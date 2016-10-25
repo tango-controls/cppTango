@@ -250,18 +250,12 @@ void Util::effective_job(int argc,char *argv[])
 // because the TAC device is stored in the db object and it references the destroyed ORB
 //
 
-		ApiUtil *au = Tango::ApiUtil::instance();
-		TangORB_var orb_clnt  = au->get_orb();
-		if (orb_clnt == nullptr)
-		{
-			orb_clnt->destroy();
-			au->set_orb(nullptr);//TODO replace nullptr
+		Tango::ApiUtil::instance()->orb_provider()->destroy();
 
-			size_t nb_db = au->get_db_vect().size();
-			for (size_t ctr = 0;ctr < nb_db;ctr++)
-				delete au->get_db_vect()[ctr];
-			au->get_db_vect().clear();
-		}
+		auto nb_db = Tango::ApiUtil::instance()->get_db_vect().size();
+		for (auto ctr = 0;ctr < nb_db;ctr++)
+			delete Tango::ApiUtil::instance()->get_db_vect()[ctr];
+		Tango::ApiUtil::instance()->get_db_vect().clear();
 
 //
 // Initialise CORBA ORB

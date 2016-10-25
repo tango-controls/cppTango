@@ -98,7 +98,7 @@ void leavefunc()
 
 	if (already_executed == false)
 	{
-			TangORB_var orb = au->get_orb();
+			TangORB_var orb = au->orb_provider()->get();
 			orb->shutdown(true);
 			orb->destroy();
 		already_executed = true;

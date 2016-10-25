@@ -93,8 +93,6 @@ void _t_handler (TANGO_UNUSED(int signum))
 ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false),ext(new ApiUtilExt),
 cl_pid(0),user_connect_timeout(-1),zmq_event_consumer(NULL),user_sub_hwm(-1)
 {
-	_orb = nullptr;//TODO replace with empty shared
-
 //
 // Check if it is created from a device server
 //
@@ -229,18 +227,7 @@ ApiUtil::~ApiUtil()
 // Properly shutdown the ORB
 //
 
-	if ((in_serv == false) && (_orb == nullptr))
-	{
-		if (event_was_used == false)
-		{
-			try
-			{
-				_orb->destroy();
-			}
-			catch (...) {}
-		}
-	}
-
+    this->orb_provider()->destroy();
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -279,94 +266,6 @@ void ApiUtil::set_sig_handler()
 #endif
 }
 
-//------------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		ApiUtil::create_orb()
-//
-// description :
-//		Create the CORBA orb object
-//
-//-------------------------------------------------------------------------------------------------------------------
-
-
-//TODO remove preconditions check in client code
-void ApiUtil::create_orb()
-{
-	if(_orb != nullptr) return;
-
-	int _argc;
-	char **_argv;
-
-//
-// pass dummy arguments to init() because we don't have access to argc and argv
-//
-
-	_argc = 1;
-	_argv = (char**)malloc(sizeof(char*));
-	_argv[0] = (char*)"dummy";
-
-//
-// Get user signal handler for SIGPIPE (ORB_init call install a SIG_IGN for SIGPIPE. This could be annoying in case
-// the user uses SIGPIPE)
-//
-
-#ifndef _TG_WINDOWS_
-	struct sigaction sa;
-	sa.sa_handler = NULL;
-
-	if (sigaction(SIGPIPE,NULL,&sa) == -1)
-		sa.sa_handler = NULL;
-#endif
-
-//
-// Init the ORB
-// Starting with omniORB 4.2, we need to add the throwTransientOnTimeout option for compatibility
-//
-
-    bool omni_42_compat = false;
-    DevULong omni_vers_hex = omniORB::versionHex();
-    if (omni_vers_hex > 0x04020000)
-        omni_42_compat = true;
-
-	const char *options[][2] = {
-			{"clientCallTimeOutPeriod",CLNT_TIMEOUT_STR},
-			{"verifyObjectExistsAndType","0"},
-			{"maxGIOPConnectionPerServer",MAX_GIOP_PER_SERVER},
-			{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
-            {"throwTransientOnTimeOut","1"},
-			{0,0}};
-
-    if (omni_42_compat == false)
-    {
-        int nb_opt = sizeof(options) / sizeof (char *[2]);
-        options[nb_opt - 2][0] = NULL;
-        options[nb_opt - 2][1] = NULL;
-    }
-
-	_orb = TangORB_init(_argc,_argv,"omniORB4",options);
-
-	free(_argv);
-
-//
-// Restore SIGPIPE handler
-//
-
-#ifndef _TG_WINDOWS_
-	if (sa.sa_handler != NULL)
-	{
-		struct sigaction sb;
-
-		sb = sa;
-
-		if (sigaction(SIGPIPE,&sb,NULL) == -1)
-		{
-			cerr << "Can re-install user signal handler for SIGPIPE!" << endl;
-		}
-	}
-#endif
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -388,7 +287,7 @@ int ApiUtil::get_db_ind()
 	}
 
 //
-// The database object has not been found, create it
+// The database object has not been found, create_or_get it
 //
 
 	db_vect.push_back(new Database());
@@ -411,7 +310,7 @@ int ApiUtil::get_db_ind(string &host,int port)
 	}
 
 //
-// The database object has not been found, create it
+// The database object has not been found, create_or_get it
 //
 
 	db_vect.push_back(new Database(host,port));
@@ -441,10 +340,11 @@ void ApiUtil::get_asynch_replies()
 
 	try
 	{
-		while (_orb->poll_next_response() == true)
+        auto orb = this->tango_orb_provider_ptr_->get();
+		while (orb->poll_next_response() == true)
 		{
 			CORBA::Request_ptr req;
-			_orb->get_next_response(req);
+			orb->get_next_response(req);
 
 //
 // Retrieve this request in the cb request map and mark it as "arrived" in both maps
@@ -603,9 +503,10 @@ void ApiUtil::get_asynch_replies(long call_timeout)
 
 				try
 				{
-					if (_orb->poll_next_response() == true)
+                    auto orb = this->orb_provider()->get();
+					if (orb->poll_next_response() == true)
 					{
-						_orb->get_next_response(req);
+						orb->get_next_response(req);
 
 //
 // Retrieve this request in the cb request map and mark it as "arrived" in both maps
@@ -670,7 +571,7 @@ void ApiUtil::get_asynch_replies(long call_timeout)
 			{
 				try
 				{
-					_orb->get_next_response(req);
+					this->orb_provider()->get()->get_next_response(req);
 
 //
 // Retrieve this request in the cb request map and mark it as "arrived" in both maps
@@ -738,7 +639,7 @@ void ApiUtil::set_asynch_cb_sub_model(cb_sub_model mode)
 		{
 
 //
-// In this case, delete the old object in case it is needed, create a new thread and start it
+// In this case, delete the old object in case it is needed, create_or_get a new thread and start it
 //
 
             delete cb_thread_ptr;
@@ -1583,51 +1484,36 @@ void ApiUtil::print_error_message(const char *mess)
 	cerr << tmp_date << ": " << mess << endl;
 }
 
-    auto ApiUtil::get_orb_factory(TangORB_ptr pORB) -> TangORBFactory_ptr
+    TangORBProvider_var ApiUtil::orb_provider(TangORB* pORB)
     {
-        if(this->get_orb()) {
-            struct AlreadyExistsFactory : public TangORBFactory {
-                auto create() -> TangORB_var {
-                    return ApiUtil::instance()->get_orb();
-                };
-            };
-            return TangORBFactory_ptr(new AlreadyExistsFactory);
-        }
+        //TODO initialize in ctr
+        if(this->tango_orb_provider_ptr_)
+            return this->tango_orb_provider_ptr_;
+
 
         if(this->in_serv){
-            struct InServerFactory : public TangORBFactory {
-                auto create() -> TangORB_var {
-                    return Util::instance()->get_orb();
-                }
+            struct UseServerProvider : public TangORBProvider {
+                UseServerProvider():TangORBProvider(move(Util::instance()->get_orb())) {};
             };
 
-            return TangORBFactory_ptr(new InServerFactory);
+            return tango_orb_provider_ptr_ = TangORBProvider_var{new UseServerProvider};
         }
 
 
         if(pORB != nullptr) {
-            struct UseProvidedFactory : public TangORBFactory {
-                UseProvidedFactory(TangORB_ptr&& pORB) : pORB(move(pORB)) {}
-
-                TangORB_ptr pORB;
-
-                auto create() -> TangORB_var  {
-                    ApiUtil::instance()->set_orb(TangORB_var(move(pORB)));
-                    return ApiUtil::instance()->get_orb();
-                };
+            struct UseProvidedProvider : public TangORBProvider {
+                UseProvidedProvider(TangORB_var tangORB_var) : TangORBProvider(tangORB_var) {};
             };
 
-            return TangORBFactory_ptr(new UseProvidedFactory(move(pORB)));
+            return tango_orb_provider_ptr_ = TangORBProvider_var{new UseProvidedProvider(TangORB_var(pORB))};
         }
 
-        struct CreateNewFactory : public TangORBFactory {
-            auto create() -> TangORB_var  {
-                ApiUtil::instance()->set_orb(TangORB_init());
-                return ApiUtil::instance()->get_orb();
-            };
+        struct UseNewProvider : public TangORBProvider {
+            UseNewProvider() : TangORBProvider(TangORB_init()) {};
         };
 
-        return TangORBFactory_ptr(new CreateNewFactory);
+
+        return tango_orb_provider_ptr_ = TangORBProvider_var{new UseNewProvider};
     }
 
 //+-----------------------------------------------------------------------------------------------------------------

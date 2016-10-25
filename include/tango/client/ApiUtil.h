@@ -32,7 +32,7 @@
 
 
 #include <tango/frontend/tango_orb.hxx>
-#include <tango/frontend/tango_orb_factory.hxx>
+#include <tango/frontend/tango_orb_provider.hxx>
 
 /****************************************************************************************
  * 																						*
@@ -54,7 +54,7 @@
  * @ingroup Client
  */
 namespace Tango {
-	class ApiUtil {
+	class ApiUtil final{
 	public:
 /**
  * Retrieve the ApiUtil instance
@@ -152,13 +152,8 @@ namespace Tango {
 		cb_sub_model get_asynch_cb_sub_model() { return auto_cb; }
 
 /// @privatesection
-//	private:
-		TangORB_var get_orb() { return _orb; }
+        auto orb_provider(TangORB* pORB = nullptr) -> TangORBProvider_var;
 
-		void set_orb(TangORB_var orb_in) { _orb = orb_in; }
-
-		void create_orb();
-//    public:
 		int get_db_ind();
 
 		int get_db_ind(string &host, int port);
@@ -240,10 +235,6 @@ namespace Tango {
 //
 
 		static void AttributeInfoEx_to_AttributeConfig(const AttributeInfoEx *, AttributeConfig_5 *);
-
-		auto get_orb_factory(TangORB_ptr pORB) -> TangORBFactory_ptr;
-
-        friend class TangORBFactory;
 	protected:
 /// @privatesection
 		ApiUtil();
@@ -252,7 +243,7 @@ namespace Tango {
 
 		vector<Database *> db_vect;
 		omni_mutex the_mutex;
-		TangORB_var _orb;
+		TangORBProvider_var tango_orb_provider_ptr_{nullptr};
 		bool in_serv;
 
 		cb_sub_model auto_cb;

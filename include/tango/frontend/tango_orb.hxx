@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <memory>
 #include <omniORB4/CORBA.h>
 
 namespace Tango {

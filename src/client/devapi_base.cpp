@@ -97,7 +97,7 @@ Connection::Connection(TangORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
 // If the proxy is created from inside a device server, use the server orb
 //
 
-    ApiUtil::instance()->get_orb_factory(TangORB_ptr(orb_in))->create();
+        ApiUtil::instance()->orb_provider(orb_in);
 
 //
 // Get user connect timeout if one is defined
@@ -369,7 +369,7 @@ void Connection::set_source(Tango::DevSource sou)
 
 //-----------------------------------------------------------------------------
 //
-// Connection::connect() - method to create connection to a TANGO device
+// Connection::connect() - method to create_or_get connection to a TANGO device
 //		using its stringified CORBA reference i.e. IOR or corbaloc
 //
 //-----------------------------------------------------------------------------
@@ -386,7 +386,7 @@ void Connection::connect(string &corba_name)
 		{
 
 			Object_var obj;
-			obj = ApiUtil::instance()->get_orb()->string_to_object(corba_name.c_str());
+			obj = ApiUtil::instance()->orb_provider()->get()->string_to_object(corba_name.c_str());
 
 //
 // Narrow CORBA string name to CORBA object

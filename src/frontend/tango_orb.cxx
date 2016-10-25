@@ -2,8 +2,11 @@
 // Created by ingvord on 10/25/16.
 //
 
-#include <tango.h>
+#include <tango/frontend/tango_orb.hxx>
+#include <omniORB4/CORBA.h>
 #include <signal.h>
+#include <tango/frontend/tango_orb_const.hxx>
+#include <iostream>
 
 Tango::TangORB_var Tango::TangORB_init() {
     int _argc;
@@ -36,7 +39,7 @@ Tango::TangORB_var Tango::TangORB_init() {
 //
 
     bool omni_42_compat = false;
-    DevULong omni_vers_hex = omniORB::versionHex();
+    auto omni_vers_hex = omniORB::versionHex();
     if (omni_vers_hex > 0x04020000)
         omni_42_compat = true;
 
@@ -69,7 +72,7 @@ Tango::TangORB_var Tango::TangORB_init() {
         sb = sa;
 
         if (sigaction(SIGPIPE, &sb, NULL) == -1) {
-            cerr << "Can not re-install user signal handler for SIGPIPE!" << endl;
+            std::cerr << "Can not re-install user signal handler for SIGPIPE!" << std::endl;
         }
     }
 #endif
