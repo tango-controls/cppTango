@@ -243,7 +243,7 @@ namespace Tango {
 
 		vector<Database *> db_vect;
 		omni_mutex the_mutex;
-		TangORBProvider_var tango_orb_provider_ptr_{nullptr};
+		TangORBProvider_var tango_orb_provider_ptr_;
 		bool in_serv;
 
 		cb_sub_model auto_cb;

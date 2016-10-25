@@ -91,7 +91,8 @@ void _t_handler (TANGO_UNUSED(int signum))
 //------------------------------------------------------------------------------------------------------------------
 
 ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false),ext(new ApiUtilExt),
-cl_pid(0),user_connect_timeout(-1),zmq_event_consumer(NULL),user_sub_hwm(-1)
+cl_pid(0),user_connect_timeout(-1),zmq_event_consumer(NULL),user_sub_hwm(-1),
+                   tango_orb_provider_ptr_{new TangORBProvider{TangORB_init()}}
 {
 //
 // Check if it is created from a device server
@@ -1486,34 +1487,24 @@ void ApiUtil::print_error_message(const char *mess)
 
     TangORBProvider_var ApiUtil::orb_provider(TangORB* pORB)
     {
-        //TODO initialize in ctr
-        if(this->tango_orb_provider_ptr_)
-            return this->tango_orb_provider_ptr_;
+		if(this->in_serv){
+			struct UseServerProvider : public TangORBProvider {
+				UseServerProvider():TangORBProvider(move(Util::instance()->get_orb())) {};
+			};
+
+			return tango_orb_provider_ptr_ = TangORBProvider_var{new UseServerProvider};
+		}
 
 
-        if(this->in_serv){
-            struct UseServerProvider : public TangORBProvider {
-                UseServerProvider():TangORBProvider(move(Util::instance()->get_orb())) {};
-            };
+		if(pORB != nullptr) {
+			struct UseProvidedProvider : public TangORBProvider {
+				UseProvidedProvider(TangORB_var tangORB_var) : TangORBProvider(tangORB_var) {};
+			};
 
-            return tango_orb_provider_ptr_ = TangORBProvider_var{new UseServerProvider};
-        }
+			return tango_orb_provider_ptr_ = TangORBProvider_var{new UseProvidedProvider(TangORB_var(pORB))};
+		}
 
-
-        if(pORB != nullptr) {
-            struct UseProvidedProvider : public TangORBProvider {
-                UseProvidedProvider(TangORB_var tangORB_var) : TangORBProvider(tangORB_var) {};
-            };
-
-            return tango_orb_provider_ptr_ = TangORBProvider_var{new UseProvidedProvider(TangORB_var(pORB))};
-        }
-
-        struct UseNewProvider : public TangORBProvider {
-            UseNewProvider() : TangORBProvider(TangORB_init()) {};
-        };
-
-
-        return tango_orb_provider_ptr_ = TangORBProvider_var{new UseNewProvider};
+        return this->tango_orb_provider_ptr_;
     }
 
 //+-----------------------------------------------------------------------------------------------------------------

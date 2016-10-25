@@ -11,7 +11,7 @@ namespace Tango {
     public:
         template <typename T>
         TangORBProvider(T&& orb):orb_{std::forward<T>(orb)}{};
-        virtual ~TangORBProvider() = 0;
+        virtual ~TangORBProvider(){};
     public:
         //TODO return weak ptr
         TangORB_var get(){
