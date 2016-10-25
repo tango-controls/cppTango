@@ -43,31 +43,40 @@ namespace Tango {
 /// forward declarations
 ///
 
-class DbDatum;
-class DbDevInfo;
-class DbDevImportInfo;
-class DbDevExportInfo;
-class DbServerInfo;
-class DbDevFullInfo;
-class DbHistory;
+	class DbDatum;
 
-class FileDatabase;
-class DbServerCache;
-class Util;
-class AccessProxy;
+	class DbDevInfo;
+
+	class DbDevImportInfo;
+
+	class DbDevExportInfo;
+
+	class DbServerInfo;
+
+	class DbDevFullInfo;
+
+	class DbHistory;
+
+	class FileDatabase;
+
+	class DbServerCache;
+
+	class Util;
+
+	class AccessProxy;
 
 ///
 /// Some typedef and define
 ///
 
-typedef vector<DbDevInfo> DbDevInfos;
-typedef vector<DbDevExportInfo> DbDevExportInfos;
-typedef vector<DbDevImportInfo> DbDevImportInfos;
-typedef vector<DbDatum> DbData;
+	typedef vector <DbDevInfo> DbDevInfos;
+	typedef vector <DbDevExportInfo> DbDevExportInfos;
+	typedef vector <DbDevImportInfo> DbDevImportInfos;
+	typedef vector <DbDatum> DbData;
 
-#define		POGO_DESC	"Description"
-#define		POGO_TITLE	"ProjectTitle"
-
+#define        POGO_DESC    "Description"
+#define        POGO_TITLE    "ProjectTitle"
+}
 ///
 /// Classes declaration
 ///
@@ -90,7 +99,7 @@ typedef vector<DbDatum> DbData;
 
 #include "DbDevice.h"
 
-
+namespace Tango {
 /**********************************************************************
  *                                                                    *
  *  DbProperty - A database object for accessing general properties   *

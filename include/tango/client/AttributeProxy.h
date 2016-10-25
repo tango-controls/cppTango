@@ -53,42 +53,41 @@
  * @headerfile tango.h
  * @ingroup Client
  */
+namespace Tango {
+	class AttributeProxy {
+	private :
+		string attr_name;
+		string device_name;
+		string alias_name;
+		Tango::DeviceProxy *dev_proxy;
+		Tango::DbAttribute *db_attr;
+		bool dbase_used;        // Dev. with database
+		bool from_env_var;   // DB from TANGO_HOST
 
-class AttributeProxy
-{
-private :
-	string 				attr_name;
-	string 				device_name;
-	string 				alias_name;
-	Tango::DeviceProxy 	*dev_proxy;
-	Tango::DbAttribute 	*db_attr;
-	bool    			dbase_used;		// Dev. with database
-	bool    			from_env_var;   // DB from TANGO_HOST
+		string host;           // DS host (if dbase_used=false)
+		string port;           // DS port (if dbase_used=false)
+		int port_num;       // DS port (as number)
 
-	string  			host;           // DS host (if dbase_used=false)
-	string  			port;           // DS port (if dbase_used=false)
-	int     			port_num;       // DS port (as number)
+		string db_host;        // DB host
+		string db_port;        // DB port
+		int db_port_num;    // DB port (as number)
 
-	string  			db_host;        // DB host
-	string  			db_port;        // DB port
-	int     			db_port_num;    // DB port (as number)
+		void real_constructor(string &);
 
-	void real_constructor(string &);
-	void ctor_from_dp(const DeviceProxy *,string &);
+		void ctor_from_dp(const DeviceProxy *, string &);
 
-    class AttributeProxyExt
-    {
-    public:
-        AttributeProxyExt() {};
-    };
+		class AttributeProxyExt {
+		public:
+			AttributeProxyExt() {};
+		};
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<AttributeProxyExt>   ext;
+		unique_ptr<AttributeProxyExt>   ext;
 #else
-	AttributeProxyExt	            *ext;     		// Class extension
+		AttributeProxyExt *ext;            // Class extension
 #endif
 
-public :
+	public :
 ///@name Constructors
 //@{
 /**
@@ -110,7 +109,8 @@ public :
  *
  * @param [in] name	The attribute name
  */
-	AttributeProxy(string &name);
+		AttributeProxy(string &name);
+
 /**
  * Create a AttributeProxy object.
  *
@@ -118,7 +118,7 @@ public :
  *
  * @param [in] name	The attribute name
  */
-	AttributeProxy(const char *name);
+		AttributeProxy(const char *name);
 //@}
 
 ///@name Miscellaneous methods
@@ -130,7 +130,8 @@ public :
  *
  * @return The attribute name
  */
-	virtual inline string name() { return attr_name; }
+		virtual inline string name() { return attr_name; }
+
 /**
  * Get associated DeviceProxy instance
  *
@@ -138,7 +139,8 @@ public :
  *
  * @return The underlying DeviceProxy object
  */
-	virtual inline DeviceProxy* get_device_proxy() { return dev_proxy; }
+		virtual inline DeviceProxy *get_device_proxy() { return dev_proxy; }
+
 /**
  * Get device status
  *
@@ -151,7 +153,8 @@ public :
  * @return The underlying device status
  * @exception ConnectionFailed, CommunnicationFailed
  */
-	virtual string status();
+		virtual string status();
+
 /**
  * Get device state
  *
@@ -164,7 +167,8 @@ public :
  * @return The underlying device state
  * @exception ConnectionFailed, CommunnicationFailed
  */
-	virtual DevState state();
+		virtual DevState state();
+
 /**
  * Ping the device
  *
@@ -177,7 +181,7 @@ public :
  * @return Time needed by the ping call
  * @exception ConnectionFailed, CommunnicationFailed
  */
-	virtual int ping();
+		virtual int ping();
 //@}
 
 ///@name Synchronous methods
@@ -190,7 +194,8 @@ public :
  * @return The attribute configuration data
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	virtual AttributeInfoEx get_config();
+		virtual AttributeInfoEx get_config();
+
 /**
  * Set attribute configuration
  *
@@ -200,7 +205,8 @@ public :
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  * @deprecated Use the set_config() method with AttributeInfoEx parameter data type
  */
-	virtual void set_config(AttributeInfo &ai);
+		virtual void set_config(AttributeInfo &ai);
+
 /**
  * Set extended attribute configuration
  *
@@ -209,7 +215,8 @@ public :
  * @param [in] ai The new extended attribute configuration data
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	virtual void set_config(AttributeInfoEx &ai);
+		virtual void set_config(AttributeInfoEx &ai);
+
 /**
  * Read attribute value
  *
@@ -221,7 +228,8 @@ public :
  * @return The attribute value
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	virtual DeviceAttribute read();
+		virtual DeviceAttribute read();
+
 /**
  * Write attribute value
  *
@@ -233,7 +241,8 @@ public :
  * @param [in] da The new attribute value
  * @exception ConnectionFailed, CommunnicationFailed, DevUnlocked, DevFailed from device
  */
-	virtual void write(DeviceAttribute &da);
+		virtual void write(DeviceAttribute &da);
+
 /**
  * Write the Read attribute value
  *
@@ -248,7 +257,8 @@ public :
  * @return The new attribute value
  * @exception ConnectionFailed, CommunnicationFailed, DevUnlocked, DevFailed from device
  */
-	virtual DeviceAttribute write_read(DeviceAttribute &da);
+		virtual DeviceAttribute write_read(DeviceAttribute &da);
+
 /**
  * Get attribute history from polling buffer
  *
@@ -288,7 +298,7 @@ public :
  * @return The attribute value history
  * @exception ConnectionFailed, CommunnicationFailed, NonSupportedFeature, DevFailed from device
  */
-	virtual vector<DeviceAttributeHistory> *history(int depth);
+		virtual vector <DeviceAttributeHistory> *history(int depth);
 //@}
 
 ///@name Asynchronous methods
@@ -302,7 +312,8 @@ public :
  * @return The asynchronous call identifier
  * @exception ConnectionFailed
  */
-	virtual long read_asynch() {return dev_proxy->read_attribute_asynch(attr_name);}
+		virtual long read_asynch() { return dev_proxy->read_attribute_asynch(attr_name); }
+
 /**
  * Get asynchronous read attribute call reply
  *
@@ -319,7 +330,8 @@ public :
  * @return The attribute value
  * @exception AsynCall, AsynReplyNotArrived, CommunicationFailed, DevFailed from device
  */
-	virtual DeviceAttribute *read_reply(long id) {return dev_proxy->read_attribute_reply(id);}
+		virtual DeviceAttribute *read_reply(long id) { return dev_proxy->read_attribute_reply(id); }
+
 /**
  * Get asynchronous read attribute call reply with timeout
  *
@@ -339,7 +351,8 @@ public :
  * @return The attribute value
  * @exception AsynCall, AsynReplyNotArrived, CommunicationFailed, DevFailed from device
  */
-	virtual DeviceAttribute *read_reply(long id,long to) {return dev_proxy->read_attribute_reply(id,to);}
+		virtual DeviceAttribute *read_reply(long id, long to) { return dev_proxy->read_attribute_reply(id, to); }
+
 /**
  * Write attribute value asynchrnously in polling model
  *
@@ -353,7 +366,8 @@ public :
  * @return The asynchrnous call identifier
  * @exception ConnectionFailed
  */
-	virtual long write_asynch(DeviceAttribute &da) {return dev_proxy->write_attribute_asynch(da);}
+		virtual long write_asynch(DeviceAttribute &da) { return dev_proxy->write_attribute_asynch(da); }
+
 /**
  * Get asynchronous write attribute call reply
  *
@@ -364,7 +378,8 @@ public :
  * @param [in] id The asynchronous identifier
  * @exception AsynCall, AsynReplyNotArrived, CommunicationFailed, DevFailed from device
  */
-	virtual void write_reply(long id) {dev_proxy->write_attribute_reply(id);}
+		virtual void write_reply(long id) { dev_proxy->write_attribute_reply(id); }
+
 /**
  * Get asynchronous write attribute call reply with timeout
  *
@@ -378,7 +393,8 @@ public :
  * @param [in] to The timeout value
  * @exception AsynCall, AsynReplyNotArrived, CommunicationFailed, DevFailed from device
  */
-	virtual void write_reply(long id,long to) {dev_proxy->write_attribute_reply(id,to);}
+		virtual void write_reply(long id, long to) { dev_proxy->write_attribute_reply(id, to); }
+
 /**
  * Read attribute asynchronously in callback model
  *
@@ -389,7 +405,8 @@ public :
  * @param [in] cb The callback object
  * @exception ConnectionFailed
  */
-	virtual void read_asynch(CallBack &cb) {dev_proxy->read_attribute_asynch(attr_name,cb);}
+		virtual void read_asynch(CallBack &cb) { dev_proxy->read_attribute_asynch(attr_name, cb); }
+
 /**
  * Write attribute asynchronously in callback model
  *
@@ -401,7 +418,7 @@ public :
  * @param [in] cb The callback object
  * @exception ConnectionFailed
  */
-	virtual void write_asynch(DeviceAttribute &da,CallBack &cb) {dev_proxy->write_attribute_asynch(da,cb);}
+		virtual void write_asynch(DeviceAttribute &da, CallBack &cb) { dev_proxy->write_attribute_asynch(da, cb); }
 //@}
 
 ///@name Polling related methods
@@ -413,7 +430,8 @@ public :
  *
  * @return Boolean true id the attribute is polled
  */
-	virtual bool is_polled();
+		virtual bool is_polled();
+
 /**
  * Get attribute polling period
  *
@@ -421,7 +439,8 @@ public :
  *
  * @return The polling period
  */
-	virtual int get_poll_period();
+		virtual int get_poll_period();
+
 /**
  * Set attribute polling period
  *
@@ -430,13 +449,14 @@ public :
  *
  * @param [in] period The polling period
  */
-	virtual void poll(int period);
+		virtual void poll(int period);
+
 /**
  * Stop attribute polling
  *
  * Remove attribute from the list of polled attributes.
  */
-	virtual void stop_poll();
+		virtual void stop_poll();
 //@}
 
 ///@name Event related methods
@@ -459,7 +479,8 @@ public :
  * @return The event identifier
  * @exception EventSystemFailed
  */
-	virtual int subscribe_event (EventType event, CallBack *cb);
+		virtual int subscribe_event(EventType event, CallBack *cb);
+
 /**
  * Stateless subscription to attribute event
  *
@@ -476,7 +497,8 @@ public :
  * @return The event identifier
  * @exception EventSystemFailed
  */
-	virtual int subscribe_event (EventType event, CallBack *cb,bool stateless);
+		virtual int subscribe_event(EventType event, CallBack *cb, bool stateless);
+
 /**
  * Stateless subscription to attribute event with event queue
  *
@@ -499,7 +521,8 @@ public :
  * @return The event identifier
  * @exception EventSystemFailed
  */
-	virtual int subscribe_event (EventType event, int event_queue_size, bool stateless = false);
+		virtual int subscribe_event(EventType event, int event_queue_size, bool stateless = false);
+
 /**
  * Unsubsribe to attribute event
  *
@@ -509,7 +532,8 @@ public :
  * @param [in] ev_id The event identifier
  * @exception EventSystemFailed
  */
-	virtual void unsubscribe_event (int ev_id) {dev_proxy->unsubscribe_event(ev_id);}
+		virtual void unsubscribe_event(int ev_id) { dev_proxy->unsubscribe_event(ev_id); }
+
 /**
  * Get events from event queue (pull model)
  *
@@ -521,8 +545,8 @@ public :
  * @param [in] cb The event callback
  * @exception EventSystemFailed
  */
-	virtual void get_events (int event_id, CallBack *cb)
-	               {dev_proxy->get_events (event_id, cb);}
+		virtual void get_events(int event_id, CallBack *cb) { dev_proxy->get_events(event_id, cb); }
+
 /**
  * Get events from event queue (pull model)
  *
@@ -535,8 +559,10 @@ public :
  * @param [out] event_list The event list
  * @exception EventSystemFailed
  */
-	virtual void get_events (int event_id, EventDataList &event_list)
-	               {dev_proxy->get_events (event_id, event_list);}
+		virtual void get_events(int event_id, EventDataList &event_list) {
+			dev_proxy->get_events(event_id, event_list);
+		}
+
 /**
  * Get events from event queue (pull model)
  *
@@ -550,8 +576,10 @@ public :
  * @param [out] event_list The event list
  * @exception EventSystemFailed
  */
-	virtual void get_events (int event_id, AttrConfEventDataList &event_list)
-	               {dev_proxy->get_events (event_id, event_list);}
+		virtual void get_events(int event_id, AttrConfEventDataList &event_list) {
+			dev_proxy->get_events(event_id, event_list);
+		}
+
 /**
  * Get events number in queue
  *
@@ -564,8 +592,8 @@ public :
  * @return The event number in the queue
  * @exception EventSystemFailed
  */
-	virtual int  event_queue_size(int event_id)
-	               {return dev_proxy->event_queue_size(event_id);}
+		virtual int event_queue_size(int event_id) { return dev_proxy->event_queue_size(event_id); }
+
 /**
  * Get last event date
  *
@@ -578,8 +606,8 @@ public :
  * @return The last event date
  * @exception EventSystemFailed
  */
-	virtual TimeVal get_last_event_date(int event_id)
-	               {return dev_proxy->get_last_event_date(event_id);}
+		virtual TimeVal get_last_event_date(int event_id) { return dev_proxy->get_last_event_date(event_id); }
+
 /**
  * Check if the event queue is empty
  *
@@ -591,8 +619,7 @@ public :
  * @return The event queue empty flag
  * @exception EventSystemFailed
  */
-	virtual bool is_event_queue_empty(int event_id)
-	               {return dev_proxy->is_event_queue_empty(event_id);}
+		virtual bool is_event_queue_empty(int event_id) { return dev_proxy->is_event_queue_empty(event_id); }
 //@}
 
 ///@name Property related methods
@@ -607,7 +634,8 @@ public :
  * @param [out] db Property value
  * @exception NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database
  */
-	virtual void get_property(string &prop_name, DbData &db);
+		virtual void get_property(string &prop_name, DbData &db);
+
 /**
  * Get multiple attribute property
  *
@@ -618,7 +646,8 @@ public :
  * @param [out] db Properties value
  * @exception NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database
  */
-	virtual void get_property(vector<string> &prop_names, DbData &db);
+		virtual void get_property(vector <string> &prop_names, DbData &db);
+
 /**
  * Get attribute property(ies)
  *
@@ -628,7 +657,8 @@ public :
  * @param [in,out] db Properties value
  * @exception NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database
  */
-	virtual void get_property(DbData &db);
+		virtual void get_property(DbData &db);
+
 /**
  * Put attribute property(ies)
  *
@@ -638,7 +668,8 @@ public :
  * @param [in,out] db Properties value
  * @exception NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database
  */
-	virtual void put_property(DbData &db);
+		virtual void put_property(DbData &db);
+
 /**
  * Delete a single attribute property
  *
@@ -648,7 +679,8 @@ public :
  * @param [in] prop_name The property name
  * @exception NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database
  */
-	virtual void delete_property(string &prop_name);
+		virtual void delete_property(string &prop_name);
+
 /**
  * Delete a list of attribute property
  *
@@ -658,7 +690,8 @@ public :
  * @param [in] prop_names The properties name
  * @exception NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database
  */
-	virtual void delete_property(vector<string> &prop_names);
+		virtual void delete_property(vector <string> &prop_names);
+
 /**
  * Delete attribute property(ies)
  *
@@ -668,7 +701,7 @@ public :
  * @param [in] db The properties name
  * @exception NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database
  */
-	virtual void delete_property(DbData &db);
+		virtual void delete_property(DbData &db);
 
 //@}
 
@@ -677,25 +710,33 @@ public :
 //
 // general methods
 //
-	virtual void parse_name(string &);
-	virtual void set_transparency_reconnection(bool);
-	virtual bool get_transparency_reconnection();
+		virtual void parse_name(string &);
+
+		virtual void set_transparency_reconnection(bool);
+
+		virtual bool get_transparency_reconnection();
 
 //
 // Old event methods
 //
 
-	virtual int subscribe_event (EventType event, CallBack *,const vector<string> &filters); // For compatibility
-	virtual int subscribe_event (EventType event, CallBack *,const vector<string> &filters, bool stateless); // For compatibility
-	virtual int subscribe_event (EventType event, int event_queue_size,const vector<string> &filters, bool stateless = false); // For compatibility
+		virtual int subscribe_event(EventType event, CallBack *, const vector <string> &filters); // For compatibility
+		virtual int subscribe_event(EventType event, CallBack *, const vector <string> &filters,
+									bool stateless); // For compatibility
+		virtual int subscribe_event(EventType event, int event_queue_size, const vector <string> &filters,
+									bool stateless = false); // For compatibility
 
 
-	AttributeProxy(const DeviceProxy *,string &);
-	AttributeProxy(const DeviceProxy *,const char *);
-	AttributeProxy(const AttributeProxy &);
-	AttributeProxy & operator=(const AttributeProxy &);
-	virtual ~AttributeProxy();
-};
+		AttributeProxy(const DeviceProxy *, string &);
 
+		AttributeProxy(const DeviceProxy *, const char *);
 
+		AttributeProxy(const AttributeProxy &);
+
+		AttributeProxy &operator=(const AttributeProxy &);
+
+		virtual ~AttributeProxy();
+	};
+
+}//Tango
 #endif /* _ATTRIBUTEPROXY_H */
