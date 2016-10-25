@@ -48,57 +48,62 @@
  * @headerfile tango.h
  * @ingroup DBase
  */
+namespace Tango {
+	class Database : public Tango::Connection {
+	private :
+		virtual string get_corba_name(bool);
 
-class Database : public Tango::Connection
-{
-private :
-	virtual string get_corba_name(bool);
-	virtual string build_corba_name() {return string("nada");}
-	virtual int get_lock_ctr() {return 0;}
-	virtual void set_lock_ctr(int) {}
+		virtual string build_corba_name() { return string("nada"); }
 
-    class DatabaseExt
-    {
-    public:
-        DatabaseExt() {};
+		virtual int get_lock_ctr() { return 0; }
 
-		string	orig_tango_host;
-    };
+		virtual void set_lock_ctr(int) {}
+
+		class DatabaseExt {
+		public:
+			DatabaseExt() {};
+
+			string orig_tango_host;
+		};
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DatabaseExt>     ext;
+		unique_ptr<DatabaseExt> ext;
 #else
-	DatabaseExt			        *ext;
+		DatabaseExt			        *ext;
 #endif
 
-	bool				db_multi_svc;
-	vector<string>		multi_db_port;
-	vector<string>		multi_db_host;
-	FileDatabase 		*filedb;
-	string 				file_name;
-	int					serv_version;
+		bool db_multi_svc;
+		vector<string> multi_db_port;
+		vector<string> multi_db_host;
+		FileDatabase *filedb;
+		string file_name;
+		int serv_version;
 
-	AccessProxy			*access_proxy;
-	bool				access_checked;
-	DevErrorList		access_except_errors;
+		AccessProxy *access_proxy;
+		bool access_checked;
+		DevErrorList access_except_errors;
 
-	map<string,string>	dev_class_cache;
-	string				db_device_name;
+		map<string, string> dev_class_cache;
+		string db_device_name;
 
-	bool				access_service_defined;
+		bool access_service_defined;
 
-    Tango::Util         *db_tg;
-    omni_mutex          map_mutex;
+		Tango::Util *db_tg;
+		omni_mutex map_mutex;
 
-	DbDatum         make_string_array(string, CORBA::Any_var &);
-	vector<DbHistory> make_history_array(bool, CORBA::Any_var &);
+		DbDatum make_string_array(string, CORBA::Any_var &);
 
-	void check_access();
-	inline string dev_name();
-	void set_server_release();
-	void check_access_and_get();
+		vector<DbHistory> make_history_array(bool, CORBA::Any_var &);
 
-public :
+		void check_access();
+
+		inline string dev_name();
+
+		void set_server_release();
+
+		void check_access_and_get();
+
+	public :
 /**@name Constructors */
 //@{
 /**
@@ -114,7 +119,7 @@ public :
  * @param [in] orb	The CORBA ORB pointer. Default value is fine for 99 % of cases
  *
  */
-	Database(CORBA::ORB *orb=NULL);
+		Database(CORBA::ORB *orb = NULL);
 // @}
 
 /**@name General methods */
@@ -144,7 +149,7 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	string get_info();
+		string get_info();
 //@}
 
 /**@name Device oriented methods */
@@ -168,7 +173,8 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed
  */
-	void add_device(DbDevInfo &dev_info);
+		void add_device(DbDevInfo &dev_info);
+
 /**
  * Delete a device from the database.
  *
@@ -181,7 +187,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError, DB_DeviceNotDefined)
  */
-	void delete_device(string dev_name);
+		void delete_device(string dev_name);
+
 /**
  * Import a device from the database.
  *
@@ -204,7 +211,8 @@ public :
  *
  * @exception ConnectionFailed, CommunicationFailed, DevFailed
  */
-	DbDevImportInfo import_device(string &dev_name);
+		DbDevImportInfo import_device(string &dev_name);
+
 /**
  * Export a device into the database.
  *
@@ -226,7 +234,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError, DB_DeviceNotDefined)
  */
-	void export_device(DbDevExportInfo &info);
+		void export_device(DbDevExportInfo &info);
+
 /**
  * Unexport a device in the database.
  *
@@ -239,7 +248,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError)
  */
-	void unexport_device(string dev_name);
+		void unexport_device(string dev_name);
+
 /**
  * Get device information
  *
@@ -250,7 +260,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDevFullInfo get_device_info(string &dev_name);
+		DbDevFullInfo get_device_info(string &dev_name);
+
 /**
  * Get class name for a device
  *
@@ -265,7 +276,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	string get_class_for_device(string &dev_name);
+		string get_class_for_device(string &dev_name);
+
 /**
  * Get device inheritance scheme
  *
@@ -284,7 +296,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_class_inheritance_for_device(string &dev_name);
+		DbDatum get_class_inheritance_for_device(string &dev_name);
 //@}
 
 /**@name Server oriented methods */
@@ -300,7 +312,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError)
  */
-	void add_server(string &ds_name, DbDevInfos &devs);
+		void add_server(string &ds_name, DbDevInfos &devs);
+
 /**
  * Delete a device server process from the database.
  *
@@ -310,7 +323,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError)
  */
-	void delete_server(string &ds_name);
+		void delete_server(string &ds_name);
+
 /**
  * Delete a device server process from the database.
  *
@@ -321,7 +335,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError)
  */
-	void export_server(DbDevExportInfos &devs);
+		void export_server(DbDevExportInfos &devs);
+
 /**
  * Unexport all devices from a device server in the database.
  *
@@ -331,7 +346,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError)
  */
-	void unexport_server(string &ds_name);
+		void unexport_server(string &ds_name);
+
 /**
  * Rename a device server in the database.
  *
@@ -342,7 +358,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError)
  */
-	void rename_server(const string &old_ds_name,const string &new_ds_name);
+		void rename_server(const string &old_ds_name, const string &new_ds_name);
 //@}
 
 /**@name Services oriented methods */
@@ -367,7 +383,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_services(string &service_name,string &inst_name);
+		DbDatum get_services(string &service_name, string &inst_name);
+
 /**
  * Get services list from database
  *
@@ -387,7 +404,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_service_list(string &service_name);
+		DbDatum get_device_service_list(string &service_name);
+
 /**
  * Register a service in the database
  *
@@ -406,7 +424,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void register_service(string &service_name,string &inst_name,string &dev_name);
+		void register_service(string &service_name, string &inst_name, string &dev_name);
+
 /**
  * Unregister a service from the database
  *
@@ -423,7 +442,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void unregister_service(string &service_name,string &inst_name);
+		void unregister_service(string &service_name, string &inst_name);
 //@}
 
 /**@name Object property oriented methods */
@@ -452,7 +471,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_property(string obj_name, DbData &db) {get_property(obj_name,db,NULL);}
+		void get_property(string obj_name, DbData &db) { get_property(obj_name, db, NULL); }
+
 /**
  * Put object property value in database
  *
@@ -476,7 +496,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_property(string obj_name, DbData &db);
+		void put_property(string obj_name, DbData &db);
+
 /**
  * Delete object property from database
  *
@@ -495,7 +516,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_property(string obj_name, DbData &db);
+		void delete_property(string obj_name, DbData &db);
+
 /**
  * Get object property history from database
  *
@@ -533,7 +555,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_property_history(string &obj_name,string &prop_name);
+		vector<DbHistory> get_property_history(string &obj_name, string &prop_name);
 //@}
 
 /**@name Device property oriented methods */
@@ -562,7 +584,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_property(string dev_name, DbData &db) {get_device_property(dev_name,db,NULL);}
+		void get_device_property(string dev_name, DbData &db) { get_device_property(dev_name, db, NULL); }
+
 /**
  * Put device property value in database
  *
@@ -586,7 +609,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_device_property(string dev_name, DbData &db);
+		void put_device_property(string dev_name, DbData &db);
+
 /**
  * Delete device property from database
  *
@@ -605,7 +629,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_device_property(string dev_name, DbData &db);
+		void delete_device_property(string dev_name, DbData &db);
+
 /**
  * Get device property history from database
  *
@@ -619,7 +644,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_device_property_history(string &dev_name,string &prop_name);
+		vector<DbHistory> get_device_property_history(string &dev_name, string &prop_name);
 //@}
 
 /**@name Device attribute property oriented methods */
@@ -676,7 +701,10 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_attribute_property(string dev_name, DbData &db) {get_device_attribute_property(dev_name,db,NULL);}
+		void get_device_attribute_property(string dev_name, DbData &db) {
+			get_device_attribute_property(dev_name, db, NULL);
+		}
+
 /**
  * Put device attribute property value in database
  *
@@ -716,7 +744,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_device_attribute_property(string dev_name, DbData &db);
+		void put_device_attribute_property(string dev_name, DbData &db);
+
 /**
  * Delete device attribute property from database
  *
@@ -736,7 +765,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_device_attribute_property(string dev_name, DbData &db);
+		void delete_device_attribute_property(string dev_name, DbData &db);
+
 /**
  * Get device attribute property history from database
  *
@@ -752,7 +782,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_device_attribute_property_history(string &dev_name,string &prop_name,string &att_name);
+		vector<DbHistory> get_device_attribute_property_history(string &dev_name, string &prop_name, string &att_name);
+
 /**
  * Get list of attribute with data in database for a specific device
  *
@@ -765,7 +796,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_attribute_list(string &dev_name,vector<string> &att_list);
+		void get_device_attribute_list(string &dev_name, vector<string> &att_list);
+
 /**
  * Get list of pipe with data in database for a specific device
  *
@@ -778,7 +810,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_pipe_list(const string &dev_name,vector<string> &pipe_list);
+		void get_device_pipe_list(const string &dev_name, vector<string> &pipe_list);
 //@}
 
 /**@name Device pipe property oriented methods */
@@ -835,7 +867,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_pipe_property(string dev_name, DbData &db) {get_device_pipe_property(dev_name,db,NULL);}
+		void get_device_pipe_property(string dev_name, DbData &db) { get_device_pipe_property(dev_name, db, NULL); }
+
 /**
  * Put device pipe property value in database
  *
@@ -875,7 +908,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_device_pipe_property(string dev_name, DbData &db);
+		void put_device_pipe_property(string dev_name, DbData &db);
+
 /**
  * Delete device pipe property from database
  *
@@ -895,7 +929,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_device_pipe_property(string dev_name, DbData &db);
+		void delete_device_pipe_property(string dev_name, DbData &db);
+
 /**
  * Get device pipe property history from database
  *
@@ -911,7 +946,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_device_pipe_property_history(string &dev_name,string &pipe_name,string &prop_name);
+		vector<DbHistory> get_device_pipe_property_history(string &dev_name, string &pipe_name, string &prop_name);
 //@}
 
 /**@name Class property oriented methods */
@@ -940,7 +975,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_class_property(string class_name,DbData &db) {get_class_property(class_name,db,NULL);}
+		void get_class_property(string class_name, DbData &db) { get_class_property(class_name, db, NULL); }
+
 /**
  * Put class property value in database
  *
@@ -964,7 +1000,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_class_property(string class_name, DbData &db);
+		void put_class_property(string class_name, DbData &db);
+
 /**
  * Delete class property from database
  *
@@ -983,7 +1020,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_class_property(string class_name, DbData &db);
+		void delete_class_property(string class_name, DbData &db);
+
 /**
  * Get class property history from database
  *
@@ -998,7 +1036,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_class_property_history(string &class_name,string &prop_name);
+		vector<DbHistory> get_class_property_history(string &class_name, string &prop_name);
 //@}
 
 /**@name Class attribute property oriented methods */
@@ -1054,7 +1092,10 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_class_attribute_property(string class_name,DbData &db) {get_class_attribute_property(class_name,db,NULL);}
+		void get_class_attribute_property(string class_name, DbData &db) {
+			get_class_attribute_property(class_name, db, NULL);
+		}
+
 /**
  * Put class attribute property value in database
  *
@@ -1092,7 +1133,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_class_attribute_property(string class_name, DbData &db);
+		void put_class_attribute_property(string class_name, DbData &db);
+
 /**
  * Delete class attribute property from database
  *
@@ -1113,7 +1155,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_class_attribute_property(string class_name, DbData &db);
+		void delete_class_attribute_property(string class_name, DbData &db);
+
 /**
  * Get class attribute property history from database
  *
@@ -1129,7 +1172,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_class_attribute_property_history(string &class_name,string &att_name,string &prop_name);
+		vector<DbHistory> get_class_attribute_property_history(string &class_name, string &att_name, string &prop_name);
 //@}
 
 /**@name Class pipe property oriented methods */
@@ -1183,7 +1226,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_class_pipe_property(string class_name,DbData &db) {get_class_pipe_property(class_name,db,NULL);}
+		void get_class_pipe_property(string class_name, DbData &db) { get_class_pipe_property(class_name, db, NULL); }
+
 /**
  * Put class pipe property value in database
  *
@@ -1221,7 +1265,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_class_pipe_property(string class_name, DbData &db);
+		void put_class_pipe_property(string class_name, DbData &db);
+
 /**
  * Delete class pipe property from database
  *
@@ -1242,7 +1287,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_class_pipe_property(string class_name, DbData &db);
+		void delete_class_pipe_property(string class_name, DbData &db);
+
 /**
  * Get class pipe property history from database
  *
@@ -1258,7 +1304,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_class_pipe_property_history(string &class_name,string &pipe_name,string &prop_name);
+		vector<DbHistory> get_class_pipe_property_history(string &class_name, string &pipe_name, string &prop_name);
 //@}
 
 /**@name Alias oriented methods */
@@ -1274,7 +1320,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_from_alias(string alias,string &dev_name);
+		void get_device_from_alias(string alias, string &dev_name);
+
 /**
  * Get device alias form its name
  *
@@ -1286,7 +1333,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_alias_from_device(string dev_name,string &alias);
+		void get_alias_from_device(string dev_name, string &alias);
+
 /**
  * Get device alias from its name
  *
@@ -1300,7 +1348,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_alias(string dev_name,string &dev_alias);
+		void get_alias(string dev_name, string &dev_alias);
+
 /**
  * Get device name from its alias
  *
@@ -1314,7 +1363,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_alias(string dev_alias,string &dev_name);
+		void get_device_alias(string dev_alias, string &dev_name);
+
 /**
  * Define device alias
  *
@@ -1326,7 +1376,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_device_alias(string &dev_name,string &dev_alias);
+		void put_device_alias(string &dev_name, string &dev_alias);
+
 /**
  * Delete device alias
  *
@@ -1336,7 +1387,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_device_alias(string &dev_alias);
+		void delete_device_alias(string &dev_alias);
+
 /**
  * Get attribute name from its alias
  *
@@ -1348,7 +1400,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_attribute_from_alias(string alias,string &att_name);
+		void get_attribute_from_alias(string alias, string &att_name);
+
 /**
  * Get attribute alias form its name
  *
@@ -1360,7 +1413,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_alias_from_attribute(string att_name,string &alias);
+		void get_alias_from_attribute(string att_name, string &alias);
+
 /**
  * Get attribute name from its alias
  *
@@ -1372,7 +1426,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_attribute_alias(string att_alias, string &att_name);
+		void get_attribute_alias(string att_alias, string &att_name);
+
 /**
  * Define attribute alias
  *
@@ -1384,7 +1439,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_attribute_alias(string &att_name,string &att_alias);
+		void put_attribute_alias(string &att_name, string &att_alias);
+
 /**
  * Delete attribute alias
  *
@@ -1394,7 +1450,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_attribute_alias(string &att_alias);
+		void delete_attribute_alias(string &att_alias);
 //@}
 
 /**@name Database browsing oriented methods */
@@ -1414,7 +1470,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_host_list();
+		DbDatum get_host_list();
+
 /**
  * Get host list with name matching a wildcard
  *
@@ -1433,7 +1490,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_host_list(string &wildcard);
+		DbDatum get_host_list(string &wildcard);
+
 /**
  * Get list of Tango classes embedded in a device server proess
  *
@@ -1454,7 +1512,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_server_class_list(string &ds_name);
+		DbDatum get_server_class_list(string &ds_name);
+
 /**
  * Get list of all Tango device server process
  *
@@ -1470,7 +1529,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_server_name_list();
+		DbDatum get_server_name_list();
+
 /**
  * Get list of instances
  *
@@ -1489,7 +1549,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_instance_name_list(string &ds_name);
+		DbDatum get_instance_name_list(string &ds_name);
+
 /**
  * Get list of device server processes
  *
@@ -1505,7 +1566,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_server_list();
+		DbDatum get_server_list();
+
 /**
  * Get list of device server processes with a wildcard
  *
@@ -1524,7 +1586,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_server_list(string &wildcard);
+		DbDatum get_server_list(string &wildcard);
+
 /**
  * Get list of device server processes running on a host
  *
@@ -1543,7 +1606,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_host_server_list(string &host_name);
+		DbDatum get_host_server_list(string &host_name);
+
 /**
  * Get list of devices served by a device server process
  *
@@ -1556,7 +1620,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_name(string &ds_name, string &class_name);
+		DbDatum get_device_name(string &ds_name, string &class_name);
+
 /**
  * Get list of exported devices
  *
@@ -1568,7 +1633,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_exported(string &filter);
+		DbDatum get_device_exported(string &filter);
+
 /**
  * Get list of device domain names
  *
@@ -1580,7 +1646,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_domain(string &wildcard);
+		DbDatum get_device_domain(string &wildcard);
+
 /**
  * Get list of device family name
  *
@@ -1592,7 +1659,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_family(string &wildcard);
+		DbDatum get_device_family(string &wildcard);
+
 /**
  * Get list of device member name
  *
@@ -1604,7 +1672,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_member(string &wildcard);
+		DbDatum get_device_member(string &wildcard);
+
 /**
  * Get list of devices/classes for a specified device server
  *
@@ -1624,7 +1693,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_class_list(string &ds_name);
+		DbDatum get_device_class_list(string &ds_name);
+
 /**
  * Get list of exported device for a class
  *
@@ -1643,7 +1713,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_exported_for_class(string &class_name);
+		DbDatum get_device_exported_for_class(string &class_name);
+
 /**
  * Get object (free property) list
  *
@@ -1663,7 +1734,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_object_list(string &wildcard);
+		DbDatum get_object_list(string &wildcard);
+
 /**
  * Get object property list
  *
@@ -1684,7 +1756,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-    DbDatum get_object_property_list(string &obj_name,string &wildcard);
+		DbDatum get_object_property_list(string &obj_name, string &wildcard);
+
 /**
  * Get Tango class list
  *
@@ -1703,7 +1776,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_class_list(string &wildcard);
+		DbDatum get_class_list(string &wildcard);
+
 /**
  * Get class property list
  *
@@ -1722,7 +1796,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_class_property_list(string &class_name);
+		DbDatum get_class_property_list(string &class_name);
+
 /**
  * Get class attribute list
  *
@@ -1743,7 +1818,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_class_attribute_list(string &class_name,string &wildcard);
+		DbDatum get_class_attribute_list(string &class_name, string &wildcard);
+
 /**
  * Get class pipe list
  *
@@ -1764,7 +1840,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_class_pipe_list(const string &class_name,const string &wildcard);
+		DbDatum get_class_pipe_list(const string &class_name, const string &wildcard);
+
 /**
  * Get device alias list
  *
@@ -1792,7 +1869,8 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_alias_list(string &filter);
+		DbDatum get_device_alias_list(string &filter);
+
 /**
  * Get attribute alias list
  *
@@ -1807,108 +1885,140 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_attribute_alias_list(string &filter);
+		DbDatum get_attribute_alias_list(string &filter);
 //@}
 
 
 ///@privatesection
-	Database(string &host, int port, CORBA::ORB *orb=NULL);
-	Database(string &file);
+		Database(string &host, int port, CORBA::ORB *orb = NULL);
 
-	Database(const Database &);
-	Database & operator=(const Database &);
+		Database(string &file);
 
-	void write_filedatabase();
-	void reread_filedatabase();
-	void write_event_channel_ior_filedatabase(string &);
-	void build_connection ();
-	void post_reconnection();
-	~Database();
-	inline Device_var &get_dbase() { return device;}
-	void check_tango_host(const char *);
-	AccessControlType check_access_control(string &);
-	bool is_control_access_checked() {return access_checked;}
-	void set_access_checked(bool val) {access_checked = val;}
+		Database(const Database &);
 
-	void set_tango_utils(Tango::Util *ptr) {db_tg=ptr;}
-	int get_server_release() {return serv_version;}
+		Database &operator=(const Database &);
 
-	DevErrorList &get_access_except_errors() {return access_except_errors;}
-	void clear_access_except_errors() {access_except_errors.length(0);}
-	bool is_command_allowed(string &,string &);
+		void write_filedatabase();
 
-	bool is_multi_tango_host() {return db_multi_svc;}
-	vector<string> &get_multi_host() {return multi_db_host;}
-	vector<string> &get_multi_port() {return multi_db_port;}
+		void reread_filedatabase();
 
-	const string &get_file_name();
-	const string &get_orig_tango_host() {return ext->orig_tango_host;}
-	void set_orig_tango_host(const string &_s) {ext->orig_tango_host=_s;}
+		void write_event_channel_ior_filedatabase(string &);
+
+		void build_connection();
+
+		void post_reconnection();
+
+		~Database();
+
+		inline Device_var &get_dbase() { return device; }
+
+		void check_tango_host(const char *);
+
+		AccessControlType check_access_control(string &);
+
+		bool is_control_access_checked() { return access_checked; }
+
+		void set_access_checked(bool val) { access_checked = val; }
+
+		void set_tango_utils(Tango::Util *ptr) { db_tg = ptr; }
+
+		int get_server_release() { return serv_version; }
+
+		DevErrorList &get_access_except_errors() { return access_except_errors; }
+
+		void clear_access_except_errors() { access_except_errors.length(0); }
+
+		bool is_command_allowed(string &, string &);
+
+		bool is_multi_tango_host() { return db_multi_svc; }
+
+		vector<string> &get_multi_host() { return multi_db_host; }
+
+		vector<string> &get_multi_port() { return multi_db_port; }
+
+		const string &get_file_name();
+
+		const string &get_orig_tango_host() { return ext->orig_tango_host; }
+
+		void set_orig_tango_host(const string &_s) { ext->orig_tango_host = _s; }
 
 #ifdef _TG_WINDOWS_
-	Database(CORBA::ORB *orb,string &,string &);
-	long get_tango_host_from_reg(char **,string &,string &);
+        Database(CORBA::ORB *orb,string &,string &);
+        long get_tango_host_from_reg(char **,string &,string &);
 #endif
 
 //
 // general methods
 //
 
-	CORBA::Any *fill_server_cache(string &,string &);
+		CORBA::Any *fill_server_cache(string &, string &);
 
 //
 // device methods
 //
 
-	DbDatum get_device_name(string &, string &,DbServerCache *dsc);
+		DbDatum get_device_name(string &, string &, DbServerCache *dsc);
 
 //
 // server methods
 //
 
-	DbServerInfo get_server_info(string &);
-	void put_server_info(DbServerInfo &);
-	void delete_server_info(string &);
+		DbServerInfo get_server_info(string &);
+
+		void put_server_info(DbServerInfo &);
+
+		void delete_server_info(string &);
 
 //
 // property methods
 //
 
-	void get_property(string, DbData &,DbServerCache *dsc);
-	void get_property_forced(string, DbData &,DbServerCache *dsc = NULL);
-	void get_device_property(string, DbData &, DbServerCache *dsc);
-	DbDatum get_device_property_list(string &,string &);
-	void get_device_property_list(string &,const string &,vector<string> &,DbServerCache *dsc = NULL);
-	void get_device_attribute_property(string, DbData &, DbServerCache *dsc);
-	void get_device_pipe_property(string, DbData &, DbServerCache *dsc);
-	void delete_all_device_attribute_property(string, DbData &);
-	void delete_all_device_pipe_property(string, DbData &);
-	void get_class_property(string, DbData &, DbServerCache *dsc);
-	void get_class_attribute_property(string, DbData &, DbServerCache *dsc);
-	void get_class_pipe_property(string, DbData &, DbServerCache *dsc);
+		void get_property(string, DbData &, DbServerCache *dsc);
+
+		void get_property_forced(string, DbData &, DbServerCache *dsc = NULL);
+
+		void get_device_property(string, DbData &, DbServerCache *dsc);
+
+		DbDatum get_device_property_list(string &, string &);
+
+		void get_device_property_list(string &, const string &, vector<string> &, DbServerCache *dsc = NULL);
+
+		void get_device_attribute_property(string, DbData &, DbServerCache *dsc);
+
+		void get_device_pipe_property(string, DbData &, DbServerCache *dsc);
+
+		void delete_all_device_attribute_property(string, DbData &);
+
+		void delete_all_device_pipe_property(string, DbData &);
+
+		void get_class_property(string, DbData &, DbServerCache *dsc);
+
+		void get_class_attribute_property(string, DbData &, DbServerCache *dsc);
+
+		void get_class_pipe_property(string, DbData &, DbServerCache *dsc);
 
 //
 // event methods
 //
 
-	void export_event(DevVarStringArray *);
-	void unexport_event(string &);
-	CORBA::Any *import_event(string &);
+		void export_event(DevVarStringArray *);
 
-};
+		void unexport_event(string &);
+
+		CORBA::Any *import_event(string &);
+
+	};
 
 //
 // Some Database class inline methods
 //
 
-inline string Database::dev_name()
-{
-	if (db_device_name.empty() == true)
-	{
-		CORBA::String_var n = device->name();
-		db_device_name = n;
+	inline string Database::dev_name() {
+		if (db_device_name.empty() == true) {
+			CORBA::String_var n = device->name();
+			db_device_name = n;
+		}
+		return db_device_name;
 	}
-	return db_device_name;
-}
-
+}//Tango
 #endif /* _DATABASE_H */

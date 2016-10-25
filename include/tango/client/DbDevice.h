@@ -47,28 +47,26 @@
  * @headerfile tango.h
  * @ingroup DBase
  */
+namespace Tango {
+	class DbDevice {
+	private :
+		string name;
+		Database *dbase;
+		int db_ind;
+		bool ext_dbase;
 
-class DbDevice
-{
-private :
-	string 		name;
-	Database 	*dbase;
-	int 		db_ind;
-	bool 		ext_dbase;
-
-    class DbDeviceExt
-    {
-    public:
-        DbDeviceExt() {};
-    };
+		class DbDeviceExt {
+		public:
+			DbDeviceExt() {};
+		};
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DbDeviceExt>     ext;
+		unique_ptr<DbDeviceExt> ext;
 #else
-	DbDeviceExt	                *ext;
+		DbDeviceExt	                *ext;
 #endif
 
-public :
+	public :
 /**@name Constructors */
 //@{
 /**
@@ -80,7 +78,8 @@ public :
  * @param [in] dev_name	The device name
  *
  */
-	DbDevice(string &dev_name);
+		DbDevice(string &dev_name);
+
 /**
  * Create a DbDevice object using a specified database
  *
@@ -91,7 +90,7 @@ public :
  * @param [in] db The database object
  *
  */
-	DbDevice(string &dev_name, Database *db);
+		DbDevice(string &dev_name, Database *db);
 //@}
 
 
@@ -106,7 +105,8 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	DbDevImportInfo import_device();
+		DbDevImportInfo import_device();
+
 /**
  * Export device info to the database
  *
@@ -116,7 +116,7 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	void export_device(DbDevExportInfo &dev_info);
+		void export_device(DbDevExportInfo &dev_info);
 //@}
 
 /**@name Property oriented methods */
@@ -131,7 +131,8 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	void get_property(DbData &db);
+		void get_property(DbData &db);
+
 /**
  * Update device property in database
  *
@@ -142,7 +143,8 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	void put_property(DbData &db);
+		void put_property(DbData &db);
+
 /**
  * Remove device property from database
  *
@@ -153,7 +155,8 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	void delete_property(DbData &db);
+		void delete_property(DbData &db);
+
 /**
  * Get device attribute property from database
  *
@@ -164,7 +167,8 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	void get_attribute_property(DbData &db);
+		void get_attribute_property(DbData &db);
+
 /**
  * Update device attribute property in database
  *
@@ -175,7 +179,8 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	void put_attribute_property(DbData &db);
+		void put_attribute_property(DbData &db);
+
 /**
  * Remove device attribute property from database
  *
@@ -186,7 +191,8 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	void delete_attribute_property(DbData &db);
+		void delete_attribute_property(DbData &db);
+
 /**
  * Get device pipe property from database
  *
@@ -197,7 +203,8 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	void get_pipe_property(DbData &db);
+		void get_pipe_property(DbData &db);
+
 /**
  * Update device pipe property in database
  *
@@ -208,7 +215,8 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	void put_pipe_property(DbData &db);
+		void put_pipe_property(DbData &db);
+
 /**
  * Remove device pipe property from database
  *
@@ -219,19 +227,26 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	void delete_pipe_property(DbData &db);
+		void delete_pipe_property(DbData &db);
 //@}
 
 /// @privatesection
 
-	DbDevice(string &,string &,string &);
-	~DbDevice();
-	void set_name(string &new_name) {name = new_name;}
-	Database *get_dbase();
-	void set_dbase(Database *db) {dbase = db;}
+		DbDevice(string &, string &, string &);
 
-	AccessControlType check_access_control();
-	void clear_access_except_errors();
-	void get_property_list(const string &,vector<string> &);
-};
+		~DbDevice();
+
+		void set_name(string &new_name) { name = new_name; }
+
+		Database *get_dbase();
+
+		void set_dbase(Database *db) { dbase = db; }
+
+		AccessControlType check_access_control();
+
+		void clear_access_except_errors();
+
+		void get_property_list(const string &, vector<string> &);
+	};
+}//Tango
 #endif /* _DBDEVICE_H */

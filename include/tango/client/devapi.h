@@ -515,25 +515,31 @@ namespace Tango {
  * @headerfile tango.h
  * @ingroup Client
  */
-class DeviceDataHistory: public DeviceData
-{
+    class DeviceDataHistory : public DeviceData {
 
-public :
+    public :
 ///@privatesection
 //
 // constructor methods
 //
 
-	DeviceDataHistory();
-	DeviceDataHistory(int, int *,DevCmdHistoryList *);
-	DeviceDataHistory(const DeviceDataHistory &);
-	DeviceDataHistory & operator=(const DeviceDataHistory &);
+        DeviceDataHistory();
+
+        DeviceDataHistory(int, int *, DevCmdHistoryList *);
+
+        DeviceDataHistory(const DeviceDataHistory &);
+
+        DeviceDataHistory &operator=(const DeviceDataHistory &);
+
 #ifdef HAS_RVALUE
-	DeviceDataHistory(DeviceDataHistory &&);
-	DeviceDataHistory &operator=(DeviceDataHistory &&);
+
+        DeviceDataHistory(DeviceDataHistory &&);
+
+        DeviceDataHistory &operator=(DeviceDataHistory &&);
+
 #endif
 
-	~DeviceDataHistory();
+        ~DeviceDataHistory();
 
 ///@publicsection
 /**
@@ -543,7 +549,8 @@ public :
  *
  * @return A boolean set to true if the record was a failure
  */
-	bool has_failed() {return fail;}
+        bool has_failed() { return fail; }
+
 /**
  * Get record polling date
  *
@@ -551,7 +558,8 @@ public :
  *
  * @return The record polling date
  */
-	TimeVal &get_date() {return time;}
+        TimeVal &get_date() { return time; }
+
 /**
  * Get record error stack
  *
@@ -560,7 +568,8 @@ public :
  *
  * @return The record error stack
  */
-	const DevErrorList &get_err_stack() {return err.in();}
+        const DevErrorList &get_err_stack() { return err.in(); }
+
 /**
  * Print a DeviceDataHistory instance
  *
@@ -584,42 +593,46 @@ public :
  * @param [in] str The printing stream
  * @param [in] ddh The instance to be printed
  */
-	friend ostream &operator<<(ostream &str,DeviceDataHistory &ddh);
+        friend ostream &operator<<(ostream &str, DeviceDataHistory &ddh);
 
 ///@privatesection
 // Three following methods for compatibility with older release
 
-	bool failed() {return fail;}
-	void failed(bool val) {fail = val;}
-	void set_date(TimeVal &tv) {time = tv;}
-	TimeVal &date() {return time;}
-	const DevErrorList &errors() {return err.in();}
-	void errors(DevErrorList_var &del) {err = del;}
+        bool failed() { return fail; }
 
-protected:
+        void failed(bool val) { fail = val; }
+
+        void set_date(TimeVal &tv) { time = tv; }
+
+        TimeVal &date() { return time; }
+
+        const DevErrorList &errors() { return err.in(); }
+
+        void errors(DevErrorList_var &del) { err = del; }
+
+    protected:
 ///@privatesection
-	bool 				fail;
-	TimeVal 			time;
-	DevErrorList_var 	err;
+        bool fail;
+        TimeVal time;
+        DevErrorList_var err;
 
-	DevCmdHistoryList 	*seq_ptr;
-	int 				*ref_ctr_ptr;
+        DevCmdHistoryList *seq_ptr;
+        int *ref_ctr_ptr;
 
-private:
-    class DeviceDataHistoryExt
-    {
-    public:
-        DeviceDataHistoryExt() {};
-    };
+    private:
+        class DeviceDataHistoryExt {
+        public:
+            DeviceDataHistoryExt() {};
+        };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DeviceDataHistoryExt>    ext_hist;
+        unique_ptr<DeviceDataHistoryExt> ext_hist;
 #else
-	DeviceDataHistoryExt	            *ext_hist;		// Class extension
+        DeviceDataHistoryExt	            *ext_hist;		// Class extension
 #endif
-};
+    };
 
-typedef vector<DeviceDataHistory> DeviceDataHistoryList;
+    typedef vector<DeviceDataHistory> DeviceDataHistoryList;
 
 /**
  * Fundamental type for receiving data from device attribute polling buffers
@@ -638,26 +651,33 @@ typedef vector<DeviceDataHistory> DeviceDataHistoryList;
  * @headerfile tango.h
  * @ingroup Client
  */
-class DeviceAttributeHistory: public DeviceAttribute
-{
+    class DeviceAttributeHistory : public DeviceAttribute {
 
-public :
+    public :
 ///@privatesection
 //
 // constructor methods
 //
 
-	DeviceAttributeHistory();
-	DeviceAttributeHistory(int, DevAttrHistoryList_var &);
-	DeviceAttributeHistory(int, DevAttrHistoryList_3_var &);
-	DeviceAttributeHistory(const DeviceAttributeHistory &);
-	DeviceAttributeHistory & operator=(const DeviceAttributeHistory &);
+        DeviceAttributeHistory();
+
+        DeviceAttributeHistory(int, DevAttrHistoryList_var &);
+
+        DeviceAttributeHistory(int, DevAttrHistoryList_3_var &);
+
+        DeviceAttributeHistory(const DeviceAttributeHistory &);
+
+        DeviceAttributeHistory &operator=(const DeviceAttributeHistory &);
+
 #ifdef HAS_RVALUE
-	DeviceAttributeHistory(DeviceAttributeHistory &&);
-	DeviceAttributeHistory &operator=(DeviceAttributeHistory &&);
+
+        DeviceAttributeHistory(DeviceAttributeHistory &&);
+
+        DeviceAttributeHistory &operator=(DeviceAttributeHistory &&);
+
 #endif
 
-	~DeviceAttributeHistory();
+        ~DeviceAttributeHistory();
 ///@publicsection
 /**
  * Check if the record was a failure
@@ -666,7 +686,8 @@ public :
  *
  * @return A boolean set to true if the record was a failure
  */
-	bool has_failed() {return fail;}
+        bool has_failed() { return fail; }
+
 /**
  * Print a DeviceAttributeHistory instance
  *
@@ -690,35 +711,36 @@ public :
  * @param [in] str The printing stream
  * @param [in] dah The instance to be printed
  */
- 	friend ostream &operator<<(ostream &str,DeviceAttributeHistory &dah);
+        friend ostream &operator<<(ostream &str, DeviceAttributeHistory &dah);
 
 ///@privatesection
 // Three following methods for compatibility with older release
 
-	bool failed() {return fail;}
-	void failed(bool val) {fail = val;}
-	TimeVal &date() {return time;}
+        bool failed() { return fail; }
+
+        void failed(bool val) { fail = val; }
+
+        TimeVal &date() { return time; }
 //	const DevErrorList &errors() {return err;}
 
-protected:
+    protected:
 ///@privatesection
-	bool 				fail;
-	char 				compatibility_padding[16];
+        bool fail;
+        char compatibility_padding[16];
 
-private:
-    class DeviceAttributeHistoryExt
-    {
-    public:
-        DeviceAttributeHistoryExt() {};
-    };
+    private:
+        class DeviceAttributeHistoryExt {
+        public:
+            DeviceAttributeHistoryExt() {};
+        };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DeviceAttributeHistoryExt>   ext_hist;
+        unique_ptr<DeviceAttributeHistoryExt> ext_hist;
 #else
-	DeviceAttributeHistoryExt	            *ext_hist;	// Class extension
+        DeviceAttributeHistoryExt	            *ext_hist;	// Class extension
 #endif
-};
-
+    };
+}//Tango
 
 /****************************************************************************************
  * 																						*
@@ -747,6 +769,7 @@ private:
 
 #include "AttributeProxy.h"
 
+namespace Tango{
 /****************************************************************************************
  * 																						*
  * 					The DummyDeviceProxy class											*
