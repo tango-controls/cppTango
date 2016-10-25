@@ -36,7 +36,7 @@
 #include <tango/server/readers_writers_lock.h>
 
 #include <bitset>
-#include <tango/frontend/tango_orb_const.hxx>
+#include <tango/frontend/orb_const.hxx>
 
 using namespace std;
 

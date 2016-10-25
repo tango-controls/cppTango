@@ -36,7 +36,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <tango.h>
 #include <tango/client/eventconsumer.h>
 #include <tango/client/api_util.tpp>
-#include <tango/frontend/tango_request.hxx>
+#include <tango/frontend/request.hxx>
 
 #ifndef _TG_WINDOWS_
 	#include <sys/types.h>

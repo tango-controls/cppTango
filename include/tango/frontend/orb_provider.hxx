@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <tango/frontend/tango_orb.hxx>
+#include <tango/frontend/orb.hxx>
 
 namespace Tango {
     class TangORBProvider {

@@ -2,10 +2,10 @@
 // Created by ingvord on 10/25/16.
 //
 
-#include <tango/frontend/tango_orb.hxx>
+#include <tango/frontend/orb.hxx>
 #include <omniORB4/CORBA.h>
 #include <signal.h>
-#include <tango/frontend/tango_orb_const.hxx>
+#include <tango/frontend/orb_const.hxx>
 #include <iostream>
 
 Tango::TangORB_var Tango::TangORB_init() {

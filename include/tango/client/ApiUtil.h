@@ -31,8 +31,8 @@
 #define _APIUTIL_H
 
 
-#include <tango/frontend/tango_orb.hxx>
-#include <tango/frontend/tango_orb_provider.hxx>
+#include <tango/frontend/orb.hxx>
+#include <tango/frontend/orb_provider.hxx>
 
 /****************************************************************************************
  * 																						*

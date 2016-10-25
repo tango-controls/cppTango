@@ -1,5 +1,5 @@
 set(SOURCES
-        tango_orb.cxx
+        orb.cxx
         )
 
 add_library(frontend_objects OBJECT ${SOURCES})

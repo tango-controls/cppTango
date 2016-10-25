@@ -29,7 +29,7 @@
 #include <tango.h>
 
 #include <map>
-#include <tango/frontend/tango_request.hxx>
+#include <tango/frontend/request.hxx>
 
 using namespace std;
 
