@@ -532,9 +532,10 @@ inline TYPE &ZmqAttrValUnion::get_seq<TYPE>() {return NAME##_att_value();}
 
 
     class NotifdEventConsumer : public POA_CosNotifyComm::StructuredPushConsumer,
-                                public EventConsumer,
-                                public omni_thread {
+                                public EventConsumer {
     public :
+        void join();
+
         static NotifdEventConsumer *create();
 
         TANGO_IMP_EXP static void cleanup() { if (_instance != NULL) { _instance = NULL; }}

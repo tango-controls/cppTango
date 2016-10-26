@@ -75,14 +75,14 @@ void NotifdEventConsumer::offer_change(TANGO_UNUSED(const CosNotification::Event
 /*		       															*/
 /************************************************************************/
 
-NotifdEventConsumer::NotifdEventConsumer(ApiUtil *ptr) : EventConsumer(ptr),omni_thread((void *)ptr)
+NotifdEventConsumer::NotifdEventConsumer(ApiUtil *ptr) : EventConsumer(ptr)
 {
 	cout3 << "calling Tango::NotifdEventConsumer::NotifdEventConsumer() \n";
 	orb_ = ptr->get_orb();
 
 	_instance = this;
 
-	start_undetached();
+	throw std::logic_error("Deprecated feature");
 }
 
 NotifdEventConsumer *NotifdEventConsumer::create()

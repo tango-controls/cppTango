@@ -109,9 +109,8 @@ void leavefunc()
 // Shut-down the notifd ORB and wait for the thread to exit
 //
 
-		int *rv;
 		notifd_ec->orb_->shutdown(true);
-		notifd_ec->join((void **)&rv);
+		notifd_ec->join();
 	}
 
 	ZmqEventConsumer *zmq_ec = au->get_zmq_event_consumer();
