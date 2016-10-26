@@ -41,11 +41,10 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 
-extern omni_thread::key_t key_py_data;
-
 namespace Tango
 {
 
+	extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
 //+----------------------------------------------------------------------------
 //
 // method :         SubDevDiag::~SubDevDiag()
@@ -87,9 +86,7 @@ void SubDevDiag::set_associated_device(string dev_name)
 	if ( th != NULL )
 	{
 		// write the device name to the per thread data structure
-		omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-		if ( tmp_py_data != NULL )
-			(static_cast<PyData *>(tmp_py_data))->device_name = dev_name;
+		kPerThreadPyData->device_name = dev_name;
 	}
 }
 
@@ -115,9 +112,7 @@ string SubDevDiag::get_associated_device()
 	if ( th != NULL )
 	{
 		// read the device name from the per thread data structure
-		omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-		if ( tmp_py_data != NULL )
-			dev_name = (static_cast<PyData *>(tmp_py_data))->device_name;
+		dev_name = kPerThreadPyData->device_name;
 	}
 
 	cout4 << "SubDevDiag::get_associated_device() found : " << dev_name << endl;

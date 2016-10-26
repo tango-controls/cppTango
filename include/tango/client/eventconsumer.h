@@ -534,7 +534,7 @@ inline TYPE &ZmqAttrValUnion::get_seq<TYPE>() {return NAME##_att_value();}
     class NotifdEventConsumer : public POA_CosNotifyComm::StructuredPushConsumer,
                                 public EventConsumer {
     public :
-        void join();
+        void join(){}
 
         static NotifdEventConsumer *create();
 

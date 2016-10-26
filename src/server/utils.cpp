@@ -61,10 +61,11 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <omniORB4/omniInterceptors.h>
 
-omni_thread::key_t key_py_data;
+
 
 namespace Tango
 {
+    thread_local std::shared_ptr<PyData> kPerThreadPyData{new PyData()};
 
 Util *Util::_instance = NULL;
 int Util::_tracelevel = 0;
@@ -483,7 +484,6 @@ void Util::create_CORBA_objects()
 	intercep->createThread.add(create_PyPerThData);
 
 	key = omni_thread::allocate_key();
-	key_py_data = omni_thread::allocate_key();
 
 //
 // Get some CORBA object references
@@ -1806,7 +1806,7 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 
 	if (is_py_ds() == false)
 	{
-		th->set_value(key_py_data,new Tango::PyData());
+        kPerThreadPyData.reset(new Tango::PyData());
 	}
 
 #ifdef _TG_WINDOWS_
@@ -1864,8 +1864,7 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 		if ((th_id == 0) && (is_py_ds() == true))
 		{
 			py_ds_main_th = true;
-			omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-			lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+			lock_ptr = kPerThreadPyData->PerTh_py_lock;
 			lock_ptr->Release();
 		}
 
@@ -1984,8 +1983,7 @@ void Util::server_run()
 
 			if (th_id == 0)
 			{
-				omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-				PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+				PyLock *lock_ptr = kPerThreadPyData->PerTh_py_lock;
 				lock_ptr->Release();
 			}
 
@@ -1997,8 +1995,7 @@ void Util::server_run()
 
 				if (th_id == 0)
 				{
-					omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-					PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+					PyLock *lock_ptr = kPerThreadPyData->PerTh_py_lock;
 					lock_ptr->Get();
 				}
 			}
@@ -2014,8 +2011,7 @@ void Util::server_run()
 
 	if (th_id == 0)
 	{
-		omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-		PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+		PyLock *lock_ptr = kPerThreadPyData->PerTh_py_lock;
 		lock_ptr->Release();
 	}
 
@@ -2062,8 +2058,7 @@ void Util::server_run()
 
 		if (th_id == 0)
 		{
-			omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-			PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+			PyLock *lock_ptr = kPerThreadPyData->PerTh_py_lock;
 			lock_ptr->Get();
 		}
 	}
@@ -3091,7 +3086,7 @@ void *Util::ORBWin32Loop::run_undetached(void *ptr)
 // Create the per thread data for the main thread
 //
 
-	omni_thread::self()->set_value(key_py_data,new Tango::PyData());
+	kPerThreadPyData.reset(new Tango::PyData());
 
 //
 // Create the DServer object
@@ -3216,7 +3211,7 @@ void create_PyPerThData(omni::omniInterceptors::createThread_T::info_T &info)
 	omni_thread::ensure_self es;
 #endif
 
-	omni_thread::self()->set_value(key_py_data,py_dat_ptr);
+    kPerThreadPyData.reset(py_dat_ptr);
 
 	Util *tg = NULL;
 	Interceptors *Inter = NULL;
@@ -3233,7 +3228,7 @@ void create_PyPerThData(omni::omniInterceptors::createThread_T::info_T &info)
 
 	info.run();
 
-	omni_thread::self()->remove_value(key_py_data);
+    kPerThreadPyData.reset();
 	delete py_dat_ptr;
 
 	if (Inter != NULL)
@@ -3244,15 +3239,13 @@ void create_PyPerThData(omni::omniInterceptors::createThread_T::info_T &info)
 
 AutoPyLock::AutoPyLock()
 {
-	omni_thread::value_t *tmp_py_data = omni_thread::self()->get_value(key_py_data);
-	PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+	PyLock *lock_ptr = kPerThreadPyData->PerTh_py_lock;
 	lock_ptr->Get();
 }
 
 AutoPyLock::~AutoPyLock()
 {
-	omni_thread::value_t *tmp_py_data = omni_thread::self()->get_value(key_py_data);
-	PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+	PyLock *lock_ptr = kPerThreadPyData->PerTh_py_lock;
 	lock_ptr->Release();
 }
 

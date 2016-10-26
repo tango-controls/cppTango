@@ -56,10 +56,10 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <stdlib.h>
 
-extern omni_thread::key_t key_py_data;
 namespace Tango
 {
 
+    extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
 ClassFactoryFuncPtr DServer::class_factory_func_ptr = NULL;
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -279,10 +279,7 @@ void DServer::init_device()
 
 					if (tg->is_py_ds() == true)
 					{
-						th = omni_thread::self();
-
-						omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-						lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+						lock_ptr = kPerThreadPyData->PerTh_py_lock;
 						lock_ptr->Release();
 					}
 

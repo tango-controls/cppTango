@@ -49,9 +49,11 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <iomanip>
 
-extern omni_thread::key_t key_py_data;
+
 namespace Tango
 {
+
+    extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
 
 DeviceImpl *PollThread::dev_to_del = NULL;
 string PollThread::name_to_del = "";
@@ -170,11 +172,7 @@ void PollThread::run()
 // Create the per thread data if it is not already done (For Python DS)
 //
 
-			if (per_thread_data_created == false)
-			{
-				omni_thread::self()->set_value(key_py_data,new PyData());
-				per_thread_data_created = true;
-			}
+    		per_thread_data_created = true;
 
 #ifdef _TG_WINDOWS_
 			_ftime(&now_win);

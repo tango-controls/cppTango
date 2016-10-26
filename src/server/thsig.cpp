@@ -45,10 +45,10 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <tango.h>
 #include <tango/server/dserversignal.h>
 
-extern omni_thread::key_t key_py_data;
-
 namespace Tango
 {
+
+    extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
 
 void DServerSignal::ThSig::run()
 {
@@ -114,7 +114,7 @@ void DServerSignal::ThSig::run()
 
 		if (th_data_created == false)
 		{
-			omni_thread::self()->set_value(key_py_data,new PyData());
+			kPerThreadPyData.reset(new PyData());
 			th_data_created = true;
 		}
 
