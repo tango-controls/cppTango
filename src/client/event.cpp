@@ -44,6 +44,8 @@ static const char *RcsId = "$Id: event.cpp 30155 2016-09-16 15:31:47Z bourtemb $
 #else
 #include <unistd.h>
 #include <sys/time.h>
+#include <future>
+
 #endif
 
 using namespace CORBA;
@@ -1228,8 +1230,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
             subscribe_event_id++;
             int ret_event_id = subscribe_event_id;
 
-            DelayedEventSubThread *th = new DelayedEventSubThread(this,device,attribute,event,callback,ev_queue,stateless,event_name,ret_event_id);
-            th->start();
+			std::async(&DelayedEventSubThread::run,new DelayedEventSubThread(this,device,attribute,event,callback,ev_queue,stateless,event_name,ret_event_id));
 
             return ret_event_id;
         }
@@ -1868,8 +1869,7 @@ void EventConsumer::unsubscribe_event(int event_id)
  //                           cout << event_id << ": Unsubscribing for an event while it is in its callback !!!!!!!!!!" << endl;
                             esspos->id = -event_id;
 
-                            DelayedEventUnsubThread *th = new DelayedEventUnsubThread(this,event_id,epos->second.callback_monitor);
-                            th->start();
+                            std::async(&DelayedEventUnsubThread::run,new DelayedEventUnsubThread(this,event_id,epos->second.callback_monitor));
 
                             return;
                         }
@@ -2067,7 +2067,7 @@ void EventConsumer::unsubscribe_event(int event_id)
 }
 
 
-void DelayedEventUnsubThread::run(TANGO_UNUSED(void *ptr))
+void DelayedEventUnsubThread::run()
 {
 	try
 	{
@@ -2090,7 +2090,7 @@ void DelayedEventUnsubThread::run(TANGO_UNUSED(void *ptr))
 }
 
 
-void DelayedEventSubThread::run(TANGO_UNUSED(void *ptr))
+void DelayedEventSubThread::run()
 {
 
 //
