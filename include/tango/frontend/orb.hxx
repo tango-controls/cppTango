@@ -9,6 +9,7 @@
 #include <tango/frontend/request.hxx>
 #include <tango/frontend/object.hxx>
 #include <vector>
+#include <map>
 
 namespace Tango {
     namespace frontend {
@@ -45,7 +46,7 @@ namespace Tango {
     using TangORB_ptr = std::unique_ptr<TangORB>;
     using TangORB_var = std::shared_ptr<TangORB>;
 
-    auto TangORB_init(int&, char**, char*, const char *[][2])-> TangORB_ptr;
+    auto TangORB_init(int&, char**, char*, std::map<std::string, std::string>)-> TangORB_ptr;
 
     auto TangORB_init() -> TangORB_ptr;
 }//Tango

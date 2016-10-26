@@ -9,7 +9,9 @@
 #include <signal.h>
 #include <tango/frontend/orb_const.hxx>
 #include <iostream>
+#include <algorithm>
 
+using namespace std;
 using namespace Tango;
 
 backend::ORB::~ORB() {
@@ -87,33 +89,22 @@ auto backend::ORB_init()
 // Starting with omniORB 4.2, we need to add the throwTransientOnTimeout option for compatibility
 //
 
-    bool omni_42_compat = false;
-    auto omni_vers_hex = omniORB::versionHex();
-    if (omni_vers_hex > 0x04020000)
-        omni_42_compat = true;
+    map<string,string> options_map;
 
-    const char* options[][2] = {
-            {"clientCallTimeOutPeriod",    CLNT_TIMEOUT_STR},
-            {"verifyObjectExistsAndType",  "0"},
-            {"maxGIOPConnectionPerServer", MAX_GIOP_PER_SERVER},
-            {"giopMaxMsgSize",             MAX_TRANSFER_SIZE},
-            {"throwTransientOnTimeOut",    "1"},
-            {0,                            0}};
+    options_map.emplace("clientCallTimeOutPeriod",    CLNT_TIMEOUT_STR);
+    options_map.emplace("verifyObjectExistsAndType",  "0");
+    options_map.emplace("maxGIOPConnectionPerServer", MAX_GIOP_PER_SERVER);
+    options_map.emplace("giopMaxMsgSize",             MAX_TRANSFER_SIZE);
+    options_map.emplace("throwTransientOnTimeOut",    "1");
 
-    if (omni_42_compat == false) {
-        int nb_opt = sizeof(options) / sizeof(char *[2]);
-        options[nb_opt - 2][0] = NULL;
-        options[nb_opt - 2][1] = NULL;
-    }
-
-    auto orb = ORB_init(_argc, _argv, "omniORB4", options);
+    auto orb = ORB_init(_argc, _argv, "omniORB4", options_map);
 
     free(_argv);
 
     return orb;
 }
 
-auto backend::ORB_init(int &argc, char **argv, char *orb_id, const char *options[][2])
+auto backend::ORB_init(int &argc, char **argv, char *orb_id, map<string,string> options)
     -> backend::ORB_ptr
 {
 
@@ -131,9 +122,29 @@ auto backend::ORB_init(int &argc, char **argv, char *orb_id, const char *options
         sa.sa_handler = NULL;
 #endif
 
+    bool omni_42_compat = false;
+    auto omni_vers_hex = omniORB::versionHex();
+    if (omni_vers_hex > 0x04020000)
+        omni_42_compat = true;
 
 
-    auto _orb = CORBA::ORB_init(argc, argv, orb_id, options);
+    const char* omni_options[options.size() + 1][2];
+
+    //TODO
+//    auto i = 0;
+//    for_each(options.begin(), options.end(), [&i, &omni_options](pair<string, string>& pair){
+//        omni_options[i++] = {pair.first.c_str(), pair.second.c_str()};
+//    });
+//    omni_options[i] = {NULL, NULL};
+
+
+    if (omni_42_compat == false) {
+        int nb_opt = sizeof(omni_options) / sizeof(char *[2]);
+        omni_options[nb_opt - 2][0] = NULL;
+        omni_options[nb_opt - 2][1] = NULL;
+    }
+
+    auto _orb = CORBA::ORB_init(argc, argv, orb_id, omni_options);
 
 //
 // Restore SIGPIPE handler

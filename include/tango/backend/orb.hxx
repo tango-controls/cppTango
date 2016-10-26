@@ -43,7 +43,7 @@ namespace Tango {
         auto ORB_init()
         -> ORB_ptr;
 
-        auto ORB_init(int& argc, char** argv, char* orb_id, const char *options[][2])
+        auto ORB_init(int &argc, char **argv, char *orb_id, std::map<std::string,std::string> options)
         -> ORB_ptr;
     }//backend
 }//Tango
