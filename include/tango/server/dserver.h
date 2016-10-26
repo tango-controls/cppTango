@@ -184,14 +184,6 @@ private:
 	bool            polling_bef_9;
 };
 
-class ServRestartThread: public omni_thread
-{
-public:
-	ServRestartThread(DServer *dev):omni_thread(dev) {}
-
-	void run(void *);
-};
-
 struct Pol
 {
 	PollObjType 	type;

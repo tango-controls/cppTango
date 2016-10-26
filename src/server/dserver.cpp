@@ -1120,120 +1120,105 @@ void DServer::restart_server()
 // Create the thread and start it
 //
 
-	ServRestartThread *t = new ServRestartThread(this);
-
-	t->start();
-
-}
-
-
-void ServRestartThread::run(void *ptr)
-{
-	PyData *py_data_ptr = new PyData();
-	omni_thread::self()->set_value(key_py_data,py_data_ptr);
+    std::async([this](){
+//        PyData *py_data_ptr = new PyData();
+//        omni_thread::self()->set_value(key_py_data,py_data_ptr);
 
 //
 // The arg. passed to this method is a pointer to the DServer device
 //
 
-	DServer *dev = (DServer *)ptr;
+        DServer *dev = (DServer *)this;
 
 //
 // clean the sub-device list for the server
 //
 
-	Tango::Util *tg = Tango::Util::instance();
-	tg->get_sub_dev_diag().remove_sub_devices();
+        Tango::Util *tg = Tango::Util::instance();
+        tg->get_sub_dev_diag().remove_sub_devices();
 
 //
 // Change the POA manager to discarding state. This is necessary to discard all request arriving while the server
 // restart.
 //
 
-	PortableServer::POA_var poa = Util::instance()->get_poa();
-	PortableServer::POAManager_var manager = poa->the_POAManager();
+        PortableServer::POA_var poa = Util::instance()->get_poa();
+        PortableServer::POAManager_var manager = poa->the_POAManager();
 
-	manager->discard_requests(true);
+        manager->discard_requests(true);
 
 //
 // Setup logging
 //
 
 #ifdef TANGO_HAS_LOG4TANGO
-  	dev->init_logger();
+        dev->init_logger();
 #endif
 
 //
 // Reset initial state and status
 //
 
-	dev->set_state(Tango::ON);
-	dev->set_status("The device is ON");
+        dev->set_state(Tango::ON);
+        dev->set_status("The device is ON");
 
 //
 // Memorize event parameters and devices interface
 //
 
-	map<string,vector<EventPar> > map_events;
-	map<string,DevIntr> map_dev_inter;
+        map<string,vector<EventPar> > map_events;
+        map<string,DevIntr> map_dev_inter;
 
-	dev->mem_event_par(map_events);
-	dev->mem_devices_interface(map_dev_inter);
+        dev->mem_event_par(map_events);
+        dev->mem_devices_interface(map_dev_inter);
 
 //
 // Destroy and recreate the multi attribute object
 //
 
-	MultiAttribute *tmp_ptr;
-	try
-	{
-		tmp_ptr = new MultiAttribute(dev->get_name(),dev->get_device_class(),dev);
-	}
-	catch (Tango::DevFailed &)
-	{
-		throw;
-	}
-	delete dev->get_device_attr();
-	dev->set_device_attr(tmp_ptr);
-	dev->add_state_status_attrs();
+        MultiAttribute *tmp_ptr;
+        try
+        {
+            tmp_ptr = new MultiAttribute(dev->get_name(),dev->get_device_class(),dev);
+        }
+        catch (Tango::DevFailed &)
+        {
+            throw;
+        }
+        delete dev->get_device_attr();
+        dev->set_device_attr(tmp_ptr);
+        dev->add_state_status_attrs();
 
 //
 // Restart device(s)
 // Before set 2 values to retrieve correct polling threads pool size
 //
 
-    tg->set_polling_threads_pool_size(ULONG_MAX);
-	dev->set_poll_th_pool_size(DEFAULT_POLLING_THREADS_POOL_SIZE);
+        tg->set_polling_threads_pool_size(ULONG_MAX);
+        dev->set_poll_th_pool_size(DEFAULT_POLLING_THREADS_POOL_SIZE);
 
-    tg->set_svr_starting(true);
-	{
-		AutoPyLock PyLo;
-		dev->init_device();
-	}
-	tg->set_svr_starting(false);
+        tg->set_svr_starting(true);
+        {
+            AutoPyLock PyLo;
+            dev->init_device();
+        }
+        tg->set_svr_starting(false);
 
 //
 // Restart polling (if any)
 //
 
-	tg->polling_configure();
+        tg->polling_configure();
 
 //
 // Reset event params and send event(s) if some device interface has changed
 //
 
-	dev->apply_event_par(map_events);
-	dev->changed_devices_interface(map_dev_inter);
+        dev->apply_event_par(map_events);
+        dev->changed_devices_interface(map_dev_inter);
 
-//
-// Exit thread
-//
-
-	omni_thread::self()->remove_value(key_py_data);
-	delete py_data_ptr;
-	omni_thread::exit();
+    });
 }
-
 
 //+-----------------------------------------------------------------------------------------------------------------
 //
