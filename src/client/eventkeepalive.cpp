@@ -496,7 +496,7 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
+void EventConsumerKeepAliveThread::run()
 {
 	int time_to_sleep;
 	time_t now;
@@ -547,7 +547,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 			if (shared_cmd.cmd_pending == true)
 			{
 				exit_th = true;
-				return (void *)NULL;
+				return;
 			}
 		}
 
@@ -648,13 +648,6 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 			}
 		}
 	}
-
-//
-// If we arrive here, this means that we have received the exit thread command.
-//
-
-	return (void *)NULL;
-
 }
 
 //---------------------------------------------------------------------------------------------------------------------

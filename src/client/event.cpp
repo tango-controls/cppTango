@@ -384,9 +384,6 @@ void EventConsumer::shutdown_keep_alive_thread()
             cmd.cond.signal();
         }
 
-        int *rv;
-        keep_alive_thread->join((void **)&rv);
-
         keep_alive_thread = NULL;
     }
 }

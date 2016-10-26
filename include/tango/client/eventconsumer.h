@@ -647,14 +647,17 @@ private:
  * 																				*
  *******************************************************************************/
 
-class EventConsumerKeepAliveThread : public omni_thread
+class EventConsumerKeepAliveThread
 {
 
 public :
 
     EventConsumerKeepAliveThread(const EventConsumer&);
 	EventConsumerKeepAliveThread(KeepAliveThCmd &cmd):shared_cmd(cmd){};
-	void start() {start_undetached();}
+	void start() {
+		auto _this_thread = std::thread(&EventConsumerKeepAliveThread::run, this);
+        _this_thread.detach();
+	}
     void stateless_subscription_failed(vector<EventNotConnected>::iterator &,DevFailed &,time_t &);
     void fwd_not_conected_event(ZmqEventConsumer *);
 
@@ -662,7 +665,7 @@ protected :
 	KeepAliveThCmd		&shared_cmd;
 
 private :
-	void *run_undetached(void *arg);
+	void run();
 	bool reconnect_to_channel(EvChanIte &,EventConsumer *);
 	void reconnect_to_event(EvChanIte &,EventConsumer *);
 	void re_subscribe_event(EvCbIte &,EvChanIte &);
