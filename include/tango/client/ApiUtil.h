@@ -257,7 +257,6 @@ namespace Tango {
 
 		cb_sub_model auto_cb;
 		CbThreadCmd cb_thread_cmd;
-		CallBackThread *cb_thread_ptr;
 
 		AsynReq *asyn_p_table;
 

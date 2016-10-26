@@ -37,43 +37,21 @@
 #define _CBTHREAD_H
 
 #include <tango.h>
+#include <atomic>
 
 
 namespace Tango
 {
 
-class CbThreadCmd: public omni_mutex
+class CbThreadCmd
 {
 public:
-	CbThreadCmd():stop(false) {};
-	void stop_thread() {omni_mutex_lock sync(*this);stop=true;}
-	void start_thread() {omni_mutex_lock sync(*this);stop=false;}
-	bool is_stopped() {omni_mutex_lock sync(*this);return stop;}
+	CbThreadCmd():stop{false} {};
+	void stop_thread();
+	void start_thread();
+	bool is_stopped();
 
-	bool stop;
-};
-
-//=============================================================================
-//
-//			The CallBackThread class
-//
-// description :	Class to store all the necessary information for the
-//			polling thread. It's run() method is the thread code
-//
-//=============================================================================
-
-
-class CallBackThread: public omni_thread
-{
-public:
-	CallBackThread(CbThreadCmd &cmd,AsynReq *as):shared_cmd(cmd),
-						     asyn_ptr(as) {};
-
-	void *run_undetached(void *);
-	void start() {start_undetached();}
-
-	CbThreadCmd	&shared_cmd;
-	AsynReq		*asyn_ptr;
+	std::atomic_bool stop;
 };
 
 
