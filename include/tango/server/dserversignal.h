@@ -94,7 +94,7 @@ public :
 
 	static void main_sig_handler(int);
 
-	class ThSig: public omni_thread
+	class ThSig
 	{
 		DServerSignal *ds;
 	public:
@@ -106,8 +106,11 @@ public :
 #ifndef _TG_WINDOWS_
 		pthread_t my_thread;
 #endif
-		void *run_undetached(void *);
-		void start() {start_undetached();}
+		void run();
+		void start() {
+			auto signal_thread = std::thread(&ThSig::run,this);
+			signal_thread.detach();
+		}
 	};
 	friend class ThSig;
 	ThSig *sig_th;
