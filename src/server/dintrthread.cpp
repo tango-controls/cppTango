@@ -72,7 +72,7 @@ shared_data(cmd),p_mon(m),dev(_d)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DevIntrThread::run(TANGO_UNUSED(void *ptr))
+void DevIntrThread::run()
 {
 
 //
@@ -112,7 +112,7 @@ void DevIntrThread::run(TANGO_UNUSED(void *ptr))
 			omni_mutex_lock sync(p_mon);
 			shared_data.th_running = false;
 		}
-		omni_thread::exit();
+		return;
 	}
 	catch (omni_thread_fatal &)
 	{

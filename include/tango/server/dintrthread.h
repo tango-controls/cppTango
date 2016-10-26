@@ -82,13 +82,16 @@ enum DevIntrCmdType
 
 class TangoMonitor;
 
-class DevIntrThread: public omni_thread
+class DevIntrThread
 {
 public:
 	DevIntrThread(ShDevIntrTh &,TangoMonitor &,DeviceImpl *);
 
-	void run(void *);
-
+	void run();
+	void start(){
+		auto dev_intr_thread = std::thread(&DevIntrThread::run, this);
+		dev_intr_thread.detach();
+	}
 	void execute_cmd();
 	DevIntrCmdType get_command(DevLong);
 	void push_event();
