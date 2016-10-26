@@ -184,14 +184,6 @@ private:
 	bool            polling_bef_9;
 };
 
-class KillThread: public omni_thread
-{
-public:
-
-	void *run_undetached(void *);
-	void start() {start_undetached();}
-};
-
 class ServRestartThread: public omni_thread
 {
 public:

@@ -51,6 +51,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <unistd.h>
 #include <signal.h>
 #include <dlfcn.h>
+#include <future>
 #endif /* _TG_WINDOWS_ */
 
 #include <stdlib.h>
@@ -1397,28 +1398,13 @@ void DServer::kill()
 // Create the thread and start it
 //
 
-	KillThread *t = new KillThread;
+	std::async([](){
+        cout4 << "In the killer thread !!!" << endl;
 
-	t->start();
-
+        Tango::Util *tg = Tango::Util::instance();
+        tg->shutdown_ds();
+    });
 }
-
-void *KillThread::run_undetached(TANGO_UNUSED(void *ptr))
-{
-	cout4 << "In the killer thread !!!" << endl;
-
-	omni_thread::self()->set_value(key_py_data,new PyData());
-
-//
-// Shutdown the server
-//
-
-	Tango::Util *tg = Tango::Util::instance();
-	tg->shutdown_ds();
-
-	return NULL;
-}
-
 
 //+----------------------------------------------------------------------------------------------------------------
 //
