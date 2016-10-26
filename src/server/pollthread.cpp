@@ -119,7 +119,7 @@ PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cm
 
 
 
-void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
+void PollThread::run()
 {
 	PollCmdType received;
 	bool per_thread_data_created = false;
@@ -244,9 +244,6 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 			cerr << "Trying to re-enter the main loop" << endl;
 		}
 	}
-
-	return NULL;
-
 }
 
 //+----------------------------------------------------------------------------------------------------------------

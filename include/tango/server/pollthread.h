@@ -101,13 +101,20 @@ enum PollCmdType
 
 class TangoMonitor;
 
-class PollThread: public omni_thread
+class PollThread
 {
 public:
 	PollThread(PollThCmd &,TangoMonitor &,bool);
 
-	void *run_undetached(void *);
-	void start() {start_undetached();}
+	void run();
+	void start() {
+		auto poll_thread = std::thread(&PollThread::run, this);
+        id_ = poll_thread.get_id();
+		poll_thread.detach();
+	}
+    thread::id id(){
+        return id_;
+    }
 	void execute_cmd();
 	void set_local_cmd(PollThCmd &cmd) {local_cmd = cmd;}
 	void set_polling_bef_9(bool _v) {polling_bef_9 = _v;}
@@ -173,6 +180,7 @@ private:
 	ClntIdent 			dummy_cl_id;
 	CppClntIdent 		cci;
 
+    thread::id id_;
 public:
 	static DeviceImpl 	*dev_to_del;
 	static string	   	name_to_del;

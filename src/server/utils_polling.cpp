@@ -495,8 +495,8 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 
 	PollingThreadInfo *th_info;
 
-	int poll_th_id = get_polling_thread_id_by_name(dev->get_name_lower().c_str());
-	if (poll_th_id == 0)
+	thread::id poll_th_id = get_polling_thread_id_by_name(dev->get_name_lower().c_str());
+	if (poll_th_id == thread::id())
 	{
 		TangoSys_OMemStream o;
 		o << "Can't find a polling thread for device " << dev->get_name() << ends;
@@ -653,8 +653,8 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 
 	PollingThreadInfo *th_info;
 
-	int poll_th_id = get_polling_thread_id_by_name(dev->get_name_lower().c_str());
-	if (poll_th_id == 0)
+	thread::id poll_th_id = get_polling_thread_id_by_name(dev->get_name_lower().c_str());
+	if (poll_th_id == thread::id())
 	{
 		TangoSys_OMemStream o;
 		o << "Can't find a polling thread for device " << dev->get_name() << ends;
@@ -874,7 +874,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,bool polling_9,in
 // If there is already a polling thread for this device, simply returns
 //
 
-	map<string,int>::iterator ite;
+	map<string,thread::id>::iterator ite;
 	ite = dev_poll_th_map.find(local_dev_name);
 	if (ite != dev_poll_th_map.end())
 	{
@@ -945,7 +945,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,bool polling_9,in
 		if (polling_9 == true)
             pti_ptr->poll_th->set_polling_bef_9(true);
 		pti_ptr->poll_th->start();
-		int poll_th_id = pti_ptr->poll_th->id();
+		thread::id poll_th_id = pti_ptr->poll_th->id();
 		pti_ptr->thread_id = poll_th_id;
 		pti_ptr->polled_devices.push_back(local_dev_name);
 		pti_ptr->nb_polled_objects++;
@@ -1099,13 +1099,6 @@ void Util::stop_all_polling_threads()
 
 			mon.signal();
 		}
-
-//
-// join with the polling thread
-//
-
-		void *dummy_ptr;
-		(*iter)->poll_th->join(&dummy_ptr);
 	}
 
 	for (iter = poll_ths.begin();iter != poll_ths.end();++iter)
@@ -1136,13 +1129,6 @@ void Util::stop_heartbeat_thread()
 
 		mon.signal();
 	}
-
-//
-// join with the polling thread
-//
-
-	void *dummy_ptr;
-	heartbeat_th->join(&dummy_ptr);
 }
 
 //+----------------------------------------------------------------------------------------------------------------
@@ -1162,15 +1148,15 @@ void Util::stop_heartbeat_thread()
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-int Util::get_polling_thread_id_by_name(const char *dev_name)
+	//TODO return value: optional
+thread::id Util::get_polling_thread_id_by_name(const char *dev_name)
 {
-	int ret = 0;
+	thread::id ret = thread::id();
 
 	string local_dev_name(dev_name);
 	transform(local_dev_name.begin(),local_dev_name.end(),local_dev_name.begin(),::tolower);
 
-	map<string,int>::iterator iter;
-	iter = dev_poll_th_map.find(local_dev_name);
+	auto iter = dev_poll_th_map.find(local_dev_name);
 	if (iter != dev_poll_th_map.end())
 		ret = iter->second;
 
@@ -1195,7 +1181,7 @@ int Util::get_polling_thread_id_by_name(const char *dev_name)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-PollingThreadInfo *Util::get_polling_thread_info_by_id(int th_id)
+PollingThreadInfo *Util::get_polling_thread_info_by_id(thread::id th_id)
 {
 	PollingThreadInfo *ret_ptr = NULL;
 	vector<PollingThreadInfo *>::iterator iter;
@@ -1936,8 +1922,7 @@ int Util::get_dev_entry_in_pool_conf(string &dev_name)
 
 void Util::remove_dev_from_polling_map(string &dev_name)
 {
-	map<string,int>::iterator iter;
-	iter = dev_poll_th_map.find(dev_name);
+	auto iter = dev_poll_th_map.find(dev_name);
 	if (iter != dev_poll_th_map.end())
 		dev_poll_th_map.erase(iter);
 }
@@ -1956,7 +1941,7 @@ void Util::remove_dev_from_polling_map(string &dev_name)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Util::remove_polling_thread_info_by_id(int th_id)
+void Util::remove_polling_thread_info_by_id(thread::id th_id)
 {
 	vector<PollingThreadInfo *>::iterator iter;
 

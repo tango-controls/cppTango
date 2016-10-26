@@ -819,8 +819,8 @@ public:
 	PollThread *get_heartbeat_thread_object() {return heartbeat_th;}
 	void clr_poll_th_ptr() {heartbeat_th = NULL;}
 	void clr_heartbeat_th_ptr() {heartbeat_th = NULL;}
-	int get_polling_thread_id() {return heartbeat_th_id;}
-	int get_heartbeat_thread_id() {return heartbeat_th_id;}
+	thread::id get_polling_thread_id() {return heartbeat_th_id;}
+	thread::id get_heartbeat_thread_id() {return heartbeat_th_id;}
 	void stop_heartbeat_thread();
 	string &get_svr_port_num() {return svr_port_num;}
 
@@ -860,8 +860,8 @@ public:
 	int create_poll_thread(const char *,bool,bool,int smallest_upd = -1);
 	void stop_all_polling_threads();
 	vector<PollingThreadInfo *> &get_polling_threads_info() {return poll_ths;}
-	PollingThreadInfo *get_polling_thread_info_by_id(int);
-	int get_polling_thread_id_by_name(const char *);
+	PollingThreadInfo *get_polling_thread_info_by_id(thread::id);
+	thread::id get_polling_thread_id_by_name(const char *);
 	void check_pool_conf(DServer *,unsigned long);
 	int check_dev_poll(vector<string> &,vector<string> &,DeviceImpl *);
 	void split_string(string &,char,vector<string> &);
@@ -873,7 +873,7 @@ public:
 	vector<string> &get_poll_pool_conf() {return poll_pool_conf;}
 	int get_dev_entry_in_pool_conf(string &);
 	void remove_dev_from_polling_map(string &dev_name);
-	void remove_polling_thread_info_by_id(int);
+	void remove_polling_thread_info_by_id(thread::id);
 
 	bool is_server_event_loop_set() {if (ev_loop_func != NULL)return true;else return false;}
 	void set_shutdown_server(bool val) {shutdown_server = val;}
@@ -998,7 +998,7 @@ private:
 	map<string,vector<string> >	cmd_line_name_list;		// Command line map <Class name, device name list>
 
 	PollThread					*heartbeat_th;			// The heartbeat thread object
-	int							heartbeat_th_id;		// The heartbeat thread identifier
+	thread::id					heartbeat_th_id;		// The heartbeat thread identifier
 	PollThCmd					shared_data;			// The shared buffer
 	TangoMonitor				poll_mon;				// The monitor
 	bool						poll_on;				// Polling on flag
@@ -1027,7 +1027,7 @@ private:
 
 	unsigned long				poll_pool_size;			// Polling threads pool size
 	vector<string>  			poll_pool_conf;			// Polling threads pool conf.
-	map<string,int>				dev_poll_th_map;		// Link between device name and polling thread id
+	map<string,thread::id>		dev_poll_th_map;		// Link between device name and polling thread id
 	vector<PollingThreadInfo *>	poll_ths;				// Polling threads
 	bool						conf_needs_db_upd;		// Polling conf needs to be udated in db
 
@@ -1229,7 +1229,7 @@ void clear_att_dim(Tango::AttributeValue_5 &att_val);
 
 struct PollingThreadInfo
 {
-	int									thread_id;			// The polling thread identifier
+	thread::id							thread_id;			// The polling thread identifier
 	PollThread							*poll_th;			// The polling thread object
 	PollThCmd							shared_data;		// The shared buffer
 	TangoMonitor						poll_mon;			// The monitor

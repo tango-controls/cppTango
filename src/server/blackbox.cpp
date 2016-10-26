@@ -70,6 +70,7 @@ namespace Tango
 // defined in utils.cpp
 //
 
+	//TODO replace with thread_local
 extern omni_thread::key_t key;
 
 //
@@ -1118,7 +1119,7 @@ void BlackBox::get_client_host()
         bool found_thread = false;
         if (poll_ths.empty() == false)
         {
-            int this_thread_id = th_id->id();
+            thread::id this_thread_id = this_thread::get_id();
             size_t nb_poll_th = poll_ths.size();
             size_t loop;
             for (loop = 0;loop < nb_poll_th;loop++)

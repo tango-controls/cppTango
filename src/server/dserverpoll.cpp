@@ -776,8 +776,8 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 // Find out which thread is in charge of the device. If none exists already, create one
 //
 
-	int poll_th_id = tg->get_polling_thread_id_by_name((argin->svalue)[0]);
-	if (poll_th_id == 0)
+	thread::id poll_th_id = tg->get_polling_thread_id_by_name((argin->svalue)[0]);
+	if (poll_th_id == thread::id())
 	{
 		cout4 << "POLLING: Creating a thread to poll device " << (argin->svalue)[0] << endl;
 
@@ -803,7 +803,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 	TangoMonitor &mon = th_info->poll_mon;
 	PollThCmd &shared_cmd = th_info->shared_data;
 
-	int th_id = omni_thread::self()->id();
+	thread::id th_id = this_thread::get_id();
 	if (th_id != poll_th_id)
 	{
 		omni_mutex_lock sync(mon);
@@ -825,8 +825,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 // Wait for thread to execute command except if the command is requested by the polling thread itself
 //
 
-		omni_thread *th = omni_thread::self();
-		int th_id = th->id();
+		thread::id th_id = this_thread::get_id();
 		if (th_id != poll_th_id && local_request == false)
 		{
 			while (shared_cmd.cmd_pending == true)
@@ -1203,8 +1202,8 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,b
 
 	PollingThreadInfo *th_info;
 
-	int poll_th_id = tg->get_polling_thread_id_by_name((argin->svalue)[0]);
-	if (poll_th_id == 0)
+	thread::id poll_th_id = tg->get_polling_thread_id_by_name((argin->svalue)[0]);
+	if (poll_th_id == thread::id())
 	{
 		TangoSys_OMemStream o;
 		o << "Can't find a polling thread for device " << (argin->svalue)[0] << ends;
@@ -1226,7 +1225,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,b
 	TangoMonitor &mon = th_info->poll_mon;
 	PollThCmd &shared_cmd = th_info->shared_data;
 
-	int th_id = omni_thread::self()->id();
+	thread::id th_id = this_thread::get_id();
 	if (th_id != poll_th_id)
 	{
 		omni_mutex_lock sync(mon);
@@ -1433,8 +1432,8 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	long tmp_upd = (*ite)->get_upd();
 
 	PollingThreadInfo *th_info;
-	int poll_th_id;
-	int th_id = omni_thread::self()->id();
+	thread::id poll_th_id;
+	thread::id th_id = this_thread::get_id();
 
 //
 // Find out which thread is in charge of the device.
@@ -1443,7 +1442,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	if (tg->is_svr_shutting_down() == false)
 	{
 		poll_th_id = tg->get_polling_thread_id_by_name((*argin)[0]);
-		if (poll_th_id == 0)
+		if (poll_th_id == thread::id())
 		{
 			TangoSys_OMemStream o;
 			o << "Can't find a polling thread for device " << (*argin)[0] << ends;
@@ -1715,10 +1714,6 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 				mon.signal();
 			}
 
-			void *dummy_ptr;
-			cout4 << "POLLING: Joining with one polling thread" << endl;
-			th_info->poll_th->join(&dummy_ptr);
-
 			tg->remove_polling_thread_info_by_id(poll_th_id);
 		}
 
@@ -1983,7 +1978,7 @@ void DServer::add_event_heartbeat()
 // Wait for thread to execute command except if the command is requested by the polling thread itself
 //
 
-		int th_id = omni_thread::self()->id();
+		thread::id th_id = this_thread::get_id();
 		if (th_id != tg->get_heartbeat_thread_id())
 		{
 			while (shared_cmd.cmd_pending == true)
@@ -2045,7 +2040,7 @@ void DServer::rem_event_heartbeat()
 // Wait for thread to execute command except if the command is requested by the polling thread itself
 //
 
-		int th_id = omni_thread::self()->id();
+		thread::id th_id = this_thread::get_id();
 		if (th_id != tg->get_heartbeat_thread_id())
 		{
 			while (shared_cmd.cmd_pending == true)

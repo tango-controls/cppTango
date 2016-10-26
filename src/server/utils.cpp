@@ -173,7 +173,7 @@ polling_bef_9_def(false)
 # endif
 #else
 Util::Util(int argc,char *argv[]):cl_list_ptr(NULL),ext(new UtilExt),
-heartbeat_th(NULL),heartbeat_th_id(0),poll_mon("utils_poll"),poll_on(false),ser_model(BY_DEVICE),
+heartbeat_th(NULL),heartbeat_th_id(thread::id()),poll_mon("utils_poll"),poll_on(false),ser_model(BY_DEVICE),
 only_one("process"),nd_event_supplier(NULL),py_interp(NULL),py_ds(false),py_dbg(false),
 db_cache(NULL),inter(NULL),svr_starting(true),svr_stopping(false),poll_pool_size(ULONG_MAX),
 conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false),

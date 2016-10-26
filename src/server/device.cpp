@@ -251,8 +251,8 @@ void DeviceImpl::stop_polling(bool with_db_upd)
 
 	PollingThreadInfo *th_info;
 
-	int poll_th_id = tg->get_polling_thread_id_by_name(device_name.c_str());
-	if (poll_th_id == 0)
+	thread::id poll_th_id = tg->get_polling_thread_id_by_name(device_name.c_str());
+	if (poll_th_id == thread::id())
 	{
 		TangoSys_OMemStream o;
 		o << "Can't find a polling thread for device " << device_name << ends;
@@ -353,10 +353,6 @@ void DeviceImpl::stop_polling(bool with_db_upd)
 
 			mon.signal();
 		}
-
-		void *dummy_ptr;
-		cout4 << "POLLING: Joining with one polling thread" << endl;
-		th_info->poll_th->join(&dummy_ptr);
 
 		tg->remove_polling_thread_info_by_id(poll_th_id);
 	}
