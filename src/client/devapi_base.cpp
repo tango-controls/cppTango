@@ -8637,7 +8637,9 @@ void DeviceProxy::create_locking_thread(ApiUtil *au,DevLong dl)
 		pos->second.shared->suicide = false;
 		pos->second.l_thread = new LockThread(*pos->second.shared,*pos->second.mon,adm_device,device_name,dl);
 
-		pos->second.l_thread->start();
+        //TODO
+		auto lock_thread = std::thread(&LockThread::run,pos->second.l_thread);
+		lock_thread.detach();
 	}
 }
 
