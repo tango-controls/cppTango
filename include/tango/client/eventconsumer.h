@@ -442,7 +442,7 @@ public :
 	int  event_queue_size(int event_id);
 	TimeVal get_last_event_date(int event_id);
 	bool is_event_queue_empty(int event_id);
-    int get_thread_id() {return thread_id;}
+    thread::id get_thread_id() {return thread_id;}
     void add_not_connected_event(DevFailed &,EventNotConnected &);
 	static ReadersWritersLock &get_map_modification_lock() {return map_modification_lock;};
 
@@ -477,7 +477,7 @@ protected :
 
 	string													device_name;
 	string 													obj_name_lower;
-    int                                                     thread_id;
+    thread::id                                              thread_id;
 
 	int add_new_callback(EvCbIte &,CallBack *,EventQueue *,int);
 	void get_fire_sync_event(DeviceProxy *,CallBack *,EventQueue *,EventType,string &,const string &,EventCallBackStruct &,string &);
@@ -545,8 +545,7 @@ private :
  * 																				*
  *******************************************************************************/
 
-class ZmqEventConsumer : public EventConsumer ,
-                         public omni_thread
+class ZmqEventConsumer : public EventConsumer
 {
 public :
 	static ZmqEventConsumer *create();
@@ -611,7 +610,7 @@ private :
     bool									ctrl_socket_bound;
 
 
-	void *run_undetached(void *arg);
+	void run();
 	void push_heartbeat_event(string &);
     void push_zmq_event(string &,unsigned char,zmq::message_t &,bool,const DevULong &);
     bool process_ctrl(zmq::message_t &,zmq::pollitem_t *,int &);

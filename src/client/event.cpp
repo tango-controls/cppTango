@@ -219,7 +219,7 @@ EventConsumer::EventConsumer(ApiUtil *api_ptr)
     if (keep_alive_thread == NULL)
         api_ptr->need_reset_already_flag(true);
 
-    thread_id = 0;
+    thread_id = thread::id();
 
 //
 // Create and start the EventConsumerKeepAliveThread. Do this at the method's end because the keep_alive_thread
@@ -1213,10 +1213,10 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 // event consumer thread which can not at the same time execute the call back and register the new event
 //
 
-    if (thread_id != 0)
+    if (thread_id != thread::id())
     {
         omni_thread::ensure_self se;
-        if (omni_thread::self()->id() == thread_id)
+        if (this_thread::get_id() == thread_id)
         {
             if (stateless == false)
             {
@@ -1860,10 +1860,10 @@ void EventConsumer::unsubscribe_event(int event_id)
 // and start a thread which will do the unsubscribe when the callback execution will be finished
 //
 
-                    if (thread_id != 0)
+                    if (thread_id != thread::id())
                     {
                         omni_thread::ensure_self se;
-                        if (omni_thread::self()->id() == thread_id)
+                        if (this_thread::get_id() == thread_id)
                         {
  //                           cout << event_id << ": Unsubscribing for an event while it is in its callback !!!!!!!!!!" << endl;
                             esspos->id = -event_id;
