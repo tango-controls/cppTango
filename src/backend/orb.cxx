@@ -97,14 +97,14 @@ auto backend::ORB_init()
     options_map.emplace("giopMaxMsgSize",             MAX_TRANSFER_SIZE);
     options_map.emplace("throwTransientOnTimeOut",    "1");
 
-    auto orb = ORB_init(_argc, _argv, "omniORB4", options_map);
+    auto orb = ORB_init(_argc, _argv, options_map);
 
     free(_argv);
 
     return orb;
 }
 
-auto backend::ORB_init(int &argc, char **argv, char *orb_id, map<string,string> options)
+auto backend::ORB_init(int &argc, char **argv, map<string,string> options)
     -> backend::ORB_ptr
 {
 
@@ -128,9 +128,11 @@ auto backend::ORB_init(int &argc, char **argv, char *orb_id, map<string,string> 
         omni_42_compat = true;
 
 
-    const char* omni_options[options.size() + 1][2];
+    //TODO calculate total size
+    char* omni_options[options.size() + 1][2];
 
-    //TODO
+
+    //TODO strcpy
 //    auto i = 0;
 //    for_each(options.begin(), options.end(), [&i, &omni_options](pair<string, string>& pair){
 //        omni_options[i++] = {pair.first.c_str(), pair.second.c_str()};
@@ -144,7 +146,7 @@ auto backend::ORB_init(int &argc, char **argv, char *orb_id, map<string,string> 
         omni_options[nb_opt - 2][1] = NULL;
     }
 
-    auto _orb = CORBA::ORB_init(argc, argv, orb_id, omni_options);
+    auto _orb = CORBA::ORB_init(argc, argv, "omniORB4", omni_options);
 
 //
 // Restore SIGPIPE handler

@@ -9,7 +9,7 @@
 		    
 using namespace Tango;
 
-bool verbose = false;
+bool verbose = true;
 
 class MyCallBack: public CallBack
 {
