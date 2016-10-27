@@ -129,7 +129,7 @@ auto backend::ORB_init(int &argc, char **argv, map<string,string> options)
 
 
     //TODO calculate total size
-    char* omni_options[options.size() + 1][2];
+    const char* omni_options[options.size() + 1][2];
 
 
     //TODO strcpy
