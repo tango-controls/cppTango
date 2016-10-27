@@ -55,7 +55,9 @@ public :
 			locking_thread_id(thread::id()),locked_ctr(0),name(na) {};
 	TangoMonitor():_timeout(DEFAULT_TIMEOUT),cond(this),locking_thread_id(thread::id()),
 			locked_ctr(0),name("unknown") {};
-	~TangoMonitor() {};
+	~TangoMonitor() {
+        cout4 << "Destructing TangoMonitor" << endl;
+    };
 
 	void get_monitor();
 	void rel_monitor();

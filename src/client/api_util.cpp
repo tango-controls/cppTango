@@ -749,7 +749,8 @@ void ApiUtil::set_asynch_cb_sub_model(cb_sub_model mode)
                 }
             };
 
-            std::async(call_back_task,&cb_thread_cmd, asyn_p_table);
+            auto t = std::thread(call_back_task,&cb_thread_cmd, asyn_p_table);
+			t.detach();
 			auto_cb = PUSH_CALLBACK;
 		}
 	}

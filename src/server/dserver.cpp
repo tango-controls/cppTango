@@ -1117,10 +1117,7 @@ void DServer::restart_server()
 // Create the thread and start it
 //
 
-    std::async([this](){
-//        PyData *py_data_ptr = new PyData();
-//        omni_thread::self()->set_value(key_py_data,py_data_ptr);
-
+    std::async(std::launch::async, [this](){
 //
 // The arg. passed to this method is a pointer to the DServer device
 //
@@ -1380,7 +1377,7 @@ void DServer::kill()
 // Create the thread and start it
 //
 
-	std::async([](){
+	std::async(std::launch::async, [](){
         cout4 << "In the killer thread !!!" << endl;
 
         Tango::Util *tg = Tango::Util::instance();
