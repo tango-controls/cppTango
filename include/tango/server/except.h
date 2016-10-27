@@ -487,8 +487,8 @@ public:
 		errors.length(1);
 		errors[0].severity = sever;
 		errors[0].reason = Tango::string_dup(reason.c_str());
-		errors[0].origin = Tango::string_dup(desc);
-		errors[0].desc = Tango::string_dup(origin.c_str());
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -694,9 +694,9 @@ public:
 		errors.length(1);
 		errors[0].severity = sever;
 		errors[0].reason = Tango::string_dup(reason.c_str());
-		errors[0].origin = Tango::string_dup(desc);
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc);
 		delete[] desc;
-		errors[0].desc = Tango::string_dup(origin.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -841,9 +841,9 @@ public:
 		errors[0].severity = sever;
 		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = Tango::string_dup(desc);
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc);
 		delete[] desc;
-		errors[0].desc = Tango::string_dup(origin.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -1259,8 +1259,8 @@ public:
 
 		ex.errors[nb_err].severity = sever;
 		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = Tango::string_dup(desc);
-		ex.errors[nb_err].desc = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 
 		throw ex;
 	}
@@ -1403,8 +1403,8 @@ public:
 
 		ex.errors[nb_err].severity = sever;
 		ex.errors[nb_err].reason = Tango::string_dup(reason);
-		ex.errors[nb_err].origin = Tango::string_dup(desc);
-		ex.errors[nb_err].desc = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 
 		throw ex;
 	}
@@ -1478,9 +1478,9 @@ public:
 
 		ex.errors[nb_err].severity = sever;
 		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = Tango::string_dup(desc);
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
-		ex.errors[nb_err].desc = Tango::string_dup(origin.c_str());
 
 		throw ex;
 	}
@@ -1633,9 +1633,9 @@ public:
 		ex.errors[nb_err].severity = sever;
 		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = Tango::string_dup(desc);
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
-		ex.errors[nb_err].desc = Tango::string_dup(origin.c_str());
 
 		throw ex;
 	}
