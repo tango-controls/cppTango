@@ -1117,7 +1117,7 @@ void DServer::restart_server()
 // Create the thread and start it
 //
 
-    std::async(std::launch::async, [this](){
+    auto f = std::async(std::launch::async, [this](){
 //
 // The arg. passed to this method is a pointer to the DServer device
 //
@@ -1377,7 +1377,7 @@ void DServer::kill()
 // Create the thread and start it
 //
 
-	std::async(std::launch::async, [](){
+	auto f = std::async(std::launch::async, [](){
         cout4 << "In the killer thread !!!" << endl;
 
         Tango::Util *tg = Tango::Util::instance();

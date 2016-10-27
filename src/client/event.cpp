@@ -1090,7 +1090,7 @@ namespace Tango {
                 subscribe_event_id++;
                 int ret_event_id = subscribe_event_id;
 
-                std::async(std::launch::async, &DelayedEventSubThread::run,
+                auto f = std::async(std::launch::async, &DelayedEventSubThread::run,
                            new DelayedEventSubThread(this, device, attribute, event, callback, ev_queue, stateless,
                                                      event_name, ret_event_id));
 
@@ -1680,7 +1680,7 @@ namespace Tango {
                             //                           cout << event_id << ": Unsubscribing for an event while it is in its callback !!!!!!!!!!" << endl;
                             esspos->id = -event_id;
 
-                            std::async(std::launch::async,
+                            auto f = std::async(std::launch::async,
                                     &DelayedEventUnsubThread::run,
                                        new DelayedEventUnsubThread(this, event_id, epos->second.callback_monitor));
 
