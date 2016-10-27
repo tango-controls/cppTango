@@ -52,8 +52,8 @@ class TangoMonitor: public omni_mutex
 {
 public :
 	TangoMonitor(const char *na):_timeout(DEFAULT_TIMEOUT),cond(this),
-			locking_thread(NULL),locked_ctr(0),name(na) {};
-	TangoMonitor():_timeout(DEFAULT_TIMEOUT),cond(this),locking_thread(NULL),
+			locking_thread_id(thread::id()),locked_ctr(0),name(na) {};
+	TangoMonitor():_timeout(DEFAULT_TIMEOUT),cond(this),locking_thread_id(thread::id()),
 			locked_ctr(0),name("unknown") {};
 	~TangoMonitor() {};
 
@@ -68,7 +68,7 @@ public :
 
 	void signal() {cond.signal();}
 
-	int get_locking_thread_id();
+	thread::id get_locking_thread_id();
 	long get_locking_ctr();
 	string &get_name() {return name;}
 	void set_name(const string &na) {name = na;}
@@ -76,7 +76,7 @@ public :
 private :
 	long 			_timeout;
 	omni_condition 	cond;
-	omni_thread		*locking_thread;
+	thread::id 		locking_thread_id;
 	long			locked_ctr;
 	string 			name;
 };
@@ -91,12 +91,9 @@ private :
 //-------------------------------------------------------------------------------------------------------------------
 
 
-inline int TangoMonitor::get_locking_thread_id()
+inline thread::id TangoMonitor::get_locking_thread_id()
 {
-	if (locking_thread != NULL)
-		return locking_thread->id();
-	else
-		return 0;
+	return locking_thread_id;
 }
 
 inline long TangoMonitor::get_locking_ctr()
@@ -118,24 +115,22 @@ inline long TangoMonitor::get_locking_ctr()
 
 inline void TangoMonitor::get_monitor()
 {
-	omni_thread *th = omni_thread::self();
-
 	omni_mutex_lock synchronized(*this);
 
 #if !defined(_TG_WINDOWS_) || (defined(_MSC_VER) && _MSC_VER >= 1300)
-	cout4 << "In get_monitor() " << name << ", thread = " << th->id() << ", ctr = " << locked_ctr << endl;
+	cout4 << "In get_monitor() " << name << ", thread = " << this_thread::get_id() << ", ctr = " << locked_ctr << endl;
 #endif
 
 	if (locked_ctr == 0)
 	{
-		locking_thread = th;
+		locking_thread_id = this_thread::get_id();
 	}
-	else if (th != locking_thread)
+	else if (this_thread::get_id() != locking_thread_id)
 	{
 		while(locked_ctr > 0)
 		{
 #if !defined(_TG_WINDOWS_) || (defined(_MSC_VER) && _MSC_VER >= 1300)
-			cout4 << "Thread " << th->id() << ": waiting !!" << endl;
+			cout4 << "Thread " << this_thread::get_id() << ": waiting !!" << endl;
 #endif
             int interupted;
 
@@ -143,14 +138,14 @@ inline void TangoMonitor::get_monitor()
 			if (interupted == false)
 			{
 #if !defined(_TG_WINDOWS_) || (defined(_MSC_VER) && _MSC_VER >= 1300)
-				cout4 << "TIME OUT for thread " << th->id() << endl;
+				cout4 << "TIME OUT for thread " << this_thread::get_id() << endl;
 #endif
 				Except::throw_exception((const char *)API_CommandTimedOut,
 					        (const char *)"Not able to acquire serialization (dev, class or process) monitor",
 					        (const char *)"TangoMonitor::get_monitor");
 			}
 		}
-		locking_thread = th;
+		locking_thread_id = this_thread::get_id();
 	}
 	else
 	{
@@ -176,13 +171,12 @@ inline void TangoMonitor::get_monitor()
 
 inline void TangoMonitor::rel_monitor()
 {
-	omni_thread *th = omni_thread::self();
 	omni_mutex_lock synchronized(*this);
 
 #if !defined(_TG_WINDOWS_) || (defined(_MSC_VER) && _MSC_VER >= 1300)
-	cout4 << "In rel_monitor() " << name << ", ctr = " << locked_ctr << ", thread = " << th->id() << endl;
+	cout4 << "In rel_monitor() " << name << ", ctr = " << locked_ctr << ", thread = " << this_thread::get_id() << endl;
 #endif
-	if ((locked_ctr == 0) || (th != locking_thread))
+	if ((locked_ctr == 0) || (this_thread::get_id() != locking_thread_id))
 		return;
 
 	locked_ctr--;
@@ -191,7 +185,7 @@ inline void TangoMonitor::rel_monitor()
 #if !defined(_TG_WINDOWS_) || (defined(_MSC_VER) && _MSC_VER >= 1300)
 		cout4 << "Signalling !" << endl;
 #endif
-		locking_thread = NULL;
+		locking_thread_id = thread::id();
 		cond.signal();
 	}
 }

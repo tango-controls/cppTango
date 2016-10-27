@@ -159,7 +159,7 @@ void PollThread::run()
 // The infinite loop
 //
 
-	while(1)
+	while(!interrupted_)
 	{
 		try
 		{
@@ -172,6 +172,7 @@ void PollThread::run()
 // Create the per thread data if it is not already done (For Python DS)
 //
 
+            //TODO implement PyDeviceServer
     		per_thread_data_created = true;
 
 #ifdef _TG_WINDOWS_
@@ -328,6 +329,7 @@ void PollThread::execute_cmd()
 	list<WorkItem>::iterator ite;
 	vector<WorkItem>::iterator et_ite;
 
+    //TODO refactor using command pattern
 	switch (local_cmd.cmd_code)
 	{
 
@@ -751,8 +753,8 @@ void PollThread::execute_cmd()
 
 	case Tango::POLL_EXIT :
 		cout5 << "Received an exit command" << endl;
-		omni_thread::exit();
-		break;
+        this->interrupted_ = true;
+		return;
 	}
 
 //

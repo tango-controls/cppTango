@@ -49,7 +49,7 @@ namespace Tango
 
 DevBoolean get_client_addr(omni::omniInterceptors::serverReceiveRequest_T::info_T &);
 
-class client_addr: public omni_thread::value_t
+class client_addr
 {
 public:
     client_addr():client_ident(false),client_pid(0) {client_ip[0]='\0';::memset(java_ident,0,sizeof(DevULong64)<<1);}
@@ -71,6 +71,8 @@ public:
 	int client_ip_2_client_name(string &) const;
 	friend ostream &operator<<(ostream &o_str,const client_addr &ca);
 };
+
+	using client_addr_var = std::shared_ptr<client_addr>;
 
 //==================================================================================================================
 //
@@ -205,8 +207,8 @@ public:
 
 	void insert_cmd_nl(const char *,long,DevSource);
 	void insert_cmd_cl_ident(const char *,const ClntIdent &,long vers=1,DevSource=Tango::DEV);
-	void add_cl_ident(const ClntIdent &,client_addr *);
-	void update_client_host(client_addr *);
+	void add_cl_ident(const ClntIdent &,client_addr_var);
+	void update_client_host(client_addr_var);
 
 	Tango::DevVarStringArray *read(long);
 

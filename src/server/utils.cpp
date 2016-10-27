@@ -65,7 +65,7 @@ static const char *RcsId = "$Id$\n$Name$";
 
 namespace Tango
 {
-    thread_local std::shared_ptr<PyData> kPerThreadPyData{new PyData()};
+
 
 Util *Util::_instance = NULL;
 int Util::_tracelevel = 0;
@@ -79,6 +79,8 @@ bool Util::_win = false;
 bool Util::_service = false;
 #endif
 
+    thread_local std::shared_ptr<PyData> kPerThreadPyData{new PyData()};
+
 //
 // A global key used for per thread specific storage. This is used to retrieve
 // client host and stores it in the device blackbox. This global is referenced
@@ -86,7 +88,7 @@ bool Util::_service = false;
 //
 
 
-omni_thread::key_t key;
+    thread_local std::shared_ptr<client_addr> kPerThreadClientAddress;
 
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -481,9 +483,6 @@ void Util::create_CORBA_objects()
 
 	omni::omniInterceptors *intercep = omniORB::getInterceptors();
 	intercep->serverReceiveRequest.add(get_client_addr);
-	intercep->createThread.add(create_PyPerThData);
-
-	key = omni_thread::allocate_key();
 
 //
 // Get some CORBA object references
@@ -3200,42 +3199,6 @@ void clear_att_dim(Tango::AttributeValue_5 &att_val)
 	att_val.data_type = 0;
 }
 
-//
-// The function called by the interceptor on thread creation
-//
-
-void create_PyPerThData(omni::omniInterceptors::createThread_T::info_T &info)
-{
-	PyData *py_dat_ptr = new PyData();
-#ifdef _TG_WINDOWS_
-	omni_thread::ensure_self es;
-#endif
-
-    kPerThreadPyData.reset(py_dat_ptr);
-
-	Util *tg = NULL;
-	Interceptors *Inter = NULL;
-
-	try
-	{
-		tg = Util::instance(false);
-		Inter = tg->get_interceptors();
-	}
-	catch(Tango::DevFailed &) {}
-
-	if (Inter != NULL)
-		Inter->create_thread();
-
-	info.run();
-
-    kPerThreadPyData.reset();
-	delete py_dat_ptr;
-
-	if (Inter != NULL)
-		Inter->delete_thread();
-
-	return;
-}
 
 AutoPyLock::AutoPyLock()
 {

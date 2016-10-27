@@ -181,6 +181,7 @@ private:
 	CppClntIdent 		cci;
 
     thread::id id_;
+	bool interrupted_;
 public:
 	static DeviceImpl 	*dev_to_del;
 	static string	   	name_to_del;

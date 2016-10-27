@@ -533,7 +533,6 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 //
 
 		TangoMonitor &dev_mon = dev->get_dev_monitor();
-		omni_thread *th = omni_thread::self();
 
 		while (shared_cmd.trigger == true)
 		{
@@ -558,7 +557,7 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 
 			bool deadlock = false;
 			long lock_ctr = 0;
-			if (th->id() == dev_mon.get_locking_thread_id())
+			if (this_thread::get_id() == dev_mon.get_locking_thread_id())
 			{
 				cout4 << "Possible deadlock detected!" << endl;
 				deadlock = true;
@@ -691,7 +690,6 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 //
 
 		TangoMonitor &dev_mon = dev->get_dev_monitor();
-		omni_thread *th = omni_thread::self();
 
 		while (shared_cmd.trigger == true)
 		{
@@ -716,7 +714,7 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 
 			bool deadlock = false;
 			long lock_ctr = 0;
-			if (th->id() == dev_mon.get_locking_thread_id())
+			if (this_thread::get_id() == dev_mon.get_locking_thread_id())
 			{
 				cout4 << "Possible deadlock detected!" << endl;
 				deadlock = true;
