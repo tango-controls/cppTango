@@ -147,10 +147,7 @@ private:
 #else
 	static inline bool auto_signal(long s)
 	{
-		if ((s==SIGQUIT) || (s==SIGINT) || (s==SIGHUP) || (s==SIGTERM))
-			return true;
-		else
-			return false;
+		return (s == SIGQUIT) || (s == SIGINT) || (s == SIGHUP) || (s == SIGTERM);
 	}
 #endif
 

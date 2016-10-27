@@ -128,8 +128,10 @@ void DServerSignal::ThSig::run()
 			omni_mutex_lock sy(*ds);
 			if (signo == SIGINT)
             {
+				cout4 << "in sigint" << endl;
                 bool job_done = false;
 
+				cout4 << "ds->sig_to_install=" << ds->sig_to_install << endl;
                 if (ds->sig_to_install == true)
                 {
                     ds->sig_to_install = false;
@@ -141,7 +143,7 @@ void DServerSignal::ThSig::run()
 //
 // Remove a signal from the catched one
 //
-
+				cout4 << "ds->sig_to_remove=" << ds->sig_to_remove << endl;
                 if (ds->sig_to_remove == true)
                 {
                     ds->sig_to_remove = false;
@@ -150,6 +152,7 @@ void DServerSignal::ThSig::run()
                     job_done = true;
                 }
 
+				cout4 << "job_done=" << job_done << endl;
                 if (job_done == true)
                 {
                     ds->signal();
