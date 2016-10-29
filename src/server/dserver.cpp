@@ -275,7 +275,6 @@ void DServer::init_device()
 //
 
 					PyLock *lock_ptr = NULL;
-					omni_thread *th;
 
 					if (tg->is_py_ds() == true)
 					{

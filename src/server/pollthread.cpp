@@ -42,22 +42,24 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <tango/server/pollthread.tpp>
 
 #ifdef _TG_WINDOWS_
-	#include <sys/timeb.h>
+#include <sys/timeb.h>
 #else
-	#include <sys/time.h>
+
+#include <sys/time.h>
+
 #endif
 
 #include <iomanip>
 
 
-namespace Tango
-{
+namespace Tango {
 
+    extern map<thread::id, string> kThreadNameMap;
     extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
 
-DeviceImpl *PollThread::dev_to_del = NULL;
-string PollThread::name_to_del = "";
-PollObjType PollThread::type_to_del = Tango::POLL_CMD;
+    DeviceImpl *PollThread::dev_to_del = NULL;
+    string PollThread::name_to_del = "";
+    PollObjType PollThread::type_to_del = Tango::POLL_CMD;
 
 //+-----------------------------------------------------------------------------------------------------------------
 //
@@ -75,39 +77,51 @@ PollObjType PollThread::type_to_del = Tango::POLL_CMD;
 //
 //------------------------------------------------------------------------------------------------------------------
 
-PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cmd(cmd),p_mon(m),
-					    sleep(1),polling_stop(true),
-					    attr_names(1),tune_ctr(1),
-					    need_two_tuning(false),send_heartbeat(heartbeat),heartbeat_ctr(0)
-{
-    local_cmd.cmd_pending = false;
+    PollThread::PollThread(PollThCmd &cmd, TangoMonitor &m, bool heartbeat, string &&name) : shared_cmd(cmd), p_mon(m),
+                                                                                             sleep(1),
+                                                                                             polling_stop(true),
+                                                                                             attr_names(1), tune_ctr(1),
+                                                                                             need_two_tuning(false),
+                                                                                             send_heartbeat(heartbeat),
+                                                                                             heartbeat_ctr(0),
+                                                                                             name_(move(name)) {
+        local_cmd.cmd_pending = false;
 
-	attr_names.length(1);
+        attr_names.length(1);
 
-	cci = 0;
-	dummy_cl_id.cpp_clnt(cci);
-	previous_nb_late = 0;
-	polling_bef_9 = false;
+        cci = 0;
+        dummy_cl_id.cpp_clnt(cci);
+        previous_nb_late = 0;
+        polling_bef_9 = false;
 
-	if (heartbeat == true)
-		polling_stop = false;
+        if (heartbeat == true)
+            polling_stop = false;
 
 #ifdef _TG_WINDOWS_
-	LARGE_INTEGER f;
-	BOOL is_ctr;
-	is_ctr = QueryPerformanceFrequency(&f);
-	if (is_ctr != 0)
-		ctr_frequency = 1000000.0 / (double)f.QuadPart;
-	else
-		ctr_frequency = 0.0;
+        LARGE_INTEGER f;
+        BOOL is_ctr;
+        is_ctr = QueryPerformanceFrequency(&f);
+        if (is_ctr != 0)
+            ctr_frequency = 1000000.0 / (double)f.QuadPart;
+        else
+            ctr_frequency = 0.0;
 #endif
 
-    dummy_att5.value.union_no_data(true);
-    dummy_att5.quality = ATTR_INVALID;
-    dummy_att4.value.union_no_data(true);
-    dummy_att4.quality = ATTR_INVALID;
-    dummy_att3.quality = ATTR_INVALID;
-}
+        dummy_att5.value.union_no_data(true);
+        dummy_att5.quality = ATTR_INVALID;
+        dummy_att4.value.union_no_data(true);
+        dummy_att4.quality = ATTR_INVALID;
+        dummy_att3.quality = ATTR_INVALID;
+    }
+
+
+    void PollThread::start() {
+        thread_ = std::thread(&PollThread::run, this);
+        id_ = thread_.get_id();
+        kThreadNameMap.emplace(id_, name_);
+//        poll_thread.detach();
+        cout5 << "Started thread id=" << id_ << "; name=" << name_ << endl;
+    }
 
 //+------------------------------------------------------------------------------------------------------------------
 //
@@ -121,129 +135,115 @@ PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cm
 
 
 
-void PollThread::run()
-{
-	PollCmdType received;
-	bool per_thread_data_created = false;
+    void PollThread::run() {
+        PollCmdType received;
 
 //
 // If the thread is the event heartbeat thread, use it also for the storage of sub device properties.
 // Declare a work item to check the for new sub devices regularly.
 //
 
-	if (send_heartbeat == true)
-	{
-		WorkItem wo;
+        if (send_heartbeat == true) {
+            WorkItem wo;
 
-		wo.dev = NULL;
-		wo.poll_list = NULL;
-		wo.type = STORE_SUBDEV;
-		wo.update = 30*60*1000;			// check ervery 30 minutes
-		wo.name.push_back(string("Sub device property storage"));
-		wo.needed_time.tv_sec  = 0;
-		wo.needed_time.tv_usec = 0;
+            wo.dev = NULL;
+            wo.poll_list = NULL;
+            wo.type = STORE_SUBDEV;
+            wo.update = 30 * 60 * 1000;            // check ervery 30 minutes
+            wo.name.push_back(string("Sub device property storage"));
+            wo.needed_time.tv_sec = 0;
+            wo.needed_time.tv_usec = 0;
 
 #ifdef _TG_WINDOWS_
-		_ftime(&now_win);
-		now.tv_sec = (unsigned long)now_win.time;
-		now.tv_usec = (long)now_win.millitm * 1000;
+            _ftime(&now_win);
+            now.tv_sec = (unsigned long)now_win.time;
+            now.tv_usec = (long)now_win.millitm * 1000;
 #else
-		gettimeofday(&now,NULL);
+            gettimeofday(&now, NULL);
 #endif
-		now.tv_sec = now.tv_sec - DELTA_T;
-		wo.wake_up_date = now;
-		insert_in_list(wo);
-	}
+            now.tv_sec = now.tv_sec - DELTA_T;
+            wo.wake_up_date = now;
+            insert_in_list(wo);
+        }
 
 //
 // The infinite loop
 //
 
-	while(!interrupted_)
-	{
-		try
-		{
-			if (sleep != 0)
-				received = get_command(sleep);
-			else
-				received = POLL_TIME_OUT;
+        while (!interrupted_) {
+            try {
+                if (sleep != 0)
+                    received = get_command(sleep);
+                else
+                    received = POLL_TIME_OUT;
 
 //
 // Create the per thread data if it is not already done (For Python DS)
 //
 
-            //TODO implement PyDeviceServer
-    		per_thread_data_created = true;
+#ifdef _TG_WINDOWS_
+                _ftime(&now_win);
+                now.tv_sec = (unsigned long)now_win.time;
+                now.tv_usec = (long)now_win.millitm * 1000;
+#else
+                gettimeofday(&now, NULL);
+#endif
+                now.tv_sec = now.tv_sec - DELTA_T;
+
+                switch (received) {
+                    case POLL_COMMAND:
+                        execute_cmd();
+                        break;
+
+                    case POLL_TIME_OUT:
+                        one_more_poll();
+                        break;
+
+                    case POLL_TRIGGER:
+                        one_more_trigg();
+                        break;
+                }
 
 #ifdef _TG_WINDOWS_
-			_ftime(&now_win);
-			now.tv_sec = (unsigned long)now_win.time;
-			now.tv_usec = (long)now_win.millitm * 1000;
+                _ftime(&after_win);
+                after.tv_sec = (unsigned long)after_win.time;
+                after.tv_usec = (long)after_win.millitm * 1000;
 #else
-			gettimeofday(&now,NULL);
+                gettimeofday(&after, NULL);
 #endif
-			now.tv_sec = now.tv_sec - DELTA_T;
+                after.tv_sec = after.tv_sec - DELTA_T;
 
-			switch (received)
-			{
-			case POLL_COMMAND:
-				execute_cmd();
-				break;
+                if (tune_ctr <= 0) {
+                    tune_list(true, 0);
+                    if (need_two_tuning == true) {
+                        unsigned long nb_works = works.size();
+                        tune_ctr = (nb_works << 2);
+                        need_two_tuning = false;
+                    } else
+                        tune_ctr = POLL_LOOP_NB;
+                }
 
-			case POLL_TIME_OUT:
-				one_more_poll();
-				break;
-
-			case POLL_TRIGGER:
-				one_more_trigg();
-				break;
-			}
-
-#ifdef _TG_WINDOWS_
-			_ftime(&after_win);
-			after.tv_sec = (unsigned long)after_win.time;
-			after.tv_usec = (long)after_win.millitm * 1000;
-#else
-			gettimeofday(&after,NULL);
-#endif
-			after.tv_sec = after.tv_sec - DELTA_T;
-
-			if (tune_ctr <= 0)
-			{
-				tune_list(true,0);
-				if (need_two_tuning == true)
-				{
-					unsigned long nb_works = works.size();
-					tune_ctr = (nb_works << 2);
-					need_two_tuning = false;
-				}
-				else
-					tune_ctr = POLL_LOOP_NB;
-			}
-
-			compute_sleep_time();
-		}
-		catch (omni_thread_fatal &)
-		{
-			cerr << "OUPS !! A omni thread fatal exception received by a polling thread !!!!!!!!" << endl;
+                compute_sleep_time();
+            }
+            catch (omni_thread_fatal &) {
+                cerr << "OUPS !! A omni thread fatal exception received by a polling thread !!!!!!!!" << endl;
 #ifndef _TG_WINDOWS_
-			time_t t = time(NULL);
-			cerr << ctime(&t);
+                time_t t = time(NULL);
+                cerr << ctime(&t);
 #endif
-			cerr << "Trying to re-enter the main loop" << endl;
-		}
-		catch (const std::exception &ex)
-		{
-			cerr << "OUPS !! An unforeseen standard exception has been received by a polling thread !!!!!!" << endl;
-			cerr << ex.what() << endl;
+                cerr << "Trying to re-enter the main loop" << endl;
+            }
+            catch (const std::exception &ex) {
+                cerr << "OUPS !! An unforeseen standard exception has been received by a polling thread !!!!!!" << endl;
+                cerr << ex.what() << endl;
 #ifndef _TG_WINDOWS_
-			time_t t = time(NULL);
-			cerr << ctime(&t);
+                time_t t = time(NULL);
+                cerr << ctime(&t);
 #endif
-			cerr << "Trying to re-enter the main loop" << endl;
-		}
-	}
-}
+                cerr << "Trying to re-enter the main loop" << endl;
+            }
+        }
+    }
 
 //+----------------------------------------------------------------------------------------------------------------
 //
@@ -264,45 +264,41 @@ void PollThread::run()
 //
 //------------------------------------------------------------------------------------------------------------------
 
-PollCmdType PollThread::get_command(long tout)
-{
-	omni_mutex_lock sync(p_mon);
-	PollCmdType ret;
+    PollCmdType PollThread::get_command(long tout) {
+        omni_mutex_lock sync(p_mon);
+        PollCmdType ret;
 
 //
 // Wait on monitor
 //
 
-	if ((shared_cmd.cmd_pending == false) && (shared_cmd.trigger == false))
-	{
-		if (works.empty() == true)
-			p_mon.wait();
-		else
-		{
-			if (tout != -1)
-				p_mon.wait(tout);
-		}
-	}
+        if ((shared_cmd.cmd_pending == false) && (shared_cmd.trigger == false)) {
+            if (works.empty() == true) {
+                cout4 << kThreadNameMap.at(this_thread::get_id()) << " waits ... " << endl;
+                p_mon.wait();
+            } else {
+                cout4 << kThreadNameMap.at(this_thread::get_id()) << " waits for " << tout << endl;
+                if (tout != -1)
+                    p_mon.wait(tout);
+            }
+        }
 
+        cout4 << kThreadNameMap.at(this_thread::get_id()) << " is awaken!" << endl;
 //
 // Test if it is a new command. If yes, copy its data locally
 //
 
-	if (shared_cmd.cmd_pending == true)
-	{
-		local_cmd = shared_cmd;
-		ret = POLL_COMMAND;
-	}
-	else if (shared_cmd.trigger == true)
-	{
-		local_cmd = shared_cmd;
-		ret = POLL_TRIGGER;
-	}
-	else
-		ret = POLL_TIME_OUT;
+        if (shared_cmd.cmd_pending == true) {
+            local_cmd = shared_cmd;
+            ret = POLL_COMMAND;
+        } else if (shared_cmd.trigger == true) {
+            local_cmd = shared_cmd;
+            ret = POLL_TRIGGER;
+        } else
+            ret = POLL_TIME_OUT;
 
-	return ret;
-}
+        return ret;
+    }
 
 //+---------------------------------------------------------------------------------------------------------------
 //
@@ -318,28 +314,16 @@ PollCmdType PollThread::get_command(long tout)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-bool pred_dev(const WorkItem &w)
-{
-	return w.dev == PollThread::dev_to_del;
-}
+    bool pred_dev(const WorkItem &w) {
+        return w.dev == PollThread::dev_to_del;
+    }
 
-void PollThread::execute_cmd()
-{
-	WorkItem wo;
-	list<WorkItem>::iterator ite;
-	vector<WorkItem>::iterator et_ite;
+    void PollThread::poll_add_obj() {
+        cout5 << "Received a Add object command" << endl;
 
-    //TODO refactor using command pattern
-	switch (local_cmd.cmd_code)
-	{
-
-//
-// Add a new object
-//
-
-	case Tango::POLL_ADD_OBJ :
-    {
-		cout5 << "Received a Add object command" << endl;
+        WorkItem wo;
+        list<WorkItem>::iterator ite;
+        vector<WorkItem>::iterator et_ite;
 
         wo.dev = local_cmd.dev;
         wo.poll_list = &(wo.dev->get_poll_obj_list());
@@ -347,11 +331,12 @@ void PollThread::execute_cmd()
         PollObjType new_type = (*wo.poll_list)[local_cmd.index]->get_type();
 
         bool found = false;
-        if (new_type == POLL_ATTR && wo.dev->get_dev_idl_version() >= 4 && polling_bef_9 == false)
-        {
+        if (new_type == POLL_ATTR && wo.dev->get_dev_idl_version() >= 4 && polling_bef_9 == false) {
 #ifdef HAS_LAMBDA_FUNC
-            ite = find_if(works.begin(),works.end(),
-                [&] (const WorkItem &wi) {return wi.dev == local_cmd.dev && wi.update == new_upd && wi.type == new_type;});
+            ite = find_if(works.begin(), works.end(),
+                          [&](const WorkItem &wi) {
+                              return wi.dev == local_cmd.dev && wi.update == new_upd && wi.type == new_type;
+                          });
 #else
             for (ite = works.begin();ite != works.end();++ite)
             {
@@ -359,70 +344,58 @@ void PollThread::execute_cmd()
                     break;
             }
 #endif
-            if (ite != works.end())
-            {
-                 ite->name.push_back((*wo.poll_list)[local_cmd.index]->get_name());
-                 found = true;
+            if (ite != works.end()) {
+                ite->name.push_back((*wo.poll_list)[local_cmd.index]->get_name());
+                found = true;
             }
         }
 
-        if (found == false)
-        {
+        if (found == false) {
             wo.type = new_type;
             wo.update = new_upd;
             wo.name.push_back((*wo.poll_list)[local_cmd.index]->get_name());
             wo.needed_time.tv_sec = 0;
             wo.needed_time.tv_usec = 0;
 
-            if (wo.update != 0)
-            {
+            if (wo.update != 0) {
                 wo.wake_up_date = now;
-                if (local_cmd.new_upd != 0)
-                {
+                if (local_cmd.new_upd != 0) {
                     cout5 << "Received a delta from now of " << local_cmd.new_upd << endl;
-                    T_ADD(wo.wake_up_date,local_cmd.new_upd * 1000);
+                    T_ADD(wo.wake_up_date, local_cmd.new_upd * 1000);
                 }
                 insert_in_list(wo);
                 unsigned long nb_works = works.size();
                 tune_ctr = (nb_works << 2);
                 need_two_tuning = true;
-            }
-            else
-            {
+            } else {
                 wo.wake_up_date.tv_sec = 0;
                 wo.wake_up_date.tv_usec = 0;
                 ext_trig_works.push_back(wo);
             }
         }
-		break;
     }
 
-//
-// Remove an already polled object
-//
+    void PollThread::poll_rem_obj() {
+        cout5 << "Received a Rem object command" << endl;
 
-	case Tango::POLL_REM_OBJ :
-		cout5 << "Received a Rem object command" << endl;
+        WorkItem wo;
+        list<WorkItem>::iterator ite;
+        vector<WorkItem>::iterator et_ite;
 
-		dev_to_del = local_cmd.dev;
-		name_to_del = local_cmd.name;
-		type_to_del = local_cmd.type;
+        dev_to_del = local_cmd.dev;
+        name_to_del = local_cmd.name;
+        type_to_del = local_cmd.type;
 
-		size_t i,nb_elt;
-		nb_elt = works.size();
-		ite = works.begin();
-		for (i = 0;i < nb_elt;i++)
-		{
-			if (ite->dev == PollThread::dev_to_del)
-			{
-				if (ite->type == PollThread::type_to_del)
-				{
-				    vector<string>::iterator ite_str;
-				    bool found = false;
-				    for (ite_str = ite->name.begin();ite_str != ite->name.end();++ite_str)
-                    {
-                        if (*ite_str == PollThread::name_to_del)
-                        {
+        size_t i, nb_elt;
+        nb_elt = works.size();
+        ite = works.begin();
+        for (i = 0; i < nb_elt; i++) {
+            if (ite->dev == PollThread::dev_to_del) {
+                if (ite->type == PollThread::type_to_del) {
+                    vector<string>::iterator ite_str;
+                    bool found = false;
+                    for (ite_str = ite->name.begin(); ite_str != ite->name.end(); ++ite_str) {
+                        if (*ite_str == PollThread::name_to_del) {
                             ite->name.erase(ite_str);
                             if (ite->name.empty() == true)
                                 works.erase(ite);
@@ -432,80 +405,73 @@ void PollThread::execute_cmd()
                     }
                     if (found == true)
                         break;
-				}
-			}
-			++ite;
-		}
-		break;
+                }
+            }
+            ++ite;
+        }
+    }
 
-//
-// Remove an already externally triggered polled object
-//
+    void PollThread::poll_rem_ext_trig_obj() {
+        cout5 << "Received a Ext Trig Rem object command" << endl;
 
-	case Tango::POLL_REM_EXT_TRIG_OBJ :
-		cout5 << "Received a Ext Trig Rem object command" << endl;
+        vector<WorkItem>::iterator et_ite;
 
-		for (et_ite = ext_trig_works.begin();
-		     et_ite != ext_trig_works.end();++et_ite)
-		{
-			if (et_ite->dev == local_cmd.dev)
-			{
-				if (et_ite->type == local_cmd.type)
-				{
-					if (et_ite->name[0] == local_cmd.name)
-					{
-						ext_trig_works.erase(et_ite);
-						break;
-					}
-				}
-			}
-		}
-		break;
+        for (et_ite = ext_trig_works.begin();
+             et_ite != ext_trig_works.end(); ++et_ite) {
+            if (et_ite->dev == local_cmd.dev) {
+                if (et_ite->type == local_cmd.type) {
+                    if (et_ite->name[0] == local_cmd.name) {
+                        ext_trig_works.erase(et_ite);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
-//
-// Remove all objects belonging to a device.
-// Take care, the same device could have several objects --> No break after the successfull if in loop
-//
+    void PollThread::poll_rem_dev() {
+        cout5 << "Received a Rem device command" << endl;
 
-	case Tango::POLL_REM_DEV :
-		cout5 << "Received a Rem device command" << endl;
-
-		dev_to_del = local_cmd.dev;
+        dev_to_del = local_cmd.dev;
 #ifdef _TG_WINDOWS_
-		nb_elt = works.size();
-		ite = works.begin();
-		for (i = 0;i < nb_elt;i++)
-		{
-			if (ite->dev == PollThread::dev_to_del)
-			{
-				ite = works.erase(ite);
-			}
-			else
-				++ite;
-		}
-		nb_elt = ext_trig_works.size();
-		et_ite = ext_trig_works.begin();
-		for (i = 0;i < nb_elt;i++)
-		{
-			if (et_ite->dev == PollThread::dev_to_del)
-			{
-				et_ite = ext_trig_works.erase(et_ite);
-			}
-			else
-				++et_ite;
-		}
-#else
-		works.remove_if(pred_dev);
 
-		ext_trig_works.erase(remove_if(ext_trig_works.begin(),
-					       ext_trig_works.end(),
-					       pred_dev),
-				     ext_trig_works.end());
+        list<WorkItem>::iterator ite;
+        vector<WorkItem>::iterator et_ite;
+
+        nb_elt = works.size();
+        ite = works.begin();
+        for (i = 0;i < nb_elt;i++)
+        {
+            if (ite->dev == PollThread::dev_to_del)
+            {
+                ite = works.erase(ite);
+            }
+            else
+                ++ite;
+        }
+        nb_elt = ext_trig_works.size();
+        et_ite = ext_trig_works.begin();
+        for (i = 0;i < nb_elt;i++)
+        {
+            if (et_ite->dev == PollThread::dev_to_del)
+            {
+                et_ite = ext_trig_works.erase(et_ite);
+            }
+            else
+                ++et_ite;
+        }
+#else
+        works.remove_if(pred_dev);
+
+        ext_trig_works.erase(remove_if(ext_trig_works.begin(),
+                                       ext_trig_works.end(),
+                                       pred_dev),
+                             ext_trig_works.end());
 #endif
 
-		break;
+    }
 
-//
+    //
 // Update polling period
 // Several cases has to be implemented here.
 // 1 - A classical command from the external world. In this case updating
@@ -523,43 +489,37 @@ void PollThread::execute_cmd()
 //	 We detect this case because the object is not in any work list (either the work
 //	 list or the trigger list)
 //
+    void PollThread::poll_upd_period() {
+        cout5 << "Received a update polling period command" << endl;
 
-	case Tango::POLL_UPD_PERIOD :
-    {
-		cout5 << "Received a update polling period command" << endl;
+        WorkItem wo;
+        list<WorkItem>::iterator ite;
+        vector<WorkItem>::iterator et_ite;
 
-		dev_to_del = local_cmd.dev;
-		name_to_del = local_cmd.name;
-		type_to_del = local_cmd.type;
+        dev_to_del = local_cmd.dev;
+        name_to_del = local_cmd.name;
+        type_to_del = local_cmd.type;
 
-		bool found_in_work_list = false;
+        bool found_in_work_list = false;
 
-        if (local_cmd.new_upd != 0)
-        {
+        if (local_cmd.new_upd != 0) {
             WorkItem tmp_work;
-            size_t i,nb_elt;
+            size_t i, nb_elt;
             nb_elt = works.size();
             ite = works.begin();
 
-            if (nb_elt != 0)
-            {
+            if (nb_elt != 0) {
                 bool found = false;
 
-                for (i = 0;i < nb_elt;i++)
-                {
-                    if (ite->dev == PollThread::dev_to_del)
-                    {
-                        if (ite->type == PollThread::type_to_del)
-                        {
+                for (i = 0; i < nb_elt; i++) {
+                    if (ite->dev == PollThread::dev_to_del) {
+                        if (ite->type == PollThread::type_to_del) {
 
                             vector<string>::iterator ite_str;
-                            for (ite_str = ite->name.begin();ite_str != ite->name.end();++ite_str)
-                            {
-                                if (*ite_str == PollThread::name_to_del)
-                                {
+                            for (ite_str = ite->name.begin(); ite_str != ite->name.end(); ++ite_str) {
+                                if (*ite_str == PollThread::name_to_del) {
                                     ite->name.erase(ite_str);
-                                    if (ite->name.empty() == true)
-                                    {
+                                    if (ite->name.empty() == true) {
                                         works.erase(ite);
                                     }
 
@@ -583,42 +543,34 @@ void PollThread::execute_cmd()
                 tmp_work.name.push_back(PollThread::name_to_del);
                 tmp_work.needed_time.tv_sec = 0;
                 tmp_work.needed_time.tv_usec = 0;
-                compute_new_date(now,local_cmd.new_upd);
+                compute_new_date(now, local_cmd.new_upd);
                 tmp_work.wake_up_date = now;
                 add_insert_in_list(tmp_work);
                 tune_ctr = 0;
                 found_in_work_list = true;
 
-                if (found == false)
-                {
+                if (found == false) {
                     rem_upd.push_back(local_cmd.new_upd);
                     rem_name.push_back(PollThread::name_to_del);
                 }
 
             }
-        }
-        else
-        {
+        } else {
 
 //
 // First, remove object from polling list and insert it in externally triggered list
 //
 
-            size_t i,nb_elt;
+            size_t i, nb_elt;
             nb_elt = works.size();
             ite = works.begin();
-            for (i = 0;i < nb_elt;i++)
-            {
-                if (ite->dev == PollThread::dev_to_del)
-                {
-                    if (ite->type == PollThread::type_to_del)
-                    {
+            for (i = 0; i < nb_elt; i++) {
+                if (ite->dev == PollThread::dev_to_del) {
+                    if (ite->type == PollThread::type_to_del) {
                         bool found = false;
                         vector<string>::iterator ite_str;
-                        for (ite_str = ite->name.begin();ite_str != ite->name.end();++ite_str)
-                        {
-                            if (*ite_str == PollThread::name_to_del)
-                            {
+                        for (ite_str = ite->name.begin(); ite_str != ite->name.end(); ++ite_str) {
+                            if (*ite_str == PollThread::name_to_del) {
                                 ite->name.erase(ite_str);
                                 if (ite->name.empty() == true)
                                     works.erase(ite);
@@ -651,127 +603,179 @@ void PollThread::execute_cmd()
 // 2-2 as described above (polling thread itself updating polling period of the object it actually polls)
 //
 
-        if (found_in_work_list == false)
-        {
-			bool found = false;
-			for (et_ite = ext_trig_works.begin();
-			     et_ite != ext_trig_works.end();++et_ite)
-			{
-				if (et_ite->dev == local_cmd.dev)
-				{
-					if (et_ite->type == local_cmd.type)
-					{
-						if (et_ite->name[0] == local_cmd.name)
-						{
-							ext_trig_works.erase(et_ite);
-							found = true;
-							break;
-						}
-					}
-				}
-			}
-
-			if (found == true)
-			{
-				wo.dev = local_cmd.dev;
-				wo.poll_list = &(wo.dev->get_poll_obj_list());
-				wo.type = type_to_del;
-				wo.update = local_cmd.new_upd;
-				wo.name.push_back(name_to_del);
-				wo.wake_up_date = now;
-				insert_in_list(wo);
-			}
-			else
-            {
-				auto_upd.push_back(local_cmd.new_upd);
-				auto_name.push_back(name_to_del);
+        if (found_in_work_list == false) {
+            bool found = false;
+            for (et_ite = ext_trig_works.begin();
+                 et_ite != ext_trig_works.end(); ++et_ite) {
+                if (et_ite->dev == local_cmd.dev) {
+                    if (et_ite->type == local_cmd.type) {
+                        if (et_ite->name[0] == local_cmd.name) {
+                            ext_trig_works.erase(et_ite);
+                            found = true;
+                            break;
+                        }
+                    }
+                }
             }
-		}
-		break;
+
+            if (found == true) {
+                wo.dev = local_cmd.dev;
+                wo.poll_list = &(wo.dev->get_poll_obj_list());
+                wo.type = type_to_del;
+                wo.update = local_cmd.new_upd;
+                wo.name.push_back(name_to_del);
+                wo.wake_up_date = now;
+                insert_in_list(wo);
+            } else {
+                auto_upd.push_back(local_cmd.new_upd);
+                auto_name.push_back(name_to_del);
+            }
+        }
     }
+
+    void PollThread::poll_add_heartbeat() {
+        cout5 << "Received a add heartbeat command" << endl;
+
+        WorkItem wo;
+        list<WorkItem>::iterator ite;
+        vector<WorkItem>::iterator et_ite;
+
+        wo.dev = NULL;
+        wo.poll_list = NULL;
+        wo.type = EVENT_HEARTBEAT;
+        wo.update = 9000;
+        wo.name.push_back(string("Event heartbeat"));
+        wo.needed_time.tv_sec = 0;
+        wo.needed_time.tv_usec = TIME_HEARTBEAT;
+
+        wo.wake_up_date = now;
+        insert_in_list(wo);
+    }
+
+    void PollThread::poll_rem_heartbeat() {
+        cout5 << "Received a remove heartbeat command" << endl;
+
+        list<WorkItem>::iterator ite;
+        vector<WorkItem>::iterator et_ite;
+
+        size_t nb_elem = works.size();
+        ite = works.begin();
+
+        for (size_t ii = 0; ii < nb_elem; ii++) {
+            if (ite->type == EVENT_HEARTBEAT) {
+                works.erase(ite);
+                break;
+            }
+            ++ite;
+        }
+    }
+
+    void PollThread::execute_cmd() {
+
+
+        //TODO refactor using command pattern
+        switch (local_cmd.cmd_code) {
+
+//
+// Add a new object
+//
+
+            case Tango::POLL_ADD_OBJ : {
+                poll_add_obj();
+                break;
+            }
+
+//
+// Remove an already polled object
+//
+
+            case Tango::POLL_REM_OBJ :
+                poll_rem_obj();
+                break;
+
+//
+// Remove an already externally triggered polled object
+//
+
+            case Tango::POLL_REM_EXT_TRIG_OBJ :
+                poll_rem_ext_trig_obj();
+                break;
+
+//
+// Remove all objects belonging to a device.
+// Take care, the same device could have several objects --> No break after the successfull if in loop
+//
+
+            case Tango::POLL_REM_DEV :
+                poll_rem_dev();
+                break;
+
+
+            case Tango::POLL_UPD_PERIOD : {
+                poll_upd_period();
+                break;
+            }
 
 //
 // Add the event heartbeat every 9 seconds
 //
 
-	case Tango::POLL_ADD_HEARTBEAT:
-		cout5 << "Received a add heartbeat command" << endl;
-		wo.dev = NULL;
-		wo.poll_list = NULL;
-		wo.type = EVENT_HEARTBEAT;
-		wo.update = 9000;
-		wo.name.push_back(string("Event heartbeat"));
-		wo.needed_time.tv_sec = 0;
-		wo.needed_time.tv_usec = TIME_HEARTBEAT;
-
-		wo.wake_up_date = now;
-		insert_in_list(wo);
-		break;
+            case Tango::POLL_ADD_HEARTBEAT:
+                poll_add_heartbeat();
+                break;
 
 //
 // Remove the event heartbeat
 //
 
-	case Tango::POLL_REM_HEARTBEAT:
-		cout5 << "Received a remove heartbeat command" << endl;
-		unsigned int ii,nb_elem;
-		nb_elem = works.size();
-		ite = works.begin();
-
-		for (ii = 0;ii < nb_elem;ii++)
-		{
-			if (ite->type == EVENT_HEARTBEAT)
-			{
-				works.erase(ite);
-				break;
-			}
-			++ite;
-		}
-		break;
+            case Tango::POLL_REM_HEARTBEAT:
+                poll_rem_heartbeat();
+                break;
 
 //
 // Start polling
 //
 
-	case Tango::POLL_START :
-		cout5 << "Received a Start polling command" << endl;
-		polling_stop = false;
-		break;
+            case Tango::POLL_START :
+                cout5 << "Received a Start polling command" << endl;
+                polling_stop = false;
+                break;
 
 //
 // Stop polling
 //
 
-	case Tango::POLL_STOP :
-		cout5 << "Received a Stop polling command" << endl;
-		polling_stop = true;
-		break;
+            case Tango::POLL_STOP :
+                cout5 << "Received a Stop polling command" << endl;
+                polling_stop = true;
+                break;
 
 //
 // Ask polling thread to exit
 //
 
-	case Tango::POLL_EXIT :
-		cout5 << "Received an exit command" << endl;
-        this->interrupted_ = true;
-		return;
-	}
+            case Tango::POLL_EXIT :
+                cout5 << "Received an exit command" << endl;
+                this->interrupted_ = true;
+                return;//exit in run function
+
+        }
 
 //
 // Inform requesting thread that the work is done
 //
 
 
-	{
-		omni_mutex_lock sync(p_mon);
-		shared_cmd.cmd_pending = false;
-		p_mon.signal();
-	}
+        {
+            omni_mutex_lock sync(p_mon);
+            shared_cmd.cmd_pending = false;
+            p_mon.signal();
+        }
 
-	if (Tango::Util::_tracelevel >= 4)
-		print_list();
+        if (Tango::Util::_tracelevel >= 4)
+            print_list();
 
-}
+    }
 
 //+-------------------------------------------------------------------------------------------------------------------
 //
@@ -782,129 +786,113 @@ void PollThread::execute_cmd()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void PollThread::one_more_poll()
-{
-	WorkItem tmp = works.front();
-	works.pop_front();
+    void PollThread::one_more_poll() {
+        WorkItem tmp = works.front();
+        works.pop_front();
 
-	if (polling_stop == false)
-	{
-		switch (tmp.type)
-		{
-		case Tango::POLL_CMD:
-			poll_cmd(tmp);
-			break;
+        if (polling_stop == false) {
+            switch (tmp.type) {
+                case Tango::POLL_CMD:
+                    poll_cmd(tmp);
+                    break;
 
-		case Tango::POLL_ATTR:
-			poll_attr(tmp);
-			break;
+                case Tango::POLL_ATTR:
+                    poll_attr(tmp);
+                    break;
 
-		case Tango::EVENT_HEARTBEAT:
-			eve_heartbeat();
-			heartbeat_ctr++;
-			if (heartbeat_ctr % 3 == 0)
-				auto_unsub();
-			break;
+                case Tango::EVENT_HEARTBEAT:
+                    eve_heartbeat();
+                    heartbeat_ctr++;
+                    if (heartbeat_ctr % 3 == 0)
+                        auto_unsub();
+                    break;
 
-		case Tango::STORE_SUBDEV:
-			store_subdev();
-			break;
-		}
-	}
+                case Tango::STORE_SUBDEV:
+                    store_subdev();
+                    break;
+            }
+        }
 
 //
 // For case where the polling thread itself modify the polling period of the object it already polls
 //
 
-	if (auto_upd.empty() == false)
-	{
-        for (size_t loop = 0;loop < auto_upd.size();loop++)
-        {
-            vector<string>::iterator pos = remove(tmp.name.begin(),tmp.name.end(),auto_name[loop]);
-            tmp.name.erase(pos,tmp.name.end());
-        }
+        if (auto_upd.empty() == false) {
+            for (size_t loop = 0; loop < auto_upd.size(); loop++) {
+                vector<string>::iterator pos = remove(tmp.name.begin(), tmp.name.end(), auto_name[loop]);
+                tmp.name.erase(pos, tmp.name.end());
+            }
 
-        if (tmp.name.empty() == false)
-        {
-            compute_new_date(tmp.wake_up_date,tmp.update);
-            insert_in_list(tmp);
-        }
+            if (tmp.name.empty() == false) {
+                compute_new_date(tmp.wake_up_date, tmp.update);
+                insert_in_list(tmp);
+            }
 
-        list<WorkItem>::iterator ite;
-        vector<WorkItem>::iterator et_ite;
+            list<WorkItem>::iterator ite;
+            vector<WorkItem>::iterator et_ite;
 
-        for (size_t loop = 0;loop < auto_upd.size();loop++)
-        {
-            size_t nb_elt = works.size();
-            ite = works.begin();
+            for (size_t loop = 0; loop < auto_upd.size(); loop++) {
+                size_t nb_elt = works.size();
+                ite = works.begin();
 
-            bool found = false;
+                bool found = false;
 
-            for (size_t i = 0;i < nb_elt;i++)
-            {
-                if (ite->dev == tmp.dev &&
-                    ite->type == tmp.type &&
-                    ite->update == auto_upd[loop])
-                {
-                    ite->name.push_back(auto_name[loop]);
-                    found = true;
-                    break;
+                for (size_t i = 0; i < nb_elt; i++) {
+                    if (ite->dev == tmp.dev &&
+                        ite->type == tmp.type &&
+                        ite->update == auto_upd[loop]) {
+                        ite->name.push_back(auto_name[loop]);
+                        found = true;
+                        break;
+                    }
+                    ++ite;
                 }
-                ++ite;
+
+                if (found == false) {
+                    WorkItem new_tmp;
+                    new_tmp.update = auto_upd[loop];
+                    new_tmp.name.push_back(auto_name[loop]);
+                    new_tmp.dev = tmp.dev;
+                    new_tmp.poll_list = tmp.poll_list;
+                    new_tmp.type = tmp.type;
+                    new_tmp.needed_time.tv_sec = 0;
+                    new_tmp.needed_time.tv_usec = 0;
+                    compute_new_date(now, local_cmd.new_upd);
+                    new_tmp.wake_up_date = now;
+                    insert_in_list(new_tmp);
+                }
             }
 
-            if (found == false)
-            {
-                WorkItem new_tmp;
-                new_tmp.update = auto_upd[loop];
-                new_tmp.name.push_back(auto_name[loop]);
-                new_tmp.dev = tmp.dev;
-                new_tmp.poll_list = tmp.poll_list;
-                new_tmp.type = tmp.type;
-                new_tmp.needed_time.tv_sec = 0;
-                new_tmp.needed_time.tv_usec = 0;
-                compute_new_date(now,local_cmd.new_upd);
-                new_tmp.wake_up_date = now;
-                insert_in_list(new_tmp);
-            }
+            auto_upd.clear();
+            auto_name.clear();
         }
-
-		auto_upd.clear();
-		auto_name.clear();
-	}
 
 //
 // Compute new polling date and insert work in list
 //
 
-    else
-    {
-        if (rem_upd.empty() == false)
-        {
-            for (size_t loop = 0;loop < rem_upd.size();loop++)
-            {
-                vector<string>::iterator pos = remove(tmp.name.begin(),tmp.name.end(),rem_name[loop]);
-                tmp.name.erase(pos,tmp.name.end());
-            }
+        else {
+            if (rem_upd.empty() == false) {
+                for (size_t loop = 0; loop < rem_upd.size(); loop++) {
+                    vector<string>::iterator pos = remove(tmp.name.begin(), tmp.name.end(), rem_name[loop]);
+                    tmp.name.erase(pos, tmp.name.end());
+                }
 
-            if (tmp.name.empty() == false)
-            {
-                compute_new_date(tmp.wake_up_date,tmp.update);
+                if (tmp.name.empty() == false) {
+                    compute_new_date(tmp.wake_up_date, tmp.update);
+                    insert_in_list(tmp);
+                }
+
+                rem_upd.clear();
+                rem_name.clear();
+            } else {
+                compute_new_date(tmp.wake_up_date, tmp.update);
                 insert_in_list(tmp);
             }
+        }
 
-            rem_upd.clear();
-            rem_name.clear();
-        }
-        else
-        {
-            compute_new_date(tmp.wake_up_date,tmp.update);
-            insert_in_list(tmp);
-        }
+        tune_ctr--;
     }
-
-	tune_ctr--;
-}
 
 //+---------------------------------------------------------------------------------------------------------------
 //
@@ -917,70 +905,64 @@ void PollThread::one_more_poll()
 //----------------------------------------------------------------------------------------------------------------
 
 
-void PollThread::one_more_trigg()
-{
-	cout5 << "Polling thread has received a trigger" << endl;
+    void PollThread::one_more_trigg() {
+        cout5 << "Polling thread has received a trigger" << endl;
 
 //
 // Check that the object is registered
 //
 
-	dev_to_del = local_cmd.dev;
-	name_to_del = local_cmd.name;
-	type_to_del = local_cmd.type;
+        dev_to_del = local_cmd.dev;
+        name_to_del = local_cmd.name;
+        type_to_del = local_cmd.type;
 
-	vector<WorkItem>::iterator et_ite;
-	for (et_ite = ext_trig_works.begin();et_ite != ext_trig_works.end();++et_ite)
-    {
-        if (et_ite->dev == PollThread::dev_to_del)
-        {
-            if (et_ite->type == PollThread::type_to_del)
-            {
-                if (et_ite->name[0] == PollThread::name_to_del)
-                    break;
+        vector<WorkItem>::iterator et_ite;
+        for (et_ite = ext_trig_works.begin(); et_ite != ext_trig_works.end(); ++et_ite) {
+            if (et_ite->dev == PollThread::dev_to_del) {
+                if (et_ite->type == PollThread::type_to_del) {
+                    if (et_ite->name[0] == PollThread::name_to_del)
+                        break;
+                }
             }
         }
-    }
 
 //
 // Check that the object to poll has been installed. If not, simply returns. This case should never happens because
 // it is tested in the Util::trigger_polling() method before the trigger is effectively sent to this thread.
 //
 
-	if (et_ite == ext_trig_works.end())
-	{
-		cout5 << "Object externally triggered not found !!!" << endl;
-		{
-			omni_mutex_lock sync(p_mon);
-			shared_cmd.trigger = false;
-			p_mon.signal();
-		}
-		return;
-	}
+        if (et_ite == ext_trig_works.end()) {
+            cout5 << "Object externally triggered not found !!!" << endl;
+            {
+                omni_mutex_lock sync(p_mon);
+                shared_cmd.trigger = false;
+                p_mon.signal();
+            }
+            return;
+        }
 
 //
 // Do the job
 //
 
-	WorkItem tmp = *et_ite;
-	if (polling_stop == false)
-	{
-		if (tmp.type == Tango::POLL_CMD)
-			poll_cmd(tmp);
-		else
-			poll_attr(tmp);
-	}
+        WorkItem tmp = *et_ite;
+        if (polling_stop == false) {
+            if (tmp.type == Tango::POLL_CMD)
+                poll_cmd(tmp);
+            else
+                poll_attr(tmp);
+        }
 
 //
 // Inform requesting thread that the work is done
 //
 
-	{
-		omni_mutex_lock sync(p_mon);
-		shared_cmd.trigger = false;
-		p_mon.signal();
-	}
-}
+        {
+            omni_mutex_lock sync(p_mon);
+            shared_cmd.trigger = false;
+            p_mon.signal();
+        }
+    }
 
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -993,49 +975,40 @@ void PollThread::one_more_trigg()
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-void PollThread::print_list()
-{
-	list<WorkItem>::iterator ite;
-	long nb_elt,i;
+    void PollThread::print_list() {
+        list<WorkItem>::iterator ite;
+        long nb_elt, i;
 
-	nb_elt = works.size();
-	ite = works.begin();
-	for (i = 0;i < nb_elt;i++)
-	{
-		if (ite->type != EVENT_HEARTBEAT )
-		{
-			if ( ite->type != STORE_SUBDEV)
-			{
-			    string obj_list;
-				for (size_t ctr = 0;ctr < ite->name.size();ctr++)
-				{
-                    obj_list = obj_list + ite->name[ctr];
-                    if (ctr < (ite->name.size() - 1))
-                        obj_list = obj_list + ", ";
-				}
+        nb_elt = works.size();
+        ite = works.begin();
+        for (i = 0; i < nb_elt; i++) {
+            if (ite->type != EVENT_HEARTBEAT) {
+                if (ite->type != STORE_SUBDEV) {
+                    string obj_list;
+                    for (size_t ctr = 0; ctr < ite->name.size(); ctr++) {
+                        obj_list = obj_list + ite->name[ctr];
+                        if (ctr < (ite->name.size() - 1))
+                            obj_list = obj_list + ", ";
+                    }
 
-				cout5 << "Dev name = " << ite->dev->get_name() << ", obj name = " << obj_list
-                     << ", next wake_up at " << + ite->wake_up_date.tv_sec
-					<< "," << setw(6) << setfill('0')
-					<< ite->wake_up_date.tv_usec << endl;
-			}
-			else
-			{
-				cout5 <<  ite->name[0]
-					<< ", next wake_up at " << + ite->wake_up_date.tv_sec
-					<< "," << setw(6) << setfill('0')
-					<< ite->wake_up_date.tv_usec << endl;
-			}
-		}
-		else
-		{
-			cout5 << "Event heartbeat, next wake_up at " << + ite->wake_up_date.tv_sec
-          		<< "," << setw(6) << setfill('0')
-          		<< ite->wake_up_date.tv_usec << endl;
-		}
-		++ite;
-	}
-}
+                    cout5 << "Dev name = " << ite->dev->get_name() << ", obj name = " << obj_list
+                          << ", next wake_up at " << +ite->wake_up_date.tv_sec
+                          << "," << setw(6) << setfill('0')
+                          << ite->wake_up_date.tv_usec << endl;
+                } else {
+                    cout5 << ite->name[0]
+                          << ", next wake_up at " << +ite->wake_up_date.tv_sec
+                          << "," << setw(6) << setfill('0')
+                          << ite->wake_up_date.tv_usec << endl;
+                }
+            } else {
+                cout5 << "Event heartbeat, next wake_up at " << +ite->wake_up_date.tv_sec
+                      << "," << setw(6) << setfill('0')
+                      << ite->wake_up_date.tv_usec << endl;
+            }
+            ++ite;
+        }
+    }
 
 
 //+----------------------------------------------------------------------------------------------------------------
@@ -1052,32 +1025,26 @@ void PollThread::print_list()
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-void PollThread::insert_in_list(WorkItem &new_work)
-{
-	list<WorkItem>::iterator ite;
-	for (ite = works.begin();ite != works.end();++ite)
-	{
-		if (ite->wake_up_date.tv_sec < new_work.wake_up_date.tv_sec)
-			continue;
-		else if (ite->wake_up_date.tv_sec == new_work.wake_up_date.tv_sec)
-		{
-			if (ite->wake_up_date.tv_usec < new_work.wake_up_date.tv_usec)
-				continue;
-			else
-			{
-				works.insert(ite,new_work);
-				return;
-			}
-		}
-		else
-		{
-			works.insert(ite,new_work);
-			return;
-		}
-	}
-	if (ite == works.end())
-		works.push_back(new_work);
-}
+    void PollThread::insert_in_list(WorkItem &new_work) {
+        list<WorkItem>::iterator ite;
+        for (ite = works.begin(); ite != works.end(); ++ite) {
+            if (ite->wake_up_date.tv_sec < new_work.wake_up_date.tv_sec)
+                continue;
+            else if (ite->wake_up_date.tv_sec == new_work.wake_up_date.tv_sec) {
+                if (ite->wake_up_date.tv_usec < new_work.wake_up_date.tv_usec)
+                    continue;
+                else {
+                    works.insert(ite, new_work);
+                    return;
+                }
+            } else {
+                works.insert(ite, new_work);
+                return;
+            }
+        }
+        if (ite == works.end())
+            works.push_back(new_work);
+    }
 
 //+----------------------------------------------------------------------------------------------------------------
 //
@@ -1095,32 +1062,29 @@ void PollThread::insert_in_list(WorkItem &new_work)
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-void PollThread::add_insert_in_list(WorkItem &new_work)
-{
-    if (new_work.type == POLL_ATTR && new_work.dev->get_dev_idl_version() >= 4 && polling_bef_9 == false)
-    {
-        list<WorkItem>::iterator ite;
+    void PollThread::add_insert_in_list(WorkItem &new_work) {
+        if (new_work.type == POLL_ATTR && new_work.dev->get_dev_idl_version() >= 4 && polling_bef_9 == false) {
+            list<WorkItem>::iterator ite;
 #ifdef HAS_LAMBDA_FUNC
-        ite = find_if(works.begin(),works.end(),
-                [&] (const WorkItem &wi) {return wi.dev == new_work.dev && wi.update == new_work.update && wi.type == new_work.type;});
+            ite = find_if(works.begin(), works.end(),
+                          [&](const WorkItem &wi) {
+                              return wi.dev == new_work.dev && wi.update == new_work.update && wi.type == new_work.type;
+                          });
 #else
-        for (ite = works.begin();ite != works.end();++ite)
-        {
-            if (ite->dev == new_work.dev && ite->update == new_work.update && ite->type == new_work.type)
-                break;
-        }
+            for (ite = works.begin();ite != works.end();++ite)
+            {
+                if (ite->dev == new_work.dev && ite->update == new_work.update && ite->type == new_work.type)
+                    break;
+            }
 #endif
 
-        if (ite != works.end())
-        {
-            ite->name.push_back(new_work.name[0]);
-        }
-        else
+            if (ite != works.end()) {
+                ite->name.push_back(new_work.name[0]);
+            } else
+                insert_in_list(new_work);
+        } else
             insert_in_list(new_work);
     }
-    else
-        insert_in_list(new_work);
-}
 
 //+----------------------------------------------------------------------------------------------------------------
 //
@@ -1138,60 +1102,53 @@ void PollThread::add_insert_in_list(WorkItem &new_work)
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void PollThread::tune_list(bool from_needed, long min_delta)
-{
-	list<WorkItem>::iterator ite,ite_next,ite_prev;
+    void PollThread::tune_list(bool from_needed, long min_delta) {
+        list<WorkItem>::iterator ite, ite_next, ite_prev;
 
-	unsigned long nb_works = works.size();
-	cout4 << "Entering tuning list. The list has " << nb_works << " item(s)" << endl;
+        unsigned long nb_works = works.size();
+        cout4 << "Entering tuning list. The list has " << nb_works << " item(s)" << endl;
 
 //
 // Nothing to do if only one let in list
 //
 
-	if (nb_works < 2)
-		return;
+        if (nb_works < 2)
+            return;
 
 //
 // If we try to tune the list with respect to works needed time, compute works needed time sum and find minimun update
 // period
 //
 
-	if (from_needed == true)
-	{
-        unsigned long needed_sum = 0;
-        unsigned long min_upd = 0;
-        long max_delta_needed;
+        if (from_needed == true) {
+            unsigned long needed_sum = 0;
+            unsigned long min_upd = 0;
+            long max_delta_needed;
 
-		for (ite = works.begin();ite != works.end();++ite)
-		{
-			long needed_time_usec = (ite->needed_time.tv_sec * 1000000) + ite->needed_time.tv_usec;
-			needed_sum = needed_sum + (unsigned long)needed_time_usec;
+            for (ite = works.begin(); ite != works.end(); ++ite) {
+                long needed_time_usec = (ite->needed_time.tv_sec * 1000000) + ite->needed_time.tv_usec;
+                needed_sum = needed_sum + (unsigned long) needed_time_usec;
 
-			unsigned long update_usec = (unsigned long)ite->update * 1000;
+                unsigned long update_usec = (unsigned long) ite->update * 1000;
 
-			if (ite == works.begin())
-			{
-				min_upd = update_usec;
-			}
-			else
-			{
-				if (min_upd > update_usec)
-					min_upd = update_usec;
-			}
-		}
+                if (ite == works.begin()) {
+                    min_upd = update_usec;
+                } else {
+                    if (min_upd > update_usec)
+                        min_upd = update_usec;
+                }
+            }
 
 //
 // In some cases, it is impossible to tune
 //
 
-		if (needed_sum > min_upd)
-			return;
-		else
-		{
-			long sleeping = min_upd - needed_sum;
-			max_delta_needed = sleeping / (nb_works);
-		}
+            if (needed_sum > min_upd)
+                return;
+            else {
+                long sleeping = min_upd - needed_sum;
+                max_delta_needed = sleeping / (nb_works);
+            }
 
 //
 // Now build a new tuned list
@@ -1208,73 +1165,70 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 //		 the delta computed from the smallest upd and the obj number
 //
 
-		Tango::DevULong64 now_us = ((Tango::DevULong64)now.tv_sec * 1000000LL) + (Tango::DevULong64)now.tv_usec;
-		Tango::DevULong64 next_tuning = now_us + (POLL_LOOP_NB * (Tango::DevULong64)min_upd);
+            Tango::DevULong64 now_us = ((Tango::DevULong64) now.tv_sec * 1000000LL) + (Tango::DevULong64) now.tv_usec;
+            Tango::DevULong64 next_tuning = now_us + (POLL_LOOP_NB * (Tango::DevULong64) min_upd);
 
-		list<WorkItem> new_works;
-		new_works.push_front(works.front());
+            list<WorkItem> new_works;
+            new_works.push_front(works.front());
 
-		ite = works.begin();
-		ite_prev = new_works.begin();
+            ite = works.begin();
+            ite_prev = new_works.begin();
 
-		for (++ite;ite != works.end();++ite,++ite_prev)
-		{
-			Tango::DevULong64 needed_time_usec = ((Tango::DevULong64)ite_prev->needed_time.tv_sec * 1000000) + (Tango::DevULong64)ite_prev->needed_time.tv_usec;
-			WorkItem wo = *ite;
-			Tango::DevULong64 next_work = ((Tango::DevULong64)wo.wake_up_date.tv_sec * 1000000LL) + (Tango::DevULong64)wo.wake_up_date.tv_usec;
+            for (++ite; ite != works.end(); ++ite, ++ite_prev) {
+                Tango::DevULong64 needed_time_usec = ((Tango::DevULong64) ite_prev->needed_time.tv_sec * 1000000) +
+                                                     (Tango::DevULong64) ite_prev->needed_time.tv_usec;
+                WorkItem wo = *ite;
+                Tango::DevULong64 next_work = ((Tango::DevULong64) wo.wake_up_date.tv_sec * 1000000LL) +
+                                              (Tango::DevULong64) wo.wake_up_date.tv_usec;
 
-			Tango::DevULong64 next_prev;
-			if (next_work < next_tuning)
-			{
-				Tango::DevULong64 prev_obj_work = ((Tango::DevULong64)ite_prev->wake_up_date.tv_sec * 1000000LL) + (Tango::DevULong64)ite_prev->wake_up_date.tv_usec;
-				if (next_work > prev_obj_work)
-				{
-					Tango::DevULong64 n = (next_work - prev_obj_work) / ((Tango::DevULong64)ite_prev->update * 1000LL);
-					next_prev = prev_obj_work + (n * (ite_prev->update * 1000LL));
-				}
-				else
-					next_prev = prev_obj_work;
+                Tango::DevULong64 next_prev;
+                if (next_work < next_tuning) {
+                    Tango::DevULong64 prev_obj_work = ((Tango::DevULong64) ite_prev->wake_up_date.tv_sec * 1000000LL) +
+                                                      (Tango::DevULong64) ite_prev->wake_up_date.tv_usec;
+                    if (next_work > prev_obj_work) {
+                        Tango::DevULong64 n =
+                                (next_work - prev_obj_work) / ((Tango::DevULong64) ite_prev->update * 1000LL);
+                        next_prev = prev_obj_work + (n * (ite_prev->update * 1000LL));
+                    } else
+                        next_prev = prev_obj_work;
 
-				wo.wake_up_date.tv_sec = (long)(next_prev / 1000000LL);
-				wo.wake_up_date.tv_usec = (long)(next_prev % 1000000LL);
+                    wo.wake_up_date.tv_sec = (long) (next_prev / 1000000LL);
+                    wo.wake_up_date.tv_usec = (long) (next_prev % 1000000LL);
 
-				T_ADD(wo.wake_up_date,needed_time_usec + max_delta_needed);
-			}
-			new_works.push_back(wo);
-		}
+                    T_ADD(wo.wake_up_date, needed_time_usec + max_delta_needed);
+                }
+                new_works.push_back(wo);
+            }
 
 //
 // Replace work list
 //
 
-		works = new_works;
-	}
-	else
-	{
-		ite_next = works.begin();
-		ite = ite_next;
-		++ite_next;
+            works = new_works;
+        } else {
+            ite_next = works.begin();
+            ite = ite_next;
+            ++ite_next;
 
-		for (unsigned int i = 1;i < nb_works;i++)
-		{
-			long diff;
-			T_DIFF(ite->wake_up_date,ite_next->wake_up_date,diff);
+            for (unsigned int i = 1; i < nb_works; i++) {
+                long diff;
+                T_DIFF(ite->wake_up_date, ite_next->wake_up_date, diff);
 
 //
 // If delta time between works is less than min, shift following work
 //
 
-			if (diff < min_delta)
-				T_ADD(ite_next->wake_up_date,min_delta - diff);
+                if (diff < min_delta)
+                T_ADD(ite_next->wake_up_date, min_delta - diff);
 
-			++ite;
-			++ite_next;
-		}
-	}
+                ++ite;
+                ++ite_next;
+            }
+        }
 
-	cout4 << "Tuning list done" << endl;
-	print_list();
-}
+        cout4 << "Tuning list done" << endl;
+        print_list();
+    }
 
 //+----------------------------------------------------------------------------------------------------------------
 //
@@ -1291,25 +1245,23 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void PollThread::compute_new_date(struct timeval &time,int upd)
-{
-	double ori_d = (double)time.tv_sec + ((double)time.tv_usec / 1000000);
-	double new_d = ori_d + ((double)(upd) / 1000);
-	time.tv_sec = (long)new_d;
-	time.tv_usec = (long)((new_d - time.tv_sec) * 1000000);
-}
+    void PollThread::compute_new_date(struct timeval &time, int upd) {
+        double ori_d = (double) time.tv_sec + ((double) time.tv_usec / 1000000);
+        double new_d = ori_d + ((double) (upd) / 1000);
+        time.tv_sec = (long) new_d;
+        time.tv_usec = (long) ((new_d - time.tv_sec) * 1000000);
+    }
 
-void PollThread::time_diff(struct timeval &before,
-			   struct timeval &after_t,
-			   struct timeval &result)
-{
-	double bef_d = (double)before.tv_sec + ((double)before.tv_usec / 1000000);
-	double aft_d = (double)after_t.tv_sec + ((double)after_t.tv_usec / 1000000);
-	double diff_d = aft_d - bef_d;
+    void PollThread::time_diff(struct timeval &before,
+                               struct timeval &after_t,
+                               struct timeval &result) {
+        double bef_d = (double) before.tv_sec + ((double) before.tv_usec / 1000000);
+        double aft_d = (double) after_t.tv_sec + ((double) after_t.tv_usec / 1000000);
+        double diff_d = aft_d - bef_d;
 
-	result.tv_sec = (long)diff_d;
-	result.tv_usec = (long)((diff_d - result.tv_sec) * 1000000);
-}
+        result.tv_sec = (long) diff_d;
+        result.tv_usec = (long) ((diff_d - result.tv_sec) * 1000000);
+    }
 
 
 //+----------------------------------------------------------------------------------------------------------------
@@ -1323,34 +1275,30 @@ void PollThread::time_diff(struct timeval &before,
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void PollThread::compute_sleep_time()
-{
-	print_list();
+    void PollThread::compute_sleep_time() {
+        print_list();
 
-	if (works.empty() == false)
-	{
-		double next,after_d,diff;
-		after_d = (double)after.tv_sec + ((double)after.tv_usec / 1000000);
+        if (works.empty() == false) {
+            double next, after_d, diff;
+            after_d = (double) after.tv_sec + ((double) after.tv_usec / 1000000);
 
-        bool discard = false;
-        u_int nb_late = 0;
+            bool discard = false;
+            u_int nb_late = 0;
 
-        if (polling_bef_9 == false)
-        {
+            if (polling_bef_9 == false) {
 
 //
 // Compute for how many items the polling thread is late
 //
 
-            list<WorkItem>::iterator ite;
+                list<WorkItem>::iterator ite;
 
-            for (ite = works.begin();ite != works.end();++ite)
-            {
-                next = (double)ite->wake_up_date.tv_sec + ((double)ite->wake_up_date.tv_usec / 1000000);
-                diff = next - after_d;
-                if (diff < 0 && fabs(diff) > DISCARD_THRESHOLD)
-                    nb_late++;
-            }
+                for (ite = works.begin(); ite != works.end(); ++ite) {
+                    next = (double) ite->wake_up_date.tv_sec + ((double) ite->wake_up_date.tv_usec / 1000000);
+                    diff = next - after_d;
+                    if (diff < 0 && fabs(diff) > DISCARD_THRESHOLD)
+                        nb_late++;
+                }
 
 //
 // If we are late for some item(s):
@@ -1359,84 +1307,71 @@ void PollThread::compute_sleep_time()
 //  - Late again: If the number of late items increase --> Discard items
 //
 
-            if (nb_late != 0)
-            {
-                if (nb_late == works.size())
-                {
-                    cout5 << "Setting discard to true because nb_late == works.size() --> " << nb_late << endl;
-                    discard = true;
-                }
-                else
-                {
-                    if (previous_nb_late != 0)
-                    {
-                        if (nb_late < previous_nb_late)
-                        {
+                if (nb_late != 0) {
+                    if (nb_late == works.size()) {
+                        cout5 << "Setting discard to true because nb_late == works.size() --> " << nb_late << endl;
+                        discard = true;
+                    } else {
+                        if (previous_nb_late != 0) {
+                            if (nb_late < previous_nb_late) {
+                                previous_nb_late = nb_late;
+                                cout5 << "Late but trying to catch up" << endl;
+                            } else {
+                                previous_nb_late = 0;
+                                discard = true;
+                            }
+                        } else
                             previous_nb_late = nb_late;
-                            cout5 << "Late but trying to catch up"  << endl;
-                        }
-                        else
-                        {
-                            previous_nb_late = 0;
-                            discard = true;
-                        }
+                        sleep = -1;
                     }
-                    else
-                        previous_nb_late = nb_late;
-                    sleep = -1;
                 }
-            }
-        }
-        else
-            discard = true;
+            } else
+                discard = true;
 
 //
 // Analyse work list
 //
 
 //        cout5 << "discard = " << boolalpha << discard << endl;
-        if (nb_late == 0 || discard == true)
-        {
-            previous_nb_late = 0;
+            if (nb_late == 0 || discard == true) {
+                previous_nb_late = 0;
 
-            next = (double)works.front().wake_up_date.tv_sec + ((double)works.front().wake_up_date.tv_usec / 1000000);
-            diff = next - after_d;
+                next = (double) works.front().wake_up_date.tv_sec +
+                       ((double) works.front().wake_up_date.tv_usec / 1000000);
+                diff = next - after_d;
 
-            if (diff < 0)
-            {
-                if (fabs(diff) < DISCARD_THRESHOLD)
-                    sleep = -1;
-                else
-                {
-                    while((diff < 0) && (fabs(diff) > DISCARD_THRESHOLD))
-                    {
-                        cout5 << "Discard one elt !!!!!!!!!!!!!" << endl;
-                        WorkItem tmp = works.front();
-                        if (tmp.type == POLL_ATTR)
-                            err_out_of_sync(tmp);
-
-                        compute_new_date(tmp.wake_up_date,tmp.update);
-                        insert_in_list(tmp);
-                        works.pop_front();
-                        tune_ctr--;
-
-                        next = (double)works.front().wake_up_date.tv_sec + ((double)works.front().wake_up_date.tv_usec / 1000000);
-                        diff = next - after_d;
-                    }
-
+                if (diff < 0) {
                     if (fabs(diff) < DISCARD_THRESHOLD)
                         sleep = -1;
-                    else
-                        sleep = (long)(diff * 1000);
-                }
-            }
-            else
-                sleep = (long)(diff * 1000);
-        }
+                    else {
+                        while ((diff < 0) && (fabs(diff) > DISCARD_THRESHOLD)) {
+                            cout5 << "Discard one elt !!!!!!!!!!!!!" << endl;
+                            WorkItem tmp = works.front();
+                            if (tmp.type == POLL_ATTR)
+                                err_out_of_sync(tmp);
 
-		cout5 << "Sleep for : " << sleep << endl;
-	}
-}
+                            compute_new_date(tmp.wake_up_date, tmp.update);
+                            insert_in_list(tmp);
+                            works.pop_front();
+                            tune_ctr--;
+
+                            next = (double) works.front().wake_up_date.tv_sec +
+                                   ((double) works.front().wake_up_date.tv_usec / 1000000);
+                            diff = next - after_d;
+                        }
+
+                        if (fabs(diff) < DISCARD_THRESHOLD)
+                            sleep = -1;
+                        else
+                            sleep = (long) (diff * 1000);
+                    }
+                } else
+                    sleep = (long) (diff * 1000);
+            }
+
+            cout5 << "Sleep for : " << sleep << endl;
+        }
+    }
 
 
 //+---------------------------------------------------------------------------------------------------------------
@@ -1453,79 +1388,79 @@ void PollThread::compute_sleep_time()
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void PollThread::err_out_of_sync(WorkItem &to_do)
-{
-	EventSupplier *event_supplier_nd = NULL;
-	EventSupplier *event_supplier_zmq = NULL;
+    void PollThread::err_out_of_sync(WorkItem &to_do) {
+        EventSupplier *event_supplier_nd = NULL;
+        EventSupplier *event_supplier_zmq = NULL;
 
 //
 // Retrieve the event supplier(s) for this attribute
 //
 
-    size_t nb_obj = to_do.name.size();
-    for (size_t ctr = 0;ctr < nb_obj;ctr++)
-    {
-        Attribute &att = to_do.dev->get_device_attr()->get_attr_by_name(to_do.name[ctr].c_str());
+        size_t nb_obj = to_do.name.size();
+        for (size_t ctr = 0; ctr < nb_obj; ctr++) {
+            Attribute &att = to_do.dev->get_device_attr()->get_attr_by_name(to_do.name[ctr].c_str());
 
-        if (att.use_notifd_event() == true && event_supplier_nd == NULL)
-            event_supplier_nd = Util::instance()->get_notifd_event_supplier();
-        if (att.use_zmq_event() == true && event_supplier_zmq == NULL)
-            event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
+            if (att.use_notifd_event() == true && event_supplier_nd == NULL)
+                event_supplier_nd = Util::instance()->get_notifd_event_supplier();
+            if (att.use_zmq_event() == true && event_supplier_zmq == NULL)
+                event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
 
-        if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
-        {
-            Tango::DevErrorList errs;
-            errs.length(1);
+            if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL)) {
+                Tango::DevErrorList errs;
+                errs.length(1);
 
-            errs[0].severity = Tango::ERR;
-            errs[0].reason = Tango::string_dup("API_PollThreadOutOfSync");
-            errs[0].origin = Tango::string_dup("PollThread::err_out_of_sync");
-            errs[0].desc = Tango::string_dup("The polling thread is late and discard this object polling.\nAdvice: Tune device server polling");
+                errs[0].severity = Tango::ERR;
+                errs[0].reason = Tango::string_dup("API_PollThreadOutOfSync");
+                errs[0].origin = Tango::string_dup("PollThread::err_out_of_sync");
+                errs[0].desc = Tango::string_dup(
+                        "The polling thread is late and discard this object polling.\nAdvice: Tune device server polling");
 
-            Tango::DevFailed except(errs);
-            long idl_vers = to_do.dev->get_dev_idl_version();
+                Tango::DevFailed except(errs);
+                long idl_vers = to_do.dev->get_dev_idl_version();
 
-            struct EventSupplier::SuppliedEventData ad;
-            ::memset(&ad,0,sizeof(ad));
+                struct EventSupplier::SuppliedEventData ad;
+                ::memset(&ad, 0, sizeof(ad));
 
-            if (idl_vers > 4)
-                ad.attr_val_5 = &dummy_att5;
-            else if (idl_vers == 4)
-                ad.attr_val_4 = &dummy_att4;
-            else if (idl_vers == 3)
-                ad.attr_val_3 = &dummy_att3;
-            else
-                ad.attr_val = &dummy_att;
+                if (idl_vers > 4)
+                    ad.attr_val_5 = &dummy_att5;
+                else if (idl_vers == 4)
+                    ad.attr_val_4 = &dummy_att4;
+                else if (idl_vers == 3)
+                    ad.attr_val_3 = &dummy_att3;
+                else
+                    ad.attr_val = &dummy_att;
 
 //
 // Fire event
 //
 
-            SendEventType send_event;
-            if (event_supplier_nd != NULL)
-                send_event = event_supplier_nd->detect_and_push_events(to_do.dev,ad,&except,to_do.name[ctr],(struct timeval *)NULL);
-            if (event_supplier_zmq != NULL)
-            {
+                SendEventType send_event;
                 if (event_supplier_nd != NULL)
-                {
-                    vector<string> f_names;
-                    vector<double> f_data;
-                    vector<string> f_names_lg;
-                    vector<long> f_data_lg;
+                    send_event = event_supplier_nd->detect_and_push_events(to_do.dev, ad, &except, to_do.name[ctr],
+                                                                           (struct timeval *) NULL);
+                if (event_supplier_zmq != NULL) {
+                    if (event_supplier_nd != NULL) {
+                        vector<string> f_names;
+                        vector<double> f_data;
+                        vector<string> f_names_lg;
+                        vector<long> f_data_lg;
 
-                    if (send_event.change == true)
-                        event_supplier_zmq->push_event_loop(to_do.dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,&except);
-                    if (send_event.archive == true)
-                        event_supplier_zmq->push_event_loop(to_do.dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,&except);
-                    if (send_event.periodic == true)
-                        event_supplier_zmq->push_event_loop(to_do.dev,PERIODIC_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,&except);
+                        if (send_event.change == true)
+                            event_supplier_zmq->push_event_loop(to_do.dev, CHANGE_EVENT, f_names, f_data, f_names_lg,
+                                                                f_data_lg, ad, att, &except);
+                        if (send_event.archive == true)
+                            event_supplier_zmq->push_event_loop(to_do.dev, ARCHIVE_EVENT, f_names, f_data, f_names_lg,
+                                                                f_data_lg, ad, att, &except);
+                        if (send_event.periodic == true)
+                            event_supplier_zmq->push_event_loop(to_do.dev, PERIODIC_EVENT, f_names, f_data, f_names_lg,
+                                                                f_data_lg, ad, att, &except);
+                    } else
+                        event_supplier_zmq->detect_and_push_events(to_do.dev, ad, &except, to_do.name[ctr],
+                                                                   (struct timeval *) NULL);
                 }
-                else
-                    event_supplier_zmq->detect_and_push_events(to_do.dev,ad,&except,to_do.name[ctr],(struct timeval *)NULL);
             }
         }
-	}
-}
+    }
 
 
 //+----------------------------------------------------------------------------------------------------------------
@@ -1542,123 +1477,118 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void PollThread::poll_cmd(WorkItem &to_do)
-{
-	cout5 << "----------> Time = " << now.tv_sec << ","
-        << setw(6) << setfill('0') << now.tv_usec
-        << " Dev name = " << to_do.dev->get_name()
-        << ", Cmd name = " << to_do.name[0] << endl;
+    void PollThread::poll_cmd(WorkItem &to_do) {
+        cout5 << "----------> Time = " << now.tv_sec << ","
+              << setw(6) << setfill('0') << now.tv_usec
+              << " Dev name = " << to_do.dev->get_name()
+              << ", Cmd name = " << to_do.name[0] << endl;
 
-	CORBA::Any *argout = NULL;
-	Tango::DevFailed *save_except = NULL;
-	struct timeval before_cmd,after_cmd,needed_time;
+        CORBA::Any *argout = NULL;
+        Tango::DevFailed *save_except = NULL;
+        struct timeval before_cmd, after_cmd, needed_time;
 #ifdef _TG_WINDOWS_
-	struct _timeb before_win,after_win;
-	LARGE_INTEGER before,after;
+        struct _timeb before_win,after_win;
+        LARGE_INTEGER before,after;
 #endif
 
-	vector<PollObj *>::iterator ite;
-	bool cmd_failed = false;
-	try
-	{
+        vector<PollObj *>::iterator ite;
+        bool cmd_failed = false;
+        try {
 #ifdef _TG_WINDOWS_
-		if (ctr_frequency != 0)
-			QueryPerformanceCounter(&before);
-		_ftime(&before_win);
-		before_cmd.tv_sec = (unsigned long)before_win.time;
-		before_cmd.tv_usec = (long)before_win.millitm * 1000;
+            if (ctr_frequency != 0)
+                QueryPerformanceCounter(&before);
+            _ftime(&before_win);
+            before_cmd.tv_sec = (unsigned long)before_win.time;
+            before_cmd.tv_usec = (long)before_win.millitm * 1000;
 #else
-		gettimeofday(&before_cmd,NULL);
+            gettimeofday(&before_cmd, NULL);
 #endif
-		before_cmd.tv_sec = before_cmd.tv_sec - DELTA_T;
+            before_cmd.tv_sec = before_cmd.tv_sec - DELTA_T;
 
 //
 // Execute the command
 //
 
-		argout = to_do.dev->command_inout(to_do.name[0].c_str(),in_any);
+            argout = to_do.dev->command_inout(to_do.name[0].c_str(), in_any);
 
 #ifdef _TG_WINDOWS_
-		if (ctr_frequency != 0)
-		{
-			QueryPerformanceCounter(&after);
+            if (ctr_frequency != 0)
+            {
+                QueryPerformanceCounter(&after);
 
-			needed_time.tv_sec = 0;
-			needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-			to_do.needed_time = needed_time;
-		}
-		else
-		{
-			_ftime(&after_win);
-			after_cmd.tv_sec = (unsigned long)after_win.time;
-			after_cmd.tv_usec = (long)after_win.millitm * 1000;
+                needed_time.tv_sec = 0;
+                needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
+                to_do.needed_time = needed_time;
+            }
+            else
+            {
+                _ftime(&after_win);
+                after_cmd.tv_sec = (unsigned long)after_win.time;
+                after_cmd.tv_usec = (long)after_win.millitm * 1000;
 
-			after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-			time_diff(before_cmd,after_cmd,needed_time);
-			to_do.needed_time = needed_time;
-		}
+                after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
+                time_diff(before_cmd,after_cmd,needed_time);
+                to_do.needed_time = needed_time;
+            }
 #else
-		gettimeofday(&after_cmd,NULL);
-		after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-		time_diff(before_cmd,after_cmd,needed_time);
-		to_do.needed_time = needed_time;
+            gettimeofday(&after_cmd, NULL);
+            after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
+            time_diff(before_cmd, after_cmd, needed_time);
+            to_do.needed_time = needed_time;
 #endif
-	}
-	catch (Tango::DevFailed &e)
-	{
-		cmd_failed = true;
+        }
+        catch (Tango::DevFailed &e) {
+            cmd_failed = true;
 #ifdef _TG_WINDOWS_
-		if (ctr_frequency != 0)
-		{
-			QueryPerformanceCounter(&after);
+            if (ctr_frequency != 0)
+            {
+                QueryPerformanceCounter(&after);
 
-			needed_time.tv_sec = 0;
-			needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-			to_do.needed_time = needed_time;
-		}
-		else
-		{
-			_ftime(&after_win);
-			after_cmd.tv_sec = (unsigned long)after_win.time;
-			after_cmd.tv_usec = (long)after_win.millitm * 1000;
+                needed_time.tv_sec = 0;
+                needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
+                to_do.needed_time = needed_time;
+            }
+            else
+            {
+                _ftime(&after_win);
+                after_cmd.tv_sec = (unsigned long)after_win.time;
+                after_cmd.tv_usec = (long)after_win.millitm * 1000;
 
-			after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-			time_diff(before_cmd,after_cmd,needed_time);
-			to_do.needed_time = needed_time;
-		}
+                after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
+                time_diff(before_cmd,after_cmd,needed_time);
+                to_do.needed_time = needed_time;
+            }
 #else
-		gettimeofday(&after_cmd,NULL);
-		after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-		time_diff(before_cmd,after_cmd,needed_time);
-		to_do.needed_time = needed_time;
+            gettimeofday(&after_cmd, NULL);
+            after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
+            time_diff(before_cmd, after_cmd, needed_time);
+            to_do.needed_time = needed_time;
 #endif
-		save_except = new Tango::DevFailed(e);
-	}
+            save_except = new Tango::DevFailed(e);
+        }
 
 //
 // Insert result in polling buffer and simply forget this command if it is not possible to insert the result in
 // polling buffer
 //
 
-	try
-	{
-		to_do.dev->get_poll_monitor().get_monitor();
-		ite = to_do.dev->get_polled_obj_by_type_name(to_do.type,to_do.name[0]);
-		if (cmd_failed == false)
-			(*ite)->insert_data(argout,before_cmd,needed_time);
-		else
-			(*ite)->insert_except(save_except,before_cmd,needed_time);
-		to_do.dev->get_poll_monitor().rel_monitor();
-	}
-	catch (Tango::DevFailed &)
-	{
-		if (cmd_failed == false)
-			delete argout;
-		else
-			delete save_except;
-		to_do.dev->get_poll_monitor().rel_monitor();
-	}
-}
+        try {
+            to_do.dev->get_poll_monitor().get_monitor();
+            ite = to_do.dev->get_polled_obj_by_type_name(to_do.type, to_do.name[0]);
+            if (cmd_failed == false)
+                (*ite)->insert_data(argout, before_cmd, needed_time);
+            else
+                (*ite)->insert_except(save_except, before_cmd, needed_time);
+            to_do.dev->get_poll_monitor().rel_monitor();
+        }
+        catch (Tango::DevFailed &) {
+            if (cmd_failed == false)
+                delete argout;
+            else
+                delete save_except;
+            to_do.dev->get_poll_monitor().rel_monitor();
+        }
+    }
 
 //+---------------------------------------------------------------------------------------------------------------
 //
@@ -1674,188 +1604,167 @@ void PollThread::poll_cmd(WorkItem &to_do)
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void PollThread::poll_attr(WorkItem &to_do)
-{
-    size_t nb_obj = to_do.name.size();
-    string att_list;
-    for (size_t ctr = 0;ctr < nb_obj;ctr++)
-    {
-        att_list =  att_list + to_do.name[ctr];
-        if (ctr < (nb_obj - 1))
-            att_list = att_list + ", ";
-    }
+    void PollThread::poll_attr(WorkItem &to_do) {
+        size_t nb_obj = to_do.name.size();
+        string att_list;
+        for (size_t ctr = 0; ctr < nb_obj; ctr++) {
+            att_list = att_list + to_do.name[ctr];
+            if (ctr < (nb_obj - 1))
+                att_list = att_list + ", ";
+        }
 
-	cout5 << "----------> Time = " << now.tv_sec << ","
-	      << setw(6) << setfill('0') << now.tv_usec
-	      << " Dev name = " << to_do.dev->get_name()
-        << ", Attr name = " << att_list << endl;
+        cout5 << "----------> Time = " << now.tv_sec << ","
+              << setw(6) << setfill('0') << now.tv_usec
+              << " Dev name = " << to_do.dev->get_name()
+              << ", Attr name = " << att_list << endl;
 
-	struct timeval before_cmd,after_cmd,needed_time;
+        struct timeval before_cmd, after_cmd, needed_time;
 #ifdef _TG_WINDOWS_
-	struct _timeb before_win,after_win;
-	LARGE_INTEGER before,after;
+        struct _timeb before_win,after_win;
+        LARGE_INTEGER before,after;
 #endif
-	Tango::AttributeValueList *argout = NULL;
-	Tango::AttributeValueList_3 *argout_3 = NULL;
-	Tango::AttributeValueList_4 *argout_4 = NULL;
-	Tango::AttributeValueList_5 *argout_5 = NULL;
-	Tango::DevFailed *save_except = NULL;
-	bool attr_failed = false;
-	vector<PollObj *>::iterator ite;
-	map<size_t,Tango::DevFailed *> map_except;
+        Tango::AttributeValueList *argout = NULL;
+        Tango::AttributeValueList_3 *argout_3 = NULL;
+        Tango::AttributeValueList_4 *argout_4 = NULL;
+        Tango::AttributeValueList_5 *argout_5 = NULL;
+        Tango::DevFailed *save_except = NULL;
+        bool attr_failed = false;
+        vector<PollObj *>::iterator ite;
+        map<size_t, Tango::DevFailed *> map_except;
 
-	long idl_vers = to_do.dev->get_dev_idl_version();
-	try
-	{
+        long idl_vers = to_do.dev->get_dev_idl_version();
+        try {
 #ifdef _TG_WINDOWS_
-		if (ctr_frequency != 0)
-			QueryPerformanceCounter(&before);
-		_ftime(&before_win);
-		before_cmd.tv_sec = (unsigned long)before_win.time;
-		before_cmd.tv_usec = (long)before_win.millitm * 1000;
+            if (ctr_frequency != 0)
+                QueryPerformanceCounter(&before);
+            _ftime(&before_win);
+            before_cmd.tv_sec = (unsigned long)before_win.time;
+            before_cmd.tv_usec = (long)before_win.millitm * 1000;
 #else
-		gettimeofday(&before_cmd,NULL);
+            gettimeofday(&before_cmd, NULL);
 #endif
-		before_cmd.tv_sec = before_cmd.tv_sec - DELTA_T;
+            before_cmd.tv_sec = before_cmd.tv_sec - DELTA_T;
 
 //
 // Read the attributes
 //
 
-        attr_names.length(nb_obj);
-        for (size_t ctr = 0;ctr < nb_obj;ctr++)
-            attr_names[ctr] = to_do.name[ctr].c_str();
+            attr_names.length(nb_obj);
+            for (size_t ctr = 0; ctr < nb_obj; ctr++)
+                attr_names[ctr] = to_do.name[ctr].c_str();
 
-		if (idl_vers >= 5)
-			argout_5 = (static_cast<Device_5Impl *>(to_do.dev))->read_attributes_5(attr_names,Tango::DEV,dummy_cl_id);
-		else if (idl_vers == 4)
-			argout_4 = (static_cast<Device_4Impl *>(to_do.dev))->read_attributes_4(attr_names,Tango::DEV,dummy_cl_id);
-		else if (idl_vers == 3)
-			argout_3 = (static_cast<Device_3Impl *>(to_do.dev))->read_attributes_3(attr_names,Tango::DEV);
-		else
-			argout = to_do.dev->read_attributes(attr_names);
+            if (idl_vers >= 5)
+                argout_5 = (static_cast<Device_5Impl *>(to_do.dev))->read_attributes_5(attr_names, Tango::DEV,
+                                                                                       dummy_cl_id);
+            else if (idl_vers == 4)
+                argout_4 = (static_cast<Device_4Impl *>(to_do.dev))->read_attributes_4(attr_names, Tango::DEV,
+                                                                                       dummy_cl_id);
+            else if (idl_vers == 3)
+                argout_3 = (static_cast<Device_3Impl *>(to_do.dev))->read_attributes_3(attr_names, Tango::DEV);
+            else
+                argout = to_do.dev->read_attributes(attr_names);
 
 #ifdef _TG_WINDOWS_
-		if (ctr_frequency != 0)
-		{
-			QueryPerformanceCounter(&after);
+            if (ctr_frequency != 0)
+            {
+                QueryPerformanceCounter(&after);
 
-			needed_time.tv_sec = 0;
-			needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-			to_do.needed_time = needed_time;
-		}
-		else
-		{
-			_ftime(&after_win);
-			after_cmd.tv_sec = (unsigned long)after_win.time;
-			after_cmd.tv_usec = (long)after_win.millitm  * 1000;
+                needed_time.tv_sec = 0;
+                needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
+                to_do.needed_time = needed_time;
+            }
+            else
+            {
+                _ftime(&after_win);
+                after_cmd.tv_sec = (unsigned long)after_win.time;
+                after_cmd.tv_usec = (long)after_win.millitm  * 1000;
 
-			after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-			time_diff(before_cmd,after_cmd,needed_time);
-			to_do.needed_time = needed_time;
-		}
+                after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
+                time_diff(before_cmd,after_cmd,needed_time);
+                to_do.needed_time = needed_time;
+            }
 #else
-		gettimeofday(&after_cmd,NULL);
-		after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-		time_diff(before_cmd,after_cmd,needed_time);
-		to_do.needed_time = needed_time;
+            gettimeofday(&after_cmd, NULL);
+            after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
+            time_diff(before_cmd, after_cmd, needed_time);
+            to_do.needed_time = needed_time;
 #endif
-	}
-	catch (Tango::DevFailed &e)
-	{
-		attr_failed = true;
+        }
+        catch (Tango::DevFailed &e) {
+            attr_failed = true;
 #ifdef _TG_WINDOWS_
-		if (ctr_frequency != 0)
-		{
-			QueryPerformanceCounter(&after);
+            if (ctr_frequency != 0)
+            {
+                QueryPerformanceCounter(&after);
 
-			needed_time.tv_sec = 0;
-			needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-			to_do.needed_time = needed_time;
-		}
-		else
-		{
-			_ftime(&after_win);
-			after_cmd.tv_sec = (unsigned long)after_win.time;
-			after_cmd.tv_usec = (long)after_win.millitm * 1000;
+                needed_time.tv_sec = 0;
+                needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
+                to_do.needed_time = needed_time;
+            }
+            else
+            {
+                _ftime(&after_win);
+                after_cmd.tv_sec = (unsigned long)after_win.time;
+                after_cmd.tv_usec = (long)after_win.millitm * 1000;
 
-			after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-			time_diff(before_cmd,after_cmd,needed_time);
-			to_do.needed_time = needed_time;
-		}
+                after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
+                time_diff(before_cmd,after_cmd,needed_time);
+                to_do.needed_time = needed_time;
+            }
 #else
-		gettimeofday(&after_cmd,NULL);
-		after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-		time_diff(before_cmd,after_cmd,needed_time);
-		to_do.needed_time = needed_time;
+            gettimeofday(&after_cmd, NULL);
+            after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
+            time_diff(before_cmd, after_cmd, needed_time);
+            to_do.needed_time = needed_time;
 #endif
 
-		save_except = new Tango::DevFailed(e);
-	}
+            save_except = new Tango::DevFailed(e);
+        }
 
 //
 // Starting with IDl release 3, an attribute in error is not an exception any more. Re-create one.
 // Don't forget that it is still possible to receive classical exception (in case of Monitor timeout for instance)
 //
 
-	if (idl_vers >= 3)
-	{
-		if (idl_vers >= 5)
-		{
-		    if (nb_obj == 1)
-            {
-                if ((attr_failed == false) && ((*argout_5)[0].err_list.length() != 0))
-                {
-                    attr_failed = true;
-                    save_except = new Tango::DevFailed((*argout_5)[0].err_list);
-                    delete argout_5;
-                }
-            }
-            else
-            {
-                for (size_t ctr = 0;ctr < nb_obj;ctr++)
-                {
-                    if ((attr_failed == false) && ((*argout_5)[ctr].err_list.length() != 0))
-                    {
-                        Tango::DevFailed *tmp_except = new Tango::DevFailed((*argout_5)[ctr].err_list);
-                        map_except.insert(pair<size_t,Tango::DevFailed *>(ctr,tmp_except));
+        if (idl_vers >= 3) {
+            if (idl_vers >= 5) {
+                if (nb_obj == 1) {
+                    if ((attr_failed == false) && ((*argout_5)[0].err_list.length() != 0)) {
+                        attr_failed = true;
+                        save_except = new Tango::DevFailed((*argout_5)[0].err_list);
+                        delete argout_5;
+                    }
+                } else {
+                    for (size_t ctr = 0; ctr < nb_obj; ctr++) {
+                        if ((attr_failed == false) && ((*argout_5)[ctr].err_list.length() != 0)) {
+                            Tango::DevFailed *tmp_except = new Tango::DevFailed((*argout_5)[ctr].err_list);
+                            map_except.insert(pair<size_t, Tango::DevFailed *>(ctr, tmp_except));
+                        }
                     }
                 }
-            }
-		}
-		else if (idl_vers == 4)
-		{
-		    if (nb_obj == 1)
-            {
-                if ((attr_failed == false) && ((*argout_4)[0].err_list.length() != 0))
-                {
-                    attr_failed = true;
-                    save_except = new Tango::DevFailed((*argout_4)[0].err_list);
-                    delete argout_4;
-                }
-            }
-            else
-            {
-                for (size_t ctr = 0;ctr < nb_obj;ctr++)
-                {
-                    if ((attr_failed == false) && ((*argout_4)[ctr].err_list.length() != 0))
-                    {
-                        Tango::DevFailed *tmp_except = new Tango::DevFailed((*argout_4)[ctr].err_list);
-                        map_except.insert(pair<size_t,Tango::DevFailed *>(ctr,tmp_except));
+            } else if (idl_vers == 4) {
+                if (nb_obj == 1) {
+                    if ((attr_failed == false) && ((*argout_4)[0].err_list.length() != 0)) {
+                        attr_failed = true;
+                        save_except = new Tango::DevFailed((*argout_4)[0].err_list);
+                        delete argout_4;
+                    }
+                } else {
+                    for (size_t ctr = 0; ctr < nb_obj; ctr++) {
+                        if ((attr_failed == false) && ((*argout_4)[ctr].err_list.length() != 0)) {
+                            Tango::DevFailed *tmp_except = new Tango::DevFailed((*argout_4)[ctr].err_list);
+                            map_except.insert(pair<size_t, Tango::DevFailed *>(ctr, tmp_except));
+                        }
                     }
                 }
+            } else {
+                if ((attr_failed == false) && ((*argout_3)[0].err_list.length() != 0)) {
+                    attr_failed = true;
+                    save_except = new Tango::DevFailed((*argout_3)[0].err_list);
+                    delete argout_3;
+                }
             }
-		}
-		else
-		{
-			if ((attr_failed == false) && ((*argout_3)[0].err_list.length() != 0))
-			{
-				attr_failed = true;
-				save_except = new Tango::DevFailed((*argout_3)[0].err_list);
-				delete argout_3;
-			}
-		}
-	}
+        }
 
 //
 // Events - for each event call the detect_and_push() method this method will fire events if there are clients
@@ -1863,114 +1772,113 @@ void PollThread::poll_attr(WorkItem &to_do)
 // We also have to retrieve which kind of clients made the subscription (zmq or notifd) and send the event accordingly
 //
 
-	EventSupplier *event_supplier_nd = NULL;
-	EventSupplier *event_supplier_zmq = NULL;
+        EventSupplier *event_supplier_nd = NULL;
+        EventSupplier *event_supplier_zmq = NULL;
 
-    for (size_t ctr = 0;ctr < nb_obj;ctr++)
-    {
-        Attribute &att = to_do.dev->get_device_attr()->get_attr_by_name(to_do.name[ctr].c_str());
+        for (size_t ctr = 0; ctr < nb_obj; ctr++) {
+            Attribute &att = to_do.dev->get_device_attr()->get_attr_by_name(to_do.name[ctr].c_str());
 
-        if (att.use_notifd_event() == true && event_supplier_nd == NULL)
-            event_supplier_nd = Util::instance()->get_notifd_event_supplier();
-        if (att.use_zmq_event() == true && event_supplier_zmq == NULL)
-            event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
+            if (att.use_notifd_event() == true && event_supplier_nd == NULL)
+                event_supplier_nd = Util::instance()->get_notifd_event_supplier();
+            if (att.use_zmq_event() == true && event_supplier_zmq == NULL)
+                event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
 
-        if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
-        {
-            if (attr_failed == true)
-            {
-                struct EventSupplier::SuppliedEventData ad;
-                ::memset(&ad,0,sizeof(ad));
+            if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL)) {
+                if (attr_failed == true) {
+                    struct EventSupplier::SuppliedEventData ad;
+                    ::memset(&ad, 0, sizeof(ad));
 
-                if (idl_vers > 4)
-                    ad.attr_val_5 = &dummy_att5;
-                else if (idl_vers == 4)
-                    ad.attr_val_4 = &dummy_att4;
-                else if (idl_vers == 3)
-                    ad.attr_val_3 = &dummy_att3;
-                else
-                    ad.attr_val = &dummy_att;
+                    if (idl_vers > 4)
+                        ad.attr_val_5 = &dummy_att5;
+                    else if (idl_vers == 4)
+                        ad.attr_val_4 = &dummy_att4;
+                    else if (idl_vers == 3)
+                        ad.attr_val_3 = &dummy_att3;
+                    else
+                        ad.attr_val = &dummy_att;
 
 //
 // Eventually push the event (if detected). When we have both notifd and zmq event supplier, do not detect the event
 // two times. The detect_and_push_events() method returns true if the event is detected.
 //
 
-                SendEventType send_event;
-                if (event_supplier_nd != NULL)
-                    send_event = event_supplier_nd->detect_and_push_events(to_do.dev,ad,save_except,to_do.name[ctr],&before_cmd);
-                if (event_supplier_zmq != NULL)
-                {
+                    SendEventType send_event;
                     if (event_supplier_nd != NULL)
-                    {
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
+                        send_event = event_supplier_nd->detect_and_push_events(to_do.dev, ad, save_except,
+                                                                               to_do.name[ctr], &before_cmd);
+                    if (event_supplier_zmq != NULL) {
+                        if (event_supplier_nd != NULL) {
+                            vector<string> f_names;
+                            vector<double> f_data;
+                            vector<string> f_names_lg;
+                            vector<long> f_data_lg;
 
-                        if (send_event.change == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
-                        if (send_event.archive == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
-                        if (send_event.periodic == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev,PERIODIC_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
+                            if (send_event.change == true)
+                                event_supplier_zmq->push_event_loop(to_do.dev, CHANGE_EVENT, f_names, f_data,
+                                                                    f_names_lg, f_data_lg, ad, att, save_except);
+                            if (send_event.archive == true)
+                                event_supplier_zmq->push_event_loop(to_do.dev, ARCHIVE_EVENT, f_names, f_data,
+                                                                    f_names_lg, f_data_lg, ad, att, save_except);
+                            if (send_event.periodic == true)
+                                event_supplier_zmq->push_event_loop(to_do.dev, PERIODIC_EVENT, f_names, f_data,
+                                                                    f_names_lg, f_data_lg, ad, att, save_except);
+                        } else
+                            event_supplier_zmq->detect_and_push_events(to_do.dev, ad, save_except, to_do.name[ctr],
+                                                                       &before_cmd);
                     }
-                    else
-                        event_supplier_zmq->detect_and_push_events(to_do.dev,ad,save_except,to_do.name[ctr],&before_cmd);
-                }
-            }
-            else
-            {
-                struct EventSupplier::SuppliedEventData ad;
-                ::memset(&ad,0,sizeof(ad));
+                } else {
+                    struct EventSupplier::SuppliedEventData ad;
+                    ::memset(&ad, 0, sizeof(ad));
 
-                if (idl_vers > 4)
-                    ad.attr_val_5 = &((*argout_5)[ctr]);
-                else if (idl_vers == 4)
-                    ad.attr_val_4 = &((*argout_4)[ctr]);
-                else if (idl_vers == 3)
-                    ad.attr_val_3 = &((*argout_3)[ctr]);
-                else
-                    ad.attr_val = &((*argout)[ctr]);
+                    if (idl_vers > 4)
+                        ad.attr_val_5 = &((*argout_5)[ctr]);
+                    else if (idl_vers == 4)
+                        ad.attr_val_4 = &((*argout_4)[ctr]);
+                    else if (idl_vers == 3)
+                        ad.attr_val_3 = &((*argout_3)[ctr]);
+                    else
+                        ad.attr_val = &((*argout)[ctr]);
 
 //
 // Eventually push the event (if detected). When we have both notifd and zmq event supplier, do not detect the event
 // two times. The detect_and_push_events() method returns true if the event is detected.
 //
 
-                SendEventType send_event;
+                    SendEventType send_event;
 
-                map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
-                Tango::DevFailed *tmp_except;
-                if (ite2 == map_except.end())
-                    tmp_except = save_except;
-                else
-                    tmp_except = ite2->second;
-
-                if (event_supplier_nd != NULL)
-                    send_event = event_supplier_nd->detect_and_push_events(to_do.dev,ad,tmp_except,to_do.name[ctr],&before_cmd);
-                if (event_supplier_zmq != NULL)
-                {
-                    if (event_supplier_nd != NULL)
-                    {
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
-
-                        if (send_event.change == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,tmp_except);
-                        if (send_event.periodic == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev,PERIODIC_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,tmp_except);
-                        if (send_event.archive == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,tmp_except);
-                    }
+                    map<size_t, Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
+                    Tango::DevFailed *tmp_except;
+                    if (ite2 == map_except.end())
+                        tmp_except = save_except;
                     else
-                        event_supplier_zmq->detect_and_push_events(to_do.dev,ad,tmp_except,to_do.name[ctr],&before_cmd);
+                        tmp_except = ite2->second;
+
+                    if (event_supplier_nd != NULL)
+                        send_event = event_supplier_nd->detect_and_push_events(to_do.dev, ad, tmp_except,
+                                                                               to_do.name[ctr], &before_cmd);
+                    if (event_supplier_zmq != NULL) {
+                        if (event_supplier_nd != NULL) {
+                            vector<string> f_names;
+                            vector<double> f_data;
+                            vector<string> f_names_lg;
+                            vector<long> f_data_lg;
+
+                            if (send_event.change == true)
+                                event_supplier_zmq->push_event_loop(to_do.dev, CHANGE_EVENT, f_names, f_data,
+                                                                    f_names_lg, f_data_lg, ad, att, tmp_except);
+                            if (send_event.periodic == true)
+                                event_supplier_zmq->push_event_loop(to_do.dev, PERIODIC_EVENT, f_names, f_data,
+                                                                    f_names_lg, f_data_lg, ad, att, tmp_except);
+                            if (send_event.archive == true)
+                                event_supplier_zmq->push_event_loop(to_do.dev, ARCHIVE_EVENT, f_names, f_data,
+                                                                    f_names_lg, f_data_lg, ad, att, tmp_except);
+                        } else
+                            event_supplier_zmq->detect_and_push_events(to_do.dev, ad, tmp_except, to_do.name[ctr],
+                                                                       &before_cmd);
+                    }
                 }
             }
-		}
-	}
+        }
 
 
 //
@@ -1984,106 +1892,84 @@ void PollThread::poll_attr(WorkItem &to_do)
 // This new feature is available only for devices with IDL 4 or more
 //
 
-	try
-	{
-		to_do.dev->get_poll_monitor().get_monitor();
-		for (size_t ctr = 0;ctr < nb_obj;ctr++)
-        {
-            ite = to_do.dev->get_polled_obj_by_type_name(to_do.type,to_do.name[ctr]);
-            if (attr_failed == false)
-            {
-                if (nb_obj == 1)
-                {
-                    if (idl_vers >= 5)
-                        (*ite)->insert_data(argout_5,before_cmd,needed_time);
-                    else if (idl_vers == 4)
-                        (*ite)->insert_data(argout_4,before_cmd,needed_time);
-                    else if (idl_vers == 3)
-                        (*ite)->insert_data(argout_3,before_cmd,needed_time);
-                    else
-                        (*ite)->insert_data(argout,before_cmd,needed_time);
-                }
-                else
-                {
-                    if (idl_vers >= 5)
-                    {
-                        map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
-                        if (ite2 == map_except.end())
-                        {
-                            Tango::AttributeValueList_5 *new_argout_5 = new Tango::AttributeValueList_5(1);
-                            new_argout_5->length(1);
-                            (*new_argout_5)[0].value.union_no_data(true);
-                            robb_data((*argout_5)[ctr],(*new_argout_5)[0]);
-                            copy_remaining((*argout_5)[ctr],(*new_argout_5)[0]);
-                            (*new_argout_5)[0].data_type = (*argout_5)[ctr].data_type;
-                            (*ite)->insert_data(new_argout_5,before_cmd,needed_time);
-                        }
+        try {
+            to_do.dev->get_poll_monitor().get_monitor();
+            for (size_t ctr = 0; ctr < nb_obj; ctr++) {
+                ite = to_do.dev->get_polled_obj_by_type_name(to_do.type, to_do.name[ctr]);
+                if (attr_failed == false) {
+                    if (nb_obj == 1) {
+                        if (idl_vers >= 5)
+                            (*ite)->insert_data(argout_5, before_cmd, needed_time);
+                        else if (idl_vers == 4)
+                            (*ite)->insert_data(argout_4, before_cmd, needed_time);
+                        else if (idl_vers == 3)
+                            (*ite)->insert_data(argout_3, before_cmd, needed_time);
                         else
-                            (*ite)->insert_except(ite2->second,before_cmd,needed_time);
+                            (*ite)->insert_data(argout, before_cmd, needed_time);
+                    } else {
+                        if (idl_vers >= 5) {
+                            map<size_t, Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
+                            if (ite2 == map_except.end()) {
+                                Tango::AttributeValueList_5 *new_argout_5 = new Tango::AttributeValueList_5(1);
+                                new_argout_5->length(1);
+                                (*new_argout_5)[0].value.union_no_data(true);
+                                robb_data((*argout_5)[ctr], (*new_argout_5)[0]);
+                                copy_remaining((*argout_5)[ctr], (*new_argout_5)[0]);
+                                (*new_argout_5)[0].data_type = (*argout_5)[ctr].data_type;
+                                (*ite)->insert_data(new_argout_5, before_cmd, needed_time);
+                            } else
+                                (*ite)->insert_except(ite2->second, before_cmd, needed_time);
+                        } else {
+                            map<size_t, Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
+                            if (ite2 == map_except.end()) {
+                                Tango::AttributeValueList_4 *new_argout_4 = new Tango::AttributeValueList_4(1);
+                                new_argout_4->length(1);
+                                (*new_argout_4)[0].value.union_no_data(true);
+                                robb_data((*argout_4)[ctr], (*new_argout_4)[0]);
+                                copy_remaining((*argout_4)[ctr], (*new_argout_4)[0]);
+                                (*ite)->insert_data(new_argout_4, before_cmd, needed_time);
+                            } else
+                                (*ite)->insert_except(ite2->second, before_cmd, needed_time);
+                        }
                     }
-                    else
-                    {
-                        map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
-                        if (ite2 == map_except.end())
-                        {
-                            Tango::AttributeValueList_4 *new_argout_4 = new Tango::AttributeValueList_4(1);
-                            new_argout_4->length(1);
-                            (*new_argout_4)[0].value.union_no_data(true);
-                            robb_data((*argout_4)[ctr],(*new_argout_4)[0]);
-                            copy_remaining((*argout_4)[ctr],(*new_argout_4)[0]);
-                            (*ite)->insert_data(new_argout_4,before_cmd,needed_time);
-                        }
-                        else
-                            (*ite)->insert_except(ite2->second,before_cmd,needed_time);
+                } else {
+                    if (nb_obj == 1)
+                        (*ite)->insert_except(save_except, before_cmd, needed_time);
+                    else {
+                        if (ctr != nb_obj - 1) {
+                            Tango::DevFailed *dup_except = new Tango::DevFailed(save_except->errors);
+                            (*ite)->insert_except(dup_except, before_cmd, needed_time);
+                        } else
+                            (*ite)->insert_except(save_except, before_cmd, needed_time);
                     }
                 }
             }
-            else
-            {
-                if (nb_obj == 1)
-                    (*ite)->insert_except(save_except,before_cmd,needed_time);
+
+            if (nb_obj != 1 && attr_failed == false) {
+                if (idl_vers >= 5)
+                    delete argout_5;
                 else
-                {
-                    if (ctr != nb_obj - 1)
-                    {
-                        Tango::DevFailed *dup_except = new Tango::DevFailed(save_except->errors);
-                        (*ite)->insert_except(dup_except,before_cmd,needed_time);
-                    }
-                    else
-                        (*ite)->insert_except(save_except,before_cmd,needed_time);
-                }
+                    delete argout_4;
             }
+
+            to_do.dev->get_poll_monitor().rel_monitor();
+        }
+        catch (Tango::DevFailed &) {
+            if (attr_failed == false) {
+                if (idl_vers >= 5)
+                    delete argout_5;
+                else if (idl_vers == 4)
+                    delete argout_4;
+                else if (idl_vers == 3)
+                    delete argout_3;
+                else
+                    delete argout;
+            } else
+                delete save_except;
+            to_do.dev->get_poll_monitor().rel_monitor();
         }
 
-        if (nb_obj != 1 && attr_failed == false)
-        {
-            if (idl_vers >= 5)
-                delete argout_5;
-            else
-                delete argout_4;
-        }
-
-		to_do.dev->get_poll_monitor().rel_monitor();
-	}
-	catch (Tango::DevFailed &)
-	{
-		if (attr_failed == false)
-		{
-			if (idl_vers >= 5)
-				delete argout_5;
-			else if (idl_vers == 4)
-				delete argout_4;
-			else if (idl_vers == 3)
-				delete argout_3;
-			else
-				delete argout;
-		}
-		else
-			delete save_except;
-		to_do.dev->get_poll_monitor().rel_monitor();
-	}
-
-}
+    }
 
 //+----------------------------------------------------------------------------------------------------------------
 //
@@ -2095,25 +1981,24 @@ void PollThread::poll_attr(WorkItem &to_do)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void PollThread::eve_heartbeat()
-{
-	cout5 << "----------> Time = " << now.tv_sec << ","
-	      << setw(6) << setfill('0') << now.tv_usec
-	      << " Sending event heartbeat" << endl;
+    void PollThread::eve_heartbeat() {
+        cout5 << "----------> Time = " << now.tv_sec << ","
+              << setw(6) << setfill('0') << now.tv_usec
+              << " Sending event heartbeat" << endl;
 
-	EventSupplier *event_supplier;
-	event_supplier = Util::instance()->get_zmq_event_supplier();
-	if ((event_supplier != NULL) && (send_heartbeat == true) && (event_supplier->get_one_subscription_cmd() == true))
-	{
-		event_supplier->push_heartbeat_event();
-	}
+        EventSupplier *event_supplier;
+        event_supplier = Util::instance()->get_zmq_event_supplier();
+        if ((event_supplier != NULL) && (send_heartbeat == true) &&
+            (event_supplier->get_one_subscription_cmd() == true)) {
+            event_supplier->push_heartbeat_event();
+        }
 
-	event_supplier = Util::instance()->get_notifd_event_supplier();
-	if ((event_supplier != NULL) && (send_heartbeat == true) && (event_supplier->get_one_subscription_cmd() == true))
-	{
-		event_supplier->push_heartbeat_event();
-	}
-}
+        event_supplier = Util::instance()->get_notifd_event_supplier();
+        if ((event_supplier != NULL) && (send_heartbeat == true) &&
+            (event_supplier->get_one_subscription_cmd() == true)) {
+            event_supplier->push_heartbeat_event();
+        }
+    }
 
 //+----------------------------------------------------------------------------------------------------------------
 //
@@ -2125,27 +2010,23 @@ void PollThread::eve_heartbeat()
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-void PollThread::store_subdev()
-{
-	static bool ignore_call = true;
+    void PollThread::store_subdev() {
+        static bool ignore_call = true;
 
-	cout5 << "----------> Time = " << now.tv_sec << ","
-	      << setw(6) << setfill('0') << now.tv_usec
-	      << " Store sub device property data if needed!" << endl;
+        cout5 << "----------> Time = " << now.tv_sec << ","
+              << setw(6) << setfill('0') << now.tv_usec
+              << " Store sub device property data if needed!" << endl;
 
 
-	if ( !ignore_call )
-	{
-		Tango::Util *tg = Tango::Util::instance();
-		tg->get_sub_dev_diag().store_sub_devices();
-	}
-	else
-	{
-		// ignore the first call to avoid storage during
-		// device server start-up.
-		ignore_call = false;
-	}
-}
+        if (!ignore_call) {
+            Tango::Util *tg = Tango::Util::instance();
+            tg->get_sub_dev_diag().store_sub_devices();
+        } else {
+            // ignore the first call to avoid storage during
+            // device server start-up.
+            ignore_call = false;
+        }
+    }
 
 //+----------------------------------------------------------------------------------------------------------------
 //
@@ -2157,10 +2038,9 @@ void PollThread::store_subdev()
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-void PollThread::auto_unsub()
-{
-	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
-	rar.auto_unsub();
-}
+    void PollThread::auto_unsub() {
+        RootAttRegistry &rar = Util::instance()->get_root_att_reg();
+        rar.auto_unsub();
+    }
 
 } // End of Tango namespace

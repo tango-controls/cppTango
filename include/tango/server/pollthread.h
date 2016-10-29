@@ -50,6 +50,7 @@
 namespace Tango
 {
 
+    extern map<thread::id, string> kThreadNameMap;
 //=============================================================================
 //
 //			The PollThCmd structure
@@ -101,24 +102,31 @@ enum PollCmdType
 
 class TangoMonitor;
 
+    //TODO make inner of Device
 class PollThread
 {
+    friend class PollingThreadInfo;
 public:
-	PollThread(PollThCmd &,TangoMonitor &,bool);
-
+	PollThread(PollThCmd &, TangoMonitor &, bool, string &&name);
 	void run();
-	void start() {
-		auto poll_thread = std::thread(&PollThread::run, this);
-        id_ = poll_thread.get_id();
-		poll_thread.detach();
-	}
+    /**
+     * Starts this thread
+     */
+	void start();
     thread::id id(){
         return id_;
     }
 	void execute_cmd();
 	void set_local_cmd(PollThCmd &cmd) {local_cmd = cmd;}
 	void set_polling_bef_9(bool _v) {polling_bef_9 = _v;}
-
+private:
+    void poll_add_obj();
+    void poll_rem_obj();
+    void poll_rem_ext_trig_obj();
+    void poll_rem_dev();
+    void poll_upd_period();
+    void poll_add_heartbeat();
+    void poll_rem_heartbeat();
 protected:
 	PollCmdType get_command(long);
 	void one_more_poll();
@@ -180,8 +188,10 @@ private:
 	ClntIdent 			dummy_cl_id;
 	CppClntIdent 		cci;
 
+	thread thread_;
     thread::id id_;
 	bool interrupted_;
+    string name_;
 public:
 	static DeviceImpl 	*dev_to_del;
 	static string	   	name_to_del;

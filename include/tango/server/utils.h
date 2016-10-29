@@ -1226,7 +1226,7 @@ void clear_att_dim(Tango::AttributeValue_5 &att_val);
 //			Polling threads pool related class/struct
 //
 //-----------------------------------------------------------------------
-
+//TODO make inner of PollThread (or vice versa)
 struct PollingThreadInfo
 {
 	thread::id							thread_id;			// The polling thread identifier
@@ -1240,6 +1240,10 @@ struct PollingThreadInfo
 
 	PollingThreadInfo():thread_id(0),poll_th(NULL),poll_mon("Polling_thread_mon"),nb_polled_objects(0),smallest_upd(0)
 	{shared_data.cmd_pending = false;shared_data.trigger=false;}
+	~PollingThreadInfo(){
+		if(poll_th->thread_.joinable())
+			poll_th->thread_.join();
+	}
 };
 
 struct DevDbUpd

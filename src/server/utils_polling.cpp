@@ -938,7 +938,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,bool polling_9,in
 		PollingThreadInfo *pti_ptr = new PollingThreadInfo();
 		if (smallest_upd != -1)
 			pti_ptr->smallest_upd = smallest_upd;
-		pti_ptr->poll_th = new PollThread(pti_ptr->shared_data,pti_ptr->poll_mon,false);
+		pti_ptr->poll_th = new PollThread(pti_ptr->shared_data, pti_ptr->poll_mon, false, "Poll["+local_dev_name+"]");
 
 		if (polling_9 == true)
             pti_ptr->poll_th->set_polling_bef_9(true);
@@ -950,7 +950,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,bool polling_9,in
 
 		poll_ths.push_back(pti_ptr);
 
-		dev_poll_th_map.insert(make_pair(local_dev_name,poll_th_id));
+		dev_poll_th_map.emplace(local_dev_name,poll_th_id);
 		ret = -1;
 	}
 	else
@@ -1921,8 +1921,10 @@ int Util::get_dev_entry_in_pool_conf(string &dev_name)
 void Util::remove_dev_from_polling_map(string &dev_name)
 {
 	auto iter = dev_poll_th_map.find(dev_name);
-	if (iter != dev_poll_th_map.end())
-		dev_poll_th_map.erase(iter);
+	if (iter != dev_poll_th_map.end()) {
+        cout5 << "Removing device [" << dev_name << "] from polled devices map..." << endl;
+        dev_poll_th_map.erase(iter);
+    }
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -1947,6 +1949,7 @@ void Util::remove_polling_thread_info_by_id(thread::id th_id)
 	{
 		if ((*iter)->thread_id == th_id)
 		{
+            cout4 << "Removing PollingThreadInfo* thread::id=" << th_id  << endl;
 			delete (*iter);
 			poll_ths.erase(iter);
 			return;

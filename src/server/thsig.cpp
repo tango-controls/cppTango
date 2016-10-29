@@ -62,7 +62,7 @@ void DServerSignal::ThSig::run()
 
 	sigemptyset(&sigs_to_catch);
 
-	sigaddset(&sigs_to_catch,SIGINT);
+//	sigaddset(&sigs_to_catch,SIGINT);
 	sigaddset(&sigs_to_catch,SIGTERM);
 	sigaddset(&sigs_to_catch,SIGHUP);
 	sigaddset(&sigs_to_catch,SIGQUIT);

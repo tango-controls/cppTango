@@ -79,6 +79,7 @@ bool Util::_win = false;
 bool Util::_service = false;
 #endif
 
+    map<thread::id, string> kThreadNameMap;
     thread_local std::shared_ptr<PyData> kPerThreadPyData{new PyData()};
 
 //
@@ -448,7 +449,7 @@ void Util::effective_job(int argc,char *argv[])
 // Create the heartbeat thread and start it
 //
 
-		heartbeat_th = new PollThread(shared_data,poll_mon,true);
+		heartbeat_th = new PollThread(shared_data, poll_mon, true, "Heartbeat");
 		heartbeat_th->start();
 		heartbeat_th_id = heartbeat_th->id();
 		cout4 << "Heartbeat thread Id = " << heartbeat_th_id << endl;
@@ -3158,8 +3159,15 @@ void Util::ORBWin32Loop::wait_for_go()
 #endif /* _TG_WINDOWS_ */
 
 
+    void TangoMonitor::wait(){
+            cout5 << "Thread=" << this_thread::get_id() << " is waiting on " << name << "[" << uid_ << "]" << endl;
+            cond.wait();
+        }
+
 int TangoMonitor::wait(long nb_millis)
 {
+    cout5 << "Thread=" << this_thread::get_id() << " is waiting on " << name << "[" << uid_ << "] for millis=" << nb_millis << endl;
+
 	unsigned long s,n;
 
 	unsigned long nb_sec,nb_nanos;

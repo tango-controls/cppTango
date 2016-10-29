@@ -237,7 +237,6 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 // Init device
 //
 
-	omni_thread *th;
 	PyLock *lock_ptr = NULL;
 	Tango::Util *tg;
 
@@ -248,8 +247,6 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 
 		if (tg->is_py_ds())
 		{
-			th = omni_thread::self();
-
 			lock_ptr = kPerThreadPyData->PerTh_py_lock;
 			lock_ptr->Get();
 		}

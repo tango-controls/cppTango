@@ -37,6 +37,9 @@
 namespace Tango
 {
 
+	inline uint64_t now_to_uid() {
+		return std::chrono::duration_cast<chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+	}
 //--------------------------------------------------------------------------------------------------------------------
 //
 // class :
@@ -52,11 +55,12 @@ class TangoMonitor: public omni_mutex
 {
 public :
 	TangoMonitor(const char *na):_timeout(DEFAULT_TIMEOUT),cond(this),
-			locking_thread_id(thread::id()),locked_ctr(0),name(na) {};
-	TangoMonitor():_timeout(DEFAULT_TIMEOUT),cond(this),locking_thread_id(thread::id()),
-			locked_ctr(0),name("unknown") {};
+			locking_thread_id(thread::id()),locked_ctr(0),name(na),uid_(now_to_uid()) {};
+
+	TangoMonitor(): _timeout(DEFAULT_TIMEOUT), cond(this), locking_thread_id(thread::id()),
+					locked_ctr(0), name("unknown"), uid_(now_to_uid()) {};
 	~TangoMonitor() {
-        cout4 << "Destructing TangoMonitor" << endl;
+        cout4 << "Destructing TangoMonitor name=" << name << "; uid=" << uid_ << endl;
     };
 
 	void get_monitor();
@@ -65,10 +69,10 @@ public :
 	void timeout(long new_to) {_timeout = new_to;}
 	long timeout() {return _timeout;}
 
-	void wait() {cond.wait();}
+	void wait();
 	int wait(long);
 
-	void signal() {cond.signal();}
+	void signal() {cond.broadcast();}
 
 	thread::id get_locking_thread_id();
 	long get_locking_ctr();
@@ -81,6 +85,7 @@ private :
 	thread::id 		locking_thread_id;
 	long			locked_ctr;
 	string 			name;
+	uint64_t 		uid_;
 };
 
 

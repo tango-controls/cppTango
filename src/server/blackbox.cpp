@@ -1094,55 +1094,33 @@ void BlackBox::inc_indexes()
 
 void BlackBox::get_client_host()
 {
-	omni_thread *th_id = omni_thread::self();
-	bool dummy = false;
-	if (th_id == NULL)
-    {
-		th_id = omni_thread::create_dummy();
-		dummy = true;
-    }
-
-	if (!kPerThreadClientAddress)
-    {
+	if (kPerThreadClientAddress) {
+		cout5 << "client_ip=" << kPerThreadClientAddress->client_ip << endl;
+		strcpy(box[insert_elt].host_ip_str, kPerThreadClientAddress->client_ip);
+        return;
+    } else {
         Tango::Util *tg = Tango::Util::instance();
         vector<PollingThreadInfo *> &poll_ths = tg->get_polling_threads_info();
 
-        bool found_thread = false;
         if (poll_ths.empty() == false)
         {
             thread::id this_thread_id = this_thread::get_id();
-            size_t nb_poll_th = poll_ths.size();
-            size_t loop;
-            for (loop = 0;loop < nb_poll_th;loop++)
+            for (size_t i = 0, nb_poll_th= poll_ths.size();i < nb_poll_th;i++)
             {
-                if (this_thread_id == poll_ths[loop]->thread_id)
+                if (this_thread_id == poll_ths[i]->thread_id)
                 {
-                    found_thread = true;
-                    break;
+                    strcpy(box[insert_elt].host_ip_str,"polling");
+                    return;
                 }
             }
         }
 
-        if (tg->is_svr_starting() == true)
-        {
-            if (found_thread == true)
-                strcpy(box[insert_elt].host_ip_str,"polling");
-            else
+		if (tg->is_svr_starting() == true)
                 strcpy(box[insert_elt].host_ip_str,"init");
-        }
         else
-        {
-            if (found_thread == true)
-                strcpy(box[insert_elt].host_ip_str,"polling");
-            else
                 strcpy(box[insert_elt].host_ip_str,"user thread");
-        }
     }
-	else
-		strcpy(box[insert_elt].host_ip_str,kPerThreadClientAddress->client_ip);
 
-    if (dummy == true)
-        omni_thread::release_dummy();
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
