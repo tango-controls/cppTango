@@ -54,18 +54,6 @@ void DServerSignal::ThSig::run()
 {
 
 #ifndef _TG_WINDOWS_
-	sigset_t sigs_to_catch;
-
-//
-// Catch main signals
-//
-
-	sigemptyset(&sigs_to_catch);
-
-//	sigaddset(&sigs_to_catch,SIGINT);
-	sigaddset(&sigs_to_catch,SIGTERM);
-	sigaddset(&sigs_to_catch,SIGHUP);
-	sigaddset(&sigs_to_catch,SIGQUIT);
 
 //
 // Init thread id and pid (for linux !!)
@@ -88,7 +76,7 @@ void DServerSignal::ThSig::run()
 	while(1)
 	{
 #ifndef _TG_WINDOWS_
-		int ret = sigwait(&sigs_to_catch,&signo);
+		int ret = sigwait(&ds->sigs_to_catch,&signo);
 		// sigwait() under linux might return an errno number without initialising the
 		// signo variable. Do a ckeck here to avoid problems!!!
 	   if ( ret != 0 )
@@ -117,50 +105,6 @@ void DServerSignal::ThSig::run()
 			kPerThreadPyData.reset(new PyData());
 			th_data_created = true;
 		}
-
-#ifndef _TG_WINDOWS_
-
-//
-// Add a new signal to catch in the mask
-//
-
-		{
-			omni_mutex_lock sy(*ds);
-			if (signo == SIGINT)
-            {
-				cout4 << "in sigint" << endl;
-                bool job_done = false;
-
-				cout4 << "ds->sig_to_install=" << ds->sig_to_install << endl;
-                if (ds->sig_to_install == true)
-                {
-                    ds->sig_to_install = false;
-                    sigaddset(&sigs_to_catch,ds->inst_sig);
-                    cout4 << "signal " << ds->inst_sig << " installed" << endl;
-                    job_done = true;
-                }
-
-//
-// Remove a signal from the catched one
-//
-				cout4 << "ds->sig_to_remove=" << ds->sig_to_remove << endl;
-                if (ds->sig_to_remove == true)
-                {
-                    ds->sig_to_remove = false;
-                    sigdelset(&sigs_to_catch,ds->rem_sig);
-                    cout4 << "signal " << ds->rem_sig << " removed" << endl;
-                    job_done = true;
-                }
-
-				cout4 << "job_done=" << job_done << endl;
-                if (job_done == true)
-                {
-                    ds->signal();
-                    continue;
-                }
-            }
-		}
-#endif
 
 		DevSigAction *act_ptr = &(DServerSignal::reg_sig[signo]);
 

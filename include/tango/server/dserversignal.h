@@ -102,6 +102,7 @@ public :
 		virtual ~ThSig() {}
 
 		TangoSys_Pid my_pid;
+        //TODO remove - no longer need thread_local always creates data on thread creation
 		bool th_data_created;
 #ifndef _TG_WINDOWS_
 		pthread_t my_thread;
@@ -109,7 +110,7 @@ public :
 		void run();
 		void start() {
 			auto signal_thread = std::thread(&ThSig::run,this);
-			signal_thread.detach();
+			signal_thread.detach();//TODO convert to field and join in destructor
 		}
 	};
 	friend class ThSig;
@@ -119,15 +120,18 @@ protected :
 	DServerSignal();
 	static DevSigAction		reg_sig[_NSIG];
 
-	bool				sig_to_install;
-	bool				sig_to_remove;
-	int				inst_sig;
-	int 				rem_sig;
 #ifdef _TG_WINDOWS_
 	static HANDLE			win_ev;
 	static int			win_signo;
 #endif
-
+#ifndef _TG_WINDOWS_
+	private:
+        template <typename SIG>
+		void install_signal(SIG);
+        template <typename SIG>
+		void remove_signal(SIG);
+		sigset_t sigs_to_catch;
+#endif
 private:
 	static DServerSignal *_instance;
 	vector<DeviceImpl *>::iterator find_device(long, DeviceImpl *);
