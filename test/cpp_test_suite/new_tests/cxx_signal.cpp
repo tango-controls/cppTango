@@ -304,6 +304,7 @@ public:
 			v_s.push_back("Sub device property");
 			v_s.push_back("Sleep for :");
 			v_s.push_back("client_ip=");
+            v_s.push_back("Heartbeat is awaken!");
 			CmpTst::CompareTest::out_remove_entries(out_file,v_s);
 
 			map<string,string> prop_val_map;
