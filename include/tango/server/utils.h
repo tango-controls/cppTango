@@ -1233,7 +1233,9 @@ struct PollingThreadInfo
 	vector<DevVarLongStringArray *> 	v_poll_cmd;			// Command(s) to send
 
 	PollingThreadInfo():thread_id(0),poll_th(NULL),poll_mon("Polling_thread_mon"),nb_polled_objects(0),smallest_upd(0)
-	{shared_data.cmd_pending = false;shared_data.trigger=false;}
+	{
+        shared_data.cmd_pending = false;shared_data.trigger=false;
+    }
 	~PollingThreadInfo(){
 		if(poll_th->thread_.joinable())
 			poll_th->thread_.join();

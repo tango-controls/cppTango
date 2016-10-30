@@ -115,7 +115,7 @@ namespace Tango {
         id_ = thread_.get_id();
         kThreadNameMap.emplace(id_, name_);
 //        poll_thread.detach();
-        cout5 << "Started thread id=" << id_ << "; name=" << name_ << endl;
+        cout5 << "Started thread id=" << id_ << "; name=" << name_ << "; monitor=" << p_mon.get_uid() << endl;
     }
 
 //+------------------------------------------------------------------------------------------------------------------

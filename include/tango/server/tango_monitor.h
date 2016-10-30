@@ -55,10 +55,16 @@ class TangoMonitor: public omni_mutex
 {
 public :
 	TangoMonitor(const char *na):_timeout(DEFAULT_TIMEOUT),cond(this),
-			locking_thread_id(thread::id()),locked_ctr(0),name(na),uid_(now_to_uid()) {};
+			locking_thread_id(thread::id()),locked_ctr(0),name(na),uid_(now_to_uid()) {
+
+		cout4 << "New TangoMonitor: uid=" << uid_ << endl;
+	};
 
 	TangoMonitor(): _timeout(DEFAULT_TIMEOUT), cond(this), locking_thread_id(thread::id()),
-					locked_ctr(0), name("unknown"), uid_(now_to_uid()) {};
+					locked_ctr(0), name("unknown"), uid_(now_to_uid()) {
+
+		cout4 << "New TangoMonitor: uid=" << uid_ << endl;
+	};
 	~TangoMonitor() {
         cout4 << "Destructing TangoMonitor name=" << name << "; uid=" << uid_ << endl;
     };
@@ -78,7 +84,7 @@ public :
 	long get_locking_ctr();
 	string &get_name() {return name;}
 	void set_name(const string &na) {name = na;}
-
+    uint64_t get_uid() { return uid_;}
 private :
 	long 			_timeout;
 	omni_condition 	cond;

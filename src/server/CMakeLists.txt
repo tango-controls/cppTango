@@ -47,6 +47,7 @@ set(SOURCES attrdesc.cpp
         seqvec.cpp
         subdev_diag.cpp
         tangoappender.cpp
+        tango_const.cxx
         tangorollingfileappender.cpp
         templ_inst.cpp
         thsig.cpp
@@ -58,12 +59,14 @@ set(SOURCES attrdesc.cpp
         zmqeventsupplier.cpp
         repeated_task.cxx
         store_sub_devices_task.cxx
-        heartbeat_task.cxx)
+        heartbeat_task.cxx
+        named_thread.cxx)
 
 set(HEADERS
         repeated_task.hxx
         store_sub_devices_task.hxx
-        heartbeat_task.hxx)
+        heartbeat_task.hxx
+        named_thread.hxx)
 
 add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)

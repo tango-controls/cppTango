@@ -1124,9 +1124,9 @@ void Util::stop_all_polling_threads()
 	//TODO return value: optional
 thread::id Util::get_polling_thread_id_by_name(const char *dev_name)
 {
-	thread::id ret = thread::id();
+	thread::id ret{thread::id()};
 
-	string local_dev_name(dev_name);
+	string local_dev_name{dev_name};
 	transform(local_dev_name.begin(),local_dev_name.end(),local_dev_name.begin(),::tolower);
 
 	auto iter = dev_poll_th_map.find(local_dev_name);
@@ -1895,11 +1895,8 @@ int Util::get_dev_entry_in_pool_conf(string &dev_name)
 
 void Util::remove_dev_from_polling_map(string &dev_name)
 {
-	auto iter = dev_poll_th_map.find(dev_name);
-	if (iter != dev_poll_th_map.end()) {
-        cout5 << "Removing device [" << dev_name << "] from polled devices map..." << endl;
-        dev_poll_th_map.erase(iter);
-    }
+    auto number_of_deleted = dev_poll_th_map.erase(dev_name);
+    cout5 << "Removed " << number_of_deleted << " entries for device[" << dev_name << "] from polled devices map..." << endl;
 }
 
 //+------------------------------------------------------------------------------------------------------------------

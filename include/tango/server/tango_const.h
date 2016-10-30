@@ -939,6 +939,15 @@ enum PollObjType {
 	POLL_ATTR
 };
 
+    /**
+     * std::string -> PollObjType
+     *
+     * @param value
+     * @return PollObjType
+     * @throw API_NotSupported
+     */
+    PollObjType PollObjType_from_string(std::string&&);
+
 enum PollCmdCode {
 	POLL_ADD_OBJ = 0,
 	POLL_REM_OBJ,

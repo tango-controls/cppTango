@@ -511,6 +511,28 @@ namespace Tango {
 
     }
 
+    tuple<bool,string> check_if_local(string&& poll_obj_type){
+        string::size_type pos = poll_obj_type.rfind(LOCAL_POLL_REQUEST);
+        if (pos == (poll_obj_type.size() - LOCAL_REQUEST_STR_SIZE) ){
+            return make_tuple(true,poll_obj_type.erase(pos));
+        }
+        return make_tuple(false,move(poll_obj_type));
+    }
+
+
+    void check_if_already_polled(PollObjType& type, string&& name, DeviceImpl* dev){
+        vector<PollObj *> &poll_list = dev->get_poll_obj_list();
+        for (size_t i = 0; i < poll_list.size(); i++) {
+            if (poll_list[i]->get_type() == type) {
+                string name_lower = poll_list[i]->get_name();
+                transform(name_lower.begin(), name_lower.end(), name_lower.begin(), ::tolower);
+                if (name_lower == name) {
+                    Except::throw_exception(API_AlreadyPolled, (type == Tango::POLL_CMD ? "Command ": "Attribute ") + name + " is already polled" , "DServer::add_obj_polling");
+                }
+            }
+        }
+    }
+
 //+----------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -552,6 +574,17 @@ namespace Tango {
         }
 
 //
+// Check that the update period is not to small
+//
+
+        int upd = (argin->lvalue)[0];
+        if ((upd != 0) && (upd < MIN_POLL_PERIOD)) {
+            TangoSys_OMemStream o;
+            o << (argin->lvalue)[0] << " is below the min authorized period (" << MIN_POLL_PERIOD << " mS)" << ends;
+            Except::throw_exception(API_NotSupported, o.str(), "DServer::add_obj_polling");
+        }
+
+//
 // Find the device
 //
 
@@ -578,83 +611,61 @@ namespace Tango {
 //
 
         string obj_type((argin->svalue)[1]);
-        transform(obj_type.begin(), obj_type.end(), obj_type.begin(), ::tolower);
         string obj_name((argin->svalue)[2]);
         transform(obj_name.begin(), obj_name.end(), obj_name.begin(), ::tolower);
-        PollObjType type = Tango::POLL_CMD;
+
+        bool local_request{false};
+        tie(local_request,obj_type) = check_if_local(move(obj_type));
+
+        PollObjType type = PollObjType_from_string(move(obj_type));
         Attribute *attr_ptr;
-
-        bool local_request = false;
-        string::size_type pos = obj_type.rfind(LOCAL_POLL_REQUEST);
-        if (pos == obj_type.size() - LOCAL_REQUEST_STR_SIZE) {
-            local_request = true;
-            obj_type.erase(pos);
-        }
-
-        if (obj_type == PollCommand) {
-            dev->check_command_exists(obj_name);
-            type = Tango::POLL_CMD;
-        } else if (obj_type == PollAttribute) {
-            Attribute &att = dev->get_device_attr()->get_attr_by_name((argin->svalue)[2]);
-            attr_ptr = &att;
-            type = Tango::POLL_ATTR;
-        } else {
-            TangoSys_OMemStream o;
-            o << "Object type " << obj_type << " not supported" << ends;
-            Except::throw_exception(API_NotSupported, o.str(), "DServer::add_obj_polling");
-        }
-
-//
-// If it's for the Init command, refuse to poll it
-//
-
-        if (obj_type == PollCommand) {
-            if (obj_name == "init") {
-                TangoSys_OMemStream o;
-                o << "It's not possible to poll the Init command!" << ends;
-                Except::throw_exception(API_NotSupported, o.str(), "DServer::add_obj_polling");
-            }
+        long depth{0};
 
 //
 // Since IDl release 3, state and status command must be polled as attributes to be able to generate event on state or
 // status.
 //
 
-            else if ((dev->get_dev_idl_version() >= 3) && ((obj_name == "state") || (obj_name == "status")))
-                type = Tango::POLL_ATTR;
+        if ((dev->get_dev_idl_version() >= 3) && ((obj_name == "state") || (obj_name == "status"))){
+            type = Tango::POLL_ATTR;
+        }
+
+
+        switch (type){
+            case POLL_CMD:
+                dev->check_command_exists(obj_name);
+                if (obj_name == "init") {
+                    TangoSys_OMemStream o;
+                    o << "It's not possible to poll the Init command!" << ends;
+                    Except::throw_exception(API_NotSupported, o.str(), "DServer::add_obj_polling");
+                }
+                depth = dev->get_cmd_poll_ring_depth(obj_name);
+                break;
+            case POLL_ATTR:
+                Attribute &att = dev->get_device_attr()->get_attr_by_name((argin->svalue)[2]);
+                attr_ptr = &att;
+//
+// Refuse to do the job for forwarded attribute
+//
+                if (attr_ptr->is_fwd_att() == true) {
+                    stringstream ss;
+                    ss << "Attribute " << obj_name << " is a forwarded attribute.\n";
+                    ss << "It's not supported to poll a forwarded attribute.\n";
+                    FwdAttribute *fwd = static_cast<FwdAttribute *>(attr_ptr);
+                    ss << "Polling has to be done on the root attribute (";
+                    ss << fwd->get_fwd_dev_name() << "/" << fwd->get_fwd_att_name() << ")";
+
+                    Except::throw_exception(API_NotSupportedFeature, ss.str(), "DServer::add_obj_polling");
+                }
+                depth = dev->get_attr_poll_ring_depth(obj_name);
+                break;
         }
 
 //
 // Check that the object is not already polled
 //
 
-        vector<PollObj *> &poll_list = dev->get_poll_obj_list();
-        for (i = 0; i < poll_list.size(); i++) {
-            if (poll_list[i]->get_type() == type) {
-                string name_lower = poll_list[i]->get_name();
-                transform(name_lower.begin(), name_lower.end(), name_lower.begin(), ::tolower);
-                if (name_lower == obj_name) {
-                    TangoSys_OMemStream o;
-                    if (type == Tango::POLL_CMD)
-                        o << "Command ";
-                    else
-                        o << "Attribute ";
-                    o << obj_name << " already polled" << ends;
-                    Except::throw_exception(API_AlreadyPolled, o.str(), "DServer::add_obj_polling");
-                }
-            }
-        }
-
-//
-// Check that the update period is not to small
-//
-
-        int upd = (argin->lvalue)[0];
-        if ((upd != 0) && (upd < MIN_POLL_PERIOD)) {
-            TangoSys_OMemStream o;
-            o << (argin->lvalue)[0] << " is below the min authorized period (" << MIN_POLL_PERIOD << " mS)" << ends;
-            Except::throw_exception(API_NotSupported, o.str(), "DServer::add_obj_polling");
-        }
+        check_if_already_polled(type, move(obj_name), dev);
 
 //
 // Check that the requested polling period is not below the one authorized (if defined)
@@ -665,31 +676,13 @@ namespace Tango {
             check_upd_authorized(dev, upd, type, obj_name);
 
 //
-// Refuse to do the job for forwarded attribute
-//
-
-        if (obj_type == PollAttribute && attr_ptr->is_fwd_att() == true) {
-            stringstream ss;
-            ss << "Attribute " << obj_name << " is a forwarded attribute.\n";
-            ss << "It's not supported to poll a forwarded attribute.\n";
-            FwdAttribute *fwd = static_cast<FwdAttribute *>(attr_ptr);
-            ss << "Polling has to be done on the root attribute (";
-            ss << fwd->get_fwd_dev_name() << "/" << fwd->get_fwd_att_name() << ")";
-
-            Except::throw_exception(API_NotSupportedFeature, ss.str(), "DServer::add_obj_polling");
-        }
-
-//
 // Create a new PollObj instance for this object. Protect this code by a monitor in case of the polling thread using
 // one of the vector element.
 //
 
-        long depth = 0;
 
-        if (obj_type == PollCommand)
-            depth = dev->get_cmd_poll_ring_depth(obj_name);
-        else
-            depth = dev->get_attr_poll_ring_depth(obj_name);
+
+        vector<PollObj *> &poll_list = dev->get_poll_obj_list();
 
         dev->get_poll_monitor().get_monitor();
         poll_list.push_back(new PollObj(dev, type, obj_name, upd, depth));
@@ -1287,7 +1280,7 @@ namespace Tango {
         long tmp_upd = (*ite)->get_upd();
 
         PollingThreadInfo *th_info;
-        thread::id poll_th_id;
+        thread::id poll_th_id{thread::id()};
         thread::id th_id = this_thread::get_id();
 
 //
