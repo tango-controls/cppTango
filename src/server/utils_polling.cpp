@@ -1104,31 +1104,6 @@ void Util::stop_all_polling_threads()
 	poll_ths.clear();
 }
 
-//+-----------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		Util::stop_heartbeat_thread()
-//
-// description :
-//		Stop the heartbeat thread
-//
-//------------------------------------------------------------------------------------------------------------------
-
-void Util::stop_heartbeat_thread()
-{
-	TangoMonitor &mon = poll_mon;
-	PollThCmd &shared_cmd = shared_data;
-
-	{
-		omni_mutex_lock sync(mon);
-
-		shared_cmd.cmd_pending = true;
-		shared_cmd.cmd_code = POLL_EXIT;
-
-		mon.signal();
-	}
-}
-
 //+----------------------------------------------------------------------------------------------------------------
 //
 // method :

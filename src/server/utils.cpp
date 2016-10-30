@@ -177,7 +177,7 @@ polling_bef_9_def(false)
 # endif
 #else
 Util::Util(int argc,char *argv[]):cl_list_ptr(NULL),ext(new UtilExt),
-heartbeat_th(NULL),heartbeat_th_id(thread::id()),poll_mon("utils_poll"),poll_on(false),ser_model(BY_DEVICE),
+poll_mon("utils_poll"),poll_on(false),ser_model(BY_DEVICE),
 only_one("process"),nd_event_supplier(NULL),py_interp(NULL),py_ds(false),py_dbg(false),
 db_cache(NULL),inter(NULL),svr_starting(true),svr_stopping(false),poll_pool_size(ULONG_MAX),
 conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false),
@@ -449,12 +449,7 @@ void Util::effective_job(int argc,char *argv[])
 // Create the heartbeat thread and start it
 //
 
-		heartbeat_th = new PollThread(shared_data, poll_mon, true, "Heartbeat");
-		heartbeat_th->start();
-		heartbeat_th_id = heartbeat_th->id();
-		cout4 << "Heartbeat thread Id = " << heartbeat_th_id << endl;
-
-        store_sub_devices_task_ = StoreSubDevicesTask_ptr(
+		store_sub_devices_task_ = StoreSubDevicesTask_ptr(
 				new StoreSubDevicesTask(chrono::minutes{30}, this->sub_dev_diag));
 
         cout4 << "Store sub devices task has been added" << endl;

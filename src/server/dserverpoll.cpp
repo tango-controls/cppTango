@@ -38,6 +38,8 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #include <tango.h>
+#include "heartbeat_task.hxx"
+#include <tango/server/eventsupplier.h>
 
 #ifdef _TG_WINDOWS_
 #include <sys/timeb.h>
@@ -1689,7 +1691,7 @@ namespace Tango {
                 shared_cmd.cmd_pending = true;
                 shared_cmd.cmd_code = POLL_START;
             }
-                mon.signal();
+            mon.signal();
             {
                 omni_mutex_lock sync(mon);
                 while (shared_cmd.cmd_pending == true) {
@@ -1726,7 +1728,7 @@ namespace Tango {
             shared_cmd.cmd_pending = true;
             shared_cmd.cmd_code = POLL_START;
         }
-            mon.signal();
+        mon.signal();
         {
             omni_mutex_lock sync(mon);
             while (shared_cmd.cmd_pending == true) {
@@ -1761,41 +1763,18 @@ namespace Tango {
 // Send command to the heartbeat thread but wait in case of previous cmd still not executed
 //
 
-        cout4 << "Sending cmd to polling thread" << endl;
         Tango::Util *tg = Tango::Util::instance();
 
-        TangoMonitor &mon = tg->get_heartbeat_monitor();
-        PollThCmd &shared_cmd = tg->get_heartbeat_shared_cmd();
-
-        {
-            omni_mutex_lock sync(mon);
-            if (shared_cmd.cmd_pending == true) {
-                mon.wait();
-            }
-            shared_cmd.cmd_pending = true;
-            shared_cmd.cmd_code = POLL_ADD_HEARTBEAT;
-
-            mon.signal();
-
-            cout4 << "Cmd sent to polling thread" << endl;
-
-//
-// Wait for thread to execute command except if the command is requested by the polling thread itself
-//
-
-            thread::id th_id = this_thread::get_id();
-            if (th_id != tg->get_heartbeat_thread_id()) {
-                while (shared_cmd.cmd_pending == true) {
-                    int interupted = mon.wait(DEFAULT_TIMEOUT);
-                    if ((shared_cmd.cmd_pending == true) && (interupted == false)) {
-                        cout4 << "TIME OUT" << endl;
-                        Except::throw_exception(API_CommandTimedOut,
-                                                "Polling thread blocked !!!",
-                                                "DServer::add_event_heartbeat");
-                    }
-                }
-            }
+        cout4 << "Creating heartbeat thread" << endl;
+        vector<EventSupplier *> event_suppliers;
+        if (tg->get_zmq_event_supplier() != nullptr) event_suppliers.push_back(tg->get_zmq_event_supplier());
+        if (tg->get_notifd_event_supplier() != nullptr) event_suppliers.push_back(tg->get_notifd_event_supplier());
+        if (event_suppliers.empty()) {
+            cout4 << "There is no event suppliers to send heartbeat from. Exiting!" << endl;
+            return;
         }
+        heartbeat_task_ptr_ = HeartbeatTask_ptr(new HeartbeatTask(tg->get_root_att_reg(), move(event_suppliers)));
+
         cout4 << "Thread cmd normally executed" << endl;
     }
 
@@ -1814,45 +1793,19 @@ namespace Tango {
         NoSyncModelTangoMonitor nosyn_mon(this);
 
         cout4 << "In rem_event_heartbeat method" << endl;
-
+        if (!heartbeat_task_ptr_)
+            return;
 //
 // Send command to the heartbeat thread but wait in case of previous cmd still not executed
 //
 
         cout4 << "Sending cmd to polling thread" << endl;
-        Tango::Util *tg = Tango::Util::instance();
-        TangoMonitor &mon = tg->get_heartbeat_monitor();
-        PollThCmd &shared_cmd = tg->get_heartbeat_shared_cmd();
 
-        {
-            omni_mutex_lock sync(mon);
-            if (shared_cmd.cmd_pending == true) {
-                mon.wait();
-            }
-            shared_cmd.cmd_pending = true;
-            shared_cmd.cmd_code = POLL_REM_HEARTBEAT;
+        heartbeat_task_ptr_->abort();
 
-            mon.signal();
+        cout4 << "Removing heartbeat task" << endl;
+        heartbeat_task_ptr_.reset();
 
-            cout4 << "Cmd sent to polling thread" << endl;
-
-//
-// Wait for thread to execute command except if the command is requested by the polling thread itself
-//
-
-            thread::id th_id = this_thread::get_id();
-            if (th_id != tg->get_heartbeat_thread_id()) {
-                while (shared_cmd.cmd_pending == true) {
-                    int interupted = mon.wait(DEFAULT_TIMEOUT);
-                    if ((shared_cmd.cmd_pending == true) && (interupted == false)) {
-                        cout4 << "TIME OUT" << endl;
-                        Except::throw_exception(API_CommandTimedOut,
-                                                "Polling thread blocked !!!",
-                                                "DServer::rem_event_heartbeat");
-                    }
-                }
-            }
-        }
         cout4 << "Thread cmd normally executed" << endl;
     }
 

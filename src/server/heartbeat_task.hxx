@@ -4,27 +4,28 @@
 
 #pragma once
 
+#include <memory>
 #include <thread>
 #include <atomic>
 #include <vector>
+#include "repeated_task.hxx"
 
 namespace Tango {
     class EventSupplier;
     class RootAttRegistry;
 
-    class HeartbeatThread {
-        std::thread thread_;
-        std::atomic_bool interrupted_;
+    class HeartbeatTask : public RepeatedTask {
         std::vector<EventSupplier*> suppliers_;
         uint32_t heartbeat_ctr_;
         RootAttRegistry& root_att_registry_;
     public:
-        HeartbeatThread(RootAttRegistry&,EventSupplier* suppliers...);
-        ~HeartbeatThread();
+        HeartbeatTask(RootAttRegistry&,vector<EventSupplier*>&& suppliers);
+        ~HeartbeatTask() = default;
         std::thread::id id();
-        void run();
-        void interrupt();
+        void execute_internal() override ;
     private:
         void send_heartbeat();
     };
+
+    using HeartbeatTask_ptr = std::unique_ptr<HeartbeatTask>;
 }//Tango

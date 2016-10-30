@@ -28,9 +28,14 @@ RepeatedTask::~RepeatedTask() {
         thread_.join();
 }
 
+void RepeatedTask::abort() {
+    aborted_.store(true);
+}
+
 void RepeatedTask::execute() {
     cout3 << "RepeatedTask::execute()" << endl;
     while(!aborted_){
+        //TODO wait on conditional variable to implement interruption
         this_thread::sleep_for(delay_);
         execute_internal();
     }

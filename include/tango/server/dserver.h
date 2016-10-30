@@ -55,6 +55,7 @@ namespace Tango
 typedef Tango::DeviceClass *(*Cpp_creator_ptr)(const char *);
 typedef void (*ClassFactoryFuncPtr)(DServer *);
 
+	class HeartbeatTask;
 
 class DServer: public TANGO_BASE_CLASS
 {
@@ -182,6 +183,8 @@ private:
 
 	bool            polling_bef_9_def;
 	bool            polling_bef_9;
+
+		std::unique_ptr<HeartbeatTask> heartbeat_task_ptr_;
 };
 
 struct Pol

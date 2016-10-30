@@ -55,6 +55,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif /* _TG_WINDOWS_ */
 
 #include <stdlib.h>
+#include "heartbeat_task.hxx"
 
 namespace Tango
 {
@@ -496,7 +497,7 @@ void DServer::init_device()
 
 DServer::~DServer()
 {
-
+	rem_event_heartbeat();
 //
 // Destroy already registered classes
 //

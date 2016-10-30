@@ -82,8 +82,6 @@ void Util::shutdown_ds()
 //
 
 	stop_all_polling_threads();
-	stop_heartbeat_thread();
-	clr_heartbeat_th_ptr();
 
 //
 // Unregister the server in the database

@@ -806,8 +806,6 @@ public:
 
 	map <string,vector<string> > &get_cmd_line_name_list() {return cmd_line_name_list;}
 	void get_cmd_line_name_list(const string &,vector<string> &);
-	TangoMonitor &get_heartbeat_monitor() {return poll_mon;}
-	PollThCmd &get_heartbeat_shared_cmd() {return shared_data;}
 	bool poll_status() {return poll_on;}
 	void poll_status(bool status) {poll_on = status;}
 
@@ -816,13 +814,6 @@ public:
 //
 
 	void polling_configure();
-	PollThread *get_polling_thread_object() {return heartbeat_th;}
-	PollThread *get_heartbeat_thread_object() {return heartbeat_th;}
-	void clr_poll_th_ptr() {heartbeat_th = NULL;}
-	void clr_heartbeat_th_ptr() {heartbeat_th = NULL;}
-	thread::id get_polling_thread_id() {return heartbeat_th_id;}
-	thread::id get_heartbeat_thread_id() {return heartbeat_th_id;}
-	void stop_heartbeat_thread();
 	string &get_svr_port_num() {return svr_port_num;}
 
 	void create_notifd_event_supplier();
@@ -998,8 +989,6 @@ private:
 
 	map<string,vector<string> >	cmd_line_name_list;		// Command line map <Class name, device name list>
 
-	PollThread					*heartbeat_th;			// The heartbeat thread object
-	thread::id					heartbeat_th_id;		// The heartbeat thread identifier
 	PollThCmd					shared_data;			// The shared buffer
 	TangoMonitor				poll_mon;				// The monitor
 	bool						poll_on;				// Polling on flag

@@ -83,7 +83,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 // If we receive this command while the DS is in its shuting down sequence, do nothing
 //
 
-	if (tg->get_heartbeat_thread_object() == NULL)
+	if (tg->is_svr_shutting_down())
 	{
      	TangoSys_OMemStream o;
 		o << "The device server is shutting down! You can no longer subscribe for events" << ends;
@@ -824,7 +824,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 // If we receive this command while the DS is in its shuting down sequence, do nothing
 //
 
-        if (tg->get_heartbeat_thread_object() == NULL)
+        if (tg->is_svr_shutting_down())
         {
             TangoSys_OMemStream o;
             o << "The device server is shutting down! You can no longer subscribe for events" << ends;
@@ -1078,7 +1078,7 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 //
 
 	Tango::Util *tg = Tango::Util::instance();
-	if (tg->get_heartbeat_thread_object() == NULL)
+	if (tg->is_svr_shutting_down())
 	{
 		TangoSys_OMemStream o;
 		o << "The device server is shutting down! You can no longer subscribe for events" << ends;

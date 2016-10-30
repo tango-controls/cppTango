@@ -4,35 +4,25 @@
 
 #include <tango.h>
 #include <tango/server/eventsupplier.h>
-#include "heartbeat_thread.hxx"
+#include "heartbeat_task.hxx"
 
 
 using namespace std;
 using namespace Tango;
 
 
-HeartbeatThread::HeartbeatThread(RootAttRegistry& root_att_registry, EventSupplier* suppliers...) :
-        thread_{&HeartbeatThread::run, this},
-        interrupted_{false},
-        suppliers_{suppliers},
-        heartbeat_ctr_{0},
-        root_att_registry_{root_att_registry}
+HeartbeatTask::HeartbeatTask(RootAttRegistry& root_att_registry, vector<EventSupplier*>&& suppliers) :
+RepeatedTask(chrono::seconds{9}),
+suppliers_{move(suppliers)},
+heartbeat_ctr_{0},
+root_att_registry_{root_att_registry}
 {}
 
-HeartbeatThread::~HeartbeatThread() {
-    if (thread_.joinable())
-        thread_.join();
-}
-
-thread::id HeartbeatThread::id() {
+thread::id HeartbeatTask::id() {
     return thread_.get_id();
 }
 
-void HeartbeatThread::interrupt() {
-    interrupted_.store(true);
-}
-
-void HeartbeatThread::send_heartbeat() {
+void HeartbeatTask::send_heartbeat() {
     cout5 << "----------> Time = " << chrono::system_clock::now().time_since_epoch().count() << " Sending event heartbeat" << endl;
 
     for_each(suppliers_.begin(), suppliers_.end(), [](EventSupplier* event_supplier) {
@@ -41,15 +31,11 @@ void HeartbeatThread::send_heartbeat() {
     });
 }
 
-void HeartbeatThread::run() {
-    while (!interrupted_.load()) {
-        //sleep
-
+void HeartbeatTask::execute_internal() {
         send_heartbeat();
         if (heartbeat_ctr_++ % 3 == 0) {
             root_att_registry_.auto_unsub();
         }
-    }
 }
 
 
