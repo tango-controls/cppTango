@@ -83,6 +83,7 @@ class PyLock;
 class CreatePyLock;
 class DbServerCache;
 class SubDevDiag;
+    class StoreSubDevicesTask;
 
 struct PollingThreadInfo;
 struct DevDbUpd;
@@ -1050,6 +1051,10 @@ private:
 
 	bool                        polling_bef_9_def;      // Is polling algo requirement defined
 	bool                        polling_bef_9;          // use Tango < 9 polling algo. flag
+
+
+
+        std::unique_ptr<StoreSubDevicesTask> store_sub_devices_task_;
 };
 
 //***************************************************************************

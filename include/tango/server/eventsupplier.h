@@ -150,7 +150,7 @@ public :
 	void convert_att_event_to_3(struct SuppliedEventData &,struct SuppliedEventData &,bool &,Attribute &);
 
 
-	bool get_one_subscription_cmd() {return one_subscription_cmd;}
+	bool get_one_subscription_cmd() const {return one_subscription_cmd;}
 	void set_one_subscription_cmd(bool val) {one_subscription_cmd = val;}
 
 protected :

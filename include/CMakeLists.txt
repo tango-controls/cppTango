@@ -116,7 +116,10 @@ set(SERVER_HEADERS tango/server/attrdesc.h
         tango/server/w_pipe.h
         tango/server/subdev_diag.h
         tango/server/encoded_attribute.h
-        tango/server/encoded_format.h)
+        tango/server/encoded_format.h
+        tango/server/repeated_task.hxx
+        tango/server/store_sub_devices_task.hxx
+        tango/server/heartbeat_thread.hxx)
 
 
 set(SERVER_TEMPLATES

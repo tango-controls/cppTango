@@ -60,7 +60,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif /* _TG_WINDOWS_ */
 
 #include <omniORB4/omniInterceptors.h>
-
+#include <tango/server/store_sub_devices_task.hxx>
 
 
 namespace Tango
@@ -453,6 +453,12 @@ void Util::effective_job(int argc,char *argv[])
 		heartbeat_th->start();
 		heartbeat_th_id = heartbeat_th->id();
 		cout4 << "Heartbeat thread Id = " << heartbeat_th_id << endl;
+
+        store_sub_devices_task_ = StoreSubDevicesTask_ptr(
+				new StoreSubDevicesTask(chrono::minutes{30}, this->sub_dev_diag));
+
+        cout4 << "Store sub devices task has been added" << endl;
+
 
 		cout4 << "Tango object singleton constructed" << endl;
 

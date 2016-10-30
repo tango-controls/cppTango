@@ -36,10 +36,15 @@
 #ifndef _SUBDEV_DIAG_H
 #define _SUBDEV_DIAG_H
 
-#include <tango.h>
+#include <string>
+#include <vector>
+#include <map>
+#include <omnithread.h>
 
 namespace Tango
 {
+
+	class DevVarStringArray;
 
 class SubDevDiag
 {
@@ -52,16 +57,16 @@ private:
 	typedef struct sub_dev_list
 	{
         bool modified;               // was the list modified?
-        vector<string> sub_devices; // list of sub devices
+        std::vector<std::string> sub_devices; // list of sub devices
 	} SubDeviceList;
 
 	// map and mutex to keep a list of sub devices per device
-	map<std::string,SubDeviceList> sub_device_map;
+    std::map<std::string,SubDeviceList> sub_device_map;
 	omni_mutex                     sub_dev_map_mutex;
 
 	// map to keep a list of sub devices per device as read from
 	// the database cache
-	map<std::string,SubDeviceList> sub_device_startup_map;
+    std::map<std::string,SubDeviceList> sub_device_startup_map;
 
 public:
 	// Constructor
@@ -72,18 +77,18 @@ public:
 
 	// Set the device name that should be asscociated to a thread
 	// in the device server
-	void set_associated_device(string dev_name);
+	void set_associated_device(std::string dev_name);
 
 	// Get the device name that is asscociated
 	// with the current thread of the device server
-	string get_associated_device();
+    std::string get_associated_device();
 
 	// Register a sub device for an associated device
 	// in the list of sub devices of the device server
-	void register_sub_device (string dev_name, string sub_dev_name);
+	void register_sub_device (std::string dev_name, std::string sub_dev_name);
 
 	// Remove all sub devices for a device of the server
-	void remove_sub_devices (string dev_name);
+	void remove_sub_devices (std::string dev_name);
 
 	// Remove all sub devices
 	void remove_sub_devices();

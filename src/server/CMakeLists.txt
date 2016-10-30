@@ -55,7 +55,10 @@ set(SOURCES attrdesc.cpp
         utils_shut.cpp
         w_attribute.cpp
         w_pipe.cpp
-        zmqeventsupplier.cpp)
+        zmqeventsupplier.cpp
+        repeated_task.cxx
+        store_sub_devices_task.cxx
+        heartbeat_thread.cxx)
 
 
 add_subdirectory(jpeg)
