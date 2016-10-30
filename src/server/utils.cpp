@@ -60,7 +60,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif /* _TG_WINDOWS_ */
 
 #include <omniORB4/omniInterceptors.h>
-#include <tango/server/store_sub_devices_task.hxx>
+#include <store_sub_devices_task.hxx>
 
 
 namespace Tango

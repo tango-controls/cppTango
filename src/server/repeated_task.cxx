@@ -3,7 +3,7 @@
 //
 
 #include <tango.h>
-#include <tango/server/repeated_task.hxx>
+#include "repeated_task.hxx"
 #include <ostream>
 
 using namespace std;

@@ -60,11 +60,15 @@ set(SOURCES attrdesc.cpp
         store_sub_devices_task.cxx
         heartbeat_thread.cxx)
 
+set(HEADERS
+        repeated_task.hxx
+        store_sub_devices_task.hxx
+        heartbeat_thread.hxx)
 
 add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)
 
-add_library(server_objects OBJECT ${SOURCES})
+add_library(server_objects OBJECT ${HEADERS} ${SOURCES})
 target_compile_options(server_objects PRIVATE -fPIC)
-target_include_directories(server_objects PRIVATE .)
+target_include_directories(server_objects PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 

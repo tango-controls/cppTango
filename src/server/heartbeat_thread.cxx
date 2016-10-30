@@ -4,7 +4,7 @@
 
 #include <tango.h>
 #include <tango/server/eventsupplier.h>
-#include <tango/server/heartbeat_thread.hxx>
+#include "heartbeat_thread.hxx"
 
 
 using namespace std;

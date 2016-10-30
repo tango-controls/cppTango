@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <tango/server/repeated_task.hxx>
+#include <repeated_task.hxx>
 
 namespace Tango {
     class SubDevDiag;

@@ -3,7 +3,7 @@
 //
 
 #include <tango.h>
-#include <tango/server/store_sub_devices_task.hxx>
+#include "store_sub_devices_task.hxx"
 #include <tango/server/subdev_diag.h>
 
 #include <iostream>
