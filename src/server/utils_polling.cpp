@@ -938,7 +938,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,bool polling_9,in
 		PollingThreadInfo *pti_ptr = new PollingThreadInfo();
 		if (smallest_upd != -1)
 			pti_ptr->smallest_upd = smallest_upd;
-		pti_ptr->poll_th = new PollThread(pti_ptr->shared_data, pti_ptr->poll_mon, false, "Poll["+local_dev_name+"]");
+		pti_ptr->poll_th = new PollThread(pti_ptr->shared_data, pti_ptr->poll_mon, "Poll["+local_dev_name+"]");
 
 		if (polling_9 == true)
             pti_ptr->poll_th->set_polling_bef_9(true);

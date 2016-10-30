@@ -107,7 +107,7 @@ class PollThread
 {
     friend class PollingThreadInfo;
 public:
-	PollThread(PollThCmd &, TangoMonitor &, bool, string &&name);
+	PollThread(PollThCmd &, TangoMonitor &, string &&name);
 	void run();
     /**
      * Starts this thread
@@ -125,8 +125,6 @@ private:
     void poll_rem_ext_trig_obj();
     void poll_rem_dev();
     void poll_upd_period();
-    void poll_add_heartbeat();
-    void poll_rem_heartbeat();
 protected:
 	PollCmdType get_command(long);
 	void one_more_poll();
@@ -136,9 +134,6 @@ protected:
 	void time_diff(struct timeval &,struct timeval &,struct timeval &);
 	void poll_cmd(WorkItem &);
 	void poll_attr(WorkItem &);
-	void eve_heartbeat();
-	void store_subdev();
-	void auto_unsub();
 
 	void print_list();
 	void insert_in_list(WorkItem &);
@@ -180,8 +175,6 @@ private:
 	vector<string>      auto_name;
 	vector<long>        rem_upd;
 	vector<string>      rem_name;
-	bool				send_heartbeat;
-	u_int				heartbeat_ctr;
 	u_int               previous_nb_late;
 	bool                polling_bef_9;
 

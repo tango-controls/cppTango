@@ -1799,7 +1799,7 @@ namespace Tango {
 // Send command to the heartbeat thread but wait in case of previous cmd still not executed
 //
 
-        cout4 << "Sending cmd to polling thread" << endl;
+        cout4 << "Sending cmd to heartbeat task" << endl;
 
         heartbeat_task_ptr_->abort();
 

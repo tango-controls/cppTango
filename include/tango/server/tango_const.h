@@ -936,9 +936,7 @@ enum MessBoxType {
 
 enum PollObjType {
 	POLL_CMD = 0,
-	POLL_ATTR,
-	EVENT_HEARTBEAT,
-	STORE_SUBDEV
+	POLL_ATTR
 };
 
 enum PollCmdCode {
@@ -949,9 +947,7 @@ enum PollCmdCode {
 	POLL_UPD_PERIOD,
 	POLL_REM_DEV,
 	POLL_EXIT,
-	POLL_REM_EXT_TRIG_OBJ,
-	POLL_ADD_HEARTBEAT,
-	POLL_REM_HEARTBEAT
+	POLL_REM_EXT_TRIG_OBJ
 };
 
 enum SerialModel {

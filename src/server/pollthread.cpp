@@ -77,14 +77,12 @@ namespace Tango {
 //
 //------------------------------------------------------------------------------------------------------------------
 
-    PollThread::PollThread(PollThCmd &cmd, TangoMonitor &m, bool heartbeat, string &&name) : shared_cmd(cmd), p_mon(m),
-                                                                                             sleep(1),
-                                                                                             polling_stop(true),
-                                                                                             attr_names(1), tune_ctr(1),
-                                                                                             need_two_tuning(false),
-                                                                                             send_heartbeat(heartbeat),
-                                                                                             heartbeat_ctr(0),
-                                                                                             name_(move(name)) {
+    PollThread::PollThread(PollThCmd &cmd, TangoMonitor &m, string &&name) : shared_cmd(cmd), p_mon(m),
+                                                                             sleep(1),
+                                                                             polling_stop(true),
+                                                                             attr_names(1), tune_ctr(1),
+                                                                             need_two_tuning(false),
+                                                                             name_(move(name)) {
         local_cmd.cmd_pending = false;
 
         attr_names.length(1);
@@ -93,9 +91,6 @@ namespace Tango {
         dummy_cl_id.cpp_clnt(cci);
         previous_nb_late = 0;
         polling_bef_9 = false;
-
-        if (heartbeat == true)
-            polling_stop = false;
 
 #ifdef _TG_WINDOWS_
         LARGE_INTEGER f;
@@ -137,34 +132,6 @@ namespace Tango {
 
     void PollThread::run() {
         PollCmdType received;
-
-//
-// If the thread is the event heartbeat thread, use it also for the storage of sub device properties.
-// Declare a work item to check the for new sub devices regularly.
-//
-
-        if (send_heartbeat == true) {
-            WorkItem wo;
-
-            wo.dev = NULL;
-            wo.poll_list = NULL;
-            wo.type = STORE_SUBDEV;
-            wo.update = 30 * 60 * 1000;            // check ervery 30 minutes
-            wo.name.push_back(string("Sub device property storage"));
-            wo.needed_time.tv_sec = 0;
-            wo.needed_time.tv_usec = 0;
-
-#ifdef _TG_WINDOWS_
-            _ftime(&now_win);
-            now.tv_sec = (unsigned long)now_win.time;
-            now.tv_usec = (long)now_win.millitm * 1000;
-#else
-            gettimeofday(&now, NULL);
-#endif
-            now.tv_sec = now.tv_sec - DELTA_T;
-            wo.wake_up_date = now;
-            insert_in_list(wo);
-        }
 
 //
 // The infinite loop
@@ -633,43 +600,6 @@ namespace Tango {
         }
     }
 
-    void PollThread::poll_add_heartbeat() {
-        cout5 << "Received a add heartbeat command" << endl;
-
-        WorkItem wo;
-        list<WorkItem>::iterator ite;
-        vector<WorkItem>::iterator et_ite;
-
-        wo.dev = NULL;
-        wo.poll_list = NULL;
-        wo.type = EVENT_HEARTBEAT;
-        wo.update = 9000;
-        wo.name.push_back(string("Event heartbeat"));
-        wo.needed_time.tv_sec = 0;
-        wo.needed_time.tv_usec = TIME_HEARTBEAT;
-
-        wo.wake_up_date = now;
-        insert_in_list(wo);
-    }
-
-    void PollThread::poll_rem_heartbeat() {
-        cout5 << "Received a remove heartbeat command" << endl;
-
-        list<WorkItem>::iterator ite;
-        vector<WorkItem>::iterator et_ite;
-
-        size_t nb_elem = works.size();
-        ite = works.begin();
-
-        for (size_t ii = 0; ii < nb_elem; ii++) {
-            if (ite->type == EVENT_HEARTBEAT) {
-                works.erase(ite);
-                break;
-            }
-            ++ite;
-        }
-    }
-
     void PollThread::execute_cmd() {
 
 
@@ -715,22 +645,6 @@ namespace Tango {
                 poll_upd_period();
                 break;
             }
-
-//
-// Add the event heartbeat every 9 seconds
-//
-
-            case Tango::POLL_ADD_HEARTBEAT:
-                poll_add_heartbeat();
-                break;
-
-//
-// Remove the event heartbeat
-//
-
-            case Tango::POLL_REM_HEARTBEAT:
-                poll_rem_heartbeat();
-                break;
 
 //
 // Start polling
@@ -798,17 +712,6 @@ namespace Tango {
 
                 case Tango::POLL_ATTR:
                     poll_attr(tmp);
-                    break;
-
-                case Tango::EVENT_HEARTBEAT:
-                    eve_heartbeat();
-                    heartbeat_ctr++;
-                    if (heartbeat_ctr % 3 == 0)
-                        auto_unsub();
-                    break;
-
-                case Tango::STORE_SUBDEV:
-                    store_subdev();
                     break;
             }
         }
@@ -982,30 +885,18 @@ namespace Tango {
         nb_elt = works.size();
         ite = works.begin();
         for (i = 0; i < nb_elt; i++) {
-            if (ite->type != EVENT_HEARTBEAT) {
-                if (ite->type != STORE_SUBDEV) {
-                    string obj_list;
-                    for (size_t ctr = 0; ctr < ite->name.size(); ctr++) {
-                        obj_list = obj_list + ite->name[ctr];
-                        if (ctr < (ite->name.size() - 1))
-                            obj_list = obj_list + ", ";
-                    }
-
-                    cout5 << "Dev name = " << ite->dev->get_name() << ", obj name = " << obj_list
-                          << ", next wake_up at " << +ite->wake_up_date.tv_sec
-                          << "," << setw(6) << setfill('0')
-                          << ite->wake_up_date.tv_usec << endl;
-                } else {
-                    cout5 << ite->name[0]
-                          << ", next wake_up at " << +ite->wake_up_date.tv_sec
-                          << "," << setw(6) << setfill('0')
-                          << ite->wake_up_date.tv_usec << endl;
-                }
-            } else {
-                cout5 << "Event heartbeat, next wake_up at " << +ite->wake_up_date.tv_sec
-                      << "," << setw(6) << setfill('0')
-                      << ite->wake_up_date.tv_usec << endl;
+            string obj_list;
+            for (size_t ctr = 0; ctr < ite->name.size(); ctr++) {
+                obj_list = obj_list + ite->name[ctr];
+                if (ctr < (ite->name.size() - 1))
+                    obj_list = obj_list + ", ";
             }
+
+            cout5 << "Dev name = " << ite->dev->get_name() << ", obj name = " << obj_list
+                  << ", next wake_up at " << +ite->wake_up_date.tv_sec
+                  << "," << setw(6) << setfill('0')
+                  << ite->wake_up_date.tv_usec << endl;
+
             ++ite;
         }
     }
@@ -1970,77 +1861,4 @@ namespace Tango {
         }
 
     }
-
-//+----------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		PollThread::eve_heartbeat
-//
-// description :
-//		Send the event heartbeat
-//
-//-------------------------------------------------------------------------------------------------------------------
-
-    void PollThread::eve_heartbeat() {
-        cout5 << "----------> Time = " << now.tv_sec << ","
-              << setw(6) << setfill('0') << now.tv_usec
-              << " Sending event heartbeat" << endl;
-
-        EventSupplier *event_supplier;
-        event_supplier = Util::instance()->get_zmq_event_supplier();
-        if ((event_supplier != NULL) && (send_heartbeat == true) &&
-            (event_supplier->get_one_subscription_cmd() == true)) {
-            event_supplier->push_heartbeat_event();
-        }
-
-        event_supplier = Util::instance()->get_notifd_event_supplier();
-        if ((event_supplier != NULL) && (send_heartbeat == true) &&
-            (event_supplier->get_one_subscription_cmd() == true)) {
-            event_supplier->push_heartbeat_event();
-        }
-    }
-
-//+----------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		PollThread::store_subdev
-//
-// description :
-//		Store the sub device properties when needed.
-//
-//-----------------------------------------------------------------------------------------------------------------
-
-    void PollThread::store_subdev() {
-        static bool ignore_call = true;
-
-        cout5 << "----------> Time = " << now.tv_sec << ","
-              << setw(6) << setfill('0') << now.tv_usec
-              << " Store sub device property data if needed!" << endl;
-
-
-        if (!ignore_call) {
-            Tango::Util *tg = Tango::Util::instance();
-            tg->get_sub_dev_diag().store_sub_devices();
-        } else {
-            // ignore the first call to avoid storage during
-            // device server start-up.
-            ignore_call = false;
-        }
-    }
-
-//+----------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		PollThread::auto_unsub
-//
-// description :
-//		Check if we can unsubscribe on user events on forwarded attribute(s)
-//
-//-----------------------------------------------------------------------------------------------------------------
-
-    void PollThread::auto_unsub() {
-        RootAttRegistry &rar = Util::instance()->get_root_att_reg();
-        rar.auto_unsub();
-    }
-
 } // End of Tango namespace
