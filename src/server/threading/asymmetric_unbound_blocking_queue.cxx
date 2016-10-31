@@ -9,8 +9,8 @@ using namespace std;
 using Lock = unique_lock<mutex>;
 
 template <typename Item>
-Tango::threading::asymmetric_unbound_blocking_queue<Item>::asymmetric_unbound_blocking_queue(threading::asymmetric_unbound_blocking_queue<Item>::size_type size):
-queue_{size}
+Tango::threading::asymmetric_unbound_blocking_queue<Item>::asymmetric_unbound_blocking_queue():
+queue_{}
 {}
 
 template <typename Item>

@@ -24,7 +24,7 @@ namespace Tango {
         public:
             typedef typename std::list<Item>::size_type size_type;
 
-            asymmetric_unbound_blocking_queue(size_type);
+            asymmetric_unbound_blocking_queue();
 
             void push(Item&&);
             Item pop();

@@ -511,23 +511,25 @@ namespace Tango {
 
     }
 
-    tuple<bool,string> check_if_local(string&& poll_obj_type){
+    tuple<bool, string> check_if_local(string &&poll_obj_type) {
         string::size_type pos = poll_obj_type.rfind(LOCAL_POLL_REQUEST);
-        if (pos == (poll_obj_type.size() - LOCAL_REQUEST_STR_SIZE) ){
-            return make_tuple(true,poll_obj_type.erase(pos));
+        if (pos == (poll_obj_type.size() - LOCAL_REQUEST_STR_SIZE)) {
+            return make_tuple(true, poll_obj_type.erase(pos));
         }
-        return make_tuple(false,move(poll_obj_type));
+        return make_tuple(false, move(poll_obj_type));
     }
 
 
-    void check_if_already_polled(PollObjType& type, string&& name, DeviceImpl* dev){
+    void check_if_already_polled(PollObjType &type, string &&name, DeviceImpl *dev) {
         vector<PollObj *> &poll_list = dev->get_poll_obj_list();
         for (size_t i = 0; i < poll_list.size(); i++) {
             if (poll_list[i]->get_type() == type) {
                 string name_lower = poll_list[i]->get_name();
                 transform(name_lower.begin(), name_lower.end(), name_lower.begin(), ::tolower);
                 if (name_lower == name) {
-                    Except::throw_exception(API_AlreadyPolled, (type == Tango::POLL_CMD ? "Command ": "Attribute ") + name + " is already polled" , "DServer::add_obj_polling");
+                    Except::throw_exception(API_AlreadyPolled,
+                                            (type == Tango::POLL_CMD ? "Command " : "Attribute ") + name +
+                                            " is already polled", "DServer::add_obj_polling");
                 }
             }
         }
@@ -615,7 +617,7 @@ namespace Tango {
         transform(obj_name.begin(), obj_name.end(), obj_name.begin(), ::tolower);
 
         bool local_request{false};
-        tie(local_request,obj_type) = check_if_local(move(obj_type));
+        tie(local_request, obj_type) = check_if_local(move(obj_type));
 
         PollObjType type = PollObjType_from_string(move(obj_type));
         Attribute *attr_ptr;
@@ -626,12 +628,12 @@ namespace Tango {
 // status.
 //
 
-        if ((dev->get_dev_idl_version() >= 3) && ((obj_name == "state") || (obj_name == "status"))){
+        if ((dev->get_dev_idl_version() >= 3) && ((obj_name == "state") || (obj_name == "status"))) {
             type = Tango::POLL_ATTR;
         }
 
 
-        switch (type){
+        switch (type) {
             case POLL_CMD:
                 dev->check_command_exists(obj_name);
                 if (obj_name == "init") {
@@ -1445,16 +1447,13 @@ namespace Tango {
 //
 
             if (kill_thread == true && tg->is_svr_shutting_down() == false && th_id != poll_th_id) {
-                TangoMonitor &mon = th_info->poll_mon;
-                PollThCmd &shared_cmd = th_info->shared_data;
+                PollThCmd exit_cmd{};
 
-                {
-                    omni_mutex_lock sync(mon);
+                exit_cmd.cmd_pending = true;
+                exit_cmd.cmd_code = POLL_EXIT;
+                exit_cmd.cmd_type = POLL_COMMAND;
 
-                    shared_cmd.cmd_pending = true;
-                    shared_cmd.cmd_code = POLL_EXIT;
-                }
-                mon.signal();
+                th_info->poll_th->add_command(move(exit_cmd));
 
                 tg->remove_polling_thread_info_by_id(poll_th_id);
             }
@@ -1584,16 +1583,8 @@ namespace Tango {
         vector<PollingThreadInfo *>::iterator iter;
 
         for (iter = th_info.begin(); iter != th_info.end(); ++iter) {
-            PollThCmd start_polling_cmd{};
+            start_polling(*iter);
 
-            start_polling_cmd.cmd_pending = true;
-            start_polling_cmd.cmd_code = POLL_START;
-            start_polling_cmd.cmd_type = POLL_COMMAND;
-
-            (*iter)->poll_th->add_command(move(start_polling_cmd));
-            {
-                //TODO wait; throw
-            }
         }
 
 //
@@ -1606,30 +1597,15 @@ namespace Tango {
     }
 
     void DServer::start_polling(PollingThreadInfo *th_info) {
-        TangoMonitor &mon = th_info->poll_mon;
-        PollThCmd &shared_cmd = th_info->shared_data;
+        PollThCmd start_polling_cmd{};
 
-        {
-            omni_mutex_lock sync(mon);
-            if (shared_cmd.cmd_pending == true) {
-                mon.wait();
-            }
-            shared_cmd.cmd_pending = true;
-            shared_cmd.cmd_code = POLL_START;
-        }
-        mon.signal();
-        {
-            omni_mutex_lock sync(mon);
-            while (shared_cmd.cmd_pending == true) {
-                int interupted = mon.wait(DEFAULT_TIMEOUT);
+        start_polling_cmd.cmd_pending = true;
+        start_polling_cmd.cmd_code = POLL_START;
+        start_polling_cmd.cmd_type = POLL_COMMAND;
 
-                if ((shared_cmd.cmd_pending == true) && (interupted == false)) {
-                    cout4 << "TIME OUT" << endl;
-                    Except::throw_exception(API_CommandTimedOut,
-                                            "Polling thread blocked while trying to start thread polling!!!",
-                                            "DServer::start_polling");
-                }
-            }
+        th_info->poll_th->add_command(move(start_polling_cmd));
+        {
+            //TODO wait; throw
         }
     }
 

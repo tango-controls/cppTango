@@ -90,7 +90,7 @@ namespace Tango {
                                                                              attr_names(1), tune_ctr(1),
                                                                              need_two_tuning(false),
                                                                              name_(move(name)),
-    queue_{new threading::asymmetric_unbound_blocking_queue<PollThCmd>(1)}
+    queue_{new threading::asymmetric_unbound_blocking_queue<PollThCmd>()}
     {
         local_cmd.cmd_pending = false;
 
@@ -240,15 +240,17 @@ namespace Tango {
 //
 //------------------------------------------------------------------------------------------------------------------
 
+    //TODO return command
     PollCmdType PollThread::get_command(long tout) {
         cout4 << kThreadNameMap.at(this_thread::get_id()) << " waits for command " << endl;
         PollThCmd cmd = queue_->pop();//TODO timeout
         cout4 << kThreadNameMap.at(this_thread::get_id()) << " done waiting; got command=" << cmd.cmd_type << endl;
+        local_cmd = cmd;
         return cmd.cmd_type;
     }
 
     void PollThread::add_command(PollThCmd&& cmd){
-        cout4 << kThreadNameMap.at(this_thread::get_id()) << " sets command=" << cmd.cmd_type << endl;
+        cout4 << "??? sets command=" << cmd.cmd_type << endl;
         queue_->push(move(cmd));
     }
 
