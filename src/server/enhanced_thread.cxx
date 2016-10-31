@@ -6,6 +6,9 @@
 
 using namespace std;
 
+static_assert(chrono::steady_clock::duration{1} <= chrono::milliseconds{1},
+              "This steady_clock implementation has an outrageously coarse duration");
+
 using Lock = unique_lock<mutex>;
 
 Tango::threading::enhanced_thread::~enhanced_thread() {
@@ -20,7 +23,10 @@ const std::string& Tango::threading::enhanced_thread::name() {
 template <typename Duration>
 void Tango::threading::enhanced_thread::sleep_for(Duration duration) throw(interrupted_exception) {
     Lock lock{monitor_guard_};
-    monitor_.wait_for(lock,duration,[this](){ return !interrupted_;});
+    cv_status _cv_status;
+    do {
+        _cv_status = monitor_.wait_for(lock, duration);//TODO how long will it wait in case spurious wake up
+    } while(_cv_status != cv_status::timeout || !interrupted_);
     if(interrupted_) throw interrupted_exception{};
 }
 

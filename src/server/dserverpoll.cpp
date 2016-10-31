@@ -1767,6 +1767,7 @@ namespace Tango {
             return;
         }
         heartbeat_task_ptr_ = HeartbeatTask_ptr(new HeartbeatTask(tg->get_root_att_reg(), move(event_suppliers)));
+        heartbeat_task_ptr_->start();
 
         cout4 << "Thread cmd normally executed" << endl;
     }

@@ -452,6 +452,8 @@ void Util::effective_job(int argc,char *argv[])
 		store_sub_devices_task_ = StoreSubDevicesTask_ptr(
 				new StoreSubDevicesTask(chrono::minutes{30}, this->sub_dev_diag));
 
+        store_sub_devices_task_->start();
+
         cout4 << "Store sub devices task has been added" << endl;
 
 

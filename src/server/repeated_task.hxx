@@ -22,6 +22,7 @@ namespace Tango {
         virtual ~RepeatedTask();
         virtual void execute() = 0;
     public:
+        void start();
         void abort();
     private:
         void run();

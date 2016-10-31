@@ -32,6 +32,10 @@ RepeatedTask::~RepeatedTask() {
     cout3 << "RepeatedTask::~RepeatedTask() exiting" << endl;
 }
 
+void RepeatedTask::start() {
+    thread_.start();
+}
+
 void RepeatedTask::abort() {
     thread_.interrupt();
 }
