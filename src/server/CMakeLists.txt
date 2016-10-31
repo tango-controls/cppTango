@@ -57,17 +57,14 @@ set(SOURCES attrdesc.cpp
         w_attribute.cpp
         w_pipe.cpp
         zmqeventsupplier.cpp
-        repeated_task.cxx
         store_sub_devices_task.cxx
-        heartbeat_task.cxx
-        enhanced_thread.cxx)
+        heartbeat_task.cxx)
 
 set(HEADERS
-        repeated_task.hxx
         store_sub_devices_task.hxx
-        heartbeat_task.hxx
-        enhanced_thread.hxx)
+        heartbeat_task.hxx)
 
+add_subdirectory(threading)
 add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)
 

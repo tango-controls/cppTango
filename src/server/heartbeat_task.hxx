@@ -8,7 +8,7 @@
 #include <thread>
 #include <atomic>
 #include <vector>
-#include "repeated_task.hxx"
+#include "threading/repeated_task.hxx"
 
 namespace Tango {
     class EventSupplier;
