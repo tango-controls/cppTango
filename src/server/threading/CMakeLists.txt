@@ -1,6 +1,6 @@
 set(SOURCES
-        asymmetric_unbounded_blocking_queue.hxx
-        asymmetric_unbounded_blocking_queue.cxx
+        asymmetric_unbound_blocking_queue.hxx
+        asymmetric_unbound_blocking_queue.cxx
         repeated_task.hxx
         repeated_task.cxx
         enhanced_thread.hxx

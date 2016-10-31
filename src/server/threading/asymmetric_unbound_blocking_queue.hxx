@@ -17,14 +17,14 @@ namespace Tango {
          *
          *
          */
-        class asymmetric_unbounded_blocking_queue {
+        class asymmetric_unbound_blocking_queue {
             std::list<Item> queue_;
             std::condition_variable monitor_;
-            std::mutex guard_;
+            std::mutex queue_guard_;
         public:
-            typedef std::list<Item>::size_type size_type;
+            typedef typename std::list<Item>::size_type size_type;
 
-            asymmetric_unbounded_blocking_queue(size_type);
+            asymmetric_unbound_blocking_queue(size_type);
 
             void push(Item&&);
             Item pop();

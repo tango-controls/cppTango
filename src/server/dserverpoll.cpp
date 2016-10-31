@@ -718,23 +718,19 @@ namespace Tango {
 
         cout4 << "Sending cmd to polling thread" << endl;
 
-        TangoMonitor &mon = th_info->poll_mon;
-        PollThCmd &shared_cmd = th_info->shared_data;
+        PollThCmd add_obj_cmd{};
+
+        add_obj_cmd.cmd_type = POLL_COMMAND;
+        add_obj_cmd.cmd_code = POLL_ADD_OBJ;
+        add_obj_cmd.name = obj_name;
+        add_obj_cmd.type = type;
+        add_obj_cmd.dev = dev;
+        add_obj_cmd.index = poll_list.size() - 1;
+        add_obj_cmd.new_upd = delta_ms;
 
         thread::id th_id = this_thread::get_id();
         if (th_id != poll_th_id) {
-            {
-                omni_mutex_lock sync(mon);
-                if (shared_cmd.cmd_pending == true) {
-                    mon.wait();
-                }
-                shared_cmd.cmd_pending = true;
-                shared_cmd.cmd_code = POLL_ADD_OBJ;
-                shared_cmd.dev = dev;
-                shared_cmd.index = poll_list.size() - 1;
-                shared_cmd.new_upd = delta_ms;
-            }
-            mon.signal();
+            th_info->poll_th->add_command(move(add_obj_cmd));
 
             cout4 << "Cmd sent to polling thread" << endl;
 
@@ -743,40 +739,12 @@ namespace Tango {
 //
 
 
-            if (th_id != poll_th_id && local_request == false) {
-                omni_mutex_lock sync(mon);
-                while (shared_cmd.cmd_pending == true) {
-                    int interupted = mon.wait(DEFAULT_TIMEOUT);
-                    if ((shared_cmd.cmd_pending == true) && (interupted == false)) {
-                        cout4 << "TIME OUT" << endl;
-                        delete poll_list.back();
-                        poll_list.pop_back();
-
-//
-// If the thread has been created by this request, try to kill it
-//
-
-                        if (thread_created == -1) {
-                            shared_cmd.cmd_pending = true;
-                            shared_cmd.cmd_code = POLL_EXIT;
-
-                            mon.signal();
-                        }
-                        Except::throw_exception(API_CommandTimedOut,
-                                                "Polling thread blocked !!!",
-                                                "DServer::add_obj_polling");
-                    }
-                }
+            if (local_request == false) {
+                //TODO if timeout and pollthread was created kill it and throw exception
             }
         } else {
-            shared_cmd.cmd_pending = true;
-            shared_cmd.cmd_code = POLL_ADD_OBJ;
-            shared_cmd.dev = dev;
-            shared_cmd.index = poll_list.size() - 1;
-            shared_cmd.new_upd = delta_ms;
-
             PollThread *poll_th = th_info->poll_th;
-            poll_th->set_local_cmd(shared_cmd);
+            poll_th->set_local_cmd(add_obj_cmd);
             poll_th->execute_cmd();
         }
 
@@ -1095,37 +1063,25 @@ namespace Tango {
 // Send command to the polling thread
 //
 
-        TangoMonitor &mon = th_info->poll_mon;
-        PollThCmd &shared_cmd = th_info->shared_data;
+        cout3 << "Sending cmd to polling thread" << endl;
+        PollThCmd upd_obj_polling_cmd{};
+
+        upd_obj_polling_cmd.cmd_pending = true;
+        upd_obj_polling_cmd.cmd_code = POLL_UPD_PERIOD;
+        upd_obj_polling_cmd.cmd_type = POLL_COMMAND;
+        upd_obj_polling_cmd.dev = dev;
+        upd_obj_polling_cmd.name = obj_name;
+        upd_obj_polling_cmd.type = type;
+        upd_obj_polling_cmd.new_upd = (argin->lvalue)[0];
+
+        upd_obj_polling_cmd.index = distance(dev->get_poll_obj_list().begin(), ite);
 
         thread::id th_id = this_thread::get_id();
         if (th_id != poll_th_id) {
-            omni_mutex_lock sync(mon);
-            if (shared_cmd.cmd_pending == true) {
-                mon.wait();
-            }
-            shared_cmd.cmd_pending = true;
-            shared_cmd.cmd_code = POLL_UPD_PERIOD;
-            shared_cmd.dev = dev;
-            shared_cmd.name = obj_name;
-            shared_cmd.type = type;
-            shared_cmd.new_upd = (argin->lvalue)[0];
-
-            shared_cmd.index = distance(dev->get_poll_obj_list().begin(), ite);
-
-            mon.signal();
+            th_info->poll_th->add_command(move(upd_obj_polling_cmd));
         } else {
-            shared_cmd.cmd_pending = true;
-            shared_cmd.cmd_code = POLL_UPD_PERIOD;
-            shared_cmd.dev = dev;
-            shared_cmd.name = obj_name;
-            shared_cmd.type = type;
-            shared_cmd.new_upd = (argin->lvalue)[0];
-
-            shared_cmd.index = distance(dev->get_poll_obj_list().begin(), ite);
-
             PollThread *poll_th = th_info->poll_th;
-            poll_th->set_local_cmd(shared_cmd);
+            poll_th->set_local_cmd(upd_obj_polling_cmd);
             poll_th->execute_cmd();
         }
 
@@ -1309,26 +1265,19 @@ namespace Tango {
 //
 
                 cout4 << "Sending cmd to polling thread" << endl;
-                TangoMonitor &mon = th_info->poll_mon;
-                PollThCmd &shared_cmd = th_info->shared_data;
+                PollThCmd rem_obj_cmd{};
+
+                rem_obj_cmd.cmd_type = POLL_COMMAND;
+                rem_obj_cmd.cmd_code = tmp_upd == 0 ? POLL_REM_EXT_TRIG_OBJ : POLL_REM_OBJ;
+
+                rem_obj_cmd.dev = dev;
+                rem_obj_cmd.name = obj_name;
+                rem_obj_cmd.type = type;
+                rem_obj_cmd.index = distance(dev->get_poll_obj_list().begin(), ite);
+
 
                 if (th_id != poll_th_id) {
-                    {
-                        omni_mutex_lock sync(mon);
-                        if (shared_cmd.cmd_pending == true) {
-                            mon.wait();
-                        }
-                        shared_cmd.cmd_pending = true;
-                        if (tmp_upd == 0)
-                            shared_cmd.cmd_code = POLL_REM_EXT_TRIG_OBJ;
-                        else
-                            shared_cmd.cmd_code = POLL_REM_OBJ;
-                        shared_cmd.dev = dev;
-                        shared_cmd.name = obj_name;
-                        shared_cmd.type = type;
-                    }
-                    mon.signal();
-
+                    th_info->poll_th->add_command(move(rem_obj_cmd));
                     cout4 << "Cmd sent to polling thread" << endl;
 
 //
@@ -1336,34 +1285,12 @@ namespace Tango {
 //
 
 
-                    if (th_id != poll_th_id && !local_request) {
-                        {
-                            omni_mutex_lock sync(mon);
-                            while (shared_cmd.cmd_pending == true) {
-                                int interupted = mon.wait(DEFAULT_TIMEOUT);
-                                if ((shared_cmd.cmd_pending == true) && (interupted == false)) {
-                                    cout4 << "TIME OUT" << endl;
-                                    Except::throw_exception(API_CommandTimedOut,
-                                                            "Polling thread blocked !!!",
-                                                            "DServer::rem_obj_polling");
-                                }
-                            }
-                        }
+                    if (!local_request) {
+                        //TODO same as add_
                     }
                 } else {
-                    shared_cmd.cmd_pending = true;
-                    if (tmp_upd == 0)
-                        shared_cmd.cmd_code = POLL_REM_EXT_TRIG_OBJ;
-                    else
-                        shared_cmd.cmd_code = POLL_REM_OBJ;
-                    shared_cmd.dev = dev;
-                    shared_cmd.name = obj_name;
-                    shared_cmd.type = type;
-
-                    shared_cmd.index = distance(dev->get_poll_obj_list().begin(), ite);
-
                     PollThread *poll_th = th_info->poll_th;
-                    poll_th->set_local_cmd(shared_cmd);
+                    poll_th->set_local_cmd(rem_obj_cmd);
                     poll_th->execute_cmd();
                 }
                 cout4 << "Thread cmd normally executed" << endl;
@@ -1611,30 +1538,14 @@ namespace Tango {
         vector<PollingThreadInfo *>::iterator iter;
 
         for (iter = th_info.begin(); iter != th_info.end(); ++iter) {
-            TangoMonitor &mon = (*iter)->poll_mon;
-            PollThCmd &shared_cmd = (*iter)->shared_data;
+            PollThCmd stop_polling_cmd{};
+            stop_polling_cmd.cmd_pending = true;
+            stop_polling_cmd.cmd_code = POLL_STOP;
+            stop_polling_cmd.cmd_type = POLL_COMMAND;
 
+            (*iter)->poll_th->add_command(move(stop_polling_cmd));
             {
-                omni_mutex_lock sync(mon);
-                if (shared_cmd.cmd_pending == true) {
-                    mon.wait();
-                }
-                shared_cmd.cmd_pending = true;
-                shared_cmd.cmd_code = POLL_STOP;
-            }
-            mon.signal();
-            {
-                omni_mutex_lock sync(mon);
-                while (shared_cmd.cmd_pending == true) {
-                    interupted = mon.wait(DEFAULT_TIMEOUT);
-
-                    if ((shared_cmd.cmd_pending == true) && (interupted == false)) {
-                        cout4 << "TIME OUT" << endl;
-                        Except::throw_exception(API_CommandTimedOut,
-                                                "Polling thread blocked !!!",
-                                                "DServer::stop_polling");
-                    }
-                }
+                //TODO wait for execution throw exception
             }
         }
 
@@ -1673,30 +1584,15 @@ namespace Tango {
         vector<PollingThreadInfo *>::iterator iter;
 
         for (iter = th_info.begin(); iter != th_info.end(); ++iter) {
-            TangoMonitor &mon = (*iter)->poll_mon;
-            PollThCmd &shared_cmd = (*iter)->shared_data;
+            PollThCmd start_polling_cmd{};
 
-            {
-                omni_mutex_lock sync(mon);
-                if (shared_cmd.cmd_pending == true) {
-                    mon.wait();
-                }
-                shared_cmd.cmd_pending = true;
-                shared_cmd.cmd_code = POLL_START;
-            }
-            mon.signal();
-            {
-                omni_mutex_lock sync(mon);
-                while (shared_cmd.cmd_pending == true) {
-                    int interupted = mon.wait(DEFAULT_TIMEOUT);
+            start_polling_cmd.cmd_pending = true;
+            start_polling_cmd.cmd_code = POLL_START;
+            start_polling_cmd.cmd_type = POLL_COMMAND;
 
-                    if ((shared_cmd.cmd_pending == true) && (interupted == false)) {
-                        cout4 << "TIME OUT" << endl;
-                        Except::throw_exception(API_CommandTimedOut,
-                                                "Polling thread blocked !!!",
-                                                "DServer::start_polling");
-                    }
-                }
+            (*iter)->poll_th->add_command(move(start_polling_cmd));
+            {
+                //TODO wait; throw
             }
         }
 

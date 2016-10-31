@@ -51,11 +51,18 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <iomanip>
 
+#include "threading/asymmetric_unbound_blocking_queue.hxx"
+#include "threading/asymmetric_unbound_blocking_queue.cxx"
+
 
 namespace Tango {
 
     extern map<thread::id, string> kThreadNameMap;
     extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
+
+    namespace threading {
+        template class asymmetric_unbound_blocking_queue<PollThCmd>;
+    }
 
     DeviceImpl *PollThread::dev_to_del = NULL;
     string PollThread::name_to_del = "";
@@ -82,7 +89,9 @@ namespace Tango {
                                                                              polling_stop(true),
                                                                              attr_names(1), tune_ctr(1),
                                                                              need_two_tuning(false),
-                                                                             name_(move(name)) {
+                                                                             name_(move(name)),
+    queue_{new threading::asymmetric_unbound_blocking_queue<PollThCmd>(1)}
+    {
         local_cmd.cmd_pending = false;
 
         attr_names.length(1);
@@ -232,39 +241,15 @@ namespace Tango {
 //------------------------------------------------------------------------------------------------------------------
 
     PollCmdType PollThread::get_command(long tout) {
-        omni_mutex_lock sync(p_mon);
-        PollCmdType ret;
+        cout4 << kThreadNameMap.at(this_thread::get_id()) << " waits for command " << endl;
+        PollThCmd cmd = queue_->pop();//TODO timeout
+        cout4 << kThreadNameMap.at(this_thread::get_id()) << " done waiting; got command=" << cmd.cmd_type << endl;
+        return cmd.cmd_type;
+    }
 
-//
-// Wait on monitor
-//
-
-        if ((shared_cmd.cmd_pending == false) && (shared_cmd.trigger == false)) {
-            if (works.empty() == true) {
-                cout4 << kThreadNameMap.at(this_thread::get_id()) << " waits ... " << endl;
-                p_mon.wait();
-            } else {
-                cout4 << kThreadNameMap.at(this_thread::get_id()) << " waits for " << tout << endl;
-                if (tout != -1)
-                    p_mon.wait(tout);
-            }
-        }
-
-        cout4 << kThreadNameMap.at(this_thread::get_id()) << " is awaken!" << endl;
-//
-// Test if it is a new command. If yes, copy its data locally
-//
-
-        if (shared_cmd.cmd_pending == true) {
-            local_cmd = shared_cmd;
-            ret = POLL_COMMAND;
-        } else if (shared_cmd.trigger == true) {
-            local_cmd = shared_cmd;
-            ret = POLL_TRIGGER;
-        } else
-            ret = POLL_TIME_OUT;
-
-        return ret;
+    void PollThread::add_command(PollThCmd&& cmd){
+        cout4 << kThreadNameMap.at(this_thread::get_id()) << " sets command=" << cmd.cmd_type << endl;
+        queue_->push(move(cmd));
     }
 
 //+---------------------------------------------------------------------------------------------------------------

@@ -51,6 +51,15 @@ namespace Tango
 {
 
     extern map<thread::id, string> kThreadNameMap;
+
+    class PollThCmd;
+
+    namespace threading {
+        template<typename Item>
+        class asymmetric_unbound_blocking_queue;
+    }
+
+    typedef std::unique_ptr<threading::asymmetric_unbound_blocking_queue<PollThCmd>> PollThCmdQueuePtr;
 //=============================================================================
 //
 //			The PollThCmd structure
@@ -60,7 +69,17 @@ namespace Tango
 //
 //=============================================================================
 
-struct PollThCmd
+
+
+    enum PollCmdType
+    {
+        POLL_TIME_OUT,
+        POLL_COMMAND,
+        POLL_TRIGGER
+    };
+
+
+    struct PollThCmd
 {
 	bool			cmd_pending;	// The new command flag
 	bool			trigger;		// The external trigger flag
@@ -70,6 +89,7 @@ struct PollThCmd
 	string			name;			// Object name
 	PollObjType		type;			// Object type (cmd/attr)
 	int				new_upd;		// New update period (For upd period com.)
+    PollCmdType     cmd_type;       //TODO replace with polymorphism
 };
 
 
@@ -83,14 +103,6 @@ struct WorkItem
 	vector<string>		name;			// Object name(s)
 	struct timeval		needed_time;	// Time needed to execute action
 };
-
-enum PollCmdType
-{
-	POLL_TIME_OUT,
-	POLL_COMMAND,
-	POLL_TRIGGER
-};
-
 //=============================================================================
 //
 //			The PollThread class
@@ -116,8 +128,9 @@ public:
     thread::id id(){
         return id_;
     }
-	void execute_cmd();
-	void set_local_cmd(PollThCmd &cmd) {local_cmd = cmd;}
+    void add_command(PollThCmd&&);
+    void execute_cmd();
+    void set_local_cmd(PollThCmd &cmd) {local_cmd = cmd;}
 	void set_polling_bef_9(bool _v) {polling_bef_9 = _v;}
 private:
     void poll_add_obj();
@@ -185,6 +198,8 @@ private:
     thread::id id_;
 	bool interrupted_;
     string name_;
+
+        PollThCmdQueuePtr queue_;
 public:
 	static DeviceImpl 	*dev_to_del;
 	static string	   	name_to_del;
