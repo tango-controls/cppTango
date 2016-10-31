@@ -242,9 +242,9 @@ namespace Tango {
 //------------------------------------------------------------------------------------------------------------------
 
     //TODO return command
-    PollCmdType PollThread::get_command(long tout) {
+    PollCmdType PollThread::get_command(long timeout) {
         cout4 << kThreadNameMap.at(this_thread::get_id()) << " waits for command " << endl;
-        PollThCmd cmd = queue_->pop();//TODO timeout
+        PollThCmd cmd = queue_->pop(chrono::milliseconds{timeout}, PollThCmd{});
         cout4 << kThreadNameMap.at(this_thread::get_id()) << " done waiting; got command=" << cmd.cmd_type << endl;
         local_cmd = cmd;
         return cmd.cmd_type;

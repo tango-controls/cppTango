@@ -23,15 +23,15 @@ void Tango::threading::asymmetric_unbound_blocking_queue<Item>::push(Item &&item
 }
 
 template <typename Item>
-Item Tango::threading::asymmetric_unbound_blocking_queue<Item>::pop() {
-    Item rv;
-    {
+Item Tango::threading::asymmetric_unbound_blocking_queue<Item>::pop(chrono::milliseconds timeout, Item&& default_item) {
         Lock lock{queue_guard_};
-        if (queue_.empty())
-            monitor_.wait(lock, [this]() { return !queue_.empty(); });
+        bool queue_empty = monitor_.wait_for(lock, timeout, [this]() { return queue_.empty(); });
 
-        rv = queue_.front();
-        queue_.pop_front();
-    }
-    return rv;
+        if(queue_empty) {
+            return default_item;
+        } else {
+            Item rv = queue_.front();
+            queue_.pop_front();
+            return rv;
+        }
 }
