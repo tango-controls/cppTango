@@ -41,6 +41,7 @@
 #include <tango/server/utils.h>
 
 #include <list>
+#include <future>
 
 #ifdef _TG_WINDOWS_
 	#include <sys/types.h>
@@ -138,6 +139,8 @@ private:
     void poll_rem_ext_trig_obj();
     void poll_rem_dev();
     void poll_upd_period();
+    void start_polling();
+    void stop_polling();
 protected:
 	PollCmdType get_command(long);
 	void one_more_poll();
@@ -172,8 +175,8 @@ protected:
 #endif
 	struct timeval		now;
 	struct timeval		after;
-	long				sleep;
-	bool				polling_stop;
+	atomic_long			sleep;
+	atomic_bool			polling_stop;
 
 private:
 	CORBA::Any			in_any;
@@ -200,6 +203,7 @@ private:
     string name_;
 
         PollThCmdQueuePtr queue_;
+        std::future<void> polling_future_;
 public:
 	static DeviceImpl 	*dev_to_del;
 	static string	   	name_to_del;

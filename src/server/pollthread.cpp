@@ -51,7 +51,9 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <iomanip>
 
+#include "threading/repeated_task.hxx"
 #include "threading/asymmetric_unbound_blocking_queue.hxx"
+//import template definitions
 #include "threading/asymmetric_unbound_blocking_queue.cxx"
 
 
@@ -61,7 +63,8 @@ namespace Tango {
     extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
 
     namespace threading {
-        template class asymmetric_unbound_blocking_queue<PollThCmd>;
+        template
+        class asymmetric_unbound_blocking_queue<PollThCmd>;
     }
 
     DeviceImpl *PollThread::dev_to_del = NULL;
@@ -90,8 +93,7 @@ namespace Tango {
                                                                              attr_names(1), tune_ctr(1),
                                                                              need_two_tuning(false),
                                                                              name_(move(name)),
-    queue_{new threading::asymmetric_unbound_blocking_queue<PollThCmd>()}
-    {
+                                                                             queue_{new threading::asymmetric_unbound_blocking_queue<PollThCmd>()} {
         local_cmd.cmd_pending = false;
 
         attr_names.length(1);
@@ -141,31 +143,18 @@ namespace Tango {
     void PollThread::run() {
         kThreadNameMap.emplace(this_thread::get_id(), name_);
 
-        PollCmdType received;
-
 //
 // The infinite loop
 //
 
         while (!interrupted_) {
             try {
-                if (sleep != 0)
-                    received = get_command(sleep);
-                else
-                    received = POLL_TIME_OUT;
+                PollCmdType received = get_command(sleep);
 
 //
 // Create the per thread data if it is not already done (For Python DS)
 //
 
-#ifdef _TG_WINDOWS_
-                _ftime(&now_win);
-                now.tv_sec = (unsigned long)now_win.time;
-                now.tv_usec = (long)now_win.millitm * 1000;
-#else
-                gettimeofday(&now, NULL);
-#endif
-                now.tv_sec = now.tv_sec - DELTA_T;
 
                 switch (received) {
                     case POLL_COMMAND:
@@ -180,27 +169,6 @@ namespace Tango {
                         one_more_trigg();
                         break;
                 }
-
-#ifdef _TG_WINDOWS_
-                _ftime(&after_win);
-                after.tv_sec = (unsigned long)after_win.time;
-                after.tv_usec = (long)after_win.millitm * 1000;
-#else
-                gettimeofday(&after, NULL);
-#endif
-                after.tv_sec = after.tv_sec - DELTA_T;
-
-                if (tune_ctr <= 0) {
-                    tune_list(true, 0);
-                    if (need_two_tuning == true) {
-                        unsigned long nb_works = works.size();
-                        tune_ctr = (nb_works << 2);
-                        need_two_tuning = false;
-                    } else
-                        tune_ctr = POLL_LOOP_NB;
-                }
-
-                compute_sleep_time();
             }
             catch (omni_thread_fatal &) {
                 cerr << "OUPS !! A omni thread fatal exception received by a polling thread !!!!!!!!" << endl;
@@ -244,14 +212,14 @@ namespace Tango {
     //TODO return command
     PollCmdType PollThread::get_command(long timeout) {
         cout4 << kThreadNameMap.at(this_thread::get_id()) << " waits for command " << endl;
-        PollThCmd cmd = queue_->pop(chrono::milliseconds{timeout}, PollThCmd{});
+        PollThCmd cmd = queue_->pop();
         cout4 << kThreadNameMap.at(this_thread::get_id()) << " done waiting; got command=" << cmd.cmd_type << endl;
         local_cmd = cmd;
         return cmd.cmd_type;
     }
 
-    void PollThread::add_command(PollThCmd&& cmd){
-        cout4 << "??? sets command=" << cmd.cmd_type << endl;
+    void PollThread::add_command(PollThCmd &&cmd) {
+        cout4 << "??? sets command=" << cmd.cmd_code << endl;
         queue_->push(move(cmd));
     }
 
@@ -588,6 +556,64 @@ namespace Tango {
         }
     }
 
+
+    void PollThread::start_polling() {
+        polling_stop.store(false);
+        polling_future_ = async(launch::async,[this]() {
+            while (!polling_stop) {
+                long sleep = this->sleep.load();
+                cout3 << "Sleep for: " << sleep << endl;
+                this_thread::sleep_for(chrono::milliseconds{sleep});//TODO use conditional variable
+
+
+#ifdef _TG_WINDOWS_
+                _ftime(&now_win);
+                now.tv_sec = (unsigned long)now_win.time;
+                now.tv_usec = (long)now_win.millitm * 1000;
+#else
+                gettimeofday(&now, NULL);
+#endif
+                now.tv_sec = now.tv_sec - DELTA_T;
+
+                cout4 << "Sending cmd to polling thread" << endl;
+
+                PollThCmd poll_cmd{};
+
+                poll_cmd.cmd_type = POLL_TIME_OUT;
+
+                add_command(move(poll_cmd));
+
+                cout4 << "Cmd sent to polling thread" << endl;
+
+#ifdef _TG_WINDOWS_
+                _ftime(&after_win);
+                after.tv_sec = (unsigned long)after_win.time;
+                after.tv_usec = (long)after_win.millitm * 1000;
+#else
+                gettimeofday(&after, NULL);
+#endif
+                after.tv_sec = after.tv_sec - DELTA_T;
+
+                if (tune_ctr <= 0) {
+                    tune_list(true, 0);
+                    if (need_two_tuning == true) {
+                        unsigned long nb_works = works.size();
+                        tune_ctr = (nb_works << 2);
+                        need_two_tuning = false;
+                    } else
+                        tune_ctr = POLL_LOOP_NB;
+                }
+
+                compute_sleep_time();
+            }
+        });
+    }
+
+    void PollThread::stop_polling(){
+        polling_stop.store(true);
+    }
+
+
     void PollThread::execute_cmd() {
 
 
@@ -640,7 +666,9 @@ namespace Tango {
 
             case Tango::POLL_START :
                 cout5 << "Received a Start polling command" << endl;
-                polling_stop = false;
+
+                start_polling();
+
                 break;
 
 //
@@ -649,7 +677,7 @@ namespace Tango {
 
             case Tango::POLL_STOP :
                 cout5 << "Received a Stop polling command" << endl;
-                polling_stop = true;
+                stop_polling();
                 break;
 
 //
@@ -689,19 +717,19 @@ namespace Tango {
 //-------------------------------------------------------------------------------------------------------------------
 
     void PollThread::one_more_poll() {
+        if(polling_stop) return;
+
         WorkItem tmp = works.front();
         works.pop_front();
 
-        if (polling_stop == false) {
-            switch (tmp.type) {
-                case Tango::POLL_CMD:
-                    poll_cmd(tmp);
-                    break;
+        switch (tmp.type) {
+            case Tango::POLL_CMD:
+                poll_cmd(tmp);
+                break;
 
-                case Tango::POLL_ATTR:
-                    poll_attr(tmp);
-                    break;
-            }
+            case Tango::POLL_ATTR:
+                poll_attr(tmp);
+                break;
         }
 
 //
@@ -1158,8 +1186,10 @@ namespace Tango {
         print_list();
 
         if (works.empty() == false) {
-            double next, after_d, diff;
-            after_d = (double) after.tv_sec + ((double) after.tv_usec / 1000000);
+            //TODO use integral type to calculate time related values
+            double next{};
+            double diff{};
+            double after_d = (double) after.tv_sec + ((double) after.tv_usec / 1000000);
 
             bool discard = false;
             u_int nb_late = 0;

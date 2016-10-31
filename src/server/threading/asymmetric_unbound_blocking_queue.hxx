@@ -27,12 +27,8 @@ namespace Tango {
             asymmetric_unbound_blocking_queue();
 
             void push(Item&&);
-            /**
-             * Waits till queue is not empty for timeout. In case of timeout returns provided item.
-             *
-             * @return enqued item or default
-             */
-            Item pop(std::chrono::milliseconds, Item&&);
+
+            Item pop();
 
             //TODO swap - grab all items and empty queue
         };
