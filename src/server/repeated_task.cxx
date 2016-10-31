@@ -9,34 +9,41 @@
 using namespace std;
 using namespace Tango;
 
-template <typename Duration>
-RepeatedTask::RepeatedTask(Duration delay):
+template <typename T, typename Duration>
+RepeatedTask::RepeatedTask(T&& name, Duration delay):
 delay_{chrono::duration_cast<chrono::milliseconds>(delay)},
-aborted_{false}
+thread_{move(name), &RepeatedTask::run, this}
 {
-    thread_ = thread{&RepeatedTask::run, this};
 }
 
-template RepeatedTask::RepeatedTask(chrono::minutes);
+template RepeatedTask::RepeatedTask(string&&, chrono::minutes);
 
-template RepeatedTask::RepeatedTask(chrono::seconds);
+template RepeatedTask::RepeatedTask(string&&, chrono::seconds);
 
-template RepeatedTask::RepeatedTask(chrono::milliseconds);
+template RepeatedTask::RepeatedTask(string&&, chrono::milliseconds);
 
 RepeatedTask::~RepeatedTask() {
-    if(thread_.joinable())
-        thread_.join();
+    cout3 << "RepeatedTask::~RepeatedTask()" << endl;
+    if(thread_.as_std_thread().joinable()) {
+        cout3 << "RepeatedTask: interrupt thread[" << thread_.name() << "]" << endl;
+        thread_.interrupt();
+        thread_.as_std_thread().join();
+    }
+    cout3 << "RepeatedTask::~RepeatedTask() exiting" << endl;
 }
 
 void RepeatedTask::abort() {
-    aborted_.store(true);
+    thread_.interrupt();
 }
 
 void RepeatedTask::run() {
     cout3 << "RepeatedTask::execute()" << endl;
-    while(!aborted_){
-        //TODO wait on conditional variable to implement interruption
-        this_thread::sleep_for(delay_);
+    while(!thread_.interrupted()){
+        try {
+            thread_.sleep_for(delay_);
+        } catch (const threading::interrupted_exception& ex){
+            return;
+        }
         execute();
     }
 }

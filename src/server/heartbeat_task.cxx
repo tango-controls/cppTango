@@ -12,14 +12,14 @@ using namespace Tango;
 
 
 HeartbeatTask::HeartbeatTask(RootAttRegistry& root_att_registry, vector<EventSupplier*>&& suppliers) :
-RepeatedTask(chrono::seconds{9}),
+RepeatedTask(string{"HeartbeatTask"},chrono::seconds{9}),
 suppliers_{move(suppliers)},
 heartbeat_ctr_{0},
 root_att_registry_{root_att_registry}
 {}
 
 thread::id HeartbeatTask::id() {
-    return thread_.get_id();
+    return thread_.as_std_thread().get_id();
 }
 
 void HeartbeatTask::send_heartbeat() {

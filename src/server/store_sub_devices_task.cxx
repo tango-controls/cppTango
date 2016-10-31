@@ -14,7 +14,7 @@ using namespace Tango;
 
 template <typename Duration>
 StoreSubDevicesTask::StoreSubDevicesTask(Duration delay, SubDevDiag& sub_dev_diag):
-RepeatedTask(delay),
+RepeatedTask(string{"StoreSubDevicesTask"},delay),
 sub_dev_diag_{sub_dev_diag}
 {}
 

@@ -10,14 +10,15 @@
 #include <atomic>
 //#include <type_traits>
 
+#include "enhanced_thread.hxx"
+
 namespace Tango {
     class RepeatedTask {
         std::chrono::milliseconds delay_;
-        std::atomic_bool aborted_;
     protected:
-        std::thread thread_;
-        template <typename Duration>
-        RepeatedTask(Duration);
+        threading::enhanced_thread thread_;
+        template <typename  T, typename Duration>
+        RepeatedTask(T&&, Duration);
         virtual ~RepeatedTask();
         virtual void execute() = 0;
     public:
