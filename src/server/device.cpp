@@ -318,6 +318,7 @@ namespace Tango {
 
             exit_cmd.cmd_pending = true;
             exit_cmd.cmd_code = POLL_EXIT;
+            exit_cmd.cmd_type = POLL_COMMAND;
 
             th_info->poll_th->add_command(move(exit_cmd));
 

@@ -122,7 +122,6 @@ namespace Tango {
     void PollThread::start() {
         thread_ = std::thread(&PollThread::run, this);
         id_ = thread_.get_id();
-        kThreadNameMap.emplace(id_, name_);
 //        poll_thread.detach();
         cout5 << "Started thread id=" << id_ << "; name=" << name_ << "; monitor=" << p_mon.get_uid() << endl;
     }
@@ -140,6 +139,8 @@ namespace Tango {
 
 
     void PollThread::run() {
+        kThreadNameMap.emplace(this_thread::get_id(), name_);
+
         PollCmdType received;
 
 //
