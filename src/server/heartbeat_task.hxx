@@ -22,7 +22,7 @@ namespace Tango {
         HeartbeatTask(RootAttRegistry&,vector<EventSupplier*>&& suppliers);
         ~HeartbeatTask() = default;
         std::thread::id id();
-        void execute_internal() override ;
+        void execute() override ;
     private:
         void send_heartbeat();
     };

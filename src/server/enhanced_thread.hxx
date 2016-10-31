@@ -8,16 +8,16 @@
 
 namespace Tango {
     namespace thread {
-        class named_thread {
+        class enhanced_thread {
             std::thread thread_;
             std::string name_;
         public:
             template <typename T, typename... Args>
-            named_thread(T&& name, Args&&... args):
+            enhanced_thread(T&& name, Args&&... args):
                     name_{std::forward(name)},
                     thread_{std::forward(std::forward<Args>(args)...)}
             {}
-            ~named_thread();
+            ~enhanced_thread();
             std::string name();
             const std::thread& as_thread();
         };

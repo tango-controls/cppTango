@@ -60,13 +60,13 @@ set(SOURCES attrdesc.cpp
         repeated_task.cxx
         store_sub_devices_task.cxx
         heartbeat_task.cxx
-        named_thread.cxx)
+        enhanced_thread.cxx)
 
 set(HEADERS
         repeated_task.hxx
         store_sub_devices_task.hxx
         heartbeat_task.hxx
-        named_thread.hxx)
+        enhanced_thread.hxx)
 
 add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)

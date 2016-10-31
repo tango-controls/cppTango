@@ -12,7 +12,7 @@ namespace Tango {
     class StoreSubDevicesTask : public RepeatedTask {
         SubDevDiag& sub_dev_diag_;
     private:
-        void execute_internal() override ;
+        void execute() override ;
     public:
         template <typename Duration>
         StoreSubDevicesTask(Duration, SubDevDiag&);

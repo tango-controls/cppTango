@@ -14,7 +14,7 @@ RepeatedTask::RepeatedTask(Duration delay):
 delay_{chrono::duration_cast<chrono::milliseconds>(delay)},
 aborted_{false}
 {
-    thread_ = thread{&RepeatedTask::execute, this};
+    thread_ = thread{&RepeatedTask::run, this};
 }
 
 template RepeatedTask::RepeatedTask(chrono::minutes);
@@ -32,11 +32,11 @@ void RepeatedTask::abort() {
     aborted_.store(true);
 }
 
-void RepeatedTask::execute() {
+void RepeatedTask::run() {
     cout3 << "RepeatedTask::execute()" << endl;
     while(!aborted_){
         //TODO wait on conditional variable to implement interruption
         this_thread::sleep_for(delay_);
-        execute_internal();
+        execute();
     }
 }

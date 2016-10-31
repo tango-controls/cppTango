@@ -19,11 +19,11 @@ namespace Tango {
         template <typename Duration>
         RepeatedTask(Duration);
         virtual ~RepeatedTask();
-        virtual void execute_internal() = 0;
+        virtual void execute() = 0;
     public:
         void abort();
     private:
-        void execute();
+        void run();
     };
 
 }//Tango

@@ -31,7 +31,7 @@ void HeartbeatTask::send_heartbeat() {
     });
 }
 
-void HeartbeatTask::execute_internal() {
+void HeartbeatTask::execute() {
         send_heartbeat();
         if (heartbeat_ctr_++ % 3 == 0) {
             root_att_registry_.auto_unsub();
