@@ -31,4 +31,4 @@ set(SOURCES dbapi_class.cpp
         zmqeventconsumer.cpp)
 
 add_library(client_objects OBJECT ${SOURCES})
-target_compile_options(client_objects PRIVATE -fPIC)
+target_compile_options(client_objects PRIVATE -fPIC  -std=c++1y)

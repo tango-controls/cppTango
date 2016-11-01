@@ -60,6 +60,20 @@ namespace Tango
         class asymmetric_unbound_blocking_queue;
     }
 
+    namespace polling {
+        class Command;
+        class AddObjCommand;
+        class AddTriggerCommand;
+        class RemObjCommand;
+        class RemExtTriggerCommand;
+        class RemDevCommand;
+        class UpdatePollPeriodCommand;
+        class StartPollingCommand;
+        class StopPollingCommand;
+    }
+
+    using CommandPtr = std::unique_ptr<polling::Command>;
+
     typedef std::unique_ptr<threading::asymmetric_unbound_blocking_queue<PollThCmd>> PollThCmdQueuePtr;
 //=============================================================================
 //
@@ -97,12 +111,16 @@ namespace Tango
 struct WorkItem
 {
 	DeviceImpl			*dev;			// The device pointer (servant)
+    //TODO replace with const reference
 	vector<PollObj *> 	*poll_list;		// The device poll list
 	struct timeval		wake_up_date;	// The next wake up date
 	int 				update;			// The update period (mS)
 	PollObjType			type;			// Object type (command/attr)
 	vector<string>		name;			// Object name(s)
 	struct timeval		needed_time;	// Time needed to execute action
+
+    WorkItem(DeviceImpl *dev, vector<PollObj *> *poll_list, const timeval &wake_up_date, int update, PollObjType type,
+             const vector<string> &name, const timeval &needed_time);
 };
 //=============================================================================
 //
@@ -130,19 +148,20 @@ public:
         return id_;
     }
     void add_command(PollThCmd&&);
-    void execute_cmd();
+    void execute_cmd(polling::Command &cmd);
     void set_local_cmd(PollThCmd &cmd) {local_cmd = cmd;}
 	void set_polling_bef_9(bool _v) {polling_bef_9 = _v;}
 private:
-    void poll_add_obj();
-    void poll_rem_obj();
-    void poll_rem_ext_trig_obj();
-    void poll_rem_dev();
-    void poll_upd_period();
-    void start_polling();
-    void stop_polling();
+    friend class polling::AddObjCommand;
+    friend class polling::AddTriggerCommand;
+    friend class polling::RemObjCommand;
+    friend class polling::RemExtTriggerCommand;
+    friend class polling::RemDevCommand;
+    friend class polling::UpdatePollPeriodCommand;
+    friend class polling::StartPollingCommand;
+    friend class polling::StopPollingCommand;
 protected:
-	PollCmdType get_command(long);
+	CommandPtr get_command(long);
 	void one_more_poll();
 	void one_more_trigg();
 	void compute_new_date(struct timeval &,int);
@@ -159,6 +178,8 @@ protected:
 
     template <typename T> void robb_data(T &,T &);
     template <typename T> void copy_remaining(T &,T &);
+
+    WorkItem new_work_item(DeviceImpl*, /*TODO const*/ PollObj&);
 
 	PollThCmd			&shared_cmd;
 	TangoMonitor		&p_mon;
@@ -204,10 +225,6 @@ private:
 
         PollThCmdQueuePtr queue_;
         std::future<void> polling_future_;
-public:
-	static DeviceImpl 	*dev_to_del;
-	static string	   	name_to_del;
-	static PollObjType	type_to_del;
 };
 
 //

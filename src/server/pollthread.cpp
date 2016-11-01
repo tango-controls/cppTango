@@ -50,6 +50,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #include <iomanip>
+#include <polling/command.hxx>
 
 #include "threading/repeated_task.hxx"
 #include "threading/asymmetric_unbound_blocking_queue.hxx"
@@ -66,10 +67,6 @@ namespace Tango {
         template
         class asymmetric_unbound_blocking_queue<PollThCmd>;
     }
-
-    DeviceImpl *PollThread::dev_to_del = NULL;
-    string PollThread::name_to_del = "";
-    PollObjType PollThread::type_to_del = Tango::POLL_CMD;
 
 //+-----------------------------------------------------------------------------------------------------------------
 //
@@ -143,6 +140,7 @@ namespace Tango {
     void PollThread::run() {
         kThreadNameMap.emplace(this_thread::get_id(), name_);
 
+        cout4 << "Starting thread[name=" << name_<< ";id="<< this_thread::get_id() <<"]" << endl;
 //
 // The infinite loop
 //
@@ -158,7 +156,7 @@ namespace Tango {
 
                 switch (received) {
                     case POLL_COMMAND:
-                        execute_cmd();
+                        execute_cmd(<#initializer#>);
                         break;
 
                     case POLL_TIME_OUT:
@@ -210,7 +208,7 @@ namespace Tango {
 //------------------------------------------------------------------------------------------------------------------
 
     //TODO return command
-    PollCmdType PollThread::get_command(long timeout) {
+    CommandPtr PollThread::get_command(long timeout) {
         cout4 << kThreadNameMap.at(this_thread::get_id()) << " waits for command " << endl;
         PollThCmd cmd = queue_->pop();
         cout4 << kThreadNameMap.at(this_thread::get_id()) << " done waiting; got command=" << cmd.cmd_type << endl;
@@ -223,488 +221,28 @@ namespace Tango {
         queue_->push(move(cmd));
     }
 
-//+---------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		PollThread::execute_cmd and two unary predicates
-//
-// description :
-//		This method is called when a command has been received. It execute the command!
-//
-// args :
-//		in :
-// 			- w : The work item
-//
-//------------------------------------------------------------------------------------------------------------------
-
-    bool pred_dev(const WorkItem &w) {
-        return w.dev == PollThread::dev_to_del;
-    }
-
-    void PollThread::poll_add_obj() {
-        cout5 << "Received a Add object command" << endl;
-
-        WorkItem wo;
-        list<WorkItem>::iterator ite;
-        vector<WorkItem>::iterator et_ite;
-
-        wo.dev = local_cmd.dev;
-        wo.poll_list = &(wo.dev->get_poll_obj_list());
-        int new_upd = (*wo.poll_list)[local_cmd.index]->get_upd();
-        PollObjType new_type = (*wo.poll_list)[local_cmd.index]->get_type();
-
-        bool found = false;
-        if (new_type == POLL_ATTR && wo.dev->get_dev_idl_version() >= 4 && polling_bef_9 == false) {
-#ifdef HAS_LAMBDA_FUNC
-            ite = find_if(works.begin(), works.end(),
-                          [&](const WorkItem &wi) {
-                              return wi.dev == local_cmd.dev && wi.update == new_upd && wi.type == new_type;
-                          });
-#else
-            for (ite = works.begin();ite != works.end();++ite)
-            {
-                if (ite->dev == local_cmd.dev && ite->update == new_upd && ite->type == new_type)
-                    break;
-            }
-#endif
-            if (ite != works.end()) {
-                ite->name.push_back((*wo.poll_list)[local_cmd.index]->get_name());
-                found = true;
-            }
-        }
-
-        if (found == false) {
-            wo.type = new_type;
-            wo.update = new_upd;
-            wo.name.push_back((*wo.poll_list)[local_cmd.index]->get_name());
-            wo.needed_time.tv_sec = 0;
-            wo.needed_time.tv_usec = 0;
-
-            if (wo.update != 0) {
-                wo.wake_up_date = now;
-                if (local_cmd.new_upd != 0) {
-                    cout5 << "Received a delta from now of " << local_cmd.new_upd << endl;
-                    T_ADD(wo.wake_up_date, local_cmd.new_upd * 1000);
-                }
-                insert_in_list(wo);
-                unsigned long nb_works = works.size();
-                tune_ctr = (nb_works << 2);
-                need_two_tuning = true;
-            } else {
-                wo.wake_up_date.tv_sec = 0;
-                wo.wake_up_date.tv_usec = 0;
-                ext_trig_works.push_back(wo);
-            }
-        }
-    }
-
-    void PollThread::poll_rem_obj() {
-        cout5 << "Received a Rem object command" << endl;
-
-        WorkItem wo;
-        list<WorkItem>::iterator ite;
-        vector<WorkItem>::iterator et_ite;
-
-        dev_to_del = local_cmd.dev;
-        name_to_del = local_cmd.name;
-        type_to_del = local_cmd.type;
-
-        size_t i, nb_elt;
-        nb_elt = works.size();
-        ite = works.begin();
-        for (i = 0; i < nb_elt; i++) {
-            if (ite->dev == PollThread::dev_to_del) {
-                if (ite->type == PollThread::type_to_del) {
-                    vector<string>::iterator ite_str;
-                    bool found = false;
-                    for (ite_str = ite->name.begin(); ite_str != ite->name.end(); ++ite_str) {
-                        if (*ite_str == PollThread::name_to_del) {
-                            ite->name.erase(ite_str);
-                            if (ite->name.empty() == true)
-                                works.erase(ite);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found == true)
-                        break;
-                }
-            }
-            ++ite;
-        }
-    }
-
-    void PollThread::poll_rem_ext_trig_obj() {
-        cout5 << "Received a Ext Trig Rem object command" << endl;
-
-        vector<WorkItem>::iterator et_ite;
-
-        for (et_ite = ext_trig_works.begin();
-             et_ite != ext_trig_works.end(); ++et_ite) {
-            if (et_ite->dev == local_cmd.dev) {
-                if (et_ite->type == local_cmd.type) {
-                    if (et_ite->name[0] == local_cmd.name) {
-                        ext_trig_works.erase(et_ite);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    void PollThread::poll_rem_dev() {
-        cout5 << "Received a Rem device command" << endl;
-
-        dev_to_del = local_cmd.dev;
-#ifdef _TG_WINDOWS_
-
-        list<WorkItem>::iterator ite;
-        vector<WorkItem>::iterator et_ite;
-
-        nb_elt = works.size();
-        ite = works.begin();
-        for (i = 0;i < nb_elt;i++)
-        {
-            if (ite->dev == PollThread::dev_to_del)
-            {
-                ite = works.erase(ite);
-            }
-            else
-                ++ite;
-        }
-        nb_elt = ext_trig_works.size();
-        et_ite = ext_trig_works.begin();
-        for (i = 0;i < nb_elt;i++)
-        {
-            if (et_ite->dev == PollThread::dev_to_del)
-            {
-                et_ite = ext_trig_works.erase(et_ite);
-            }
-            else
-                ++et_ite;
-        }
-#else
-        works.remove_if(pred_dev);
-
-        ext_trig_works.erase(remove_if(ext_trig_works.begin(),
-                                       ext_trig_works.end(),
-                                       pred_dev),
-                             ext_trig_works.end());
-#endif
-
-    }
-
-    //
-// Update polling period
-// Several cases has to be implemented here.
-// 1 - A classical command from the external world. In this case updating
-//     polling period means removing the already inserted object from the work list,
-//     compute its new polling time and insert it in the work list with its new
-//     polling time and polling period
-// 2 - This is executed by the polling thread itself
-// 2-1 - The command updates polling period for another object: idem than previous
-// 2-2 - The commands updates polling period for the object it is actually polled.
-//       In this case, the object is not in the work list. It has been removed from the
-//	 work list at the beginning of the "one_more_poll" method and is memorized there
-//	 Therefore, simply stores new polling period in a data member. The "one_more_poll"
-//	 method will get its new polling period before re-inserting the object in the work
-// 	 list with the new update period.
-//	 We detect this case because the object is not in any work list (either the work
-//	 list or the trigger list)
-//
-    void PollThread::poll_upd_period() {
-        cout5 << "Received a update polling period command" << endl;
-
-        WorkItem wo;
-        list<WorkItem>::iterator ite;
-        vector<WorkItem>::iterator et_ite;
-
-        dev_to_del = local_cmd.dev;
-        name_to_del = local_cmd.name;
-        type_to_del = local_cmd.type;
-
-        bool found_in_work_list = false;
-
-        if (local_cmd.new_upd != 0) {
-            WorkItem tmp_work;
-            size_t i, nb_elt;
-            nb_elt = works.size();
-            ite = works.begin();
-
-            if (nb_elt != 0) {
-                bool found = false;
-
-                for (i = 0; i < nb_elt; i++) {
-                    if (ite->dev == PollThread::dev_to_del) {
-                        if (ite->type == PollThread::type_to_del) {
-
-                            vector<string>::iterator ite_str;
-                            for (ite_str = ite->name.begin(); ite_str != ite->name.end(); ++ite_str) {
-                                if (*ite_str == PollThread::name_to_del) {
-                                    ite->name.erase(ite_str);
-                                    if (ite->name.empty() == true) {
-                                        works.erase(ite);
-                                    }
-
-                                    found = true;
-                                    found_in_work_list = true;
-                                    break;
-                                }
-                            }
-
-                            if (found == true)
-                                break;
-                        }
-                    }
-                    ++ite;
-                }
-
-                tmp_work.dev = PollThread::dev_to_del;
-                tmp_work.poll_list = &(tmp_work.dev->get_poll_obj_list());
-                tmp_work.type = PollThread::type_to_del;
-                tmp_work.update = local_cmd.new_upd;
-                tmp_work.name.push_back(PollThread::name_to_del);
-                tmp_work.needed_time.tv_sec = 0;
-                tmp_work.needed_time.tv_usec = 0;
-                compute_new_date(now, local_cmd.new_upd);
-                tmp_work.wake_up_date = now;
-                add_insert_in_list(tmp_work);
-                tune_ctr = 0;
-                found_in_work_list = true;
-
-                if (found == false) {
-                    rem_upd.push_back(local_cmd.new_upd);
-                    rem_name.push_back(PollThread::name_to_del);
-                }
-
-            }
-        } else {
-
-//
-// First, remove object from polling list and insert it in externally triggered list
-//
-
-            size_t i, nb_elt;
-            nb_elt = works.size();
-            ite = works.begin();
-            for (i = 0; i < nb_elt; i++) {
-                if (ite->dev == PollThread::dev_to_del) {
-                    if (ite->type == PollThread::type_to_del) {
-                        bool found = false;
-                        vector<string>::iterator ite_str;
-                        for (ite_str = ite->name.begin(); ite_str != ite->name.end(); ++ite_str) {
-                            if (*ite_str == PollThread::name_to_del) {
-                                ite->name.erase(ite_str);
-                                if (ite->name.empty() == true)
-                                    works.erase(ite);
-                                found = true;
-                                found_in_work_list = true;
-                                break;
-                            }
-                        }
-                        if (found == true)
-                            break;
-                    }
-                }
-                ++ite;
-            }
-
-            wo.dev = local_cmd.dev;
-            wo.poll_list = &(wo.dev->get_poll_obj_list());
-            wo.type = (*wo.poll_list)[local_cmd.index]->get_type();
-            wo.update = (*wo.poll_list)[local_cmd.index]->get_upd();
-            wo.name.push_back((*wo.poll_list)[local_cmd.index]->get_name());
-            wo.wake_up_date.tv_sec = 0;
-            wo.wake_up_date.tv_usec = 0;
-
-            ext_trig_works.push_back(wo);
-        }
-
-//
-// If not found in work list, it should be in the externally triggered object. Therefore, remove it from externally
-// triggered list and insert it in work list. If not found in work list and in trig list, we are in case
-// 2-2 as described above (polling thread itself updating polling period of the object it actually polls)
-//
-
-        if (found_in_work_list == false) {
-            bool found = false;
-            for (et_ite = ext_trig_works.begin();
-                 et_ite != ext_trig_works.end(); ++et_ite) {
-                if (et_ite->dev == local_cmd.dev) {
-                    if (et_ite->type == local_cmd.type) {
-                        if (et_ite->name[0] == local_cmd.name) {
-                            ext_trig_works.erase(et_ite);
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (found == true) {
-                wo.dev = local_cmd.dev;
-                wo.poll_list = &(wo.dev->get_poll_obj_list());
-                wo.type = type_to_del;
-                wo.update = local_cmd.new_upd;
-                wo.name.push_back(name_to_del);
-                wo.wake_up_date = now;
-                insert_in_list(wo);
-            } else {
-                auto_upd.push_back(local_cmd.new_upd);
-                auto_name.push_back(name_to_del);
-            }
-        }
+    WorkItem PollThread::new_work_item(DeviceImpl* device, /*TODO const*/ PollObj& poll_obj) {
+        //TODO forward arguments
+        return {
+                device,
+                &(device->get_poll_obj_list()),
+                now,
+                poll_obj.get_upd(),
+                poll_obj.get_type(),
+                {poll_obj.get_name()},
+                {0, 0}
+        };
     }
 
 
-    void PollThread::start_polling() {
-        polling_stop.store(false);
-        polling_future_ = async(launch::async,[this]() {
-            while (!polling_stop) {
-                long sleep = this->sleep.load();
-                cout3 << "Sleep for: " << sleep << endl;
-                this_thread::sleep_for(chrono::milliseconds{sleep});//TODO use conditional variable
+    void PollThread::execute_cmd(polling::Command &cmd) {
+        cmd.execute(*this);
 
-
-#ifdef _TG_WINDOWS_
-                _ftime(&now_win);
-                now.tv_sec = (unsigned long)now_win.time;
-                now.tv_usec = (long)now_win.millitm * 1000;
-#else
-                gettimeofday(&now, NULL);
-#endif
-                now.tv_sec = now.tv_sec - DELTA_T;
-
-                cout4 << "Sending cmd to polling thread" << endl;
-
-                PollThCmd poll_cmd{};
-
-                poll_cmd.cmd_type = POLL_TIME_OUT;
-
-                add_command(move(poll_cmd));
-
-                cout4 << "Cmd sent to polling thread" << endl;
-
-#ifdef _TG_WINDOWS_
-                _ftime(&after_win);
-                after.tv_sec = (unsigned long)after_win.time;
-                after.tv_usec = (long)after_win.millitm * 1000;
-#else
-                gettimeofday(&after, NULL);
-#endif
-                after.tv_sec = after.tv_sec - DELTA_T;
-
-                if (tune_ctr <= 0) {
-                    tune_list(true, 0);
-                    if (need_two_tuning == true) {
-                        unsigned long nb_works = works.size();
-                        tune_ctr = (nb_works << 2);
-                        need_two_tuning = false;
-                    } else
-                        tune_ctr = POLL_LOOP_NB;
-                }
-
-                compute_sleep_time();
-            }
-        });
-    }
-
-    void PollThread::stop_polling(){
-        polling_stop.store(true);
-    }
-
-
-    void PollThread::execute_cmd() {
-
-
-        //TODO refactor using command pattern
-        switch (local_cmd.cmd_code) {
-
-//
-// Add a new object
-//
-
-            case Tango::POLL_ADD_OBJ : {
-                poll_add_obj();
-                break;
-            }
-
-//
-// Remove an already polled object
-//
-
-            case Tango::POLL_REM_OBJ :
-                poll_rem_obj();
-                break;
-
-//
-// Remove an already externally triggered polled object
-//
-
-            case Tango::POLL_REM_EXT_TRIG_OBJ :
-                poll_rem_ext_trig_obj();
-                break;
-
-//
-// Remove all objects belonging to a device.
-// Take care, the same device could have several objects --> No break after the successfull if in loop
-//
-
-            case Tango::POLL_REM_DEV :
-                poll_rem_dev();
-                break;
-
-
-            case Tango::POLL_UPD_PERIOD : {
-                poll_upd_period();
-                break;
-            }
-
-//
-// Start polling
-//
-
-            case Tango::POLL_START :
-                cout5 << "Received a Start polling command" << endl;
-
-                start_polling();
-
-                break;
-
-//
-// Stop polling
-//
-
-            case Tango::POLL_STOP :
-                cout5 << "Received a Stop polling command" << endl;
-                stop_polling();
-                break;
-
-//
-// Ask polling thread to exit
-//
-
-            case Tango::POLL_EXIT :
-                cout5 << "Received an exit command" << endl;
-                this->interrupted_ = true;
-                return;//exit in run function
-
-        }
-
-//
-// Inform requesting thread that the work is done
-//
-
-
-        {
-            omni_mutex_lock sync(p_mon);
-            shared_cmd.cmd_pending = false;
-            p_mon.signal();
-        }
 
         if (Tango::Util::_tracelevel >= 4)
             print_list();
 
+        return;
     }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -1879,4 +1417,15 @@ namespace Tango {
         }
 
     }
+
+    WorkItem::WorkItem(DeviceImpl *dev, vector<PollObj *> *poll_list, const timeval &wake_up_date, int update,
+                       PollObjType type, const vector<string> &name, const timeval &needed_time) : dev(dev),
+                                                                                                   poll_list(poll_list),
+                                                                                                   wake_up_date(
+                                                                                                           wake_up_date),
+                                                                                                   update(update),
+                                                                                                   type(type),
+                                                                                                   name(name),
+                                                                                                   needed_time(
+                                                                                                           needed_time) {}
 } // End of Tango namespace

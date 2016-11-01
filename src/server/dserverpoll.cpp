@@ -747,7 +747,7 @@ namespace Tango {
         } else {
             PollThread *poll_th = th_info->poll_th;
             poll_th->set_local_cmd(add_obj_cmd);
-            poll_th->execute_cmd();
+            poll_th->execute_cmd(<#initializer#>);
         }
 
 
@@ -1084,7 +1084,7 @@ namespace Tango {
         } else {
             PollThread *poll_th = th_info->poll_th;
             poll_th->set_local_cmd(upd_obj_polling_cmd);
-            poll_th->execute_cmd();
+            poll_th->execute_cmd(<#initializer#>);
         }
 
 //
@@ -1293,7 +1293,7 @@ namespace Tango {
                 } else {
                     PollThread *poll_th = th_info->poll_th;
                     poll_th->set_local_cmd(rem_obj_cmd);
-                    poll_th->execute_cmd();
+                    poll_th->execute_cmd(<#initializer#>);
                 }
                 cout4 << "Thread cmd normally executed" << endl;
             } else {

@@ -65,10 +65,11 @@ set(HEADERS
         heartbeat_task.hxx)
 
 add_subdirectory(threading)
+add_subdirectory(polling)
 add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)
 
 add_library(server_objects OBJECT ${HEADERS} ${SOURCES})
-target_compile_options(server_objects PRIVATE -fPIC)
+target_compile_options(server_objects PRIVATE -fPIC  -std=c++1y)
 target_include_directories(server_objects PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
