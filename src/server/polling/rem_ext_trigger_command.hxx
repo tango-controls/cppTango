@@ -10,8 +10,7 @@ namespace Tango {
     namespace polling {
         class RemExtTriggerCommand : public Command  {
         public:
-            RemExtTriggerCommand(DeviceImpl *dev, string &&name, PollObjType type, long index,
-                                 int new_upd);
+            RemExtTriggerCommand(DeviceImpl *dev, string &&name, PollObjType type, long index);
 
             virtual void operator()(PollThread &poll_thread) override;
 

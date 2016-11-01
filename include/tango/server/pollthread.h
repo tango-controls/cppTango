@@ -86,6 +86,7 @@ namespace Tango
 
 
 
+	//TODO remove
     enum PollCmdType
     {
         POLL_TIME_OUT,
@@ -94,6 +95,7 @@ namespace Tango
     };
 
 
+	//TODO remove
     struct PollThCmd
 {
 	bool			cmd_pending;	// The new command flag
@@ -104,7 +106,6 @@ namespace Tango
 	string			name;			// Object name
 	PollObjType		type;			// Object type (cmd/attr)
 	int				new_upd;		// New update period (For upd period com.)
-    PollCmdType     cmd_type;       //TODO replace with polymorphism
 };
 
 
@@ -138,19 +139,11 @@ class PollThread
 {
     friend class PollingThreadInfo;
 public:
-	PollThread(PollThCmd &, TangoMonitor &, string &&name);
-	void run();
-    /**
-     * Starts this thread
-     */
-	void start();
+	PollThread(TangoMonitor &, string &&name, bool polling_as_before_tango_9);
     thread::id id(){
         return id_;
     }
-    void add_command(PollThCmd&&);
     void execute_cmd(polling::Command &cmd);
-    void set_local_cmd(PollThCmd &cmd) {local_cmd = cmd;}
-	void set_polling_bef_9(bool _v) {polling_bef_9 = _v;}
 private:
     friend class polling::AddObjCommand;
     friend class polling::AddTriggerCommand;
@@ -181,9 +174,6 @@ protected:
 
     WorkItem new_work_item(DeviceImpl*, /*TODO const*/ PollObj&);
 
-	PollThCmd			&shared_cmd;
-	TangoMonitor		&p_mon;
-
 	list<WorkItem>		works;
 	vector<WorkItem>	ext_trig_works;
 
@@ -200,12 +190,6 @@ protected:
 	atomic_bool			polling_stop;
 
 private:
-	CORBA::Any			in_any;
-	DevVarStringArray	attr_names;
-	AttributeValue		dummy_att;
-	AttributeValue_3	dummy_att3;
-	AttributeValue_4 	dummy_att4;
-	AttributeValue_5	dummy_att5;
 	long				tune_ctr;
 	bool				need_two_tuning;
 	vector<long>		auto_upd;
@@ -216,7 +200,6 @@ private:
 	bool                polling_bef_9;
 
 	ClntIdent 			dummy_cl_id;
-	CppClntIdent 		cci;
 
 	thread thread_;
     thread::id id_;

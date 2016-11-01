@@ -74,6 +74,7 @@ bool Util::_FileDb = false;
 bool Util::_daemon = false;
 long Util::_sleep_between_connect = 60;
 bool Util::_constructed = false;
+    ClntIdent Util::kDummyClientIdentity = {};
 #ifdef _TG_WINDOWS_
 bool Util::_win = false;
 bool Util::_service = false;
@@ -188,8 +189,6 @@ polling_bef_9_def(false)
 # endif
 #endif
 {
-	shared_data.cmd_pending=false;
-	shared_data.trigger=false;
     cr_py_lock = new CreatePyLock();
 
 //

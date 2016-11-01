@@ -32,3 +32,16 @@ Tango::polling::find_work_item(bool polling_bef_9, const Command &cmd, PollObj &
     }
     return optional_work_item;
 }
+
+struct timeval Tango::polling::time_diff(struct timeval before,
+                                         struct timeval after_t) {
+
+    double bef_d = (double) before.tv_sec + ((double) before.tv_usec / 1000000);
+    double aft_d = (double) after_t.tv_sec + ((double) after_t.tv_usec / 1000000);
+    double diff_d = aft_d - bef_d;
+
+    struct timeval result{};
+    result.tv_sec = (long) diff_d;
+    result.tv_usec = (long) ((diff_d - result.tv_sec) * 1000000);
+    return result;
+}

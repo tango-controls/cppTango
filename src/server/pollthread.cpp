@@ -84,19 +84,17 @@ namespace Tango {
 //
 //------------------------------------------------------------------------------------------------------------------
 
-    PollThread::PollThread(PollThCmd &cmd, TangoMonitor &m, string &&name) : shared_cmd(cmd), p_mon(m),
-                                                                             sleep(1),
-                                                                             polling_stop(true),
-                                                                             attr_names(1), tune_ctr(1),
-                                                                             need_two_tuning(false),
-                                                                             name_(move(name)),
-                                                                             queue_{new threading::asymmetric_unbound_blocking_queue<PollThCmd>()} {
+    PollThread::PollThread(TangoMonitor &m, string &&name, bool polling_as_before_tango_9)
+            : sleep(1),
+              polling_stop(true),
+              tune_ctr(1),
+              need_two_tuning(false),
+              name_(move(name)),
+              polling_bef_9{polling_as_before_tango_9},
+              queue_{new threading::asymmetric_unbound_blocking_queue<PollThCmd>()} {
         local_cmd.cmd_pending = false;
 
-        attr_names.length(1);
-
-        cci = 0;
-        dummy_cl_id.cpp_clnt(cci);
+        dummy_cl_id.cpp_clnt(0);
         previous_nb_late = 0;
         polling_bef_9 = false;
 
@@ -115,110 +113,6 @@ namespace Tango {
         dummy_att4.value.union_no_data(true);
         dummy_att4.quality = ATTR_INVALID;
         dummy_att3.quality = ATTR_INVALID;
-    }
-
-
-    void PollThread::start() {
-        thread_ = std::thread(&PollThread::run, this);
-        id_ = thread_.get_id();
-//        poll_thread.detach();
-        cout5 << "Started thread id=" << id_ << "; name=" << name_ << "; monitor=" << p_mon.get_uid() << endl;
-    }
-
-//+------------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		PollThread::run_undetached
-//
-// description :
-//		The polling thread main code
-//
-//-------------------------------------------------------------------------------------------------------------------
-
-
-
-    void PollThread::run() {
-        kThreadNameMap.emplace(this_thread::get_id(), name_);
-
-        cout4 << "Starting thread[name=" << name_<< ";id="<< this_thread::get_id() <<"]" << endl;
-//
-// The infinite loop
-//
-
-        while (!interrupted_) {
-            try {
-                PollCmdType received = get_command(sleep);
-
-//
-// Create the per thread data if it is not already done (For Python DS)
-//
-
-
-                switch (received) {
-                    case POLL_COMMAND:
-                        execute_cmd(<#initializer#>);
-                        break;
-
-                    case POLL_TIME_OUT:
-                        one_more_poll();
-                        break;
-
-                    case POLL_TRIGGER:
-                        one_more_trigg();
-                        break;
-                }
-            }
-            catch (omni_thread_fatal &) {
-                cerr << "OUPS !! A omni thread fatal exception received by a polling thread !!!!!!!!" << endl;
-#ifndef _TG_WINDOWS_
-                time_t t = time(NULL);
-                cerr << ctime(&t);
-#endif
-                cerr << "Trying to re-enter the main loop" << endl;
-            }
-            catch (const std::exception &ex) {
-                cerr << "OUPS !! An unforeseen standard exception has been received by a polling thread !!!!!!" << endl;
-                cerr << ex.what() << endl;
-#ifndef _TG_WINDOWS_
-                time_t t = time(NULL);
-                cerr << ctime(&t);
-#endif
-                cerr << "Trying to re-enter the main loop" << endl;
-            }
-        }
-    }
-
-//+----------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		PollThread::get_command
-//
-// description :
-//		This method wait on the shared monitor for a new command to be sent to the polling thread. The thread waits
-//		with a timeout. If the thread is awaken due to the timeout, false is returned.
-//		If the work list is empty, the thread waits for ever.
-//
-// args :
-//		in :
-// 			- tout : Timeout to be used when waiting on monitor
-//
-// returns :
-// 		The method returns true if the thread has been awaken due to a new command sent by the main thread
-//
-//------------------------------------------------------------------------------------------------------------------
-
-    //TODO return command
-    CommandPtr PollThread::get_command(long timeout) {
-        cout4 << kThreadNameMap.at(this_thread::get_id()) << " waits for command " << endl;
-        PollThCmd cmd = queue_->pop();
-        cout4 << kThreadNameMap.at(this_thread::get_id()) << " done waiting; got command=" << cmd.cmd_type << endl;
-        local_cmd = cmd;
-        return cmd.cmd_type;
-    }
-
-    void PollThread::add_command(PollThCmd &&cmd) {
-        cout4 << "??? sets command=" << cmd.cmd_code << endl;
-        queue_->push(move(cmd));
     }
 
     WorkItem PollThread::new_work_item(DeviceImpl* device, /*TODO const*/ PollObj& poll_obj) {
@@ -369,15 +263,12 @@ namespace Tango {
 // Check that the object is registered
 //
 
-        dev_to_del = local_cmd.dev;
-        name_to_del = local_cmd.name;
-        type_to_del = local_cmd.type;
-
+        //TODO extract find function
         vector<WorkItem>::iterator et_ite;
         for (et_ite = ext_trig_works.begin(); et_ite != ext_trig_works.end(); ++et_ite) {
-            if (et_ite->dev == PollThread::dev_to_del) {
-                if (et_ite->type == PollThread::type_to_del) {
-                    if (et_ite->name[0] == PollThread::name_to_del)
+            if (et_ite->dev == local_cmd.dev) {
+                if (et_ite->type == local_cmd.type) {
+                    if (et_ite->name[0] == local_cmd.name)
                         break;
                 }
             }
@@ -390,11 +281,6 @@ namespace Tango {
 
         if (et_ite == ext_trig_works.end()) {
             cout5 << "Object externally triggered not found !!!" << endl;
-            {
-                omni_mutex_lock sync(p_mon);
-                shared_cmd.trigger = false;
-                p_mon.signal();
-            }
             return;
         }
 
@@ -411,14 +297,9 @@ namespace Tango {
         }
 
 //
-// Inform requesting thread that the work is done
+// TODO Inform requesting thread that the work is done
 //
 
-        {
-            omni_mutex_lock sync(p_mon);
-            shared_cmd.trigger = false;
-            p_mon.signal();
-        }
     }
 
 
@@ -697,16 +578,7 @@ namespace Tango {
         time.tv_usec = (long) ((new_d - time.tv_sec) * 1000000);
     }
 
-    void PollThread::time_diff(struct timeval &before,
-                               struct timeval &after_t,
-                               struct timeval &result) {
-        double bef_d = (double) before.tv_sec + ((double) before.tv_usec / 1000000);
-        double aft_d = (double) after_t.tv_sec + ((double) after_t.tv_usec / 1000000);
-        double diff_d = aft_d - bef_d;
 
-        result.tv_sec = (long) diff_d;
-        result.tv_usec = (long) ((diff_d - result.tv_sec) * 1000000);
-    }
 
 
 //+----------------------------------------------------------------------------------------------------------------
@@ -910,132 +782,8 @@ namespace Tango {
     }
 
 
-//+----------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		PollThread::poll_cmd
-//
-// description :
-//		Execute a command and store the result in the device ring buffer
-//
-// args :
-//		in :
-// 			- to_do : The work item
-//
-//----------------------------------------------------------------------------------------------------------------
 
-    void PollThread::poll_cmd(WorkItem &to_do) {
-        cout5 << "----------> Time = " << now.tv_sec << ","
-              << setw(6) << setfill('0') << now.tv_usec
-              << " Dev name = " << to_do.dev->get_name()
-              << ", Cmd name = " << to_do.name[0] << endl;
 
-        CORBA::Any *argout = NULL;
-        Tango::DevFailed *save_except = NULL;
-        struct timeval before_cmd, after_cmd, needed_time;
-#ifdef _TG_WINDOWS_
-        struct _timeb before_win,after_win;
-        LARGE_INTEGER before,after;
-#endif
-
-        vector<PollObj *>::iterator ite;
-        bool cmd_failed = false;
-        try {
-#ifdef _TG_WINDOWS_
-            if (ctr_frequency != 0)
-                QueryPerformanceCounter(&before);
-            _ftime(&before_win);
-            before_cmd.tv_sec = (unsigned long)before_win.time;
-            before_cmd.tv_usec = (long)before_win.millitm * 1000;
-#else
-            gettimeofday(&before_cmd, NULL);
-#endif
-            before_cmd.tv_sec = before_cmd.tv_sec - DELTA_T;
-
-//
-// Execute the command
-//
-
-            argout = to_do.dev->command_inout(to_do.name[0].c_str(), in_any);
-
-#ifdef _TG_WINDOWS_
-            if (ctr_frequency != 0)
-            {
-                QueryPerformanceCounter(&after);
-
-                needed_time.tv_sec = 0;
-                needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-                to_do.needed_time = needed_time;
-            }
-            else
-            {
-                _ftime(&after_win);
-                after_cmd.tv_sec = (unsigned long)after_win.time;
-                after_cmd.tv_usec = (long)after_win.millitm * 1000;
-
-                after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-                time_diff(before_cmd,after_cmd,needed_time);
-                to_do.needed_time = needed_time;
-            }
-#else
-            gettimeofday(&after_cmd, NULL);
-            after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-            time_diff(before_cmd, after_cmd, needed_time);
-            to_do.needed_time = needed_time;
-#endif
-        }
-        catch (Tango::DevFailed &e) {
-            cmd_failed = true;
-#ifdef _TG_WINDOWS_
-            if (ctr_frequency != 0)
-            {
-                QueryPerformanceCounter(&after);
-
-                needed_time.tv_sec = 0;
-                needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-                to_do.needed_time = needed_time;
-            }
-            else
-            {
-                _ftime(&after_win);
-                after_cmd.tv_sec = (unsigned long)after_win.time;
-                after_cmd.tv_usec = (long)after_win.millitm * 1000;
-
-                after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-                time_diff(before_cmd,after_cmd,needed_time);
-                to_do.needed_time = needed_time;
-            }
-#else
-            gettimeofday(&after_cmd, NULL);
-            after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-            time_diff(before_cmd, after_cmd, needed_time);
-            to_do.needed_time = needed_time;
-#endif
-            save_except = new Tango::DevFailed(e);
-        }
-
-//
-// Insert result in polling buffer and simply forget this command if it is not possible to insert the result in
-// polling buffer
-//
-
-        try {
-            to_do.dev->get_poll_monitor().get_monitor();
-            ite = to_do.dev->get_polled_obj_by_type_name(to_do.type, to_do.name[0]);
-            if (cmd_failed == false)
-                (*ite)->insert_data(argout, before_cmd, needed_time);
-            else
-                (*ite)->insert_except(save_except, before_cmd, needed_time);
-            to_do.dev->get_poll_monitor().rel_monitor();
-        }
-        catch (Tango::DevFailed &) {
-            if (cmd_failed == false)
-                delete argout;
-            else
-                delete save_except;
-            to_do.dev->get_poll_monitor().rel_monitor();
-        }
-    }
 
 //+---------------------------------------------------------------------------------------------------------------
 //

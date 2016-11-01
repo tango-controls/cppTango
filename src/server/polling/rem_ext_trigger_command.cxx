@@ -4,11 +4,10 @@
 
 #include "rem_ext_trigger_command.hxx"
 
-Tango::polling::RemExtTriggerCommand::RemExtTriggerCommand(Tango::DeviceImpl *dev, string &&name,
-                                                           Tango::PollObjType type, long index,
-                                                           int new_upd) : Command(dev, POLL_REM_EXT_TRIG_OBJ,
-                                                                                  move(name), type, index,
-                                                                                  new_upd) {}
+Tango::polling::RemExtTriggerCommand::RemExtTriggerCommand(DeviceImpl *dev, string &&name, PollObjType type, long index)
+        : Command(dev, POLL_REM_EXT_TRIG_OBJ,
+                  move(name), type, index,
+                  -1) {}
 
 void Tango::polling::RemExtTriggerCommand::operator()(PollThread &poll_thread) {
     return execute(poll_thread);

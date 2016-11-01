@@ -50,6 +50,9 @@ static const char *RcsId = "$Id$";
 #ifdef TANGO_HAS_LOG4TANGO
 
 #include <tango/server/logging.h>
+#include <polling/exit_command.hxx>
+#include "polling/rem_dev_command.hxx"
+#include "polling/exit_command.hxx"
 
 #endif
 
@@ -259,14 +262,9 @@ namespace Tango {
 
         th_info = tg->get_polling_thread_info_by_id(poll_th_id);
 
-        PollThCmd rem_dev_cmd{};
+        polling::RemDevCommand rem_dev_cmd{this};
 
-        rem_dev_cmd.cmd_pending = true;
-        rem_dev_cmd.cmd_code = POLL_REM_DEV;
-        rem_dev_cmd.cmd_type = POLL_COMMAND;
-        rem_dev_cmd.dev = this;
-
-        th_info->poll_th->add_command(move(rem_dev_cmd));
+        th_info->poll_th->execute_cmd(move(rem_dev_cmd));
 
 //
 // TODO Wait for thread to execute command
@@ -313,14 +311,9 @@ namespace Tango {
 //
 
         if (kill_thread == true) {
-            PollThCmd exit_cmd{};
+            polling::ExitCommand exit_cmd{};
 
-
-            exit_cmd.cmd_pending = true;
-            exit_cmd.cmd_code = POLL_EXIT;
-            exit_cmd.cmd_type = POLL_COMMAND;
-
-            th_info->poll_th->add_command(move(exit_cmd));
+            th_info->poll_th->execute_cmd(move(exit_cmd));
 
             tg->remove_polling_thread_info_by_id(poll_th_id);
         }

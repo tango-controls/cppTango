@@ -8,11 +8,10 @@ using namespace std;
 
 using namespace Tango;
 
-Tango::polling::RemObjCommand::RemObjCommand(Tango::DeviceImpl *dev, string &&name,
-                                             Tango::PollObjType type, long index, int new_upd) : Command(dev, POLL_REM_OBJ,
-                                                                                                         move(name), type,
-                                                                                                         index,
-                                                                                                         new_upd) {}
+Tango::polling::RemObjCommand::RemObjCommand(DeviceImpl *dev, string &&name, PollObjType type, long index) : Command(dev, POLL_REM_OBJ,
+                                                                                                                     move(name), type,
+                                                                                                                     index,
+                                                                                                                     -1) {}
 
 void polling::RemObjCommand::operator()(PollThread &poll_thread) {
     return execute(poll_thread);

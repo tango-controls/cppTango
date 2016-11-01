@@ -40,6 +40,7 @@ static const char *RcsId = "$Id$";
 
 #include <iostream>
 #include <algorithm>
+#include "polling/trigger_polling_command.hxx"
 
 namespace Tango {
 //+-----------------------------------------------------------------------------------------------------------------
@@ -474,15 +475,9 @@ namespace Tango {
 
         cout4 << "Sending trigger to polling thread" << endl;
 
-        PollThCmd attr_trigger{};
+        polling::TriggerPollingCommand attr_trigger{dev, move(obj_name), Tango::POLL_ATTR};
 
-        attr_trigger.trigger = true;
-        attr_trigger.cmd_type = POLL_TRIGGER;
-        attr_trigger.dev = dev;
-        attr_trigger.name = obj_name;
-        attr_trigger.type = Tango::POLL_ATTR;
-
-        th_info->poll_th->add_command(move(attr_trigger));
+        th_info->poll_th->execute_cmd(move(attr_trigger));
 
         cout4 << "Trigger sent to polling thread" << endl;
 
@@ -571,15 +566,9 @@ namespace Tango {
 // Send command to the polling thread but wait in case of previous cmd still not executed
 //
 
-        PollThCmd cmd_trigger{};
+        polling::TriggerPollingCommand cmd_trigger{dev, move(obj_name), Tango::POLL_CMD};
 
-        cmd_trigger.trigger = true;
-        cmd_trigger.cmd_type = POLL_TRIGGER;
-        cmd_trigger.dev = dev;
-        cmd_trigger.name = obj_name;
-        cmd_trigger.type = Tango::POLL_CMD;
-
-        th_info->poll_th->add_command(move(cmd_trigger));
+        th_info->poll_th->execute_cmd(move(cmd_trigger));
 
         cout4 << "Trigger sent to polling thread" << endl;
 
@@ -770,11 +759,8 @@ namespace Tango {
             PollingThreadInfo *pti_ptr = new PollingThreadInfo();
             if (smallest_upd != -1)
                 pti_ptr->smallest_upd = smallest_upd;
-            pti_ptr->poll_th = new PollThread(pti_ptr->shared_data, pti_ptr->poll_mon, "Poll[" + local_dev_name + "]");
+            pti_ptr->poll_th = new PollThread(pti_ptr->poll_mon, "Poll[" + local_dev_name + "]", polling_9);
 
-            if (polling_9 == true)
-                pti_ptr->poll_th->set_polling_bef_9(true);
-            pti_ptr->poll_th->start();
             thread::id poll_th_id = pti_ptr->poll_th->id();
             pti_ptr->thread_id = poll_th_id;
             pti_ptr->polled_devices.push_back(local_dev_name);

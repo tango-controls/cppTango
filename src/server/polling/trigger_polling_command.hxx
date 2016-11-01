@@ -8,15 +8,17 @@
 
 namespace Tango {
     namespace polling {
-        class RemObjCommand : public Command {
+        class TriggerPollingCommand : public Command{
         public:
-            RemObjCommand(DeviceImpl *dev, string &&name, PollObjType type, long index);
+            TriggerPollingCommand(Tango::DeviceImpl *dev, string &&name,
+                                              Tango::PollObjType type);
 
             virtual void operator()(PollThread &poll_thread) override;
 
             virtual void execute(PollThread &poll_thread) override;
 
             virtual operator std::string() override;
+
         };
     }//polling
 }//Tango

@@ -800,6 +800,8 @@ private:
 
 
 public:
+        const static ClntIdent kDummyClientIdentity;
+
 /// @privatesection
 	void set_interceptors(Interceptors *in) {inter = in;}
 	Interceptors *get_interceptors() {return inter;}
@@ -989,6 +991,7 @@ private:
 
 	map<string,vector<string> >	cmd_line_name_list;		// Command line map <Class name, device name list>
 
+		//TODO remove
 	PollThCmd					shared_data;			// The shared buffer
 	TangoMonitor				poll_mon;				// The monitor
 	bool						poll_on;				// Polling on flag

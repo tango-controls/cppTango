@@ -50,6 +50,13 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #include <iomanip>
+#include <polling/exit_command.hxx>
+#include "polling/add_obj_command.hxx"
+#include "polling/rem_obj_command.hxx"
+#include "polling/rem_ext_trigger_command.hxx"
+#include "polling/start_polling_command.hxx"
+#include "polling/stop_polling_command.hxx"
+#include "polling/update_poll_period_command.hxx"
 
 namespace Tango {
 
@@ -720,36 +727,11 @@ namespace Tango {
 
         cout4 << "Sending cmd to polling thread" << endl;
 
-        PollThCmd add_obj_cmd{};
+        polling::AddObjCommand add_obj_cmd{dev, move(obj_name), type, poll_list.size() - 1, delta_ms};
 
-        add_obj_cmd.cmd_type = POLL_COMMAND;
-        add_obj_cmd.cmd_code = POLL_ADD_OBJ;
-        add_obj_cmd.name = obj_name;
-        add_obj_cmd.type = type;
-        add_obj_cmd.dev = dev;
-        add_obj_cmd.index = poll_list.size() - 1;
-        add_obj_cmd.new_upd = delta_ms;
+        th_info->poll_th->execute_cmd(move(add_obj_cmd));
 
-        thread::id th_id = this_thread::get_id();
-        if (th_id != poll_th_id) {
-            th_info->poll_th->add_command(move(add_obj_cmd));
-
-            cout4 << "Cmd sent to polling thread" << endl;
-
-//
-// Wait for thread to execute command except if the command is requested by the polling thread itself
-//
-
-
-            if (local_request == false) {
-                //TODO if timeout and pollthread was created kill it and throw exception
-            }
-        } else {
-            PollThread *poll_th = th_info->poll_th;
-            poll_th->set_local_cmd(add_obj_cmd);
-            poll_th->execute_cmd(<#initializer#>);
-        }
-
+        cout4 << "Cmd sent to polling thread" << endl;
 
         cout4 << "Thread cmd normally executed" << endl;
         th_info->nb_polled_objects++;
@@ -1066,26 +1048,10 @@ namespace Tango {
 //
 
         cout3 << "Sending cmd to polling thread" << endl;
-        PollThCmd upd_obj_polling_cmd{};
+        polling::UpdatePollPeriodCommand upd_obj_polling_cmd{
+                dev, move(obj_name), type, distance(dev->get_poll_obj_list().begin(), ite), (argin->lvalue)[0]};
 
-        upd_obj_polling_cmd.cmd_pending = true;
-        upd_obj_polling_cmd.cmd_code = POLL_UPD_PERIOD;
-        upd_obj_polling_cmd.cmd_type = POLL_COMMAND;
-        upd_obj_polling_cmd.dev = dev;
-        upd_obj_polling_cmd.name = obj_name;
-        upd_obj_polling_cmd.type = type;
-        upd_obj_polling_cmd.new_upd = (argin->lvalue)[0];
-
-        upd_obj_polling_cmd.index = distance(dev->get_poll_obj_list().begin(), ite);
-
-        thread::id th_id = this_thread::get_id();
-        if (th_id != poll_th_id) {
-            th_info->poll_th->add_command(move(upd_obj_polling_cmd));
-        } else {
-            PollThread *poll_th = th_info->poll_th;
-            poll_th->set_local_cmd(upd_obj_polling_cmd);
-            poll_th->execute_cmd(<#initializer#>);
-        }
+        th_info->poll_th->execute_cmd(move(upd_obj_polling_cmd));
 
 //
 // Update database property --> Update polling period if this object is already defined in the polling property.
@@ -1267,34 +1233,15 @@ namespace Tango {
 //
 
                 cout4 << "Sending cmd to polling thread" << endl;
-                PollThCmd rem_obj_cmd{};
+                polling::Command& rem_obj_cmd = tmp_upd == 0 ?
+                                                polling::RemExtTriggerCommand{dev, move(obj_name), type,
+                                                                              distance(dev->get_poll_obj_list().begin()} :
+                                                polling::RemObjCommand{dev, move(obj_name), type,
+                                                                       distance(dev->get_poll_obj_list().begin(), ite)};
 
-                rem_obj_cmd.cmd_type = POLL_COMMAND;
-                rem_obj_cmd.cmd_code = tmp_upd == 0 ? POLL_REM_EXT_TRIG_OBJ : POLL_REM_OBJ;
-
-                rem_obj_cmd.dev = dev;
-                rem_obj_cmd.name = obj_name;
-                rem_obj_cmd.type = type;
-                rem_obj_cmd.index = distance(dev->get_poll_obj_list().begin(), ite);
-
-
-                if (th_id != poll_th_id) {
-                    th_info->poll_th->add_command(move(rem_obj_cmd));
+                    th_info->poll_th->execute_cmd(move(rem_obj_cmd));
                     cout4 << "Cmd sent to polling thread" << endl;
 
-//
-// Wait for thread to execute command except if the command is requested by the polling thread itself
-//
-
-
-                    if (!local_request) {
-                        //TODO same as add_
-                    }
-                } else {
-                    PollThread *poll_th = th_info->poll_th;
-                    poll_th->set_local_cmd(rem_obj_cmd);
-                    poll_th->execute_cmd(<#initializer#>);
-                }
                 cout4 << "Thread cmd normally executed" << endl;
             } else {
                 cout4 << "Polling thread is no longer running!!!!" << endl;
@@ -1447,13 +1394,9 @@ namespace Tango {
 //
 
             if (kill_thread == true && tg->is_svr_shutting_down() == false && th_id != poll_th_id) {
-                PollThCmd exit_cmd{};
+                polling::ExitCommand exit_cmd{};
 
-                exit_cmd.cmd_pending = true;
-                exit_cmd.cmd_code = POLL_EXIT;
-                exit_cmd.cmd_type = POLL_COMMAND;
-
-                th_info->poll_th->add_command(move(exit_cmd));
+                th_info->poll_th->execute_cmd(move(exit_cmd));
 
                 tg->remove_polling_thread_info_by_id(poll_th_id);
             }
@@ -1501,6 +1444,7 @@ namespace Tango {
 // is done
 //
 
+        //TODO
         if (kill_thread == true && tg->is_svr_shutting_down() == false && th_id == poll_th_id &&
             local_request == true) {
             tg->remove_polling_thread_info_by_id(poll_th_id);
@@ -1536,17 +1480,9 @@ namespace Tango {
         vector<PollingThreadInfo *> &th_info = tg->get_polling_threads_info();
         vector<PollingThreadInfo *>::iterator iter;
 
-        for (iter = th_info.begin(); iter != th_info.end(); ++iter) {
-            PollThCmd stop_polling_cmd{};
-            stop_polling_cmd.cmd_pending = true;
-            stop_polling_cmd.cmd_code = POLL_STOP;
-            stop_polling_cmd.cmd_type = POLL_COMMAND;
-
-            (*iter)->poll_th->add_command(move(stop_polling_cmd));
-            {
-                //TODO wait for execution throw exception
-            }
-        }
+        polling::StopPollingCommand stop_polling_cmd{};
+        for_each(th_info.begin(), th_info.end(),
+                 [&stop_polling_cmd](const PollingThreadInfo& th_info){ th_info.poll_th->execute_cmd(move(stop_polling_cmd));});
 
 //
 // Update polling status
@@ -1597,16 +1533,9 @@ namespace Tango {
     }
 
     void DServer::start_polling(PollingThreadInfo *th_info) {
-        PollThCmd start_polling_cmd{};
+        polling::StartPollingCommand start_polling_cmd{};
 
-        start_polling_cmd.cmd_pending = true;
-        start_polling_cmd.cmd_code = POLL_START;
-        start_polling_cmd.cmd_type = POLL_COMMAND;
-
-        th_info->poll_th->add_command(move(start_polling_cmd));
-        {
-            //TODO wait; throw
-        }
+        th_info->poll_th->execute_cmd(move(start_polling_cmd));
     }
 
 //+------------------------------------------------------------------------------------------------------------------
