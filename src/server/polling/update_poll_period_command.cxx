@@ -46,8 +46,8 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_thread) {
 
     if (new_upd_ != 0) {
         size_t i, nb_elt;
-        nb_elt = poll_thread->works.size();
-        ite = poll_thread->works.begin();
+        nb_elt = poll_thread.works.size();
+        ite = poll_thread.works.begin();
 
         if (nb_elt != 0) {
             bool found = false;
@@ -61,7 +61,7 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_thread) {
                             if (*ite_str == obj_name_) {
                                 ite->name.erase(ite_str);
                                 if (ite->name.empty() == true) {
-                                    poll_thread->works.erase(ite);
+                                    poll_thread.works.erase(ite);
                                 }
 
                                 found = true;
@@ -77,22 +77,22 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_thread) {
                 ++ite;
             }
 
-            WorkItem tmp_work = poll_thread->new_work_item(dev_, poll_list_item);
+            WorkItem tmp_work = poll_thread.new_work_item(dev_, poll_list_item);
             tmp_work.type = obj_type_;
             tmp_work.update = new_upd_;
             tmp_work.name.push_back(obj_name_);
 
-            poll_thread->compute_new_date(poll_thread->now, new_upd_);
+            poll_thread.compute_new_date(poll_thread.now, new_upd_);
 
-            tmp_work.wake_up_date = poll_thread->now;
+            tmp_work.wake_up_date = poll_thread.now;
 
-            poll_thread->add_insert_in_list(tmp_work);
-            poll_thread->tune_ctr = 0;
+            poll_thread.add_insert_in_list(tmp_work);
+            poll_thread.tune_ctr = 0;
             found_in_work_list = true;
 
             if (found == false) {
-                poll_thread->rem_upd.push_back(new_upd_);
-                poll_thread->rem_name.push_back(obj_name_);
+                poll_thread.rem_upd.push_back(new_upd_);
+                poll_thread.rem_name.push_back(obj_name_);
             }
 
         }
@@ -103,8 +103,8 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_thread) {
 //
 
         size_t i, nb_elt;
-        nb_elt = poll_thread->works.size();
-        ite = poll_thread->works.begin();
+        nb_elt = poll_thread.works.size();
+        ite = poll_thread.works.begin();
         for (i = 0; i < nb_elt; i++) {
             if (ite->dev == dev_) {
                 if (ite->type == obj_type_) {
@@ -114,7 +114,7 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_thread) {
                         if (*ite_str == obj_name_) {
                             ite->name.erase(ite_str);
                             if (ite->name.empty() == true)
-                                poll_thread->works.erase(ite);
+                                poll_thread.works.erase(ite);
                             found = true;
                             found_in_work_list = true;
                             break;
@@ -127,9 +127,9 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_thread) {
             ++ite;
         }
 
-        WorkItem wo = poll_thread->new_work_item(dev_, poll_list_item);
+        WorkItem wo = poll_thread.new_work_item(dev_, poll_list_item);
 
-        poll_thread->ext_trig_works.push_back(wo);
+        poll_thread.ext_trig_works.push_back(wo);
     }
 
 //
@@ -140,12 +140,12 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_thread) {
 
     if (found_in_work_list == false) {
         bool found = false;
-        for (et_ite = poll_thread->ext_trig_works.begin();
-             et_ite != poll_thread->ext_trig_works.end(); ++et_ite) {
+        for (et_ite = poll_thread.ext_trig_works.begin();
+             et_ite != poll_thread.ext_trig_works.end(); ++et_ite) {
             if (et_ite->dev == dev_) {
                 if (et_ite->type == obj_type_) {
                     if (et_ite->name[0] == obj_name_) {
-                        poll_thread->ext_trig_works.erase(et_ite);
+                        poll_thread.ext_trig_works.erase(et_ite);
                         found = true;
                         break;
                     }
@@ -154,14 +154,14 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_thread) {
         }
 
         if (found == true) {
-            WorkItem wo = poll_thread->new_work_item(dev_, poll_list_item);
+            WorkItem wo = poll_thread.new_work_item(dev_, poll_list_item);
             wo.type = obj_type_;
             wo.update = new_upd_;
             wo.name.push_back(obj_name_);
-            poll_thread->insert_in_list(wo);
+            poll_thread.insert_in_list(wo);
         } else {
-            poll_thread->auto_upd.push_back(new_upd_);
-            poll_thread->auto_name.push_back(obj_name_);
+            poll_thread.auto_upd.push_back(new_upd_);
+            poll_thread.auto_name.push_back(obj_name_);
         }
     }
 }

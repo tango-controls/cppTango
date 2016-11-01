@@ -21,9 +21,9 @@ void polling::RemObjCommand::operator()(PollThread &poll_thread) {
 void polling::RemObjCommand::execute(PollThread &poll_thread) {
     cout5 << "Execute a Rem object command" << endl;
 
-    auto ite = poll_thread->works.begin();
+    auto ite = poll_thread.works.begin();
     //TODO find work item; delete if found
-    for (size_t i = 0, size = poll_thread->works.size(); i < size; i++) {
+    for (size_t i = 0, size = poll_thread.works.size(); i < size; i++) {
         if (ite->dev == dev_) {
             if (ite->type == obj_type_) {
                 vector<string>::iterator ite_str;
@@ -32,7 +32,7 @@ void polling::RemObjCommand::execute(PollThread &poll_thread) {
                     if (*ite_str == obj_name_) {
                         ite->name.erase(ite_str);
                         if (ite->name.empty() == true)
-                            poll_thread->works.erase(ite);
+                            poll_thread.works.erase(ite);
                         found = true;
                         break;
                     }

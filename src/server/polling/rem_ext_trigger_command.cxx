@@ -19,12 +19,12 @@ void Tango::polling::RemExtTriggerCommand::execute(PollThread &poll_thread) {
 
     vector<WorkItem>::iterator et_ite;
 
-    for (et_ite = poll_thread->ext_trig_works.begin();
-         et_ite != poll_thread->ext_trig_works.end(); ++et_ite) {
+    for (et_ite = poll_thread.ext_trig_works.begin();
+         et_ite != poll_thread.ext_trig_works.end(); ++et_ite) {
         if (et_ite->dev == dev_) {
             if (et_ite->type == obj_type_) {
                 if (et_ite->name[0] == obj_name_) {
-                    poll_thread->ext_trig_works.erase(et_ite);
+                    poll_thread.ext_trig_works.erase(et_ite);
                     break;
                 }
             }
