@@ -246,9 +246,9 @@ void Tango::polling::PollTask::copy_remaining(T &old_attr_value, T &new_attr_val
 
 }
 
-template <typename AttributesList>
-void put_exceptions_into_map(map<size_t, Tango::DevFailed*> exceptions_map, AttributesList& attrs, size_t size){
-    for(size_t i = 0; i < size; ++i){
+template<typename AttributesList>
+void put_exceptions_into_map(map<size_t, Tango::DevFailed *> exceptions_map, AttributesList &attrs, size_t size) {
+    for (size_t i = 0; i < size; ++i) {
         if (attrs[i].err_list.length() != 0) {
             exceptions_map.emplace(i, new Tango::DevFailed(attrs[i].err_list));
         }
@@ -262,17 +262,10 @@ void Tango::polling::PollTask::poll_attr() {
           << " Dev name = " << work_.dev->get_name()
           << ", Attr name = " << att_list << endl;
 
-    Tango::AttributeValueList *argout = nullptr;
-    Tango::AttributeValueList_3 *argout_3 = nullptr;
-    Tango::AttributeValueList_4 *argout_4 = nullptr;
-    Tango::AttributeValueList_5 *argout_5 = nullptr;
     Tango::DevFailed *attr_reading_exception = nullptr;
+    map<size_t, Tango::DevFailed *> map_except{};
 
-
-    vector<PollObj *>::iterator ite;
-    map<size_t, Tango::DevFailed *> map_except;
-
-    long idl_vers = work_.dev->get_dev_idl_version();
+    long idl_vers{work_.dev->get_dev_idl_version()};
     auto start = chrono::high_resolution_clock::now();
 
 //
@@ -285,15 +278,15 @@ void Tango::polling::PollTask::poll_attr() {
             attr_names[i] = work_.name[i].c_str();
 
         if (idl_vers >= 5)
-            argout_5 = (static_cast<Device_5Impl *>(work_.dev))->read_attributes_5(attr_names, Tango::DEV,
-                                                                                   Util::kDummyClientIdentity);
+            work_.values = (dynamic_cast<Device_5Impl *>(work_.dev))->read_attributes_5(attr_names, Tango::DEV,
+                                                                                        Util::kDummyClientIdentity);
         else if (idl_vers == 4)
-            argout_4 = (static_cast<Device_4Impl *>(work_.dev))->read_attributes_4(attr_names, Tango::DEV,
-                                                                                   Util::kDummyClientIdentity);
+            work_.values = (static_cast<Device_4Impl *>(work_.dev))->read_attributes_4(attr_names, Tango::DEV,
+                                                                                       Util::kDummyClientIdentity);
         else if (idl_vers == 3)
-            argout_3 = (static_cast<Device_3Impl *>(work_.dev))->read_attributes_3(attr_names, Tango::DEV);
+            work_.values = (static_cast<Device_3Impl *>(work_.dev))->read_attributes_3(attr_names, Tango::DEV);
         else
-            argout = work_.dev->read_attributes(attr_names);
+            work_.values = work_.dev->read_attributes(attr_names);
     }
     catch (Tango::DevFailed &e) {
         attr_reading_exception = new Tango::DevFailed(e);
@@ -301,24 +294,31 @@ void Tango::polling::PollTask::poll_attr() {
 
     auto stop = chrono::high_resolution_clock::now();
 
+    //TODO update work and publish
+    work_.start_time = start;
+    work_.needed_time = chrono::duration_cast<chrono::nanoseconds>(stop - start);
+    work_.stop_time = stop;
+
 //
 // Starting with IDl release 3, an attribute in error is not an exception any more. Re-create one.
 // Don't forget that it is still possible to receive classical exception (in case of Monitor timeout for instance)
 //
 
 
+    auto argout_5 = reinterpret_cast<AttributeValueList_5 *>(work_.values);
+    auto argout_4 = reinterpret_cast<AttributeValueList_4 *>(work_.values);
     if (idl_vers >= 3) {
         if (idl_vers >= 5) {
-            put_exceptions_into_map(map_except,*argout_5,work_.name.size());
-            //TODO delete argout_5?
+            put_exceptions_into_map(map_except, *argout_5,
+                                    work_.name.size());
         } else if (idl_vers == 4) {
-            put_exceptions_into_map(map_except,*argout_4,work_.name.size());
-            delete argout_4;
+            put_exceptions_into_map(map_except, *argout_4,
+                                    work_.name.size());
         }
     } else {
-        if ((*argout_3)[0].err_list.length() != 0) {
-            map_except.emplace(0, new Tango::DevFailed((*argout_3)[0].err_list));
-            delete argout_3;
+        auto err_list = (*reinterpret_cast<AttributeValueList_3 *>(work_.values))[0].err_list;
+        if (err_list.length() != 0) {
+            map_except.emplace(0, new Tango::DevFailed(err_list));
         }
     }
 
@@ -336,121 +336,6 @@ void Tango::polling::PollTask::poll_attr() {
         engine_.get_event_system().push_event(work_);
     }
 
-    EventSupplier *event_supplier_nd = NULL;
-    EventSupplier *event_supplier_zmq = NULL;
-
-    for (size_t ctr = 0; ctr < nb_obj; ctr++) {
-        Attribute &att = work_.dev->get_device_attr()->get_attr_by_name(work_.name[ctr].c_str());
-
-        if (att.use_notifd_event() == true && event_supplier_nd == NULL)
-            event_supplier_nd = Util::instance()->get_notifd_event_supplier();
-        if (att.use_zmq_event() == true && event_supplier_zmq == NULL)
-            event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
-
-        if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL)) {
-            if (attr_failed == true) {
-                struct EventSupplier::SuppliedEventData ad;
-                ::memset(&ad, 0, sizeof(ad));
-
-
-                AttributeValue dummy_att{};
-                AttributeValue_3 dummy_att3{};
-                AttributeValue_4 dummy_att4{};
-                AttributeValue_5 dummy_att5{};
-
-                if (idl_vers > 4)
-                    ad.attr_val_5 = &dummy_att5;//TODO may refer to deleted object
-                else if (idl_vers == 4)
-                    ad.attr_val_4 = &dummy_att4;
-                else if (idl_vers == 3)
-                    ad.attr_val_3 = &dummy_att3;
-                else
-                    ad.attr_val = &dummy_att;
-
-//
-// Eventually push the event (if detected). When we have both notifd and zmq event supplier, do not detect the event
-// two times. The detect_and_push_events() method returns true if the event is detected.
-//
-
-                SendEventType send_event;
-                if (event_supplier_nd != NULL)
-                    send_event = event_supplier_nd->detect_and_push_events(work_.dev, ad, attr_reading_exception,
-                                                                           work_.name[ctr], &before_cmd);
-                if (event_supplier_zmq != NULL) {
-                    if (event_supplier_nd != NULL) {
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
-
-                        if (send_event.change == true)
-                            event_supplier_zmq->push_event_loop(work_.dev, CHANGE_EVENT, f_names, f_data,
-                                                                f_names_lg, f_data_lg, ad, att, attr_reading_exception);
-                        if (send_event.archive == true)
-                            event_supplier_zmq->push_event_loop(work_.dev, ARCHIVE_EVENT, f_names, f_data,
-                                                                f_names_lg, f_data_lg, ad, att, attr_reading_exception);
-                        if (send_event.periodic == true)
-                            event_supplier_zmq->push_event_loop(work_.dev, PERIODIC_EVENT, f_names, f_data,
-                                                                f_names_lg, f_data_lg, ad, att, attr_reading_exception);
-                    } else
-                        event_supplier_zmq->detect_and_push_events(work_.dev, ad, attr_reading_exception, work_.name[ctr],
-                                                                   &before_cmd);
-                }
-            } else {
-                struct EventSupplier::SuppliedEventData ad;
-                ::memset(&ad, 0, sizeof(ad));
-
-                if (idl_vers > 4)
-                    ad.attr_val_5 = &((*argout_5)[ctr]);
-                else if (idl_vers == 4)
-                    ad.attr_val_4 = &((*argout_4)[ctr]);
-                else if (idl_vers == 3)
-                    ad.attr_val_3 = &((*argout_3)[ctr]);
-                else
-                    ad.attr_val = &((*argout)[ctr]);
-
-//
-// Eventually push the event (if detected). When we have both notifd and zmq event supplier, do not detect the event
-// two times. The detect_and_push_events() method returns true if the event is detected.
-//
-
-                SendEventType send_event;
-
-                map<size_t, Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
-                Tango::DevFailed *tmp_except;
-                if (ite2 == map_except.end())
-                    tmp_except = attr_reading_exception;
-                else
-                    tmp_except = ite2->second;
-
-                if (event_supplier_nd != NULL)
-                    send_event = event_supplier_nd->detect_and_push_events(work_.dev, ad, tmp_except,
-                                                                           work_.name[ctr], &before_cmd);
-                if (event_supplier_zmq != NULL) {
-                    if (event_supplier_nd != NULL) {
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
-
-                        if (send_event.change == true)
-                            event_supplier_zmq->push_event_loop(work_.dev, CHANGE_EVENT, f_names, f_data,
-                                                                f_names_lg, f_data_lg, ad, att, tmp_except);
-                        if (send_event.periodic == true)
-                            event_supplier_zmq->push_event_loop(work_.dev, PERIODIC_EVENT, f_names, f_data,
-                                                                f_names_lg, f_data_lg, ad, att, tmp_except);
-                        if (send_event.archive == true)
-                            event_supplier_zmq->push_event_loop(work_.dev, ARCHIVE_EVENT, f_names, f_data,
-                                                                f_names_lg, f_data_lg, ad, att, tmp_except);
-                    } else
-                        event_supplier_zmq->detect_and_push_events(work_.dev, ad, tmp_except, work_.name[ctr],
-                                                                   &before_cmd);
-                }
-            }
-        }
-    }
-
-
 //
 // Insert result in polling buffer and simply forget this attribute if it is not possible to insert the result in
 // polling buffer
@@ -463,81 +348,49 @@ void Tango::polling::PollTask::poll_attr() {
 //
 
     try {
+        struct timeval tv = duration_to_timeval(work_.start_time);
+        struct timeval delta_tv = duration_to_timeval(work_.needed_time);
         work_.dev->get_poll_monitor().get_monitor();
-        for (size_t ctr = 0; ctr < nb_obj; ctr++) {
-            ite = work_.dev->get_polled_obj_by_type_name(work_.type, work_.name[ctr]);
-            if (attr_failed == false) {
-                if (nb_obj == 1) {
-                    if (idl_vers >= 5)
-                        (*ite)->insert_data(argout_5, before_cmd, work_.needed_time);
-                    else if (idl_vers == 4)
-                        (*ite)->insert_data(argout_4, before_cmd, work_.needed_time);
-                    else if (idl_vers == 3)
-                        (*ite)->insert_data(argout_3, before_cmd, work_.needed_time);
-                    else
-                        (*ite)->insert_data(argout, before_cmd, work_.needed_time);
+        for (size_t i = 0, size = work_.name.size(); i < size; i++) {
+            auto ite = work_.dev->get_polled_obj_by_type_name(work_.type, work_.name[i]);
+            if (attr_reading_exception == nullptr) {
+                if (idl_vers >= 5) {
+                    map<size_t, Tango::DevFailed *>::iterator ite2 = map_except.find(i);
+                    if (ite2 == map_except.end()) {
+                        Tango::AttributeValueList_5 *new_argout_5 = new Tango::AttributeValueList_5(1);
+                        new_argout_5->length(1);
+                        (*new_argout_5)[0].value.union_no_data(true);
+                        steal_data((*argout_5)[i], (*new_argout_5)[0]);
+                        copy_remaining((*argout_5)[i], (*new_argout_5)[0]);
+                        (*new_argout_5)[0].data_type = (*argout_5)[i].data_type;
+                        (*ite)->insert_data(new_argout_5, tv, delta_tv);
+                    } else
+                        (*ite)->insert_except(ite2->second, tv, delta_tv);
                 } else {
-                    if (idl_vers >= 5) {
-                        map<size_t, Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
-                        if (ite2 == map_except.end()) {
-                            Tango::AttributeValueList_5 *new_argout_5 = new Tango::AttributeValueList_5(1);
-                            new_argout_5->length(1);
-                            (*new_argout_5)[0].value.union_no_data(true);
-                            steal_data((*argout_5)[ctr], (*new_argout_5)[0]);
-                            copy_remaining((*argout_5)[ctr], (*new_argout_5)[0]);
-                            (*new_argout_5)[0].data_type = (*argout_5)[ctr].data_type;
-                            (*ite)->insert_data(new_argout_5, before_cmd, work_.needed_time);
-                        } else
-                            (*ite)->insert_except(ite2->second, before_cmd, work_.needed_time);
-                    } else {
-                        map<size_t, Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
-                        if (ite2 == map_except.end()) {
-                            Tango::AttributeValueList_4 *new_argout_4 = new Tango::AttributeValueList_4(1);
-                            new_argout_4->length(1);
-                            (*new_argout_4)[0].value.union_no_data(true);
-                            steal_data((*argout_4)[ctr], (*new_argout_4)[0]);
-                            copy_remaining((*argout_4)[ctr], (*new_argout_4)[0]);
-                            (*ite)->insert_data(new_argout_4, before_cmd, work_.needed_time);
-                        } else
-                            (*ite)->insert_except(ite2->second, before_cmd, work_.needed_time);
-                    }
+                    map<size_t, Tango::DevFailed *>::iterator ite2 = map_except.find(i);
+                    if (ite2 == map_except.end()) {
+                        Tango::AttributeValueList_4 *new_argout_4 = new Tango::AttributeValueList_4(1);
+                        new_argout_4->length(1);
+                        (*new_argout_4)[0].value.union_no_data(true);
+                        steal_data((*argout_4)[i], (*new_argout_4)[0]);
+                        copy_remaining((*argout_4)[i], (*new_argout_4)[0]);
+                        (*ite)->insert_data(new_argout_4, tv, delta_tv);
+                    } else
+                        (*ite)->insert_except(ite2->second, tv, delta_tv);
                 }
             } else {
-                if (nb_obj == 1)
-                    (*ite)->insert_except(attr_reading_exception, before_cmd, work_.needed_time);
-                else {
-                    if (ctr != nb_obj - 1) {
-                        Tango::DevFailed *dup_except = new Tango::DevFailed(attr_reading_exception->errors);
-                        (*ite)->insert_except(dup_except, before_cmd, work_.needed_time);
-                    } else
-                        (*ite)->insert_except(attr_reading_exception, before_cmd, work_.needed_time);
-                }
+                Tango::DevFailed *dup_except = new Tango::DevFailed(attr_reading_exception->errors);
+                (*ite)->insert_except(dup_except, tv, delta_tv);
             }
-        }
-
-        if (nb_obj != 1 && attr_failed == false) {
-            if (idl_vers >= 5)
-                delete argout_5;
-            else
-                delete argout_4;
         }
 
         work_.dev->get_poll_monitor().rel_monitor();
     }
     catch (Tango::DevFailed &) {
-        if (attr_failed == false) {
-            if (idl_vers >= 5)
-                delete argout_5;
-            else if (idl_vers == 4)
-                delete argout_4;
-            else if (idl_vers == 3)
-                delete argout_3;
-            else
-                delete argout;
-        } else
+        if (attr_reading_exception != nullptr) {
             delete attr_reading_exception;
-        work_.dev->get_poll_monitor().rel_monitor();
+            work_.dev->get_poll_monitor().rel_monitor();
+        }
     }
-
 }
 

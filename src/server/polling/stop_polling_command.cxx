@@ -12,7 +12,7 @@ void Tango::polling::StopPollingCommand::operator()(PollThread &poll_thread) {
 }
 
 void Tango::polling::StopPollingCommand::execute(PollThread &poll_thread) {
-    poll_thread.polling_stop.store(true);
+    poll_thread.polling_stop_.store(true);
 }
 
 Tango::polling::StopPollingCommand::operator std::string() {

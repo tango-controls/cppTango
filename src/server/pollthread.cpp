@@ -89,7 +89,7 @@ namespace Tango {
 //------------------------------------------------------------------------------------------------------------------
 
     PollThread::PollThread(TangoMonitor &m, string &&name, bool polling_as_before_tango_9)
-            : polling_stop(true),
+            : polling_stop_(true),
               tune_ctr(1),
               need_two_tuning{false},
               name_(move(name)),
@@ -98,8 +98,7 @@ namespace Tango {
               thread_{},
               works{},
               ext_trig_works{},
-              event_system_(Util::instance()->get_notifd_event_supplier(),Util::instance()->get_zmq_event_supplier())
-    {
+              event_system_(Util::instance()->get_notifd_event_supplier(), Util::instance()->get_zmq_event_supplier()) {
 #ifdef _TG_WINDOWS_
         LARGE_INTEGER f;
         BOOL is_ctr;
@@ -111,7 +110,7 @@ namespace Tango {
 #endif
     }
 
-    thread::id PollThread::id(){
+    thread::id PollThread::id() {
         return thread_.as_std_thread().get_id();
     }
 
@@ -146,7 +145,7 @@ namespace Tango {
     }
 
     std::experimental::optional<WorkItem>
-    PollThread::find_work_item(DeviceImpl *device, PollObjType type, long update) {
+    PollThread::find_work_item(DeviceImpl *device, PollObjType type, chrono::milliseconds update) {
         experimental::optional<WorkItem> optional_work_item{};
         if (polling_bef_9) return optional_work_item;
 
@@ -171,30 +170,29 @@ namespace Tango {
 //-----------------------------------------------------------------------------------------------------------------
 
     void PollThread::print_work_items() {
-        works.for_each([](const WorkItem& work_item){
+        works.for_each([](const WorkItem &work_item) {
             ostringstream oss;
-            copy(work_item.name.begin(), work_item.name.end()-1,
-                      ostream_iterator<int>(oss, ","));
+            copy(work_item.name.begin(), work_item.name.end() - 1,
+                 ostream_iterator<int>(oss, ","));
 
             oss << work_item.name.back();
 
             cout5 << "Dev name = " << work_item.dev->get_name() << ", obj name(s) = " << oss.str()
-                  << ", next wake_up at " << +work_item.wake_up_date.tv_sec
-                  << "," << setw(6) << setfill('0')
-                  << work_item.wake_up_date.tv_usec << endl;
+                  << ", next wake_up at " << +work_item.wake_up_date.time_since_epoch() << endl;
         });
     }
 
     void PollThread::add_or_push(WorkItem &new_work) {
         experimental::optional<WorkItem> work_item = find_work_item(new_work.dev, new_work.type, new_work.update);
 
-        if(work_item)
+        if (work_item)
             work_item->name.push_back(new_work.name[0]);
         else
             works.push(new_work);
     }
 
-    std::experimental::optional<WorkItem> PollThread::remove_work_item(DeviceImpl * device, std::string obj_name, PollObjType obj_type) {
+    std::experimental::optional<WorkItem>
+    PollThread::remove_work_item(DeviceImpl *device, std::string obj_name, PollObjType obj_type) {
         std::experimental::optional<WorkItem> work_item = works.find_if([](const WorkItem &work_item) {
             return work_item.dev == device && work_item.type == obj_type &&
                    find_if(work_item.name.begin(), work_item.name.end(),
@@ -207,16 +205,18 @@ namespace Tango {
                     work_item->name.end(),
                     [](const string &name) { return name == obj_name; }
             ), work_item->name.end());
-            if (work_item->name.empty()){
+            if (work_item->name.empty()) {
                 auto outer = work_item.value();
-                works.erase([&outer](const WorkItem& inner){ return inner.dev == outer.dev && inner.type == outer.type;});
+                works.erase(
+                        [&outer](const WorkItem &inner) { return inner.dev == outer.dev && inner.type == outer.type; });
             }
         }
 
         return work_item;
     }
 
-    std::experimental::optional<WorkItem> PollThread::remove_trigger(DeviceImpl * device, std::string obj_name, PollObjType obj_type) {
+    std::experimental::optional<WorkItem>
+    PollThread::remove_trigger(DeviceImpl *device, std::string obj_name, PollObjType obj_type) {
         std::experimental::optional<WorkItem> work_item = works.find_if([](const WorkItem &work_item) {
             return work_item.dev == device && work_item.type == obj_type &&
                    find_if(work_item.name.begin(), work_item.name.end(),
@@ -229,9 +229,10 @@ namespace Tango {
                     work_item->name.end(),
                     [](const string &name) { return name == obj_name; }
             ), work_item->name.end());
-            if (work_item->name.empty()){
+            if (work_item->name.empty()) {
                 auto outer = work_item.value();
-                works.erase([&outer](const WorkItem& inner){ return inner.dev == outer.dev && inner.type == outer.type;});
+                works.erase(
+                        [&outer](const WorkItem &inner) { return inner.dev == outer.dev && inner.type == outer.type; });
             }
         }
 
@@ -253,51 +254,43 @@ namespace Tango {
 //
 //------------------------------------------------------------------------------------------------------------------
 
-    timeval PollThread::compute_new_date(timeval time, int upd) {
-        double ori_d = (double) time.tv_sec + ((double) time.tv_usec / 1000000);
-        double new_d = ori_d + ((double) (upd) / 1000);
-        return {(long) new_d, (long) ((new_d - time.tv_sec) * 1000000)};
+    chrono::milliseconds PollThread::compute_new_date(chrono::time_point current_time, chrono::microseconds update) {
+        return current_time.time_since_epoch() + update;
     }
 
-    void PollThread::set_time() {
-#ifdef _TG_WINDOWS_
-        _ftime(&now_win);
-			now.tv_sec = (unsigned long)now_win.time;
-			now.tv_usec = (long)now_win.millitm * 1000;
-#else
-        gettimeofday(&now,NULL);
-#endif
-        now.tv_sec = now.tv_sec - DELTA_T;
+    void PollThread::set_time(chrono::time_point start, chrono::time_point stop) {
+        start_ = start;
+        stop_  = stop;
     }
 
-    polling::EventSystem& PollThread::get_event_system(){
+    polling::EventSystem &PollThread::get_event_system() {
         return event_system_;
     }
 
+    //TODO split sleep computation and works list modification
     std::chrono::milliseconds PollThread::compute_next_sleep() {
-            //TODO use integral type to calculate time related values
-            uint64_t next{};
-            uint64_t diff{};
-            uint64_t after_d = after.tv_sec + (after.tv_usec / 1000000);//TODO precision loss :/
+        //TODO use integral type to calculate time related values
+        chrono::time_point next{};
+        chrono::time_point diff{};
 
-            uint64_t sleep{};
+        chrono::milliseconds sleep{};
 
-            bool discard = false;
-            u_int nb_late = 0;
+        bool discard = false;
+        u_int nb_late = 0;
 
-            if (polling_bef_9) {
-                discard = true;
-            } else {
+        if (polling_bef_9) {
+            discard = true;
+        } else {
 
 //
 // Compute for how many items the polling thread is late
 //
-                works.for_each([](const WorkItem& work_item){
-                    next = (double) work_item.wake_up_date.tv_sec + ((double) work_item.wake_up_date.tv_usec / 1000000);
-                    diff = next - after_d;
-                    if (diff < 0 && fabs(diff) > DISCARD_THRESHOLD)
-                        nb_late++;
-                });
+            works.for_each([](const WorkItem &work_item) {
+                next = (double) work_item.wake_up_date.tv_sec + ((double) work_item.wake_up_date.tv_usec / 1000000);
+                diff = next - after_d;
+                if (diff < 0 && fabs(diff) > DISCARD_THRESHOLD)
+                    nb_late++;
+            });
 
 //
 // If we are late for some item(s):
@@ -306,87 +299,86 @@ namespace Tango {
 //  - Late again: If the number of late items increase --> Discard items
 //
 
-                if (nb_late != 0) {
-                    if (nb_late == works.size()) {
-                        cout5 << "Setting discard to true because nb_late == works.size() --> " << nb_late << endl;
-                        discard = true;
-                    } else {
-                        if (previous_nb_late != 0) {
-                            if (nb_late < previous_nb_late) {
-                                previous_nb_late = nb_late;
-                                cout5 << "Late but trying to catch up" << endl;
-                            } else {
-                                previous_nb_late = 0;
-                                discard = true;
-                            }
-                        } else
+            if (nb_late != 0) {
+                if (nb_late == works.size()) {
+                    cout5 << "Setting discard to true because nb_late == works.size() --> " << nb_late << endl;
+                    discard = true;
+                } else {
+                    if (previous_nb_late != 0) {
+                        if (nb_late < previous_nb_late) {
                             previous_nb_late = nb_late;
-                        sleep = -1;
-                    }
+                            cout5 << "Late but trying to catch up" << endl;
+                        } else {
+                            previous_nb_late = 0;
+                            discard = true;
+                        }
+                    } else
+                        previous_nb_late = nb_late;
+                    sleep = -1;
                 }
             }
+        }
 
 //
 // Analyse work list
 //
 
 //        cout5 << "discard = " << boolalpha << discard << endl;
-            if (nb_late == 0 || discard == true) {
-                previous_nb_late = 0;
+        if (nb_late == 0 || discard == true) {
+            previous_nb_late = 0;
 
-                auto item = works.top();
-                next = (double) item.wake_up_date.tv_sec +
-                       ((double) item.wake_up_date.tv_usec / 1000000);
-                diff = next - after_d;
+            auto item = works.top();
+            next = (double) item.wake_up_date.tv_sec +
+                   ((double) item.wake_up_date.tv_usec / 1000000);
+            diff = next - after_d;
 
-                if (diff < 0) {
-                    if (fabs(diff) < DISCARD_THRESHOLD)
-                        sleep = -1;
-                    else {
-                        while ((diff < 0) && (fabs(diff) > DISCARD_THRESHOLD)) {
-                            cout5 << "Discard one elt !!!!!!!!!!!!!" << endl;
-                            WorkItem& tmp = const_cast<WorkItem&>(works.top());
-                            if (tmp.type == POLL_ATTR) {
-                                DevErrorList errs{1};
+            if (diff < 0) {
+                if (fabs(diff) < DISCARD_THRESHOLD)
+                    sleep = -1;
+                else {
+                    while ((diff < 0) && (fabs(diff) > DISCARD_THRESHOLD)) {
+                        cout5 << "Discard one elt !!!!!!!!!!!!!" << endl;
+                        WorkItem &tmp = const_cast<WorkItem &>(works.top());
+                        if (tmp.type == POLL_ATTR) {
+                            DevErrorList errs{1};
 
-                                errs[0].severity = ERR;
-                                errs[0].reason = string_dup("API_PollThreadOutOfSync");
-                                errs[0].origin = string_dup("PollThread::push_error_event");
-                                errs[0].desc = string_dup(
-                                        "The polling thread is late and discard this object polling.\nAdvice: Tune device server polling");
+                            errs[0].severity = ERR;
+                            errs[0].reason = string_dup("API_PollThreadOutOfSync");
+                            errs[0].origin = string_dup("PollThread::push_error_event");
+                            errs[0].desc = string_dup(
+                                    "The polling thread is late and discard this object polling.\nAdvice: Tune device server polling");
 
-                                DevFailed except{errs};
+                            DevFailed except{errs};
 
-                                push_error_event(tmp, except);
-                            }
-
-                            tmp.wake_up_date = compute_new_date(tmp.wake_up_date, tmp.update);
-                            works.push(tmp);
-                            works.pop();
-                            tune_ctr--;
-
-                            WorkItem &top = const_cast<WorkItem&>(works.top());
-                            next = (double) top.wake_up_date.tv_sec +
-                                   ((double) top.wake_up_date.tv_usec / 1000000);
-                            diff = next - after_d;
+                            get_event_system().push_error_event(tmp, except);
                         }
 
-                        if (fabs(diff) < DISCARD_THRESHOLD)
-                            sleep = -1;
-                        else
-                            sleep = (diff * 1000);
-                    }
-                } else
-                    sleep = (diff * 1000);
-            }
+                        tmp.wake_up_date = compute_new_date(tmp.wake_up_date, tmp.update);
+                        works.push(tmp);
+                        works.pop();
+                        tune_ctr--;
 
-            cout5 << "Sleep for : " << sleep << endl;
-            return chrono::milliseconds{sleep};
+                        WorkItem &top = const_cast<WorkItem &>(works.top());
+                        next = (double) top.wake_up_date.tv_sec +
+                               ((double) top.wake_up_date.tv_usec / 1000000);
+                        diff = next - after_d;
+                    }
+
+                    if (fabs(diff) < DISCARD_THRESHOLD)
+                        sleep = -1;
+                    else
+                        sleep = (diff * 1000);
+                }
+            } else
+                sleep = (diff * 1000);
+        }
+
+        cout5 << "Sleep for : " << sleep << endl;
+        return chrono::milliseconds{sleep};
     }
 
 
-
-    void PollThread::adjust_work_items(WorkItem& work_item) {
+    void PollThread::adjust_work_items(WorkItem &work_item) {
         //
 // For case where the polling thread itself modify the polling period of the object it already polls
 //
@@ -457,23 +449,11 @@ namespace Tango {
 
         tune_ctr--;
 
-#ifdef _TG_WINDOWS_
-        _ftime(&after_win);
-			after.tv_sec = (unsigned long)after_win.time;
-			after.tv_usec = (long)after_win.millitm * 1000;
-#else
-        gettimeofday(&after,NULL);
-#endif
-        after.tv_sec = after.tv_sec - DELTA_T;
-
-        if (tune_ctr <= 0)
-        {
-            tune_list(true,0);
-            if (need_two_tuning)
-            {
+        if (tune_ctr <= 0) {
+            tune_list(true, 0);
+            if (need_two_tuning) {
                 set_need_two_tuning(false);
-            }
-            else
+            } else
                 tune_ctr = POLL_LOOP_NB;
         }
     }

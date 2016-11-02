@@ -180,7 +180,7 @@ namespace Tango {
         void execute_cmd(polling::Command &&);
 
         std::experimental::optional<WorkItem>
-        find_work_item(DeviceImpl *, PollObjType, long update);
+        find_work_item(DeviceImpl *, PollObjType, chrono::milliseconds update);
 
         std::experimental::optional<WorkItem> remove_work_item(DeviceImpl*,std::string, PollObjType);
         std::experimental::optional<WorkItem> remove_trigger(DeviceImpl*,std::string, PollObjType);
@@ -212,7 +212,7 @@ namespace Tango {
         //TODO inject algorithm?
         std::chrono::milliseconds compute_next_sleep();
 
-        timeval compute_new_date(timeval, int);
+        chrono::milliseconds compute_new_date(chrono::time_point, chrono::microseconds);
 
         void print_work_items();
 
@@ -231,8 +231,9 @@ namespace Tango {
 
         void reset_tune_counter(){ tune_ctr = 0;}
 
-        void set_time();
-    protected:
+        //TOOD remove - use time in work item
+        void set_time(std::chrono::time_point, std::chrono::time_point);
+    private:
         polling::PollingQueue &works;
         polling::PollingQueue &ext_trig_works;
 #ifdef _TG_WINDOWS_
@@ -240,11 +241,10 @@ namespace Tango {
         struct _timeb		after_win;
         double				ctr_frequency;
 #endif
-        struct timeval now;
-        struct timeval after;
-        atomic_bool polling_stop;
+        std::chrono::time_point start_;
+        std::chrono::time_point stop_;
+        atomic_bool polling_stop_;
 
-    private:
         //+----------------------------------------------------------------------------------------------------------------
         //
         // method :
