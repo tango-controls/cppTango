@@ -574,15 +574,15 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 #endif
 		}
 
-		if (i == nb)
+		if(i == nb && !req.request->poll_response())
 		{
 			TangoSys_OMemStream desc;
 			desc << "Device " << dev_name();
 			desc << ": Reply for asynchronous call (id = " << id;
 			desc << ") is not yet arrived" << ends;
 			ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
-						       	       desc.str(),
-						               "Connection::command_inout_reply");
+			                                       desc.str(),
+			                                       "Connection::command_inout_reply");
 		}
 	}
 
@@ -1405,15 +1405,15 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 #endif
 		}
 	
-		if (i == nb)
+		if(i == nb && !req.request->poll_response())
 		{
 			TangoSys_OMemStream desc;
 			desc << "Device " << device_name;
 			desc << ": Reply for asynchronous call (id = " << id;
 			desc << ") is not yet arrived" << ends;
 			ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
-						       	       desc.str(),
-						               "DeviceProxy::read_attributes_reply");
+			                                       desc.str(),
+			                                       "DeviceProxy::read_attributes_reply");
 		}
 	}
 
@@ -1648,15 +1648,15 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 #endif
 		}
 
-		if (i == nb)
+		if(i == nb && !req.request->poll_response())
 		{
 			TangoSys_OMemStream desc;
 			desc << "Device " << device_name;
 			desc << ": Reply for asynchronous call (id = " << id;
 			desc << ") is not yet arrived" << ends;
 			ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
-						       	       desc.str(),
-						               "DeviceProxy::read_attribute_reply");
+			                                       desc.str(),
+			                                       "DeviceProxy::read_attribute_reply");
 		}
 	}
 
@@ -2263,15 +2263,15 @@ void DeviceProxy::write_attributes_reply(long id,long call_timeout)
 #endif
 		}
 
-		if (i == nb)
+		if(i == nb && !req.request->poll_response())
 		{
 			TangoSys_OMemStream desc;
 			desc << "Device " << device_name;
 			desc << ": Reply for asynchronous call (id = " << id;
 			desc << ") is not yet arrived" << ends;
 			ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
-						       	       desc.str(),
-						               "DeviceProxy::write_attributes_reply");
+			                                       desc.str(),
+			                                       "DeviceProxy::write_attributes_reply");
 		}
 	}
 
