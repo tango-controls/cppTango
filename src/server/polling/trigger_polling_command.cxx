@@ -22,9 +22,10 @@ void Tango::polling::TriggerPollingCommand::execute(Tango::PollThread &poll_engi
     );
 
     if(work_item){
-        PollTask poll_task{work_item.value()};
+        PollTask poll_task{work_item.value(), poll_engine};
 
-        async(launch::async, poll_task);//TODO release tmp future
+
+        auto future = poll_task();//TODO release future
     }
 }
 

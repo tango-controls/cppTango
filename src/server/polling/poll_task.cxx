@@ -8,301 +8,225 @@
 #include <tango.h>
 #include <tango/server/eventsupplier.h>
 
-Tango::polling::PollTask::PollTask(Tango::WorkItem &work) : work_(work) {}
+Tango::polling::PollTask::PollTask(Tango::WorkItem &work, PollThread &engine) : work_(work), engine_(engine) {}
 
 std::future<void> Tango::polling::PollTask::operator()() {
-    auto future = std::async(std::launch::async,&Tango::polling::PollTask::execute, this);
+    auto future = std::async(std::launch::async, &Tango::polling::PollTask::execute, this);
     return future;
 }
 
 void Tango::polling::PollTask::execute() {
-    if(work_.type == Tango::POLL_CMD)
+    if (work_.type == Tango::POLL_CMD)
         poll_cmd();
     else
         poll_attr();
 }
 
 void Tango::polling::PollTask::poll_cmd() {
-        cout5 << "----------> Time = "
-              << chrono::system_clock::now().time_since_epoch().count()
-              << " Dev name = " << work_.dev->get_name()
-              << ", Cmd name = " << work_.name[0] << endl;
+    cout5 << "----------> Time = "
+          << chrono::system_clock::now().time_since_epoch().count()
+          << " Dev name = " << work_.dev->get_name()
+          << ", Cmd name = " << work_.name[0] << endl;
 
-        CORBA::Any *argout = NULL;
-        Tango::DevFailed *save_except = NULL;
-        struct timeval before_cmd, after_cmd;
-#ifdef _TG_WINDOWS_
-        struct _timeb before_win,after_win;
-        LARGE_INTEGER before,after;
-#endif
+    CORBA::Any *argout = nullptr;
+    Tango::DevFailed *save_except = nullptr;
+    bool cmd_failed{false};
 
-        vector<PollObj *>::iterator ite;
-        bool cmd_failed = false;
-        try {
-#ifdef _TG_WINDOWS_
-            if (ctr_frequency != 0)
-                QueryPerformanceCounter(&before);
-            _ftime(&before_win);
-            before_cmd.tv_sec = (unsigned long)before_win.time;
-            before_cmd.tv_usec = (long)before_win.millitm * 1000;
-#else
-            gettimeofday(&before_cmd, NULL);
-#endif
-            before_cmd.tv_sec = before_cmd.tv_sec - DELTA_T;
 
-//
-// Execute the command
-//
+    auto start = chrono::high_resolution_clock::now();
 
-            argout = work_.dev->command_inout(work_.name[0].c_str(), CORBA::Any{});
+    //
+    // Execute the command
+    //
+    try {
+        argout = work_.dev->command_inout(work_.name[0].c_str(), CORBA::Any{});
+    }
+    catch (const Tango::DevFailed &e) {
+        cmd_failed = true;
+        save_except = new Tango::DevFailed(e);
+    }
 
-#ifdef _TG_WINDOWS_
-            if (ctr_frequency != 0)
-            {
-                QueryPerformanceCounter(&after);
+    auto stop = chrono::high_resolution_clock::now();
 
-                needed_time.tv_sec = 0;
-                needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-                work_.needed_time = needed_time;
-            }
-            else
-            {
-                _ftime(&after_win);
-                after_cmd.tv_sec = (unsigned long)after_win.time;
-                after_cmd.tv_usec = (long)after_win.millitm * 1000;
-
-                after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-                time_diff(before_cmd,after_cmd,needed_time);
-                work_.needed_time = needed_time;
-            }
-#else
-            gettimeofday(&after_cmd, NULL);
-            after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-            work_.needed_time = time_diff(before_cmd, after_cmd);
-#endif
-        }
-        catch (Tango::DevFailed &e) {
-            cmd_failed = true;
-#ifdef _TG_WINDOWS_
-            if (ctr_frequency != 0)
-            {
-                QueryPerformanceCounter(&after);
-
-                needed_time.tv_sec = 0;
-                needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-                work_.needed_time = needed_time;
-            }
-            else
-            {
-                _ftime(&after_win);
-                after_cmd.tv_sec = (unsigned long)after_win.time;
-                after_cmd.tv_usec = (long)after_win.millitm * 1000;
-
-                after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-                time_diff(before_cmd,after_cmd,needed_time);
-                work_.needed_time = needed_time;
-            }
-#else
-            gettimeofday(&after_cmd, NULL);
-            after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-            work_.needed_time = time_diff(before_cmd, after_cmd);
-#endif
-            save_except = new Tango::DevFailed(e);
-        }
+    work_.needed_time = stop - start;
 
 //
 // Insert result in polling buffer and simply forget this command if it is not possible to insert the result in
 // polling buffer
 //
 
-        try {
-            work_.dev->get_poll_monitor().get_monitor();
-            ite = work_.dev->get_polled_obj_by_type_name(work_.type, work_.name[0]);
-            if (cmd_failed == false)
-                (*ite)->insert_data(argout, before_cmd, work_.needed_time);
-            else
-                (*ite)->insert_except(save_except, before_cmd, work_.needed_time);
-            work_.dev->get_poll_monitor().rel_monitor();
-        }
-        catch (Tango::DevFailed &) {
-            if (cmd_failed == false)
-                delete argout;
-            else
-                delete save_except;
-            work_.dev->get_poll_monitor().rel_monitor();
-        }
+    try {
+        struct timeval start_as_tv = to_timeval(start);
+        struct timeval delta_tv = to_timeval(work_.needed_time);
+        work_.dev->get_poll_monitor().get_monitor();
+        auto ite = work_.dev->get_polled_obj_by_type_name(work_.type, work_.name[0]);
+        if (cmd_failed)
+            (*ite)->insert_except(save_except, start_as_tv, delta_tv);
+        else
+            (*ite)->insert_data(argout, start_as_tv, delta_tv);
+        work_.dev->get_poll_monitor().rel_monitor();
+    }
+    catch (Tango::DevFailed &) {
+        //TODO if not thrown who will release? CORBA?
+        if (cmd_failed)
+            delete save_except;
+        else
+            delete argout;
+
+        work_.dev->get_poll_monitor().rel_monitor();
+    }
 }
 
 
-
-template <typename T>
-void Tango::polling::PollTask::steal_data(T &attr_value,T &new_attr_value)
-{
-    switch (attr_value.value._d())
-    {
-        case ATT_BOOL:
-        {
+template<typename T>
+void Tango::polling::PollTask::steal_data(T &attr_value, T &new_attr_value) {
+    switch (attr_value.value._d()) {
+        case ATT_BOOL: {
             DevVarBooleanArray &union_seq = attr_value.value.bool_att_value();
             DevVarBooleanArray tmp_seq(1);
             new_attr_value.value.bool_att_value(tmp_seq);
             DevVarBooleanArray &new_union_seq = new_attr_value.value.bool_att_value();
             unsigned long len = union_seq.length();
-            new_union_seq.replace(len,len,union_seq.get_buffer(false),false);
+            new_union_seq.replace(len, len, union_seq.get_buffer(false), false);
         }
             break;
 
-        case ATT_SHORT:
-        {
+        case ATT_SHORT: {
             DevVarShortArray &union_seq = attr_value.value.short_att_value();
             DevVarShortArray tmp_seq(1);
             new_attr_value.value.short_att_value(tmp_seq);
             DevVarShortArray &new_union_seq = new_attr_value.value.short_att_value();
             unsigned long len = union_seq.length();
-            new_union_seq.replace(len,len,union_seq.get_buffer(false),false);
+            new_union_seq.replace(len, len, union_seq.get_buffer(false), false);
         }
             break;
 
-        case ATT_LONG:
-        {
+        case ATT_LONG: {
             DevVarLongArray &union_seq = attr_value.value.long_att_value();
             DevVarLongArray tmp_seq(1);
             new_attr_value.value.long_att_value(tmp_seq);
             DevVarLongArray &new_union_seq = new_attr_value.value.long_att_value();
             unsigned long len = union_seq.length();
-            new_union_seq.replace(len,len,union_seq.get_buffer(false),false);
+            new_union_seq.replace(len, len, union_seq.get_buffer(false), false);
         }
             break;
 
-        case ATT_LONG64:
-        {
+        case ATT_LONG64: {
             DevVarLong64Array &union_seq = attr_value.value.long64_att_value();
             DevVarLong64Array tmp_seq(1);
             new_attr_value.value.long64_att_value(tmp_seq);
             DevVarLong64Array &new_union_seq = new_attr_value.value.long64_att_value();
             unsigned long len = union_seq.length();
-            new_union_seq.replace(len,len,union_seq.get_buffer(false),false);
+            new_union_seq.replace(len, len, union_seq.get_buffer(false), false);
         }
             break;
 
-        case ATT_FLOAT:
-        {
+        case ATT_FLOAT: {
             DevVarFloatArray &union_seq = attr_value.value.float_att_value();
             DevVarFloatArray tmp_seq(1);
             new_attr_value.value.float_att_value(tmp_seq);
             DevVarFloatArray &new_union_seq = new_attr_value.value.float_att_value();
             unsigned long len = union_seq.length();
-            new_union_seq.replace(len,len,union_seq.get_buffer(false),false);
+            new_union_seq.replace(len, len, union_seq.get_buffer(false), false);
         }
             break;
 
-        case ATT_DOUBLE:
-        {
+        case ATT_DOUBLE: {
             DevVarDoubleArray &union_seq = attr_value.value.double_att_value();
             DevVarDoubleArray tmp_seq(1);
             new_attr_value.value.double_att_value(tmp_seq);
             DevVarDoubleArray &new_union_seq = new_attr_value.value.double_att_value();
             unsigned long len = union_seq.length();
-            new_union_seq.replace(len,len,union_seq.get_buffer(false),false);
+            new_union_seq.replace(len, len, union_seq.get_buffer(false), false);
         }
             break;
 
-        case ATT_UCHAR:
-        {
+        case ATT_UCHAR: {
             DevVarUCharArray &union_seq = attr_value.value.uchar_att_value();
             DevVarUCharArray tmp_seq(1);
             new_attr_value.value.uchar_att_value(tmp_seq);
             DevVarUCharArray &new_union_seq = new_attr_value.value.uchar_att_value();
             unsigned long len = union_seq.length();
-            new_union_seq.replace(len,len,union_seq.get_buffer(false),false);
+            new_union_seq.replace(len, len, union_seq.get_buffer(false), false);
         }
             break;
 
-        case ATT_USHORT:
-        {
+        case ATT_USHORT: {
             DevVarUShortArray &union_seq = attr_value.value.ushort_att_value();
             DevVarUShortArray tmp_seq(1);
             new_attr_value.value.ushort_att_value(tmp_seq);
             DevVarUShortArray &new_union_seq = new_attr_value.value.ushort_att_value();
             unsigned long len = union_seq.length();
-            new_union_seq.replace(len,len,union_seq.get_buffer(false),false);
+            new_union_seq.replace(len, len, union_seq.get_buffer(false), false);
         }
             break;
 
-        case ATT_ULONG:
-        {
+        case ATT_ULONG: {
             DevVarULongArray &union_seq = attr_value.value.ulong_att_value();
             DevVarULongArray tmp_seq(1);
             new_attr_value.value.ulong_att_value(tmp_seq);
             DevVarULongArray &new_union_seq = new_attr_value.value.ulong_att_value();
             unsigned long len = union_seq.length();
-            new_union_seq.replace(len,len,union_seq.get_buffer(false),false);
+            new_union_seq.replace(len, len, union_seq.get_buffer(false), false);
         }
             break;
 
-        case ATT_ULONG64:
-        {
+        case ATT_ULONG64: {
             DevVarULong64Array &union_seq = attr_value.value.ulong64_att_value();
             DevVarULong64Array tmp_seq(1);
             new_attr_value.value.ulong64_att_value(tmp_seq);
             DevVarULong64Array &new_union_seq = new_attr_value.value.ulong64_att_value();
             unsigned long len = union_seq.length();
-            new_union_seq.replace(len,len,union_seq.get_buffer(false),false);
+            new_union_seq.replace(len, len, union_seq.get_buffer(false), false);
         }
             break;
 
-        case ATT_STRING:
-        {
+        case ATT_STRING: {
             DevVarStringArray &union_seq = attr_value.value.string_att_value();
             DevVarStringArray tmp_seq(1);
             new_attr_value.value.string_att_value(tmp_seq);
             DevVarStringArray &new_union_seq = new_attr_value.value.string_att_value();
             unsigned long len = union_seq.length();
-            new_union_seq.replace(len,len,union_seq.get_buffer(false),false);
+            new_union_seq.replace(len, len, union_seq.get_buffer(false), false);
         }
             break;
 
-        case ATT_STATE:
-        {
+        case ATT_STATE: {
             DevVarStateArray &union_seq = attr_value.value.state_att_value();
             DevVarStateArray tmp_seq(1);
             new_attr_value.value.state_att_value(tmp_seq);
             DevVarStateArray &new_union_seq = new_attr_value.value.state_att_value();
             unsigned long len = union_seq.length();
-            new_union_seq.replace(len,len,union_seq.get_buffer(false),false);
+            new_union_seq.replace(len, len, union_seq.get_buffer(false), false);
         }
             break;
 
-        case DEVICE_STATE:
-        {
+        case DEVICE_STATE: {
             DevState union_state = attr_value.value.dev_state_att();
             new_attr_value.value.dev_state_att(union_state);
         }
             break;
 
-        case ATT_NO_DATA:
-        {
+        case ATT_NO_DATA: {
             new_attr_value.value.union_no_data(true);
         }
             break;
 
-        case ATT_ENCODED:
-        {
+        case ATT_ENCODED: {
             DevVarEncodedArray &union_seq = attr_value.value.encoded_att_value();
             DevVarEncodedArray tmp_seq(1);
             new_attr_value.value.encoded_att_value(tmp_seq);
             DevVarEncodedArray &new_union_seq = new_attr_value.value.encoded_att_value();
             unsigned long len = union_seq.length();
-            new_union_seq.replace(len,len,union_seq.get_buffer(false),false);
+            new_union_seq.replace(len, len, union_seq.get_buffer(false), false);
         }
             break;
     }
 }
 
 
-
-template <typename T>
-void Tango::polling::PollTask::copy_remaining(T &old_attr_value,T &new_attr_value)
-{
+template<typename T>
+void Tango::polling::PollTask::copy_remaining(T &old_attr_value, T &new_attr_value) {
     new_attr_value.quality = old_attr_value.quality;
     new_attr_value.data_format = old_attr_value.data_format;
     new_attr_value.time = old_attr_value.time;
@@ -314,63 +238,50 @@ void Tango::polling::PollTask::copy_remaining(T &old_attr_value,T &new_attr_valu
     new_attr_value.name = tmp_ptr;
 
     omni_mutex *tmp_mut = old_attr_value.get_attr_mutex();
-    if (tmp_mut != NULL)
-    {
+    if (tmp_mut != NULL) {
         new_attr_value.set_attr_mutex(tmp_mut);
         old_attr_value.set_attr_mutex(NULL);
     }
 
 }
 
+template <typename AttributesList>
+void put_exceptions_into_map(map<size_t, Tango::DevFailed*> exceptions_map, AttributesList& attrs, size_t size){
+    for(size_t i = 0; i < size; ++i){
+        if (attrs[i].err_list.length() != 0) {
+            exceptions_map.emplace(i, new Tango::DevFailed(attrs[i].err_list));
+        }
+    }
+}
 
 void Tango::polling::PollTask::poll_attr() {
-    size_t nb_obj = work_.name.size();
-    string att_list;
-    for (size_t ctr = 0; ctr < nb_obj; ctr++) {
-        att_list = att_list + work_.name[ctr];
-        if (ctr < (nb_obj - 1))
-            att_list = att_list + ", ";
-    }
-
+    string att_list = vector_to_string(work_.name);
     cout5 << "----------> Time = "
           << chrono::system_clock::now().time_since_epoch().count()
           << " Dev name = " << work_.dev->get_name()
           << ", Attr name = " << att_list << endl;
 
-    struct timeval before_cmd, after_cmd;
-#ifdef _TG_WINDOWS_
-    struct _timeb before_win,after_win;
-        LARGE_INTEGER before,after;
-#endif
-    Tango::AttributeValueList *argout = NULL;
-    Tango::AttributeValueList_3 *argout_3 = NULL;
-    Tango::AttributeValueList_4 *argout_4 = NULL;
-    Tango::AttributeValueList_5 *argout_5 = NULL;
-    Tango::DevFailed *saved_exception = NULL;
-    bool attr_failed = false;
+    Tango::AttributeValueList *argout = nullptr;
+    Tango::AttributeValueList_3 *argout_3 = nullptr;
+    Tango::AttributeValueList_4 *argout_4 = nullptr;
+    Tango::AttributeValueList_5 *argout_5 = nullptr;
+    Tango::DevFailed *attr_reading_exception = nullptr;
+
+
     vector<PollObj *>::iterator ite;
     map<size_t, Tango::DevFailed *> map_except;
 
     long idl_vers = work_.dev->get_dev_idl_version();
-    try {
-#ifdef _TG_WINDOWS_
-        if (ctr_frequency != 0)
-                QueryPerformanceCounter(&before);
-            _ftime(&before_win);
-            before_cmd.tv_sec = (unsigned long)before_win.time;
-            before_cmd.tv_usec = (long)before_win.millitm * 1000;
-#else
-        gettimeofday(&before_cmd, NULL);
-#endif
-        before_cmd.tv_sec = before_cmd.tv_sec - DELTA_T;
+    auto start = chrono::high_resolution_clock::now();
 
 //
 // Read the attributes
 //
+    try {
+        DevVarStringArray attr_names{work_.name.size()};
 
-        DevVarStringArray attr_names{nb_obj};
-        for (size_t ctr = 0; ctr < nb_obj; ctr++)
-            attr_names[ctr] = work_.name[ctr].c_str();
+        for (size_t i = 0, size = work_.name.size(); i < size; i++)
+            attr_names[i] = work_.name[i].c_str();
 
         if (idl_vers >= 5)
             argout_5 = (static_cast<Device_5Impl *>(work_.dev))->read_attributes_5(attr_names, Tango::DEV,
@@ -382,112 +293,47 @@ void Tango::polling::PollTask::poll_attr() {
             argout_3 = (static_cast<Device_3Impl *>(work_.dev))->read_attributes_3(attr_names, Tango::DEV);
         else
             argout = work_.dev->read_attributes(attr_names);
-
-#ifdef _TG_WINDOWS_
-        if (ctr_frequency != 0)
-            {
-                QueryPerformanceCounter(&after);
-
-                needed_time.tv_sec = 0;
-                needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-                work_.needed_time = needed_time;
-            }
-            else
-            {
-                _ftime(&after_win);
-                after_cmd.tv_sec = (unsigned long)after_win.time;
-                after_cmd.tv_usec = (long)after_win.millitm  * 1000;
-
-                after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-                time_diff(before_cmd,after_cmd,needed_time);
-                work_.needed_time = needed_time;
-            }
-#else
-        gettimeofday(&after_cmd, NULL);
-        after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-        work_.needed_time = time_diff(before_cmd, after_cmd);
-#endif
     }
     catch (Tango::DevFailed &e) {
-        attr_failed = true;
-#ifdef _TG_WINDOWS_
-        if (ctr_frequency != 0)
-            {
-                QueryPerformanceCounter(&after);
-
-                needed_time.tv_sec = 0;
-                needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-                work_.needed_time = needed_time;
-            }
-            else
-            {
-                _ftime(&after_win);
-                after_cmd.tv_sec = (unsigned long)after_win.time;
-                after_cmd.tv_usec = (long)after_win.millitm * 1000;
-
-                after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-                time_diff(before_cmd,after_cmd,needed_time);
-                work_.needed_time = needed_time;
-            }
-#else
-        gettimeofday(&after_cmd, NULL);
-        after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-        work_.needed_time = time_diff(before_cmd, after_cmd);
-#endif
-
-        saved_exception = new Tango::DevFailed(e);
+        attr_reading_exception = new Tango::DevFailed(e);
     }
+
+    auto stop = chrono::high_resolution_clock::now();
 
 //
 // Starting with IDl release 3, an attribute in error is not an exception any more. Re-create one.
 // Don't forget that it is still possible to receive classical exception (in case of Monitor timeout for instance)
 //
 
+
     if (idl_vers >= 3) {
         if (idl_vers >= 5) {
-            if (nb_obj == 1) {
-                if ((attr_failed == false) && ((*argout_5)[0].err_list.length() != 0)) {
-                    attr_failed = true;
-                    saved_exception = new Tango::DevFailed((*argout_5)[0].err_list);
-                    delete argout_5;
-                }
-            } else {
-                for (size_t ctr = 0; ctr < nb_obj; ctr++) {
-                    if ((attr_failed == false) && ((*argout_5)[ctr].err_list.length() != 0)) {
-                        Tango::DevFailed *tmp_except = new Tango::DevFailed((*argout_5)[ctr].err_list);
-                        map_except.insert(pair<size_t, Tango::DevFailed *>(ctr, tmp_except));
-                    }
-                }
-            }
+            put_exceptions_into_map(map_except,*argout_5,work_.name.size());
+            //TODO delete argout_5?
         } else if (idl_vers == 4) {
-            if (nb_obj == 1) {
-                if ((attr_failed == false) && ((*argout_4)[0].err_list.length() != 0)) {
-                    attr_failed = true;
-                    saved_exception = new Tango::DevFailed((*argout_4)[0].err_list);
-                    delete argout_4;
-                }
-            } else {
-                for (size_t ctr = 0; ctr < nb_obj; ctr++) {
-                    if ((attr_failed == false) && ((*argout_4)[ctr].err_list.length() != 0)) {
-                        Tango::DevFailed *tmp_except = new Tango::DevFailed((*argout_4)[ctr].err_list);
-                        map_except.insert(pair<size_t, Tango::DevFailed *>(ctr, tmp_except));
-                    }
-                }
-            }
-        } else {
-            if ((attr_failed == false) && ((*argout_3)[0].err_list.length() != 0)) {
-                attr_failed = true;
-                saved_exception = new Tango::DevFailed((*argout_3)[0].err_list);
-                delete argout_3;
-            }
+            put_exceptions_into_map(map_except,*argout_4,work_.name.size());
+            delete argout_4;
+        }
+    } else {
+        if ((*argout_3)[0].err_list.length() != 0) {
+            map_except.emplace(0, new Tango::DevFailed((*argout_3)[0].err_list));
+            delete argout_3;
         }
     }
+
+
 
 //
 // Events - for each event call the detect_and_push() method this method will fire events if there are clients
 // registered and if there is an event (on_change, on_alarm or periodic)
 // We also have to retrieve which kind of clients made the subscription (zmq or notifd) and send the event accordingly
 //
+
+    if (attr_reading_exception != nullptr) {
+        engine_.get_event_system().push_error_event(work_, *attr_reading_exception);
+    } else {
+        engine_.get_event_system().push_event(work_);
+    }
 
     EventSupplier *event_supplier_nd = NULL;
     EventSupplier *event_supplier_zmq = NULL;
@@ -506,10 +352,10 @@ void Tango::polling::PollTask::poll_attr() {
                 ::memset(&ad, 0, sizeof(ad));
 
 
-                AttributeValue		dummy_att{};
-                AttributeValue_3	dummy_att3{};
-                AttributeValue_4 	dummy_att4{};
-                AttributeValue_5	dummy_att5{};
+                AttributeValue dummy_att{};
+                AttributeValue_3 dummy_att3{};
+                AttributeValue_4 dummy_att4{};
+                AttributeValue_5 dummy_att5{};
 
                 if (idl_vers > 4)
                     ad.attr_val_5 = &dummy_att5;//TODO may refer to deleted object
@@ -527,7 +373,7 @@ void Tango::polling::PollTask::poll_attr() {
 
                 SendEventType send_event;
                 if (event_supplier_nd != NULL)
-                    send_event = event_supplier_nd->detect_and_push_events(work_.dev, ad, saved_exception,
+                    send_event = event_supplier_nd->detect_and_push_events(work_.dev, ad, attr_reading_exception,
                                                                            work_.name[ctr], &before_cmd);
                 if (event_supplier_zmq != NULL) {
                     if (event_supplier_nd != NULL) {
@@ -538,15 +384,15 @@ void Tango::polling::PollTask::poll_attr() {
 
                         if (send_event.change == true)
                             event_supplier_zmq->push_event_loop(work_.dev, CHANGE_EVENT, f_names, f_data,
-                                                                f_names_lg, f_data_lg, ad, att, saved_exception);
+                                                                f_names_lg, f_data_lg, ad, att, attr_reading_exception);
                         if (send_event.archive == true)
                             event_supplier_zmq->push_event_loop(work_.dev, ARCHIVE_EVENT, f_names, f_data,
-                                                                f_names_lg, f_data_lg, ad, att, saved_exception);
+                                                                f_names_lg, f_data_lg, ad, att, attr_reading_exception);
                         if (send_event.periodic == true)
                             event_supplier_zmq->push_event_loop(work_.dev, PERIODIC_EVENT, f_names, f_data,
-                                                                f_names_lg, f_data_lg, ad, att, saved_exception);
+                                                                f_names_lg, f_data_lg, ad, att, attr_reading_exception);
                     } else
-                        event_supplier_zmq->detect_and_push_events(work_.dev, ad, saved_exception, work_.name[ctr],
+                        event_supplier_zmq->detect_and_push_events(work_.dev, ad, attr_reading_exception, work_.name[ctr],
                                                                    &before_cmd);
                 }
             } else {
@@ -572,7 +418,7 @@ void Tango::polling::PollTask::poll_attr() {
                 map<size_t, Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
                 Tango::DevFailed *tmp_except;
                 if (ite2 == map_except.end())
-                    tmp_except = saved_exception;
+                    tmp_except = attr_reading_exception;
                 else
                     tmp_except = ite2->second;
 
@@ -657,13 +503,13 @@ void Tango::polling::PollTask::poll_attr() {
                 }
             } else {
                 if (nb_obj == 1)
-                    (*ite)->insert_except(saved_exception, before_cmd, work_.needed_time);
+                    (*ite)->insert_except(attr_reading_exception, before_cmd, work_.needed_time);
                 else {
                     if (ctr != nb_obj - 1) {
-                        Tango::DevFailed *dup_except = new Tango::DevFailed(saved_exception->errors);
+                        Tango::DevFailed *dup_except = new Tango::DevFailed(attr_reading_exception->errors);
                         (*ite)->insert_except(dup_except, before_cmd, work_.needed_time);
                     } else
-                        (*ite)->insert_except(saved_exception, before_cmd, work_.needed_time);
+                        (*ite)->insert_except(attr_reading_exception, before_cmd, work_.needed_time);
                 }
             }
         }
@@ -688,7 +534,7 @@ void Tango::polling::PollTask::poll_attr() {
             else
                 delete argout;
         } else
-            delete saved_exception;
+            delete attr_reading_exception;
         work_.dev->get_poll_monitor().rel_monitor();
     }
 

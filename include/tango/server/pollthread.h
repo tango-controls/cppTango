@@ -89,6 +89,8 @@ namespace Tango {
         class PollingThread;
 
         class PollingQueue;
+
+        class EventSystem;
     }
 
     using CommandPtr = std::unique_ptr<polling::Command>;
@@ -133,13 +135,18 @@ namespace Tango {
         struct timeval wake_up_date;    // The next wake up date
         int update;            // The update period (mS)
         PollObjType type;            // Object type (command/attr)
+        //TODO rename to names
         vector<string> name;            // Object name(s)
-        struct timeval needed_time;    // Time needed to execute action
+        void* values;  //pointer to AttributeValueList of some sort
+         std::chrono::time_point     start_time;
+        std::chrono::nanoseconds    needed_time;    // Time needed to execute action
 
         WorkItem(DeviceImpl *dev, vector<PollObj *> *poll_list, const timeval &wake_up_date, int update,
                  PollObjType type,
                  const vector<string> &name, const timeval &needed_time);
     };
+
+
 //=============================================================================
 //
 //			The PollThread class
@@ -210,30 +217,18 @@ namespace Tango {
 
         WorkItem new_work_item(DeviceImpl *, /*TODO const*/ PollObj &);
 
-        //+---------------------------------------------------------------------------------------------------------------
-        //
-        // method :
-        //		PollThread::err_out_of_sync
-        //
-        // description :
-        //		To force one event if the polling thread has discarded one work item because it is late
-        //
-        // args :
-        //		in :
-        // 			- to_do : The work item
-        //
-        //----------------------------------------------------------------------------------------------------------------
-        void err_out_of_sync(WorkItem&);
-
+        polling::EventSystem& get_event_system();
         /**
          *
          */
-        void adjust_work_items();
+        void adjust_work_items(WorkItem&);
 
 
         void set_need_two_tuning(bool);
 
         void reset_tune_counter(){ tune_ctr = 0;}
+
+        void set_time();
     protected:
         polling::PollingQueue &works;
         polling::PollingQueue &ext_trig_works;
@@ -278,8 +273,7 @@ namespace Tango {
         threading::enhanced_thread &thread_;
         string name_;
 
-        PollThCmdQueuePtr queue_;
-        std::future<void> polling_future_;
+        polling::EventSystem& event_system_;
     };
 
 //

@@ -8,9 +8,11 @@
 
 namespace Tango {
     class WorkItem;
+    class PollThread;
 
     namespace polling {
         class PollTask {
+            PollThread& engine_;
             WorkItem &work_;
 
             //+----------------------------------------------------------------------------------------------------------------
@@ -68,7 +70,7 @@ namespace Tango {
             void copy_remaining(T &, T &);
 
         public:
-            PollTask(WorkItem &work);
+            PollTask(WorkItem &work, PollThread&);
 
             std::future<void> operator()();
 

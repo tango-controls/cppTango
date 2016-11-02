@@ -54,16 +54,17 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <iomanip>
 #include <polling/command.hxx>
+#include <polling/event_system.hxx>
 
 #include "threading/repeated_task.hxx"
 #include "threading/asymmetric_unbound_blocking_queue.hxx"
 //import template definitions
 #include "polling/polling_queue.hxx"
+#include "polling/event_system.hxx"
 
 
 namespace Tango {
 
-    extern map<thread::id, string> kThreadNameMap;
     extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
 
     namespace threading {
@@ -96,7 +97,8 @@ namespace Tango {
               polling_bef_9{polling_as_before_tango_9},
               thread_{},
               works{},
-              ext_trig_works{}
+              ext_trig_works{},
+              event_system_(Util::instance()->get_notifd_event_supplier(),Util::instance()->get_zmq_event_supplier())
     {
 #ifdef _TG_WINDOWS_
         LARGE_INTEGER f;
@@ -257,6 +259,21 @@ namespace Tango {
         return {(long) new_d, (long) ((new_d - time.tv_sec) * 1000000)};
     }
 
+    void PollThread::set_time() {
+#ifdef _TG_WINDOWS_
+        _ftime(&now_win);
+			now.tv_sec = (unsigned long)now_win.time;
+			now.tv_usec = (long)now_win.millitm * 1000;
+#else
+        gettimeofday(&now,NULL);
+#endif
+        now.tv_sec = now.tv_sec - DELTA_T;
+    }
+
+    polling::EventSystem& PollThread::get_event_system(){
+        return event_system_;
+    }
+
     std::chrono::milliseconds PollThread::compute_next_sleep() {
             //TODO use integral type to calculate time related values
             uint64_t next{};
@@ -329,8 +346,19 @@ namespace Tango {
                         while ((diff < 0) && (fabs(diff) > DISCARD_THRESHOLD)) {
                             cout5 << "Discard one elt !!!!!!!!!!!!!" << endl;
                             WorkItem& tmp = const_cast<WorkItem&>(works.top());
-                            if (tmp.type == POLL_ATTR)
-                                err_out_of_sync(tmp);
+                            if (tmp.type == POLL_ATTR) {
+                                DevErrorList errs{1};
+
+                                errs[0].severity = ERR;
+                                errs[0].reason = string_dup("API_PollThreadOutOfSync");
+                                errs[0].origin = string_dup("PollThread::push_error_event");
+                                errs[0].desc = string_dup(
+                                        "The polling thread is late and discard this object polling.\nAdvice: Tune device server polling");
+
+                                DevFailed except{errs};
+
+                                push_error_event(tmp, except);
+                            }
 
                             tmp.wake_up_date = compute_new_date(tmp.wake_up_date, tmp.update);
                             works.push(tmp);
@@ -356,81 +384,79 @@ namespace Tango {
             return chrono::milliseconds{sleep};
     }
 
-    void PollThread::err_out_of_sync(WorkItem &to_do) {
-        EventSupplier *event_supplier_nd = NULL;
-        EventSupplier *event_supplier_zmq = NULL;
 
-//
-// Retrieve the event supplier(s) for this attribute
-//
 
-        size_t nb_obj = to_do.name.size();
-        for (size_t ctr = 0; ctr < nb_obj; ctr++) {
-            Attribute &att = to_do.dev->get_device_attr()->get_attr_by_name(to_do.name[ctr].c_str());
-
-            if (att.use_notifd_event() == true && event_supplier_nd == NULL)
-                event_supplier_nd = Util::instance()->get_notifd_event_supplier();
-            if (att.use_zmq_event() == true && event_supplier_zmq == NULL)
-                event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
-
-            if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL)) {
-                DevErrorList errs;
-                errs.length(1);
-
-                errs[0].severity = ERR;
-                errs[0].reason = string_dup("API_PollThreadOutOfSync");
-                errs[0].origin = string_dup("PollThread::err_out_of_sync");
-                errs[0].desc = string_dup(
-                        "The polling thread is late and discard this object polling.\nAdvice: Tune device server polling");
-
-                DevFailed except(errs);
-                long idl_vers = to_do.dev->get_dev_idl_version();
-
-                struct EventSupplier::SuppliedEventData ad{};
-                memset(&ad, 0, sizeof(ad));
-
-                if (idl_vers > 4)
-                    ad.attr_val_5 = &dummy_att5;
-                else if (idl_vers == 4)
-                    ad.attr_val_4 = &dummy_att4;
-                else if (idl_vers == 3)
-                    ad.attr_val_3 = &dummy_att3;
-                else
-                    ad.attr_val = &dummy_att;
-
-//
-// Fire event
+    void PollThread::adjust_work_items(WorkItem& work_item) {
+        //
+// For case where the polling thread itself modify the polling period of the object it already polls
 //
 
-                SendEventType send_event;
-                if (event_supplier_nd != NULL)
-                    send_event = event_supplier_nd->detect_and_push_events(to_do.dev, ad, &except, to_do.name[ctr],
-                                                                           (struct timeval *) NULL);
-                if (event_supplier_zmq != NULL) {
-                    if (event_supplier_nd != NULL) {
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
+        if (auto_upd.empty() == false) {
+            for (size_t loop = 0; loop < auto_upd.size(); loop++) {
+                vector<string>::iterator pos = remove(work_item.name.begin(), work_item.name.end(), auto_name[loop]);
+                work_item.name.erase(pos, work_item.name.end());
+            }
 
-                        if (send_event.change == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev, CHANGE_EVENT, f_names, f_data, f_names_lg,
-                                                                f_data_lg, ad, att, &except);
-                        if (send_event.archive == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev, ARCHIVE_EVENT, f_names, f_data, f_names_lg,
-                                                                f_data_lg, ad, att, &except);
-                        if (send_event.periodic == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev, PERIODIC_EVENT, f_names, f_data, f_names_lg,
-                                                                f_data_lg, ad, att, &except);
-                    } else
-                        event_supplier_zmq->detect_and_push_events(to_do.dev, ad, &except, to_do.name[ctr],
-                                                                   (struct timeval *) NULL);
+            if (work_item.name.empty() == false) {
+                work_item.wake_up_date = compute_new_date(work_item.wake_up_date, work_item.update);
+                works.push(work_item);
+            }
+
+            list<WorkItem>::iterator ite;
+            vector<WorkItem>::iterator et_ite;
+
+            for (size_t loop = 0; loop < auto_upd.size(); loop++) {
+                int auto_upd_value = auto_upd[loop];
+                auto work_item = works.find_if(
+                        [auto_upd_value, &work_item](const WorkItem &work_item_in_c) {
+                            return work_item_in_c.dev == work_item.dev &&
+                                   work_item_in_c.type == work_item.type &&
+                                   work_item_in_c.update == auto_upd_value;
+                        });
+
+                if (work_item)
+                    work_item->name.push_back(auto_name[loop]);
+                else {
+                    WorkItem new_work_item = new_work_item(work_item.dev, poll_obj);
+                    new_work_item.update = auto_upd[loop];
+                    new_work_item.name.push_back(auto_name[loop]);
+
+                    now = compute_new_date(now, local_cmd.new_upd);
+                    new_work_item.wake_up_date = now;
+                    works.push(new_work_item);
                 }
             }
-        }
-    }
 
-    void PollThread::adjust_work_items() {
+            auto_upd.clear();
+            auto_name.clear();
+        }
+
+//
+// Compute new polling date and insert work in list
+//
+
+        else {
+            if (rem_upd.empty() == false) {
+                for (size_t loop = 0; loop < rem_upd.size(); loop++) {
+                    vector<string>::iterator pos = remove(work_item.name.begin(), work_item.name.end(), rem_name[loop]);
+                    work_item.name.erase(pos, work_item.name.end());
+                }
+
+                if (work_item.name.empty() == false) {
+                    work_item.wake_up_date = compute_new_date(work_item.wake_up_date, work_item.update);
+                    works.push(work_item);
+                }
+
+                rem_upd.clear();
+                rem_name.clear();
+            } else {
+                work_item.wake_up_date = compute_new_date(work_item.wake_up_date, work_item.update);
+                works.push(work_item);
+            }
+        }
+
+        tune_ctr--;
+
 #ifdef _TG_WINDOWS_
         _ftime(&after_win);
 			after.tv_sec = (unsigned long)after_win.time;
