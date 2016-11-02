@@ -4,16 +4,15 @@
 
 #pragma once
 
-#include <experimental/optional>
-#include <list>
 #include <chrono>
 #include <sstream>
 #include <iterator>
+#include <string>
 
 namespace Tango {
 
     template <typename Sequence, typename Item = typename Sequence::value_type>
-    std::string vector_to_string(Sequence sequence){
+    std::string sequence_to_string(Sequence sequence){
         std::ostringstream oss;
 
         if (!sequence.empty())
@@ -29,15 +28,9 @@ namespace Tango {
         return oss.str();
     }
 
-    class PollObj;
-
-    class WorkItem;
     namespace polling {
-        class Command;
-        struct timeval time_diff(struct timeval before, struct timeval after_t);
-
         template<typename Duration>
-        struct timeval to_timeval(Duration&& d) {
+        struct timeval duration_to_timeval(Duration &&d) {
             std::chrono::seconds const sec = std::chrono::duration_cast<std::chrono::seconds>(d);
             struct timeval tv{};
             tv.tv_sec  = sec.count();

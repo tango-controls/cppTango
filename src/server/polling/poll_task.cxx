@@ -4,6 +4,7 @@
 
 #include "poll_task.hxx"
 #include "helpers.hxx"
+#include "event_system.hxx"
 
 #include <tango.h>
 #include <tango/server/eventsupplier.h>
@@ -56,8 +57,8 @@ void Tango::polling::PollTask::poll_cmd() {
 //
 
     try {
-        struct timeval start_as_tv = to_timeval(start);
-        struct timeval delta_tv = to_timeval(work_.needed_time);
+        struct timeval start_as_tv = duration_to_timeval(start);
+        struct timeval delta_tv = duration_to_timeval(work_.needed_time);
         work_.dev->get_poll_monitor().get_monitor();
         auto ite = work_.dev->get_polled_obj_by_type_name(work_.type, work_.name[0]);
         if (cmd_failed)
@@ -255,7 +256,7 @@ void put_exceptions_into_map(map<size_t, Tango::DevFailed*> exceptions_map, Attr
 }
 
 void Tango::polling::PollTask::poll_attr() {
-    string att_list = vector_to_string(work_.name);
+    string att_list = sequence_to_string(work_.name);
     cout5 << "----------> Time = "
           << chrono::system_clock::now().time_since_epoch().count()
           << " Dev name = " << work_.dev->get_name()

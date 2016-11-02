@@ -1,6 +1,5 @@
 set(SOURCES
         helpers.hxx
-        helpers.cxx
         command.hxx
         add_obj_command.hxx
         add_obj_command.cxx

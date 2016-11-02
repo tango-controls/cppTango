@@ -3,6 +3,7 @@
 //
 
 #include "event_system.hxx"
+#include "helpers.hxx"
 
 #include <tango.h>
 #include <tango/server/eventsupplier.h>
@@ -18,8 +19,8 @@ void Tango::polling::EventSystem::push_event(Tango::WorkItem & item) {
 //
 
         size_t nb_obj = item.name.size();
-        for (size_t ctr = 0; ctr < nb_obj; ctr++) {
-            Attribute &att = item.dev->get_device_attr()->get_attr_by_name(item.name[ctr].c_str());
+        for (size_t i = 0; i < nb_obj; i++) {
+
 
             if ((event_supplier_nd_ != nullptr) || (event_supplier_zmq_ != nullptr)) {
                 long idl_vers = item.dev->get_dev_idl_version();
@@ -28,63 +29,31 @@ void Tango::polling::EventSystem::push_event(Tango::WorkItem & item) {
                 ::memset(&ad, 0, sizeof(ad));
 
                 if (idl_vers > 4)
-                    ad.attr_val_5 = &reinterpret_cast<AttributeValueList_5*>(item.values)->operator[](ctr);
+                    ad.attr_val_5 = &reinterpret_cast<AttributeValueList_5*>(item.values)->operator[](i);
                 else if (idl_vers == 4)
-                    ad.attr_val_4 = &reinterpret_cast<AttributeValueList_4*>(item.values)->operator[](ctr);
+                    ad.attr_val_4 = &reinterpret_cast<AttributeValueList_4*>(item.values)->operator[](i);
                 else if (idl_vers == 3)
-                    ad.attr_val_3 = &reinterpret_cast<AttributeValueList_3*>(item.values)->operator[](ctr);
+                    ad.attr_val_3 = &reinterpret_cast<AttributeValueList_3*>(item.values)->operator[](i);
                 else
-                    ad.attr_val = &reinterpret_cast<AttributeValueList*>(item.values)->operator[](ctr);
+                    ad.attr_val = &reinterpret_cast<AttributeValueList*>(item.values)->operator[](i);
 
-//
-// Eventually push the event (if detected). When we have both notifd and zmq event supplier, do not detect the event
-// two times. The detect_and_push_events() method returns true if the event is detected.
-//
 
-                SendEventType send_event;
-
-                if (event_supplier_nd != NULL)
-                    send_event = event_supplier_nd->detect_and_push_events(item.dev, ad, tmp_except,
-                                                                           item.name[ctr], &before_cmd);
-                if (event_supplier_zmq != NULL) {
-                    if (event_supplier_nd != NULL) {
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
-
-                        if (send_event.change == true)
-                            event_supplier_zmq->push_event_loop(item.dev, CHANGE_EVENT, f_names, f_data,
-                                                                f_names_lg, f_data_lg, ad, att, tmp_except);
-                        if (send_event.periodic == true)
-                            event_supplier_zmq->push_event_loop(item.dev, PERIODIC_EVENT, f_names, f_data,
-                                                                f_names_lg, f_data_lg, ad, att, tmp_except);
-                        if (send_event.archive == true)
-                            event_supplier_zmq->push_event_loop(item.dev, ARCHIVE_EVENT, f_names, f_data,
-                                                                f_names_lg, f_data_lg, ad, att, tmp_except);
-                    } else
-                        event_supplier_zmq->detect_and_push_events(item.dev, ad, tmp_except, item.name[ctr],
-                                                                   &before_cmd);
-                }
+                struct timeval tv = duration_to_timeval(item.start_time);
+                push_event(item.dev, move(ad), item.errors[i], move(item.name[i]), &tv);
             }
         }
 }
 
-void Tango::polling::EventSystem::push_error_event(Tango::WorkItem &, Tango::DevFailed &) {
+void Tango::polling::EventSystem::push_error_event(Tango::WorkItem &item, Tango::DevFailed &error) {
 //
 // Retrieve the event supplier(s) for this attribute
 //
 
-    size_t nb_obj = item.name.size();
-    for (size_t ctr = 0; ctr < nb_obj; ctr++) {
-        Attribute &att = item.dev->get_device_attr()->get_attr_by_name(item.name[ctr].c_str());
+    for (size_t i = 0, size = item.name.size(); i < size; ++i) {
+        Attribute &att = item.dev->get_device_attr()->get_attr_by_name(item.name[i].c_str());
 
-        if (att.use_notifd_event() == true && event_supplier_nd == NULL)
-            event_supplier_nd = Util::instance()->get_notifd_event_supplier();
-        if (att.use_zmq_event() == true && event_supplier_zmq == NULL)
-            event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
-
-        if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL)) {
+        if ((event_supplier_nd_ != NULL && att.use_notifd_event()) ||
+                (event_supplier_zmq_ != NULL && att.use_zmq_event())) {
             long idl_vers = item.dev->get_dev_idl_version();
 
             struct EventSupplier::SuppliedEventData ad{};
@@ -108,31 +77,39 @@ void Tango::polling::EventSystem::push_error_event(Tango::WorkItem &, Tango::Dev
 // Fire event
 //
 
-            SendEventType send_event;
-            if (event_supplier_nd != NULL)
-                send_event = event_supplier_nd->detect_and_push_events(item.dev, ad, &except, item.name[ctr],
-                                                                       (struct timeval *) NULL);
-            if (event_supplier_zmq != NULL) {
-                if (event_supplier_nd != NULL) {
-                    vector<string> f_names;
-                    vector<double> f_data;
-                    vector<string> f_names_lg;
-                    vector<long> f_data_lg;
+            push_event(item.dev, move(ad), &error, move(item.name[i]), nullptr);
 
-                    if (send_event.change == true)
-                        event_supplier_zmq->push_event_loop(item.dev, CHANGE_EVENT, f_names, f_data, f_names_lg,
-                                                            f_data_lg, ad, att, &except);
-                    if (send_event.archive == true)
-                        event_supplier_zmq->push_event_loop(item.dev, ARCHIVE_EVENT, f_names, f_data, f_names_lg,
-                                                            f_data_lg, ad, att, &except);
-                    if (send_event.periodic == true)
-                        event_supplier_zmq->push_event_loop(item.dev, PERIODIC_EVENT, f_names, f_data, f_names_lg,
-                                                            f_data_lg, ad, att, &except);
-                } else
-                    event_supplier_zmq->detect_and_push_events(item.dev, ad, &except, item.name[ctr],
-                                                               (struct timeval *) NULL);
-            }
         }
+    }
+
+
+}
+
+void Tango::polling::EventSystem::push_event(Tango::DeviceImpl * device, Tango::EventSupplier::SuppliedEventData && data,
+                                             Tango::DevFailed * error, std::string && name, struct timeval * tv) {
+    Attribute &att = device->get_device_attr()->get_attr_by_name(name.c_str());
+
+    SendEventType send_event;
+    if (event_supplier_nd_ != NULL)
+        send_event = event_supplier_nd_->detect_and_push_events(device, data, error, name, tv);
+    if (event_supplier_zmq_ != NULL) {
+        if (event_supplier_nd_ != NULL) {
+            vector<string> f_names;
+            vector<double> f_data;
+            vector<string> f_names_lg;
+            vector<long> f_data_lg;
+
+            if (send_event.change)
+                event_supplier_zmq_->push_event_loop(device, CHANGE_EVENT, f_names, f_data, f_names_lg,
+                                                     f_data_lg, data, att, error);
+            if (send_event.archive)
+                event_supplier_zmq_->push_event_loop(device, ARCHIVE_EVENT, f_names, f_data, f_names_lg,
+                                                     f_data_lg, data, att, error);
+            if (send_event.periodic)
+                event_supplier_zmq_->push_event_loop(device, PERIODIC_EVENT, f_names, f_data, f_names_lg,
+                                                     f_data_lg, data, att, error);
+        } else
+            event_supplier_zmq_->detect_and_push_events(device, data, error, name,tv);
     }
 }
 

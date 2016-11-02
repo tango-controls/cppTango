@@ -5,6 +5,9 @@
 #pragma once
 
 
+#include <tango/server/tango_const.h>
+#include <tango/server/eventsupplier.h>
+
 namespace Tango {
     class WorkItem;
     class DevFailed;
@@ -15,11 +18,18 @@ namespace Tango {
         class EventSystem {
             EventSupplier* event_supplier_nd_;
             EventSupplier* event_supplier_zmq_;
+
+            //TODO public?
+            //
+            // Eventually push the event (if detected). When we have both notifd and zmq event supplier, do not detect the event
+            // two times. The detect_and_push_events() method returns true if the event is detected.
+            //
+            void push_event(DeviceImpl*, struct EventSupplier::SuppliedEventData&&, DevFailed*, std::string&&, struct timeval *);
         public:
             /**
              * Notifd, ZMQ
              *
-             * @return
+             * @constructor
              */
             EventSystem(EventSupplier *, EventSupplier *);
 

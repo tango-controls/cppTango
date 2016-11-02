@@ -131,15 +131,18 @@ namespace Tango {
     struct WorkItem {
         DeviceImpl *dev;            // The device pointer (servant)
         //TODO replace with const reference
+        //TODO filter list so it contains only related to this item objects
         vector<PollObj *> *poll_list;        // The device poll list
-        struct timeval wake_up_date;    // The next wake up date
-        int update;            // The update period (mS)
+        std::chrono::time_point wake_up_date;    // The next wake up date
+        std::chrono::milliseconds update;            // The update period (mS)
         PollObjType type;            // Object type (command/attr)
-        //TODO rename to names
+        //TODO remove when poll_list is filtered
         vector<string> name;            // Object name(s)
-        void* values;  //pointer to AttributeValueList of some sort
-         std::chrono::time_point     start_time;
-        std::chrono::nanoseconds    needed_time;    // Time needed to execute action
+        void *values;  //pointer to AttributeValueList of some sort, i.e. _3, _4, _5
+        std::chrono::time_point start_time;
+        std::chrono::nanoseconds needed_time;    // Time needed to execute action
+        std::chrono::time_point stop_time;
+        vector<DevFailed*> errors;
 
         WorkItem(DeviceImpl *dev, vector<PollObj *> *poll_list, const timeval &wake_up_date, int update,
                  PollObjType type,
