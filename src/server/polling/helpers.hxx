@@ -13,11 +13,6 @@ namespace Tango {
     class WorkItem;
     namespace polling {
         class Command;
-
-
-        std::experimental::optional<WorkItem>
-        find_work_item(bool, const Command &, /*TODO const*/ PollObj &, const std::list <WorkItem> &);
-
         struct timeval time_diff(struct timeval before, struct timeval after_t);
     }//polling
 }//Tango

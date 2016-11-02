@@ -42,14 +42,15 @@
 
 #include <list>
 #include <future>
+#include <queue>
+#include <experimental/optional>
 
 #ifdef _TG_WINDOWS_
-	#include <sys/types.h>
-	#include <sys/timeb.h>
+#include <sys/types.h>
+#include <sys/timeb.h>
 #endif
 
-namespace Tango
-{
+namespace Tango {
 
     extern map<thread::id, string> kThreadNameMap;
 
@@ -58,18 +59,36 @@ namespace Tango
     namespace threading {
         template<typename Item>
         class asymmetric_unbound_blocking_queue;
+
+        class enhanced_thread;
     }
 
     namespace polling {
         class Command;
+
         class AddObjCommand;
+
         class AddTriggerCommand;
+
         class RemObjCommand;
+
         class RemExtTriggerCommand;
+
         class RemDevCommand;
+
         class UpdatePollPeriodCommand;
+
         class StartPollingCommand;
+
         class StopPollingCommand;
+
+        class TriggerPollingCommand;
+
+        class ExitCommand;
+
+        class PollingThread;
+
+        class PollingQueue;
     }
 
     using CommandPtr = std::unique_ptr<polling::Command>;
@@ -86,43 +105,41 @@ namespace Tango
 
 
 
-	//TODO remove
-    enum PollCmdType
-    {
+    //TODO remove
+    enum PollCmdType {
         POLL_TIME_OUT,
         POLL_COMMAND,
         POLL_TRIGGER
     };
 
 
-	//TODO remove
-    struct PollThCmd
-{
-	bool			cmd_pending;	// The new command flag
-	bool			trigger;		// The external trigger flag
-	PollCmdCode		cmd_code;		// The command code
-	DeviceImpl		*dev;			// The device pointer (servant)
-	long			index;			// Index in the device poll_list
-	string			name;			// Object name
-	PollObjType		type;			// Object type (cmd/attr)
-	int				new_upd;		// New update period (For upd period com.)
-};
+    //TODO remove
+    struct PollThCmd {
+        bool cmd_pending;    // The new command flag
+        bool trigger;        // The external trigger flag
+        PollCmdCode cmd_code;        // The command code
+        DeviceImpl *dev;            // The device pointer (servant)
+        long index;            // Index in the device poll_list
+        string name;            // Object name
+        PollObjType type;            // Object type (cmd/attr)
+        int new_upd;        // New update period (For upd period com.)
+    };
 
 
-struct WorkItem
-{
-	DeviceImpl			*dev;			// The device pointer (servant)
-    //TODO replace with const reference
-	vector<PollObj *> 	*poll_list;		// The device poll list
-	struct timeval		wake_up_date;	// The next wake up date
-	int 				update;			// The update period (mS)
-	PollObjType			type;			// Object type (command/attr)
-	vector<string>		name;			// Object name(s)
-	struct timeval		needed_time;	// Time needed to execute action
+    struct WorkItem {
+        DeviceImpl *dev;            // The device pointer (servant)
+        //TODO replace with const reference
+        vector<PollObj *> *poll_list;        // The device poll list
+        struct timeval wake_up_date;    // The next wake up date
+        int update;            // The update period (mS)
+        PollObjType type;            // Object type (command/attr)
+        vector<string> name;            // Object name(s)
+        struct timeval needed_time;    // Time needed to execute action
 
-    WorkItem(DeviceImpl *dev, vector<PollObj *> *poll_list, const timeval &wake_up_date, int update, PollObjType type,
-             const vector<string> &name, const timeval &needed_time);
-};
+        WorkItem(DeviceImpl *dev, vector<PollObj *> *poll_list, const timeval &wake_up_date, int update,
+                 PollObjType type,
+                 const vector<string> &name, const timeval &needed_time);
+    };
 //=============================================================================
 //
 //			The PollThread class
@@ -132,112 +149,114 @@ struct WorkItem
 //
 //=============================================================================
 
-class TangoMonitor;
+    class TangoMonitor;
 
     //TODO make inner of Device
-class PollThread
-{
-    friend class PollingThreadInfo;
-public:
-	PollThread(TangoMonitor &, string &&name, bool polling_as_before_tango_9);
-    thread::id id(){
-        return id_;
-    }
-    void execute_cmd(polling::Command &cmd);
-private:
-    friend class polling::AddObjCommand;
-    friend class polling::AddTriggerCommand;
-    friend class polling::RemObjCommand;
-    friend class polling::RemExtTriggerCommand;
-    friend class polling::RemDevCommand;
-    friend class polling::UpdatePollPeriodCommand;
-    friend class polling::StartPollingCommand;
-    friend class polling::StopPollingCommand;
-protected:
-	CommandPtr get_command(long);
-	void one_more_poll();
-	void one_more_trigg();
-	void compute_new_date(struct timeval &,int);
-	void compute_sleep_time();
-	void time_diff(struct timeval &,struct timeval &,struct timeval &);
-	void poll_cmd(WorkItem &);
-	void poll_attr(WorkItem &);
+    class PollThread {
 
-	void print_list();
-	void insert_in_list(WorkItem &);
-	void add_insert_in_list(WorkItem &);
-	void tune_list(bool,long);
-	void err_out_of_sync(WorkItem &);
+        friend class PollingThreadInfo;
 
-    template <typename T> void robb_data(T &,T &);
-    template <typename T> void copy_remaining(T &,T &);
+    public:
+        PollThread(TangoMonitor &, string &&name, bool polling_as_before_tango_9);
 
-    WorkItem new_work_item(DeviceImpl*, /*TODO const*/ PollObj&);
+        thread::id id();
 
-	list<WorkItem>		works;
-	vector<WorkItem>	ext_trig_works;
+        void execute_cmd(polling::Command &&);
 
-	PollThCmd			local_cmd;
+        std::experimental::optional<WorkItem>
+        find_work_item(DeviceImpl *, PollObjType, long update);
 
+        std::experimental::optional<WorkItem> remove_work_item(DeviceImpl*,std::string, PollObjType);
+        std::experimental::optional<WorkItem> remove_trigger(DeviceImpl*,std::string, PollObjType);
+    private:
+        friend class polling::AddObjCommand;
+
+        friend class polling::AddTriggerCommand;
+
+        friend class polling::RemObjCommand;
+
+        friend class polling::RemExtTriggerCommand;
+
+        friend class polling::RemDevCommand;
+
+        friend class polling::UpdatePollPeriodCommand;
+
+        friend class polling::StartPollingCommand;
+
+        friend class polling::StopPollingCommand;
+
+        friend class polling::TriggerPollingCommand;
+
+        friend class polling::ExitCommand;
+
+        friend class polling::PollingThread;
+    protected:
+        timeval compute_new_date(timeval, int);
+
+        void print_work_items();
+
+        void add_or_push(WorkItem &);
+
+        WorkItem new_work_item(DeviceImpl *, /*TODO const*/ PollObj &);
+
+        polling::PollingQueue &works;
+        polling::PollingQueue &ext_trig_works;
 #ifdef _TG_WINDOWS_
-	struct _timeb		now_win;
-	struct _timeb		after_win;
-	double				ctr_frequency;
+        struct _timeb		now_win;
+        struct _timeb		after_win;
+        double				ctr_frequency;
 #endif
-	struct timeval		now;
-	struct timeval		after;
-	atomic_long			sleep;
-	atomic_bool			polling_stop;
+        struct timeval now;
+        struct timeval after;
+        atomic_bool polling_stop;
 
-private:
-	long				tune_ctr;
-	bool				need_two_tuning;
-	vector<long>		auto_upd;
-	vector<string>      auto_name;
-	vector<long>        rem_upd;
-	vector<string>      rem_name;
-	u_int               previous_nb_late;
-	bool                polling_bef_9;
+    private:
+        long tune_ctr;
+        bool need_two_tuning;
+        vector<long> auto_upd;
+        vector<string> auto_name;
+        vector<long> rem_upd;
+        vector<string> rem_name;
+        u_int previous_nb_late;
+        bool polling_bef_9;
 
-	ClntIdent 			dummy_cl_id;
+        ClntIdent dummy_cl_id;
 
-	thread thread_;
-    thread::id id_;
-	bool interrupted_;
-    string name_;
+        threading::enhanced_thread &thread_;
+        string name_;
 
         PollThCmdQueuePtr queue_;
         std::future<void> polling_future_;
-};
+    };
 
 //
 // Three macros
 //
 
-#define T_DIFF(A,B,C) \
-	long delta_sec = B.tv_sec - A.tv_sec; \
-	if (delta_sec == 0) \
-		C = B.tv_usec - A.tv_usec; \
-	else \
-	{ \
-		C = ((delta_sec - 1) * 1000000) + (1000000 - A.tv_usec) + B.tv_usec; \
-	}
+#define T_DIFF(A, B, C) \
+    long delta_sec = B.tv_sec - A.tv_sec; \
+    if (delta_sec == 0) \
+        C = B.tv_usec - A.tv_usec; \
+    else \
+    { \
+        C = ((delta_sec - 1) * 1000000) + (1000000 - A.tv_usec) + B.tv_usec; \
+    }
 
-#define T_ADD(A,B) \
-	A.tv_usec = A.tv_usec + B; \
-	while (A.tv_usec > 1000000) \
-	{ \
-		A.tv_sec++; \
-		A.tv_usec = A.tv_usec - 1000000; \
-	}
+#define T_ADD(A, B) \
+    A.tv_usec = A.tv_usec + B; \
+    while (A.tv_usec > 1000000) \
+    { \
+        A.tv_sec++; \
+        A.tv_usec = A.tv_usec - 1000000; \
+    }
 
-#define T_DEC(A,B) \
-	A.tv_usec = A.tv_usec - B; \
-	if (A.tv_usec < 0) \
-	{ \
-		A.tv_sec--; \
-		A.tv_usec = 1000000 + A.tv_usec; \
-	}
+#define T_DEC(A, B) \
+    A.tv_usec = A.tv_usec - B; \
+    if (A.tv_usec < 0) \
+    { \
+        A.tv_sec--; \
+        A.tv_usec = 1000000 + A.tv_usec; \
+    }
 
 } // End of Tango namespace
 

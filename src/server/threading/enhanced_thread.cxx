@@ -16,39 +16,48 @@ Tango::threading::enhanced_thread::~enhanced_thread() {
         thread_.join();
 }
 
-const std::string& Tango::threading::enhanced_thread::name() {
-    return move(std::string());
+void Tango::threading::enhanced_thread::swap(const enhanced_thread& other) noexcept {
+    thread_.swap(other.thread_);
+}
+
+const std::string& Tango::threading::enhanced_thread::name() const noexcept {
+    return name_;
 }
 
 template <typename Duration>
-void Tango::threading::enhanced_thread::sleep_for(Duration duration) throw(interrupted_exception) {
+bool Tango::threading::enhanced_thread::sleep_for(Duration duration) {
     Lock lock{monitor_guard_};
     cv_status _cv_status;
     do {
         _cv_status = monitor_.wait_for(lock, duration);//TODO how long will it wait in case spurious wake up
     } while(_cv_status != cv_status::timeout || !interrupted_);
-    if(interrupted_) throw interrupted_exception{};
+    return interrupted_;
 }
 
-template void Tango::threading::enhanced_thread::sleep_for(chrono::milliseconds);
+template bool Tango::threading::enhanced_thread::sleep_for(chrono::milliseconds);
 
-template void Tango::threading::enhanced_thread::sleep_for(chrono::seconds);
+template bool Tango::threading::enhanced_thread::sleep_for(chrono::seconds);
 
-template void Tango::threading::enhanced_thread::sleep_for(chrono::minutes);
+template bool Tango::threading::enhanced_thread::sleep_for(chrono::minutes);
 
-void Tango::threading::enhanced_thread::interrupt() {
+void Tango::threading::enhanced_thread::interrupt() const noexcept {
     interrupted_.store(true);//TODO investigate memory model
     monitor_.notify_one();
 }
 
-bool Tango::threading::enhanced_thread::interrupted() {
+bool Tango::threading::enhanced_thread::interrupted() const noexcept  {
     return interrupted_.load();//TODO investigate memory model
 }
 
-void Tango::threading::enhanced_thread::start() {
+const Tango::threading::enhanced_thread & Tango::threading::enhanced_thread::start() const {
     thread_ = std::thread{bind_};
+    return *this;
 }
 
-std::thread &Tango::threading::enhanced_thread::as_std_thread() {
+const std::thread &Tango::threading::enhanced_thread::as_std_thread() const noexcept  {
+    return thread_;
+}
+
+std::thread &Tango::threading::enhanced_thread::as_std_thread() noexcept  {
     return thread_;
 }

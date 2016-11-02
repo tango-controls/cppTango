@@ -19,7 +19,7 @@ set(SOURCES
         stop_polling_command.cxx
         stop_polling_command.hxx
         exit_command.cxx
-        exit_command.hxx trigger_polling_command.cxx trigger_polling_command.hxx poll_task.cxx poll_task.hxx)
+        exit_command.hxx trigger_polling_command.cxx trigger_polling_command.hxx poll_task.cxx poll_task.hxx polling_thread.cxx polling_thread.hxx polling_queue.cxx polling_queue.hxx)
 
 add_library(polling_objects OBJECT ${SOURCES})
 target_include_directories(polling_objects PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

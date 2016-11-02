@@ -1239,10 +1239,7 @@ struct PollingThreadInfo
 	{
         shared_data.cmd_pending = false;shared_data.trigger=false;
     }
-	~PollingThreadInfo(){
-		if(poll_th->thread_.joinable())
-			poll_th->thread_.join();
-	}
+	~PollingThreadInfo(){}
 };
 
 struct DevDbUpd

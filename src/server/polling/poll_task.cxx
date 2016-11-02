@@ -138,7 +138,7 @@ void Tango::polling::PollTask::poll_cmd() {
 
 
 template <typename T>
-void Tango::polling::PollTask::robb_data(T &attr_value,T &new_attr_value)
+void Tango::polling::PollTask::steal_data(T &attr_value,T &new_attr_value)
 {
     switch (attr_value.value._d())
     {
@@ -300,21 +300,7 @@ void Tango::polling::PollTask::robb_data(T &attr_value,T &new_attr_value)
     }
 }
 
-//------------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		PollThread::copy_remaining
-//
-// description :
-//      Copy from one AttributeValue_X structure to another one data elements which are not the data themselves
-//
-// argument :
-//		in :
-//			- attr_value : The origin attribute value
-//      out :
-//          - new_attr_value : The new attribute value
-//
-//------------------------------------------------------------------------------------------------------------------
+
 
 template <typename T>
 void Tango::polling::PollTask::copy_remaining(T &old_attr_value,T &new_attr_value)
@@ -652,7 +638,7 @@ void Tango::polling::PollTask::poll_attr() {
                             Tango::AttributeValueList_5 *new_argout_5 = new Tango::AttributeValueList_5(1);
                             new_argout_5->length(1);
                             (*new_argout_5)[0].value.union_no_data(true);
-                            robb_data((*argout_5)[ctr], (*new_argout_5)[0]);
+                            steal_data((*argout_5)[ctr], (*new_argout_5)[0]);
                             copy_remaining((*argout_5)[ctr], (*new_argout_5)[0]);
                             (*new_argout_5)[0].data_type = (*argout_5)[ctr].data_type;
                             (*ite)->insert_data(new_argout_5, before_cmd, work_.needed_time);
@@ -664,7 +650,7 @@ void Tango::polling::PollTask::poll_attr() {
                             Tango::AttributeValueList_4 *new_argout_4 = new Tango::AttributeValueList_4(1);
                             new_argout_4->length(1);
                             (*new_argout_4)[0].value.union_no_data(true);
-                            robb_data((*argout_4)[ctr], (*new_argout_4)[0]);
+                            steal_data((*argout_4)[ctr], (*new_argout_4)[0]);
                             copy_remaining((*argout_4)[ctr], (*new_argout_4)[0]);
                             (*ite)->insert_data(new_argout_4, before_cmd, work_.needed_time);
                         } else

@@ -3,6 +3,7 @@
 //
 
 #include "rem_dev_command.hxx"
+#include "polling_queue.hxx"
 
 Tango::polling::RemDevCommand::RemDevCommand(Tango::DeviceImpl *dev) : Command(dev, POLL_REM_DEV,
                                                                                "",
@@ -46,13 +47,9 @@ void Tango::polling::RemDevCommand::execute(PollThread &poll_thread) {
         }
 #else
     auto predicate = [this](const WorkItem &work_item) { return work_item.dev == dev_; };
-    poll_thread.works.remove_if(predicate);
+    poll_thread.works.erase(predicate);
 
-    poll_thread.ext_trig_works.erase(
-            remove_if(poll_thread.ext_trig_works.begin(),
-                      poll_thread.ext_trig_works.end(),
-                      predicate),
-            poll_thread.ext_trig_works.end());
+    poll_thread.ext_trig_works.erase(predicate);
 #endif
 }
 

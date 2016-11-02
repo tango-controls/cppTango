@@ -6,6 +6,7 @@
 #include "helpers.hxx"
 
 #include <sstream>
+#include "polling_queue.hxx"
 
 using namespace std;
 
@@ -21,31 +22,31 @@ void polling::AddObjCommand::operator()(PollThread &poll_thread) {
     return execute(poll_thread);
 }
 
-void polling::AddObjCommand::execute(PollThread &poll_thread) {
+void polling::AddObjCommand::execute(PollThread &poll_engine) {
     cout5 << "Execute an Add object command" << endl;
 
     PollObj *poll_list_item = dev_->get_poll_obj_list()[index_];//TODO pass as a parameter from dserverpoll
 
-    experimental::optional <WorkItem> work_item = find_work_item(poll_thread.polling_bef_9, *this, *poll_list_item, poll_thread.works);
+    experimental::optional <WorkItem> work_item = poll_engine.find_work_item(dev_, poll_list_item->get_type(), poll_list_item->get_upd());
 
     if (work_item) {
         work_item->name.push_back(poll_list_item->get_name());
         return;
     }
 
-    auto wo = poll_thread.new_work_item(dev_, *poll_list_item);
+    auto wo = poll_engine.new_work_item(dev_, *poll_list_item);
 
     assert(wo.update != 0);// "Trying to add trigger object is not expected here"*/);
 
-    wo.wake_up_date = poll_thread.now;
+    wo.wake_up_date = poll_engine.now;
     if (new_upd_ != 0) {
         cout5 << "Received a delta from now of " << new_upd_ << endl;
         T_ADD(wo.wake_up_date, new_upd_ * 1000);
     }
-    poll_thread.insert_in_list(wo);
-    unsigned long nb_works = poll_thread.works.size();
-    poll_thread.tune_ctr = (nb_works << 2);
-    poll_thread.need_two_tuning = true;
+    poll_engine.works.push(wo);
+    unsigned long nb_works = poll_engine.works.size();
+    poll_engine.tune_ctr = (nb_works << 2);
+    poll_engine.need_two_tuning = true;
 }
 
 polling::AddObjCommand::operator std::string() {

@@ -17,26 +17,33 @@ namespace Tango {
 
         class enhanced_thread {
             std::function<void()> bind_;
-            std::thread thread_{};
+            mutable std::thread thread_{};
             std::string name_;
-            std::atomic_bool interrupted_{false};
-            std::condition_variable monitor_;
+            mutable std::atomic_bool interrupted_{false};
+            mutable std::condition_variable monitor_;
             std::mutex monitor_guard_;
         public:
+            void swap(const enhanced_thread&) noexcept;
+
+            enhanced_thread() = default;
             template <typename T, typename... Args>
             enhanced_thread(T&& name, Args&&... args):
                     name_{std::forward<T>(name)},
                     bind_{std::bind(std::forward<Args>(args)...)}
             {}
             ~enhanced_thread();
-            const std::string& name();
-            bool interrupted();
-            void start();
-            //TODO return status instead of exception
+            const std::string& name() const noexcept;
+            bool interrupted() const noexcept;
+            const enhanced_thread & start() const ;
+            /**
+             *
+             * @return true if thread has been interrupted
+             */
             template <typename Duration>
-            void sleep_for(Duration) throw(interrupted_exception);
-            void interrupt();
-            std::thread& as_std_thread();
+            bool sleep_for(Duration);
+            void interrupt() const noexcept ;
+            const std::thread& as_std_thread() const noexcept ;
+            std::thread& as_std_thread() noexcept ;
         };
     }//threading
 }//Tango

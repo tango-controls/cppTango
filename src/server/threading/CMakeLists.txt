@@ -8,4 +8,4 @@ set(SOURCES
 
 add_library(threading_objects OBJECT ${SOURCES})
 target_include_directories(threading_objects PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_compile_options(threading_objects PRIVATE -fPIC)
+target_compile_options(threading_objects PRIVATE -fPIC -std=c++1y)

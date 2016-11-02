@@ -3,6 +3,7 @@
 //
 
 #include "rem_obj_command.hxx"
+#include "polling_queue.hxx"
 
 using namespace std;
 
@@ -17,31 +18,10 @@ void polling::RemObjCommand::operator()(PollThread &poll_thread) {
     return execute(poll_thread);
 }
 
-void polling::RemObjCommand::execute(PollThread &poll_thread) {
+void polling::RemObjCommand::execute(PollThread &poll_engine) {
     cout5 << "Execute a Rem object command" << endl;
 
-    auto ite = poll_thread.works.begin();
-    //TODO find work item; delete if found
-    for (size_t i = 0, size = poll_thread.works.size(); i < size; i++) {
-        if (ite->dev == dev_) {
-            if (ite->type == obj_type_) {
-                vector<string>::iterator ite_str;
-                bool found = false;
-                for (ite_str = ite->name.begin(); ite_str != ite->name.end(); ++ite_str) {
-                    if (*ite_str == obj_name_) {
-                        ite->name.erase(ite_str);
-                        if (ite->name.empty() == true)
-                            poll_thread.works.erase(ite);
-                        found = true;
-                        break;
-                    }
-                }
-                if (found == true)
-                    break;
-            }
-        }
-        ++ite;
-    }
+    poll_engine.remove_work_item(dev_, obj_name_, obj_type_);
 }
 
 polling::RemObjCommand::operator std::string() {

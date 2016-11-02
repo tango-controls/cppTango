@@ -15,7 +15,7 @@ namespace Tango {
 
             virtual void operator()(PollThread &poll_thread) override;
 
-            virtual void execute(PollThread &poll_thread) override;
+            virtual void execute(PollThread &poll_engine) override;
 
             virtual operator std::string() override;
 

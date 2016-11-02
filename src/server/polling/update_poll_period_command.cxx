@@ -3,6 +3,7 @@
 //
 
 #include "update_poll_period_command.hxx"
+#include "polling_queue.hxx"
 
 Tango::polling::UpdatePollPeriodCommand::UpdatePollPeriodCommand(Tango::DeviceImpl *dev, string &&name,
                                                                  Tango::PollObjType type, long index,
@@ -32,104 +33,29 @@ void Tango::polling::UpdatePollPeriodCommand::operator()(PollThread &poll_thread
 //	 We detect this case because the object is not in any work list (either the work
 //	 list or the trigger list)
 //
-void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_thread) {
+void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_engine) {
     cout5 << "Execute an update polling period command" << endl;
 
 
     auto poll_list = dev_->get_poll_obj_list();
     auto &poll_list_item = *poll_list[index_];
 
-    list<WorkItem>::iterator ite;
-    vector<WorkItem>::iterator et_ite;
-
     bool found_in_work_list = false;
 
     if (new_upd_ != 0) {
-        size_t i, nb_elt;
-        nb_elt = poll_thread.works.size();
-        ite = poll_thread.works.begin();
-
-        if (nb_elt != 0) {
-            bool found = false;
-
-            for (i = 0; i < nb_elt; i++) {
-                if (ite->dev == dev_) {
-                    if (ite->type == obj_type_) {
-
-                        vector<string>::iterator ite_str;
-                        for (ite_str = ite->name.begin(); ite_str != ite->name.end(); ++ite_str) {
-                            if (*ite_str == obj_name_) {
-                                ite->name.erase(ite_str);
-                                if (ite->name.empty() == true) {
-                                    poll_thread.works.erase(ite);
-                                }
-
-                                found = true;
-                                found_in_work_list = true;
-                                break;
-                            }
-                        }
-
-                        if (found == true)
-                            break;
-                    }
-                }
-                ++ite;
-            }
-
-            WorkItem tmp_work = poll_thread.new_work_item(dev_, poll_list_item);
-            tmp_work.type = obj_type_;
-            tmp_work.update = new_upd_;
-            tmp_work.name.push_back(obj_name_);
-
-            poll_thread.compute_new_date(poll_thread.now, new_upd_);
-
-            tmp_work.wake_up_date = poll_thread.now;
-
-            poll_thread.add_insert_in_list(tmp_work);
-            poll_thread.tune_ctr = 0;
-            found_in_work_list = true;
-
-            if (found == false) {
-                poll_thread.rem_upd.push_back(new_upd_);
-                poll_thread.rem_name.push_back(obj_name_);
-            }
-
-        }
+        found_in_work_list = update_polled_obj(poll_engine, poll_list_item);
     } else {
 
 //
 // First, remove object from polling list and insert it in externally triggered list
 //
 
-        size_t i, nb_elt;
-        nb_elt = poll_thread.works.size();
-        ite = poll_thread.works.begin();
-        for (i = 0; i < nb_elt; i++) {
-            if (ite->dev == dev_) {
-                if (ite->type == obj_type_) {
-                    bool found = false;
-                    vector<string>::iterator ite_str;
-                    for (ite_str = ite->name.begin(); ite_str != ite->name.end(); ++ite_str) {
-                        if (*ite_str == obj_name_) {
-                            ite->name.erase(ite_str);
-                            if (ite->name.empty() == true)
-                                poll_thread.works.erase(ite);
-                            found = true;
-                            found_in_work_list = true;
-                            break;
-                        }
-                    }
-                    if (found == true)
-                        break;
-                }
-            }
-            ++ite;
-        }
+        auto work_item = poll_engine.remove_work_item(dev_, obj_name_, obj_type_);
+        found_in_work_list = work_item.operator bool();
 
-        WorkItem wo = poll_thread.new_work_item(dev_, poll_list_item);
+        WorkItem wo = poll_engine.new_work_item(dev_, poll_list_item);
 
-        poll_thread.ext_trig_works.push_back(wo);
+        poll_engine.ext_trig_works.push(wo);
     }
 
 //
@@ -139,31 +65,50 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_thread) {
 //
 
     if (found_in_work_list == false) {
-        bool found = false;
-        for (et_ite = poll_thread.ext_trig_works.begin();
-             et_ite != poll_thread.ext_trig_works.end(); ++et_ite) {
-            if (et_ite->dev == dev_) {
-                if (et_ite->type == obj_type_) {
-                    if (et_ite->name[0] == obj_name_) {
-                        poll_thread.ext_trig_works.erase(et_ite);
-                        found = true;
-                        break;
-                    }
-                }
-            }
-        }
+        auto work_item = poll_engine.ext_trig_works.find_if(
+                [this](const WorkItem& work_item){
+                    return work_item.dev == dev_ && work_item.type == obj_type_ && work_item.name[0] == obj_name_;}
+        );
 
-        if (found == true) {
-            WorkItem wo = poll_thread.new_work_item(dev_, poll_list_item);
+        if (work_item) {
+            WorkItem wo = poll_engine.new_work_item(dev_, poll_list_item);
             wo.type = obj_type_;
             wo.update = new_upd_;
             wo.name.push_back(obj_name_);
-            poll_thread.insert_in_list(wo);
+            poll_engine.works.push(wo);
         } else {
-            poll_thread.auto_upd.push_back(new_upd_);
-            poll_thread.auto_name.push_back(obj_name_);
+            poll_engine.auto_upd.push_back(new_upd_);
+            poll_engine.auto_name.push_back(obj_name_);
         }
     }
+}
+
+bool Tango::polling::UpdatePollPeriodCommand::update_polled_obj(PollThread &poll_engine, PollObj &poll_obj) {
+    if (poll_engine.works.empty()) return false;
+    auto work_item = poll_engine.remove_work_item(dev_, obj_name_, obj_type_);
+
+
+    WorkItem tmp_work = poll_engine.new_work_item(dev_, poll_obj);
+    tmp_work.type = obj_type_;
+    tmp_work.update = new_upd_;
+    tmp_work.name.push_back(obj_name_);
+
+    poll_engine.now = poll_engine.compute_new_date(poll_engine.now, new_upd_);
+
+    tmp_work.wake_up_date = poll_engine.now;
+
+    poll_engine.add_or_push(tmp_work);
+
+
+    poll_engine.tune_ctr = 0;
+
+    if (!work_item) {
+        poll_engine.rem_upd.push_back(new_upd_);
+        poll_engine.rem_name.push_back(obj_name_);
+        return false;
+    }
+
+    return true;
 }
 
 Tango::polling::UpdatePollPeriodCommand::operator std::string() {

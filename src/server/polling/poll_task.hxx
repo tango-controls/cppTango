@@ -43,11 +43,27 @@ namespace Tango {
             //----------------------------------------------------------------------------------------------------------------
             void poll_attr();
 
-            void execute();
+
 
             template<typename T>
-            void robb_data(T &, T &);
+            void steal_data(T &, T &);
 
+
+            //------------------------------------------------------------------------------------------------------------------
+            //
+            // method :
+            //		PollThread::copy_remaining
+            //
+            // description :
+            //      Copy from one AttributeValue_X structure to another one data elements which are not the data themselves
+            //
+            // argument :
+            //		in :
+            //			- attr_value : The origin attribute value
+            //      out :
+            //          - new_attr_value : The new attribute value
+            //
+            //------------------------------------------------------------------------------------------------------------------
             template<typename T>
             void copy_remaining(T &, T &);
 
@@ -55,6 +71,8 @@ namespace Tango {
             PollTask(WorkItem &work);
 
             std::future<void> operator()();
+
+            void execute();
         };
     }
 }//Tango
