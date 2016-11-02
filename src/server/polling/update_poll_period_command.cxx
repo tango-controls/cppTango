@@ -100,7 +100,7 @@ bool Tango::polling::UpdatePollPeriodCommand::update_polled_obj(PollThread &poll
     poll_engine.add_or_push(tmp_work);
 
 
-    poll_engine.tune_ctr = 0;
+    poll_engine.reset_tune_counter();
 
     if (!work_item) {
         poll_engine.rem_upd.push_back(new_upd_);

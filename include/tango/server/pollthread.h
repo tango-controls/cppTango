@@ -151,14 +151,20 @@ namespace Tango {
 
     class TangoMonitor;
 
-    //TODO make inner of Device
+    //TODO rename to PollEngine
     class PollThread {
 
+        //TODO merge into this class
         friend class PollingThreadInfo;
 
     public:
         PollThread(TangoMonitor &, string &&name, bool polling_as_before_tango_9);
 
+        /**
+         *
+         *
+         * @return running polling thread id or thread::id()
+         */
         thread::id id();
 
         void execute_cmd(polling::Command &&);
@@ -169,6 +175,7 @@ namespace Tango {
         std::experimental::optional<WorkItem> remove_work_item(DeviceImpl*,std::string, PollObjType);
         std::experimental::optional<WorkItem> remove_trigger(DeviceImpl*,std::string, PollObjType);
     private:
+        //TODO redesign API so that these friends are no longer required, i.e. use public API
         friend class polling::AddObjCommand;
 
         friend class polling::AddTriggerCommand;
@@ -190,7 +197,11 @@ namespace Tango {
         friend class polling::ExitCommand;
 
         friend class polling::PollingThread;
-    protected:
+
+    public:
+        //TODO inject algorithm?
+        std::chrono::milliseconds compute_next_sleep();
+
         timeval compute_new_date(timeval, int);
 
         void print_work_items();
@@ -199,6 +210,31 @@ namespace Tango {
 
         WorkItem new_work_item(DeviceImpl *, /*TODO const*/ PollObj &);
 
+        //+---------------------------------------------------------------------------------------------------------------
+        //
+        // method :
+        //		PollThread::err_out_of_sync
+        //
+        // description :
+        //		To force one event if the polling thread has discarded one work item because it is late
+        //
+        // args :
+        //		in :
+        // 			- to_do : The work item
+        //
+        //----------------------------------------------------------------------------------------------------------------
+        void err_out_of_sync(WorkItem&);
+
+        /**
+         *
+         */
+        void adjust_work_items();
+
+
+        void set_need_two_tuning(bool);
+
+        void reset_tune_counter(){ tune_ctr = 0;}
+    protected:
         polling::PollingQueue &works;
         polling::PollingQueue &ext_trig_works;
 #ifdef _TG_WINDOWS_
@@ -211,6 +247,23 @@ namespace Tango {
         atomic_bool polling_stop;
 
     private:
+        //+----------------------------------------------------------------------------------------------------------------
+        //
+        // method :
+        //		PollThread::tune_list
+        //
+        // description :
+        //		This method tunes the work list.
+        //
+        // args :
+        //		in :
+        // 			- from_needed : Set to true if the delta between work should be at least equal to the
+        //							time needed to execute the previous work
+        //			- min_delta : Min. delta between polling works when from_needed is false
+        //
+        //----------------------------------------------------------------------------------------------------------------
+        void tune_list(bool from_needed, long min_delta);
+
         long tune_ctr;
         bool need_two_tuning;
         vector<long> auto_upd;

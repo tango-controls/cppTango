@@ -43,10 +43,8 @@ void polling::AddObjCommand::execute(PollThread &poll_engine) {
         cout5 << "Received a delta from now of " << new_upd_ << endl;
         T_ADD(wo.wake_up_date, new_upd_ * 1000);
     }
-    poll_engine.works.push(wo);
-    unsigned long nb_works = poll_engine.works.size();
-    poll_engine.tune_ctr = (nb_works << 2);
-    poll_engine.need_two_tuning = true;
+    poll_engine.works.push(wo);//TODO set flag - queue has changed, catch the flag in polling thread
+    poll_engine.set_need_two_tuning(true);
 }
 
 polling::AddObjCommand::operator std::string() {

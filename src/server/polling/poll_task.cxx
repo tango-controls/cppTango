@@ -23,8 +23,6 @@ void Tango::polling::PollTask::execute() {
 }
 
 void Tango::polling::PollTask::poll_cmd() {
-
-
         cout5 << "----------> Time = "
               << chrono::system_clock::now().time_since_epoch().count()
               << " Dev name = " << work_.dev->get_name()

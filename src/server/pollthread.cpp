@@ -33,6 +33,10 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 //-==================================================================================================================
 
+
+
+
+
 #if HAVE_CONFIG_H
 #include <ac_config.h>
 #endif
@@ -86,7 +90,7 @@ namespace Tango {
     PollThread::PollThread(TangoMonitor &m, string &&name, bool polling_as_before_tango_9)
             : polling_stop(true),
               tune_ctr(1),
-              need_two_tuning(false),
+              need_two_tuning{false},
               name_(move(name)),
               previous_nb_late{0},
               polling_bef_9{polling_as_before_tango_9},
@@ -120,6 +124,12 @@ namespace Tango {
                 {poll_obj.get_name()},
                 {0, 0}
         };
+    }
+
+    void PollThread::set_need_two_tuning(bool v) {
+        size_t nb_works = works.size();
+        tune_ctr = (nb_works << 2); //* 4
+        need_two_tuning = v;
     }
 
 
@@ -245,6 +255,329 @@ namespace Tango {
         double ori_d = (double) time.tv_sec + ((double) time.tv_usec / 1000000);
         double new_d = ori_d + ((double) (upd) / 1000);
         return {(long) new_d, (long) ((new_d - time.tv_sec) * 1000000)};
+    }
+
+    std::chrono::milliseconds PollThread::compute_next_sleep() {
+            //TODO use integral type to calculate time related values
+            uint64_t next{};
+            uint64_t diff{};
+            uint64_t after_d = after.tv_sec + (after.tv_usec / 1000000);//TODO precision loss :/
+
+            uint64_t sleep{};
+
+            bool discard = false;
+            u_int nb_late = 0;
+
+            if (polling_bef_9) {
+                discard = true;
+            } else {
+
+//
+// Compute for how many items the polling thread is late
+//
+                works.for_each([](const WorkItem& work_item){
+                    next = (double) work_item.wake_up_date.tv_sec + ((double) work_item.wake_up_date.tv_usec / 1000000);
+                    diff = next - after_d;
+                    if (diff < 0 && fabs(diff) > DISCARD_THRESHOLD)
+                        nb_late++;
+                });
+
+//
+// If we are late for some item(s):
+//  - Seriously late (number of late items equal number of items) --> We will discard items
+//  - Late for the first time: Poll immediately but memorize the number of items for which we are late
+//  - Late again: If the number of late items increase --> Discard items
+//
+
+                if (nb_late != 0) {
+                    if (nb_late == works.size()) {
+                        cout5 << "Setting discard to true because nb_late == works.size() --> " << nb_late << endl;
+                        discard = true;
+                    } else {
+                        if (previous_nb_late != 0) {
+                            if (nb_late < previous_nb_late) {
+                                previous_nb_late = nb_late;
+                                cout5 << "Late but trying to catch up" << endl;
+                            } else {
+                                previous_nb_late = 0;
+                                discard = true;
+                            }
+                        } else
+                            previous_nb_late = nb_late;
+                        sleep = -1;
+                    }
+                }
+            }
+
+//
+// Analyse work list
+//
+
+//        cout5 << "discard = " << boolalpha << discard << endl;
+            if (nb_late == 0 || discard == true) {
+                previous_nb_late = 0;
+
+                auto item = works.top();
+                next = (double) item.wake_up_date.tv_sec +
+                       ((double) item.wake_up_date.tv_usec / 1000000);
+                diff = next - after_d;
+
+                if (diff < 0) {
+                    if (fabs(diff) < DISCARD_THRESHOLD)
+                        sleep = -1;
+                    else {
+                        while ((diff < 0) && (fabs(diff) > DISCARD_THRESHOLD)) {
+                            cout5 << "Discard one elt !!!!!!!!!!!!!" << endl;
+                            WorkItem& tmp = const_cast<WorkItem&>(works.top());
+                            if (tmp.type == POLL_ATTR)
+                                err_out_of_sync(tmp);
+
+                            tmp.wake_up_date = compute_new_date(tmp.wake_up_date, tmp.update);
+                            works.push(tmp);
+                            works.pop();
+                            tune_ctr--;
+
+                            WorkItem &top = const_cast<WorkItem&>(works.top());
+                            next = (double) top.wake_up_date.tv_sec +
+                                   ((double) top.wake_up_date.tv_usec / 1000000);
+                            diff = next - after_d;
+                        }
+
+                        if (fabs(diff) < DISCARD_THRESHOLD)
+                            sleep = -1;
+                        else
+                            sleep = (diff * 1000);
+                    }
+                } else
+                    sleep = (diff * 1000);
+            }
+
+            cout5 << "Sleep for : " << sleep << endl;
+            return chrono::milliseconds{sleep};
+    }
+
+    void PollThread::err_out_of_sync(WorkItem &to_do) {
+        EventSupplier *event_supplier_nd = NULL;
+        EventSupplier *event_supplier_zmq = NULL;
+
+//
+// Retrieve the event supplier(s) for this attribute
+//
+
+        size_t nb_obj = to_do.name.size();
+        for (size_t ctr = 0; ctr < nb_obj; ctr++) {
+            Attribute &att = to_do.dev->get_device_attr()->get_attr_by_name(to_do.name[ctr].c_str());
+
+            if (att.use_notifd_event() == true && event_supplier_nd == NULL)
+                event_supplier_nd = Util::instance()->get_notifd_event_supplier();
+            if (att.use_zmq_event() == true && event_supplier_zmq == NULL)
+                event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
+
+            if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL)) {
+                DevErrorList errs;
+                errs.length(1);
+
+                errs[0].severity = ERR;
+                errs[0].reason = string_dup("API_PollThreadOutOfSync");
+                errs[0].origin = string_dup("PollThread::err_out_of_sync");
+                errs[0].desc = string_dup(
+                        "The polling thread is late and discard this object polling.\nAdvice: Tune device server polling");
+
+                DevFailed except(errs);
+                long idl_vers = to_do.dev->get_dev_idl_version();
+
+                struct EventSupplier::SuppliedEventData ad{};
+                memset(&ad, 0, sizeof(ad));
+
+                if (idl_vers > 4)
+                    ad.attr_val_5 = &dummy_att5;
+                else if (idl_vers == 4)
+                    ad.attr_val_4 = &dummy_att4;
+                else if (idl_vers == 3)
+                    ad.attr_val_3 = &dummy_att3;
+                else
+                    ad.attr_val = &dummy_att;
+
+//
+// Fire event
+//
+
+                SendEventType send_event;
+                if (event_supplier_nd != NULL)
+                    send_event = event_supplier_nd->detect_and_push_events(to_do.dev, ad, &except, to_do.name[ctr],
+                                                                           (struct timeval *) NULL);
+                if (event_supplier_zmq != NULL) {
+                    if (event_supplier_nd != NULL) {
+                        vector<string> f_names;
+                        vector<double> f_data;
+                        vector<string> f_names_lg;
+                        vector<long> f_data_lg;
+
+                        if (send_event.change == true)
+                            event_supplier_zmq->push_event_loop(to_do.dev, CHANGE_EVENT, f_names, f_data, f_names_lg,
+                                                                f_data_lg, ad, att, &except);
+                        if (send_event.archive == true)
+                            event_supplier_zmq->push_event_loop(to_do.dev, ARCHIVE_EVENT, f_names, f_data, f_names_lg,
+                                                                f_data_lg, ad, att, &except);
+                        if (send_event.periodic == true)
+                            event_supplier_zmq->push_event_loop(to_do.dev, PERIODIC_EVENT, f_names, f_data, f_names_lg,
+                                                                f_data_lg, ad, att, &except);
+                    } else
+                        event_supplier_zmq->detect_and_push_events(to_do.dev, ad, &except, to_do.name[ctr],
+                                                                   (struct timeval *) NULL);
+                }
+            }
+        }
+    }
+
+    void PollThread::adjust_work_items() {
+#ifdef _TG_WINDOWS_
+        _ftime(&after_win);
+			after.tv_sec = (unsigned long)after_win.time;
+			after.tv_usec = (long)after_win.millitm * 1000;
+#else
+        gettimeofday(&after,NULL);
+#endif
+        after.tv_sec = after.tv_sec - DELTA_T;
+
+        if (tune_ctr <= 0)
+        {
+            tune_list(true,0);
+            if (need_two_tuning)
+            {
+                set_need_two_tuning(false);
+            }
+            else
+                tune_ctr = POLL_LOOP_NB;
+        }
+    }
+
+    void PollThread::tune_list(bool from_needed, long min_delta) {
+        list::iterator ite, ite_next, ite_prev;
+
+        unsigned long nb_works = works.size();
+        cout4 << "Entering tuning list. The list has " << nb_works << " item(s)" << endl;
+
+//
+// Nothing to do if only one let in list
+//
+
+        if (nb_works < 2)
+            return;
+
+//
+// If we try to tune the list with respect to works needed time, compute works needed time sum and find minimun update
+// period
+//
+
+        if (from_needed == true) {
+            unsigned long needed_sum = 0;
+            unsigned long min_upd = 0;
+            long max_delta_needed;
+
+            for (ite = works.begin(); ite != works.end(); ++ite) {
+                long needed_time_usec = (ite->needed_time.tv_sec * 1000000) + ite->needed_time.tv_usec;
+                needed_sum = needed_sum + (unsigned long) needed_time_usec;
+
+                unsigned long update_usec = (unsigned long) ite->update * 1000;
+
+                if (ite == works.begin()) {
+                    min_upd = update_usec;
+                } else {
+                    if (min_upd > update_usec)
+                        min_upd = update_usec;
+                }
+            }
+
+//
+// In some cases, it is impossible to tune
+//
+
+            if (needed_sum > min_upd)
+                return;
+            else {
+                long sleeping = min_upd - needed_sum;
+                max_delta_needed = sleeping / (nb_works);
+            }
+
+//
+// Now build a new tuned list
+// Warning: On Windows 64 bits, long are 32 bits data. Convert everything to DevULong64 to be sure
+// that we will have computation on unsigned 64 bits data
+//
+// To tune the list
+// - Take obj j and compute when it should be polled (next_work)
+// - Compute when object j-1 should be polled (prev_obj_work)
+// - Compute the number of poll between these two dates (n)
+// - Compute date of previous object polling just before "next_work"
+// - Assign next_work to this date and add
+//       the time needed to execute previous object polling
+//		 the delta computed from the smallest upd and the obj number
+//
+
+            DevULong64 now_us = ((DevULong64) now.tv_sec * 1000000LL) + (DevULong64) now.tv_usec;
+            DevULong64 next_tuning = now_us + (POLL_LOOP_NB * (DevULong64) min_upd);
+
+            PollingQueue new_works{};
+            new_works.push(works.front());
+
+            ite = works.begin();
+            ite_prev = new_works.begin();
+
+            for (++ite; ite != works.end(); ++ite, ++ite_prev) {
+                DevULong64 needed_time_usec = ((DevULong64) ite_prev->needed_time.tv_sec * 1000000) +
+                                              (DevULong64) ite_prev->needed_time.tv_usec;
+                WorkItem wo = *ite;
+                DevULong64 next_work = ((DevULong64) wo.wake_up_date.tv_sec * 1000000LL) +
+                                       (DevULong64) wo.wake_up_date.tv_usec;
+
+                DevULong64 next_prev;
+                if (next_work < next_tuning) {
+                    DevULong64 prev_obj_work = ((DevULong64) ite_prev->wake_up_date.tv_sec * 1000000LL) +
+                                               (DevULong64) ite_prev->wake_up_date.tv_usec;
+                    if (next_work > prev_obj_work) {
+                        DevULong64 n =
+                                (next_work - prev_obj_work) / ((DevULong64) ite_prev->update * 1000LL);
+                        next_prev = prev_obj_work + (n * (ite_prev->update * 1000LL));
+                    } else
+                        next_prev = prev_obj_work;
+
+                    wo.wake_up_date.tv_sec = (long) (next_prev / 1000000LL);
+                    wo.wake_up_date.tv_usec = (long) (next_prev % 1000000LL);
+
+                    T_ADD(wo.wake_up_date, needed_time_usec + max_delta_needed);
+                }
+                new_works.push(wo);
+            }
+
+//
+// Replace work list
+//
+
+            works.swap(new_works);
+        } else {
+            ite_next = works.begin();
+            ite = ite_next;
+            ++ite_next;
+
+            for (unsigned int i = 1; i < nb_works; i++) {
+                long diff;
+                T_DIFF(ite->wake_up_date, ite_next->wake_up_date, diff);
+
+//
+// If delta time between works is less than min, shift following work
+//
+
+                if (diff < min_delta)
+                T_ADD(ite_next->wake_up_date, min_delta - diff);
+
+                ++ite;
+                ++ite_next;
+            }
+        }
+
+        cout4 << "Tuning list done" << endl;
+        print_work_items();
     }
 
     WorkItem::WorkItem(DeviceImpl *dev, vector<PollObj *> *poll_list, const timeval &wake_up_date, int update,
