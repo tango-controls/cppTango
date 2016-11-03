@@ -170,7 +170,7 @@ namespace Tango {
     public:
 
 
-        static const int kPollLoop{500};
+        static const int kPollLoop;
         static const uint64_t kDiscardThreshold{200};//TODO original double value =0.02
 
         //+-----------------------------------------------------------------------------------------------------------------

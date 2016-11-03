@@ -67,6 +67,8 @@ namespace Tango {
 
     extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
 
+    const int PollThread::kPollLoop{500};
+
     namespace threading {
         template
         class asymmetric_unbound_blocking_queue<PollThCmd>;
@@ -242,6 +244,7 @@ namespace Tango {
         return work_item;
     }
 
+    //TODO return discarded items list
     bool PollThread::analyze_work_list() {
         auto calculate_diff = [](const WorkItem &work_item) {
             return work_item.wake_up_date - work_item.stop_time;
@@ -252,6 +255,7 @@ namespace Tango {
             cout5 << "Discard one elt !!!!!!!!!!!!!" << endl;
             WorkItem tmp = works.top();
             if (tmp.type == POLL_ATTR) {
+                //TODO put into dedicated list and send events in a dedicated method
                 DevErrorList errs{1};
 
                 errs[0].severity = ERR;
