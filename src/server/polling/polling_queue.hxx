@@ -28,6 +28,8 @@ namespace Tango {
 
             std::experimental::optional<WorkItem>
             find_if(std::function<bool(const WorkItem & )>);
+
+            int64_t count_if(std::function<bool(const WorkItem & )>);
         };
     }//polling
 }//Tango

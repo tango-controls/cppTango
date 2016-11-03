@@ -48,4 +48,8 @@ void polling::PollingQueue::for_each(std::function<void(const WorkItem &)> f) {
     std::for_each(c.begin(), c.end(), f);
 }
 
+int64_t polling::PollingQueue::count_if(std::function<bool(const WorkItem &)> predicate) {
+    return std::count_if(c.begin(), c.end(), predicate);
+}
+
 

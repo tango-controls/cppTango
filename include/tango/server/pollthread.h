@@ -168,6 +168,9 @@ namespace Tango {
         friend class PollingThreadInfo;
 
     public:
+
+        static const uint64_t DISCARD_THRESHOLD{200};//TODO original double value =0.02
+
         PollThread(TangoMonitor &, string &&name, bool polling_as_before_tango_9);
 
         /**
@@ -209,10 +212,32 @@ namespace Tango {
         friend class polling::PollingThread;
 
     public:
-        //TODO inject algorithm?
-        std::chrono::milliseconds compute_next_sleep();
 
-        chrono::milliseconds compute_new_date(chrono::time_point, chrono::microseconds);
+
+        /**
+         *
+         * @return true if works has been changed
+         */
+        bool discard_late_items();
+
+        //TODO inject algorithm?
+        std::chrono::milliseconds compute_next_sleep(bool);
+
+        //+----------------------------------------------------------------------------------------------------------------
+        //
+        // method :
+        //		PollThread::compute_new_date
+        //
+        // description :
+        //		This method computes the new poll date.
+        //
+        // args :
+        //		in :
+        // 			- time : The actual date
+        //			- upd : The polling update period (mS)
+        //
+        //------------------------------------------------------------------------------------------------------------------
+        chrono::time_point compute_new_date(chrono::time_point, chrono::milliseconds);
 
         void print_work_items();
 
@@ -244,7 +269,6 @@ namespace Tango {
         std::chrono::time_point start_;
         std::chrono::time_point stop_;
         atomic_bool polling_stop_;
-
         //+----------------------------------------------------------------------------------------------------------------
         //
         // method :
@@ -277,6 +301,8 @@ namespace Tango {
         string name_;
 
         polling::EventSystem& event_system_;
+
+        bool analyze_work_list();
     };
 
 //

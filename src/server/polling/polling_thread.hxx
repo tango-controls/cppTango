@@ -11,6 +11,12 @@ namespace Tango {
     class WorkItem;
 
     namespace polling {
+
+
+        /**
+         *
+         * Implements Tango polling algorithm
+         */
         class PollingThread {
             threading::enhanced_thread thread_;
             PollThread& engine_;
