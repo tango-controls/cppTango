@@ -274,16 +274,16 @@ namespace Tango {
     }
 
     bool PollThread::discard_late_items() {
-        auto wake_up_before_stop = [](const WorkItem &work_item) {
-            int64_t diff = work_item.wake_up_date.time_since_epoch() - work_item.stop_time.time_since_epoch();
-            return (diff < 0 && abs(diff) > DISCARD_THRESHOLD);
-        };
-
         if (polling_bef_9) {
             previous_nb_late = 0;
 
             return analyze_work_list();
         } else {
+            auto wake_up_before_stop = [](const WorkItem &work_item) {
+                int64_t diff = work_item.wake_up_date.time_since_epoch() - work_item.stop_time.time_since_epoch();
+                return (diff < 0 && abs(diff) > DISCARD_THRESHOLD);
+            };
+
             //
             // Compute for how many items the polling thread is late
             //
@@ -308,9 +308,9 @@ namespace Tango {
 
                 return analyze_work_list();
             }
-        }
 
-        return false;
+            return false;
+        }
     }
 
     chrono::time_point PollThread::compute_new_date(chrono::time_point current_time, chrono::milliseconds update) {
