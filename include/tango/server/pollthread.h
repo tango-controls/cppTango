@@ -143,10 +143,6 @@ namespace Tango {
         std::chrono::nanoseconds needed_time;    // Time needed to execute action
         std::chrono::milliseconds stop_time;
         vector<DevFailed*> errors;
-
-        WorkItem(DeviceImpl *dev, vector<PollObj *> *poll_list, const timeval &wake_up_date, int update,
-                 PollObjType type,
-                 const vector<string> &name, const timeval &needed_time);
     };
 
 
@@ -158,6 +154,10 @@ namespace Tango {
 //			polling thread. It's run() method is the thread code
 //
 //=============================================================================
+
+    class PollThread;
+
+    using PollThreadPtr = std::unique_ptr<Tango::PollThread>;
 
     class TangoMonitor;
 
@@ -173,7 +173,20 @@ namespace Tango {
         static const int kPollLoop{500};
         static const uint64_t kDiscardThreshold{200};//TODO original double value =0.02
 
-        PollThread(TangoMonitor &, string &&name, bool polling_as_before_tango_9);
+        //+-----------------------------------------------------------------------------------------------------------------
+        //
+        // method :
+        //		PollThread::create_instance
+        //
+        // description :
+        //		The polling thread constructor.
+        //
+        // args :
+        //		in :TODO
+        //
+        //------------------------------------------------------------------------------------------------------------------
+
+        static PollThreadPtr create_instance(std::string&&, bool);
 
         /**
          *
@@ -190,6 +203,10 @@ namespace Tango {
         std::experimental::optional<WorkItem> remove_work_item(DeviceImpl*,std::string, PollObjType);
         std::experimental::optional<WorkItem> remove_trigger(DeviceImpl*,std::string, PollObjType);
     private:
+        PollThread(string &&, bool, polling::PollingQueue &&,
+                   polling::PollingQueue &&, threading::enhanced_thread &&,
+                   polling::EventSystem &&);
+
         //TODO redesign API so that these friends are no longer required, i.e. use public API
         friend class polling::AddObjCommand;
 
@@ -298,6 +315,10 @@ namespace Tango {
 
         bool analyze_work_list();
     };
+
+
+
+    std::experimental::optional<WorkItem> find_work_item(polling::PollingQueue&, DeviceImpl*, std::string, PollObjType);
 
 //
 // Three macros

@@ -74,7 +74,7 @@ bool Util::_FileDb = false;
 bool Util::_daemon = false;
 long Util::_sleep_between_connect = 60;
 bool Util::_constructed = false;
-    ClntIdent Util::kDummyClientIdentity{};
+	const ClntIdent Util::kDummyClientIdentity = {};
 #ifdef _TG_WINDOWS_
 bool Util::_win = false;
 bool Util::_service = false;

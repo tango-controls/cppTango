@@ -1478,9 +1478,10 @@ namespace Tango {
         vector<PollingThreadInfo *> &th_info = tg->get_polling_threads_info();
         vector<PollingThreadInfo *>::iterator iter;
 
-        polling::StopPollingCommand stop_polling_cmd{};
         for_each(th_info.begin(), th_info.end(),
-                 [&stop_polling_cmd](const PollingThreadInfo& th_info){ th_info.poll_th->execute_cmd(move(stop_polling_cmd));});
+                 [](PollingThreadInfo* th_info){
+                     th_info->poll_th->execute_cmd(polling::StopPollingCommand{});
+                 });
 
 //
 // Update polling status

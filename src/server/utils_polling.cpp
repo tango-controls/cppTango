@@ -759,7 +759,10 @@ namespace Tango {
             PollingThreadInfo *pti_ptr = new PollingThreadInfo();
             if (smallest_upd != -1)
                 pti_ptr->smallest_upd = smallest_upd;
-            pti_ptr->poll_th = new PollThread(pti_ptr->poll_mon, "Poll[" + local_dev_name + "]", polling_9);
+
+
+
+            pti_ptr->poll_th = PollThread::create_instance("PollEngine["+local_dev_name+"]", polling_9);
 
             thread::id poll_th_id = pti_ptr->poll_th->id();
             pti_ptr->thread_id = poll_th_id;
