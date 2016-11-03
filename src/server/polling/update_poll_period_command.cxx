@@ -73,7 +73,7 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_engine) {
         if (work_item) {
             WorkItem wo = poll_engine.new_work_item(dev_, poll_list_item);
             wo.type = obj_type_;
-            wo.update = new_upd_;
+            wo.update = {new_upd_};
             wo.name.push_back(obj_name_);
             poll_engine.works.push(wo);
         } else {
@@ -90,12 +90,10 @@ bool Tango::polling::UpdatePollPeriodCommand::update_polled_obj(PollThread &poll
 
     WorkItem tmp_work = poll_engine.new_work_item(dev_, poll_obj);
     tmp_work.type = obj_type_;
-    tmp_work.update = new_upd_;
+    tmp_work.update = {new_upd_};
     tmp_work.name.push_back(obj_name_);
 
-    poll_engine.now = poll_engine.compute_new_date(poll_engine.now, new_upd_);
-
-    tmp_work.wake_up_date = poll_engine.now;
+    tmp_work.wake_up_date = poll_engine.compute_new_date(work_item->wake_up_date, tmp_work.update);
 
     poll_engine.add_or_push(tmp_work);
 

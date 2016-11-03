@@ -169,7 +169,9 @@ namespace Tango {
 
     public:
 
-        static const uint64_t DISCARD_THRESHOLD{200};//TODO original double value =0.02
+
+        static const int kPollLoop{500};
+        static const uint64_t kDiscardThreshold{200};//TODO original double value =0.02
 
         PollThread(TangoMonitor &, string &&name, bool polling_as_before_tango_9);
 
@@ -276,15 +278,8 @@ namespace Tango {
         //
         // description :
         //		This method tunes the work list.
-        //
-        // args :
-        //		in :
-        // 			- from_needed : Set to true if the delta between work should be at least equal to the
-        //							time needed to execute the previous work
-        //			- min_delta : Min. delta between polling works when from_needed is false
-        //
         //----------------------------------------------------------------------------------------------------------------
-        void tune_list(bool from_needed, long min_delta);
+        void tune_list();//TODO was from_needed, min_delta which were always true and 0
 
         long tune_ctr;
         bool need_two_tuning;

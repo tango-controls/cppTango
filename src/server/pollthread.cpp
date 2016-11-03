@@ -245,7 +245,7 @@ namespace Tango {
         };
         auto diff = calculate_diff(works.top());
 
-        while ((diff < 0) && (abs(diff) > DISCARD_THRESHOLD)) {
+        while ((diff < 0) && (abs(diff) > kDiscardThreshold)) {
             cout5 << "Discard one elt !!!!!!!!!!!!!" << endl;
             WorkItem tmp = works.top();
             if (tmp.type == POLL_ATTR) {
@@ -270,7 +270,7 @@ namespace Tango {
             diff = calculate_diff(works.top());
         }
 
-        return (abs(diff) < DISCARD_THRESHOLD);
+        return (abs(diff) < kDiscardThreshold);
     }
 
     bool PollThread::discard_late_items() {
@@ -281,7 +281,7 @@ namespace Tango {
         } else {
             auto wake_up_before_stop = [](const WorkItem &work_item) {
                 int64_t diff = work_item.wake_up_date.time_since_epoch() - work_item.stop_time.time_since_epoch();
-                return (diff < 0 && abs(diff) > DISCARD_THRESHOLD);
+                return (diff < 0 && abs(diff) > kDiscardThreshold);
             };
 
             //
@@ -337,27 +337,31 @@ namespace Tango {
     }
 
 
-    void PollThread::adjust_work_items(WorkItem &work_item) {
+    void PollThread::adjust_work_items(WorkItem &just_polled_item) {
         //
-// For case where the polling thread itself modify the polling period of the object it already polls
-//
+        // For case where the polling thread itself modify the polling period of the object it already polls
+        //
 
         if (auto_upd.empty() == false) {
-            for (size_t loop = 0; loop < auto_upd.size(); loop++) {
-                vector<string>::iterator pos = remove(work_item.name.begin(), work_item.name.end(), auto_name[loop]);
-                work_item.name.erase(pos, work_item.name.end());
+            for (size_t i = 0; i < auto_upd.size(); i++) {
+                just_polled_item.name.erase(
+                        remove(
+                                just_polled_item.name.begin(),
+                                just_polled_item.name.end(), auto_name[i]),
+                        just_polled_item.name.end());
             }
 
-            if (work_item.name.empty() == false) {
-                work_item.wake_up_date = compute_new_date(work_item.wake_up_date, work_item.update);
-                works.push(work_item);
+            if (just_polled_item.name.empty() == false) {
+                just_polled_item.wake_up_date = compute_new_date(just_polled_item.wake_up_date,
+                                                                 just_polled_item.update);
+                works.push(just_polled_item);
             }
 
             list<WorkItem>::iterator ite;
             vector<WorkItem>::iterator et_ite;
 
-            for (size_t loop = 0; loop < auto_upd.size(); loop++) {
-                int auto_upd_value = auto_upd[loop];
+            for (size_t i = 0; i < auto_upd.size(); i++) {
+                int auto_upd_value = auto_upd[i];
                 auto work_item = works.find_if(
                         [auto_upd_value, &work_item](const WorkItem &work_item_in_c) {
                             return work_item_in_c.dev == work_item.dev &&
@@ -366,14 +370,14 @@ namespace Tango {
                         });
 
                 if (work_item)
-                    work_item->name.push_back(auto_name[loop]);
+                    work_item->name.push_back(auto_name[i]);
                 else {
                     WorkItem new_work_item = new_work_item(work_item.dev, poll_obj);
-                    new_work_item.update = auto_upd[loop];
-                    new_work_item.name.push_back(auto_name[loop]);
+                    new_work_item.update = auto_upd[i];
+                    new_work_item.name.push_back(auto_name[i]);
 
-                    now = compute_new_date(now, local_cmd.new_upd);
-                    new_work_item.wake_up_date = now;
+                    new_work_item.wake_up_date = compute_new_date(now,
+                                                                  new_work_item.update);//TODO local_cmd.new_upd??? -- last non-timeout command
                     works.push(new_work_item);
                 }
             }
@@ -389,39 +393,39 @@ namespace Tango {
         else {
             if (rem_upd.empty() == false) {
                 for (size_t loop = 0; loop < rem_upd.size(); loop++) {
-                    vector<string>::iterator pos = remove(work_item.name.begin(), work_item.name.end(), rem_name[loop]);
-                    work_item.name.erase(pos, work_item.name.end());
+                    vector<string>::iterator pos = remove(just_polled_item.name.begin(), just_polled_item.name.end(),
+                                                          rem_name[loop]);
+                    just_polled_item.name.erase(pos, just_polled_item.name.end());
                 }
 
-                if (work_item.name.empty() == false) {
-                    work_item.wake_up_date = compute_new_date(work_item.wake_up_date, work_item.update);
-                    works.push(work_item);
+                if (just_polled_item.name.empty() == false) {
+                    just_polled_item.wake_up_date = compute_new_date(just_polled_item.wake_up_date,
+                                                                     just_polled_item.update);
+                    works.push(just_polled_item);
                 }
 
                 rem_upd.clear();
                 rem_name.clear();
             } else {
-                work_item.wake_up_date = compute_new_date(work_item.wake_up_date, work_item.update);
-                works.push(work_item);
+                just_polled_item.wake_up_date = compute_new_date(just_polled_item.wake_up_date,
+                                                                 just_polled_item.update);
+                works.push(just_polled_item);
             }
         }
 
         tune_ctr--;
 
         if (tune_ctr <= 0) {
-            tune_list(true, 0);
+            tune_list();
             if (need_two_tuning) {
                 set_need_two_tuning(false);
             } else
-                tune_ctr = POLL_LOOP_NB;
+                tune_ctr = kPollLoop;
         }
     }
 
-    void PollThread::tune_list(bool from_needed, long min_delta) {
-        list::iterator ite, ite_next, ite_prev;
-
-        unsigned long nb_works = works.size();
-        cout4 << "Entering tuning list. The list has " << nb_works << " item(s)" << endl;
+    void PollThread::tune_list() {
+        size_t nb_works = works.size();
 
 //
 // Nothing to do if only one let in list
@@ -430,46 +434,40 @@ namespace Tango {
         if (nb_works < 2)
             return;
 
+
+        cout4 << "Entering tuning list. The list has " << nb_works << " item(s)" << endl;
 //
 // If we try to tune the list with respect to works needed time, compute works needed time sum and find minimun update
 // period
 //
 
-        if (from_needed == true) {
-            unsigned long needed_sum = 0;
-            unsigned long min_upd = 0;
-            long max_delta_needed;
+        chrono::nanoseconds needed_sum{0};
+        chrono::milliseconds min_upd = works.top().update;
+        chrono::nanoseconds max_delta_needed = works.top().needed_time;
 
-            for (ite = works.begin(); ite != works.end(); ++ite) {
-                long needed_time_usec = (ite->needed_time.tv_sec * 1000000) + ite->needed_time.tv_usec;
-                needed_sum = needed_sum + (unsigned long) needed_time_usec;
+        //transform -> collect;
+        //transofmr -> min;
+        works.for_each([&](const WorkItem &work_item) {
+            needed_sum += work_item.needed_time;
 
-                unsigned long update_usec = (unsigned long) ite->update * 1000;
-
-                if (ite == works.begin()) {
-                    min_upd = update_usec;
-                } else {
-                    if (min_upd > update_usec)
-                        min_upd = update_usec;
-                }
-            }
+            if (min_upd > work_item.update)
+                min_upd = work_item.update;
+        });
 
 //
 // In some cases, it is impossible to tune
 //
 
-            if (needed_sum > min_upd)
-                return;
-            else {
-                long sleeping = min_upd - needed_sum;
-                max_delta_needed = sleeping / (nb_works);
-            }
+        if (needed_sum > min_upd)//TODO should not it be LT
+            return;
+        else {
+            chrono::nanoseconds sleeping = min_upd - needed_sum;
+            max_delta_needed = sleeping / (nb_works);
+        }
 
 //
 // Now build a new tuned list
-// Warning: On Windows 64 bits, long are 32 bits data. Convert everything to DevULong64 to be sure
-// that we will have computation on unsigned 64 bits data
-//
+
 // To tune the list
 // - Take obj j and compute when it should be polled (next_work)
 // - Compute when object j-1 should be polled (prev_obj_work)
@@ -480,80 +478,44 @@ namespace Tango {
 //		 the delta computed from the smallest upd and the obj number
 //
 
-            DevULong64 now_us = ((DevULong64) now.tv_sec * 1000000LL) + (DevULong64) now.tv_usec;
-            DevULong64 next_tuning = now_us + (POLL_LOOP_NB * (DevULong64) min_upd);
+        auto now = chrono::high_resolution_clock::now();//TODO now? or last polled item.stop
+        auto next_tuning = now + (kPollLoop * min_upd);
 
-            PollingQueue new_works{};
-            new_works.push(works.front());
+        polling::PollingQueue new_works{};
+        new_works.push(works.top());
 
-            ite = works.begin();
-            ite_prev = new_works.begin();
+        auto ite = works.top();
+        auto previous_work_item = new_works.top();
 
-            for (++ite; ite != works.end(); ++ite, ++ite_prev) {
-                DevULong64 needed_time_usec = ((DevULong64) ite_prev->needed_time.tv_sec * 1000000) +
-                                              (DevULong64) ite_prev->needed_time.tv_usec;
-                WorkItem wo = *ite;
-                DevULong64 next_work = ((DevULong64) wo.wake_up_date.tv_sec * 1000000LL) +
-                                       (DevULong64) wo.wake_up_date.tv_usec;
+        works.for_each([&](WorkItem& wo){
+            auto previous_needed_time = previous_work_item.needed_time;
+            auto wake_up_date = wo.wake_up_date;
 
-                DevULong64 next_prev;
-                if (next_work < next_tuning) {
-                    DevULong64 prev_obj_work = ((DevULong64) ite_prev->wake_up_date.tv_sec * 1000000LL) +
-                                               (DevULong64) ite_prev->wake_up_date.tv_usec;
-                    if (next_work > prev_obj_work) {
-                        DevULong64 n =
-                                (next_work - prev_obj_work) / ((DevULong64) ite_prev->update * 1000LL);
-                        next_prev = prev_obj_work + (n * (ite_prev->update * 1000LL));
-                    } else
-                        next_prev = prev_obj_work;
+            chrono::time_point next_prev;
+            if (wake_up_date.time_since_epoch() < next_tuning) {
+                auto previous_wake_up = previous_work_item.wake_up_date;
+                if (wake_up_date.time_since_epoch() > previous_wake_up) {
+                    auto n =
+                            (wake_up_date.time_since_epoch() - previous_wake_up) / (previous_work_item.update);//*1000LL
+                    next_prev = previous_wake_up + (n * (previous_work_item.update));
+                } else
+                    next_prev = previous_wake_up;
 
-                    wo.wake_up_date.tv_sec = (long) (next_prev / 1000000LL);
-                    wo.wake_up_date.tv_usec = (long) (next_prev % 1000000LL);
+                wo.wake_up_date = next_prev;
 
-                    T_ADD(wo.wake_up_date, needed_time_usec + max_delta_needed);
-                }
-                new_works.push(wo);
+                wo.wake_up_date = {previous_needed_time + max_delta_needed};
             }
+            new_works.push(wo);
+            previous_work_item = wo;//TODO pointer
+        });
 
 //
 // Replace work list
 //
 
-            works.swap(new_works);
-        } else {
-            ite_next = works.begin();
-            ite = ite_next;
-            ++ite_next;
-
-            for (unsigned int i = 1; i < nb_works; i++) {
-                long diff;
-                T_DIFF(ite->wake_up_date, ite_next->wake_up_date, diff);
-
-//
-// If delta time between works is less than min, shift following work
-//
-
-                if (diff < min_delta)
-                T_ADD(ite_next->wake_up_date, min_delta - diff);
-
-                ++ite;
-                ++ite_next;
-            }
-        }
+        works.swap(new_works);
 
         cout4 << "Tuning list done" << endl;
         print_work_items();
     }
-
-    WorkItem::WorkItem(DeviceImpl *dev, vector<PollObj *> *poll_list, const timeval &wake_up_date, int update,
-                       PollObjType type, const vector<string> &name, const timeval &needed_time) : dev(dev),
-                                                                                                   poll_list(poll_list),
-                                                                                                   wake_up_date(
-                                                                                                           wake_up_date),
-                                                                                                   update(update),
-                                                                                                   type(type),
-                                                                                                   name(name),
-                                                                                                   needed_time(
-                                                                                                           needed_time) {}
-
 } // End of Tango namespace

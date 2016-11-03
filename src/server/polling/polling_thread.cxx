@@ -33,8 +33,6 @@ void Tango::polling::PollingThread::run() {
         PollTask task{tmp, engine_};
         task.execute();
 
-        engine_.set_time(tmp.start_time, tmp.stop_time);
-
         engine_.adjust_work_items(tmp);
     }
 }

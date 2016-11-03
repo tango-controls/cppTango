@@ -87,7 +87,6 @@ const int   MIN_POLL_PERIOD                = 5;
 const int   DELTA_T                        = 1002000000;
 const int   MIN_DELTA_WORK                 = 20000;
 const int   TIME_HEARTBEAT                 = 2000;
-const int   POLL_LOOP_NB                   = 500;
 const int   ONE_SECOND                     = 1000000;
 
 const int   DEFAULT_TIMEOUT                = 3200;
