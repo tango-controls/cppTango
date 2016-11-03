@@ -27,7 +27,7 @@ namespace Tango {
             long			index_;			// Index in the device poll_list
             std::string		obj_name_;			// Object name
             PollObjType		obj_type_;			// Object type (cmd/attr)
-            int				new_upd_;		// New update period (For upd period com.)
+            std::chrono::milliseconds				new_upd_;		// New update period (For upd period com.)
 
             Command(DeviceImpl* dev, PollCmdCode code, string&& name, PollObjType type, long index, int new_upd):
                     dev_{dev},

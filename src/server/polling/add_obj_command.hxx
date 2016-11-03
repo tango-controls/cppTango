@@ -20,5 +20,3 @@ namespace polling {
     };
 }
 }//Tango
-
-

@@ -42,7 +42,7 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_engine) {
 
     bool found_in_work_list = false;
 
-    if (new_upd_ != 0) {
+    if (new_upd_.count() != 0) {
         found_in_work_list = update_polled_obj(poll_engine, poll_list_item);
     } else {
 
@@ -93,7 +93,7 @@ bool Tango::polling::UpdatePollPeriodCommand::update_polled_obj(PollThread &poll
     tmp_work.update = {new_upd_};
     tmp_work.name.push_back(obj_name_);
 
-    tmp_work.wake_up_date = poll_engine.compute_new_date(work_item->wake_up_date, tmp_work.update);
+    tmp_work.wake_up_date = work_item->wake_up_date + tmp_work.update;
 
     poll_engine.add_or_push(tmp_work);
 
@@ -114,7 +114,7 @@ Tango::polling::UpdatePollPeriodCommand::operator std::string() {
     out << "UpdatePollPeriodCommand[device=" << dev_->get_name() << ";"
         << "obj_type=" << obj_type_ << ";"
         << "obj_name=" << obj_name_ << ";"
-        << "new_update_period=" << new_upd_ << ";"
+        << "new_update_period=" << new_upd_.count() << ";"
         << "]";
     return out.str();
 }

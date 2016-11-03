@@ -1233,13 +1233,11 @@ namespace Tango {
 //
 
                 cout4 << "Sending cmd to polling thread" << endl;
-                polling::Command& rem_obj_cmd = tmp_upd == 0 ?
-                                                polling::RemExtTriggerCommand{dev, move(obj_name), type,
-                                                                              distance(dev->get_poll_obj_list().begin()} :
-                                                polling::RemObjCommand{dev, move(obj_name), type,
-                                                                       distance(dev->get_poll_obj_list().begin(), ite)};
-
-                    th_info->poll_th->execute_cmd(move(rem_obj_cmd));
+                auto index = distance(dev->get_poll_obj_list().begin(), ite);
+                if(tmp_upd == 0)
+                    th_info->poll_th->execute_cmd(polling::RemExtTriggerCommand{dev, move(obj_name), type, index});
+                else
+                    th_info->poll_th->execute_cmd(polling::RemObjCommand{dev, move(obj_name), type, index});
                     cout4 << "Cmd sent to polling thread" << endl;
 
                 cout4 << "Thread cmd normally executed" << endl;

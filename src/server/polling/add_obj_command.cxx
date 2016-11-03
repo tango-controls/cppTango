@@ -6,9 +6,14 @@
 #include "helpers.hxx"
 
 #include <sstream>
+#include <cassert>
 #include "polling_queue.hxx"
 
 using namespace std;
+
+using chrono::milliseconds;
+using chrono::duration_cast;
+using chrono::system_clock;
 
 using namespace Tango;
 
@@ -27,7 +32,8 @@ void polling::AddObjCommand::execute(PollThread &poll_engine) {
 
     PollObj *poll_list_item = dev_->get_poll_obj_list()[index_];//TODO pass as a parameter from dserverpoll
 
-    experimental::optional <WorkItem> work_item = poll_engine.find_work_item(dev_, poll_list_item->get_type(), poll_list_item->get_upd());
+    milliseconds update{poll_list_item->get_upd()};
+    experimental::optional <WorkItem> work_item = poll_engine.find_work_item(dev_, poll_list_item->get_type(), update);
 
     if (work_item) {
         work_item->name.push_back(poll_list_item->get_name());
@@ -36,12 +42,13 @@ void polling::AddObjCommand::execute(PollThread &poll_engine) {
 
     auto wo = poll_engine.new_work_item(dev_, *poll_list_item);
 
-    assert(wo.update != 0);// "Trying to add trigger object is not expected here"*/);
+    assert(wo.update.count() != 0);// "Trying to add trigger object is not expected here"*/);
 
-    wo.wake_up_date = poll_engine.now;
-    if (new_upd_ != 0) {
-        cout5 << "Received a delta from now of " << new_upd_ << endl;
-        T_ADD(wo.wake_up_date, new_upd_ * 1000);
+
+    wo.wake_up_date = duration_cast<milliseconds>(system_clock::now().time_since_epoch());//TODO was: poll_engine.now;
+    if (new_upd_.count() != 0) {
+        cout5 << "Received a delta from now of " << new_upd_.count() << endl;
+        wo.wake_up_date += new_upd_ * 1000;
     }
     poll_engine.works.push(wo);//TODO set flag - queue has changed, catch the flag in polling thread
     poll_engine.set_need_two_tuning(true);

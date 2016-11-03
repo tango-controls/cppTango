@@ -9,6 +9,12 @@
 #include <tango.h>
 #include <tango/server/eventsupplier.h>
 
+using namespace std;
+
+using chrono::high_resolution_clock;
+using chrono::milliseconds;
+using chrono::duration_cast;
+
 Tango::polling::PollTask::PollTask(Tango::WorkItem &work, PollThread &engine) : work_(work), engine_(engine) {}
 
 std::future<void> Tango::polling::PollTask::operator()() {
@@ -30,11 +36,9 @@ void Tango::polling::PollTask::poll_cmd() {
           << ", Cmd name = " << work_.name[0] << endl;
 
     CORBA::Any *argout = nullptr;
-    Tango::DevFailed *save_except = nullptr;
-    bool cmd_failed{false};
+    Tango::DevFailed *cmd_execution_exception = nullptr;
 
-
-    auto start = chrono::high_resolution_clock::now();
+    auto start = high_resolution_clock::now();
 
     //
     // Execute the command
@@ -43,13 +47,14 @@ void Tango::polling::PollTask::poll_cmd() {
         argout = work_.dev->command_inout(work_.name[0].c_str(), CORBA::Any{});
     }
     catch (const Tango::DevFailed &e) {
-        cmd_failed = true;
-        save_except = new Tango::DevFailed(e);
+        cmd_execution_exception = new Tango::DevFailed(e);
     }
 
-    auto stop = chrono::high_resolution_clock::now();
+    auto stop = high_resolution_clock::now();
 
+    work_.start_time = duration_cast<milliseconds>(start.time_since_epoch());
     work_.needed_time = stop - start;
+    work_.stop_time = duration_cast<milliseconds>(stop.time_since_epoch());
 
 //
 // Insert result in polling buffer and simply forget this command if it is not possible to insert the result in
@@ -57,20 +62,20 @@ void Tango::polling::PollTask::poll_cmd() {
 //
 
     try {
-        struct timeval start_as_tv = duration_to_timeval(start);
+        struct timeval start_as_tv = duration_to_timeval(start.time_since_epoch());
         struct timeval delta_tv = duration_to_timeval(work_.needed_time);
         work_.dev->get_poll_monitor().get_monitor();
         auto ite = work_.dev->get_polled_obj_by_type_name(work_.type, work_.name[0]);
-        if (cmd_failed)
-            (*ite)->insert_except(save_except, start_as_tv, delta_tv);
+        if (cmd_execution_exception != nullptr)
+            (*ite)->insert_except(cmd_execution_exception, start_as_tv, delta_tv);
         else
             (*ite)->insert_data(argout, start_as_tv, delta_tv);
         work_.dev->get_poll_monitor().rel_monitor();
     }
     catch (Tango::DevFailed &) {
         //TODO if not thrown who will release? CORBA?
-        if (cmd_failed)
-            delete save_except;
+        if (cmd_execution_exception != nullptr)
+            delete cmd_execution_exception;
         else
             delete argout;
 
@@ -266,7 +271,7 @@ void Tango::polling::PollTask::poll_attr() {
     map<size_t, Tango::DevFailed *> map_except{};
 
     long idl_vers{work_.dev->get_dev_idl_version()};
-    auto start = chrono::high_resolution_clock::now();
+    auto start = high_resolution_clock::now();
 
 //
 // Read the attributes
@@ -292,12 +297,12 @@ void Tango::polling::PollTask::poll_attr() {
         attr_reading_exception = new Tango::DevFailed(e);
     }
 
-    auto stop = chrono::high_resolution_clock::now();
+    auto stop = high_resolution_clock::now();
 
     //TODO update work and publish
-    work_.start_time = start;
-    work_.needed_time = chrono::duration_cast<chrono::nanoseconds>(stop - start);
-    work_.stop_time = stop;
+    work_.start_time = duration_cast<milliseconds>(start.time_since_epoch());
+    work_.needed_time = duration_cast<chrono::nanoseconds>(stop - start);
+    work_.stop_time = duration_cast<milliseconds>(stop.time_since_epoch());
 
 //
 // Starting with IDl release 3, an attribute in error is not an exception any more. Re-create one.

@@ -5,7 +5,7 @@
 #pragma once
 
 #include <queue>
-#include <list>
+#include <deque>
 #include <functional>
 #include <experimental/optional>
 
@@ -15,7 +15,7 @@ namespace Tango {
     namespace polling {
         bool compare_work_items(WorkItem&,WorkItem&);
         //TODO extract template
-        class PollingQueue : public std::priority_queue<WorkItem, std::list<WorkItem>, std::function<bool(WorkItem&, WorkItem&)>> {
+        class PollingQueue : public std::priority_queue<WorkItem, std::deque<WorkItem>, std::function<bool(WorkItem&, WorkItem&)>> {
         public:
             PollingQueue();
 

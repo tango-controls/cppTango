@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iterator>
 #include <string>
+#include <idl/tango.h>
 
 namespace Tango {
 
@@ -37,6 +38,30 @@ namespace Tango {
             tv.tv_usec = std::chrono::duration_cast<std::chrono::microseconds>(d - sec).count();
             return tv;
         }
+
+        template<typename Function, typename Argout = typename std::result_of<Function>, typename Exception = Tango::DevFailed*>
+        std::tuple<std::chrono::milliseconds, std::chrono::milliseconds, Argout, Exception> timed_function_call(Function f){
+            using Tuple = std::tuple<std::chrono::milliseconds, std::chrono::milliseconds>;
+
+            Argout argout = nullptr;
+            Exception exception = nullptr;
+
+            auto start = std::chrono::high_resolution_clock::now();
+
+            //
+            // Execute the command
+            //
+            try {
+                argout =  f();
+            }
+            catch (const Exception &e) {
+                exception = new Exception(e);
+            }
+
+            auto stop = std::chrono::high_resolution_clock::now();
+
+            return std::make_tuple(start, stop, argout, exception);
+        };
 
     }//polling
 }//Tango

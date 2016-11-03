@@ -133,15 +133,15 @@ namespace Tango {
         //TODO replace with const reference
         //TODO filter list so it contains only related to this item objects
         vector<PollObj *> *poll_list;        // The device poll list
-        std::chrono::time_point wake_up_date;    // The next wake up date
+        std::chrono::milliseconds wake_up_date;    // The next wake up date
         std::chrono::milliseconds update;            // The update period (mS)
         PollObjType type;            // Object type (command/attr)
         //TODO remove when poll_list is filtered
         vector<string> name;            // Object name(s)
         void *values;  //pointer to AttributeValueList of some sort, i.e. _3, _4, _5
-        std::chrono::time_point start_time;
+        std::chrono::milliseconds start_time;
         std::chrono::nanoseconds needed_time;    // Time needed to execute action
-        std::chrono::time_point stop_time;
+        std::chrono::milliseconds stop_time;
         vector<DevFailed*> errors;
 
         WorkItem(DeviceImpl *dev, vector<PollObj *> *poll_list, const timeval &wake_up_date, int update,
@@ -225,6 +225,7 @@ namespace Tango {
         //TODO inject algorithm?
         std::chrono::milliseconds compute_next_sleep(bool);
 
+        //TODO do we need this?
         //+----------------------------------------------------------------------------------------------------------------
         //
         // method :
@@ -239,7 +240,7 @@ namespace Tango {
         //			- upd : The polling update period (mS)
         //
         //------------------------------------------------------------------------------------------------------------------
-        chrono::time_point compute_new_date(chrono::time_point, chrono::milliseconds);
+        //chrono::time_point compute_new_date(chrono::time_point, chrono::milliseconds);
 
         void print_work_items();
 
@@ -257,9 +258,6 @@ namespace Tango {
         void set_need_two_tuning(bool);
 
         void reset_tune_counter(){ tune_ctr = 0;}
-
-        //TOOD remove - use time in work item
-        void set_time(std::chrono::time_point, std::chrono::time_point);
     private:
         polling::PollingQueue &works;
         polling::PollingQueue &ext_trig_works;
@@ -268,8 +266,6 @@ namespace Tango {
         struct _timeb		after_win;
         double				ctr_frequency;
 #endif
-        std::chrono::time_point start_;
-        std::chrono::time_point stop_;
         atomic_bool polling_stop_;
         //+----------------------------------------------------------------------------------------------------------------
         //
@@ -283,10 +279,13 @@ namespace Tango {
 
         long tune_ctr;
         bool need_two_tuning;
-        vector<long> auto_upd;
+        //TODO
+        vector<std::chrono::milliseconds> auto_upd;
         vector<string> auto_name;
-        vector<long> rem_upd;
+        //TODO
+        vector<std::chrono::milliseconds> rem_upd;
         vector<string> rem_name;
+
         u_int previous_nb_late;
         bool polling_bef_9;
 

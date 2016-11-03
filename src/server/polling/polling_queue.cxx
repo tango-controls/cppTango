@@ -11,16 +11,10 @@ using namespace std;
 using namespace Tango;
 
 bool Tango::polling::compare_work_items(WorkItem &lhs, WorkItem &rhs) {
-    if (lhs.wake_up_date.tv_sec < rhs.wake_up_date.tv_sec)
-        return true;
-    else if (lhs.wake_up_date.tv_sec == rhs.wake_up_date.tv_sec) {
-        return lhs.wake_up_date.tv_usec < rhs.wake_up_date.tv_usec;
-    } else {
-        return false;
-    }
+    return lhs.wake_up_date < rhs.wake_up_date;
 }
 
-Tango::polling::PollingQueue::PollingQueue() : priority_queue(compare_work_items, std::list<WorkItem>{}) {}
+Tango::polling::PollingQueue::PollingQueue() : priority_queue(compare_work_items, std::deque<WorkItem>{}) {}
 
 void Tango::polling::PollingQueue::erase(function<bool(const WorkItem&)> predicate){
     c.erase(std::remove_if(c.begin(), c.end(), predicate), c.end());

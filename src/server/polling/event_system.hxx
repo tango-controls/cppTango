@@ -4,11 +4,12 @@
 
 #pragma once
 
-
-#include <tango/server/tango_const.h>
+#include <string>
+#include <tango.h>
 #include <tango/server/eventsupplier.h>
 
 namespace Tango {
+    class DeviceImpl;
     class WorkItem;
     class DevFailed;
     class EventSupplier;

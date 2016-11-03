@@ -20,7 +20,7 @@ void Tango::polling::PollingThread::run() {
     while (!engine_.polling_stop_) {
         bool discarded = engine_.discard_late_items();
         auto sleep = engine_.compute_next_sleep(discarded);
-        cout5 << "Sleep for : " << sleep << endl;
+        cout5 << "Sleep for : " << sleep.count() << endl;
         bool interrupted = thread_.sleep_for(sleep);
         if (interrupted) return;
 

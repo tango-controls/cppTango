@@ -23,7 +23,8 @@ void Tango::polling::AddTriggerCommand::execute(PollThread &poll_engine) {
 
     PollObj *poll_list_item = dev_->get_poll_obj_list()[index_];//TODO pass as a parameter from dserverpoll
 
-    auto work_item = poll_engine.find_work_item(dev_, poll_list_item->get_type(), poll_list_item->get_upd());
+    chrono::milliseconds update{poll_list_item->get_upd()};
+    auto work_item = poll_engine.find_work_item(dev_, poll_list_item->get_type(), update);
 
     if (work_item) {
         work_item->name.push_back(poll_list_item->get_name());
@@ -32,10 +33,8 @@ void Tango::polling::AddTriggerCommand::execute(PollThread &poll_engine) {
 
     auto wo = poll_engine.new_work_item(dev_, *poll_list_item);
 
-    assert(wo.update == 0);// "Trying to add non-trigger object is not expected here"*/);
+    assert(wo.update.count() == 0);// "Trying to add non-trigger object is not expected here"*/);
 
-    wo.wake_up_date.tv_sec = 0;
-    wo.wake_up_date.tv_usec = 0;
     poll_engine.ext_trig_works.push(wo);
 }
 

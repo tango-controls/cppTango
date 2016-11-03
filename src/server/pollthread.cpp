@@ -313,14 +313,9 @@ namespace Tango {
         }
     }
 
-    chrono::time_point PollThread::compute_new_date(chrono::time_point current_time, chrono::milliseconds update) {
-        return current_time.time_since_epoch() + update;
-    }
-
-    void PollThread::set_time(chrono::time_point start, chrono::time_point stop) {
-        start_ = start;
-        stop_ = stop;
-    }
+//    chrono::time_point PollThread::compute_new_date(chrono::time_point current_time, chrono::milliseconds update) {
+//        return current_time.time_since_epoch() + update;
+//    }
 
     polling::EventSystem &PollThread::get_event_system() {
         return event_system_;
