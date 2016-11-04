@@ -281,6 +281,7 @@ namespace Tango {
     }
 
     bool PollThread::discard_late_items() {
+        //TODO remove this check (preserve only false)
         if (polling_bef_9) {
             previous_nb_late = 0;
 
