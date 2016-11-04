@@ -35,7 +35,7 @@ void Tango::polling::AddTriggerCommand::execute(PollThread &poll_engine) {
 
     assert(wo.update.count() == 0);// "Trying to add non-trigger object is not expected here"*/);
 
-    poll_engine.ext_trig_works.push(wo);
+    poll_engine.add_trigger(wo);
 }
 
 Tango::polling::AddTriggerCommand::operator std::string() {

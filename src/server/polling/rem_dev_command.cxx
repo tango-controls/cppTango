@@ -46,10 +46,7 @@ void Tango::polling::RemDevCommand::execute(PollThread &poll_thread) {
                 ++et_ite;
         }
 #else
-    auto predicate = [this](const WorkItem &work_item) { return work_item.dev == dev_; };
-    poll_thread.works.erase(predicate);
-
-    poll_thread.ext_trig_works.erase(predicate);
+    poll_thread.remove_work_items_by(dev_);
 #endif
 }
 

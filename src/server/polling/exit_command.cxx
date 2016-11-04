@@ -14,7 +14,7 @@ void Tango::polling::ExitCommand::operator()(PollThread &poll_thread) {
 }
 
 void Tango::polling::ExitCommand::execute(PollThread &poll_engine) {
-    poll_engine.thread_.interrupt();
+    poll_engine.polling_thread().interrupt();
 }
 
 Tango::polling::ExitCommand::operator std::string() {

@@ -19,6 +19,8 @@ namespace Tango {
         public:
             PollingQueue();
 
+            PollingQueue(PollingQueue&&) = default;
+
             void erase(std::function<bool(const WorkItem&)>);
 
             std::experimental::optional<WorkItem>

@@ -17,9 +17,7 @@ void Tango::polling::TriggerPollingCommand::operator()(Tango::PollThread &poll_t
 
 //TODO return future
 void Tango::polling::TriggerPollingCommand::execute(Tango::PollThread &poll_engine) {
-    experimental::optional<WorkItem> work_item = poll_engine.ext_trig_works.find_if(
-            [this](const WorkItem& work_item){ return work_item.dev == dev_ && work_item.type == obj_type_ && work_item.name[0] == obj_name_;}
-    );
+    experimental::optional<WorkItem> work_item = poll_engine.find_trigger(dev_, obj_type_, obj_name_);
 
     if(work_item){
         PollTask poll_task{work_item.value(), poll_engine};

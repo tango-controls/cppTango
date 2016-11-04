@@ -51,9 +51,6 @@
 #endif
 
 namespace Tango {
-
-    extern map<thread::id, string> kThreadNameMap;
-
     class PollThCmd;
 
     namespace threading {
@@ -93,9 +90,7 @@ namespace Tango {
         class EventSystem;
     }
 
-    using CommandPtr = std::unique_ptr<polling::Command>;
 
-    typedef std::unique_ptr<threading::asymmetric_unbound_blocking_queue<PollThCmd>> PollThCmdQueuePtr;
 //=============================================================================
 //
 //			The PollThCmd structure
@@ -159,6 +154,16 @@ namespace Tango {
 
     using PollThreadPtr = std::unique_ptr<Tango::PollThread>;
 
+    //TODO move in to corresponding headers
+
+    using CommandPtr = std::unique_ptr<polling::Command>;
+
+    using PollingQueuePtr = std::unique_ptr<polling::PollingQueue>;
+
+    using EnhancedThreadPtr = std::unique_ptr<threading::enhanced_thread>;
+
+    using EventSystemPtr = std::unique_ptr<polling::EventSystem>;
+
     class TangoMonitor;
 
     //TODO rename to PollEngine
@@ -171,7 +176,15 @@ namespace Tango {
 
 
         static const int kPollLoop;
-        static const uint64_t kDiscardThreshold{20};//TODO original double value =0.02
+        static constexpr std::chrono::milliseconds kDiscardThreshold{20};//TODO original double value =0.02
+
+
+        //TODO
+        vector<std::chrono::milliseconds> auto_upd;
+        vector<string> auto_name;
+        //TODO
+        vector<std::chrono::milliseconds> rem_upd;
+        vector<string> rem_name;
 
         //+-----------------------------------------------------------------------------------------------------------------
         //
@@ -197,42 +210,32 @@ namespace Tango {
 
         void execute_cmd(polling::Command &&);
 
+        void start_polling(){
+            polling_stop_.store(false);
+        }
+
+        void stop_polling(){
+            polling_stop_.store(true);
+        }
+
+        threading::enhanced_thread& polling_thread() {
+            return *thread_;
+        }
+
         std::experimental::optional<WorkItem>
         find_work_item(DeviceImpl *, PollObjType, chrono::milliseconds update);
 
-        std::experimental::optional<WorkItem> remove_work_item(DeviceImpl*,std::string, PollObjType);
-        std::experimental::optional<WorkItem> remove_trigger(DeviceImpl*,std::string, PollObjType);
-    private:
-        PollThread(string &&, bool, polling::PollingQueue &&,
-                   polling::PollingQueue &&, threading::enhanced_thread &&,
-                   polling::EventSystem &&);
+        std::experimental::optional<WorkItem>
+        find_trigger(DeviceImpl *, PollObjType, std::string);
 
-        //TODO redesign API so that these friends are no longer required, i.e. use public API
-        friend class polling::AddObjCommand;
+        /**
+         * Removes all work items (and triggers) related to the device
+         *
+         */
+        void remove_work_items_by(DeviceImpl *);
 
-        friend class polling::AddTriggerCommand;
-
-        friend class polling::RemObjCommand;
-
-        friend class polling::RemExtTriggerCommand;
-
-        friend class polling::RemDevCommand;
-
-        friend class polling::UpdatePollPeriodCommand;
-
-        friend class polling::StartPollingCommand;
-
-        friend class polling::StopPollingCommand;
-
-        friend class polling::TriggerPollingCommand;
-
-        friend class polling::ExitCommand;
-
-        friend class polling::PollingThread;
-
-    public:
-
-
+        std::experimental::optional<WorkItem> remove_work_item_by(DeviceImpl *, std::string, PollObjType);
+        std::experimental::optional<WorkItem> remove_trigger_by(DeviceImpl *, std::string, PollObjType);
         /**
          *
          * @return true if works has been changed
@@ -261,7 +264,8 @@ namespace Tango {
 
         void print_work_items();
 
-        void add_or_push(WorkItem &);
+        void add_work_item(WorkItem &);
+        void add_trigger(WorkItem&);
 
         WorkItem new_work_item(DeviceImpl *, /*TODO const*/ PollObj &);
 
@@ -275,15 +279,11 @@ namespace Tango {
         void set_need_two_tuning(bool);
 
         void reset_tune_counter(){ tune_ctr = 0;}
+
+        bool empty();
     private:
-        polling::PollingQueue &works;
-        polling::PollingQueue &ext_trig_works;
-#ifdef _TG_WINDOWS_
-        struct _timeb		now_win;
-        struct _timeb		after_win;
-        double				ctr_frequency;
-#endif
-        atomic_bool polling_stop_;
+        PollThread(string &&, bool, threading::enhanced_thread &&, polling::EventSystem &&);
+        friend class polling::PollingThread;
         //+----------------------------------------------------------------------------------------------------------------
         //
         // method :
@@ -293,25 +293,21 @@ namespace Tango {
         //		This method tunes the work list.
         //----------------------------------------------------------------------------------------------------------------
         void tune_list();//TODO was from_needed, min_delta which were always true and 0
+    private:
+        PollingQueuePtr works;
+        PollingQueuePtr ext_trig_works;
+        atomic_bool polling_stop_;
 
         long tune_ctr;
         bool need_two_tuning;
-        //TODO
-        vector<std::chrono::milliseconds> auto_upd;
-        vector<string> auto_name;
-        //TODO
-        vector<std::chrono::milliseconds> rem_upd;
-        vector<string> rem_name;
 
         u_int previous_nb_late;
         bool polling_bef_9;
 
-        ClntIdent dummy_cl_id;
-
-        threading::enhanced_thread &thread_;
+        EnhancedThreadPtr thread_;
         string name_;
 
-        polling::EventSystem& event_system_;
+        EventSystemPtr event_system_;
 
         bool analyze_work_list();
     };

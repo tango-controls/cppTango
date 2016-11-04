@@ -26,11 +26,16 @@ namespace Tango {
             void swap(const enhanced_thread&) noexcept;
 
             enhanced_thread() = default;
+            template <typename T>
+            enhanced_thread(T&& name):
+                    name_{std::forward<T>(name)}
+            {}
             template <typename T, typename... Args>
             enhanced_thread(T&& name, Args&&... args):
                     name_{std::forward<T>(name)},
                     bind_{std::bind(std::forward<Args>(args)...)}
             {}
+            enhanced_thread(enhanced_thread&&) = default;
             ~enhanced_thread();
             const std::string& name() const noexcept;
             bool interrupted() const noexcept;

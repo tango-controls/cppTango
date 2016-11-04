@@ -21,7 +21,7 @@ void polling::RemObjCommand::operator()(PollThread &poll_thread) {
 void polling::RemObjCommand::execute(PollThread &poll_engine) {
     cout5 << "Execute a Rem object command" << endl;
 
-    poll_engine.remove_work_item(dev_, obj_name_, obj_type_);
+    poll_engine.remove_work_item_by(dev_, obj_name_, obj_type_);
 }
 
 polling::RemObjCommand::operator std::string() {

@@ -58,6 +58,7 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include "threading/repeated_task.hxx"
 #include "threading/asymmetric_unbound_blocking_queue.hxx"
+#include "threading/enhanced_thread.hxx"
 //import template definitions
 #include "polling/polling_queue.hxx"
 #include "polling/event_system.hxx"
@@ -68,6 +69,7 @@ namespace Tango {
     extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
 
     const int PollThread::kPollLoop{500};
+    constexpr std::chrono::milliseconds PollThread::kDiscardThreshold;
 
     namespace threading {
         template
@@ -86,29 +88,27 @@ namespace Tango {
     }
 
     PollThreadPtr PollThread::create_instance(std::string &&name, bool polling_as_before_tango_9) {
-        polling::PollingQueue work_items_queue{};
-        polling::PollingQueue ext_triggers_queue{};
-        threading::enhanced_thread thread{};
+        threading::enhanced_thread thread{"Dummy polling thread"};
         polling::EventSystem event_system{Util::instance()->get_notifd_event_supplier(),
                                           Util::instance()->get_zmq_event_supplier()};
 
-        return Tango::PollThreadPtr(new PollThread(move(name), polling_as_before_tango_9, move(work_items_queue),
-                                                   move(ext_triggers_queue), move(thread), move(event_system)));
+        return Tango::PollThreadPtr(
+                new PollThread(move(name), polling_as_before_tango_9, move(thread), move(event_system)));
     }
 
-    PollThread::PollThread(string &&name, bool polling_as_before_tango_9, polling::PollingQueue &&work_items_queue,
-                           polling::PollingQueue &&ext_triggers_queue, threading::enhanced_thread &&thread,
-                           polling::EventSystem &&event_system)
+    PollThread::PollThread(string &&name, bool polling_as_before_tango_9, threading::enhanced_thread &&thread,
+                               polling::EventSystem &&event_system)
             : polling_stop_(true),
               tune_ctr(1),
               need_two_tuning{false},
               name_(move(name)),
               previous_nb_late{0},
               polling_bef_9{polling_as_before_tango_9},
-              thread_(thread),
-              works(work_items_queue),
-              ext_trig_works(ext_triggers_queue),
-              event_system_(event_system) {
+              thread_(new threading::enhanced_thread("Dummy polling thread")),
+              works(new polling::PollingQueue{}),
+              ext_trig_works(new polling::PollingQueue{}),
+              event_system_(new polling::EventSystem{Util::instance()->get_notifd_event_supplier(),
+                                                 Util::instance()->get_zmq_event_supplier()}) {
 #ifdef _TG_WINDOWS_
         LARGE_INTEGER f;
         BOOL is_ctr;
@@ -121,7 +121,7 @@ namespace Tango {
     }
 
     thread::id PollThread::id() {
-        return thread_.as_std_thread().get_id();
+        return thread_->as_std_thread().get_id();
     }
 
     using chrono::system_clock;
@@ -141,7 +141,7 @@ namespace Tango {
     }
 
     void PollThread::set_need_two_tuning(bool v) {
-        size_t nb_works = works.size();
+        size_t nb_works = works->size();
         tune_ctr = (nb_works << 2); //* 4
         need_two_tuning = v;
     }
@@ -165,7 +165,7 @@ namespace Tango {
         bool is_attr = type == POLL_ATTR;
         long idl_version = device->get_dev_idl_version();
         if (is_attr && idl_version >= 4) {
-            return works.find_if([device, update, type](const WorkItem &work_item) {
+            return works->find_if([device, update, type](const WorkItem &work_item) {
                 return work_item.dev == device && work_item.update == update && work_item.type == type;
             });
         }
@@ -183,7 +183,7 @@ namespace Tango {
 //-----------------------------------------------------------------------------------------------------------------
 
     void PollThread::print_work_items() {
-        works.for_each([](const WorkItem &work_item) {
+        works->for_each([](const WorkItem &work_item) {
             ostringstream oss;
             copy(work_item.name.begin(), work_item.name.end() - 1,
                  ostream_iterator<string>(oss, ","));
@@ -195,18 +195,18 @@ namespace Tango {
         });
     }
 
-    void PollThread::add_or_push(WorkItem &new_work) {
+    void PollThread::add_work_item(WorkItem &new_work) {
         experimental::optional<WorkItem> work_item = find_work_item(new_work.dev, new_work.type, new_work.update);
 
         if (work_item)
             work_item->name.push_back(new_work.name[0]);
         else
-            works.push(new_work);
+            works->push(new_work);
     }
 
     std::experimental::optional<WorkItem>
-    PollThread::remove_work_item(DeviceImpl *device, std::string obj_name, PollObjType obj_type) {
-        auto work_item = Tango::find_work_item(works, device, obj_name, obj_type);
+    PollThread::remove_work_item_by(DeviceImpl *device, std::string obj_name, PollObjType obj_type) {
+        auto work_item = Tango::find_work_item(*works, device, obj_name, obj_type);
 
         if (work_item) {
             work_item->name.erase(remove_if(
@@ -216,7 +216,7 @@ namespace Tango {
             ), work_item->name.end());
             if (work_item->name.empty()) {
                 auto outer = work_item.value();
-                works.erase(
+                works->erase(
                         [&outer](const WorkItem &inner) { return inner.dev == outer.dev && inner.type == outer.type; });
             }
         }
@@ -225,7 +225,7 @@ namespace Tango {
     }
 
     std::experimental::optional<WorkItem>
-    PollThread::remove_trigger(DeviceImpl *device, std::string obj_name, PollObjType obj_type) {
+    PollThread::remove_trigger_by(DeviceImpl *device, std::string obj_name, PollObjType obj_type) {
         auto work_item = Tango::find_work_item(ext_trig_works, device, obj_name, obj_type);
 
         if (work_item) {
@@ -236,7 +236,7 @@ namespace Tango {
             ), work_item->name.end());
             if (work_item->name.empty()) {
                 auto outer = work_item.value();
-                ext_trig_works.erase(
+                ext_trig_works->erase(
                         [&outer](const WorkItem &inner) { return inner.dev == outer.dev && inner.type == outer.type; });
             }
         }
@@ -249,11 +249,11 @@ namespace Tango {
         auto calculate_diff = [](const WorkItem &work_item) {
             return work_item.wake_up_date - work_item.stop_time;
         };
-        auto diff = calculate_diff(works.top());
+        auto diff = calculate_diff(works->top());
 
-        while ((diff.count() < 0) && (abs(diff.count()) > kDiscardThreshold)) {
+        while ((diff.count() < 0) && (abs(diff.count()) > kDiscardThreshold.count())) {
             cout5 << "Discard one elt !!!!!!!!!!!!!" << endl;
-            WorkItem tmp = works.top();
+            WorkItem tmp = works->top();
             if (tmp.type == POLL_ATTR) {
                 //TODO put into dedicated list and send events in a dedicated method
                 DevErrorList errs{1};
@@ -270,14 +270,14 @@ namespace Tango {
             }
 
             tmp.wake_up_date += tmp.update;
-            works.push(tmp);
-            works.pop();
+            works->push(tmp);
+            works->pop();
             tune_ctr--;
 
-            diff = calculate_diff(works.top());
+            diff = calculate_diff(works->top());
         }
 
-        return (abs(diff.count()) < kDiscardThreshold);
+        return (abs(diff.count()) < kDiscardThreshold.count());
     }
 
     bool PollThread::discard_late_items() {
@@ -289,13 +289,13 @@ namespace Tango {
         } else {
             auto wake_up_before_stop = [](const WorkItem &work_item) {
                 auto diff = work_item.wake_up_date - work_item.stop_time;
-                return (diff.count() < 0 && abs(diff.count()) > kDiscardThreshold);
+                return (diff.count() < 0 && abs(diff.count()) > kDiscardThreshold.count());
             };
 
             //
             // Compute for how many items the polling thread is late
             //
-            auto nb_late = works.count_if(wake_up_before_stop);
+            auto nb_late = works->count_if(wake_up_before_stop);
             // If we are late for some item(s):
             if (nb_late > 0) {
 
@@ -333,7 +333,7 @@ namespace Tango {
         if (discarded)
             return milliseconds{0};
         else {
-            auto item = works.top();
+            auto item = works->top();
             auto diff = item.wake_up_date - item.stop_time;
             return milliseconds{diff * 1000};//TODO return previous value?; *1000?
         }
@@ -356,12 +356,12 @@ namespace Tango {
 
             if (just_polled_item.name.empty() == false) {
                 just_polled_item.wake_up_date += just_polled_item.update;
-                works.push(just_polled_item);
+                works->push(just_polled_item);
             }
 
             for (size_t i = 0; i < auto_upd.size(); i++) {
                 milliseconds auto_upd_value = auto_upd[i];
-                auto work_item = works.find_if(
+                auto work_item = works->find_if(
                         [auto_upd_value, &just_polled_item](const WorkItem &work_item_in_c) {
                             return work_item_in_c.dev == just_polled_item.dev &&
                                    work_item_in_c.type == just_polled_item.type &&
@@ -377,7 +377,7 @@ namespace Tango {
                     new_work_item.name.push_back(auto_name[i]);
 
                     new_work_item.wake_up_date += new_work_item.update;//TODO local_cmd.new_upd??? -- last non-timeout command
-                    works.push(new_work_item);
+                    works->push(new_work_item);
                 }
             }
 
@@ -399,14 +399,14 @@ namespace Tango {
 
                 if (just_polled_item.name.empty() == false) {
                     just_polled_item.wake_up_date += just_polled_item.update;
-                    works.push(just_polled_item);
+                    works->push(just_polled_item);
                 }
 
                 rem_upd.clear();
                 rem_name.clear();
             } else {
                 just_polled_item.wake_up_date += just_polled_item.update;
-                works.push(just_polled_item);
+                works->push(just_polled_item);
             }
         }
 
@@ -422,7 +422,7 @@ namespace Tango {
     }
 
     void PollThread::tune_list() {
-        size_t nb_works = works.size();
+        size_t nb_works = works->size();
 
 //
 // Nothing to do if only one let in list
@@ -439,12 +439,12 @@ namespace Tango {
 //
 
         chrono::nanoseconds needed_sum{0};
-        milliseconds min_upd = works.top().update;
-        chrono::nanoseconds max_delta_needed = works.top().needed_time;
+        milliseconds min_upd = works->top().update;
+        chrono::nanoseconds max_delta_needed = works->top().needed_time;
 
         //transform -> collect;
         //transofmr -> min;
-        works.for_each([&](const WorkItem &work_item) {
+        works->for_each([&](const WorkItem &work_item) {
             needed_sum += work_item.needed_time;
 
             if (min_upd > work_item.update)
@@ -479,11 +479,11 @@ namespace Tango {
         auto next_tuning = now + (kPollLoop * min_upd);
 
         polling::PollingQueue new_works{};
-        new_works.push(works.top());
+        new_works->push(works->top());
 
-        auto previous_work_item = new_works.top();
+        auto previous_work_item = new_works->top();
 
-        works.for_each([&](const WorkItem &wo) {
+        works->for_each([&](const WorkItem &wo) {
             auto previous_needed_time = previous_work_item.needed_time;
             auto wake_up_date = chrono::duration_cast<chrono::nanoseconds>(wo.wake_up_date);
 
@@ -501,7 +501,7 @@ namespace Tango {
 
                 const_cast<WorkItem&>(wo).wake_up_date = chrono::duration_cast<milliseconds>(previous_needed_time + max_delta_needed);
             }
-            new_works.push(wo);
+            new_works->push(wo);
             previous_work_item = wo;//TODO pointer
         });
 
@@ -509,9 +509,33 @@ namespace Tango {
 // Replace work list
 //
 
-        works.swap(new_works);
+        works->swap(new_works);
 
         cout4 << "Tuning list done" << endl;
         print_work_items();
+    }
+
+    void PollThread::remove_work_items_by(DeviceImpl * device) {
+        auto predicate = [device](const WorkItem &work_item) { return work_item.dev == device; };
+
+        works->erase(predicate);
+
+        ext_trig_works->erase(predicate);
+    }
+
+    std::experimental::optional<WorkItem> PollThread::find_trigger(DeviceImpl *device, PollObjType type, std::string name) {
+        auto predicate = [device, type, name](const WorkItem& work_item){
+            return work_item.dev == device && work_item.type == type && work_item.name[0] == name;
+        };
+
+        return ext_trig_works->find_if(predicate);
+    }
+
+    void PollThread::add_trigger(WorkItem & trigger) {
+        ext_trig_works->push(trigger);
+    }
+
+    bool PollThread::empty() {
+        return works->empty();
     }
 } // End of Tango namespace

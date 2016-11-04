@@ -32,14 +32,6 @@ void polling::AddObjCommand::execute(PollThread &poll_engine) {
 
     PollObj *poll_list_item = dev_->get_poll_obj_list()[index_];//TODO pass as a parameter from dserverpoll
 
-    milliseconds update{poll_list_item->get_upd()};
-    experimental::optional <WorkItem> work_item = poll_engine.find_work_item(dev_, poll_list_item->get_type(), update);
-
-    if (work_item) {
-        work_item->name.push_back(poll_list_item->get_name());
-        return;
-    }
-
     auto wo = poll_engine.new_work_item(dev_, *poll_list_item);
 
     assert(wo.update.count() != 0);// "Trying to add trigger object is not expected here"*/);
@@ -51,7 +43,7 @@ void polling::AddObjCommand::execute(PollThread &poll_engine) {
         wo.wake_up_date += new_upd_ * 1000;
     }
     //TODO protected queue in case many incoming requests
-    poll_engine.works.push(wo);//TODO set flag - queue has changed, catch the flag in polling thread
+    poll_engine.add_work_item(wo);//TODO set flag - queue has changed, catch the flag in polling thread
     poll_engine.set_need_two_tuning(true);
 }
 
