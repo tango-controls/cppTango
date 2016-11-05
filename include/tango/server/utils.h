@@ -1229,17 +1229,13 @@ struct PollingThreadInfo
 	thread::id							thread_id;			// The polling thread identifier
 	PollThreadPtr						poll_th;			// The polling thread object
 	PollThCmd							shared_data;		// The shared buffer
-	TangoMonitor						poll_mon;			// The monitor
 	vector<string>						polled_devices;		// Polled devices for this thread
 	int									nb_polled_objects;	// Polled objects number in this thread
 	int 								smallest_upd;		// Smallest thread update period
 	vector<DevVarLongStringArray *> 	v_poll_cmd;			// Command(s) to send
 
-	PollingThreadInfo():thread_id(0),poll_th(nullptr),poll_mon("Polling_thread_mon"),nb_polled_objects(0),smallest_upd(0)
-	{
-        shared_data.cmd_pending = false;shared_data.trigger=false;
-    }
-	~PollingThreadInfo(){}
+	PollingThreadInfo();
+	~PollingThreadInfo();
 };
 
 struct DevDbUpd

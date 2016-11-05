@@ -41,6 +41,7 @@ static const char *RcsId = "$Id$";
 #include <iostream>
 #include <algorithm>
 #include "polling/trigger_polling_command.hxx"
+#include "polling/stop_polling_command.hxx"
 
 namespace Tango {
 //+-----------------------------------------------------------------------------------------------------------------
@@ -889,23 +890,14 @@ namespace Tango {
 //------------------------------------------------------------------------------------------------------------------
 
     void Util::stop_all_polling_threads() {
-        vector<PollingThreadInfo *>::iterator iter;
+        for (auto iter = poll_ths.begin(); iter != poll_ths.end(); ++iter) {
 
-        for (iter = poll_ths.begin(); iter != poll_ths.end(); ++iter) {
-            TangoMonitor &mon = (*iter)->poll_mon;
-            PollThCmd &shared_cmd = (*iter)->shared_data;
+            polling::StopPollingCommand stop_polling{};
 
-            {
-                omni_mutex_lock sync(mon);
-
-                shared_cmd.cmd_pending = true;
-                shared_cmd.cmd_code = POLL_EXIT;
-
-                mon.signal();
-            }
+            (*iter)->poll_th->execute_cmd(move(stop_polling));
         }
 
-        for (iter = poll_ths.begin(); iter != poll_ths.end(); ++iter)
+        for (auto iter = poll_ths.begin(); iter != poll_ths.end(); ++iter)
             delete (*iter);
         poll_ths.clear();
     }
