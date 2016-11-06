@@ -250,17 +250,7 @@ namespace Tango {
 // Find out which thread is in charge of the device.
 //
 
-        PollingThreadInfo *th_info;
-
-        thread::id poll_th_id = tg->get_polling_thread_id_by_name(device_name.c_str());
-        if (poll_th_id == thread::id()) {
-            TangoSys_OMemStream o;
-            o << "Can't find a polling thread for device " << device_name << ends;
-            Except::throw_exception((const char *) API_PollingThreadNotFound, o.str(),
-                                    (const char *) "DeviImpl::stop_polling");
-        }
-
-        th_info = tg->get_polling_thread_info_by_id(poll_th_id);
+        PollingThreadInfo *th_info = tg->get_polling_thread_info_by_id(device_name);
 
         polling::RemDevCommand rem_dev_cmd{this};
 
@@ -315,7 +305,7 @@ namespace Tango {
 
             th_info->poll_th->execute_cmd(move(exit_cmd));
 
-            tg->remove_polling_thread_info_by_id(poll_th_id);
+            tg->remove_polling_thread_info_by_id(device_name);
         }
 
 //

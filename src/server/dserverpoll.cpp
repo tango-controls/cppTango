@@ -599,12 +599,13 @@ namespace Tango {
 
         Tango::Util *tg = Tango::Util::instance();
         DeviceImpl *dev = NULL;
+        auto device_name = (argin->svalue)[0];
         try {
-            dev = tg->get_device_by_name((argin->svalue)[0]);
+            dev = tg->get_device_by_name(device_name);
         }
         catch (Tango::DevFailed &e) {
             TangoSys_OMemStream o;
-            o << "Device " << (argin->svalue)[0] << " not found" << ends;
+            o << "Device " << device_name << " not found" << ends;
 
             Except::re_throw_exception(e, API_DeviceNotFound, o.str(), "DServer::add_obj_polling");
         }
@@ -613,7 +614,7 @@ namespace Tango {
 // If the device is locked and if the client is not the lock owner, refuse to do the job
 //
 
-        check_lock_owner(dev, "add_obj_polling", (argin->svalue)[0]);
+        check_lock_owner(dev, "add_obj_polling", device_name);
 
 //
 // Check that the command (or the attribute) exists. For command, also checks that it does not need input value.
@@ -697,29 +698,25 @@ namespace Tango {
         poll_list.push_back(new PollObj(dev, type, obj_name, upd, depth));
         dev->get_poll_monitor().rel_monitor();
 
-        PollingThreadInfo *th_info;
         int thread_created = -2;
 
 //
 // Find out which thread is in charge of the device. If none exists already, create one
 //
 
-        thread::id poll_th_id = tg->get_polling_thread_id_by_name((argin->svalue)[0]);
-        if (poll_th_id == thread::id()) {
-            cout4 << "POLLING: Creating a thread to poll device " << (argin->svalue)[0] << endl;
+        PollingThreadInfo *th_info = tg->get_polling_thread_info_by_id(device_name.in());
+        if (th_info == nullptr) {
+            cout4 << "POLLING: Creating a thread to poll device " << device_name << endl;
 
             bool poll_bef_9 = false;
-            if (polling_bef_9_def == true)
+            if (polling_bef_9_def)
                 poll_bef_9 = polling_bef_9;
-            else if (tg->is_polling_bef_9_def() == true)
+            else if (tg->is_polling_bef_9_def())
                 poll_bef_9 = tg->get_polling_bef_9();
 
-            thread_created = tg->create_poll_thread((argin->svalue)[0], false, poll_bef_9);
-            poll_th_id = tg->get_polling_thread_id_by_name((argin->svalue)[0]);
+            thread_created = tg->create_poll_thread(device_name, false, poll_bef_9);
         }
-
-        cout4 << "POLLING: Thread in charge of device " << (argin->svalue)[0] << " is thread " << poll_th_id << endl;
-        th_info = tg->get_polling_thread_info_by_id(poll_th_id);
+        cout4 << "POLLING: Thread in charge of device " << device_name << " is thread " << th_info->poll_th->id() << endl;
 
 //
 // Send command to the polling thread but wait in case of previous cmd still not executed
@@ -822,7 +819,7 @@ namespace Tango {
 //
 
         if (thread_created != -2) {
-            string dev_name((argin->svalue)[0]);
+            string dev_name(device_name);
             transform(dev_name.begin(), dev_name.end(), dev_name.begin(), ::tolower);
             cout4 << "thread_created = " << thread_created << endl;
             if (thread_created == -1) {
@@ -921,12 +918,13 @@ namespace Tango {
 
         Tango::Util *tg = Tango::Util::instance();
         DeviceImpl *dev = NULL;
+        auto device_name = (argin->svalue)[0];
         try {
-            dev = tg->get_device_by_name((argin->svalue)[0]);
+            dev = tg->get_device_by_name(device_name);
         }
         catch (Tango::DevFailed &e) {
             TangoSys_OMemStream o;
-            o << "Device " << (argin->svalue)[0] << " not found" << ends;
+            o << "Device " << device_name << " not found" << ends;
 
             Except::re_throw_exception(e, API_DeviceNotFound, o.str(), "DServer::upd_obj_polling_period");
         }
@@ -937,7 +935,7 @@ namespace Tango {
 
         if (dev->is_polled() == false) {
             TangoSys_OMemStream o;
-            o << "Device " << (argin->svalue)[0] << " is not polled" << ends;
+            o << "Device " << device_name << " is not polled" << ends;
 
             Except::throw_exception(API_DeviceNotPolled, o.str(), "DServer::upd_obj_polling_period");
         }
@@ -946,7 +944,7 @@ namespace Tango {
 // If the device is locked and if the client is not the lock owner, refuse to do the job
 //
 
-        check_lock_owner(dev, "upd_obj_polling_period", (argin->svalue)[0]);
+        check_lock_owner(dev, "upd_obj_polling_period", device_name);
 
 //
 // Find the wanted object in the list of device polled object
@@ -1026,16 +1024,7 @@ namespace Tango {
 // Find out which thread is in charge of the device. If none exists already, create one
 //
 
-        PollingThreadInfo *th_info;
-
-        thread::id poll_th_id = tg->get_polling_thread_id_by_name((argin->svalue)[0]);
-        if (poll_th_id == thread::id()) {
-            TangoSys_OMemStream o;
-            o << "Can't find a polling thread for device " << (argin->svalue)[0] << ends;
-            Except::throw_exception(API_NotSupported, o.str(), "DServer::upd_obj_polling");
-        }
-
-        th_info = tg->get_polling_thread_info_by_id(poll_th_id);
+        PollingThreadInfo *th_info = tg->get_polling_thread_info_by_id(device_name.in());
 
 //
 // Update polling period
@@ -1212,21 +1201,14 @@ namespace Tango {
 //
 
         if (tg->is_svr_shutting_down() == false) {
-            poll_th_id = tg->get_polling_thread_id_by_name((*argin)[0]);
-            if (poll_th_id == thread::id()) {
-                TangoSys_OMemStream o;
-                o << "Can't find a polling thread for device " << (*argin)[0] << ends;
-                Except::throw_exception(API_NotSupported, o.str(), "DServer::rem_obj_polling");
-            }
-
+            th_info = tg->get_polling_thread_info_by_id((*argin)[0].in());
             cout4 << "Thread in charge of device " << (*argin)[0] << " is thread " << poll_th_id << endl;
-            th_info = tg->get_polling_thread_info_by_id(poll_th_id);
 
 //
 // Test whether the polling thread is still running!
 //
 
-            if (th_info->poll_th != NULL) {
+            if (th_info->poll_th->id() != thread::id()) {
 
 //
 // Send command to the polling thread
@@ -1254,7 +1236,7 @@ namespace Tango {
 
         dev->get_poll_monitor().get_monitor();
         delete (*ite);
-        poll_list.erase(ite);
+        poll_list.erase(ite);//TODO remove from map
         dev->get_poll_monitor().rel_monitor();
 
 //
@@ -1396,7 +1378,7 @@ namespace Tango {
 
                 th_info->poll_th->execute_cmd(move(exit_cmd));
 
-                tg->remove_polling_thread_info_by_id(poll_th_id);
+                tg->remove_polling_thread_info_by_id(dev_name);
             }
 
 //
@@ -1445,11 +1427,7 @@ namespace Tango {
         //TODO
         if (kill_thread == true && tg->is_svr_shutting_down() == false && th_id == poll_th_id &&
             local_request == true) {
-            tg->remove_polling_thread_info_by_id(poll_th_id);
-
-            PollThCmd &shared_cmd = th_info->shared_data;
-            shared_cmd.cmd_pending = true;
-            shared_cmd.cmd_code = POLL_EXIT;
+            assert(false);//Can not happen as all the commands are now executed in the request thread
         }
     }
 

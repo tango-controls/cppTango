@@ -320,6 +320,8 @@ namespace Tango {
         PollingQueuePtr ext_trig_works;
 
         EventSystemPtr event_system_;
+
+        void set_polling_thread_id(thread::id id);
     };
 
 

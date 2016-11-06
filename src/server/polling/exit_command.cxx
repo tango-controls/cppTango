@@ -15,6 +15,7 @@ void Tango::polling::ExitCommand::operator()(PollThread &poll_thread) {
 
 void Tango::polling::ExitCommand::execute(PollThread &poll_engine) {
     poll_engine.polling_thread().interrupt();
+    //TODO reset polling thread id
 }
 
 Tango::polling::ExitCommand::operator std::string() {

@@ -1102,17 +1102,10 @@ void BlackBox::get_client_host()
         Tango::Util *tg = Tango::Util::instance();
         vector<PollingThreadInfo *> &poll_ths = tg->get_polling_threads_info();
 
-        if (poll_ths.empty() == false)
+        if (!poll_ths.empty())
         {
-            thread::id this_thread_id = this_thread::get_id();
-            for (size_t i = 0, nb_poll_th= poll_ths.size();i < nb_poll_th;i++)
-            {
-                if (this_thread_id == poll_ths[i]->thread_id)
-                {
-                    strcpy(box[insert_elt].host_ip_str,"polling");
-                    return;
-                }
-            }
+            assert(false);
+			return;
         }
 
 		if (tg->is_svr_starting() == true)

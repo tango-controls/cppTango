@@ -3240,11 +3240,13 @@ long _convert_tango_lib_release()
 }
 
 
-	PollingThreadInfo::PollingThreadInfo():thread_id(thread::id()),poll_th(nullptr),nb_polled_objects(0),smallest_upd(0)
+	PollingThreadInfo::PollingThreadInfo():poll_th(nullptr),nb_polled_objects(0),smallest_upd(0)
 {
 	shared_data.cmd_pending = false;shared_data.trigger=false;
 }
 
-    PollingThreadInfo::~PollingThreadInfo() {}
+    PollingThreadInfo::~PollingThreadInfo() {
+        cout3 << "Destroying PollingThreadInfo..." << endl;
+    }
 
 } // End of Tango namespace

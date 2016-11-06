@@ -851,11 +851,10 @@ public:
 	void clean_cmd_polled_prop();
 	void clean_dyn_attr_prop();
 
-	int create_poll_thread(const char *,bool,bool,int smallest_upd = -1);
+	int create_poll_thread(const char *, bool, bool);
 	void stop_all_polling_threads();
-	vector<PollingThreadInfo *> &get_polling_threads_info() {return poll_ths;}
-	PollingThreadInfo *get_polling_thread_info_by_id(thread::id);
-	thread::id get_polling_thread_id_by_name(const char *);
+	vector<PollingThreadInfo *> &get_polling_threads_info();
+	PollingThreadInfo *get_polling_thread_info_by_id(string);
 	void check_pool_conf(DServer *,unsigned long);
 	int check_dev_poll(vector<string> &,vector<string> &,DeviceImpl *);
 	void split_string(string &,char,vector<string> &);
@@ -867,7 +866,7 @@ public:
 	vector<string> &get_poll_pool_conf() {return poll_pool_conf;}
 	int get_dev_entry_in_pool_conf(string &);
 	void remove_dev_from_polling_map(string &dev_name);
-	void remove_polling_thread_info_by_id(thread::id);
+	void remove_polling_thread_info_by_id(string);
 
 	bool is_server_event_loop_set() {if (ev_loop_func != NULL)return true;else return false;}
 	void set_shutdown_server(bool val) {shutdown_server = val;}
@@ -1020,8 +1019,8 @@ private:
 
 	unsigned long				poll_pool_size;			// Polling threads pool size
 	vector<string>  			poll_pool_conf;			// Polling threads pool conf.
-	map<string,thread::id>		dev_poll_th_map;		// Link between device name and polling thread id
-	vector<PollingThreadInfo *>	poll_ths;				// Polling threads
+        //TODO replace value with shared_ptr
+	std::map<std::string, PollingThreadInfo *>	dev_poll_th_map;				// Polling threads
 	bool						conf_needs_db_upd;		// Polling conf needs to be udated in db
 
 	bool 						(*ev_loop_func)(void);	// Ptr to user event loop
@@ -1226,7 +1225,6 @@ void clear_att_dim(Tango::AttributeValue_5 &att_val);
 //TODO make inner of PollThread (or vice versa)
 struct PollingThreadInfo
 {
-	thread::id							thread_id;			// The polling thread identifier
 	PollThreadPtr						poll_th;			// The polling thread object
 	PollThCmd							shared_data;		// The shared buffer
 	vector<string>						polled_devices;		// Polled devices for this thread
