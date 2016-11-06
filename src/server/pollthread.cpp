@@ -61,6 +61,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include "threading/enhanced_thread.hxx"
 //import template definitions
 #include "polling/polling_queue.hxx"
+#include "polling/polling_thread.hxx"
 #include "polling/event_system.hxx"
 
 
@@ -99,11 +100,11 @@ namespace Tango {
               name_(move(name)),
               previous_nb_late{0},
               polling_bef_9{polling_as_before_tango_9},
-              thread_(new threading::enhanced_thread("Dummy polling thread")),
+              thread_(new polling::PollingThread(*this)),
               works(new polling::PollingQueue{}),
               ext_trig_works(new polling::PollingQueue{}),
-              event_system_(new polling::EventSystem{Util::instance()->get_notifd_event_supplier(),
-                                                 Util::instance()->get_zmq_event_supplier()}) {
+              event_system_(new polling::EventSystem(Util::instance()->get_notifd_event_supplier(),
+                                                 Util::instance()->get_zmq_event_supplier())) {
 #ifdef _TG_WINDOWS_
         LARGE_INTEGER f;
         BOOL is_ctr;
@@ -116,7 +117,7 @@ namespace Tango {
     }
 
     thread::id PollThread::id() {
-        return thread_->as_std_thread().get_id();
+        return thread_->id();
     }
 
     using chrono::system_clock;
@@ -532,5 +533,14 @@ namespace Tango {
 
     bool PollThread::empty() {
         return works->empty();
+    }
+
+    void PollThread::start_thread_if_required() {
+        //TODO protected id
+        if(thread_->id() != thread::id()) return;
+
+        //TODO get_thread_pool.submit()
+        thread_.reset(new polling::PollingThread(*this));
+        thread_->start();
     }
 } // End of Tango namespace

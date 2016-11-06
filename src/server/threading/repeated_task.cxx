@@ -41,13 +41,11 @@ void RepeatedTask::abort() {
 }
 
 void RepeatedTask::run() {
-    cout3 << "RepeatedTask::execute()" << endl;
+    cout3 << thread_.name() << "::run()" << endl;
     while(!thread_.interrupted()){
-        try {
-            thread_.sleep_for(delay_);
-        } catch (const threading::interrupted_exception& ex){
-            return;
-        }
+        bool interrupted = thread_.sleep_for(delay_);
+        if(interrupted) return;
+        cout3 << thread_.name() << "::execute()" << endl;
         execute();
     }
 }

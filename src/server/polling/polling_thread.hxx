@@ -23,21 +23,17 @@ namespace Tango {
 
             void run();
         public:
-            PollingThread(PollThread &engine_);
+            PollingThread(PollThread &);
+
+            std::thread::id id(){
+                return thread_.as_std_thread().get_id();
+            }
+
+            void interrupt(){
+                thread_.interrupt();
+            }
 
             const threading::enhanced_thread& start(){ return thread_.start();}
-
-            //+----------------------------------------------------------------------------------------------------------------
-            //
-            // method :
-            //		PollThread::compute_sleep_time
-            //
-            // description :
-            //		This method computes how many mS the thread should sleep before the next poll time. If this time is
-            //		negative and greater than a pre-defined threshold, the polling is discarded.
-            //
-            //----------------------------------------------------------------------------------------------------------------
-            std::chrono::milliseconds compute_next_sleep();
         };
     }//polling
 }//Tango

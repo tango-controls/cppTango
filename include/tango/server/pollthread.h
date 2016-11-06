@@ -160,7 +160,7 @@ namespace Tango {
 
     using PollingQueuePtr = std::unique_ptr<polling::PollingQueue>;
 
-    using EnhancedThreadPtr = std::unique_ptr<threading::enhanced_thread>;
+    using PollingThreadPtr = std::unique_ptr<polling::PollingThread>;
 
     using EventSystemPtr = std::unique_ptr<polling::EventSystem>;
 
@@ -209,13 +209,15 @@ namespace Tango {
 
         void start_polling(){
             polling_stop_.store(false);
+
+            start_thread_if_required();
         }
 
         void stop_polling(){
             polling_stop_.store(true);
         }
 
-        threading::enhanced_thread& polling_thread() {
+        /*TODO const*/ polling::PollingThread& polling_thread() {
             return *thread_;
         }
 
@@ -240,6 +242,16 @@ namespace Tango {
         bool discard_late_items();
 
         //TODO inject algorithm?
+        //+----------------------------------------------------------------------------------------------------------------
+        //
+        // method :
+        //		PollThread::compute_sleep_time
+        //
+        // description :
+        //		This method computes how many mS the thread should sleep before the next poll time. If this time is
+        //		negative and greater than a pre-defined threshold, the polling is discarded.
+        //
+        //----------------------------------------------------------------------------------------------------------------
         std::chrono::milliseconds compute_next_sleep(bool);
 
         //TODO do we need this?
@@ -291,6 +303,8 @@ namespace Tango {
         void tune_list();//TODO was from_needed, min_delta which were always true and 0
 
         bool analyze_work_list();
+
+        void start_thread_if_required();
     private://fields
         atomic_bool polling_stop_;
 
@@ -300,7 +314,7 @@ namespace Tango {
         u_int previous_nb_late;
 
         bool polling_bef_9;
-        EnhancedThreadPtr thread_;
+        PollingThreadPtr thread_;
         PollingQueuePtr works;
 
         PollingQueuePtr ext_trig_works;

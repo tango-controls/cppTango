@@ -3,7 +3,7 @@
 //
 
 #include "exit_command.hxx"
-#include "../threading/enhanced_thread.hxx"
+#include "polling_thread.hxx"
 
 Tango::polling::ExitCommand::ExitCommand() : Command(nullptr, POLL_EXIT, "",
                                                      POLL_ATTR, -1,

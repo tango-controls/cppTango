@@ -63,7 +63,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <store_sub_devices_task.hxx>
 #include "polling/polling_queue.hxx"
 #include "polling/event_system.hxx"
-#include "threading/enhanced_thread.hxx"
+#include "polling/polling_thread.hxx"
 
 
 namespace Tango
@@ -447,9 +447,7 @@ void Util::effective_job(int argc,char *argv[])
 		create_notifd_event_supplier();
 		create_zmq_event_supplier();
 
-//
-// Create the heartbeat thread and start it
-//
+		cout4 << "Adding store sub devices task..." << endl;
 
 		store_sub_devices_task_ = StoreSubDevicesTask_ptr(
 				new StoreSubDevicesTask(chrono::minutes{30}, this->sub_dev_diag));
