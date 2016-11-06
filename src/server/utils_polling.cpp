@@ -42,6 +42,9 @@ static const char *RcsId = "$Id$";
 #include <algorithm>
 #include "polling/trigger_polling_command.hxx"
 #include "polling/stop_polling_command.hxx"
+#include "polling/polling_queue.hxx"
+#include "polling/event_system.hxx"
+#include "threading/enhanced_thread.hxx"
 
 namespace Tango {
 //+-----------------------------------------------------------------------------------------------------------------

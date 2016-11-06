@@ -61,6 +61,9 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <omniORB4/omniInterceptors.h>
 #include <store_sub_devices_task.hxx>
+#include "polling/polling_queue.hxx"
+#include "polling/event_system.hxx"
+#include "threading/enhanced_thread.hxx"
 
 
 namespace Tango

@@ -226,7 +226,7 @@ namespace Tango {
 
     std::experimental::optional<WorkItem>
     PollThread::remove_trigger_by(DeviceImpl *device, std::string obj_name, PollObjType obj_type) {
-        auto work_item = Tango::find_work_item(ext_trig_works, device, obj_name, obj_type);
+        auto work_item = Tango::find_work_item(*ext_trig_works, device, obj_name, obj_type);
 
         if (work_item) {
             work_item->name.erase(remove_if(
@@ -325,8 +325,8 @@ namespace Tango {
 //        return current_time.time_since_epoch() + update;
 //    }
 
-    polling::EventSystem &PollThread::get_event_system() {
-        return event_system_;
+    /*TODO const*/ polling::EventSystem &PollThread::get_event_system() {
+        return *event_system_;
     }
 
     std::chrono::milliseconds PollThread::compute_next_sleep(bool discarded) {
@@ -479,9 +479,9 @@ namespace Tango {
         auto next_tuning = now + (kPollLoop * min_upd);
 
         polling::PollingQueue new_works{};
-        new_works->push(works->top());
+        new_works.push(works->top());
 
-        auto previous_work_item = new_works->top();
+        auto previous_work_item = new_works.top();
 
         works->for_each([&](const WorkItem &wo) {
             auto previous_needed_time = previous_work_item.needed_time;
@@ -501,7 +501,7 @@ namespace Tango {
 
                 const_cast<WorkItem&>(wo).wake_up_date = chrono::duration_cast<milliseconds>(previous_needed_time + max_delta_needed);
             }
-            new_works->push(wo);
+            new_works.push(wo);
             previous_work_item = wo;//TODO pointer
         });
 

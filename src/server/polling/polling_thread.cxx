@@ -18,22 +18,22 @@ void Tango::polling::PollingThread::run() {
     cout3 << "Thread " << thread_.name() << " has started." << endl;
     //TODO memory fence or somethig to fetch latest values from engine
     while (!engine_.polling_stop_) {
-        bool discarded = engine_.discard_late_items();
-        auto sleep = engine_.compute_next_sleep(discarded);
-        cout5 << "Sleep for : " << sleep.count() << endl;
-        bool interrupted = thread_.sleep_for(sleep);
-        if (interrupted) return;
+        if(engine_.works->empty()) return;//TODO wait?
 
-        if(engine_.works.empty()) return;//TODO wait?
-
-        WorkItem tmp = engine_.works.top();
-        engine_.works.pop();
+        WorkItem tmp = engine_.works->top();
+        engine_.works->pop();
 
 
         PollTask task{tmp, engine_};
         task.execute();
 
         engine_.adjust_work_items(tmp);
+
+        bool discarded = engine_.discard_late_items();
+        auto sleep = engine_.compute_next_sleep(discarded);
+        cout5 << "Sleep for : " << sleep.count() << endl;
+        bool interrupted = thread_.sleep_for(sleep);
+        if (interrupted) return;
     }
 }
 
