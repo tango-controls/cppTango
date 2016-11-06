@@ -18,6 +18,9 @@ PollObjType Tango::PollObjType_from_string(string &&value) {
         return POLL_ATTR;
     } else {
         Except::throw_exception(API_NotSupported, "Object type " + value + " not supported", "PollObjType_from_string");
+        //supress warning
+        assert(false);
+        return POLL_ATTR;
     }
 }
 

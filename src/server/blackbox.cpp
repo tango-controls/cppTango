@@ -1092,6 +1092,7 @@ void BlackBox::inc_indexes()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
+    //TODO return clientIdentity
 void BlackBox::get_client_host()
 {
 	if (kPerThreadClientAddress) {
@@ -1100,12 +1101,17 @@ void BlackBox::get_client_host()
         return;
     } else {
         Tango::Util *tg = Tango::Util::instance();
-        vector<PollingThreadInfo *> &poll_ths = tg->get_polling_threads_info();
+        auto poll_ths = tg->get_polling_threads_info();
 
         if (!poll_ths.empty())
         {
-            assert(false);
-			return;
+            auto found = find_if(poll_ths.begin(), poll_ths.end(),[](PollingThreadInfoPtr th_info){
+                return this_thread::get_id() == th_info->poll_th->id();
+            });
+            if(found != poll_ths.end()){
+                strcpy(box[insert_elt].host_ip_str,"polling");
+                return;
+            }
         }
 
 		if (tg->is_svr_starting() == true)

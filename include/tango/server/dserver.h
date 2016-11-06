@@ -77,9 +77,9 @@ public :
 	void add_obj_polling(const Tango::DevVarLongStringArray *,bool with_db_upd = true,int delta_ms = 0);
 	void upd_obj_polling_period(const Tango::DevVarLongStringArray *,bool with_db_upd = true);
 	void rem_obj_polling(const Tango::DevVarStringArray *,bool with_db_upd = true);
-	void stop_polling();
+	void stop_polling() override;
 	void start_polling();
-	void start_polling(PollingThreadInfo *);
+	void start_polling(PollingThreadInfoPtr);
 	void add_event_heartbeat();
 	void rem_event_heartbeat();
 
@@ -120,7 +120,7 @@ public :
 	bool get_opt_pool_usage() {return optimize_pool_usage;}
 	vector<string> get_poll_th_conf() {return polling_th_pool_conf;}
 
-	void check_lock_owner(DeviceImpl *,const char *,const char *);
+	void check_lock_owner(DeviceImpl *, const char *, string &);
 	void check_upd_authorized(DeviceImpl *,int,PollObjType,string &);
 
 	TANGO_IMP_EXP static void register_class_factory(ClassFactoryFuncPtr f_ptr) {class_factory_func_ptr = f_ptr;}

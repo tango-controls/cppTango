@@ -599,7 +599,7 @@ namespace Tango {
 
         Tango::Util *tg = Tango::Util::instance();
         DeviceImpl *dev = NULL;
-        auto device_name = (argin->svalue)[0];
+        string device_name{(argin->svalue)[0].in()};
         try {
             dev = tg->get_device_by_name(device_name);
         }
@@ -698,13 +698,11 @@ namespace Tango {
         poll_list.push_back(new PollObj(dev, type, obj_name, upd, depth));
         dev->get_poll_monitor().rel_monitor();
 
-        int thread_created = -2;
-
 //
 // Find out which thread is in charge of the device. If none exists already, create one
 //
 
-        PollingThreadInfo *th_info = tg->get_polling_thread_info_by_id(device_name.in());
+        auto th_info = tg->get_polling_thread_info_by_id(device_name);
         if (th_info == nullptr) {
             cout4 << "POLLING: Creating a thread to poll device " << device_name << endl;
 
@@ -714,9 +712,12 @@ namespace Tango {
             else if (tg->is_polling_bef_9_def())
                 poll_bef_9 = tg->get_polling_bef_9();
 
-            thread_created = tg->create_poll_thread(device_name, false, poll_bef_9);
+            th_info = tg->create_poll_thread(device_name, false, poll_bef_9);
+
+            tg->get_poll_pool_conf().push_back(device_name);
         }
-        cout4 << "POLLING: Thread in charge of device " << device_name << " is thread " << th_info->poll_th->id() << endl;
+        cout4 << "POLLING: Thread in charge of device " << device_name << " is thread " << th_info->poll_th->id()
+              << endl;
 
 //
 // Send command to the polling thread but wait in case of previous cmd still not executed
@@ -810,60 +811,46 @@ namespace Tango {
 // If a polling thread has just been created, ask it to poll
 //
 
-        if (thread_created == -1) {
-            start_polling(th_info);
-        }
+        start_polling(th_info);
 
 //
 // Also update the polling threads pool conf if one thread has been created by this call
 //
 
-        if (thread_created != -2) {
-            string dev_name(device_name);
-            transform(dev_name.begin(), dev_name.end(), dev_name.begin(), ::tolower);
-            cout4 << "thread_created = " << thread_created << endl;
-            if (thread_created == -1) {
-                tg->get_poll_pool_conf().push_back(dev_name);
-            } else if (thread_created >= 0) {
-                string &conf_entry = (tg->get_poll_pool_conf())[thread_created];
-                conf_entry = conf_entry + ',' + dev_name;
+        if ((with_db_upd == true) && (Tango::Util::_UseDb == true)) {
+            DbData send_data;
+            send_data.push_back(DbDatum("polling_threads_pool_conf"));
+
+            vector<string> &ppc = tg->get_poll_pool_conf();
+
+            vector<string>::iterator iter;
+            vector<string> new_ppc;
+
+            for (iter = ppc.begin(); iter != ppc.end(); ++iter) {
+                string v_entry = *iter;
+                unsigned int length = v_entry.size();
+                int nb_lines = (length / MaxDevPropLength) + 1;
+
+                if (nb_lines > 1) {
+                    string::size_type start;
+                    start = 0;
+
+                    for (int i = 0; i < nb_lines; i++) {
+                        string sub = v_entry.substr(start, MaxDevPropLength);
+                        if (i < (nb_lines - 1))
+                            sub = sub + '\\';
+                        start = start + MaxDevPropLength;
+                        new_ppc.push_back(sub);
+                    }
+                } else
+                    new_ppc.push_back(v_entry);
             }
 
-            if ((with_db_upd == true) && (Tango::Util::_UseDb == true)) {
-                DbData send_data;
-                send_data.push_back(DbDatum("polling_threads_pool_conf"));
+            send_data[0] << new_ppc;
+            tg->get_dserver_device()->get_db_device()->put_property(send_data);
 
-                vector<string> &ppc = tg->get_poll_pool_conf();
-
-                vector<string>::iterator iter;
-                vector<string> new_ppc;
-
-                for (iter = ppc.begin(); iter != ppc.end(); ++iter) {
-                    string v_entry = *iter;
-                    unsigned int length = v_entry.size();
-                    int nb_lines = (length / MaxDevPropLength) + 1;
-
-                    if (nb_lines > 1) {
-                        string::size_type start;
-                        start = 0;
-
-                        for (int i = 0; i < nb_lines; i++) {
-                            string sub = v_entry.substr(start, MaxDevPropLength);
-                            if (i < (nb_lines - 1))
-                                sub = sub + '\\';
-                            start = start + MaxDevPropLength;
-                            new_ppc.push_back(sub);
-                        }
-                    } else
-                        new_ppc.push_back(v_entry);
-                }
-
-                send_data[0] << new_ppc;
-                tg->get_dserver_device()->get_db_device()->put_property(send_data);
-            }
+            cout4 << "Polling properties updated" << endl;
         }
-
-        cout4 << "Polling properties updated" << endl;
 
 //
 // Mark the device as polled
@@ -918,7 +905,7 @@ namespace Tango {
 
         Tango::Util *tg = Tango::Util::instance();
         DeviceImpl *dev = NULL;
-        auto device_name = (argin->svalue)[0];
+        string device_name{(argin->svalue)[0].in()};
         try {
             dev = tg->get_device_by_name(device_name);
         }
@@ -1024,7 +1011,7 @@ namespace Tango {
 // Find out which thread is in charge of the device. If none exists already, create one
 //
 
-        PollingThreadInfo *th_info = tg->get_polling_thread_info_by_id(device_name.in());
+        auto th_info = tg->get_polling_thread_info_by_id(device_name);
 
 //
 // Update polling period
@@ -1132,12 +1119,13 @@ namespace Tango {
 
         Tango::Util *tg = Tango::Util::instance();
         DeviceImpl *dev = NULL;
+        string device_name{(*argin)[0].in()};
         try {
-            dev = tg->get_device_by_name((*argin)[0]);
+            dev = tg->get_device_by_name(device_name);
         }
         catch (Tango::DevFailed &e) {
             TangoSys_OMemStream o;
-            o << "Device " << (*argin)[0] << " not found" << ends;
+            o << "Device " << device_name << " not found" << ends;
 
             Except::re_throw_exception(e, API_DeviceNotFound, o.str(), "DServer::rem_obj_polling");
         }
@@ -1148,7 +1136,7 @@ namespace Tango {
 
         if (dev->is_polled() == false) {
             TangoSys_OMemStream o;
-            o << "Device " << (*argin)[0] << " is not polled" << ends;
+            o << "Device " << device_name << " is not polled" << ends;
 
             Except::throw_exception(API_DeviceNotPolled, o.str(), "DServer::rem_obj_polling");
         }
@@ -1157,7 +1145,7 @@ namespace Tango {
 // If the device is locked and if the client is not the lock owner, refuse to do the job
 //
 
-        check_lock_owner(dev, "rem_obj_polling", (*argin)[0]);
+        check_lock_owner(dev, "rem_obj_polling", device_name);
 
 //
 // Find the wanted object in the list of device polled object
@@ -1192,35 +1180,38 @@ namespace Tango {
         vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(type, obj_name);
         long tmp_upd = (*ite)->get_upd();
 
-        PollingThreadInfo *th_info;
-        thread::id poll_th_id{thread::id()};
-        thread::id th_id = this_thread::get_id();
+        PollingThreadInfoPtr th_info;
+
+
 
 //
 // Find out which thread is in charge of the device.
 //
 
         if (tg->is_svr_shutting_down() == false) {
-            th_info = tg->get_polling_thread_info_by_id((*argin)[0].in());
-            cout4 << "Thread in charge of device " << (*argin)[0] << " is thread " << poll_th_id << endl;
+            th_info = tg->get_polling_thread_info_by_id(device_name);
+            cout4 << "Thread in charge of device " << device_name << " is thread " << th_info->poll_th->id() << endl;
 
 //
 // Test whether the polling thread is still running!
 //
 
-            if (th_info->poll_th->id() != thread::id()) {
 
+            thread::id poll_th_id = th_info->poll_th->id();
+            assert(this_thread::get_id() != poll_th_id);
+            if (poll_th_id != thread::id()) {
 //
 // Send command to the polling thread
 //
 
                 cout4 << "Sending cmd to polling thread" << endl;
                 auto index = distance(dev->get_poll_obj_list().begin(), ite);
-                if(tmp_upd == 0)
+                if (tmp_upd == 0)
                     th_info->poll_th->execute_cmd(polling::RemExtTriggerCommand{dev, move(obj_name), type, index});
                 else
                     th_info->poll_th->execute_cmd(polling::RemObjCommand{dev, move(obj_name), type, index});
-                    cout4 << "Cmd sent to polling thread" << endl;
+
+                cout4 << "Cmd sent to polling thread" << endl;
 
                 cout4 << "Thread cmd normally executed" << endl;
             } else {
@@ -1341,12 +1332,10 @@ namespace Tango {
         bool kill_thread = false;
         if (poll_list.empty() == true) {
             int ind;
-            string dev_name((*argin)[0]);
-            transform(dev_name.begin(), dev_name.end(), dev_name.begin(), ::tolower);
 
-            if ((ind = tg->get_dev_entry_in_pool_conf(dev_name)) == -1) {
+            if ((ind = tg->get_dev_entry_in_pool_conf(device_name)) == -1) {
                 TangoSys_OMemStream o;
-                o << "Can't find entry for device " << (*argin)[0] << " in polling threads pool configuration !"
+                o << "Can't find entry for device " << device_name << " in polling threads pool configuration !"
                   << ends;
                 Except::throw_exception(API_NotSupported, o.str(), "DServer::rem_obj_polling");
             }
@@ -1355,9 +1344,9 @@ namespace Tango {
             string &conf_entry = pool_conf[ind];
             string::size_type pos;
             if ((pos = conf_entry.find(',')) != string::npos) {
-                pos = conf_entry.find(dev_name);
-                if ((pos + dev_name.size()) != conf_entry.size())
-                    conf_entry.erase(pos, dev_name.size() + 1);
+                pos = conf_entry.find(device_name);
+                if ((pos + device_name.size()) != conf_entry.size())
+                    conf_entry.erase(pos, device_name.size() + 1);
                 else
                     conf_entry.erase(pos - 1);
             } else {
@@ -1366,19 +1355,20 @@ namespace Tango {
                 kill_thread = true;
             }
 
-            tg->remove_dev_from_polling_map(dev_name);
+            tg->remove_dev_from_polling_map(device_name);
 
 //
 // Kill the thread if needed and join but don do this now if the executing thread is the polling thread itself
 // (case of a polled command which itself decide to stop its own polling)
 //
 
-            if (kill_thread == true && tg->is_svr_shutting_down() == false && th_id != poll_th_id) {
+            if (kill_thread == true && tg->is_svr_shutting_down() == false) {
                 polling::ExitCommand exit_cmd{};
 
+                //TODO may throw NPE if srv_shutting_down == true, see above
                 th_info->poll_th->execute_cmd(move(exit_cmd));
 
-                tg->remove_polling_thread_info_by_id(dev_name);
+                tg->remove_polling_thread_info_by_id(device_name);
             }
 
 //
@@ -1418,17 +1408,6 @@ namespace Tango {
             if (att.change_event_subscribed() == true && att.is_change_event() == false)
                 dev->push_change_event(obj_name, &ex);
         }
-
-//
-// In case of local_request and executing thread is the polling thread, ask our self to exit now that eveything else
-// is done
-//
-
-        //TODO
-        if (kill_thread == true && tg->is_svr_shutting_down() == false && th_id == poll_th_id &&
-            local_request == true) {
-            assert(false);//Can not happen as all the commands are now executed in the request thread
-        }
     }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -1452,13 +1431,11 @@ namespace Tango {
 
         Tango::Util *tg = Tango::Util::instance();
 
-        vector<PollingThreadInfo *> &th_info = tg->get_polling_threads_info();
-        vector<PollingThreadInfo *>::iterator iter;
+        auto th_info = tg->get_polling_threads_info();
 
-        for_each(th_info.begin(), th_info.end(),
-                 [](PollingThreadInfo* th_info){
-                     th_info->poll_th->execute_cmd(polling::StopPollingCommand{});
-                 });
+        for (auto poll_th_info : th_info) {
+            poll_th_info->poll_th->execute_cmd(polling::StopPollingCommand{});
+        }
 
 //
 // Update polling status
@@ -1491,12 +1468,10 @@ namespace Tango {
 
         Tango::Util *tg = Tango::Util::instance();
 
-        vector<PollingThreadInfo *> &th_info = tg->get_polling_threads_info();
-        vector<PollingThreadInfo *>::iterator iter;
+        auto th_info = tg->get_polling_threads_info();
 
-        for (iter = th_info.begin(); iter != th_info.end(); ++iter) {
-            start_polling(*iter);
-
+        for (auto pll_th_info : th_info) {
+            start_polling(pll_th_info);
         }
 
 //
@@ -1508,7 +1483,7 @@ namespace Tango {
         str = "The device is ON\nThe polling is ON";
     }
 
-    void DServer::start_polling(PollingThreadInfo *th_info) {
+    void DServer::start_polling(PollingThreadInfoPtr th_info) {
         polling::StartPollingCommand start_polling_cmd{};
 
         th_info->poll_th->execute_cmd(move(start_polling_cmd));

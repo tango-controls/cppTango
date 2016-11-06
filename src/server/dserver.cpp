@@ -838,7 +838,7 @@ void DServer::restart(string &d_name)
 // If the device is locked and if the client is not the lock owner, refuse to do the job
 //
 
-	check_lock_owner(dev_to_del,"restart",d_name.c_str());
+	check_lock_owner(dev_to_del,"restart",d_name);
 
 //
 // clean the sub-device list for this device
@@ -1611,7 +1611,7 @@ void DServer::get_dev_prop(Tango::Util *tg)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::check_lock_owner(DeviceImpl *dev,const char *cmd_name,const char *dev_name)
+void DServer::check_lock_owner(DeviceImpl *dev, const char *cmd_name, string &dev_name)
 {
 	if (dev->is_device_locked() == true)
 	{

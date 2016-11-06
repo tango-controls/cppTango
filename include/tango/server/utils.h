@@ -85,7 +85,26 @@ class DbServerCache;
 class SubDevDiag;
     class StoreSubDevicesTask;
 
-struct PollingThreadInfo;
+//-----------------------------------------------------------------------
+//
+//			Polling threads pool related class/struct
+//
+//-----------------------------------------------------------------------
+//TODO make inner of PollThread (or vice versa)
+//TODO threadsafe
+    struct PollingThreadInfo
+    {
+        PollThreadPtr						poll_th;			// The polling thread object
+        vector<string>						polled_devices;		// Polled devices for this thread
+        int									nb_polled_objects;	// Polled objects number in this thread
+        int 								smallest_upd;		// Smallest thread update period
+        vector<DevVarLongStringArray *> 	v_poll_cmd;			// Command(s) to send
+
+        PollingThreadInfo();
+        ~PollingThreadInfo();
+    };
+
+    using PollingThreadInfoPtr = std::shared_ptr<PollingThreadInfo>;
 struct DevDbUpd;
 
 #ifdef _TG_WINDOWS_
@@ -851,10 +870,27 @@ public:
 	void clean_cmd_polled_prop();
 	void clean_dyn_attr_prop();
 
-	int create_poll_thread(const char *, bool, bool);
+        PollingThreadInfoPtr create_poll_thread(string &, bool, bool);
 	void stop_all_polling_threads();
-	vector<PollingThreadInfo *> &get_polling_threads_info();
-	PollingThreadInfo *get_polling_thread_info_by_id(string);
+	std::vector<PollingThreadInfoPtr> get_polling_threads_info();
+    //+----------------------------------------------------------------------------------------------------------------
+    //
+    // method :
+    //		Util::get_polling_thread_info_by_id()
+    //
+    // description :
+    //		Return the PollingThreadInfo for the thread with the ID specified as the input argument
+    //
+    // args :
+    //		in :
+    // 			- id : The polling thread identifier
+    //
+    // return :
+    // 		PollingThreadInfo* or nullptr
+    //
+    //------------------------------------------------------------------------------------------------------------------
+    //TODO return optional
+	PollingThreadInfoPtr get_polling_thread_info_by_id(string);
 	void check_pool_conf(DServer *,unsigned long);
 	int check_dev_poll(vector<string> &,vector<string> &,DeviceImpl *);
 	void split_string(string &,char,vector<string> &);
@@ -1020,7 +1056,7 @@ private:
 	unsigned long				poll_pool_size;			// Polling threads pool size
 	vector<string>  			poll_pool_conf;			// Polling threads pool conf.
         //TODO replace value with shared_ptr
-	std::map<std::string, PollingThreadInfo *>	dev_poll_th_map;				// Polling threads
+	std::map<std::string, PollingThreadInfoPtr>	dev_poll_th_map;				// Polling threads
 	bool						conf_needs_db_upd;		// Polling conf needs to be udated in db
 
 	bool 						(*ev_loop_func)(void);	// Ptr to user event loop
@@ -1216,25 +1252,6 @@ inline DbDevice *DeviceImpl::get_db_device()
 void clear_att_dim(Tango::AttributeValue_3 &att_val);
 void clear_att_dim(Tango::AttributeValue_4 &att_val);
 void clear_att_dim(Tango::AttributeValue_5 &att_val);
-
-//-----------------------------------------------------------------------
-//
-//			Polling threads pool related class/struct
-//
-//-----------------------------------------------------------------------
-//TODO make inner of PollThread (or vice versa)
-struct PollingThreadInfo
-{
-	PollThreadPtr						poll_th;			// The polling thread object
-	PollThCmd							shared_data;		// The shared buffer
-	vector<string>						polled_devices;		// Polled devices for this thread
-	int									nb_polled_objects;	// Polled objects number in this thread
-	int 								smallest_upd;		// Smallest thread update period
-	vector<DevVarLongStringArray *> 	v_poll_cmd;			// Command(s) to send
-
-	PollingThreadInfo();
-	~PollingThreadInfo();
-};
 
 struct DevDbUpd
 {

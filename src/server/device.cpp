@@ -242,7 +242,7 @@ namespace Tango {
 // already stopped for all devices)
 //
 
-        vector<PollingThreadInfo *> &v_th_info = tg->get_polling_threads_info();
+        auto v_th_info = tg->get_polling_threads_info();
         if (v_th_info.empty() == true)
             return;
 
@@ -250,7 +250,7 @@ namespace Tango {
 // Find out which thread is in charge of the device.
 //
 
-        PollingThreadInfo *th_info = tg->get_polling_thread_info_by_id(device_name);
+        auto th_info = tg->get_polling_thread_info_by_id(device_name);
 
         polling::RemDevCommand rem_dev_cmd{this};
 
