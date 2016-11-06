@@ -12,7 +12,9 @@ using namespace std;
 
 Tango::polling::PollingThread::PollingThread(Tango::PollThread &engine) :
         thread_{"PollingThread", &PollingThread::run, this},
-        engine_(engine) {}
+        engine_(engine) {
+    cout3 << "PollingThread has been created." << endl;
+}
 
 void Tango::polling::PollingThread::run() {
     cout3 << "Thread " << thread_.name() << " has started." << endl;

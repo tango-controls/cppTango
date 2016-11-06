@@ -186,20 +186,17 @@ namespace Tango {
         vector<std::chrono::milliseconds> rem_upd;
         vector<string> rem_name;
 
-        //+-----------------------------------------------------------------------------------------------------------------
-        //
-        // method :
-        //		PollThread::create_instance
-        //
-        // description :
-        //		The polling thread constructor.
-        //
-        // args :
-        //		in :TODO
-        //
-        //------------------------------------------------------------------------------------------------------------------
 
-        static PollThreadPtr create_instance(std::string&&, bool);
+        /**
+         * Constructs PollThread
+         *
+         * @param name - name
+         * @param polling_as_before_9
+         * @constructor
+         */
+        PollThread(string &&, bool);
+
+        static PollThreadPtr create_instance_ptr(std::string&&, bool);
 
         /**
          *
@@ -282,7 +279,6 @@ namespace Tango {
 
         bool empty();
     private:
-        PollThread(string &&, bool, threading::enhanced_thread &&, polling::EventSystem &&);
         friend class polling::PollingThread;
         //+----------------------------------------------------------------------------------------------------------------
         //
@@ -293,23 +289,23 @@ namespace Tango {
         //		This method tunes the work list.
         //----------------------------------------------------------------------------------------------------------------
         void tune_list();//TODO was from_needed, min_delta which were always true and 0
-    private:
-        PollingQueuePtr works;
-        PollingQueuePtr ext_trig_works;
+
+        bool analyze_work_list();
+    private://fields
         atomic_bool polling_stop_;
 
         long tune_ctr;
         bool need_two_tuning;
-
-        u_int previous_nb_late;
-        bool polling_bef_9;
-
-        EnhancedThreadPtr thread_;
         string name_;
+        u_int previous_nb_late;
+
+        bool polling_bef_9;
+        EnhancedThreadPtr thread_;
+        PollingQueuePtr works;
+
+        PollingQueuePtr ext_trig_works;
 
         EventSystemPtr event_system_;
-
-        bool analyze_work_list();
     };
 
 

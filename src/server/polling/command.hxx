@@ -18,15 +18,14 @@ namespace Tango {
     namespace polling {
         class Command {
             friend class PollThread;
-            friend std::experimental::optional<WorkItem> find_work_item(bool, const Command&, /*TODO const*/ PollObj&, const std::list<WorkItem>&);
         protected:
 //            using DeviceImplPtr = std::shared_ptr<DeviceImpl>;
-            PollCmdCode		code_;		    // The command code
             //TODO replace with shared
             DeviceImpl* 	dev_;			// The device pointer (servant)
-            long			index_;			// Index in the device poll_list
+            PollCmdCode		code_;		    // The command code
             std::string		obj_name_;			// Object name
             PollObjType		obj_type_;			// Object type (cmd/attr)
+            long			index_;			// Index in the device poll_list
             std::chrono::milliseconds				new_upd_;		// New update period (For upd period com.)
 
             Command(DeviceImpl* dev, PollCmdCode code, string&& name, PollObjType type, long index, int new_upd):

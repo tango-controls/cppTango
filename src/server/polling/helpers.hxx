@@ -33,16 +33,12 @@ namespace Tango {
         template<typename Duration>
         struct timeval duration_to_timeval(Duration &&d) {
             std::chrono::seconds const sec = std::chrono::duration_cast<std::chrono::seconds>(d);
-            struct timeval tv{};
-            tv.tv_sec  = sec.count();
-            tv.tv_usec = std::chrono::duration_cast<std::chrono::microseconds>(d - sec).count();
+            struct timeval tv{sec.count(), std::chrono::duration_cast<std::chrono::microseconds>(d - sec).count()};
             return tv;
         }
 
         template<typename Function, typename Argout = typename std::result_of<Function>, typename Exception = Tango::DevFailed*>
         std::tuple<std::chrono::milliseconds, std::chrono::milliseconds, Argout, Exception> timed_function_call(Function f){
-            using Tuple = std::tuple<std::chrono::milliseconds, std::chrono::milliseconds>;
-
             Argout argout = nullptr;
             Exception exception = nullptr;
 

@@ -1472,7 +1472,6 @@ namespace Tango {
 // Send command to the polling thread and wait for its execution
 //
 
-        int interupted;
         Tango::Util *tg = Tango::Util::instance();
 
         vector<PollingThreadInfo *> &th_info = tg->get_polling_threads_info();

@@ -12,8 +12,8 @@ namespace Tango {
 
     namespace polling {
         class PollTask {
-            PollThread& engine_;
             WorkItem &work_;
+            PollThread& engine_;
 
             //+----------------------------------------------------------------------------------------------------------------
             //

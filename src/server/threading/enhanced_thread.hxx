@@ -16,9 +16,9 @@ namespace Tango {
         };
 
         class enhanced_thread {
+            std::string name_;
             std::function<void()> bind_;
             mutable std::thread thread_{};
-            std::string name_;
             mutable std::atomic_bool interrupted_{false};
             mutable std::condition_variable monitor_;
             std::mutex monitor_guard_;

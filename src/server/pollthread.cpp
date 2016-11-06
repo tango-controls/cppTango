@@ -87,17 +87,12 @@ namespace Tango {
         return works.find_if(same_device_type_contains_name);
     }
 
-    PollThreadPtr PollThread::create_instance(std::string &&name, bool polling_as_before_tango_9) {
-        threading::enhanced_thread thread{"Dummy polling thread"};
-        polling::EventSystem event_system{Util::instance()->get_notifd_event_supplier(),
-                                          Util::instance()->get_zmq_event_supplier()};
-
+    PollThreadPtr PollThread::create_instance_ptr(std::string &&name, bool polling_as_before_tango_9) {
         return Tango::PollThreadPtr(
-                new PollThread(move(name), polling_as_before_tango_9, move(thread), move(event_system)));
+                new PollThread(move(name), polling_as_before_tango_9));
     }
 
-    PollThread::PollThread(string &&name, bool polling_as_before_tango_9, threading::enhanced_thread &&thread,
-                               polling::EventSystem &&event_system)
+    PollThread::PollThread(string &&name, bool polling_as_before_tango_9)
             : polling_stop_(true),
               tune_ctr(1),
               need_two_tuning{false},

@@ -766,8 +766,10 @@ namespace Tango {
 
 
 
-            pti_ptr->poll_th = PollThread::create_instance("PollEngine["+local_dev_name+"]", polling_9);
+            pti_ptr->poll_th = PollThread::create_instance_ptr("PollEngine["+local_dev_name+"]", polling_9);
 
+
+            //TODO revise these code - poll_th_id is now thread::id()
             thread::id poll_th_id = pti_ptr->poll_th->id();
             pti_ptr->thread_id = poll_th_id;
             pti_ptr->polled_devices.push_back(local_dev_name);
