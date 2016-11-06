@@ -16,10 +16,6 @@ Tango::threading::enhanced_thread::~enhanced_thread() {
         thread_.join();
 }
 
-void Tango::threading::enhanced_thread::swap(const enhanced_thread& other) noexcept {
-    thread_.swap(other.thread_);
-}
-
 const std::string& Tango::threading::enhanced_thread::name() const noexcept {
     return name_;
 }
@@ -51,6 +47,11 @@ bool Tango::threading::enhanced_thread::interrupted() const noexcept  {
 
 const Tango::threading::enhanced_thread & Tango::threading::enhanced_thread::start() const {
     thread_ = std::thread{bind_};
+    return *this;
+}
+
+const Tango::threading::enhanced_thread & Tango::threading::enhanced_thread::start_synchronously() const {
+    bind_();
     return *this;
 }
 

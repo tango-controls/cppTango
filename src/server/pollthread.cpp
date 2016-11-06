@@ -331,7 +331,7 @@ namespace Tango {
         else {
             auto item = works->top();
             auto diff = item.wake_up_date - item.stop_time;
-            return milliseconds{diff * 1000};//TODO return previous value?; *1000?
+            return milliseconds{diff};
         }
     }
 

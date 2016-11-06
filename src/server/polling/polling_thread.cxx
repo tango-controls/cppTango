@@ -13,11 +13,11 @@ using namespace std;
 Tango::polling::PollingThread::PollingThread(Tango::PollThread &engine) :
         thread_{"PollingThread", &PollingThread::run, this},
         engine_(engine) {
-    cout3 << "PollingThread has been created." << endl;
+    cout3 << "Thread[PollingThread] has been created." << endl;
 }
 
 void Tango::polling::PollingThread::run() {
-    cout3 << "Thread " << thread_.name() << " has started." << endl;
+    cout3 << "Thread[" << thread_.name() << "] has started." << endl;
     //TODO memory fence or somethig to fetch latest values from engine
     while (!engine_.polling_stop_) {
         if(engine_.works->empty()) return;//TODO wait?

@@ -137,7 +137,7 @@ namespace Tango {
         std::chrono::milliseconds start_time;
         std::chrono::nanoseconds needed_time;    // Time needed to execute action
         std::chrono::milliseconds stop_time;
-        vector<DevFailed*> errors;
+        std::map<std::string, DevFailed*> errors;
     };
 
 

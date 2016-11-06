@@ -34,6 +34,8 @@ namespace Tango {
             }
 
             const threading::enhanced_thread& start(){ return thread_.start();}
+
+            const threading::enhanced_thread& start_synchronously(){ return thread_.start_synchronously();}
         };
     }//polling
 }//Tango

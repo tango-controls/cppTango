@@ -18,8 +18,7 @@ void Tango::polling::EventSystem::push_event(Tango::WorkItem & item) {
 // Retrieve the event supplier(s) for this attribute
 //
 
-        size_t nb_obj = item.name.size();
-        for (size_t i = 0; i < nb_obj; i++) {
+        for (size_t i = 0, size = item.name.size(); i < size; i++) {
 
 
             if ((event_supplier_nd_ != nullptr) || (event_supplier_zmq_ != nullptr)) {
@@ -39,7 +38,10 @@ void Tango::polling::EventSystem::push_event(Tango::WorkItem & item) {
 
 
                 struct timeval tv = duration_to_timeval(item.start_time);
-                push_event(item.dev, move(ad), item.errors[i], move(item.name[i]), &tv);
+                auto name = item.name[i];
+                //TODO get_if
+                DevFailed* error = item.errors.count(name) == 1 ? item.errors.at(name) : nullptr;
+                push_event(item.dev, move(ad), error, move(name), &tv);
             }
         }
 }

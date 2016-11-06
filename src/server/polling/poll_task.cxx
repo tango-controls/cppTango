@@ -252,10 +252,10 @@ void Tango::polling::PollTask::copy_remaining(T &old_attr_value, T &new_attr_val
 }
 
 template<typename AttributesList>
-void put_exceptions_into_map(map<size_t, Tango::DevFailed *> exceptions_map, AttributesList &attrs, size_t size) {
+void put_exceptions_into_map(map<string, Tango::DevFailed *>& exceptions_map, AttributesList &attrs, size_t size) {
     for (size_t i = 0; i < size; ++i) {
         if (attrs[i].err_list.length() != 0) {
-            exceptions_map.emplace(i, new Tango::DevFailed(attrs[i].err_list));
+            exceptions_map.emplace(attrs[i].name.in(), new Tango::DevFailed(attrs[i].err_list));
         }
     }
 }
@@ -268,7 +268,6 @@ void Tango::polling::PollTask::poll_attr() {
           << ", Attr name = " << att_list << endl;
 
     Tango::DevFailed *attr_reading_exception = nullptr;
-    map<size_t, Tango::DevFailed *> map_except{};
 
     long idl_vers{work_.dev->get_dev_idl_version()};
     auto start = high_resolution_clock::now();
@@ -277,7 +276,8 @@ void Tango::polling::PollTask::poll_attr() {
 // Read the attributes
 //
     try {
-        DevVarStringArray attr_names{work_.name.size()};
+        DevVarStringArray attr_names{};
+        attr_names.length(work_.name.size());
 
         for (size_t i = 0, size = work_.name.size(); i < size; i++)
             attr_names[i] = work_.name[i].c_str();
@@ -314,16 +314,17 @@ void Tango::polling::PollTask::poll_attr() {
     auto argout_4 = reinterpret_cast<AttributeValueList_4 *>(work_.values);
     if (idl_vers >= 3) {
         if (idl_vers >= 5) {
-            put_exceptions_into_map(map_except, *argout_5,
+            put_exceptions_into_map(work_.errors, *argout_5,
                                     work_.name.size());
         } else if (idl_vers == 4) {
-            put_exceptions_into_map(map_except, *argout_4,
+            put_exceptions_into_map(work_.errors, *argout_4,
                                     work_.name.size());
         }
     } else {
         auto err_list = (*reinterpret_cast<AttributeValueList_3 *>(work_.values))[0].err_list;
         if (err_list.length() != 0) {
-            map_except.emplace(0, new Tango::DevFailed(err_list));
+            //TODO is it correct?
+            work_.errors.emplace(work_.name[0], new Tango::DevFailed(err_list));
         }
     }
 
@@ -357,11 +358,12 @@ void Tango::polling::PollTask::poll_attr() {
         struct timeval delta_tv = duration_to_timeval(work_.needed_time);
         work_.dev->get_poll_monitor().get_monitor();
         for (size_t i = 0, size = work_.name.size(); i < size; i++) {
-            auto ite = work_.dev->get_polled_obj_by_type_name(work_.type, work_.name[i]);
+            auto name = work_.name[i];
+            auto ite = work_.dev->get_polled_obj_by_type_name(work_.type, name);
             if (attr_reading_exception == nullptr) {
                 if (idl_vers >= 5) {
-                    map<size_t, Tango::DevFailed *>::iterator ite2 = map_except.find(i);
-                    if (ite2 == map_except.end()) {
+                    map<string, Tango::DevFailed *>::iterator ite2 = work_.errors.find(name);
+                    if (ite2 == work_.errors.end()) {
                         Tango::AttributeValueList_5 *new_argout_5 = new Tango::AttributeValueList_5(1);
                         new_argout_5->length(1);
                         (*new_argout_5)[0].value.union_no_data(true);
@@ -372,8 +374,8 @@ void Tango::polling::PollTask::poll_attr() {
                     } else
                         (*ite)->insert_except(ite2->second, tv, delta_tv);
                 } else {
-                    map<size_t, Tango::DevFailed *>::iterator ite2 = map_except.find(i);
-                    if (ite2 == map_except.end()) {
+                    map<string, Tango::DevFailed *>::iterator ite2 = work_.errors.find(name);
+                    if (ite2 == work_.errors.end()) {
                         Tango::AttributeValueList_4 *new_argout_4 = new Tango::AttributeValueList_4(1);
                         new_argout_4->length(1);
                         (*new_argout_4)[0].value.union_no_data(true);

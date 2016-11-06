@@ -23,8 +23,6 @@ namespace Tango {
             mutable std::condition_variable monitor_;
             std::mutex monitor_guard_;
         public:
-            void swap(const enhanced_thread&) noexcept;
-
             enhanced_thread() = default;
             template <typename T>
             enhanced_thread(T&& name):
@@ -40,6 +38,16 @@ namespace Tango {
             const std::string& name() const noexcept;
             bool interrupted() const noexcept;
             const enhanced_thread & start() const ;
+
+            //TODO rename to start using mock or inheritance
+            /**
+             * Runs specified command in this thread
+             *
+             * For testing
+             *
+             * @return
+             */
+            const enhanced_thread & start_synchronously() const ;
             /**
              *
              * @return true if thread has been interrupted
