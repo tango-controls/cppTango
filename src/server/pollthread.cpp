@@ -249,7 +249,7 @@ namespace Tango {
 
         while ((diff.count() < 0) && (abs(diff.count()) > kDiscardThreshold.count())) {
             cout5 << "Discard one elt !!!!!!!!!!!!!" << endl;
-            WorkItem tmp = works->top();
+            WorkItem tmp = works->pop();
             if (tmp.type == POLL_ATTR) {
                 //TODO put into dedicated list and send events in a dedicated method
                 try {
@@ -275,7 +275,6 @@ namespace Tango {
 
             tmp.wake_up_date += tmp.update;
             works->push(tmp);
-            works->pop();
             tune_counter_--;
 
             diff = calculate_diff(works->top());
@@ -485,9 +484,10 @@ namespace Tango {
             auto previous_needed_time = previous_work_item.needed_time;
             auto wake_up_date = chrono::duration_cast<chrono::nanoseconds>(wo.wake_up_date);
 
-            milliseconds next_prev;
+
             if (wake_up_date < next_tuning.time_since_epoch()) {
                 auto previous_wake_up = previous_work_item.wake_up_date;
+                milliseconds next_prev;
                 if (wake_up_date > previous_wake_up) {
                     auto n =
                             (wake_up_date - previous_wake_up) / (previous_work_item.update);//*1000LL
@@ -495,10 +495,8 @@ namespace Tango {
                 } else
                     next_prev = previous_wake_up;
 
+                next_prev += chrono::duration_cast<milliseconds>(previous_needed_time + max_delta_needed);
                 const_cast<WorkItem &>(wo).wake_up_date = next_prev;
-
-                const_cast<WorkItem &>(wo).wake_up_date = chrono::duration_cast<milliseconds>(
-                        previous_needed_time + max_delta_needed);
             }
             new_works.push(wo);
             previous_work_item = wo;//TODO pointer

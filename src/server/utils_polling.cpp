@@ -714,11 +714,7 @@ namespace Tango {
 //
 // Check if the pool is full
 //
-
         //TODO in V10 there is no pool for polling, each device simply has its own thread
-        if (dev_poll_th_map.size() != poll_pool_size) {
-
-
 //
 // Create a new polling thread and start it
 //
@@ -735,11 +731,6 @@ namespace Tango {
 
             dev_poll_th_map.emplace(device_name, pti_ptr);
             return pti_ptr;
-        } else {
-            assert(false);//this is not supported in V10
-        }
-
-        return nullptr;
     }
 
 //+------------------------------------------------------------------------------------------------------------------
