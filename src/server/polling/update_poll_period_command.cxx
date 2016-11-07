@@ -85,10 +85,10 @@ bool Tango::polling::UpdatePollPeriodCommand::update_polled_obj(PollThread &poll
     auto work_item = poll_engine.remove_work_item_by(dev_, obj_name_, obj_type_);
 
 
+    //TODO avoid this tmp object
     WorkItem tmp_work = poll_engine.new_work_item(dev_, poll_obj);
     tmp_work.type = obj_type_;
     tmp_work.update = {new_upd_};
-    tmp_work.name.push_back(obj_name_);
 
     tmp_work.wake_up_date = work_item->wake_up_date + tmp_work.update;
 
