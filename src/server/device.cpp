@@ -304,8 +304,6 @@ namespace Tango {
             polling::ExitCommand exit_cmd{};
 
             th_info->poll_th->execute_cmd(move(exit_cmd));
-
-            tg->remove_polling_thread_info_by_id(device_name);
         }
 
 //

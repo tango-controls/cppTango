@@ -902,9 +902,8 @@ public:
 	vector<string> &get_poll_pool_conf() {return poll_pool_conf;}
 	int get_dev_entry_in_pool_conf(string &);
 	void remove_dev_from_polling_map(string &dev_name);
-	void remove_polling_thread_info_by_id(string);
 
-	bool is_server_event_loop_set() {if (ev_loop_func != NULL)return true;else return false;}
+		bool is_server_event_loop_set() {if (ev_loop_func != NULL)return true;else return false;}
 	void set_shutdown_server(bool val) {shutdown_server = val;}
 
 	void shutdown_ds();

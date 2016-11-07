@@ -1434,18 +1434,4 @@ namespace Tango {
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-    void Util::remove_polling_thread_info_by_id(string device) {
-        if(dev_poll_th_map.count(device) == 0){
-            Except::throw_exception(API_PollingThreadNotFound,
-                                    "There is no polling thread with ID = " + device + " in the polling threads pool",
-                                    "Util::remove_polling_thread_info_by_id");
-            //suspend warnings
-            assert(false);
-            return;
-        }
-
-        //TODO delete entry.second;
-        dev_poll_th_map.erase(device);
-    }
-
 } // End of Tango namespace

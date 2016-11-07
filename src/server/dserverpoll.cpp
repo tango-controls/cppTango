@@ -1099,8 +1099,7 @@ namespace Tango {
         NoSyncModelTangoMonitor nosync_mon(this);
 
         cout4 << "In rem_obj_polling method" << endl;
-        unsigned long i;
-        for (i = 0; i < argin->length(); i++)
+        for (size_t i = 0; i < argin->length(); i++)
             cout4 << "Input string = " << (*argin)[i].in() << endl;
 
 //
@@ -1151,9 +1150,9 @@ namespace Tango {
 // Find the wanted object in the list of device polled object
 //
 
-        string obj_type((*argin)[1]);
+        string obj_type((*argin)[1].in());
         transform(obj_type.begin(), obj_type.end(), obj_type.begin(), ::tolower);
-        string obj_name((*argin)[2]);
+        string obj_name((*argin)[2].in());
         transform(obj_name.begin(), obj_name.end(), obj_name.begin(), ::tolower);
 
         bool local_request = false;
@@ -1203,13 +1202,14 @@ namespace Tango {
 //
 // Send command to the polling thread
 //
-
+                //TODO refactor so that this copy is not needed - do not use obj_name later in this method
+                string obj_name_copy = obj_name;
                 cout4 << "Sending cmd to polling thread" << endl;
                 auto index = distance(dev->get_poll_obj_list().begin(), ite);
                 if (tmp_upd == 0)
-                    th_info->poll_th->execute_cmd(polling::RemExtTriggerCommand{dev, move(obj_name), type, index});
+                    th_info->poll_th->execute_cmd(polling::RemExtTriggerCommand{dev, move(obj_name_copy), type, index});
                 else
-                    th_info->poll_th->execute_cmd(polling::RemObjCommand{dev, move(obj_name), type, index});
+                    th_info->poll_th->execute_cmd(polling::RemObjCommand{dev, move(obj_name_copy), type, index});
 
                 cout4 << "Cmd sent to polling thread" << endl;
 
@@ -1367,8 +1367,6 @@ namespace Tango {
 
                 //TODO may throw NPE if srv_shutting_down == true, see above
                 th_info->poll_th->execute_cmd(move(exit_cmd));
-
-                tg->remove_polling_thread_info_by_id(device_name);
             }
 
 //
