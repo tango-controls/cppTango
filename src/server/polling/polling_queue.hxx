@@ -8,14 +8,15 @@
 #include <deque>
 #include <functional>
 #include <experimental/optional>
+#include "../threading/blocking_priority_queue.hxx"
 
 
 namespace Tango {
     class WorkItem;
     namespace polling {
-        bool compare_work_items(WorkItem&,WorkItem&);
+        bool compare_work_items(const WorkItem&, const WorkItem&);
         //TODO extract template
-        class PollingQueue : public std::priority_queue<WorkItem, std::deque<WorkItem>, std::function<bool(WorkItem&, WorkItem&)>> {
+        class PollingQueue : public threading::blocking_priority_queue<WorkItem> {
         public:
             PollingQueue();
 

@@ -40,7 +40,7 @@ void polling::AddObjCommand::execute(PollThread &poll_engine) {
     wo.wake_up_date = duration_cast<milliseconds>(system_clock::now().time_since_epoch());//TODO was: poll_engine.now;
     if (new_upd_.count() != 0) {
         cout5 << "Received a delta from now of " << new_upd_.count() << endl;
-        wo.wake_up_date += new_upd_ * 1000;
+        wo.wake_up_date += new_upd_;
     }
     //TODO protected queue in case many incoming requests
     poll_engine.add_work_item(wo);//TODO set flag - queue has changed, catch the flag in polling thread

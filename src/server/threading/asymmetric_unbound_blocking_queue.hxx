@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <list>
+#include <deque>
 #include <condition_variable>
 
 namespace Tango {
@@ -18,11 +18,11 @@ namespace Tango {
          *
          */
         class asymmetric_unbound_blocking_queue {
-            std::list<Item> queue_;
+            std::deque<Item> queue_;
             std::condition_variable monitor_;
             std::mutex queue_guard_;
         public:
-            typedef typename std::list<Item>::size_type size_type;
+            typedef typename std::deque<Item>::size_type size_type;
 
             asymmetric_unbound_blocking_queue();
 

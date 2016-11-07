@@ -35,7 +35,6 @@ void Tango::polling::PollTask::poll_cmd() {
           << " Dev name = " << work_.dev->get_name()
           << ", Cmd name = " << work_.name[0] << endl;
 
-    CORBA::Any *argout = nullptr;
     Tango::DevFailed *cmd_execution_exception = nullptr;
 
     auto start = high_resolution_clock::now();
@@ -44,7 +43,7 @@ void Tango::polling::PollTask::poll_cmd() {
     // Execute the command
     //
     try {
-        argout = work_.dev->command_inout(work_.name[0].c_str(), CORBA::Any{});
+        work_.values = work_.dev->command_inout(work_.name[0].c_str(), CORBA::Any{});
     }
     catch (const Tango::DevFailed &e) {
         cmd_execution_exception = new Tango::DevFailed(e);
@@ -69,15 +68,13 @@ void Tango::polling::PollTask::poll_cmd() {
         if (cmd_execution_exception != nullptr)
             (*ite)->insert_except(cmd_execution_exception, start_as_tv, delta_tv);
         else
-            (*ite)->insert_data(argout, start_as_tv, delta_tv);
+            (*ite)->insert_data(reinterpret_cast<CORBA::Any *>(work_.values), start_as_tv, delta_tv);
         work_.dev->get_poll_monitor().rel_monitor();
     }
     catch (Tango::DevFailed &) {
         //TODO if not thrown who will release? CORBA?
         if (cmd_execution_exception != nullptr)
             delete cmd_execution_exception;
-        else
-            delete argout;
 
         work_.dev->get_poll_monitor().rel_monitor();
     }
@@ -252,7 +249,7 @@ void Tango::polling::PollTask::copy_remaining(T &old_attr_value, T &new_attr_val
 }
 
 template<typename AttributesList>
-void put_exceptions_into_map(map<string, Tango::DevFailed *>& exceptions_map, AttributesList &attrs, size_t size) {
+void put_exceptions_into_map(map<string, Tango::DevFailed *> &exceptions_map, AttributesList &attrs, size_t size) {
     for (size_t i = 0; i < size; ++i) {
         if (attrs[i].err_list.length() != 0) {
             exceptions_map.emplace(attrs[i].name.in(), new Tango::DevFailed(attrs[i].err_list));
@@ -361,9 +358,10 @@ void Tango::polling::PollTask::poll_attr() {
             auto name = work_.name[i];
             auto ite = work_.dev->get_polled_obj_by_type_name(work_.type, name);
             if (attr_reading_exception == nullptr) {
-                if (idl_vers >= 5) {
-                    map<string, Tango::DevFailed *>::iterator ite2 = work_.errors.find(name);
-                    if (ite2 == work_.errors.end()) {
+                map<string, Tango::DevFailed *>::iterator ite2 = work_.errors.find(name);
+                if (ite2 == work_.errors.end()) {
+                    if (idl_vers >= 5) {
+
                         Tango::AttributeValueList_5 *new_argout_5 = new Tango::AttributeValueList_5(1);
                         new_argout_5->length(1);
                         (*new_argout_5)[0].value.union_no_data(true);
@@ -371,19 +369,17 @@ void Tango::polling::PollTask::poll_attr() {
                         copy_remaining((*argout_5)[i], (*new_argout_5)[0]);
                         (*new_argout_5)[0].data_type = (*argout_5)[i].data_type;
                         (*ite)->insert_data(new_argout_5, tv, delta_tv);
-                    } else
-                        (*ite)->insert_except(ite2->second, tv, delta_tv);
-                } else {
-                    map<string, Tango::DevFailed *>::iterator ite2 = work_.errors.find(name);
-                    if (ite2 == work_.errors.end()) {
+                    } else {
                         Tango::AttributeValueList_4 *new_argout_4 = new Tango::AttributeValueList_4(1);
                         new_argout_4->length(1);
                         (*new_argout_4)[0].value.union_no_data(true);
                         steal_data((*argout_4)[i], (*new_argout_4)[0]);
                         copy_remaining((*argout_4)[i], (*new_argout_4)[0]);
                         (*ite)->insert_data(new_argout_4, tv, delta_tv);
-                    } else
-                        (*ite)->insert_except(ite2->second, tv, delta_tv);
+                    }
+                } else {
+                    Tango::DevFailed *dup_except = new Tango::DevFailed(ite2->second->errors);
+                    (*ite)->insert_except(dup_except, tv, delta_tv);
                 }
             } else {
                 Tango::DevFailed *dup_except = new Tango::DevFailed(attr_reading_exception->errors);

@@ -101,7 +101,7 @@ public:
 
 	void get_delta_t(vector<double> &,long nb);
 	struct timeval get_last_insert_date();
-	bool is_empty() {if (nb_elt == 0) return true;else return false;}
+	bool is_empty() {return (nb_elt == 0);}
 
 	bool is_last_an_error();
 	bool is_last_cmd_an_error();

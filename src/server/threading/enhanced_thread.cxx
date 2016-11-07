@@ -12,8 +12,10 @@ static_assert(chrono::steady_clock::duration{1} <= chrono::milliseconds{1},
 using Lock = unique_lock<mutex>;
 
 Tango::threading::enhanced_thread::~enhanced_thread() {
-    if(thread_.joinable())
+    if(thread_.joinable()) {
+        interrupt();
         thread_.join();
+    }
 }
 
 const std::string& Tango::threading::enhanced_thread::name() const noexcept {
@@ -26,8 +28,8 @@ bool Tango::threading::enhanced_thread::sleep_for(Duration duration) {
     cv_status _cv_status;
     do {
         _cv_status = monitor_.wait_for(lock, duration);//TODO how long will it wait in case spurious wake up
-    } while(_cv_status == cv_status::no_timeout);
-    return interrupted_;
+    } while(_cv_status == cv_status::no_timeout && !interrupted_.load());
+    return interrupted_.load();
 }
 
 template bool Tango::threading::enhanced_thread::sleep_for(chrono::milliseconds);

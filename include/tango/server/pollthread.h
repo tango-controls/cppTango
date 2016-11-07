@@ -51,12 +51,7 @@
 #endif
 
 namespace Tango {
-    class PollThCmd;
-
     namespace threading {
-        template<typename Item>
-        class asymmetric_unbound_blocking_queue;
-
         class enhanced_thread;
     }
 
@@ -90,39 +85,6 @@ namespace Tango {
         class EventSystem;
     }
 
-
-//=============================================================================
-//
-//			The PollThCmd structure
-//
-// description :	This structure is used to shared data between the polling
-//			thread and the main thread.
-//
-//=============================================================================
-
-
-
-    //TODO remove
-    enum PollCmdType {
-        POLL_TIME_OUT,
-        POLL_COMMAND,
-        POLL_TRIGGER
-    };
-
-
-    //TODO remove
-    struct PollThCmd {
-        bool cmd_pending;    // The new command flag
-        bool trigger;        // The external trigger flag
-        PollCmdCode cmd_code;        // The command code
-        DeviceImpl *dev;            // The device pointer (servant)
-        long index;            // Index in the device poll_list
-        string name;            // Object name
-        PollObjType type;            // Object type (cmd/attr)
-        int new_upd;        // New update period (For upd period com.)
-    };
-
-
     struct WorkItem {
         DeviceImpl *dev;            // The device pointer (servant)
         //TODO replace with const reference
@@ -139,7 +101,6 @@ namespace Tango {
         std::chrono::milliseconds stop_time;
         std::map<std::string, DevFailed*> errors;
     };
-
 
 //=============================================================================
 //
@@ -281,26 +242,27 @@ namespace Tango {
         polling::EventSystem& get_event_system();
         /**
          *
+         * @return true if tune is required
          */
-        void adjust_work_items(WorkItem&);
-
-
-        void set_need_two_tuning(bool);
-
-        void reset_tune_counter(){ tune_ctr = 0;}
-
-        bool empty();
-    private:
-        friend class polling::PollingThread;
+        void adjust_work_items(WorkItem &);
         //+----------------------------------------------------------------------------------------------------------------
         //
         // method :
-        //		PollThread::tune_list
+        //		PollThread::tune_work_items_list
         //
         // description :
         //		This method tunes the work list.
         //----------------------------------------------------------------------------------------------------------------
-        void tune_list();//TODO was from_needed, min_delta which were always true and 0
+        void tune_work_items_list();//TODO was from_needed, min_delta which were always true and 0
+
+        void set_need_two_tuning(bool);
+
+        void reset_tune_counter(){ tune_counter_ = 0;}
+
+        bool empty();
+    private:
+        friend class polling::PollingThread;
+
 
         bool analyze_work_list();
 
@@ -308,7 +270,7 @@ namespace Tango {
     private://fields
         atomic_bool polling_stop_;
 
-        long tune_ctr;
+        long tune_counter_;
         bool need_two_tuning;
         string name_;
         u_int previous_nb_late;
