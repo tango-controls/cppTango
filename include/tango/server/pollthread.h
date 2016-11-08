@@ -111,6 +111,8 @@ namespace Tango {
 //
 //=============================================================================
 
+    class ZmqEventSupplier;
+    class NotifdEventSupplier;
     class PollThread;
 
     using PollThreadPtr = std::unique_ptr<Tango::PollThread>;
@@ -155,7 +157,8 @@ namespace Tango {
          * @param polling_as_before_9
          * @constructor
          */
-        PollThread(string &&, bool);
+        PollThread(string &&, bool, Tango::ZmqEventSupplier *zmq_event_supplier,
+                   Tango::NotifdEventSupplier *notifd_event_supplier);
 
         static PollThreadPtr create_instance_ptr(std::string&&, bool);
 

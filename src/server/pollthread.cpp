@@ -84,10 +84,11 @@ namespace Tango {
 
     PollThreadPtr PollThread::create_instance_ptr(std::string &&name, bool polling_as_before_tango_9) {
         return Tango::PollThreadPtr(
-                new PollThread(move(name), polling_as_before_tango_9));
+                new PollThread(move(name), polling_as_before_tango_9, Util::instance()->get_zmq_event_supplier(), Util::instance()->get_notifd_event_supplier()));
     }
 
-    PollThread::PollThread(string &&name, bool polling_as_before_tango_9)
+    PollThread::PollThread(string &&name, bool polling_as_before_tango_9, ZmqEventSupplier *zmq_event_supplier,
+                               NotifdEventSupplier *notifd_event_supplier)
             : polling_stop_(true),
               tune_counter_(1),
               need_two_tuning{false},
@@ -97,8 +98,8 @@ namespace Tango {
               thread_(new polling::PollingThread(*this)),
               works(new polling::PollingQueue{}),
               ext_trig_works(new polling::PollingQueue{}),
-              event_system_(new polling::EventSystem(Util::instance()->get_notifd_event_supplier(),
-                                                     Util::instance()->get_zmq_event_supplier())) {
+              event_system_(new polling::EventSystem(zmq_event_supplier,
+                                                     notifd_event_supplier)) {
 #ifdef _TG_WINDOWS_
         LARGE_INTEGER f;
         BOOL is_ctr;
@@ -191,6 +192,7 @@ namespace Tango {
         });
     }
 
+    //TODO &&
     void PollThread::add_work_item(WorkItem &new_work) {
         experimental::optional<WorkItem> work_item = find_work_item(new_work.dev, new_work.type, new_work.update);
 
