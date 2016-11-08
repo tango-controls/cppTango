@@ -23,17 +23,12 @@ set(TESTS   acc_right
             multiple_new
             new_devproxy
             obj_prop
-            poll_attr
-            Poll
             poll_except
-            poll_met
-            poll_pool
             print_data
             print_data_hist
             prop_list
             rds
             read_attr
-            read_hist
             read_hist_ext
             reconnect_attr
             reconnect
@@ -41,7 +36,6 @@ set(TESTS   acc_right
             ring_depth
             size
             state_attr
-            StopPoll
             sub_dev
             unlock
             wait_mcast_dev
@@ -69,12 +63,6 @@ add_test(NAME "old_tests::write_attr"  COMMAND $<TARGET_FILE:write_attr> ${DEV1}
 add_test(NAME "old_tests::copy_devproxy"  COMMAND $<TARGET_FILE:copy_devproxy> ${DEV1} ${DEV2} ${DEV3})
 add_test(NAME "old_tests::attr_misc"  COMMAND $<TARGET_FILE:attr_misc> ${DEV1})
 add_test(NAME "old_tests::obj_prop"  COMMAND $<TARGET_FILE:obj_prop>)
-
-configure_file(test_polling.sh.cmake test_polling.sh @ONLY)
-execute_process(COMMAND chmod +x ${CMAKE_CURRENT_BINARY_DIR}/test_polling.sh)
-add_test(NAME "old_tests::polling" COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test_polling.sh
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-
 add_test(NAME "old_tests::attr_proxy"  COMMAND $<TARGET_FILE:attr_proxy> ${DEV1}/Short_attr_rw)
 add_test(NAME "old_tests::write_attr_3"  COMMAND $<TARGET_FILE:write_attr_3> ${DEV1} 10)
 add_test(NAME "old_tests::read_hist_ext"  COMMAND $<TARGET_FILE:read_hist_ext> ${DEV1})
