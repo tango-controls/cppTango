@@ -242,8 +242,9 @@ namespace Tango {
 
     //TODO return discarded items list
     bool PollThread::analyze_work_list() {
-        auto calculate_diff = [](const WorkItem &work_item) {
-            return work_item.wake_up_date - work_item.stop_time;
+        auto now = chrono::high_resolution_clock::now().time_since_epoch();
+        auto calculate_diff = [&now](const WorkItem &work_item) {
+            return work_item.wake_up_date - now;
         };
         auto diff = calculate_diff(works->top());
 
@@ -337,8 +338,9 @@ namespace Tango {
             return milliseconds{0};
         else {
             auto item = works->top();
-            auto diff = item.wake_up_date - item.stop_time;
-            return milliseconds{diff};
+            auto now = chrono::high_resolution_clock::now().time_since_epoch();
+            auto diff = item.wake_up_date - now;
+            return chrono::duration_cast<milliseconds>(diff);
         }
     }
 
