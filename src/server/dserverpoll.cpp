@@ -50,7 +50,8 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #include <iomanip>
-#include <polling/exit_command.hxx>
+#include "polling/exit_command.hxx"
+#include "polling/add_trigger_command.hxx"
 #include "polling/add_obj_command.hxx"
 #include "polling/rem_obj_command.hxx"
 #include "polling/rem_ext_trigger_command.hxx"
@@ -726,9 +727,15 @@ namespace Tango {
 
         cout4 << "Sending cmd to polling thread" << endl;
 
-        polling::AddObjCommand add_obj_cmd{dev, type, poll_list.size() - 1};
+        if (upd == 0) {
+            polling::AddTriggerCommand add_trigger_cmd{dev, type, poll_list.size() - 1};
 
-        th_info->poll_th->execute_cmd(move(add_obj_cmd));
+            th_info->poll_th->execute_cmd(move(add_trigger_cmd));
+        } else {
+            polling::AddObjCommand add_obj_cmd{dev, type, poll_list.size() - 1};
+
+            th_info->poll_th->execute_cmd(move(add_obj_cmd));
+        }
 
         cout4 << "Cmd sent to polling thread" << endl;
 
@@ -740,7 +747,7 @@ namespace Tango {
 // (it should not but...), only update its polling period
 //
 
-        if ((with_db_upd == true) && (Tango::Util::_UseDb == true)) {
+        if ((with_db_upd == true)) {
             TangoSys_MemStream s;
             string upd_str;
             s << upd;

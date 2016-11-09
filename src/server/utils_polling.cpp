@@ -105,8 +105,6 @@ namespace Tango {
         for (size_t i = 0, size = tmp_cl_list.size(); i < size; i++) {
             vector<DeviceImpl *> &dev_list = tmp_cl_list[i]->get_device_list();
             for (size_t j = 0; j < dev_list.size(); j++) {
-                v_poll_cmd.clear();
-
                 vector<string> &poll_cmd_list = dev_list[j]->get_polled_cmd();
                 vector<string> &poll_attr_list = dev_list[j]->get_polled_attr();
 

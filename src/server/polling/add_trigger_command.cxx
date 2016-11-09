@@ -6,13 +6,13 @@
 #include "helpers.hxx"
 #include "polling_queue.hxx"
 
-Tango::polling::AddTriggerCommand::AddTriggerCommand(Tango::DeviceImpl *dev, string &&name,
-                                                     Tango::PollObjType type, long index, int new_upd) : Command(dev,
-                                                                                                                 POLL_ADD_OBJ,
-                                                                                                                 move(name),
-                                                                                                                 type,
-                                                                                                                 index,
-                                                                                                                 new_upd) {}
+Tango::polling::AddTriggerCommand::AddTriggerCommand(DeviceImpl *dev, PollObjType type, long index)
+        : Command(dev,
+                  POLL_ADD_OBJ,
+                  "",
+                  type,
+                  index,
+                  0) {}
 
 void Tango::polling::AddTriggerCommand::operator()(PollThread &poll_thread) {
     return execute(poll_thread);
@@ -42,7 +42,6 @@ Tango::polling::AddTriggerCommand::operator std::string() {
         stringstream out;
         out << "AddTriggerCommand[device=" << dev_->get_name() << ";"
             << "obj_type=" << obj_type_ << ";"
-            << "obj_name=" << obj_name_ << ";"
             << "]";
         return out.str();
 }
