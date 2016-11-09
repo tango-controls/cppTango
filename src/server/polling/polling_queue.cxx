@@ -26,19 +26,15 @@ void Tango::polling::PollingQueue::erase(function<bool(const WorkItem&)> predica
 std::experimental::optional<WorkItem>
 Tango::polling::PollingQueue::find_if(function<bool(const WorkItem&)> predicate) {
     Lock lock{queue_guard_};
-    auto it = std::find_if(c.begin(), c.end(), predicate);
-
-    if(it == c.end()) return experimental::optional<WorkItem>{};
-    return experimental::make_optional(*it);
-}
-
-std::experimental::optional<WorkItem>
-Tango::polling::PollingQueue::remove_if(function<bool(const WorkItem&)> predicate) {
-    Lock lock{queue_guard_};
     auto it = std::remove_if(c.begin(), c.end(), predicate);
 
-    if(it == c.end()) return experimental::optional<WorkItem>{};
-    return experimental::make_optional(*it);
+    if(it == c.end()) {
+        return experimental::optional<WorkItem>{};
+    }
+
+    auto result = experimental::make_optional(*it);
+    c.erase(it, c.end());
+    return result;
 }
 
 

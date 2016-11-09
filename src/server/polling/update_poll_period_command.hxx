@@ -13,7 +13,7 @@ namespace Tango {
              *
              * @return true if work item was found in work list
              */
-            bool update_polled_obj(PollThread &, PollObj&);
+            bool update_polled_obj(PollThread &);
         public:
             UpdatePollPeriodCommand(DeviceImpl *dev, string &&name, PollObjType type, long index,
                                     int new_upd);

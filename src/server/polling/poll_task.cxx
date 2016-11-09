@@ -251,8 +251,12 @@ void Tango::polling::PollTask::copy_remaining(T &old_attr_value, T &new_attr_val
 template<typename AttributesList>
 void put_exceptions_into_map(map<string, Tango::DevFailed *> &exceptions_map, AttributesList &attrs, size_t size) {
     for (size_t i = 0; i < size; ++i) {
+        string attr_name{attrs[i].name.in()};
+        transform(attr_name.begin(), attr_name.end(), attr_name.begin(),::tolower);
         if (attrs[i].err_list.length() != 0) {
-            exceptions_map.emplace(attrs[i].name.in(), new Tango::DevFailed(attrs[i].err_list));
+            exceptions_map[attr_name] = new Tango::DevFailed(attrs[i].err_list);//TODO memory leak
+        } else {
+            exceptions_map.erase(attr_name);
         }
     }
 }
@@ -321,7 +325,7 @@ void Tango::polling::PollTask::poll_attr() {
         auto err_list = (*reinterpret_cast<AttributeValueList_3 *>(work_.values))[0].err_list;
         if (err_list.length() != 0) {
             //TODO is it correct?
-            work_.errors.emplace(work_.name[0], new Tango::DevFailed(err_list));
+            work_.errors[work_.name[0]] = new Tango::DevFailed(err_list);//TODO memory leak
         }
     }
 

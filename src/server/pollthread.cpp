@@ -73,13 +73,13 @@ namespace Tango {
     constexpr std::chrono::milliseconds PollThread::kDiscardThreshold;
 
     std::experimental::optional<WorkItem>
-    find_work_item(polling::PollingQueue &works, DeviceImpl *device, std::string obj_name, PollObjType obj_type) {
+    PollThread::find_work_item(DeviceImpl *device, PollObjType obj_type, const std::string& obj_name) {
         auto same_device_type_contains_name = [device, obj_name, obj_type](const WorkItem &work_item) {
             return work_item.dev == device && work_item.type == obj_type &&
                    find_if(work_item.name.begin(), work_item.name.end(),
                            [obj_name](const string &name) { return name == obj_name; }) != work_item.name.end();
         };
-        return works.find_if(same_device_type_contains_name);
+        return works->find_if(same_device_type_contains_name);
     }
 
     PollThreadPtr PollThread::create_instance_ptr(std::string &&name, bool polling_as_before_tango_9) {
@@ -127,7 +127,7 @@ namespace Tango {
                 now,
                 milliseconds{poll_obj.get_upd()},
                 poll_obj.get_type(),
-                {poll_obj.get_name()},
+                {1, poll_obj.get_name()},
                 nullptr,
                 now,
                 chrono::nanoseconds{0},
@@ -196,50 +196,11 @@ namespace Tango {
     void PollThread::add_work_item(WorkItem &new_work) {
         experimental::optional<WorkItem> work_item = find_work_item(new_work.dev, new_work.type, new_work.update);
 
-        if (work_item)
-            work_item->name.push_back(new_work.name[0]);
-        else
-            works->push(new_work);
-    }
-
-    std::experimental::optional<WorkItem>
-    PollThread::remove_work_item_by(DeviceImpl *device, std::string obj_name, PollObjType obj_type) {
-        auto work_item = Tango::find_work_item(*works, device, obj_name, obj_type);
-
         if (work_item) {
-            work_item->name.erase(remove_if(
-                    work_item->name.begin(),
-                    work_item->name.end(),
-                    [obj_name](const string &name) { return name == obj_name; }
-            ), work_item->name.end());
-            if (work_item->name.empty()) {
-                auto outer = work_item.value();
-                works->erase(
-                        [&outer](const WorkItem &inner) { return inner.dev == outer.dev && inner.type == outer.type; });
-            }
+            new_work.name.insert(new_work.name.end(),work_item->name.begin(), work_item->name.end());
         }
 
-        return work_item;
-    }
-
-    std::experimental::optional<WorkItem>
-    PollThread::remove_trigger_by(DeviceImpl *device, std::string obj_name, PollObjType obj_type) {
-        auto work_item = Tango::find_work_item(*ext_trig_works, device, obj_name, obj_type);
-
-        if (work_item) {
-            work_item->name.erase(remove_if(
-                    work_item->name.begin(),
-                    work_item->name.end(),
-                    [obj_name](const string &name) { return name == obj_name; }
-            ), work_item->name.end());
-            if (work_item->name.empty()) {
-                auto outer = work_item.value();
-                ext_trig_works->erase(
-                        [&outer](const WorkItem &inner) { return inner.dev == outer.dev && inner.type == outer.type; });
-            }
-        }
-
-        return work_item;
+        works->push(new_work);
     }
 
     //TODO return discarded items list
@@ -277,7 +238,7 @@ namespace Tango {
             }
 
             tmp.wake_up_date += tmp.update;
-            works->push(tmp);
+            add_work_item(tmp);
             tune_counter_--;
 
             diff = calculate_diff(works->top());
@@ -363,7 +324,7 @@ namespace Tango {
 
             if (just_polled_item.name.empty() == false) {
                 just_polled_item.wake_up_date += just_polled_item.update;
-                works->push(just_polled_item);
+                add_work_item(just_polled_item);
             }
 
             for (size_t i = 0; i < auto_upd.size(); i++) {
@@ -378,13 +339,11 @@ namespace Tango {
                 if (work_item)
                     work_item->name.push_back(auto_name[i]);
                 else {
-                    WorkItem new_work_item(just_polled_item);
+                    just_polled_item.update = auto_upd[i];
+                    just_polled_item.name.push_back(auto_name[i]);
 
-                    new_work_item.update = auto_upd[i];
-                    new_work_item.name.push_back(auto_name[i]);
-
-                    new_work_item.wake_up_date += new_work_item.update;//TODO local_cmd.new_upd??? -- last non-timeout command
-                    works->push(new_work_item);
+                    just_polled_item.wake_up_date += just_polled_item.update;//TODO local_cmd.new_upd??? -- last non-timeout command
+                    add_work_item(just_polled_item);
                 }
             }
 
@@ -406,14 +365,14 @@ namespace Tango {
 
                 if (just_polled_item.name.empty() == false) {
                     just_polled_item.wake_up_date += just_polled_item.update;
-                    works->push(just_polled_item);
+                    add_work_item(just_polled_item);
                 }
 
                 rem_upd.clear();
                 rem_name.clear();
             } else {
                 just_polled_item.wake_up_date = just_polled_item.stop_time + just_polled_item.update;
-                works->push(just_polled_item);
+                add_work_item(just_polled_item);
             }
         }
 

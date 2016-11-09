@@ -1,3 +1,1 @@
-#set(SOURCES )
-
-#TODO add tests
+add_cgreen_test(test_blocking_queue)

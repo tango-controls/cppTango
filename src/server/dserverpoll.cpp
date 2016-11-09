@@ -620,8 +620,8 @@ namespace Tango {
 // Check that the command (or the attribute) exists. For command, also checks that it does not need input value.
 //
 
-        string obj_type((argin->svalue)[1]);
-        string obj_name((argin->svalue)[2]);
+        string obj_type((argin->svalue)[1].in());
+        string obj_name((argin->svalue)[2].in());
         transform(obj_name.begin(), obj_name.end(), obj_name.begin(), ::tolower);
 
         bool local_request{false};
@@ -725,7 +725,7 @@ namespace Tango {
 
         cout4 << "Sending cmd to polling thread" << endl;
 
-        polling::AddObjCommand add_obj_cmd{dev, move(obj_name), type, poll_list.size() - 1, delta_ms};
+        polling::AddObjCommand add_obj_cmd{dev, type, poll_list.size() - 1, delta_ms};
 
         th_info->poll_th->execute_cmd(move(add_obj_cmd));
 

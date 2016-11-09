@@ -43,14 +43,14 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_engine) {
     bool found_in_work_list = false;
 
     if (new_upd_.count() != 0) {
-        found_in_work_list = update_polled_obj(poll_engine, poll_list_item);
+        found_in_work_list = update_polled_obj(poll_engine);
     } else {
 
 //
 // First, remove object from polling list and insert it in externally triggered list
 //
 
-        auto work_item = poll_engine.remove_work_item_by(dev_, obj_name_, obj_type_);
+        auto work_item = poll_engine.find_work_item(dev_, obj_type_, obj_name_);
         found_in_work_list = work_item.operator bool();
 
         WorkItem wo = poll_engine.new_work_item(dev_, poll_list_item);
@@ -65,7 +65,7 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_engine) {
 //
 
     if (found_in_work_list == false) {
-        auto work_item = poll_engine.find_trigger(dev_ ,obj_type_,obj_name_);
+        auto work_item = poll_engine.find_trigger(dev_, obj_type_, obj_name_);
 
         if (work_item) {
             WorkItem wo = poll_engine.new_work_item(dev_, poll_list_item);
@@ -80,30 +80,27 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_engine) {
     }
 }
 
-bool Tango::polling::UpdatePollPeriodCommand::update_polled_obj(PollThread &poll_engine, PollObj &poll_obj) {
+bool Tango::polling::UpdatePollPeriodCommand::update_polled_obj(PollThread &poll_engine) {
     if (poll_engine.empty()) return false;
-    auto work_item = poll_engine.remove_work_item_by(dev_, obj_name_, obj_type_);
+    auto work_item = poll_engine.find_work_item(dev_, obj_type_, obj_name_);
+
+    if (work_item) {
+        work_item->type = obj_type_;
+        work_item->update = {new_upd_};
+        work_item->wake_up_date += work_item->update;
+
+        poll_engine.add_work_item(*work_item);
 
 
-    //TODO avoid this tmp object
-    WorkItem tmp_work = poll_engine.new_work_item(dev_, poll_obj);
-    tmp_work.type = obj_type_;
-    tmp_work.update = {new_upd_};
-
-    tmp_work.wake_up_date = work_item->wake_up_date + tmp_work.update;
-
-    poll_engine.add_work_item(tmp_work);
+        poll_engine.reset_tune_counter();
 
 
-    poll_engine.reset_tune_counter();
-
-    if (!work_item) {
+        return true;
+    } else {
         poll_engine.rem_upd.push_back(new_upd_);
         poll_engine.rem_name.push_back(obj_name_);
         return false;
     }
-
-    return true;
 }
 
 Tango::polling::UpdatePollPeriodCommand::operator std::string() {

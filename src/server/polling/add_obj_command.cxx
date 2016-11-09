@@ -17,11 +17,10 @@ using chrono::system_clock;
 
 using namespace Tango;
 
-polling::AddObjCommand::AddObjCommand(DeviceImpl *dev, string &&name,
-                                      PollObjType type, long index, int new_upd) : Command(dev, POLL_ADD_OBJ,
-                                                                                           move(name), type,
-                                                                                           index,
-                                                                                           new_upd) {}
+polling::AddObjCommand::AddObjCommand(DeviceImpl *dev, PollObjType type, long index, int new_upd) : Command(dev, POLL_ADD_OBJ,
+                                                                                                            "", type,
+                                                                                                            index,
+                                                                                                            new_upd) {}
 
 void polling::AddObjCommand::operator()(PollThread &poll_thread) {
     return execute(poll_thread);
@@ -51,7 +50,6 @@ polling::AddObjCommand::operator std::string() {
     stringstream out;
     out << "AddObjCommand[device=" << dev_->get_name() << ";"
         << "obj_type=" << obj_type_ << ";"
-        << "obj_name=" << obj_name_ << ";"
         << "]";
     return out.str();
 }

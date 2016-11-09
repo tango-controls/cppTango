@@ -16,7 +16,20 @@ void Tango::polling::RemExtTriggerCommand::operator()(PollThread &poll_thread) {
 void Tango::polling::RemExtTriggerCommand::execute(PollThread &poll_engine) {
     cout5 << "Received a Ext Trig Rem object command" << endl;
 
-    poll_engine.remove_trigger_by(dev_, obj_name_, obj_type_);
+
+    auto work_item = poll_engine.find_trigger(dev_, obj_type_, obj_name_);
+
+    if (work_item) {
+        work_item->name.erase(remove_if(
+                work_item->name.begin(),
+                work_item->name.end(),
+                [this](const string &name) { return name == obj_name_; }
+        ), work_item->name.end());
+
+        if (!work_item->name.empty()) {
+            poll_engine.add_trigger(*work_item);
+        }
+    }
 }
 
 Tango::polling::RemExtTriggerCommand::operator std::string() {

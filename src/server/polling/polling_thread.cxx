@@ -28,6 +28,10 @@ void Tango::polling::PollingThread::run() {
         PollTask task{tmp, engine_};
         task.execute();
 
+        //TODO send events
+//        task.send_result();
+
+
         engine_.adjust_work_items(tmp);
         engine_.tune_work_items_list();
 

@@ -189,16 +189,18 @@ namespace Tango {
         find_work_item(DeviceImpl *, PollObjType, chrono::milliseconds update);
 
         std::experimental::optional<WorkItem>
+        find_work_item(DeviceImpl *, PollObjType, const std::string&);
+
+        std::experimental::optional<WorkItem>
         find_trigger(DeviceImpl *, PollObjType, std::string);
 
         /**
          * Removes all work items (and triggers) related to the device
          *
+         * //TODO remove param - simply clear the queue - as this is not needed if we use poll thread per device
          */
         void remove_work_items_by(DeviceImpl *);
 
-        std::experimental::optional<WorkItem> remove_work_item_by(DeviceImpl *, std::string, PollObjType);
-        std::experimental::optional<WorkItem> remove_trigger_by(DeviceImpl *, std::string, PollObjType);
         /**
          *
          * @return true if works has been changed
@@ -285,8 +287,6 @@ namespace Tango {
         PollingQueuePtr ext_trig_works;
 
         EventSystemPtr event_system_;
-
-        void set_polling_thread_id(thread::id id);
     };
 
 

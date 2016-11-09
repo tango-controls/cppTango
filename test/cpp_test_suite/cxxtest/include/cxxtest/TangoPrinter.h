@@ -764,7 +764,19 @@ namespace CxxTest
         	return params_tmp;
         }
 
-    private:
+        template <typename DeviceProxy, typename DevFailed, typename CriticalException, typename Except>
+		static void stop_poll_att_no_except(DeviceProxy* dev, const char *att_name) {
+			try {
+				dev->stop_poll_attribute(att_name);
+			}
+			catch (DevFailed &) {}
+			catch (CriticalException &e) {
+				Except::print_exception(e);
+				exit(-1);
+			}
+		}
+
+	private:
         class Adapter : public OutputStream
         {
             CXXTEST_STD(ostream) &_o;

@@ -24,11 +24,13 @@ namespace Tango {
 
             void erase(std::function<bool(const WorkItem&)>);
 
-            std::experimental::optional<WorkItem>
-            remove_if(std::function<bool(const WorkItem&)>);
-
             void for_each(std::function<void(const WorkItem&)>);
 
+            /**
+             * Removes found element
+             *
+             * @return optional found element
+             */
             std::experimental::optional<WorkItem>
             find_if(std::function<bool(const WorkItem & )>);
 
