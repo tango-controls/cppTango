@@ -765,9 +765,9 @@ namespace CxxTest
         }
 
         template <typename DeviceProxy, typename DevFailed, typename CriticalException, typename Except>
-		static void stop_poll_att_no_except(DeviceProxy* dev, const char *att_name) {
+		static void stop_poll_att_no_except(DeviceProxy* dev, const string& att_name) {
 			try {
-				dev->stop_poll_attribute(att_name);
+				dev->stop_poll_attribute(att_name.c_str());
 			}
 			catch (DevFailed &) {}
 			catch (CriticalException &e) {

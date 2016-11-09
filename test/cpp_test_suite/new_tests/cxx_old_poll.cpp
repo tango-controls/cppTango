@@ -37,6 +37,8 @@ void stop_poll_cmd_no_except(DeviceProxy *, const char *);
 
 void del_device_no_error(Database &, string&);
 
+const auto stop_poll_att_no_except = CxxTest::TangoPrinter::stop_poll_att_no_except<DeviceProxy, DevFailed, CORBA::Exception, Except>;
+
 class OldPollTestSuite__loop : public CxxTest::TestSuite {
 protected:
     DeviceProxy *device;
@@ -126,7 +128,7 @@ public:
             device->set_source(Tango::CACHE_DEV);
 
         if (CxxTest::TangoPrinter::is_restore_set("dev2_poll_PollLong_attr_1000"))
-            CxxTest::TangoPrinter::stop_poll_att_no_except(new DeviceProxy(device2_name), "PollLong_attr");
+            stop_poll_att_no_except(new DeviceProxy(device2_name), "PollLong_attr");
 
 //	cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
         stop_poll_cmd_no_except(device, "IOPollStr1");
@@ -137,20 +139,20 @@ public:
         stop_poll_cmd_no_except(device, "State");
         stop_poll_cmd_no_except(device, "Status");
 
-        CxxTest::TangoPrinter::stop_poll_att_no_except(device, "PollLong_attr");
-        CxxTest::TangoPrinter::stop_poll_att_no_except(device, "attr_wrong_type");
+        stop_poll_att_no_except(device, "PollLong_attr");
+        stop_poll_att_no_except(device, "attr_wrong_type");
 
-        CxxTest::TangoPrinter::stop_poll_att_no_except(device, "Long64_attr_rw");
-        CxxTest::TangoPrinter::stop_poll_att_no_except(device, "ULong_spec_attr_rw");
-        CxxTest::TangoPrinter::stop_poll_att_no_except(device, "ULong64_attr_rw");
-        CxxTest::TangoPrinter::stop_poll_att_no_except(device, "State_spec_attr_rw");
-        CxxTest::TangoPrinter::stop_poll_att_no_except(device, "Encoded_attr");
+        stop_poll_att_no_except(device, "Long64_attr_rw");
+        stop_poll_att_no_except(device, "ULong_spec_attr_rw");
+        stop_poll_att_no_except(device, "ULong64_attr_rw");
+        stop_poll_att_no_except(device, "State_spec_attr_rw");
+        stop_poll_att_no_except(device, "Encoded_attr");
 
-        CxxTest::TangoPrinter::stop_poll_att_no_except(device, "event_change_tst");
-        CxxTest::TangoPrinter::stop_poll_att_no_except(device, "event64_change_tst");
-        CxxTest::TangoPrinter::stop_poll_att_no_except(device, "short_attr");
-        CxxTest::TangoPrinter::stop_poll_att_no_except(device, "slow_actuator");
-        CxxTest::TangoPrinter::stop_poll_att_no_except(device, "fast_actuator");
+        stop_poll_att_no_except(device, "event_change_tst");
+        stop_poll_att_no_except(device, "event64_change_tst");
+        stop_poll_att_no_except(device, "short_attr");
+        stop_poll_att_no_except(device, "slow_actuator");
+        stop_poll_att_no_except(device, "fast_actuator");
 
         if (CxxTest::TangoPrinter::is_restore_set("reset_device_server"))
             reset_device_server();
