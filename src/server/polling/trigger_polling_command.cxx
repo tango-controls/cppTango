@@ -23,7 +23,7 @@ void Tango::polling::TriggerPollingCommand::execute(Tango::PollThread &poll_engi
         PollTask poll_task{work_item.value(), poll_engine};
 
 
-        auto future = poll_task();//TODO release future
+        thread(poll_task).detach();
     }
 }
 
