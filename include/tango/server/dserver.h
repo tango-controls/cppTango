@@ -74,7 +74,7 @@ public :
 
 	Tango::DevVarStringArray *polled_device();
 	Tango::DevVarStringArray *dev_poll_status(string &);
-	void add_obj_polling(const Tango::DevVarLongStringArray *,bool with_db_upd = true,int delta_ms = 0);
+	void add_obj_polling(const Tango::DevVarLongStringArray *, bool with_db_upd = true);
 	void upd_obj_polling_period(const Tango::DevVarLongStringArray *,bool with_db_upd = true);
 	void rem_obj_polling(const Tango::DevVarStringArray *,bool with_db_upd = true);
 	void stop_polling() override;

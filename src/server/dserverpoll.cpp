@@ -562,7 +562,8 @@ namespace Tango {
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-    void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin, bool with_db_upd, int delta_ms) {
+    //TODO replace DevVarLongStringArray with actual arguments
+    void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin, bool with_db_upd) {
         NoSyncModelTangoMonitor nosyn_mon(this);
 
         cout4 << "In add_obj_polling method" << endl;
@@ -725,7 +726,7 @@ namespace Tango {
 
         cout4 << "Sending cmd to polling thread" << endl;
 
-        polling::AddObjCommand add_obj_cmd{dev, type, poll_list.size() - 1, delta_ms};
+        polling::AddObjCommand add_obj_cmd{dev, type, poll_list.size() - 1};
 
         th_info->poll_th->execute_cmd(move(add_obj_cmd));
 
@@ -817,7 +818,7 @@ namespace Tango {
 // Also update the polling threads pool conf if one thread has been created by this call
 //
 
-        if ((with_db_upd == true) && (Tango::Util::_UseDb == true)) {
+        if ((with_db_upd == true)) {
             DbData send_data;
             send_data.push_back(DbDatum("polling_threads_pool_conf"));
 

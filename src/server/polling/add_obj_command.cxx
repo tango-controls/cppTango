@@ -17,10 +17,10 @@ using chrono::system_clock;
 
 using namespace Tango;
 
-polling::AddObjCommand::AddObjCommand(DeviceImpl *dev, PollObjType type, long index, int new_upd) : Command(dev, POLL_ADD_OBJ,
-                                                                                                            "", type,
-                                                                                                            index,
-                                                                                                            new_upd) {}
+polling::AddObjCommand::AddObjCommand(DeviceImpl *dev, PollObjType type, long index) : Command(dev, POLL_ADD_OBJ,
+                                                                                               "", type,
+                                                                                               index,
+                                                                                               0) {}
 
 void polling::AddObjCommand::operator()(PollThread &poll_thread) {
     return execute(poll_thread);

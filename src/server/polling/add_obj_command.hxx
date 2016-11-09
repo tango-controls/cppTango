@@ -10,7 +10,7 @@ namespace Tango{
 namespace polling {
     class AddObjCommand : public Command {
     public:
-        AddObjCommand(DeviceImpl *dev, PollObjType type, long index, int new_upd);
+        AddObjCommand(DeviceImpl *dev, PollObjType type, long index);
 
         virtual void operator()(PollThread &poll_thread) override;
 

@@ -226,31 +226,6 @@ namespace Tango {
 
                     k++;
                 }
-
-//
-// Make sure we have a thread in the pool to poll this device
-//
-
-                unsigned long nb_cmd = v_poll_cmd.size();
-                if (nb_cmd != 0) {
-                    bool poll_bef_9 = false;
-                    if (admin_dev->is_polling_bef_9_def() == true)
-                        poll_bef_9 = admin_dev->get_polling_bef_9();
-                    else if (polling_bef_9_def == true)
-                        poll_bef_9 = polling_bef_9;
-
-                    string device_name{v_poll_cmd[0]->svalue[0].in()};
-                    create_poll_thread(device_name, true, poll_bef_9);
-                    first_loop = true;
-
-//
-// Copy the list of commands to send to the threads in its structure
-//
-
-                    auto th_info = get_polling_thread_info_by_id(device_name);
-                    for (size_t k = 0; k < nb_cmd; ++k)
-                        th_info->v_poll_cmd.push_back(v_poll_cmd[k]);
-                }
             }
         }
 
@@ -262,68 +237,44 @@ namespace Tango {
         unsigned long nb_thread = dev_poll_th_map.size();
         cout4 << "POLLING: " << nb_thread << " thread(s) needed for polling from a pool of "
               << get_polling_threads_pool_size() << endl;
-        for_each(dev_poll_th_map.begin(), dev_poll_th_map.end(), [this, &admin_dev](const pair<string, PollingThreadInfoPtr> entry) {
-            auto th_info = entry.second;
-            auto nb_cmd = th_info->v_poll_cmd.size();
-
-            int sleeping_time = th_info->smallest_upd / nb_cmd;
-            int delta_time = 0;
-
-            long delta_os = 5;
-            if (delta_os < sleeping_time)
-                sleeping_time = sleeping_time - delta_os;
-
-            cout4 << "PollConfigureThread: smallest_upd = " << th_info->smallest_upd;
-            cout4 << ", delta_time = " << sleeping_time;
-            cout4 << ", nb_poll_objects = " << nb_cmd << endl;
-
-            for (unsigned long cmd_loop = 0; cmd_loop < nb_cmd; ++cmd_loop) {
-                try {
-                    bool upd_db = false;
-                    int upd = th_info->v_poll_cmd[cmd_loop]->lvalue[0];
-                    if (upd < 0) {
-                        th_info->v_poll_cmd[cmd_loop]->lvalue[0] = -upd;
-                        upd_db = true;
-                    }
-                    admin_dev->add_obj_polling(th_info->v_poll_cmd[cmd_loop], upd_db, delta_time);
+        for (auto cmd : v_poll_cmd) {
+            try {
+                //TODO check if object is already polled instead of catching exception
+                bool upd_db = false;
+                int upd = cmd->lvalue[0];
+                if (upd < 0)
+                {
+                    cmd->lvalue[0] = -upd;
+                    upd_db = true;
                 }
-                catch (Tango::DevFailed &e) {
-                    bool throw_ex = true;
+                admin_dev->add_obj_polling(cmd, upd_db && (Tango::Util::_UseDb == true));
+            }
+            catch (Tango::DevFailed &e) {
+                bool throw_ex = true;
 
-                    if (::strcmp(e.errors[0].reason.in(), API_AlreadyPolled) == 0) {
-                        try {
-                            admin_dev->upd_obj_polling_period(th_info->v_poll_cmd[cmd_loop], false);
-                            throw_ex = false;
-                        }
-                        catch (Tango::DevFailed &) {}
+                if (::strcmp(e.errors[0].reason.in(), API_AlreadyPolled) == 0) {
+                    try {
+                        admin_dev->upd_obj_polling_period(cmd, false);
+                        throw_ex = false;
                     }
-
-                    if (throw_ex == true) {
-                        TangoSys_OMemStream o;
-                        o << "Error when configuring polling for device "
-                          << th_info->v_poll_cmd[cmd_loop]->svalue[0].in();
-                        if (::strcmp(th_info->v_poll_cmd[cmd_loop]->svalue[1].in(), "command") == 0)
-                            o << ", cmd = ";
-                        else
-                            o << ", attr = ";
-                        o << th_info->v_poll_cmd[cmd_loop]->svalue[2].in() << ends;
-                        Except::re_throw_exception(e, (const char *) API_BadConfigurationProperty,
-                                                   o.str(),
-                                                   (const char *) "Util::polling_configure");
-                    }
+                    catch (Tango::DevFailed &) {}
                 }
 
-                if (nb_cmd > 1) {
-                    delta_time = delta_time + sleeping_time;
+                if (throw_ex) {
+                    TangoSys_OMemStream o;
+                    o << "Error when configuring polling for device "
+                      << cmd->svalue[0].in();
+                    if (::strcmp(cmd->svalue[1].in(), "command") == 0)
+                        o << ", cmd = ";
+                    else
+                        o << ", attr = ";
+                    o << cmd->svalue[2].in() << ends;
+                    Except::re_throw_exception(e, API_BadConfigurationProperty,
+                                               o.str(),
+                                               "Util::polling_configure");
                 }
             }
-
-            //
-            // Delete allocated memory
-            //
-            for (size_t i = 0; i < nb_cmd; i++)
-                delete th_info->v_poll_cmd[i];
-        });
+        }
 
 
 
@@ -340,7 +291,7 @@ namespace Tango {
                     v_poll_cmd_fwd[i]->lvalue[0] = -upd;
                     upd_db = true;
                 }
-                admin_dev->add_obj_polling(v_poll_cmd_fwd[i], upd_db, 0);
+                admin_dev->add_obj_polling(v_poll_cmd_fwd[i], upd_db && (Tango::Util::_UseDb == true));
             }
             catch (Tango::DevFailed &e) {
                 bool throw_ex = true;
@@ -719,18 +670,18 @@ namespace Tango {
 // Create a new polling thread and start it
 //
 
-            auto pti_ptr = make_shared<PollingThreadInfo>();
+        auto pti_ptr = make_shared<PollingThreadInfo>();
 
 
-            pti_ptr->poll_th = PollThread::create_instance_ptr("PollEngine[" + device_name + "]", polling_9);
+        pti_ptr->poll_th = PollThread::create_instance_ptr("PollEngine[" + device_name + "]", polling_9);
 
 
-            //TODO revise these code - poll_th_id is now thread::id()
-            pti_ptr->polled_devices.push_back(device_name);
-            pti_ptr->nb_polled_objects++;
+        //TODO revise these code - poll_th_id is now thread::id()
+        pti_ptr->polled_devices.push_back(device_name);
+        pti_ptr->nb_polled_objects++;
 
-            dev_poll_th_map.emplace(device_name, pti_ptr);
-            return pti_ptr;
+        dev_poll_th_map.emplace(device_name, pti_ptr);
+        return pti_ptr;
     }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -744,7 +695,7 @@ namespace Tango {
 //------------------------------------------------------------------------------------------------------------------
 
     void Util::stop_all_polling_threads() {
-        for(auto entry : dev_poll_th_map){
+        for (auto entry : dev_poll_th_map) {
             polling::StopPollingCommand stop_polling{};
 
             entry.second->poll_th->execute_cmd(move(stop_polling));
@@ -762,8 +713,6 @@ namespace Tango {
 
         return result;
     }
-
-
 
 
     PollingThreadInfoPtr Util::get_polling_thread_info_by_id(string device) {
@@ -1307,7 +1256,9 @@ namespace Tango {
 
     void Util::build_first_pool_conf(vector<string> &pool_conf) {
         transform(dev_poll_th_map.begin(), dev_poll_th_map.end(), back_inserter(pool_conf),
-                  [](const pair<string, PollingThreadInfoPtr> entry){ return sequence_to_string(entry.second->polled_devices);}
+                  [](const pair<string, PollingThreadInfoPtr> entry) {
+                      return sequence_to_string(entry.second->polled_devices);
+                  }
         );
     }
 
