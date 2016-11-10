@@ -186,7 +186,7 @@ namespace Tango {
         }
 
         std::experimental::optional<WorkItem>
-        find_work_item(DeviceImpl *, PollObjType, chrono::milliseconds update);
+        find_work_item(DeviceImpl *, PollObjType, chrono::milliseconds update, string cmd_name);
 
         std::experimental::optional<WorkItem>
         find_work_item(DeviceImpl *, PollObjType, const std::string&);

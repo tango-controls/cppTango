@@ -24,9 +24,10 @@ void Tango::polling::AddTriggerCommand::execute(PollThread &poll_engine) {
     PollObj *poll_list_item = dev_->get_poll_obj_list()[index_];//TODO pass as a parameter from dserverpoll
 
     chrono::milliseconds update{poll_list_item->get_upd()};
-    auto work_item = poll_engine.find_work_item(dev_, poll_list_item->get_type(), update);
+    auto work_item = poll_engine.find_work_item(dev_, poll_list_item->get_type(), update, poll_list_item->get_name());
 
     if (work_item) {
+        //TODO should we really return in this case
         work_item->name.push_back(poll_list_item->get_name());
         return;
     }

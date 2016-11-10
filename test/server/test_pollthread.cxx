@@ -55,7 +55,7 @@ Ensure(PollThread, test_find_work_item) {
     };
     instance.add_work_item(item1);
 
-    auto result = instance.find_work_item(mock_device, PollObjType::POLL_ATTR, chrono::milliseconds{100});
+    auto result = instance.find_work_item(mock_device, PollObjType::POLL_ATTR, chrono::milliseconds{100}, std::string());
 
     assert_true(result.operator bool());
 }

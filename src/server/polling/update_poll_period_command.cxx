@@ -40,38 +40,19 @@ void Tango::polling::UpdatePollPeriodCommand::execute(PollThread &poll_engine) {
     auto poll_list = dev_->get_poll_obj_list();
     auto &poll_list_item = *poll_list[index_];
 
-    bool found_in_work_list = false;
-
-    if (new_upd_.count() != 0) {
-        found_in_work_list = update_polled_obj(poll_engine);
+    auto work_item = poll_engine.find_work_item(dev_, obj_type_, obj_name_);
+    if(work_item){
+        if(new_upd_.count() == 0)
+            poll_engine.add_trigger(work_item.value());
+        else
+            update_polled_obj(poll_engine);
     } else {
-
-//
-// First, remove object from polling list and insert it in externally triggered list
-//
-
-        auto work_item = poll_engine.find_work_item(dev_, obj_type_, obj_name_);
-        found_in_work_list = work_item.operator bool();
-
-        WorkItem wo = poll_engine.new_work_item(dev_, poll_list_item);
-
-        poll_engine.add_trigger(wo);
-    }
-
-//
-// If not found in work list, it should be in the externally triggered object. Therefore, remove it from externally
-// triggered list and insert it in work list. If not found in work list and in trig list, we are in case
-// 2-2 as described above (polling thread itself updating polling period of the object it actually polls)
-//
-
-    if (found_in_work_list == false) {
-        auto work_item = poll_engine.find_trigger(dev_, obj_type_, obj_name_);
+        work_item = poll_engine.find_trigger(dev_, obj_type_, obj_name_);
 
         if (work_item) {
             WorkItem wo = poll_engine.new_work_item(dev_, poll_list_item);
             wo.type = obj_type_;
             wo.update = {new_upd_};
-            wo.name.push_back(obj_name_);
             poll_engine.add_work_item(wo);
         } else {
             poll_engine.auto_upd.push_back(new_upd_);
@@ -87,9 +68,8 @@ bool Tango::polling::UpdatePollPeriodCommand::update_polled_obj(PollThread &poll
     if (work_item) {
         work_item->type = obj_type_;
         work_item->update = {new_upd_};
-        work_item->wake_up_date += work_item->update;
 
-        poll_engine.add_work_item(*work_item);
+        poll_engine.add_work_item(work_item.value());
 
 
         poll_engine.reset_tune_counter();

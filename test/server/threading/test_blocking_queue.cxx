@@ -23,6 +23,29 @@ bool item_comparator(const Item& lhs, const Item& rhs){
     return lhs.id < rhs.id;
 }
 
+struct InheritedQueue : public blocking_priority_queue<Item>{
+    InheritedQueue() : blocking_priority_queue(&item_comparator) {}
+
+    experimental::optional<Item> find_if(function<bool(const Item&)> predicate) {
+        Lock lock{queue_guard_};
+        auto it = std::remove_if(c.begin(), c.end(), predicate);
+
+        if (it == c.end()) {
+            return experimental::optional<Item>{};
+        }
+
+        auto result = experimental::make_optional(*it);
+        c.erase(it, c.end());
+        return result;
+    }
+
+
+    void for_each(function<void(const Item &)> f) {
+        Lock lock{queue_guard_};
+        std::for_each(c.begin(), c.end(), f);
+    }
+};
+
 Describe(BlockingQeue);
 BeforeEach(BlockingQeue) {
 
@@ -61,28 +84,7 @@ Ensure(BlockingQeue, test_pop) {
 }
 
 Ensure(BlockingQeue, test_inherite_find_if) {
-    struct InheritedQueue : public blocking_priority_queue<Item>{
-        InheritedQueue() : blocking_priority_queue(&item_comparator) {}
 
-        experimental::optional<Item> find_if(function<bool(const Item&)> predicate) {
-            Lock lock{queue_guard_};
-            auto it = std::remove_if(c.begin(), c.end(), predicate);
-
-            if (it == c.end()) {
-                return experimental::optional<Item>{};
-            }
-
-            auto result = experimental::make_optional(*it);
-            c.erase(it, c.end());
-            return result;
-        }
-
-
-        void for_each(function<void(const Item &)> f) {
-            Lock lock{queue_guard_};
-            std::for_each(c.begin(), c.end(), f);
-        }
-    };
 
     InheritedQueue instance{};
 
@@ -112,12 +114,40 @@ Ensure(BlockingQeue, test_inherite_find_if) {
     });
 }
 
+Ensure(BlockingQeue, test_remove_update_push) {
+    InheritedQueue instance{};
+
+
+    instance.push({0, "Hello"});
+    instance.push({3, "!!!"});
+    instance.push({2, "World"});
+    instance.push({1, "  "});
+    instance.push({4, "World"});
+
+
+
+    auto result = instance.find_if([](const Item& item){ return item.value == "World";});
+
+    assert_true(result.operator bool());
+    result->id = 10;
+    result->value = "WAAAAGH!!!";
+
+    instance.push(result.value());
+
+    assert_equal(instance.size(), 4);
+    auto top = instance.pop();
+
+    assert_equal(top.id, 10);
+    assert_string_equal(top.value.c_str(), "WAAAAGH!!!");
+}
+
 int main(int argc, char **argv) {
 
     TestSuite *suite = create_test_suite();
     add_test_with_context(suite, BlockingQeue, test_push);
     add_test_with_context(suite, BlockingQeue, test_pop);
     add_test_with_context(suite, BlockingQeue, test_inherite_find_if);
+    add_test_with_context(suite, BlockingQeue, test_remove_update_push);
     if (argc > 1) {
         return run_single_test(suite, argv[1], create_text_reporter());
     }

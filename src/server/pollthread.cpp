@@ -155,17 +155,23 @@ namespace Tango {
     }
 
     std::experimental::optional<WorkItem>
-    PollThread::find_work_item(DeviceImpl *device, PollObjType type, milliseconds update) {
+    PollThread::find_work_item(DeviceImpl *device, PollObjType type, milliseconds update, string cmd_name) {
         experimental::optional<WorkItem> optional_work_item{};
         if (polling_bef_9) return optional_work_item;
 
         bool is_attr = type == POLL_ATTR;
         long idl_version = device->get_dev_idl_version();
-        if (is_attr && idl_version >= 4) {
+        //TODO split method for attributes and commands
+        if (type == POLL_CMD) {
+            return works->find_if([device, update, type, cmd_name](const WorkItem &work_item) {
+                return work_item.dev == device && work_item.update == update && work_item.type == type && work_item.name[0] == cmd_name;
+            });
+        } else if ((is_attr && idl_version >= 4)) {
             return works->find_if([device, update, type](const WorkItem &work_item) {
                 return work_item.dev == device && work_item.update == update && work_item.type == type;
             });
         }
+        //not found
         return optional_work_item;
     }
 
@@ -188,13 +194,14 @@ namespace Tango {
             oss << work_item.name.back();
 
             cout5 << "Dev name = " << work_item.dev->get_name() << ", obj name(s) = " << oss.str()
-                  << ", next wake_up at " << +work_item.wake_up_date.count() << endl;
+                  << ", update = " << work_item.update.count() << ", next wake_up at " << +work_item.wake_up_date.count() << endl;
         });
     }
 
     //TODO &&
     void PollThread::add_work_item(WorkItem &new_work) {
-        experimental::optional<WorkItem> work_item = find_work_item(new_work.dev, new_work.type, new_work.update);
+        experimental::optional<WorkItem> work_item =
+                find_work_item(new_work.dev, new_work.type, new_work.update, new_work.name[0]);
 
         if (work_item) {
             new_work.name.insert(new_work.name.end(),work_item->name.begin(), work_item->name.end());

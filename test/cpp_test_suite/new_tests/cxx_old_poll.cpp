@@ -12,7 +12,7 @@ using namespace Tango;
 using namespace std;
 
 #define cout cout << "\t"
-#define BASIC_NB_POLL        16
+const int kNumberOfPolledObjects{15};
 #define TEST_CLASS "devTest"
 
 #undef SUITE_NAME
@@ -615,7 +615,7 @@ public:
         vector <string> *poll_str;
         TS_ASSERT_THROWS_NOTHING(poll_str = device->polling_status());
 
-        unsigned long nb_polled = BASIC_NB_POLL;
+        unsigned long nb_polled = kNumberOfPolledObjects;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -668,7 +668,7 @@ public:
         vector <string> v_str;
         d_received >> v_str;
 
-        auto nb_polled = BASIC_NB_POLL;
+        auto nb_polled = kNumberOfPolledObjects;
         for (unsigned int i = 0; i < v_str.size(); i++) {
             if (v_str[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -756,7 +756,7 @@ public:
             cout << endl;
         }
 
-        auto nb_polled = BASIC_NB_POLL + 1;
+        auto nb_polled = kNumberOfPolledObjects + 1;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -820,7 +820,7 @@ public:
             cout << endl;
         }
 
-        auto nb_polled = BASIC_NB_POLL;
+        auto nb_polled = kNumberOfPolledObjects;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -881,7 +881,7 @@ public:
             cout << endl;
         }
 
-        auto nb_polled = BASIC_NB_POLL + 1;
+        auto nb_polled = kNumberOfPolledObjects + 1;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -916,7 +916,7 @@ public:
             cout << endl;
         }
 
-        auto nb_polled = BASIC_NB_POLL;
+        auto nb_polled = kNumberOfPolledObjects;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
