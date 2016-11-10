@@ -20,10 +20,10 @@ void Tango::polling::TriggerPollingCommand::execute(Tango::PollThread &poll_engi
     experimental::optional<WorkItem> work_item = poll_engine.find_trigger(dev_, obj_type_, obj_name_);
 
     if(work_item){
-        PollTask poll_task{work_item.value(), poll_engine};
+        //TODO release tango monitor so that this request does not block the others
+            PollTask poll_task{work_item.value(), poll_engine};
 
-
-        thread(poll_task).detach();
+            poll_task.execute();
     }
 }
 
