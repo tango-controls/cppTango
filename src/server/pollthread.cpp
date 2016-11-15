@@ -204,9 +204,9 @@ namespace Tango {
                 find_work_item(new_work.dev, new_work.type, new_work.update, new_work.name[0]);
 
         if (work_item) {
-            assert(work_item->dev == new_work.dev);
-            assert(work_item->type == new_work.type);
-            assert(work_item->update == new_work.update);
+//            assert(work_item->dev == new_work.dev);
+//            assert(work_item->type == new_work.type);
+//            assert(work_item->update == new_work.update);
             new_work.name.insert(new_work.name.end(),work_item->name.begin(), work_item->name.end());
         }
 

@@ -368,8 +368,9 @@ namespace Tango {
 //
 //-------------------------------------------------------------------------------------------------------------------
 
+    //TODO merge with trigger_cmd_polling
     void Util::trigger_attr_polling(Tango::DeviceImpl *dev, const string &name) {
-        cout4 << "Sending trigger to polling thread" << endl;
+
 
 //
 // Check that the device is polled
@@ -419,17 +420,15 @@ namespace Tango {
 // Send command to the polling thread but wait in case of previous cmd still not executed
 //
 
+        auto locked_counter = dev->get_dev_monitor().get_locking_ctr();
+        while(locked_counter-- != 0)
+            dev->get_dev_monitor().rel_monitor();
+
         cout4 << "Sending trigger to polling thread" << endl;
 
         polling::TriggerPollingCommand attr_trigger{dev, move(obj_name), Tango::POLL_ATTR};
 
         th_info->poll_th->execute_cmd(move(attr_trigger));
-
-        cout4 << "Trigger sent to polling thread" << endl;
-
-//
-// TODO Wait for thread to execute command
-//
 
         cout4 << "Thread cmd normally executed" << endl;
     }
@@ -451,8 +450,8 @@ namespace Tango {
 //
 //------------------------------------------------------------------------------------------------------------------
 
+    //TODO merge with trigger_attr_polling
     void Util::trigger_cmd_polling(Tango::DeviceImpl *dev, const string &name) {
-        cout4 << "Sending trigger to polling thread" << endl;
 
 //
 // Check that the device is polled
@@ -502,15 +501,17 @@ namespace Tango {
 // Send command to the polling thread but wait in case of previous cmd still not executed
 //
 
+        //there is no race condition as this device is either already blocked in the stack trace (command_inout)
+        //  or it has no_sync, i.e. locked_ctr == 0
+        auto locked_counter = dev->get_dev_monitor().get_locking_ctr();
+        while(locked_counter-- != 0)
+            dev->get_dev_monitor().rel_monitor();
+
+        cout4 << "Sending trigger to polling thread" << endl;
+
         polling::TriggerPollingCommand cmd_trigger{dev, move(obj_name), Tango::POLL_CMD};
 
         th_info->poll_th->execute_cmd(move(cmd_trigger));
-
-        cout4 << "Trigger sent to polling thread" << endl;
-
-//
-// TODO Wait for thread to execute command
-//
 
         cout4 << "Thread cmd normally executed" << endl;
     }
