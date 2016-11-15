@@ -33,7 +33,7 @@ void Tango::polling::PollingThread::run() {
 
 
         engine_.adjust_work_items(tmp);
-        engine_.tune_work_items_list();
+//        engine_.tune_work_items_list();
 
         bool discarded = engine_.discard_late_items();
         auto sleep = engine_.compute_next_sleep(discarded);
