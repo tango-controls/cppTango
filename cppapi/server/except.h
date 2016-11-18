@@ -26,7 +26,7 @@
 // You should have received a copy of the GNU Lesser General Public License along with Tango.
 // If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
+// $Revision: 30238 $
 //
 //==================================================================================================================
 
@@ -63,8 +63,8 @@ class DeviceImpl;
  * Container class for all exception related methods. Most of these methods are
  * static methods
  *
- * $Author$
- * $Revision$
+ * $Author: bourtemb $
+ * $Revision: 30238 $
  *
  * @headerfile tango.h
  * @ingroup Server
@@ -487,8 +487,8 @@ public:
 		errors.length(1);
 		errors[0].severity = sever;
 		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(desc);
-		errors[0].desc = CORBA::string_dup(origin.c_str());
+		errors[0].origin = CORBA::string_dup(origin.c_str());
+		errors[0].desc = CORBA::string_dup(desc);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -694,10 +694,9 @@ public:
 		errors.length(1);
 		errors[0].severity = sever;
 		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(desc);
+		errors[0].origin = CORBA::string_dup(origin.c_str());
+		errors[0].desc = CORBA::string_dup(desc);
 		delete[] desc;
-		errors[0].desc = CORBA::string_dup(origin.c_str());
-
 		throw Tango::DevFailed(errors);
 	}
 
@@ -841,9 +840,9 @@ public:
 		errors[0].severity = sever;
 		errors[0].reason = CORBA::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(desc);
+		errors[0].origin = CORBA::string_dup(origin.c_str());
+		errors[0].desc = CORBA::string_dup(desc);
 		delete[] desc;
-		errors[0].desc = CORBA::string_dup(origin.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -1259,8 +1258,8 @@ public:
 
 		ex.errors[nb_err].severity = sever;
 		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(desc);
-		ex.errors[nb_err].desc = CORBA::string_dup(origin.c_str());
+		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = CORBA::string_dup(desc);
 
 		throw ex;
 	}
@@ -1403,8 +1402,8 @@ public:
 
 		ex.errors[nb_err].severity = sever;
 		ex.errors[nb_err].reason = CORBA::string_dup(reason);
-		ex.errors[nb_err].origin = CORBA::string_dup(desc);
-		ex.errors[nb_err].desc = CORBA::string_dup(origin.c_str());
+		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = CORBA::string_dup(desc);
 
 		throw ex;
 	}
@@ -1478,9 +1477,9 @@ public:
 
 		ex.errors[nb_err].severity = sever;
 		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(desc);
+		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = CORBA::string_dup(desc);
 		delete[] desc;
-		ex.errors[nb_err].desc = CORBA::string_dup(origin.c_str());
 
 		throw ex;
 	}
@@ -1633,9 +1632,9 @@ public:
 		ex.errors[nb_err].severity = sever;
 		ex.errors[nb_err].reason = CORBA::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(desc);
+		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = CORBA::string_dup(desc);
 		delete[] desc;
-		ex.errors[nb_err].desc = CORBA::string_dup(origin.c_str());
 
 		throw ex;
 	}
