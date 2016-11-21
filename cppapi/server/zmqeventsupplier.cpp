@@ -1224,7 +1224,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 				}
 				else if (data_discr == ATT_NO_DATA)
 				{
-                    nb_data = 0;
+					nb_data = 0;
 				}
 				else
 				{
