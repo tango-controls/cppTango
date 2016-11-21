@@ -1222,6 +1222,10 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 					if (nb_data > LARGE_DATA_THRESHOLD_ENCODED)
 						large_data = true;
 				}
+				else if (data_discr == ATT_NO_DATA)
+				{
+                    nb_data = 0;
+				}
 				else
 				{
 					nb_data = ((int *)mess_ptr)[1];
