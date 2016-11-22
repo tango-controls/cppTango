@@ -2,6 +2,7 @@ prefix = @CMAKE_INSTALL_PREFIX@
 exec_prefix = ${prefix}
 includedir = ${prefix}/include
 libdir = ${prefix}/@CMAKE_INSTALL_LIBDIR@
+devices_dir = ${prefix}/@CMAKE_INSTALL_LIBDIR@/tango
 
 Name: @CMAKE_PROJECT_NAME@
 Description: TANGO client/server API library
