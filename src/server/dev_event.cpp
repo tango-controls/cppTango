@@ -2032,25 +2032,17 @@ void DeviceImpl::push_data_ready_event (const string &attr_name, Tango::DevLong 
 // Get event suppliers
 //
 
-    EventSupplier *event_supplier_nd = NULL;
     EventSupplier *event_supplier_zmq = NULL;
 
-	if (attr.use_notifd_event() == true)
-		event_supplier_nd = tg->get_notifd_event_supplier();
 	if (attr.use_zmq_event() == true)
 		event_supplier_zmq = tg->get_zmq_event_supplier();
 
-	if ((event_supplier_nd == NULL) && (event_supplier_zmq == NULL))
+	if ((event_supplier_zmq == NULL))
 		return;
 
 //
 // Push the event
 //
-
-    if (event_supplier_nd != NULL)
-    {
-        event_supplier_nd->push_att_data_ready_event(this,attr_name,attr.get_data_type(),ctr);
-    }
 
     if (event_supplier_zmq != NULL)
     {

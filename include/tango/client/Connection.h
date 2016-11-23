@@ -106,13 +106,13 @@ namespace Tango {
 
 		void check_and_reconnect(Tango::DevSource &, Tango::AccessControlType &);
 
-		long add_asyn_request(CORBA::Request_ptr, TgRequest::ReqType);
+		long add_asyn_request(TangoRequest_ptr, TgRequest::ReqType);
 
 		void remove_asyn_request(long);
 
-		void add_asyn_cb_request(CORBA::Request_ptr, CallBack *, Connection *, TgRequest::ReqType);
+		void add_asyn_cb_request(TangoRequest_ptr, CallBack *, Connection *, TgRequest::ReqType);
 
-		void remove_asyn_cb_request(Connection *, CORBA::Request_ptr);
+		void remove_asyn_cb_request(Connection *, TangoRequest_ptr);
 
 		long get_pasyn_cb_ctr();
 
@@ -555,7 +555,7 @@ namespace Tango {
 ///@privatesection
 		virtual string dev_name()=0;
 
-		Connection(CORBA::ORB *orb = NULL);
+		Connection(TangORB *orb = NULL);
 
 		Connection(bool dummy);
 
@@ -603,11 +603,11 @@ namespace Tango {
 // Asynchronous methods
 //
 
-		void Cb_Cmd_Request(CORBA::Request_ptr, Tango::CallBack *);
+		void Cb_Cmd_Request(TangoRequest_ptr, Tango::CallBack *);
 
-		void Cb_ReadAttr_Request(CORBA::Request_ptr, Tango::CallBack *);
+		void Cb_ReadAttr_Request(TangoRequest_ptr, Tango::CallBack *);
 
-		void Cb_WriteAttr_Request(CORBA::Request_ptr req, Tango::CallBack *cb_ptr);
+		void Cb_WriteAttr_Request(TangoRequest_ptr req, Tango::CallBack *cb_ptr);
 
 		void dec_asynch_counter(asyn_req_type ty);
 

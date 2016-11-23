@@ -78,8 +78,8 @@ Connection::ConnectionExt &Connection::ConnectionExt::operator=(TANGO_UNUSED(con
 // Connection::Connection() - constructor to manage a connection to a device
 //
 //-----------------------------------------------------------------------------
-
-Connection::Connection(ORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
+//TODO replace raw ptr
+Connection::Connection(TangORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
 				    timeout(CLNT_TIMEOUT),
 				    version(0),source(Tango::CACHE_DEV),ext(new ConnectionExt()),
 				    tr_reco(true),prev_failed(false),prev_failed_t0(0.0),
@@ -97,27 +97,15 @@ Connection::Connection(ORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
 // If the proxy is created from inside a device server, use the server orb
 //
 
-	ApiUtil *au = ApiUtil::instance();
-	if ((orb_in == NULL) && (CORBA::is_nil(au->get_orb()) == true))
-	{
-		if (au->in_server() == true)
-			ApiUtil::instance()->set_orb(Util::instance()->get_orb());
-		else
-			ApiUtil::instance()->create_orb();
-	}
-	else
-	{
-		if (orb_in != NULL)
-			au->set_orb(orb_in);
-	}
+        ApiUtil::instance()->orb_provider(orb_in);
 
 //
 // Get user connect timeout if one is defined
 //
 
-	int ucto = au->get_user_connect_timeout();
-	if (ucto != -1)
-		user_connect_timeout = ucto;
+	int userConnectTimeout = ApiUtil::instance()->get_user_connect_timeout();
+	if (userConnectTimeout != -1)
+		user_connect_timeout = userConnectTimeout;
 }
 
 
@@ -381,7 +369,7 @@ void Connection::set_source(Tango::DevSource sou)
 
 //-----------------------------------------------------------------------------
 //
-// Connection::connect() - method to create connection to a TANGO device
+// Connection::connect() - method to create_or_get connection to a TANGO device
 //		using its stringified CORBA reference i.e. IOR or corbaloc
 //
 //-----------------------------------------------------------------------------
@@ -398,7 +386,7 @@ void Connection::connect(string &corba_name)
 		{
 
 			Object_var obj;
-			obj = ApiUtil::instance()->get_orb()->string_to_object(corba_name.c_str());
+			obj = ApiUtil::instance()->orb_provider()->get()->string_to_object(corba_name.c_str());
 
 //
 // Narrow CORBA string name to CORBA object
@@ -1575,7 +1563,7 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 //
 //-----------------------------------------------------------------------------
 
-DeviceProxy::DeviceProxy (string &name, CORBA::ORB *orb) : Connection(orb),
+DeviceProxy::DeviceProxy (string &name, TangORB*orb) : Connection(orb),
 							   db_dev(NULL),
 							   is_alias(false),
 							   adm_device(NULL),
@@ -1585,7 +1573,7 @@ DeviceProxy::DeviceProxy (string &name, CORBA::ORB *orb) : Connection(orb),
 	real_constructor(name,true);
 }
 
-DeviceProxy::DeviceProxy (const char *na, CORBA::ORB *orb) : Connection(orb),
+DeviceProxy::DeviceProxy (const char *na, TangORB*orb) : Connection(orb),
 							     db_dev(NULL),
 								 is_alias(false),
 							     adm_device(NULL),
@@ -1596,7 +1584,7 @@ DeviceProxy::DeviceProxy (const char *na, CORBA::ORB *orb) : Connection(orb),
 	real_constructor(name,true);
 }
 
-DeviceProxy::DeviceProxy (string &name, bool need_check_acc,CORBA::ORB *orb) : Connection(orb),
+DeviceProxy::DeviceProxy (string &name, bool need_check_acc,TangORB*orb) : Connection(orb),
 								 db_dev(NULL),
 								 is_alias(false),
 								 adm_device(NULL),
@@ -1606,7 +1594,7 @@ DeviceProxy::DeviceProxy (string &name, bool need_check_acc,CORBA::ORB *orb) : C
 	real_constructor(name,need_check_acc);
 }
 
-DeviceProxy::DeviceProxy (const char *na, bool need_check_acc,CORBA::ORB *orb) : Connection(orb),
+DeviceProxy::DeviceProxy (const char *na, bool need_check_acc,TangORB*orb) : Connection(orb),
 								 db_dev(NULL),
 								 is_alias(false),
 								 adm_device(NULL),
@@ -7703,26 +7691,7 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 //
 
     int ret;
-	try
-	{
         ret = api_ptr->get_zmq_event_consumer()->subscribe_event(this, attr_name,event, callback, filters, stateless);
-	}
-	catch (DevFailed &e)
-	{
-	    string reason(e.errors[0].reason.in());
-	    if (reason == API_CommandNotFound)
-	    {
-            if (api_ptr->get_notifd_event_consumer() == NULL)
-            {
-                api_ptr->create_notifd_event_consumer();
-            }
-
-            ret = api_ptr->get_notifd_event_consumer()->subscribe_event(this, attr_name,event, callback, filters, stateless);
-	    }
-	    else
-            throw;
-	}
-
 	return ret;
 }
 
@@ -7752,26 +7721,7 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 //
 
     int ret;
-	try
-	{
         ret = api_ptr->get_zmq_event_consumer()->subscribe_event(this, attr_name,event, event_queue_size, filters, stateless);
-	}
-	catch (DevFailed &e)
-	{
-	    string reason(e.errors[0].reason.in());
-	    if (reason == API_CommandNotFound)
-	    {
-            if (api_ptr->get_notifd_event_consumer() == NULL)
-            {
-                api_ptr->create_notifd_event_consumer();
-            }
-
-            ret = api_ptr->get_notifd_event_consumer()->subscribe_event(this, attr_name,event, event_queue_size, filters, stateless);
-	    }
-	    else
-            throw;
-	}
-
 	return ret;
 }
 
@@ -7873,8 +7823,6 @@ void DeviceProxy::unsubscribe_event (int event_id)
     }
 	else
 	{
-        if (api_ptr->get_notifd_event_consumer() == NULL)
-        {
             TangoSys_OMemStream desc;
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
@@ -7883,8 +7831,6 @@ void DeviceProxy::unsubscribe_event (int event_id)
                             (const char*)"API_EventConsumer",
                             desc.str(),
                             (const char*)"DeviceProxy::unsubscribe_event()");
-        }
-        api_ptr->get_notifd_event_consumer()->unsubscribe_event(event_id);
 	}
 }
 
@@ -7922,8 +7868,6 @@ void DeviceProxy::get_events (int event_id, EventDataList &event_list)
     }
     else
     {
-        if (api_ptr->get_notifd_event_consumer() == NULL)
-        {
             TangoSys_OMemStream desc;
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
@@ -7932,8 +7876,6 @@ void DeviceProxy::get_events (int event_id, EventDataList &event_list)
                             (const char*)"API_EventConsumer",
                             desc.str(),
                             (const char*)"DeviceProxy::get_events()");
-        }
-        api_ptr->get_notifd_event_consumer()->get_events(event_id,event_list);
     }
 }
 
@@ -7970,15 +7912,11 @@ void DeviceProxy::get_events (int event_id, AttrConfEventDataList &event_list)
     }
     else
     {
-        if (api_ptr->get_notifd_event_consumer() == NULL)
-        {
             TangoSys_OMemStream desc;
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << ends;
             Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
-        }
-        api_ptr->get_notifd_event_consumer()->get_events(event_id,event_list);
     }
 }
 
@@ -8000,15 +7938,11 @@ void DeviceProxy::get_events (int event_id, DataReadyEventDataList &event_list)
     }
     else
     {
-        if (api_ptr->get_notifd_event_consumer() == NULL)
-        {
             TangoSys_OMemStream desc;
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << ends;
             Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
-        }
-        api_ptr->get_notifd_event_consumer()->get_events(event_id,event_list);
     }
 }
 
@@ -8093,8 +8027,6 @@ void DeviceProxy::get_events (int event_id, CallBack *cb)
     }
     else
     {
-        if (api_ptr->get_notifd_event_consumer() == NULL)
-        {
             TangoSys_OMemStream desc;
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
@@ -8103,8 +8035,6 @@ void DeviceProxy::get_events (int event_id, CallBack *cb)
                             (const char*)"API_EventConsumer",
                             desc.str(),
                             (const char*)"DeviceProxy::get_events()");
-        }
-        api_ptr->get_notifd_event_consumer()->get_events(event_id,cb);
     }
 }
 
@@ -8139,8 +8069,6 @@ int  DeviceProxy::event_queue_size(int event_id)
     }
     else
     {
-        if (api_ptr->get_notifd_event_consumer() == NULL)
-        {
             TangoSys_OMemStream desc;
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
@@ -8149,9 +8077,6 @@ int  DeviceProxy::event_queue_size(int event_id)
                             (const char*)"API_EventConsumer",
                             desc.str(),
                             (const char*)"DeviceProxy::event_queue_size()");
-        }
-        else
-            ev = api_ptr->get_notifd_event_consumer();
     }
 
     return ev->event_queue_size(event_id);
@@ -8188,8 +8113,6 @@ bool DeviceProxy::is_event_queue_empty(int event_id)
     }
     else
     {
-        if (api_ptr->get_notifd_event_consumer() == NULL)
-        {
             TangoSys_OMemStream desc;
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
@@ -8198,9 +8121,6 @@ bool DeviceProxy::is_event_queue_empty(int event_id)
                             (const char*)"API_EventConsumer",
                             desc.str(),
                             (const char*)"DeviceProxy::is_event_queue_empty()");
-        }
-        else
-            ev = api_ptr->get_notifd_event_consumer();
     }
 
     return (ev->is_event_queue_empty(event_id));
@@ -8237,8 +8157,6 @@ TimeVal DeviceProxy::get_last_event_date(int event_id)
     }
     else
     {
-        if (api_ptr->get_notifd_event_consumer() == NULL)
-        {
             TangoSys_OMemStream desc;
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
@@ -8247,9 +8165,6 @@ TimeVal DeviceProxy::get_last_event_date(int event_id)
                             (const char*)"API_EventConsumer",
                             desc.str(),
                             (const char*)"DeviceProxy::get_last_event_date()");
-        }
-        else
-            ev = api_ptr->get_notifd_event_consumer();
     }
 
     return (ev->get_last_event_date(event_id));
@@ -9536,13 +9451,9 @@ void DeviceProxy::local_import(string &local_ior)
                 }
 
 				Tango::Device_var d_var = dev_list[lo]->get_d_var();
-				CORBA::ORB_ptr orb_ptr = tg->get_orb();
+				TangORB_var orb_ptr = tg->get_orb();
 
-				char *s = orb_ptr->object_to_string(d_var);
-				local_ior = s;
-
-				CORBA::release(orb_ptr);
-				CORBA::string_free(s);
+//TODO				local_ior = orb_ptr->object_to_string(d_var);
 
 				return;
 			}

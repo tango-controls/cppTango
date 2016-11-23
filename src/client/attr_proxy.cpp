@@ -1357,26 +1357,7 @@ int AttributeProxy::subscribe_event (EventType event, CallBack *callback,
 
 
 	int ret;
-	try
-	{
         ret = api_ptr->get_zmq_event_consumer()->subscribe_event(dev_proxy,attr_name, event, callback, filters, stateless);
-	}
-	catch (DevFailed &e)
-	{
-	    string reason(e.errors[0].reason.in());
-	    if (reason == API_CommandNotFound)
-	    {
-            if (ApiUtil::instance()->get_notifd_event_consumer() == NULL)
-            {
-                ApiUtil::instance()->create_notifd_event_consumer();
-            }
-
-            ret = api_ptr->get_notifd_event_consumer()->subscribe_event(dev_proxy,attr_name, event, callback, filters, stateless);
-	    }
-	    else
-            throw;
-	}
-
 	return ret;
 }
 
@@ -1404,24 +1385,7 @@ int AttributeProxy::subscribe_event (EventType event, int event_queue_size,
 	}
 
     int ret;
-    try
-    {
         ret = api_ptr->get_zmq_event_consumer()->subscribe_event(dev_proxy,attr_name, event, event_queue_size, filters, stateless);
-    }
-    catch (DevFailed &e)
-    {
-        string reason(e.errors[0].reason.in());
-        if (reason == API_CommandNotFound)
-        {
-            if (api_ptr->get_notifd_event_consumer() == NULL)
-            {
-                api_ptr->create_notifd_event_consumer();
-            }
-            ret = api_ptr->get_notifd_event_consumer()->subscribe_event(dev_proxy,attr_name, event, event_queue_size, filters, stateless);
-        }
-        else
-            throw;
-    }
 	return ret;
 }
 

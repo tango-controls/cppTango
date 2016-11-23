@@ -36,6 +36,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <tango.h>
 #include <tango/client/eventconsumer.h>
 #include <tango/client/api_util.tpp>
+#include <tango/frontend/request.hxx>
 
 #ifndef _TG_WINDOWS_
 	#include <sys/types.h>
@@ -91,10 +92,9 @@ void _t_handler (TANGO_UNUSED(int signum))
 //------------------------------------------------------------------------------------------------------------------
 
 ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false),ext(new ApiUtilExt),
-notifd_event_consumer(NULL),cl_pid(0),user_connect_timeout(-1),zmq_event_consumer(NULL),user_sub_hwm(-1)
+cl_pid(0),user_connect_timeout(-1),zmq_event_consumer(NULL),user_sub_hwm(-1),
+                   tango_orb_provider_ptr_{new TangORBProvider{TangORB_init()}}
 {
-	_orb = CORBA::ORB::_nil();
-
 //
 // Check if it is created from a device server
 //
@@ -205,11 +205,10 @@ ApiUtil::~ApiUtil()
 	if (ext != NULL)
 #endif
 	{
-		if ((notifd_event_consumer != NULL) || (zmq_event_consumer != NULL))
+		if ((zmq_event_consumer != NULL))
 		{
 			event_was_used = true;
 			leavefunc();
-			NotifdEventConsumer::cleanup();
 			ZmqEventConsumer::cleanup();
 		}
 #ifndef HAS_UNIQUE_PTR
@@ -230,19 +229,7 @@ ApiUtil::~ApiUtil()
 // Properly shutdown the ORB
 //
 
-	if ((in_serv == false) && (CORBA::is_nil(_orb) == false))
-	{
-		if (event_was_used == false)
-		{
-			try
-			{
-				_orb->destroy();
-			}
-			catch (...) {}
-		}
-		CORBA::release(_orb);
-	}
-
+    this->orb_provider()->destroy();
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -281,90 +268,6 @@ void ApiUtil::set_sig_handler()
 #endif
 }
 
-//------------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		ApiUtil::create_orb()
-//
-// description :
-//		Create the CORBA orb object
-//
-//-------------------------------------------------------------------------------------------------------------------
-
-void ApiUtil::create_orb()
-{
-	int _argc;
-	char **_argv;
-
-//
-// pass dummy arguments to init() because we don't have access to argc and argv
-//
-
-	_argc = 1;
-	_argv = (char**)malloc(sizeof(char*));
-	_argv[0] = (char*)"dummy";
-
-//
-// Get user signal handler for SIGPIPE (ORB_init call install a SIG_IGN for SIGPIPE. This could be annoying in case
-// the user uses SIGPIPE)
-//
-
-#ifndef _TG_WINDOWS_
-	struct sigaction sa;
-	sa.sa_handler = NULL;
-
-	if (sigaction(SIGPIPE,NULL,&sa) == -1)
-		sa.sa_handler = NULL;
-#endif
-
-//
-// Init the ORB
-// Starting with omniORB 4.2, we need to add the throwTransientOnTimeout option for compatibility
-//
-
-    bool omni_42_compat = false;
-    DevULong omni_vers_hex = omniORB::versionHex();
-    if (omni_vers_hex > 0x04020000)
-        omni_42_compat = true;
-
-	const char *options[][2] = {
-			{"clientCallTimeOutPeriod",CLNT_TIMEOUT_STR},
-			{"verifyObjectExistsAndType","0"},
-			{"maxGIOPConnectionPerServer",MAX_GIOP_PER_SERVER},
-			{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
-            {"throwTransientOnTimeOut","1"},
-			{0,0}};
-
-    if (omni_42_compat == false)
-    {
-        int nb_opt = sizeof(options) / sizeof (char *[2]);
-        options[nb_opt - 2][0] = NULL;
-        options[nb_opt - 2][1] = NULL;
-    }
-
-	_orb = CORBA::ORB_init(_argc,_argv,"omniORB4",options);
-
-	free(_argv);
-
-//
-// Restore SIGPIPE handler
-//
-
-#ifndef _TG_WINDOWS_
-	if (sa.sa_handler != NULL)
-	{
-		struct sigaction sb;
-
-		sb = sa;
-
-		if (sigaction(SIGPIPE,&sb,NULL) == -1)
-		{
-			cerr << "Can re-install user signal handler for SIGPIPE!" << endl;
-		}
-	}
-#endif
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -386,7 +289,7 @@ int ApiUtil::get_db_ind()
 	}
 
 //
-// The database object has not been found, create it
+// The database object has not been found, create_or_get it
 //
 
 	db_vect.push_back(new Database());
@@ -409,7 +312,7 @@ int ApiUtil::get_db_ind(string &host,int port)
 	}
 
 //
-// The database object has not been found, create it
+// The database object has not been found, create_or_get it
 //
 
 	db_vect.push_back(new Database(host,port));
@@ -439,10 +342,11 @@ void ApiUtil::get_asynch_replies()
 
 	try
 	{
-		while (_orb->poll_next_response() == true)
+        auto orb = this->tango_orb_provider_ptr_->get();
+		while (orb->poll_next_response() == true)
 		{
-			CORBA::Request_ptr req;
-			_orb->get_next_response(req);
+			TangoRequest_ptr req;
+			orb->get_next_response(req);
 
 //
 // Retrieve this request in the cb request map and mark it as "arrived" in both maps
@@ -573,7 +477,7 @@ void ApiUtil::get_asynch_replies(long call_timeout)
 
 	if (asyn_p_table->get_cb_request_nb() != 0)
 	{
-		CORBA::Request_ptr req;
+		TangoRequest_ptr req;
 
 		if (call_timeout != 0)
 		{
@@ -601,9 +505,10 @@ void ApiUtil::get_asynch_replies(long call_timeout)
 
 				try
 				{
-					if (_orb->poll_next_response() == true)
+                    auto orb = this->orb_provider()->get();
+					if (orb->poll_next_response() == true)
 					{
-						_orb->get_next_response(req);
+						orb->get_next_response(req);
 
 //
 // Retrieve this request in the cb request map and mark it as "arrived" in both maps
@@ -668,7 +573,7 @@ void ApiUtil::get_asynch_replies(long call_timeout)
 			{
 				try
 				{
-					_orb->get_next_response(req);
+					this->orb_provider()->get()->get_next_response(req);
 
 //
 // Retrieve this request in the cb request map and mark it as "arrived" in both maps
@@ -736,7 +641,7 @@ void ApiUtil::set_asynch_cb_sub_model(cb_sub_model mode)
 		{
 
 //
-// In this case, delete the old object in case it is needed, create a new thread and start it
+// In this case, delete the old object in case it is needed, create_or_get a new thread and start it
 //
 
             delete cb_thread_ptr;
@@ -777,19 +682,9 @@ void ApiUtil::set_asynch_cb_sub_model(cb_sub_model mode)
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void ApiUtil::create_notifd_event_consumer()
-{
-    notifd_event_consumer = NotifdEventConsumer::create();
-}
-
 void ApiUtil::create_zmq_event_consumer()
 {
     zmq_event_consumer = ZmqEventConsumer::create();
-}
-
-NotifdEventConsumer *ApiUtil::get_notifd_event_consumer()
-{
-	return notifd_event_consumer;
 }
 
 ZmqEventConsumer *ApiUtil::get_zmq_event_consumer()
@@ -1590,6 +1485,28 @@ void ApiUtil::print_error_message(const char *mess)
 	tmp_date[strlen(tmp_date) - 1] = '\0';
 	cerr << tmp_date << ": " << mess << endl;
 }
+
+    TangORBProvider_var ApiUtil::orb_provider(TangORB* pORB)
+    {
+		if(this->in_serv){
+			struct UseServerProvider : public TangORBProvider {
+				UseServerProvider():TangORBProvider(move(Util::instance()->get_orb())) {};
+			};
+
+			return tango_orb_provider_ptr_ = TangORBProvider_var{new UseServerProvider};
+		}
+
+
+		if(pORB != nullptr) {
+			struct UseProvidedProvider : public TangORBProvider {
+				UseProvidedProvider(TangORB_var tangORB_var) : TangORBProvider(tangORB_var) {};
+			};
+
+			return tango_orb_provider_ptr_ = TangORBProvider_var{new UseProvidedProvider(TangORB_var(pORB))};
+		}
+
+        return this->tango_orb_provider_ptr_;
+    }
 
 //+-----------------------------------------------------------------------------------------------------------------
 //

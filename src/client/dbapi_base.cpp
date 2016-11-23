@@ -55,7 +55,7 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-Database::Database(ORB *orb_in) : Connection(orb_in),
+Database::Database(TangORB *orb_in) : Connection(orb_in),
 ext(new DatabaseExt),
 access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {
@@ -304,7 +304,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 //
 //-----------------------------------------------------------------------------
 
-Database::Database(string &in_host, int in_port, ORB *orb_in) : Connection(orb_in),
+Database::Database(string &in_host, int in_port, TangORB *orb_in) : Connection(orb_in),
 ext(new DatabaseExt),
 access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {

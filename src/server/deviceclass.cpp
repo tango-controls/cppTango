@@ -1046,15 +1046,14 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 	if ((Tango::Util::_UseDb == true) && (Tango::Util::_FileDb == false))
 	{
 		Tango::Util *tg = Tango::Util::instance();
-		CORBA::ORB_ptr orb_ptr = tg->get_orb();
+		TangORB_var orb_ptr = tg->get_orb();
 
-		char *s = orb_ptr->object_to_string(d);
-		string ior_string(s);
+//TODO		string ior_string(orb_ptr->object_to_string(d));
 
 		Tango::DbDevExportInfo exp;
 
 		exp.name = dev->get_name();
-		exp.ior = ior_string;
+//TODO		exp.ior = ior_string;
 		exp.host = tg->get_host_name();
 		exp.pid = tg->get_pid();
 		exp.version = tg->get_version_str();
@@ -1072,13 +1071,8 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 		catch (Tango::CommunicationFailed &)
 		{
 			cerr << "CommunicationFailed while exporting device " << dev->get_name() << endl;
-			CORBA::release(orb_ptr);
-			CORBA::string_free(s);
 			throw;
 		}
-
-		CORBA::release(orb_ptr);
-		CORBA::string_free(s);
 	}
 
 //

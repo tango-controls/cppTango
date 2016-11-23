@@ -119,7 +119,7 @@ namespace Tango {
  * @param [in] orb	The CORBA ORB pointer. Default value is fine for 99 % of cases
  *
  */
-		Database(CORBA::ORB *orb = NULL);
+		Database(TangORB *orb = NULL);
 // @}
 
 /**@name General methods */
@@ -1890,7 +1890,7 @@ namespace Tango {
 
 
 ///@privatesection
-		Database(string &host, int port, CORBA::ORB *orb = NULL);
+		Database(string &host, int port, TangORB *orb = NULL);
 
 		Database(string &file);
 
@@ -1943,7 +1943,7 @@ namespace Tango {
 		void set_orig_tango_host(const string &_s) { ext->orig_tango_host = _s; }
 
 #ifdef _TG_WINDOWS_
-        Database(CORBA::ORB *orb,string &,string &);
+        Database(TangORB *orb,string &,string &);
         long get_tango_host_from_reg(char **,string &,string &);
 #endif
 

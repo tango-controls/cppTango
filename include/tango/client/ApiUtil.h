@@ -31,6 +31,9 @@
 #define _APIUTIL_H
 
 
+#include <tango/frontend/orb.hxx>
+#include <tango/frontend/orb_provider.hxx>
+
 /****************************************************************************************
  * 																						*
  * 					The ApiUtil class													*
@@ -51,7 +54,7 @@
  * @ingroup Client
  */
 namespace Tango {
-	class ApiUtil {
+	class ApiUtil final{
 	public:
 /**
  * Retrieve the ApiUtil instance
@@ -149,12 +152,7 @@ namespace Tango {
 		cb_sub_model get_asynch_cb_sub_model() { return auto_cb; }
 
 /// @privatesection
-
-		CORBA::ORB_ptr get_orb() { return CORBA::ORB::_duplicate(_orb); }
-
-		void set_orb(CORBA::ORB_ptr orb_in) { _orb = orb_in; }
-
-		void create_orb();
+        auto orb_provider(TangORB* pORB = nullptr) -> TangORBProvider_var;
 
 		int get_db_ind();
 
@@ -206,13 +204,7 @@ namespace Tango {
 // EventConsumer related methods
 //
 
-		void create_notifd_event_consumer();
-
 		void create_zmq_event_consumer();
-
-		bool is_notifd_event_consumer_created() { return notifd_event_consumer != NULL; }
-
-		NotifdEventConsumer *get_notifd_event_consumer();
 
 		bool is_zmq_event_consumer_created() { return zmq_event_consumer != NULL; }
 
@@ -243,7 +235,6 @@ namespace Tango {
 //
 
 		static void AttributeInfoEx_to_AttributeConfig(const AttributeInfoEx *, AttributeConfig_5 *);
-
 	protected:
 /// @privatesection
 		ApiUtil();
@@ -252,7 +243,7 @@ namespace Tango {
 
 		vector<Database *> db_vect;
 		omni_mutex the_mutex;
-		CORBA::ORB_ptr _orb;
+		TangORBProvider_var tango_orb_provider_ptr_;
 		bool in_serv;
 
 		cb_sub_model auto_cb;
@@ -285,7 +276,6 @@ namespace Tango {
 		ApiUtilExt *ext;        // Class extension
 #endif
 
-		NotifdEventConsumer *notifd_event_consumer;
 		TangoSys_Pid cl_pid;
 		int user_connect_timeout;
 		ZmqEventConsumer *zmq_event_consumer;

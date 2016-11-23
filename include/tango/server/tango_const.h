@@ -161,13 +161,7 @@ const char* const DEVICE_UNLOCKED_REASON   = "API_DeviceUnlocked";
 const int   MIN_LOCK_VALIDITY              = 2;
 const char* const TG_LOCAL_HOST            = "localhost";
 
-//
-// Client timeout as defined by omniORB4.0.0
-//
 
-const char* const CLNT_TIMEOUT_STR         = "3000";
-const int   CLNT_TIMEOUT                   = 3000;
-const int   NARROW_CLNT_TIMEOUT            = 100;
 
 //
 // Connection and call timeout for database device
@@ -200,18 +194,6 @@ const char* const ACCESS_SERVICE           = "AccessControl";
 //
 
 const int DEFAULT_POLLING_THREADS_POOL_SIZE = 1;
-
-//
-// Max transfer size 256 MBytes (in byte). Needed by omniORB
-//
-
-const char* const MAX_TRANSFER_SIZE        = "268435456";
-
-//
-// Max GIOP connection per server . Needed by omniORB
-//
-
-const char* const MAX_GIOP_PER_SERVER      = "128";
 
 //
 // Tango name length

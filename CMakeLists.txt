@@ -32,6 +32,8 @@ add_subdirectory(test)
 add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:client_objects>
                             $<TARGET_OBJECTS:idl_objects>
+                            $<TARGET_OBJECTS:backend_objects>
+                            $<TARGET_OBJECTS:frontend_objects>
                             $<TARGET_OBJECTS:jpeg_objects>
                             $<TARGET_OBJECTS:jpeg_mmx_objects>
                             $<TARGET_OBJECTS:server_objects>

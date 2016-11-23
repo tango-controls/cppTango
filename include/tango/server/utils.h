@@ -77,7 +77,6 @@ class DeviceClass;
 class DServer;
 class AutoTangoMonitor;
 class Util;
-class NotifdEventSupplier;
 class ZmqEventSupplier;
 class PyLock;
 class CreatePyLock;
@@ -219,7 +218,7 @@ public:
  *
  * @return The CORBA ORB
  */
-	CORBA::ORB_ptr get_orb() {return CORBA::ORB::_duplicate(orb);}
+	TangORB_var get_orb() noexcept {return orb;}
 
 /**
  * Get a reference to the CORBA Portable Object Adapter (POA)
@@ -392,13 +391,6 @@ public:
  * BY_DEVICE, BY_CLASS, BY_PROCESS or NO_SYNC
  */
 	SerialModel get_serial_model() {return ser_model;}
-
-/**
- * Get a reference to the notifd TANGO EventSupplier object
- *
- * @return The notifd EventSupplier object
- */
-	NotifdEventSupplier *get_notifd_event_supplier() {return nd_event_supplier;}
 
 /**
  * Get a reference to the ZMQ TANGO EventSupplier object
@@ -824,7 +816,6 @@ public:
 	void stop_heartbeat_thread();
 	string &get_svr_port_num() {return svr_port_num;}
 
-	void create_notifd_event_supplier();
 	void create_zmq_event_supplier();
 
 	void *get_py_interp() {return py_interp;}
@@ -940,7 +931,7 @@ private:
 	ORBWin32Loop *loop_th;
 #endif
 
-	CORBA::ORB_var 			orb;
+	TangORB_var 			orb;
 	PortableServer::POA_var _poa;
 
 	string					ds_instance_name;	// The instance name
@@ -1004,7 +995,6 @@ private:
 	bool						poll_on;				// Polling on flag
 	SerialModel					ser_model;				// The serialization model
 	TangoMonitor				only_one;				// Serialization monitor
-	NotifdEventSupplier			*nd_event_supplier;	    // The notifd event supplier object
 
 	void						*py_interp;				// The Python interpreter
 	bool						py_ds;					// The Python DS flag

@@ -35,6 +35,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #include <tango.h>
+#include <tango/frontend/request.hxx>
 
 
 #ifdef _TG_WINDOWS_
@@ -84,8 +85,7 @@ void Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 // Create the request object
 //
 
-	CORBA::ORB::RequestSeq req_seq;
-	req_seq.length(1);
+	TangORB::RequestSeq req_seq{1};
 
 	if (version >= 4)
 		req_seq[0] = device_4->_request("command_inout_4");
@@ -119,7 +119,7 @@ void Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 
 	ApiUtil *au = ApiUtil::instance();
 	add_asyn_cb_request(req_seq[0],&cb,this,TgRequest::CMD_INOUT);
-	CORBA::ORB_ptr orb = au->get_orb();
+	TangORB_var orb = au->orb_provider()->get();
 	orb->send_multiple_requests_deferred(req_seq);
 	if (au->get_asynch_cb_sub_model() == PUSH_CALLBACK)
 		au->get_pasyn_table()->signal();
@@ -173,7 +173,7 @@ void Connection::command_inout_asynch(string &command,CallBack &cb)
 void Connection::get_asynch_replies()
 {
 
-	CORBA::ORB_ptr orb = ApiUtil::instance()->get_orb();
+	TangORB_var orb = ApiUtil::instance()->orb_provider()->get();
 
 //
 // First get all replies from ORB buffers
@@ -183,7 +183,7 @@ void Connection::get_asynch_replies()
 	{
 		while (orb->poll_next_response() == true)
 		{
-			CORBA::Request_ptr req;
+			TangoRequest_ptr req;
 			orb->get_next_response(req);
 
 //
@@ -269,7 +269,7 @@ void Connection::get_asynch_replies()
 //
 //-----------------------------------------------------------------------------
 
-void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
+void Connection::Cb_Cmd_Request(TangoRequest_ptr req,Tango::CallBack *cb_ptr)
 {
 
 	DeviceData data_out;
@@ -438,7 +438,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 //
 //-----------------------------------------------------------------------------
 
-void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
+void Connection::Cb_ReadAttr_Request(TangoRequest_ptr req,Tango::CallBack *cb_ptr)
 {
 	vector<DeviceAttribute> *dev_attr = NULL;
 	Tango::DevErrorList errors(2);
@@ -688,7 +688,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 //
 //-----------------------------------------------------------------------------
 
-void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
+void Connection::Cb_WriteAttr_Request(TangoRequest_ptr req,Tango::CallBack *cb_ptr)
 {
 	Tango::NamedDevFailedList err_3;
 
@@ -969,8 +969,8 @@ void Connection::get_asynch_replies(long call_timeout)
 
 	if (get_pasyn_cb_ctr() != 0)
 	{
-		CORBA::ORB_ptr orb = ApiUtil::instance()->get_orb();
-		CORBA::Request_ptr req;
+		TangORB_var orb = ApiUtil::instance()->orb_provider()->get();
+		TangoRequest_ptr req;
 
 		if (call_timeout != 0)
 		{
@@ -1143,8 +1143,7 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 // Create the request object
 //
 
-	CORBA::ORB::RequestSeq req_seq;
-	req_seq.length(1);
+	TangORB::RequestSeq req_seq{1};
 
 	Tango::DevVarStringArray names;
 	long nb_names = attr_names.size();
@@ -1205,7 +1204,7 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 
 	ApiUtil *au = ApiUtil::instance();
 	add_asyn_cb_request(req_seq[0],&cb,this,TgRequest::READ_ATTR);
-	CORBA::ORB_ptr orb = au->get_orb();
+	TangORB_var orb = au->orb_provider()->get();
 	orb->send_multiple_requests_deferred(req_seq);
 	if (au->get_asynch_cb_sub_model() == PUSH_CALLBACK)
 		au->get_pasyn_table()->signal();
@@ -1254,8 +1253,7 @@ void DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list,
 // Create the request object
 //
 
-	CORBA::ORB::RequestSeq req_seq;
-	req_seq.length(1);
+	TangORB::RequestSeq req_seq{1};
 
 
 	Tango::AttributeValueList att;
@@ -1306,7 +1304,7 @@ void DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list,
 
 	ApiUtil *au = ApiUtil::instance();
 	add_asyn_cb_request(req_seq[0],&cb,this,TgRequest::WRITE_ATTR);
-	CORBA::ORB_ptr orb = au->get_orb();
+	TangORB_var orb = au->orb_provider()->get();
 	orb->send_multiple_requests_deferred(req_seq);
 	if (au->get_asynch_cb_sub_model() == PUSH_CALLBACK)
 		au->get_pasyn_table()->signal();
@@ -1356,8 +1354,7 @@ void DeviceProxy::write_attribute_asynch(DeviceAttribute &attr,CallBack &cb)
 // Create the request object
 //
 
-	CORBA::ORB::RequestSeq req_seq;
-	req_seq.length(1);
+	TangORB::RequestSeq req_seq{1};
 
 
 	Tango::AttributeValueList att;
@@ -1405,7 +1402,7 @@ void DeviceProxy::write_attribute_asynch(DeviceAttribute &attr,CallBack &cb)
 
 	ApiUtil *au = ApiUtil::instance();
 	add_asyn_cb_request(req_seq[0],&cb,this,TgRequest::WRITE_ATTR_SINGLE);
-	CORBA::ORB_ptr orb = au->get_orb();
+	TangORB_var orb = au->orb_provider()->get();
 	orb->send_multiple_requests_deferred(req_seq);
 	if (au->get_asynch_cb_sub_model() == PUSH_CALLBACK)
 		au->get_pasyn_table()->signal();

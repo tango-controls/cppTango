@@ -54,9 +54,7 @@ DeviceData::DeviceData():ext(new DeviceDataExt)
 // Otherwise, string insertion into the Any will not be possible
 //
 
-	ApiUtil *au = ApiUtil::instance();
-	if (CORBA::is_nil(au->get_orb()) == true)
-		au->create_orb();
+	ApiUtil::instance()->orb_provider();
 
 	any = new CORBA::Any();
 	exceptions_flags.set(isempty_flag);
@@ -96,7 +94,7 @@ DeviceData::DeviceData(const DeviceData & source)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::DeviceData() - move constructor to create DeviceData
+// DeviceData::DeviceData() - move constructor to create_or_get DeviceData
 //
 //-----------------------------------------------------------------------------
 

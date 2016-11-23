@@ -56,7 +56,6 @@ set(CLIENT_HELPERS
         tango/client/helpers/Xstring.h)
 
 set(CLIENT_TEMPLATES
-        tango/client/event.tpp
         tango/client/devapi_attr.tpp
         tango/client/devapi_utils.tpp
         tango/client/api_util.tpp
@@ -139,7 +138,18 @@ set(SERVER_TEMPLATES
         tango/server/w_attribute_spec.tpp
         tango/server/w_pipe.tpp)
 
-add_library(include_objects OBJECT tango.h ${SERVER_HEADERS} ${CLIENT_HEADERS} ${CLIENT_HELPERS} ${LOG4TANGO_HEADERS} ${LOG4TANGO_THREADING})
+set(FRONTEND_HEADERS
+        tango/frontend/orb.hxx
+        tango/frontend/orb_provider.hxx
+        tango/frontend/orb_const.hxx
+        tango/frontend/request.hxx
+        tango/frontend/object.hxx
+        tango/frontend/helpers.hxx)
+
+set(BACKEND_HEADERS
+        tango/backend/orb.hxx)
+
+add_library(include_objects OBJECT tango.h ${FRONTEND_HEADERS} ${BACKEND_HEADERS} ${SERVER_HEADERS} ${CLIENT_HEADERS} ${CLIENT_HELPERS} ${LOG4TANGO_HEADERS} ${LOG4TANGO_THREADING})
 
 install(FILES tango.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
 install(FILES ${SERVER_HEADERS} ${SERVER_TEMPLATES} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/server")
