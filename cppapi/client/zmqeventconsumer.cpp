@@ -515,6 +515,11 @@ void ZmqEventConsumer::process_heartbeat(zmq::message_t &received_event_name,zmq
 
 void ZmqEventConsumer::process_event(zmq::message_t &received_event_name,zmq::message_t &received_endian,zmq::message_t &received_call,zmq::message_t &event_data)
 {
+//cout << "event name message adr = " << (void *)(&received_event_name) << " - size = " << received_event_name.size() << " - ptr = " << (void *)(received_event_name.data()) << endl;
+//cout << "endian message adr = " << (void *)(&received_endian) << " - size = " << received_endian.size() << " - ptr = " << (void *)(received_endian.data()) << endl;
+//cout << "call info message adr = " << (void *)(&received_call) << " - size = " << received_call.size() << " - ptr = " << (void *)(received_call.data()) << endl;
+//cout << "event data message adr = " << (void *)(&event_data) << " - size = " << event_data.size() << " - ptr = " << (void *)(event_data.data()) << endl;
+
 //
 // For debug and logging purposes
 //
@@ -2143,12 +2148,34 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 				char *data_ptr = (char *)event_data.data();
 				size_t data_size = (size_t)event_data.size();
 
+				bool shift_zmq420 = false;
+                int shift_mem = (unsigned long)data_ptr & 0x3;
+                if (shift_mem != 0)
+                {
+					char *src = data_ptr + 4;
+
+                    size_t size_to_move = data_size - 4;
+					if (data_type == PIPE)
+                    {
+                         src = src + 4;
+                         size_to_move = size_to_move - 4;
+                    }
+
+					char *dest = src - shift_mem;
+					if (((unsigned long)dest & 0x7) == 4)
+                        dest = dest - 4;
+					memmove((void *)dest,(void *)src,size_to_move);
+					shift_zmq420 = true;
+
+					data_ptr = dest;
+                }
+
 				bool data64 = false;
 				if (data_type == PIPE)
 					data64 = true;
 				else if (data_type == ATT_VALUE && error == false)
 				{
-					int disc = ((int *)data_ptr)[1];
+					int disc = shift_zmq420 == true ? ((int *)data_ptr)[0] : ((int *)data_ptr)[1];
 					if (endian == 0)
                     {
                         char first_byte = disc & 0xFF;
@@ -2187,7 +2214,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 					data_ptr = data_ptr + 4;
 					data_size = data_size - 4;
 				}
-				else if (data_type != PIPE && data64 == true && buffer_aligned64 == true)
+				else if (data_type != PIPE && data64 == true && buffer_aligned64 == true && shift_zmq420 == false)
 				{
 					if (omniORB::trace(30))
 					{
@@ -2204,13 +2231,15 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 				{
 					if (data_type == PIPE)
 					{
-						data_ptr = data_ptr + (sizeof(CORBA::Long) << 1);
-						data_size = data_size - (sizeof(CORBA::Long) << 1);
+					    if (shift_zmq420 == false)
+                            data_ptr = data_ptr + (sizeof(CORBA::Long) << 1);
+                        data_size = data_size - (sizeof(CORBA::Long) << 1);
 					}
 					else
 					{
-						data_ptr = data_ptr + sizeof(CORBA::Long);
-						data_size = data_size - sizeof(CORBA::Long);
+					    if (shift_zmq420 == false)
+                            data_ptr = data_ptr + sizeof(CORBA::Long);
+                        data_size = data_size - sizeof(CORBA::Long);
 					}
 
 				}
