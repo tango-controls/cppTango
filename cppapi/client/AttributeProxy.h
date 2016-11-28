@@ -451,6 +451,8 @@ public :
  * event reason. A standard set of reasons are implemented by the system, additional device specific reasons
  * an be implemented by device servers programmers.
  * cb is a pointer to a class inheriting fromthe Tango CallBack class and implementing a push_event() method.
+ * The lifetime of the pointed to object must at least
+ * be equal to the time when events are requested because only the pointer is stored into the event machinery.
  * The subscribe_event()
  * call returns an event id which has to be specified when unsubscribing from this event.
  *
@@ -463,7 +465,7 @@ public :
 /**
  * Stateless subscription to attribute event
  *
- * This subscribe eventmethod has the same functionality as described in the last section. It adds an additional
+ * This subscribe event method has the same functionality as described in the last section. It adds an additional
  * flag called stateless. When the stateless flag is set to false, an exception will be thrown when the event
  * subscription encounters a problem.
  * With the stateless flag set to true, the event subscription will always succeed, even if the corresponding
