@@ -591,7 +591,6 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 			catch (Tango::MultiDevFailed &e)
 			{
 				cout3 << "Cannot write setpoint(s) value for memorized attribute(s) of device " << device_list[i]->get_name() << endl;
-
 				for (unsigned long k = 0;k < e.errors.length();k++)
 				{
 					WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[e.errors[k].index_in_call].name.in());
@@ -609,6 +608,34 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 				Tango::NamedDevFailedList e_list (e, device_list[i]->get_name(), (const char *)"DeviceClass::set_memorized_values()",
 					       			(const char *)API_AttributeFailed);
 				Tango::Except::print_exception(e_list);
+			}
+			catch (...)
+			{
+				cout3 << "Cannot write setpoint(s) value for memorized attribute(s) of device " << device_list[i]->get_name() << endl;
+				cerr << "Received unknown exception while trying to write memorized attribute(s)" << endl;
+
+				size_t nb_att = att_val.length();
+				for (size_t k = 0;k < nb_att;k++)
+				{
+                    stringstream ss;
+                    ss << "Received unknown exception (nor a devfailed, nor a MultiDevFailed !!";
+
+                    Tango::DevErrorList errors;
+                    errors.length(1);
+                    errors[0].reason = API_WrongEventData;
+                    errors[0].origin = "DeviceClass::set_memorized_values()";
+                    errors[0].desc = CORBA::string_dup(ss.str().c_str());
+                    errors[0].severity = ERR;
+
+                    WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[k].name.in());
+					att.set_mem_exception(errors);
+					log4tango::Logger *log = device_list[i]->get_logger();
+					if (log->is_warn_enabled())
+					{
+						log->warn_stream() << log4tango::LogInitiator::_begin_log << "Writing set_point for attribute " << att.get_name() << " failed" << endl;
+					}
+				}
+				device_list[i]->set_run_att_conf_loop(true);
 			}
 
 //
