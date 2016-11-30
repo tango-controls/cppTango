@@ -1,0 +1,2 @@
+add_subdirectory(log4tango)
+add_subdirectory(cpp_test_suite)

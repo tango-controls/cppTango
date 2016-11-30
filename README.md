@@ -1,5 +1,22 @@
-# cppTango [![Build Status](https://travis-ci.org/tango-controls/cppTango.png)](https://travis-ci.org/tango-controls/cppTango)
-This repository is the result of svn2git migration of tango source code. It is combined from api/cppapi, api/log4tango, api/cpp_test_suite anf api/cpp_test_ds
+[![logo](http://www.tango-controls.org/static/tango/img/logo_tangocontrols.png)](http://www.tango-controls.org)
+
+[![Build Status](https://travis-ci.org/tango-controls/cppTango.png)](https://travis-ci.org/tango-controls/cppTango)
+
+# TANGO distributed control system - shared library
+
+TANGO is an object-oriented distributed control system. In TANGO all objects are representations of devices, which can be on the same computer or distributed over a network. Communication between devices can be synchronous, asynchronous or event driven.
+
+The object model in TANGO supports methods, attributes and properties. TANGO provides an API which hides all the details of network access and provides object browsing, discovery, and security features. 
+
+TANGO is being actively developed as a collaborative effort between the ESRF ([www.esrf.eu](http://www.esrf.eu)), Soleil ([synchrotron-soleil.fr](http://synchrotron-soleil.fr)), Alba ([www.cells.es](http://www.cells.es)), and Elettra institutes ([www.elettra.trieste.it](http://www.elettra.trieste.it)).
+
+For more information please visit [www.tango-controls.org](http://www.tango-controls.org).
+
+# Documentation
+
+Generated: [tango-controls.github.io/cppTango-docs](https://tango-controls.github.io/cppTango-docs)
+
+Manuals: [tango-controls.org/resources/documentation/kernel](http://www.tango-controls.org/resources/documentation/kernel/)
 
 # How to build and install using cmake
 

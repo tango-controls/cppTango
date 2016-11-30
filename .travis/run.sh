@@ -18,6 +18,14 @@ then
 fi
 docker exec cpp_tango make -C /home/tango/src/build -j 2
 echo "Test log4tango"
-docker exec cpp_tango /bin/sh -c 'cd /home/tango/src/build/log4tango; exec ctest -V'
+docker exec cpp_tango /bin/sh -c 'cd /home/tango/src/build/test/log4tango; exec ctest -V'
+if [ $? -ne "0" ]
+then
+    exit -1
+fi
 echo "Test cppTango"
-docker exec cpp_tango /bin/sh -c 'cd /home/tango/src/build/cpp_test_suite; exec ctest -V'
+docker exec cpp_tango /bin/sh -c 'cd /home/tango/src/build/test/cpp_test_suite; exec ctest -V'
+if [ $? -ne "0" ]
+then
+    exit -1
+fi
