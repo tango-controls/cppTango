@@ -1,4 +1,4 @@
-static const char *RcsId = "$Id$\n$Name$";
+static const char *RcsId = "$Id: api_util.cpp 30271 2016-11-09 12:19:27Z bourtemb $\n$Name$";
 
 //+==================================================================================================================
 //
@@ -25,7 +25,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- May 2002
 //
-// $Revision$
+// $Revision: 30271 $
 //
 //+==================================================================================================================
 
@@ -1847,9 +1847,10 @@ AttributeInfoEx &AttributeInfoEx::operator=(const AttributeConfig_5 *att_5)
 		else
 			memorized = MEMORIZED_WRITE_INIT;
 	}
+	enum_labels.clear();
 	for (unsigned int j=0; j<att_5->enum_labels.length(); j++)
 	{
-		enum_labels[j] = att_5->enum_labels[j];
+		enum_labels.push_back(att_5->enum_labels[j].in());
 	}
 
 	alarms.min_alarm = att_5->att_alarm.min_alarm;
