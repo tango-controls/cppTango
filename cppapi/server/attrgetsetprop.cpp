@@ -2246,11 +2246,6 @@ void Attribute::set_one_event_prop(const char *prop_name,const CORBA::String_mem
 		prop_val[1] = rel_change_tmp[1];
 	}
 
-    if (strcmp(prop_name,"archive_rel_change") == 0 || strcmp(prop_name,"rel_change") == 0)
-	    prop_val[0] = fabs(prop_val[0]);
-	prop_val[1] = fabs(prop_val[1]);
-
-
 //
 // Manage db
 //
@@ -3065,12 +3060,13 @@ void Attribute::event_prop_db_xxx(vector<double> &rel_change_tmp,vector<double> 
     vector<bool> rel_change_usr_def_tmp(2);
     rel_change_usr_def_tmp[0] = rel_change_usr_def_tmp[1] = false;
 
-    if(rel_change_tmp[0] == fabs(rel_change_usr[0]))
+    if(rel_change_tmp[0] == rel_change_usr[0])
     {
         rel_change_str_tmp[0] = NotANumber;
         rel_change_usr_def_tmp[0] = true;
     }
-    if(rel_change_tmp[1] == fabs(rel_change_usr[1]))
+
+    if(rel_change_tmp[1] == rel_change_usr[1])
     {
         rel_change_str_tmp[1] = NotANumber;
         rel_change_usr_def_tmp[1] = true;
