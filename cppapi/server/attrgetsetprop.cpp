@@ -3065,6 +3065,7 @@ void Attribute::event_prop_db_xxx(vector<double> &rel_change_tmp,vector<double> 
         rel_change_str_tmp[0] = NotANumber;
         rel_change_usr_def_tmp[0] = true;
     }
+
     if(rel_change_tmp[1] == rel_change_usr[1])
     {
         rel_change_str_tmp[1] = NotANumber;
