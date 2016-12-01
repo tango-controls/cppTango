@@ -1,4 +1,3 @@
-static const char *RcsId = "$Id$\n$Name$";
 //====================================================================================
 //
 // cpp 	- C++ source code file for TANGO api Connection and DeviceProxy

@@ -1,5 +1,3 @@
-static const char *RcsId = "$Id$";
-
 //===================================================================================================================
 //
 // devapi_pipe.cpp 	- C++ source code file for TANGO devapi class DevicePipe

@@ -1,4 +1,3 @@
-static const char *RcsId = "$Id$\n$Name$";
 //
 // dbapi_history.cpp - C++ source code file for TANGO dbapi class DbHistory
 //

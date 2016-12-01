@@ -1,5 +1,4 @@
 /*----- PROTECTED REGION ID(FwdTest.cpp) ENABLED START -----*/
-static const char *RcsId = "$Id$";
 //=============================================================================
 //
 // file :        FwdTest.cpp
