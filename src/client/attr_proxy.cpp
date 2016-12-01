@@ -1,4 +1,3 @@
-static const char *RcsId = "$Id$\n$Name$";
 //
 // attr_proxy.cpp 	- C++ source code file for TANGO attribute proxy api
 //

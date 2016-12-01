@@ -1,5 +1,3 @@
-static const char *RcsId = "$Id$";
-
 //+==================================================================================================================
 //
 //  zmqeventsupplier.cpp : C++ classes for implementing the event server and client singleton classes -ZmqEventSupplier

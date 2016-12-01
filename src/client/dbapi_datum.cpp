@@ -1,4 +1,3 @@
-static const char *RcsId = "$Id$\n$Name$";
 //
 // dbdatum.cpp 	- C++ source code file for TANGO dbapi class DbDatum
 //
