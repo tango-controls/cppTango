@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 project(libtango)
 include(CTest)
 
@@ -20,7 +20,8 @@ include(configure/CMakeLists.txt)
 include_directories(cppapi/client)
 include_directories(cppapi/client/helpers)
 include_directories(cppapi/server)
-include_directories(cppapi/server/idl)
+#required for idl/tango.h
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/cppapi/server)
 include_directories(log4tango/include)
 #required for generated config.h
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
@@ -54,3 +55,10 @@ configure_file(tango.pc.cmake tango.pc @ONLY)
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/tango.pc"
         DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
+
+# This is a convenient target to be able to test the installation part from CLion IDE
+# Just select the install_libtango target and build (not execute) this target
+# This will do the equivalent of make install from CLion
+add_custom_target(install_${PROJECT_NAME}
+        $(MAKE) install
+        COMMENT "Installing ${PROJECT_NAME}")
