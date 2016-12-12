@@ -41,10 +41,9 @@
 #include <tango/client/eventconsumer.h>
 #include <tango/server/eventsupplier.h>
 
-extern omni_thread::key_t key_py_data;
-
 namespace Tango
 {
+    extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
 //+----------------------------------------------------------------------------
 //
 // method : 		Util::shutdown_ds()
@@ -81,8 +80,6 @@ void Util::shutdown_ds()
 //
 
 	stop_all_polling_threads();
-	stop_heartbeat_thread();
-	clr_heartbeat_th_ptr();
 
 //
 // Unregister the server in the database
@@ -99,8 +96,7 @@ void Util::shutdown_ds()
 // Protect python data
 //
 
-	omni_thread::value_t *tmp_py_data = omni_thread::self()->get_value(key_py_data);
-	PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+	PyLock *lock_ptr = kPerThreadPyData->PerTh_py_lock;
 	lock_ptr->Get();
 
 	get_dserver_device()->delete_devices();

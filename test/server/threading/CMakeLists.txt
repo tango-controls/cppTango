@@ -1,0 +1,1 @@
+add_cgreen_test(test_blocking_queue)

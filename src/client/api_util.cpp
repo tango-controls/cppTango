@@ -43,15 +43,12 @@
 	#include <netdb.h>
 	#include <signal.h>
 	#include <ifaddrs.h>
-	#ifdef HAS_THREAD
-		#include <thread>
-	#endif
 	#include <netinet/in.h> 	// FreeBSD
+    #include <future>
 #else
 	#include <ws2tcpip.h>
 	#include <process.h>
 #endif
-
 
 namespace Tango
 {
@@ -59,23 +56,11 @@ namespace Tango
 ApiUtil *ApiUtil::_instance = NULL;
 omni_mutex ApiUtil::inst_mutex;
 
-#ifdef HAS_THREAD
-void _killproc_()
-{
-	::exit(-1);
-}
-#endif // HAS_THREAD
-
 void _t_handler (TANGO_UNUSED(int signum))
 {
-#ifdef HAS_THREAD
-	thread t(_killproc_);
-	t.detach();
-#else
-	_KillProc_ *t = new _KillProc_;
-	t->start();
-#endif
-	Tango_sleep(3);
+	async([](){
+        std::exit(-1);
+    });
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -119,7 +104,6 @@ notifd_event_consumer(NULL),cl_pid(0),user_connect_timeout(-1),zmq_event_consume
 //
 
 	auto_cb = PULL_CALLBACK;
-	cb_thread_ptr = NULL;
 
 //
 // Get the process PID
@@ -177,13 +161,9 @@ ApiUtil::~ApiUtil()
 // Release Asyn stuff
 //
 
-	delete asyn_p_table;
 
-	if (cb_thread_ptr != NULL)
-	{
-		cb_thread_cmd.stop_thread();
-		cb_thread_ptr->join(0);
-	}
+    cb_thread_cmd.stop_thread();
+    delete asyn_p_table;
 
 //
 // Kill any remaining locking threads
@@ -737,13 +717,38 @@ void ApiUtil::set_asynch_cb_sub_model(cb_sub_model mode)
 // In this case, delete the old object in case it is needed, create a new thread and start it
 //
 
-            delete cb_thread_ptr;
-            cb_thread_ptr = NULL;
-
 			cb_thread_cmd.start_thread();
 
-			cb_thread_ptr = new CallBackThread(cb_thread_cmd,asyn_p_table);
-			cb_thread_ptr->start();
+            auto call_back_task = [](CbThreadCmd* cb_thread_cmd, AsynReq* asyn_p_table) {
+                while(cb_thread_cmd->is_stopped() == false)
+                {
+                    try
+                    {
+                        {
+                            omni_mutex_lock sync(*asyn_p_table);
+                            if (asyn_p_table->get_cb_request_nb_i() == 0)
+                            {
+                                asyn_p_table->wait();
+                            }
+                        }
+
+                        if (asyn_p_table->get_cb_request_nb() != 0)
+                            ApiUtil::instance()->get_asynch_replies(0);
+                    }
+                    catch (omni_thread_fatal &)
+                    {
+                        cerr << "OUPS !! A omni thread fatal exception !!!!!!!!" << endl;
+#ifndef _TG_WINDOWS_
+                        time_t t = time(NULL);
+                        cerr << ctime(&t);
+#endif
+                        cerr << "Trying to re-enter the main loop" << endl;
+                    }
+                }
+            };
+
+            auto t = std::thread(call_back_task,&cb_thread_cmd, asyn_p_table);
+			t.detach();
 			auto_cb = PUSH_CALLBACK;
 		}
 	}

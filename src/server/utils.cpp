@@ -58,11 +58,15 @@
 #endif /* _TG_WINDOWS_ */
 
 #include <omniORB4/omniInterceptors.h>
+#include <store_sub_devices_task.hxx>
+#include "polling/polling_queue.hxx"
+#include "polling/event_system.hxx"
+#include "polling/polling_thread.hxx"
 
-omni_thread::key_t key_py_data;
 
 namespace Tango
 {
+
 
 Util *Util::_instance = NULL;
 int Util::_tracelevel = 0;
@@ -71,10 +75,14 @@ bool Util::_FileDb = false;
 bool Util::_daemon = false;
 long Util::_sleep_between_connect = 60;
 bool Util::_constructed = false;
+	const ClntIdent Util::kDummyClientIdentity = {};
 #ifdef _TG_WINDOWS_
 bool Util::_win = false;
 bool Util::_service = false;
 #endif
+
+    map<thread::id, string> kThreadNameMap;
+    thread_local std::shared_ptr<PyData> kPerThreadPyData{new PyData()};
 
 //
 // A global key used for per thread specific storage. This is used to retrieve
@@ -83,7 +91,7 @@ bool Util::_service = false;
 //
 
 
-omni_thread::key_t key;
+    thread_local std::shared_ptr<client_addr> kPerThreadClientAddress;
 
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -171,7 +179,7 @@ polling_bef_9_def(false)
 # endif
 #else
 Util::Util(int argc,char *argv[]):cl_list_ptr(NULL),ext(new UtilExt),
-heartbeat_th(NULL),heartbeat_th_id(0),poll_mon("utils_poll"),poll_on(false),ser_model(BY_DEVICE),
+poll_mon("utils_poll"),poll_on(false),ser_model(BY_DEVICE),
 only_one("process"),nd_event_supplier(NULL),py_interp(NULL),py_ds(false),py_dbg(false),
 db_cache(NULL),inter(NULL),svr_starting(true),svr_stopping(false),poll_pool_size(ULONG_MAX),
 conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false),
@@ -182,8 +190,6 @@ polling_bef_9_def(false)
 # endif
 #endif
 {
-	shared_data.cmd_pending=false;
-	shared_data.trigger=false;
     cr_py_lock = new CreatePyLock();
 
 //
@@ -439,14 +445,15 @@ void Util::effective_job(int argc,char *argv[])
 		create_notifd_event_supplier();
 		create_zmq_event_supplier();
 
-//
-// Create the heartbeat thread and start it
-//
+		cout4 << "Adding store sub devices task..." << endl;
 
-		heartbeat_th = new PollThread(shared_data,poll_mon,true);
-		heartbeat_th->start();
-		heartbeat_th_id = heartbeat_th->id();
-		cout4 << "Heartbeat thread Id = " << heartbeat_th_id << endl;
+		store_sub_devices_task_ = StoreSubDevicesTask_ptr(
+				new StoreSubDevicesTask(chrono::minutes{30}, this->sub_dev_diag));
+
+        store_sub_devices_task_->start();
+
+        cout4 << "Store sub devices task has been added" << endl;
+
 
 		cout4 << "Tango object singleton constructed" << endl;
 
@@ -478,10 +485,6 @@ void Util::create_CORBA_objects()
 
 	omni::omniInterceptors *intercep = omniORB::getInterceptors();
 	intercep->serverReceiveRequest.add(get_client_addr);
-	intercep->createThread.add(create_PyPerThData);
-
-	key = omni_thread::allocate_key();
-	key_py_data = omni_thread::allocate_key();
 
 //
 // Get some CORBA object references
@@ -1804,7 +1807,7 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 
 	if (is_py_ds() == false)
 	{
-		th->set_value(key_py_data,new Tango::PyData());
+        kPerThreadPyData.reset(new Tango::PyData());
 	}
 
 #ifdef _TG_WINDOWS_
@@ -1862,8 +1865,7 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 		if ((th_id == 0) && (is_py_ds() == true))
 		{
 			py_ds_main_th = true;
-			omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-			lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+			lock_ptr = kPerThreadPyData->PerTh_py_lock;
 			lock_ptr->Release();
 		}
 
@@ -1982,8 +1984,7 @@ void Util::server_run()
 
 			if (th_id == 0)
 			{
-				omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-				PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+				PyLock *lock_ptr = kPerThreadPyData->PerTh_py_lock;
 				lock_ptr->Release();
 			}
 
@@ -1995,8 +1996,7 @@ void Util::server_run()
 
 				if (th_id == 0)
 				{
-					omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-					PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+					PyLock *lock_ptr = kPerThreadPyData->PerTh_py_lock;
 					lock_ptr->Get();
 				}
 			}
@@ -2012,8 +2012,7 @@ void Util::server_run()
 
 	if (th_id == 0)
 	{
-		omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-		PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+		PyLock *lock_ptr = kPerThreadPyData->PerTh_py_lock;
 		lock_ptr->Release();
 	}
 
@@ -2060,8 +2059,7 @@ void Util::server_run()
 
 		if (th_id == 0)
 		{
-			omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-			PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+			PyLock *lock_ptr = kPerThreadPyData->PerTh_py_lock;
 			lock_ptr->Get();
 		}
 	}
@@ -3089,7 +3087,7 @@ void *Util::ORBWin32Loop::run_undetached(void *ptr)
 // Create the per thread data for the main thread
 //
 
-	omni_thread::self()->set_value(key_py_data,new Tango::PyData());
+	kPerThreadPyData.reset(new Tango::PyData());
 
 //
 // Create the DServer object
@@ -3162,8 +3160,15 @@ void Util::ORBWin32Loop::wait_for_go()
 #endif /* _TG_WINDOWS_ */
 
 
+    void TangoMonitor::wait(){
+            cout5 << "Thread=" << this_thread::get_id() << " is waiting on " << name << "[" << uid_ << "]" << endl;
+            cond.wait();
+        }
+
 int TangoMonitor::wait(long nb_millis)
 {
+    cout5 << "Thread=" << this_thread::get_id() << " is waiting on " << name << "[" << uid_ << "] for millis=" << nb_millis << endl;
+
 	unsigned long s,n;
 
 	unsigned long nb_sec,nb_nanos;
@@ -3203,54 +3208,16 @@ void clear_att_dim(Tango::AttributeValue_5 &att_val)
 	att_val.data_type = 0;
 }
 
-//
-// The function called by the interceptor on thread creation
-//
-
-void create_PyPerThData(omni::omniInterceptors::createThread_T::info_T &info)
-{
-	PyData *py_dat_ptr = new PyData();
-#ifdef _TG_WINDOWS_
-	omni_thread::ensure_self es;
-#endif
-
-	omni_thread::self()->set_value(key_py_data,py_dat_ptr);
-
-	Util *tg = NULL;
-	Interceptors *Inter = NULL;
-
-	try
-	{
-		tg = Util::instance(false);
-		Inter = tg->get_interceptors();
-	}
-	catch(Tango::DevFailed &) {}
-
-	if (Inter != NULL)
-		Inter->create_thread();
-
-	info.run();
-
-	omni_thread::self()->remove_value(key_py_data);
-	delete py_dat_ptr;
-
-	if (Inter != NULL)
-		Inter->delete_thread();
-
-	return;
-}
 
 AutoPyLock::AutoPyLock()
 {
-	omni_thread::value_t *tmp_py_data = omni_thread::self()->get_value(key_py_data);
-	PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+	PyLock *lock_ptr = kPerThreadPyData->PerTh_py_lock;
 	lock_ptr->Get();
 }
 
 AutoPyLock::~AutoPyLock()
 {
-	omni_thread::value_t *tmp_py_data = omni_thread::self()->get_value(key_py_data);
-	PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+	PyLock *lock_ptr = kPerThreadPyData->PerTh_py_lock;
 	lock_ptr->Release();
 }
 
@@ -3270,5 +3237,12 @@ long _convert_tango_lib_release()
 	return ret;
 }
 
+
+	PollingThreadInfo::PollingThreadInfo():poll_th(nullptr),nb_polled_objects(0),smallest_upd(0)
+    {}
+
+    PollingThreadInfo::~PollingThreadInfo() {
+        cout3 << "Destroying PollingThreadInfo..." << endl;
+    }
 
 } // End of Tango namespace

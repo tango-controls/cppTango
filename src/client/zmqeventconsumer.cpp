@@ -69,8 +69,7 @@ ZmqEventConsumer *ZmqEventConsumer::_instance = NULL;
 /*		       															*/
 /************************************************************************/
 
-ZmqEventConsumer::ZmqEventConsumer(ApiUtil *ptr) : EventConsumer(ptr),
-omni_thread((void *)ptr),zmq_context(1),ctrl_socket_bound(false)
+ZmqEventConsumer::ZmqEventConsumer(ApiUtil *ptr) : EventConsumer(ptr),zmq_context(1),ctrl_socket_bound(false)
 {
 	cout3 << "calling Tango::ZmqEventConsumer::ZmqEventConsumer() \n";
 	_instance = this;
@@ -88,7 +87,8 @@ omni_thread((void *)ptr),zmq_context(1),ctrl_socket_bound(false)
 	dic = new DevIntrChange();
 	del = new DevErrorList();
 
-	start_undetached();
+    auto zmq_thread = std::thread(&ZmqEventConsumer::run,this);
+	zmq_thread.detach();
 }
 
 ZmqEventConsumer *ZmqEventConsumer::create()
@@ -122,7 +122,7 @@ ZmqEventConsumer *ZmqEventConsumer::create()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
+void ZmqEventConsumer::run()
 {
 	int linger = 0;
 	int reconnect_ivl = -1;
@@ -132,7 +132,7 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 // Store thread ID
 //
 
-    thread_id = self()->id();
+    thread_id = this_thread::get_id();
 
 //
 // Create the subscriber socket used to receive heartbeats coming from different DS. This socket subscribe to
@@ -405,8 +405,6 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 			}
 		}
 	}
-
-	return (void *)NULL;
 }
 
 

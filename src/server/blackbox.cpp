@@ -68,7 +68,7 @@ namespace Tango
 // defined in utils.cpp
 //
 
-extern omni_thread::key_t key;
+extern thread_local std::shared_ptr<client_addr> kPerThreadClientAddress;
 
 //
 // The function called by the interceptor
@@ -76,7 +76,7 @@ extern omni_thread::key_t key;
 
 DevBoolean get_client_addr(omni::omniInterceptors::serverReceiveRequest_T::info_T &info)
 {
-    omni_thread::self()->set_value(key,new client_addr(((omni::giopStrand &)info.giop_s.strand()).connection->peeraddress()));
+	kPerThreadClientAddress.reset(new client_addr(((omni::giopStrand &)info.giop_s.strand()).connection->peeraddress()));
 	return true;
 }
 
@@ -317,9 +317,8 @@ void BlackBox::insert_cmd_cl_ident(const char *cmd,const ClntIdent &cl_id,long v
 // Add client ident info into the client_addr instance and into the box
 //
 
-    omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-	update_client_host(static_cast<client_addr *>(ip));
+	add_cl_ident(cl_id,kPerThreadClientAddress);
+	update_client_host(kPerThreadClientAddress);
 
 	sync.unlock();
 }
@@ -339,7 +338,7 @@ void BlackBox::insert_cmd_cl_ident(const char *cmd,const ClntIdent &cl_id,long v
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void BlackBox::add_cl_ident(const ClntIdent &cl_ident,client_addr *cl_addr)
+void BlackBox::add_cl_ident(const ClntIdent &cl_ident,client_addr_var cl_addr)
 {
 	cl_addr->client_ident = true;
 	Tango::LockerLanguage cl_lang = cl_ident._d();
@@ -378,7 +377,7 @@ void BlackBox::add_cl_ident(const ClntIdent &cl_ident,client_addr *cl_addr)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void BlackBox::update_client_host(client_addr *ip)
+void BlackBox::update_client_host(client_addr_var ip)
 {
 	long local_insert_elt = insert_elt;
 	if (local_insert_elt == 0)
@@ -440,9 +439,8 @@ void BlackBox::insert_op(BlackBoxElt_OpType op,const ClntIdent &cl_id)
 // Add client ident info into the client_addr instance and into the box
 //
 
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-	update_client_host(static_cast<client_addr *>(ip));
+	add_cl_ident(cl_id,kPerThreadClientAddress);
+	update_client_host(kPerThreadClientAddress);
 
 	sync.unlock();
 }
@@ -657,14 +655,13 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
 		return;
 	}
 
-    omni_thread::value_t *ip = omni_thread::self()->get_value(key);
 
 //
 // Add client ident info into the client_addr instance and into the box
 //
 
-	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-	update_client_host(static_cast<client_addr *>(ip));
+	add_cl_ident(cl_id,kPerThreadClientAddress);
+	update_client_host(kPerThreadClientAddress);
 
 //
 // Release mutex
@@ -736,9 +733,8 @@ void BlackBox::insert_attr(const char *name,const ClntIdent &cl_id,TANGO_UNUSED(
 
     if (poll_user == false)
     {
-        omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-        add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-        update_client_host(static_cast<client_addr *>(ip));
+        add_cl_ident(cl_id,kPerThreadClientAddress);
+        update_client_host(kPerThreadClientAddress);
     }
 
 //
@@ -814,9 +810,8 @@ void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val,const ClntIdent &c
 
     if (poll_user == false)
     {
-        omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-        add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-        update_client_host(static_cast<client_addr *>(ip));
+        add_cl_ident(cl_id,kPerThreadClientAddress);
+        update_client_host(kPerThreadClientAddress);
     }
 
 //
@@ -858,9 +853,8 @@ void BlackBox::insert_attr(const Tango::AttributeValueList_4 &att_list, const Cl
 // Add client ident info into the client_addr instance and into the box
 //
 
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-	update_client_host(static_cast<client_addr *>(ip));
+	add_cl_ident(cl_id,kPerThreadClientAddress);
+	update_client_host(kPerThreadClientAddress);
 
 	sync.unlock();
 }
@@ -1002,9 +996,8 @@ void BlackBox::insert_wr_attr(const Tango::AttributeValueList_4 &att_list,const 
 // Add client ident info into the client_addr instance and into the box
 //
 
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-	update_client_host(static_cast<client_addr *>(ip));
+	add_cl_ident(cl_id,kPerThreadClientAddress);
+	update_client_host(kPerThreadClientAddress);
 
 	sync.unlock();
 }
@@ -1097,58 +1090,34 @@ void BlackBox::inc_indexes()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
+    //TODO return clientIdentity
 void BlackBox::get_client_host()
 {
-	omni_thread *th_id = omni_thread::self();
-	bool dummy = false;
-	if (th_id == NULL)
-    {
-		th_id = omni_thread::create_dummy();
-		dummy = true;
-    }
-
-	omni_thread::value_t *ip = th_id->get_value(key);
-	if (ip == NULL)
-    {
+	if (kPerThreadClientAddress) {
+		cout5 << "client_ip=" << kPerThreadClientAddress->client_ip << endl;
+		strcpy(box[insert_elt].host_ip_str, kPerThreadClientAddress->client_ip);
+        return;
+    } else {
         Tango::Util *tg = Tango::Util::instance();
-        vector<PollingThreadInfo *> &poll_ths = tg->get_polling_threads_info();
+        auto poll_ths = tg->get_polling_threads_info();
 
-        bool found_thread = false;
-        if (poll_ths.empty() == false)
+        if (!poll_ths.empty())
         {
-            int this_thread_id = th_id->id();
-            size_t nb_poll_th = poll_ths.size();
-            size_t loop;
-            for (loop = 0;loop < nb_poll_th;loop++)
-            {
-                if (this_thread_id == poll_ths[loop]->thread_id)
-                {
-                    found_thread = true;
-                    break;
-                }
+            auto found = find_if(poll_ths.begin(), poll_ths.end(),[](PollingThreadInfoPtr th_info){
+                return this_thread::get_id() == th_info->poll_th->id();
+            });
+            if(found != poll_ths.end()){
+                strcpy(box[insert_elt].host_ip_str,"polling");
+                return;
             }
         }
 
-        if (tg->is_svr_starting() == true)
-        {
-            if (found_thread == true)
-                strcpy(box[insert_elt].host_ip_str,"polling");
-            else
+		if (tg->is_svr_starting() == true)
                 strcpy(box[insert_elt].host_ip_str,"init");
-        }
         else
-        {
-            if (found_thread == true)
-                strcpy(box[insert_elt].host_ip_str,"polling");
-            else
                 strcpy(box[insert_elt].host_ip_str,"user thread");
-        }
     }
-	else
-		strcpy(box[insert_elt].host_ip_str,(static_cast<client_addr *>(ip))->client_ip);
 
-    if (dummy == true)
-        omni_thread::release_dummy();
 }
 
 //+-------------------------------------------------------------------------------------------------------------------

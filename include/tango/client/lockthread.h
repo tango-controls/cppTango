@@ -87,12 +87,12 @@ enum LockCmdType
 
 class TangoMonitor;
 
-class LockThread: public omni_thread
+class LockThread
 {
 public:
 	LockThread(LockThCmd &,TangoMonitor &,DeviceProxy *,string &,DevLong);
 
-	void run(void *);
+	void run();
 
 	void execute_cmd();
 	void one_more_lock();

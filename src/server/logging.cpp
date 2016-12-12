@@ -291,7 +291,7 @@ void Logging::add_logging_target (const Tango::DevVarStringArray *argin)
 	  // Check that none of the concerned device(s) is locked by another client
 	  DServer *adm_dev = Util::instance()->get_dserver_device();
 	  for (unsigned int j = 0; j < dl.size(); j++) {
-		adm_dev->check_lock_owner(dl[j],"add_logging_target",(dl[j]->get_name()).c_str());
+		adm_dev->check_lock_owner(dl[j],"add_logging_target",(dl[j]->get_name()));
 	  }
       // for each device matching pattern...
       for (unsigned int j = 0; j < dl.size(); j++) {
@@ -564,7 +564,7 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
 	  // Check that none of the concerned device(s) is locked by another client
 	  DServer *adm_dev = Util::instance()->get_dserver_device();
 	  for (unsigned int j = 0; j < dl.size(); j++) {
-		adm_dev->check_lock_owner(dl[j],"remove_logging_target",(dl[j]->get_name()).c_str());
+		adm_dev->check_lock_owner(dl[j],"remove_logging_target",(dl[j]->get_name()));
 	  }
       // get target type and name from argin (syntax type::name)
       type_name = (*argin)[i++];
@@ -765,7 +765,7 @@ void Logging::set_logging_level (const DevVarLongStringArray *argin)
 	  // Check that none of the concerned device(s) is locked by another client
 	  DServer *adm_dev = Util::instance()->get_dserver_device();
 	  for (unsigned int j = 0; j < dl.size(); j++) {
-		adm_dev->check_lock_owner(dl[j],"set_logging_level",(dl[j]->get_name()).c_str());
+		adm_dev->check_lock_owner(dl[j],"set_logging_level",(dl[j]->get_name()));
 	  }
       // for each device in dl
       for (unsigned int j = 0; j < dl.size(); j++) {

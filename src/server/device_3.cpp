@@ -521,11 +521,11 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					{
 						cout4 << "Locking attribute mutex for attribute " << att.get_name() << endl;
 						omni_mutex *attr_mut = att.get_attr_mutex();
-						if (attr_mut->trylock() == 0)
-						{
-							cout4 << "Mutex for attribute " << att.get_name() << " is already taken.........." << endl;
-							attr_mut->lock();
-						}
+						int rv;
+                        while((rv = attr_mut->trylock()) != 0)
+                            cout4 << "Failed to lock mutex for attribute " << att.get_name() << ": " << strerror(rv) << endl;
+
+                        cout4 << "Locked mutex for attribute " << att.get_name() << endl;
 					}
 
 //
@@ -570,7 +570,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					{
 						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
 						{
-							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
+							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error:" << e._name() << endl;
 							omni_mutex *attr_mut = att.get_attr_mutex();
 							attr_mut->unlock();
 						}
@@ -580,7 +580,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					{
 						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
 						{
-							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
+							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error:" << e._name() << endl;
 							omni_mutex *attr_mut = att.get_attr_mutex();
 							attr_mut->unlock();
 						}
@@ -674,7 +674,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 				{
 					if ((atsm != ATTR_NO_SYNC) && (w_type == Tango::READ_WITH_WRITE))
 					{
-						cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
+						cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error:" << e._name() << endl;
 						omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
 						attr_mut->unlock();
 					}
@@ -684,7 +684,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 				{
 					if ((atsm != ATTR_NO_SYNC) && (w_type == Tango::READ_WITH_WRITE))
 					{
-						cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
+						cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error:" << e._name() << endl;
 						omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
 						attr_mut->unlock();
 					}

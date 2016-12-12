@@ -47,6 +47,7 @@ set(SOURCES attrdesc.cpp
         seqvec.cpp
         subdev_diag.cpp
         tangoappender.cpp
+        tango_const.cxx
         tangorollingfileappender.cpp
         templ_inst.cpp
         thsig.cpp
@@ -55,13 +56,20 @@ set(SOURCES attrdesc.cpp
         utils_shut.cpp
         w_attribute.cpp
         w_pipe.cpp
-        zmqeventsupplier.cpp)
+        zmqeventsupplier.cpp
+        store_sub_devices_task.cxx
+        heartbeat_task.cxx)
 
+set(HEADERS
+        store_sub_devices_task.hxx
+        heartbeat_task.hxx)
 
+add_subdirectory(threading)
+add_subdirectory(polling)
 add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)
 
-add_library(server_objects OBJECT ${SOURCES})
-target_compile_options(server_objects PRIVATE -fPIC)
-target_include_directories(server_objects PRIVATE .)
+add_library(server_objects OBJECT ${HEADERS} ${SOURCES})
+target_compile_options(server_objects PRIVATE -fPIC  -std=c++1y)
+target_include_directories(server_objects PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 

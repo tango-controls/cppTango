@@ -41,54 +41,66 @@
 #include <tango/server/utils.h>
 
 #include <list>
+#include <future>
+#include <queue>
+#include <experimental/optional>
 
 #ifdef _TG_WINDOWS_
-	#include <sys/types.h>
-	#include <sys/timeb.h>
+#include <sys/types.h>
+#include <sys/timeb.h>
 #endif
 
-namespace Tango
-{
+namespace Tango {
+    namespace threading {
+        class enhanced_thread;
+    }
 
-//=============================================================================
-//
-//			The PollThCmd structure
-//
-// description :	This structure is used to shared data between the polling
-//			thread and the main thread.
-//
-//=============================================================================
+    namespace polling {
+        class Command;
 
-struct PollThCmd
-{
-	bool			cmd_pending;	// The new command flag
-	bool			trigger;		// The external trigger flag
-	PollCmdCode		cmd_code;		// The command code
-	DeviceImpl		*dev;			// The device pointer (servant)
-	long			index;			// Index in the device poll_list
-	string			name;			// Object name
-	PollObjType		type;			// Object type (cmd/attr)
-	int				new_upd;		// New update period (For upd period com.)
-};
+        class AddObjCommand;
 
+        class AddTriggerCommand;
 
-struct WorkItem
-{
-	DeviceImpl			*dev;			// The device pointer (servant)
-	vector<PollObj *> 	*poll_list;		// The device poll list
-	struct timeval		wake_up_date;	// The next wake up date
-	int 				update;			// The update period (mS)
-	PollObjType			type;			// Object type (command/attr)
-	vector<string>		name;			// Object name(s)
-	struct timeval		needed_time;	// Time needed to execute action
-};
+        class RemObjCommand;
 
-enum PollCmdType
-{
-	POLL_TIME_OUT,
-	POLL_COMMAND,
-	POLL_TRIGGER
-};
+        class RemExtTriggerCommand;
+
+        class RemDevCommand;
+
+        class UpdatePollPeriodCommand;
+
+        class StartPollingCommand;
+
+        class StopPollingCommand;
+
+        class TriggerPollingCommand;
+
+        class ExitCommand;
+
+        class PollingThread;
+
+        class PollingQueue;
+
+        class EventSystem;
+    }
+
+    struct WorkItem {
+        DeviceImpl *dev;            // The device pointer (servant)
+        //TODO replace with const reference
+        //TODO filter list so it contains only related to this item objects
+        vector<PollObj *> *poll_list;        // The device poll list
+        std::chrono::milliseconds wake_up_date;    // The next wake up date
+        std::chrono::milliseconds update;            // The update period (mS)
+        PollObjType type;            // Object type (command/attr)
+        //TODO remove when poll_list is filtered
+        vector<string> name;            // Object name(s)
+        void *values;  //pointer to AttributeValueList of some sort, i.e. _3, _4, _5
+        std::chrono::milliseconds start_time;
+        std::chrono::nanoseconds needed_time;    // Time needed to execute action
+        std::chrono::milliseconds stop_time;
+        std::map<std::string, DevFailed*> errors;
+    };
 
 //=============================================================================
 //
@@ -99,114 +111,216 @@ enum PollCmdType
 //
 //=============================================================================
 
-class TangoMonitor;
+    class ZmqEventSupplier;
+    class NotifdEventSupplier;
+    class PollThread;
 
-class PollThread: public omni_thread
-{
-public:
-	PollThread(PollThCmd &,TangoMonitor &,bool);
+    using PollThreadPtr = std::unique_ptr<Tango::PollThread>;
 
-	void *run_undetached(void *);
-	void start() {start_undetached();}
-	void execute_cmd();
-	void set_local_cmd(PollThCmd &cmd) {local_cmd = cmd;}
-	void set_polling_bef_9(bool _v) {polling_bef_9 = _v;}
+    //TODO move in to corresponding headers
 
-protected:
-	PollCmdType get_command(long);
-	void one_more_poll();
-	void one_more_trigg();
-	void compute_new_date(struct timeval &,int);
-	void compute_sleep_time();
-	void time_diff(struct timeval &,struct timeval &,struct timeval &);
-	void poll_cmd(WorkItem &);
-	void poll_attr(WorkItem &);
-	void eve_heartbeat();
-	void store_subdev();
-	void auto_unsub();
+    using CommandPtr = std::unique_ptr<polling::Command>;
 
-	void print_list();
-	void insert_in_list(WorkItem &);
-	void add_insert_in_list(WorkItem &);
-	void tune_list(bool,long);
-	void err_out_of_sync(WorkItem &);
+    using PollingQueuePtr = std::unique_ptr<polling::PollingQueue>;
 
-    template <typename T> void robb_data(T &,T &);
-    template <typename T> void copy_remaining(T &,T &);
+    using PollingThreadPtr = std::unique_ptr<polling::PollingThread>;
 
-	PollThCmd			&shared_cmd;
-	TangoMonitor		&p_mon;
+    using EventSystemPtr = std::unique_ptr<polling::EventSystem>;
 
-	list<WorkItem>		works;
-	vector<WorkItem>	ext_trig_works;
+    class TangoMonitor;
 
-	PollThCmd			local_cmd;
+    //TODO rename to PollEngine
+    class PollThread {
 
-#ifdef _TG_WINDOWS_
-	struct _timeb		now_win;
-	struct _timeb		after_win;
-	double				ctr_frequency;
-#endif
-	struct timeval		now;
-	struct timeval		after;
-	long				sleep;
-	bool				polling_stop;
+        //TODO merge into this class
+        friend class PollingThreadInfo;
 
-private:
-	CORBA::Any			in_any;
-	DevVarStringArray	attr_names;
-	AttributeValue		dummy_att;
-	AttributeValue_3	dummy_att3;
-	AttributeValue_4 	dummy_att4;
-	AttributeValue_5	dummy_att5;
-	long				tune_ctr;
-	bool				need_two_tuning;
-	vector<long>		auto_upd;
-	vector<string>      auto_name;
-	vector<long>        rem_upd;
-	vector<string>      rem_name;
-	bool				send_heartbeat;
-	u_int				heartbeat_ctr;
-	u_int               previous_nb_late;
-	bool                polling_bef_9;
+    public:
 
-	ClntIdent 			dummy_cl_id;
-	CppClntIdent 		cci;
 
-public:
-	static DeviceImpl 	*dev_to_del;
-	static string	   	name_to_del;
-	static PollObjType	type_to_del;
-};
+        static const int kPollLoop;
+        static constexpr std::chrono::milliseconds kDiscardThreshold{20};//TODO original double value =0.02
+
+
+        //TODO
+        vector<std::chrono::milliseconds> auto_upd;
+        vector<string> auto_name;
+        //TODO
+        vector<std::chrono::milliseconds> rem_upd;
+        vector<string> rem_name;
+
+
+        /**
+         * Constructs PollThread
+         *
+         * @param name - name
+         * @param polling_as_before_9
+         * @constructor
+         */
+        PollThread(string &&, bool, Tango::ZmqEventSupplier *zmq_event_supplier,
+                   Tango::NotifdEventSupplier *notifd_event_supplier);
+
+        static PollThreadPtr create_instance_ptr(std::string&&, bool);
+
+        /**
+         *
+         *
+         * @return running polling thread id or thread::id()
+         */
+        thread::id id();
+
+        void execute_cmd(polling::Command &&);
+
+        void start_polling(){
+            polling_stop_.store(false);
+
+            start_thread_if_required();
+        }
+
+        void stop_polling(){
+            polling_stop_.store(true);
+        }
+
+        /*TODO const*/ polling::PollingThread& polling_thread() {
+            return *thread_;
+        }
+
+        std::experimental::optional<WorkItem>
+        find_work_item(DeviceImpl *, PollObjType, chrono::milliseconds update, string cmd_name);
+
+        std::experimental::optional<WorkItem>
+        find_work_item(DeviceImpl *, PollObjType, const std::string&);
+
+        std::experimental::optional<WorkItem>
+        find_trigger(DeviceImpl *, PollObjType, std::string);
+
+        /**
+         * Removes all work items (and triggers) related to the device
+         *
+         * //TODO remove param - simply clear the queue - as this is not needed if we use poll thread per device
+         */
+        void remove_work_items_by(DeviceImpl *);
+
+        /**
+         *
+         * @return true if works has been changed
+         */
+        bool discard_late_items();
+
+        //TODO inject algorithm?
+        //+----------------------------------------------------------------------------------------------------------------
+        //
+        // method :
+        //		PollThread::compute_sleep_time
+        //
+        // description :
+        //		This method computes how many mS the thread should sleep before the next poll time. If this time is
+        //		negative and greater than a pre-defined threshold, the polling is discarded.
+        //
+        //----------------------------------------------------------------------------------------------------------------
+        std::chrono::milliseconds compute_next_sleep(bool);
+
+        //TODO do we need this?
+        //+----------------------------------------------------------------------------------------------------------------
+        //
+        // method :
+        //		PollThread::compute_new_date
+        //
+        // description :
+        //		This method computes the new poll date.
+        //
+        // args :
+        //		in :
+        // 			- time : The actual date
+        //			- upd : The polling update period (mS)
+        //
+        //------------------------------------------------------------------------------------------------------------------
+        //chrono::time_point compute_new_date(chrono::time_point, chrono::milliseconds);
+
+        void print_work_items();
+
+        void add_work_item(WorkItem &);
+        void add_trigger(WorkItem&);
+
+        WorkItem new_work_item(DeviceImpl *, /*TODO const*/ PollObj &);
+
+        polling::EventSystem& get_event_system();
+        /**
+         *
+         * @return true if tune is required
+         */
+        void adjust_work_items(WorkItem &);
+        //+----------------------------------------------------------------------------------------------------------------
+        //
+        // method :
+        //		PollThread::tune_work_items_list
+        //
+        // description :
+        //		This method tunes the work list.
+        //----------------------------------------------------------------------------------------------------------------
+        void tune_work_items_list();//TODO was from_needed, min_delta which were always true and 0
+
+        void set_need_two_tuning(bool);
+
+        void reset_tune_counter(){ tune_counter_ = 0;}
+
+        bool empty();
+    private:
+        friend class polling::PollingThread;
+
+
+        bool analyze_work_list();
+
+        void start_thread_if_required();
+    private://fields
+        atomic_bool polling_stop_;
+
+        long tune_counter_;
+        bool need_two_tuning;
+        string name_;
+        u_int previous_nb_late;
+
+        bool polling_bef_9;
+        PollingThreadPtr thread_;
+        PollingQueuePtr works;
+
+        PollingQueuePtr ext_trig_works;
+
+        EventSystemPtr event_system_;
+    };
+
+
+
+    std::experimental::optional<WorkItem> find_work_item(polling::PollingQueue&, DeviceImpl*, std::string, PollObjType);
 
 //
 // Three macros
 //
 
-#define T_DIFF(A,B,C) \
-	long delta_sec = B.tv_sec - A.tv_sec; \
-	if (delta_sec == 0) \
-		C = B.tv_usec - A.tv_usec; \
-	else \
-	{ \
-		C = ((delta_sec - 1) * 1000000) + (1000000 - A.tv_usec) + B.tv_usec; \
-	}
+#define T_DIFF(A, B, C) \
+    long delta_sec = B.tv_sec - A.tv_sec; \
+    if (delta_sec == 0) \
+        C = B.tv_usec - A.tv_usec; \
+    else \
+    { \
+        C = ((delta_sec - 1) * 1000000) + (1000000 - A.tv_usec) + B.tv_usec; \
+    }
 
-#define T_ADD(A,B) \
-	A.tv_usec = A.tv_usec + B; \
-	while (A.tv_usec > 1000000) \
-	{ \
-		A.tv_sec++; \
-		A.tv_usec = A.tv_usec - 1000000; \
-	}
+#define T_ADD(A, B) \
+    A.tv_usec = A.tv_usec + B; \
+    while (A.tv_usec > 1000000) \
+    { \
+        A.tv_sec++; \
+        A.tv_usec = A.tv_usec - 1000000; \
+    }
 
-#define T_DEC(A,B) \
-	A.tv_usec = A.tv_usec - B; \
-	if (A.tv_usec < 0) \
-	{ \
-		A.tv_sec--; \
-		A.tv_usec = 1000000 + A.tv_usec; \
-	}
+#define T_DEC(A, B) \
+    A.tv_usec = A.tv_usec - B; \
+    if (A.tv_usec < 0) \
+    { \
+        A.tv_sec--; \
+        A.tv_usec = 1000000 + A.tv_usec; \
+    }
 
 } // End of Tango namespace
 

@@ -138,7 +138,7 @@ int main(int argc, char **argv)
 
 			assert( sub_dev_list.size() == 3);
 			
-			string result = devices[1];
+			string result = "no associated device name! " + devices[1];
 			assert( sub_dev_list[0]     == result);
 			result = device1_name + " " + devices[1];
 			assert( sub_dev_list[1]     == result);

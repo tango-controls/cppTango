@@ -87,9 +87,7 @@ const int   MIN_POLL_PERIOD                = 5;
 const int   DELTA_T                        = 1002000000;
 const int   MIN_DELTA_WORK                 = 20000;
 const int   TIME_HEARTBEAT                 = 2000;
-const int   POLL_LOOP_NB                   = 500;
 const int   ONE_SECOND                     = 1000000;
-const double   DISCARD_THRESHOLD           = 0.02;
 
 const int   DEFAULT_TIMEOUT                = 3200;
 const int   DEFAULT_POLL_OLD_FACTOR        = 4;
@@ -936,10 +934,17 @@ enum MessBoxType {
 
 enum PollObjType {
 	POLL_CMD = 0,
-	POLL_ATTR,
-	EVENT_HEARTBEAT,
-	STORE_SUBDEV
+	POLL_ATTR
 };
+
+    /**
+     * std::string -> PollObjType
+     *
+     * @param value
+     * @return PollObjType
+     * @throw API_NotSupported
+     */
+    PollObjType PollObjType_from_string(std::string&&);
 
 enum PollCmdCode {
 	POLL_ADD_OBJ = 0,
@@ -949,9 +954,7 @@ enum PollCmdCode {
 	POLL_UPD_PERIOD,
 	POLL_REM_DEV,
 	POLL_EXIT,
-	POLL_REM_EXT_TRIG_OBJ,
-	POLL_ADD_HEARTBEAT,
-	POLL_REM_HEARTBEAT
+	POLL_REM_EXT_TRIG_OBJ
 };
 
 enum SerialModel {

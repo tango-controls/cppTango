@@ -3335,7 +3335,7 @@ public:
 	vector<string> &get_non_auto_polled_attr() {return non_auto_polled_attr;}
 	vector<PollObj *> &get_poll_obj_list() {return poll_obj_list;}
 	void stop_polling(bool);
-	void stop_polling() {stop_polling(true);}
+	virtual void stop_polling() {stop_polling(true);}
 
 	void check_command_exists(const string &);
 	Command *get_command(const string &);

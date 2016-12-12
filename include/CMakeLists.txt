@@ -131,7 +131,6 @@ set(SERVER_TEMPLATES
         tango/server/fwdattribute_spec.tpp
         tango/server/pollext.tpp
         tango/server/pollring.tpp
-        tango/server/pollthread.tpp
         tango/server/utils.tpp
         tango/server/utils_spec.tpp
         tango/server/w_attribute.tpp

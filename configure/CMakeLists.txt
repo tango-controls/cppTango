@@ -74,3 +74,5 @@ endif()
 include(GNUInstallDirs)
 
 include(configure/config.cmake)
+
+include(configure/cgreen.cmake)

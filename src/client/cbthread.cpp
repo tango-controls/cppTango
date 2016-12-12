@@ -43,58 +43,12 @@
 #include <tango.h>
 #include <tango/client/cbthread.h>
 
-namespace Tango
-{
+namespace Tango {
 
+    void CbThreadCmd::stop_thread() { this->stop.store(true); }
 
-//+-------------------------------------------------------------------------
-//
-// method : 		CallBackThread::CallBackThread
-//
-// description : 	Two constructors for the PollObj class. The first one
-//			constructs a PollObji nstance with the default polling
-//			ring depth
-//			The second one create a PollObj instance with a
-//			specified polling ring depth
-//
-// argument : in :
-//
-//--------------------------------------------------------------------------
+    void CbThreadCmd::start_thread() { this->stop.store(false); }
 
-
-void *CallBackThread::run_undetached(TANGO_UNUSED(void *ptr))
-{
-	while(shared_cmd.is_stopped() == false)
-	{
-		try
-		{
-			{
-				omni_mutex_lock sync(*asyn_ptr);
-				if (asyn_ptr->get_cb_request_nb_i() == 0)
-				{
-					asyn_ptr->wait();
-				}
-			}
-
-			if (asyn_ptr->get_cb_request_nb() != 0)
-				ApiUtil::instance()->get_asynch_replies(0);
-		}
-		catch (omni_thread_fatal &)
-		{
-			cerr << "OUPS !! A omni thread fatal exception !!!!!!!!" << endl;
-#ifndef _TG_WINDOWS_
-			time_t t = time(NULL);
-			cerr << ctime(&t);
-#endif
-			cerr << "Trying to re-enter the main loop" << endl;
-		}
-	}
-
-	omni_thread::exit();
-
-	return NULL;
-
-}
-
+    bool CbThreadCmd::is_stopped() { return this->stop.load(); }
 
 } // End of Tango namespace

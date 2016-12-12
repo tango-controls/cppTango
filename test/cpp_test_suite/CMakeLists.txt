@@ -2,6 +2,8 @@ project(test_suite)
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O0 -g")
 
+add_compile_options(-std=c++1y)
+
 configure_file(CTestCustom.cmake CTestCustom.cmake)
 
 #TODO different OS

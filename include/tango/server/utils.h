@@ -83,8 +83,28 @@ class PyLock;
 class CreatePyLock;
 class DbServerCache;
 class SubDevDiag;
+    class StoreSubDevicesTask;
 
-struct PollingThreadInfo;
+//-----------------------------------------------------------------------
+//
+//			Polling threads pool related class/struct
+//
+//-----------------------------------------------------------------------
+//TODO make inner of PollThread (or vice versa)
+//TODO threadsafe
+    struct PollingThreadInfo
+    {
+        PollThreadPtr						poll_th;			// The polling thread object
+        vector<string>						polled_devices;		// Polled devices for this thread
+        int									nb_polled_objects;	// Polled objects number in this thread
+        int 								smallest_upd;		// Smallest thread update period
+        vector<DevVarLongStringArray *> 	v_poll_cmd;			// Command(s) to send
+
+        PollingThreadInfo();
+        ~PollingThreadInfo();
+    };
+
+    using PollingThreadInfoPtr = std::shared_ptr<PollingThreadInfo>;
 struct DevDbUpd;
 
 #ifdef _TG_WINDOWS_
@@ -799,14 +819,14 @@ private:
 
 
 public:
+        const static ClntIdent kDummyClientIdentity;
+
 /// @privatesection
 	void set_interceptors(Interceptors *in) {inter = in;}
 	Interceptors *get_interceptors() {return inter;}
 
 	map <string,vector<string> > &get_cmd_line_name_list() {return cmd_line_name_list;}
 	void get_cmd_line_name_list(const string &,vector<string> &);
-	TangoMonitor &get_heartbeat_monitor() {return poll_mon;}
-	PollThCmd &get_heartbeat_shared_cmd() {return shared_data;}
 	bool poll_status() {return poll_on;}
 	void poll_status(bool status) {poll_on = status;}
 
@@ -815,13 +835,6 @@ public:
 //
 
 	void polling_configure();
-	PollThread *get_polling_thread_object() {return heartbeat_th;}
-	PollThread *get_heartbeat_thread_object() {return heartbeat_th;}
-	void clr_poll_th_ptr() {heartbeat_th = NULL;}
-	void clr_heartbeat_th_ptr() {heartbeat_th = NULL;}
-	int get_polling_thread_id() {return heartbeat_th_id;}
-	int get_heartbeat_thread_id() {return heartbeat_th_id;}
-	void stop_heartbeat_thread();
 	string &get_svr_port_num() {return svr_port_num;}
 
 	void create_notifd_event_supplier();
@@ -857,11 +870,27 @@ public:
 	void clean_cmd_polled_prop();
 	void clean_dyn_attr_prop();
 
-	int create_poll_thread(const char *,bool,bool,int smallest_upd = -1);
+        PollingThreadInfoPtr create_poll_thread(string &, bool, bool);
 	void stop_all_polling_threads();
-	vector<PollingThreadInfo *> &get_polling_threads_info() {return poll_ths;}
-	PollingThreadInfo *get_polling_thread_info_by_id(int);
-	int get_polling_thread_id_by_name(const char *);
+	std::vector<PollingThreadInfoPtr> get_polling_threads_info();
+    //+----------------------------------------------------------------------------------------------------------------
+    //
+    // method :
+    //		Util::get_polling_thread_info_by_id()
+    //
+    // description :
+    //		Return the PollingThreadInfo for the thread with the ID specified as the input argument
+    //
+    // args :
+    //		in :
+    // 			- id : The polling thread identifier
+    //
+    // return :
+    // 		PollingThreadInfo* or nullptr
+    //
+    //------------------------------------------------------------------------------------------------------------------
+    //TODO return optional
+	PollingThreadInfoPtr get_polling_thread_info_by_id(string);
 	void check_pool_conf(DServer *,unsigned long);
 	int check_dev_poll(vector<string> &,vector<string> &,DeviceImpl *);
 	void split_string(string &,char,vector<string> &);
@@ -873,9 +902,8 @@ public:
 	vector<string> &get_poll_pool_conf() {return poll_pool_conf;}
 	int get_dev_entry_in_pool_conf(string &);
 	void remove_dev_from_polling_map(string &dev_name);
-	void remove_polling_thread_info_by_id(int);
 
-	bool is_server_event_loop_set() {if (ev_loop_func != NULL)return true;else return false;}
+		bool is_server_event_loop_set() {if (ev_loop_func != NULL)return true;else return false;}
 	void set_shutdown_server(bool val) {shutdown_server = val;}
 
 	void shutdown_ds();
@@ -997,9 +1025,6 @@ private:
 
 	map<string,vector<string> >	cmd_line_name_list;		// Command line map <Class name, device name list>
 
-	PollThread					*heartbeat_th;			// The heartbeat thread object
-	int							heartbeat_th_id;		// The heartbeat thread identifier
-	PollThCmd					shared_data;			// The shared buffer
 	TangoMonitor				poll_mon;				// The monitor
 	bool						poll_on;				// Polling on flag
 	SerialModel					ser_model;				// The serialization model
@@ -1027,8 +1052,8 @@ private:
 
 	unsigned long				poll_pool_size;			// Polling threads pool size
 	vector<string>  			poll_pool_conf;			// Polling threads pool conf.
-	map<string,int>				dev_poll_th_map;		// Link between device name and polling thread id
-	vector<PollingThreadInfo *>	poll_ths;				// Polling threads
+        //TODO replace value with shared_ptr
+	std::map<std::string, PollingThreadInfoPtr>	dev_poll_th_map;				// Polling threads
 	bool						conf_needs_db_upd;		// Polling conf needs to be udated in db
 
 	bool 						(*ev_loop_func)(void);	// Ptr to user event loop
@@ -1050,6 +1075,10 @@ private:
 
 	bool                        polling_bef_9_def;      // Is polling algo requirement defined
 	bool                        polling_bef_9;          // use Tango < 9 polling algo. flag
+
+
+
+        std::unique_ptr<StoreSubDevicesTask> store_sub_devices_task_;
 };
 
 //***************************************************************************
@@ -1220,27 +1249,6 @@ inline DbDevice *DeviceImpl::get_db_device()
 void clear_att_dim(Tango::AttributeValue_3 &att_val);
 void clear_att_dim(Tango::AttributeValue_4 &att_val);
 void clear_att_dim(Tango::AttributeValue_5 &att_val);
-
-//-----------------------------------------------------------------------
-//
-//			Polling threads pool related class/struct
-//
-//-----------------------------------------------------------------------
-
-struct PollingThreadInfo
-{
-	int									thread_id;			// The polling thread identifier
-	PollThread							*poll_th;			// The polling thread object
-	PollThCmd							shared_data;		// The shared buffer
-	TangoMonitor						poll_mon;			// The monitor
-	vector<string>						polled_devices;		// Polled devices for this thread
-	int									nb_polled_objects;	// Polled objects number in this thread
-	int 								smallest_upd;		// Smallest thread update period
-	vector<DevVarLongStringArray *> 	v_poll_cmd;			// Command(s) to send
-
-	PollingThreadInfo():thread_id(0),poll_th(NULL),poll_mon("Polling_thread_mon"),nb_polled_objects(0),smallest_upd(0)
-	{shared_data.cmd_pending = false;shared_data.trigger=false;}
-};
 
 struct DevDbUpd
 {

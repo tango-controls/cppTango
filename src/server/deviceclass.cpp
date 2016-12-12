@@ -52,10 +52,10 @@
 #include <tango/server/logging.h>
 #endif
 
-extern omni_thread::key_t key_py_data;
 namespace Tango
 {
 
+	extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
 static void lower_cmd_name(string &cmd)
 {
 	transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);

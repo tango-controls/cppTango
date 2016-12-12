@@ -43,27 +43,15 @@
 #include <tango.h>
 #include <tango/server/dserversignal.h>
 
-extern omni_thread::key_t key_py_data;
-
 namespace Tango
 {
 
-void *DServerSignal::ThSig::run_undetached(TANGO_UNUSED(void *ptr))
+    extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
+
+void DServerSignal::ThSig::run()
 {
 
 #ifndef _TG_WINDOWS_
-	sigset_t sigs_to_catch;
-
-//
-// Catch main signals
-//
-
-	sigemptyset(&sigs_to_catch);
-
-	sigaddset(&sigs_to_catch,SIGINT);
-	sigaddset(&sigs_to_catch,SIGTERM);
-	sigaddset(&sigs_to_catch,SIGHUP);
-	sigaddset(&sigs_to_catch,SIGQUIT);
 
 //
 // Init thread id and pid (for linux !!)
@@ -86,7 +74,7 @@ void *DServerSignal::ThSig::run_undetached(TANGO_UNUSED(void *ptr))
 	while(1)
 	{
 #ifndef _TG_WINDOWS_
-		int ret = sigwait(&sigs_to_catch,&signo);
+		int ret = sigwait(&ds->sigs_to_catch,&signo);
 		// sigwait() under linux might return an errno number without initialising the
 		// signo variable. Do a ckeck here to avoid problems!!!
 	   if ( ret != 0 )
@@ -112,50 +100,9 @@ void *DServerSignal::ThSig::run_undetached(TANGO_UNUSED(void *ptr))
 
 		if (th_data_created == false)
 		{
-			omni_thread::self()->set_value(key_py_data,new PyData());
+			kPerThreadPyData.reset(new PyData());
 			th_data_created = true;
 		}
-
-#ifndef _TG_WINDOWS_
-
-//
-// Add a new signal to catch in the mask
-//
-
-		{
-			omni_mutex_lock sy(*ds);
-			if (signo == SIGINT)
-            {
-                bool job_done = false;
-
-                if (ds->sig_to_install == true)
-                {
-                    ds->sig_to_install = false;
-                    sigaddset(&sigs_to_catch,ds->inst_sig);
-                    cout4 << "signal " << ds->inst_sig << " installed" << endl;
-                    job_done = true;
-                }
-
-//
-// Remove a signal from the catched one
-//
-
-                if (ds->sig_to_remove == true)
-                {
-                    ds->sig_to_remove = false;
-                    sigdelset(&sigs_to_catch,ds->rem_sig);
-                    cout4 << "signal " << ds->rem_sig << " removed" << endl;
-                    job_done = true;
-                }
-
-                if (job_done == true)
-                {
-                    ds->signal();
-                    continue;
-                }
-            }
-		}
-#endif
 
 		DevSigAction *act_ptr = &(DServerSignal::reg_sig[signo]);
 
@@ -209,8 +156,6 @@ void *DServerSignal::ThSig::run_undetached(TANGO_UNUSED(void *ptr))
 		}
 
 	}
-
-	return NULL;
 }
 
 

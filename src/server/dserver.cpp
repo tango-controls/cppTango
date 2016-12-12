@@ -49,14 +49,16 @@
 #include <unistd.h>
 #include <signal.h>
 #include <dlfcn.h>
+#include <future>
 #endif /* _TG_WINDOWS_ */
 
 #include <stdlib.h>
+#include "heartbeat_task.hxx"
 
-extern omni_thread::key_t key_py_data;
 namespace Tango
 {
 
+    extern thread_local std::shared_ptr<PyData> kPerThreadPyData;
 ClassFactoryFuncPtr DServer::class_factory_func_ptr = NULL;
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -272,14 +274,10 @@ void DServer::init_device()
 //
 
 					PyLock *lock_ptr = NULL;
-					omni_thread *th;
 
 					if (tg->is_py_ds() == true)
 					{
-						th = omni_thread::self();
-
-						omni_thread::value_t *tmp_py_data = th->get_value(key_py_data);
-						lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+						lock_ptr = kPerThreadPyData->PerTh_py_lock;
 						lock_ptr->Release();
 					}
 
@@ -497,7 +495,7 @@ void DServer::init_device()
 
 DServer::~DServer()
 {
-
+	rem_event_heartbeat();
 //
 // Destroy already registered classes
 //
@@ -838,7 +836,7 @@ void DServer::restart(string &d_name)
 // If the device is locked and if the client is not the lock owner, refuse to do the job
 //
 
-	check_lock_owner(dev_to_del,"restart",d_name.c_str());
+	check_lock_owner(dev_to_del,"restart",d_name);
 
 //
 // clean the sub-device list for this device
@@ -1117,120 +1115,102 @@ void DServer::restart_server()
 // Create the thread and start it
 //
 
-	ServRestartThread *t = new ServRestartThread(this);
-
-	t->start();
-
-}
-
-
-void ServRestartThread::run(void *ptr)
-{
-	PyData *py_data_ptr = new PyData();
-	omni_thread::self()->set_value(key_py_data,py_data_ptr);
-
+    std::thread([this](){
 //
 // The arg. passed to this method is a pointer to the DServer device
 //
 
-	DServer *dev = (DServer *)ptr;
+        DServer *dev = (DServer *)this;
 
 //
 // clean the sub-device list for the server
 //
 
-	Tango::Util *tg = Tango::Util::instance();
-	tg->get_sub_dev_diag().remove_sub_devices();
+        Tango::Util *tg = Tango::Util::instance();
+        tg->get_sub_dev_diag().remove_sub_devices();
 
 //
 // Change the POA manager to discarding state. This is necessary to discard all request arriving while the server
 // restart.
 //
 
-	PortableServer::POA_var poa = Util::instance()->get_poa();
-	PortableServer::POAManager_var manager = poa->the_POAManager();
+        PortableServer::POA_var poa = Util::instance()->get_poa();
+        PortableServer::POAManager_var manager = poa->the_POAManager();
 
-	manager->discard_requests(true);
+        manager->discard_requests(true);
 
 //
 // Setup logging
 //
 
 #ifdef TANGO_HAS_LOG4TANGO
-  	dev->init_logger();
+        dev->init_logger();
 #endif
 
 //
 // Reset initial state and status
 //
 
-	dev->set_state(Tango::ON);
-	dev->set_status("The device is ON");
+        dev->set_state(Tango::ON);
+        dev->set_status("The device is ON");
 
 //
 // Memorize event parameters and devices interface
 //
 
-	map<string,vector<EventPar> > map_events;
-	map<string,DevIntr> map_dev_inter;
+        map<string,vector<EventPar> > map_events;
+        map<string,DevIntr> map_dev_inter;
 
-	dev->mem_event_par(map_events);
-	dev->mem_devices_interface(map_dev_inter);
+        dev->mem_event_par(map_events);
+        dev->mem_devices_interface(map_dev_inter);
 
 //
 // Destroy and recreate the multi attribute object
 //
 
-	MultiAttribute *tmp_ptr;
-	try
-	{
-		tmp_ptr = new MultiAttribute(dev->get_name(),dev->get_device_class(),dev);
-	}
-	catch (Tango::DevFailed &)
-	{
-		throw;
-	}
-	delete dev->get_device_attr();
-	dev->set_device_attr(tmp_ptr);
-	dev->add_state_status_attrs();
+        MultiAttribute *tmp_ptr;
+        try
+        {
+            tmp_ptr = new MultiAttribute(dev->get_name(),dev->get_device_class(),dev);
+        }
+        catch (Tango::DevFailed &)
+        {
+            throw;
+        }
+        delete dev->get_device_attr();
+        dev->set_device_attr(tmp_ptr);
+        dev->add_state_status_attrs();
 
 //
 // Restart device(s)
 // Before set 2 values to retrieve correct polling threads pool size
 //
 
-    tg->set_polling_threads_pool_size(ULONG_MAX);
-	dev->set_poll_th_pool_size(DEFAULT_POLLING_THREADS_POOL_SIZE);
+        tg->set_polling_threads_pool_size(ULONG_MAX);
+        dev->set_poll_th_pool_size(DEFAULT_POLLING_THREADS_POOL_SIZE);
 
-    tg->set_svr_starting(true);
-	{
-		AutoPyLock PyLo;
-		dev->init_device();
-	}
-	tg->set_svr_starting(false);
+        tg->set_svr_starting(true);
+        {
+            AutoPyLock PyLo;
+            dev->init_device();
+        }
+        tg->set_svr_starting(false);
 
 //
 // Restart polling (if any)
 //
 
-	tg->polling_configure();
+        tg->polling_configure();
 
 //
 // Reset event params and send event(s) if some device interface has changed
 //
 
-	dev->apply_event_par(map_events);
-	dev->changed_devices_interface(map_dev_inter);
+        dev->apply_event_par(map_events);
+        dev->changed_devices_interface(map_dev_inter);
 
-//
-// Exit thread
-//
-
-	omni_thread::self()->remove_value(key_py_data);
-	delete py_data_ptr;
-	omni_thread::exit();
+    }).detach();
 }
-
 
 //+-----------------------------------------------------------------------------------------------------------------
 //
@@ -1395,28 +1375,14 @@ void DServer::kill()
 // Create the thread and start it
 //
 
-	KillThread *t = new KillThread;
+	std::async(
+			[](){
+        cout4 << "In the killer thread !!!" << endl;
 
-	t->start();
-
+        Tango::Util *tg = Tango::Util::instance();
+        tg->shutdown_ds();
+    });
 }
-
-void *KillThread::run_undetached(TANGO_UNUSED(void *ptr))
-{
-	cout4 << "In the killer thread !!!" << endl;
-
-	omni_thread::self()->set_value(key_py_data,new PyData());
-
-//
-// Shutdown the server
-//
-
-	Tango::Util *tg = Tango::Util::instance();
-	tg->shutdown_ds();
-
-	return NULL;
-}
-
 
 //+----------------------------------------------------------------------------------------------------------------
 //
@@ -1643,7 +1609,7 @@ void DServer::get_dev_prop(Tango::Util *tg)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::check_lock_owner(DeviceImpl *dev,const char *cmd_name,const char *dev_name)
+void DServer::check_lock_owner(DeviceImpl *dev, const char *cmd_name, string &dev_name)
 {
 	if (dev->is_device_locked() == true)
 	{

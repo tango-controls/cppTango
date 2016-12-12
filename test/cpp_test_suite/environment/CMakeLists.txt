@@ -21,3 +21,5 @@ execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shutdown.sh)
 add_custom_target(stop-tango ${CMAKE_CURRENT_SOURCE_DIR}/shutdown.sh
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
         SOURCES shutdown.sh)
+
+add_executable(ok ok.cxx)

@@ -12,7 +12,7 @@ using namespace Tango;
 using namespace std;
 
 #define cout cout << "\t"
-#define BASIC_NB_POLL        16
+const int kNumberOfPolledObjects{15};
 #define TEST_CLASS "devTest"
 
 #undef SUITE_NAME
@@ -33,11 +33,11 @@ typedef enum {
 
 void split_string(string &, char, vector <string> &);
 
-void stop_poll_att_no_except(DeviceProxy *, const char *);
-
 void stop_poll_cmd_no_except(DeviceProxy *, const char *);
 
 void del_device_no_error(Database &, string&);
+
+const auto stop_poll_att_no_except = CxxTest::TangoPrinter::stop_poll_att_no_except<DeviceProxy, DevFailed, CORBA::Exception, Except>;
 
 class OldPollTestSuite__loop : public CxxTest::TestSuite {
 protected:
@@ -80,6 +80,7 @@ public:
 
         try {
             device = new DeviceProxy(device_name);
+            device->set_timeout_millis(1000000);
             device->ping();
         }
         catch (const CORBA::Exception &e) {
@@ -96,7 +97,6 @@ public:
             device->poll_command("Status", 2000);
 
             device->poll_attribute("PollLong_attr", 1000);
-            device->poll_attribute("PollString_spec_attr", 500);
             device->poll_attribute("attr_wrong_type", 500);
 
             device->poll_attribute("Long64_attr_rw", 500);
@@ -140,7 +140,6 @@ public:
         stop_poll_cmd_no_except(device, "Status");
 
         stop_poll_att_no_except(device, "PollLong_attr");
-        stop_poll_att_no_except(device, "PollString_spec_attr");
         stop_poll_att_no_except(device, "attr_wrong_type");
 
         stop_poll_att_no_except(device, "Long64_attr_rw");
@@ -470,135 +469,6 @@ public:
         delete a_hist;
     }
 
-    void test_attribute_history_for_strings_spectrum(void) {
-        auto a_hist = device->attribute_history("PollString_spec_attr", hist_depth);
-
-        string first_string;
-        AttrResult ar;
-
-        vector <string> str;
-
-        if ((*a_hist)[0].has_failed() == true) {
-            if (::strcmp(((*a_hist)[0].get_err_stack())[0].reason.in(), "aaaa") == 0)
-                ar = FIRST_EXCEPT;
-            else
-                ar = SECOND_EXCEPT;
-        } else {
-            (*a_hist)[0] >> str;
-            if (str.size() == 2)
-                ar = FIRST_DATA;
-            else
-                ar = SECOND_DATA;
-        }
-
-        for (size_t i = 0; i < a_hist->size(); i++) {
-            if (verbose) {
-                cout << "Attribute failed = " << (*a_hist)[i].has_failed() << endl;
-                TimeVal &t = (*a_hist)[i].get_date();
-                cout << "Date : " << t.tv_sec << " sec, " << t.tv_usec << " usec" << endl;
-                if ((*a_hist)[i].has_failed() == false) {
-                    (*a_hist)[i] >> str;
-                    cout << "Value = " << str[0];
-                    if (str.size() == 2)
-                        cout << ", Value = " << str[1];
-                    cout << endl;
-                } else {
-                    cout << "Error stack depth = " << (*a_hist)[i].get_err_stack().length() << endl;
-                    cout << "Error level 0 reason = " << ((*a_hist)[i].get_err_stack())[0].reason << endl;
-                    cout << "Error level 0 desc = " << ((*a_hist)[i].get_err_stack())[0].desc << endl;
-                }
-                cout << endl;
-            }
-        }
-
-        switch (ar) {
-            case FIRST_EXCEPT:
-                TS_ASSERT((*a_hist)[0].has_failed() == true);
-                TS_ASSERT((*a_hist)[0].get_err_stack().length() == 1);
-                TS_ASSERT(::strcmp(((*a_hist)[0].get_err_stack())[0].desc.in(), "bbb") == 0);
-                TS_ASSERT(::strcmp(((*a_hist)[0].get_err_stack())[0].reason.in(), "aaaa") == 0);
-
-                TS_ASSERT((*a_hist)[1].has_failed() == true);
-                TS_ASSERT((*a_hist)[1].get_err_stack().length() == 1);
-                TS_ASSERT(::strcmp(((*a_hist)[1].get_err_stack())[0].desc.in(), "yyy") == 0);
-                TS_ASSERT(::strcmp(((*a_hist)[1].get_err_stack())[0].reason.in(), "xxx") == 0);
-
-                (*a_hist)[2] >> str;
-                TS_ASSERT(str.size() == 2);
-                TS_ASSERT(str[0] == "Hello world");
-                TS_ASSERT(str[1] == "Hello universe");
-
-                (*a_hist)[3] >> str;
-                TS_ASSERT(str.size() == 1);
-                TS_ASSERT(str[0] == "Hello Grenoble");
-                break;
-
-            case SECOND_EXCEPT:
-                TS_ASSERT((*a_hist)[0].has_failed() == true);
-                TS_ASSERT((*a_hist)[0].get_err_stack().length() == 1);
-                TS_ASSERT(::strcmp(((*a_hist)[0].get_err_stack())[0].desc.in(), "yyy") == 0);
-                TS_ASSERT(::strcmp(((*a_hist)[0].get_err_stack())[0].reason.in(), "xxx") == 0);
-
-                (*a_hist)[1] >> str;
-                TS_ASSERT(str.size() == 2);
-                TS_ASSERT(str[0] == "Hello world");
-                TS_ASSERT(str[1] == "Hello universe");
-
-                (*a_hist)[2] >> str;
-                TS_ASSERT(str.size() == 1);
-                TS_ASSERT(str[0] == "Hello Grenoble");
-
-                TS_ASSERT((*a_hist)[3].has_failed() == true);
-                TS_ASSERT((*a_hist)[3].get_err_stack().length() == 1);
-                TS_ASSERT(::strcmp(((*a_hist)[3].get_err_stack())[0].desc.in(), "bbb") == 0);
-                TS_ASSERT(::strcmp(((*a_hist)[3].get_err_stack())[0].reason.in(), "aaaa") == 0);
-                break;
-
-            case FIRST_DATA:
-                (*a_hist)[0] >> str;
-                TS_ASSERT(str.size() == 2);
-                TS_ASSERT(str[0] == "Hello world");
-                TS_ASSERT(str[1] == "Hello universe");
-
-                (*a_hist)[1] >> str;
-                TS_ASSERT(str.size() == 1);
-                TS_ASSERT(str[0] == "Hello Grenoble");
-
-                TS_ASSERT((*a_hist)[2].has_failed() == true);
-                TS_ASSERT((*a_hist)[2].get_err_stack().length() == 1);
-                TS_ASSERT(::strcmp(((*a_hist)[2].get_err_stack())[0].desc.in(), "bbb") == 0);
-                TS_ASSERT(::strcmp(((*a_hist)[2].get_err_stack())[0].reason.in(), "aaaa") == 0);
-
-                TS_ASSERT((*a_hist)[3].has_failed() == true);
-                TS_ASSERT((*a_hist)[3].get_err_stack().length() == 1);
-                TS_ASSERT(::strcmp(((*a_hist)[3].get_err_stack())[0].desc.in(), "yyy") == 0);
-                TS_ASSERT(::strcmp(((*a_hist)[3].get_err_stack())[0].reason.in(), "xxx") == 0);
-                break;
-
-            case SECOND_DATA:
-                (*a_hist)[0] >> str;
-                TS_ASSERT(str.size() == 1);
-                TS_ASSERT(str[0] == "Hello Grenoble");
-
-                TS_ASSERT((*a_hist)[1].has_failed() == true);
-                TS_ASSERT((*a_hist)[1].get_err_stack().length() == 1);
-                TS_ASSERT(::strcmp(((*a_hist)[1].get_err_stack())[0].desc.in(), "bbb") == 0);
-                TS_ASSERT(::strcmp(((*a_hist)[1].get_err_stack())[0].reason.in(), "aaaa") == 0);
-
-                TS_ASSERT((*a_hist)[2].has_failed() == true);
-                TS_ASSERT((*a_hist)[2].get_err_stack().length() == 1);
-                TS_ASSERT(::strcmp(((*a_hist)[2].get_err_stack())[0].desc.in(), "yyy") == 0);
-                TS_ASSERT(::strcmp(((*a_hist)[2].get_err_stack())[0].reason.in(), "xxx") == 0);
-
-                (*a_hist)[3] >> str;
-                TS_ASSERT(str.size() == 2);
-                TS_ASSERT(str[0] == "Hello world");
-                TS_ASSERT(str[1] == "Hello universe");
-                break;
-        }
-        delete a_hist;
-    }
-
     void test_attribute_history_for_dev_encoded(void) {
         auto enc_hist = device->attribute_history("Encoded_attr", hist_depth);
 
@@ -745,7 +615,7 @@ public:
         vector <string> *poll_str;
         TS_ASSERT_THROWS_NOTHING(poll_str = device->polling_status());
 
-        unsigned long nb_polled = BASIC_NB_POLL;
+        unsigned long nb_polled = kNumberOfPolledObjects;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -798,7 +668,7 @@ public:
         vector <string> v_str;
         d_received >> v_str;
 
-        auto nb_polled = BASIC_NB_POLL;
+        auto nb_polled = kNumberOfPolledObjects;
         for (unsigned int i = 0; i < v_str.size(); i++) {
             if (v_str[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -886,7 +756,7 @@ public:
             cout << endl;
         }
 
-        auto nb_polled = BASIC_NB_POLL + 1;
+        auto nb_polled = kNumberOfPolledObjects + 1;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -950,7 +820,7 @@ public:
             cout << endl;
         }
 
-        auto nb_polled = BASIC_NB_POLL;
+        auto nb_polled = kNumberOfPolledObjects;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -1011,7 +881,7 @@ public:
             cout << endl;
         }
 
-        auto nb_polled = BASIC_NB_POLL + 1;
+        auto nb_polled = kNumberOfPolledObjects + 1;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -1046,7 +916,7 @@ public:
             cout << endl;
         }
 
-        auto nb_polled = BASIC_NB_POLL;
+        auto nb_polled = kNumberOfPolledObjects;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -1311,17 +1181,6 @@ void split_string(string &the_str, char delim, vector <string> &splitted_str) {
     splitted_str.push_back(the_str.substr(start));
 }
 
-
-void stop_poll_att_no_except(DeviceProxy *dev, const char *att_name) {
-    try {
-        dev->stop_poll_attribute(att_name);
-    }
-    catch (Tango::DevFailed &) {}
-    catch (CORBA::Exception &e) {
-        Except::print_exception(e);
-        exit(-1);
-    }
-}
 
 void stop_poll_cmd_no_except(DeviceProxy *dev, const char *cmd_name) {
     try {
