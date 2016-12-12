@@ -1845,9 +1845,10 @@ AttributeInfoEx &AttributeInfoEx::operator=(const AttributeConfig_5 *att_5)
 		else
 			memorized = MEMORIZED_WRITE_INIT;
 	}
-	for (unsigned int j=0; j<att_5->enum_labels.length(); j++)
+	enum_labels.clear();
+	for (size_t j = 0, size = att_5->enum_labels.length(); j < size; ++j)
 	{
-		enum_labels[j] = att_5->enum_labels[j];
+		enum_labels.push_back(att_5->enum_labels[j].in());
 	}
 
 	alarms.min_alarm = att_5->att_alarm.min_alarm;
