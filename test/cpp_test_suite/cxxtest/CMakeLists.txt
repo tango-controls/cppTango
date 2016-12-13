@@ -11,7 +11,7 @@ macro(CXX_GENERATE_TEST name)
     endif()
 
     add_executable(${name} $<TARGET_OBJECTS:compare_test_object> ${name}.cpp)
-    target_include_directories(${name} PRIVATE include)
+    target_include_directories(${name} PRIVATE include ${CMAKE_CURRENT_BINARY_DIR}/include)
     target_link_libraries(${name} PRIVATE tango)
     target_compile_definitions(${name} PRIVATE "-DVALGRIND -D_PTHREADS -D_REENTRANT")
 
@@ -72,3 +72,11 @@ CXX_GENERATE_TEST(cxx_pipe_conf)
 CXX_GENERATE_TEST(cxx_pipe)
 CXX_GENERATE_TEST(cxx_z00_dyn_cmd)
 CXX_GENERATE_TEST(cxx_old_poll)
+CXX_GENERATE_TEST(cxx_test_reconnection)
+
+
+#utilities
+configure_file(bin/start_server.sh.cmake    bin/start_server.sh @ONLY)
+configure_file(bin/kill_server.sh.cmake     bin/kill_server.sh @ONLY)
+
+configure_file(include/config.h.cmake include/config.h @ONLY)
