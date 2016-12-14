@@ -81,7 +81,17 @@ CXX_GENERATE_TEST(cxx_stateless_subscription)
 
 
 #utilities
-configure_file(bin/start_server.sh.cmake    bin/start_server.sh @ONLY)
-configure_file(bin/kill_server.sh.cmake     bin/kill_server.sh @ONLY)
+configure_file(bin/start_server.sh.cmake    ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/start_server.sh @ONLY)
+configure_file(bin/kill_server.sh.cmake     ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/kill_server.sh @ONLY)
+
+# now copy the temporary into the final destination, setting the permissions
+file(COPY ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/start_server.sh
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin
+        FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
+        GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+file(COPY ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/kill_server.sh
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin
+        FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
+        GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
 configure_file(include/config.h.cmake include/config.h @ONLY)
