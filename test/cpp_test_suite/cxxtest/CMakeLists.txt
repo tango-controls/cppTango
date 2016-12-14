@@ -1,3 +1,5 @@
+find_package (Threads REQUIRED)
+
 macro(CXX_GENERATE_TEST name)
     message("Generate ${name}.cpp")
     execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
@@ -11,14 +13,15 @@ macro(CXX_GENERATE_TEST name)
     endif()
 
     add_executable(${name} $<TARGET_OBJECTS:compare_test_object> ${name}.cpp)
-    target_include_directories(${name} PRIVATE include)
-    target_link_libraries(${name} PRIVATE tango)
+    target_include_directories(${name} PRIVATE include ${CMAKE_CURRENT_BINARY_DIR}/include)
+    target_link_libraries(${name} PRIVATE tango ${CMAKE_THREAD_LIBS_INIT})
     target_compile_definitions(${name} PRIVATE "-DVALGRIND -D_PTHREADS -D_REENTRANT")
 
     add_test(NAME "CXX::${name}" COMMAND $<TARGET_FILE:${name}>
             --device1=${DEV1}
             --device2=${DEV2}
             --device3=${DEV3}
+            --device20=${DEV20}
             --fwd_device=${FWD_DEV}
             --loop=1
             --fulldsname=${SERV_NAME}/${INST_NAME}
@@ -72,3 +75,23 @@ CXX_GENERATE_TEST(cxx_pipe_conf)
 CXX_GENERATE_TEST(cxx_pipe)
 CXX_GENERATE_TEST(cxx_z00_dyn_cmd)
 CXX_GENERATE_TEST(cxx_old_poll)
+CXX_GENERATE_TEST(cxx_server_event)
+CXX_GENERATE_TEST(cxx_reconnection_zmq)
+CXX_GENERATE_TEST(cxx_stateless_subscription)
+
+
+#utilities
+configure_file(bin/start_server.sh.cmake    ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/start_server.sh @ONLY)
+configure_file(bin/kill_server.sh.cmake     ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/kill_server.sh @ONLY)
+
+# now copy the temporary into the final destination, setting the permissions
+file(COPY ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/start_server.sh
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin
+        FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
+        GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+file(COPY ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/kill_server.sh
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin
+        FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
+        GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+configure_file(include/config.h.cmake include/config.h @ONLY)

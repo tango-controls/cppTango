@@ -18,11 +18,7 @@ set(TESTS   archive_event
             data_ready_event_buffer
             dev_intr_event
             multi_dev_event
-            per_event
-#            reco_event
-            reco_zmq
-            server_event
-            stateless_sub)
+            per_event)
 
 foreach(TEST ${TESTS})
     TEST_SUITE_ADD_TEST(${TEST})
@@ -45,10 +41,3 @@ add_test(NAME "event::multi_dev_event"  COMMAND $<TARGET_FILE:multi_dev_event> $
 add_test(NAME "event::dev_intr_event"  COMMAND $<TARGET_FILE:dev_intr_event> ${DEV1})
 add_test(NAME "event::pipe_event"  COMMAND $<TARGET_FILE:pipe_event> ${DEV1})
 add_test(NAME "event::event_lock"  COMMAND $<TARGET_FILE:event_lock> ${DEV1})
-
-
-#the following test performs several kill/start sequences, but must keep DEV1 alive in the end
-configure_file(test_reconnection.sh.cmake test_reconnection.sh @ONLY)
-execute_process(COMMAND chmod +x ${CMAKE_CURRENT_BINARY_DIR}/test_reconnection.sh)
-add_test(NAME "event::reconnect" COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test_reconnection.sh
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
