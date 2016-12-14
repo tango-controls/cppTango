@@ -22,12 +22,15 @@ using namespace std;
 class ServerEventTestSuite : public CxxTest::TestSuite {
 protected:
     DeviceProxy *device1, *device2;
-    string device1_name, device2_name;
+    string device1_name, device2_name, device1_instance_name, device2_instance_name;
     bool verbose;
     DevLong eve_id;
 
 public:
-    SUITE_NAME() {
+    SUITE_NAME():
+            device1_instance_name{"test"},//TODO pass via cl
+            device2_instance_name{"test2"}
+            {
 
 //
 // Arguments check -------------------------------------------------
@@ -50,7 +53,7 @@ public:
             device2 = new DeviceProxy(device2_name);
 
             //TODO start server 2 and set fallback point
-            CxxTest::TangoPrinter::start_server("test2");
+            CxxTest::TangoPrinter::start_server(device2_instance_name);
             CxxTest::TangoPrinter::restore_set("test2/debian8/20 started.");
         }
         catch (CORBA::Exception &e) {
@@ -63,6 +66,8 @@ public:
     virtual ~SUITE_NAME() {
         if (CxxTest::TangoPrinter::is_restore_set("test2/debian8/20 started."))
             CxxTest::TangoPrinter::kill_server();
+
+        CxxTest::TangoPrinter::start_server(device1_instance_name);
 
         delete device1;
         delete device2;

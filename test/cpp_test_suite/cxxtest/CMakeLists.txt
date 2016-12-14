@@ -1,3 +1,5 @@
+find_package (Threads REQUIRED)
+
 macro(CXX_GENERATE_TEST name)
     message("Generate ${name}.cpp")
     execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
@@ -12,7 +14,7 @@ macro(CXX_GENERATE_TEST name)
 
     add_executable(${name} $<TARGET_OBJECTS:compare_test_object> ${name}.cpp)
     target_include_directories(${name} PRIVATE include ${CMAKE_CURRENT_BINARY_DIR}/include)
-    target_link_libraries(${name} PRIVATE tango)
+    target_link_libraries(${name} PRIVATE tango ${CMAKE_THREAD_LIBS_INIT})
     target_compile_definitions(${name} PRIVATE "-DVALGRIND -D_PTHREADS -D_REENTRANT")
 
     add_test(NAME "CXX::${name}" COMMAND $<TARGET_FILE:${name}>
@@ -74,6 +76,7 @@ CXX_GENERATE_TEST(cxx_pipe)
 CXX_GENERATE_TEST(cxx_z00_dyn_cmd)
 CXX_GENERATE_TEST(cxx_old_poll)
 CXX_GENERATE_TEST(cxx_server_event)
+CXX_GENERATE_TEST(cxx_reconnection_zmq)
 
 
 #utilities
