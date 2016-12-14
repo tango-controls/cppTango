@@ -19,6 +19,7 @@ macro(CXX_GENERATE_TEST name)
             --device1=${DEV1}
             --device2=${DEV2}
             --device3=${DEV3}
+            --device20=${DEV20}
             --fwd_device=${FWD_DEV}
             --loop=1
             --fulldsname=${SERV_NAME}/${INST_NAME}
@@ -72,7 +73,7 @@ CXX_GENERATE_TEST(cxx_pipe_conf)
 CXX_GENERATE_TEST(cxx_pipe)
 CXX_GENERATE_TEST(cxx_z00_dyn_cmd)
 CXX_GENERATE_TEST(cxx_old_poll)
-CXX_GENERATE_TEST(cxx_test_reconnection)
+CXX_GENERATE_TEST(cxx_server_event)
 
 
 #utilities
