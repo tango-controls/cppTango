@@ -77,6 +77,7 @@ CXX_GENERATE_TEST(cxx_z00_dyn_cmd)
 CXX_GENERATE_TEST(cxx_old_poll)
 CXX_GENERATE_TEST(cxx_server_event)
 CXX_GENERATE_TEST(cxx_reconnection_zmq)
+CXX_GENERATE_TEST(cxx_stateless_subscription)
 
 
 #utilities
