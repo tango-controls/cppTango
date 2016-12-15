@@ -2142,7 +2142,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // union discriminator + elt nb. This means 64 bits data not on a
 // 8 bytes boundary
 //
-
+//TODO extract into a dedicated method which returns properly aligned data_ptr
 				char *data_ptr = (char *)event_data.data();
 				size_t data_size = (size_t)event_data.size();
 
