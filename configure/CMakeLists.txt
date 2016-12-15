@@ -1,9 +1,15 @@
 include(FindPkgConfig)
 include(FindDoxygen)
+include(GNUInstallDirs)
 
 if(NOT CMAKE_BUILD_TYPE)
     message("No build type specified - default is DEBUG")
     set(CMAKE_BUILD_TYPE DEBUG)
+endif()
+
+if(NOT TANGO_DEVICE_SERVER_PATH)
+    #TODO windows
+    set(TANGO_DEVICE_SERVER_PATH ${CMAKE_INSTALL_FULL_BINDIR})
 endif()
 
 if(IDL_BASE)
@@ -70,7 +76,5 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_options(-std=c++11)
     add_definitions(-DGNU_CXX)
 endif()
-
-include(GNUInstallDirs)
 
 include(configure/config.cmake)

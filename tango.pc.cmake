@@ -1,10 +1,11 @@
 prefix = @CMAKE_INSTALL_PREFIX@
 exec_prefix = ${prefix}
-includedir = ${prefix}/include
+includedir = ${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
 libdir = ${prefix}/@CMAKE_INSTALL_LIBDIR@
+tangodsdir = @TANGO_DEVICE_SERVER_PATH@
 
 Name: @CMAKE_PROJECT_NAME@
-Description: TANGO client/server API library
+Description: TANGO C++ client/server API library
 Version: @LIBRARY_VERSION@
 Cflags: -std=c++11 -I${includedir}
 Requires: omniDynamic4 >= 4.1.6, omniCOS4, libzmq
