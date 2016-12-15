@@ -947,7 +947,7 @@ namespace Tango {
     //TODO generalize for any enum?
     void DServer::check_event(const string &event) const {
         string check_event = event;
-        transform(check_event.begin(), check_event.end(), check_event.begin(), tolower);
+        transform(check_event.begin(), check_event.end(), check_event.begin(), ::tolower);
 
         auto pos_check = check_event.find(EVENT_COMPAT);
         if (pos_check != string::npos)
