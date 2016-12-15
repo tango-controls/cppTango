@@ -755,6 +755,37 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         action = (*argin)[2];
         event = (*argin)[3];
 
+//
+// Check event type validity
+//
+
+        string check_event = event;
+        transform(check_event.begin(),check_event.end(),check_event.begin(),::tolower);
+
+        string::size_type pos_check = check_event.find(EVENT_COMPAT);
+        if (pos_check != string::npos)
+            check_event.erase(0,EVENT_COMPAT_IDL5_SIZE);
+
+        size_t nb_event_type = sizeof(EventName)/sizeof(char *);
+        bool found = false;
+
+        for (size_t loop = 0;loop < nb_event_type;loop++)
+        {
+            if (strcmp(check_event.c_str(),EventName[loop]) == 0)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (found == false)
+        {
+            stringstream ss;
+            ss << "The event type you sent (" << event << ") is not  valid event type";
+
+            Except::throw_exception(API_WrongNumberOfArgs,ss.str(),"DServer::zmq_event_subscription_change");
+        }
+
         bool intr_change = false;
         if (event == EventName[INTERFACE_CHANGE_EVENT])
 			intr_change = true;
