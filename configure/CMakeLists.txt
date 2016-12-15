@@ -9,7 +9,7 @@ endif()
 
 if(NOT TANGO_DEVICE_SERVER_PATH)
     #TODO windows
-    set(TANGO_DEVICE_SERVER_PATH /usr/bin)
+    set(TANGO_DEVICE_SERVER_PATH ${CMAKE_INSTALL_FULL_BINDIR})
 endif()
 
 if(IDL_BASE)
