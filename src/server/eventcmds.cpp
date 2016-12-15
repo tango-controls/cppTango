@@ -781,7 +781,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         if (found == false)
         {
             stringstream ss;
-            ss << "The event type you sent (" << event << ") is not  valid event type";
+            ss << "The event type you sent (" << event << ") is not a valid event type";
 
             Except::throw_exception(API_WrongNumberOfArgs,ss.str(),"DServer::zmq_event_subscription_change");
         }
