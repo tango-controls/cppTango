@@ -7,8 +7,9 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE DEBUG)
 endif()
 
-if(NOT DS_DEFAULT_DIR)
-    set(DS_DEFAULT_DIR ${CMAKE_INSTALL_FULL_LIBDIR}/tango/server)
+if(NOT TANGO_DEVICE_SERVER_PATH)
+    #TODO windows
+    set(TANGO_DEVICE_SERVER_PATH /usr/bin)
 endif()
 
 if(IDL_BASE)
