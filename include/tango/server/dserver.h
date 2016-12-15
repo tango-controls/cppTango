@@ -182,7 +182,15 @@ private:
 
 	bool            polling_bef_9_def;
 	bool            polling_bef_9;
-};
+
+		/**
+		 * Checks whether event is one of Tango::EventName
+		 *
+		 * @param event event name
+		 * @throws API_WrongNumberOfArgs if check fails
+		 */
+        void check_event(const string &event) const;
+    };
 
 class KillThread: public omni_thread
 {
