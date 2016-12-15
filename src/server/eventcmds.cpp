@@ -769,16 +769,16 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         size_t nb_event_type = sizeof(EventName)/sizeof(char *);
         bool found = false;
 
-        for (size_t loop = 0;loop < nb_event_type;loop++)
+        for (size_t i = 0;i < nb_event_type;i++)
         {
-            if (strcmp(check_event.c_str(),EventName[loop]) == 0)
+            if (strcmp(check_event.c_str(),EventName[i]) == 0)
             {
                 found = true;
                 break;
             }
         }
 
-        if (found == false)
+        if (!found)
         {
             stringstream ss;
             ss << "The event type you sent (" << event << ") is not a valid event type";
