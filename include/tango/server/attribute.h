@@ -2687,7 +2687,7 @@ inline void Attribute::set_att_conf_event_sub(int cl_lib)
 //
 // Macro to help coding
 //
-
+//TODO replace with template function
 #define MEM_STREAM_2_CORBA(A,B) \
 	if (true) \
 	{ \

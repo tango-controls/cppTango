@@ -198,7 +198,7 @@ void Attribute::get_properties(Tango::AttributeConfig_3 &conf)
 		conf.event_prop.per_event.period = Tango::string_dup((const char *)(DEFAULT_EVENT_PERIOD));
 	else
 	{
-		int per = (int)((double)event_period);
+		int per = event_period;
 		str << per;
 		MEM_STREAM_2_CORBA(conf.event_prop.per_event.period,str);
 	}
