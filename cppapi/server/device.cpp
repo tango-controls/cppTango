@@ -3229,7 +3229,43 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 
 	if (new_attr->is_fwd() == true)
 	{
-		dev_attr->add_fwd_attribute(device_name,device_class,i,new_attr);
+		// If forwarded attribute is dynamically created and was constructed without specifying
+		// the root_attribute parameter then we have to get its __root_att property from tango DB
+		// prior to calling validate_fwd_att()
+		vector<AttrProperty> dev_prop;
+		Tango::Util *tg = Tango::Util::instance();
+		Tango::FwdAttr *fwd_attr = static_cast<Tango::FwdAttr *> (new_attr);
+		if ((tg->_UseDb==true) && (fwd_attr->get_full_root_att()==RootAttNotDef))
+		{
+			Tango::DbData db_list;
+			db_list.push_back(DbDatum(new_attr->get_name()));
+			tg->get_database()->get_device_attribute_property(this->device_name,db_list,tg->get_db_cache());
+			for (unsigned int ind=0 ; ind<db_list.size() ; ind++)
+			{
+				if (db_list[ind].name == RootAttrPropName)
+				{
+					dev_prop.push_back(AttrProperty(db_list[ind].name, db_list[ind].value_string[0]));
+					break;
+				}
+			}
+		}
+		// Validate the __root_att property of the attribute
+		fwd_attr->validate_fwd_att(dev_prop, this->device_name);
+		// Register the root attribute configuration
+		try
+		{
+			fwd_attr->get_root_conf(this->device_name,this);
+		}
+		catch (...)
+		{
+			DeviceImpl::FwdWrongConf fwc;
+			fwc.att_name = attr_name;
+			fwc.full_root_att_name = fwd_attr->get_full_root_att();
+			fwc.fae = fwd_attr->get_err_kind();
+			fwd_att_wrong_conf.push_back(fwc);
+		}
+		// Add the attribute
+		dev_attr->add_fwd_attribute(device_name,device_class,i,fwd_attr);
 	}
 	else
 		dev_attr->add_attribute(device_name,device_class,i);

@@ -180,7 +180,10 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 	}
 	catch (...) {}
 
-	if (root_att_db_defined == true)
+	//check if full_root_att is already set
+	if (full_root_att.size()!=0 and full_root_att.compare(RootAttNotDef)!=0)
+		;
+	else if (root_att_db_defined == true)
 		full_root_att = root_att_db;
     else
         full_root_att = RootAttNotDef;
