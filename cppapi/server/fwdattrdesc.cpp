@@ -182,8 +182,7 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 	catch (...) {}
 
 	//check if full_root_att is already set
-	if (full_root_att.size()!=0 && full_root_att.compare(RootAttNotDef)!=0)
-		is_full_root_att_set = true;
+	is_full_root_att_set = full_root_att.size()!=0 && full_root_att.compare(RootAttNotDef)!=0;
 
 	if(is_full_root_att_set)
 		; // root attribute was defined in constructor: do not overwrite it
