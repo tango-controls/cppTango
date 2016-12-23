@@ -184,12 +184,12 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 	//check if full_root_att is already set
 	is_full_root_att_set = full_root_att.size()!=0 && full_root_att.compare(RootAttNotDef)!=0;
 
-	if(is_full_root_att_set)
-		; // root attribute was defined in constructor: do not overwrite it
-	else if (root_att_db_defined)
-		full_root_att = root_att_db;
-    else
-        full_root_att = RootAttNotDef;
+	if(!is_full_root_att_set) {
+		if (root_att_db_defined)
+			full_root_att = root_att_db;
+		else
+			full_root_att = RootAttNotDef;
+	}
 
 //
 // Check root att syntax and add TANGO_HOST info in root device name of not given
