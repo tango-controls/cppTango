@@ -118,6 +118,7 @@ public :
  * @li string
  * @li char* (insert only)
  * @li const char *
+ * @li vector<bool>
  * @li vector<unsigned char>
  * @li vector<string>
  * @li vector<short>
@@ -132,6 +133,7 @@ public :
  * Operators exist for inserting the native TANGO CORBA sequence types. These can be
  * useful for programmers who want to use the TANGO api internally in their device servers and do not want
  * to convert from CORBA to C++ types. Insert and extract operators exist for the following types :
+ * @li DevVarBooleanArray *
  * @li DevVarUCharArray *
  * @li DevVarShortArray *
  * @li DevVarUShortArray *
@@ -151,6 +153,7 @@ public :
  *
  * Operators also exist for inserting TANGO CORBA sequence type by reference. The insertion copy the
  * data into the DeviceData object. Insert operator exist for the following types :
+ * @li DevVarBooleanArray &
  * @li DevVarUCharArray &
  * @li DevVarShortArray &
  * @li DevVarUShortArray &
@@ -280,6 +283,7 @@ public :
  * @li const char *
  * @li DevEncoded
  * @li DevState
+ * @li vector<bool>
  * @li vector<unsigned char>
  * @li vector<string>
  * @li vector<short>
@@ -294,6 +298,7 @@ public :
  * Operators exist for extracting the native TANGO CORBA sequence types. These can be
  * useful for programmers who want to use the TANGO api internally in their device servers and do not want
  * to convert from CORBA to C++ types. Insert and extract operators exist for the following types :
+ * @li const DevVarBooleanArray *
  * @li const DevVarUCharArray *
  * @li const DevVarShortArray *
  * @li const DevVarUShortArray *
@@ -376,6 +381,7 @@ public :
 	void operator << (char *&datum) {any <<= datum;}
 	void operator << (const char *&datum) {any <<= datum;}
 	void operator << (string &datum) {any <<= datum.c_str();}
+	void operator << (vector<bool>&);
 	void operator << (vector<unsigned char>&);
 	void operator << (vector<string>&);
 	void operator << (vector<short>&);
@@ -400,6 +406,7 @@ public :
 // insert methods for TANGO CORBA sequence types
 //
 
+	inline void operator << (DevVarBooleanArray* datum) { any.inout() <<= datum;}
 	inline void operator << (DevVarCharArray* datum) { any.inout() <<= datum;}
 	inline void operator << (DevVarShortArray* datum) { any.inout() <<= datum;}
 	inline void operator << (DevVarUShortArray* datum) { any.inout() <<= datum;}
@@ -413,6 +420,7 @@ public :
 	inline void operator << (DevVarLongStringArray* datum) { any.inout() <<= datum;}
 	inline void operator << (DevVarDoubleStringArray* datum) { any.inout() <<= datum;}
 
+	inline void operator << (DevVarBooleanArray &datum) { any.inout() <<= datum;}
 	inline void operator << (DevVarCharArray &datum) { any.inout() <<= datum;}
 	inline void operator << (DevVarShortArray &datum) { any.inout() <<= datum;}
 	inline void operator << (DevVarUShortArray datum) { any.inout() <<= datum;}
@@ -442,6 +450,7 @@ public :
 	bool operator >> (const char*&);
 	bool operator >> (string&);
 
+	bool operator >> (vector<bool>&);
 	bool operator >> (vector<unsigned char>&);
 	bool operator >> (vector<string>&);
 	bool operator >> (vector<short>&);
@@ -463,6 +472,7 @@ public :
 // extract methods for TANGO CORBA sequence types
 //
 
+	bool operator >> (const DevVarBooleanArray* &datum);
 	bool operator >> (const DevVarCharArray* &datum);
 	bool operator >> (const DevVarShortArray* &datum);
 	bool operator >> (const DevVarUShortArray* &datum);
