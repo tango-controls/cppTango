@@ -4,8 +4,8 @@
 
 - fork
 - clone fork
-- start a new branch `git branch my-contrib`
-- switch to the new branch `git checkout my-contrib`
+- If you want to work on TANGO 9 LTS, switch to tango-9-lts branch: `git checkout tango-9-lts`
+- start a new branch for your contribution and switch to the new branch `git checkout -b my-contrib`
 - do changes
 - commit&push
 - create pull request
@@ -20,3 +20,5 @@ Before submitting a new pull request
 _OR_
 
 - git pull --rebase upstream master
+
+You can have a look at this page to get more details on how to fork and submit a Pull Request: https://gist.github.com/Chaser324/ce0505fbed06b947d962
