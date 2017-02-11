@@ -968,6 +968,7 @@ private:
 	void create_CORBA_objects();
 	void misc_init();
 	void init_host_name();
+	void server_perform_work();
 	void server_already_running();
 	void print_usage(char *);
 	static void print_err_message(const char *,Tango::MessBoxType type = Tango::STOP);

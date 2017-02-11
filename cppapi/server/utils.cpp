@@ -1911,6 +1911,60 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 //+-----------------------------------------------------------------------------------------------------------------
 //
 // method :
+//		Util::server_perform_work()
+//
+// description :
+//		To call orb->run() or call orb->perform_work() and user-defined ev_loop_func() in a while loop
+//      if user has setup the event loop function
+//
+//------------------------------------------------------------------------------------------------------------------
+void Util::server_perform_work()
+{
+	if (ev_loop_func != NULL)
+	{
+
+		//
+		// If the user has installed its own event management function, call it in a loop
+		//
+
+		struct timespec sleep_time;
+		sleep_time.tv_sec = 0;
+		sleep_time.tv_nsec = 20000000;
+		bool user_shutdown_server;
+
+		while (shutdown_server == false)
+		{
+			if (is_svr_shutting_down() == false)
+			{
+				if (orb->work_pending())
+					orb->perform_work();
+
+				user_shutdown_server = (*ev_loop_func)();
+				if (user_shutdown_server == true)
+				{
+					shutdown_ds();
+					shutdown_server = true;
+				}
+			}
+			else
+			{
+#ifdef _TG_WINDOWS_
+				Sleep(sleep_time.tv_nsec / 1000000);
+#else
+				nanosleep(&sleep_time, NULL);
+#endif
+			}
+		}
+	}
+	else
+	{
+		orb->run();
+	}
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
 //		Util::server_run()
 //
 // description :
@@ -1968,7 +2022,7 @@ void Util::server_run()
 				//JM : 9.8.2005 : destroy() should be called at the exit of run()!
 				try
 				{
-					orb->run();
+					server_perform_work();
 					server_cleanup();
 				}
 				catch (CORBA::Exception &)
@@ -1992,7 +2046,7 @@ void Util::server_run()
 			//JM : 9.8.2005 : destroy() should be called at the exit of run()!
 			try
 			{
-				orb->run();
+				server_perform_work();
 				server_cleanup();
 
 				if (th_id == 0)
@@ -2022,42 +2076,7 @@ void Util::server_run()
 	//JM : 9.8.2005 : destroy() should be called at the exit of run()!
 	try
 	{
-		if (ev_loop_func != NULL)
-		{
-
-//
-// If the user has installed its own event management function, call it in a loop
-//
-
-			struct timespec sleep_time;
-			sleep_time.tv_sec = 0;
-			sleep_time.tv_nsec = 20000000;
-			bool user_shutdown_server;
-
-			while(shutdown_server == false)
-			{
-				if (is_svr_shutting_down() == false)
-				{
-					if (orb->work_pending())
-						orb->perform_work();
-
-					user_shutdown_server = (*ev_loop_func)();
-					if (user_shutdown_server == true)
-					{
-						shutdown_ds();
-						shutdown_server = true;
-					}
-				}
-				else
-				{
-					nanosleep(&sleep_time,NULL);
-				}
-			}
-		}
-		else
-		{
-			orb->run();
-		}
+		server_perform_work();
 		server_cleanup();
 
 		if (th_id == 0)
