@@ -1221,6 +1221,64 @@ CORBA::Any *IODoubleString::execute(Tango::DeviceImpl *device,const CORBA::Any &
 
 //+----------------------------------------------------------------------------
 //
+// method : 		IOBooleanArray::IOBooleanArray()
+//
+// description : 	constructor for the IOBooleanArray command of the
+//			DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+IOBooleanArray::IOBooleanArray(const char *name,Tango::CmdArgType in,
+                               Tango::CmdArgType out,const char *in_desc,
+                               const char *out_desc)
+        :Tango::Command(name,in,out,in_desc,out_desc)
+{
+}
+
+
+
+bool IOBooleanArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+
+//
+// command allowed only if the device is on
+//
+
+    if (device->get_state() == Tango::ON)
+        return(true);
+    else
+        return(false);
+}
+
+
+CORBA::Any *IOBooleanArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+{
+    try {
+        const Tango::DevVarBooleanArray *booleanArray;
+        extract(in_any,booleanArray);
+        auto *theReturnedArray = new Tango::DevVarBooleanArray();
+        theReturnedArray->length(booleanArray->length());
+        for (unsigned int i=0; i<booleanArray->length(); i++) {
+            cout << "[IOBoolArray::execute] received bool " << (*booleanArray)[i] << endl;
+            (*theReturnedArray)[i] = (*booleanArray)[i];
+        }
+        return insert(theReturnedArray);
+    }
+    catch (CORBA::Exception &e)
+    {
+        Tango::Except::print_exception(e);
+        throw ;
+    }
+}
+
+//+----------------------------------------------------------------------------
+//
 // method : 		OLong::OLong()
 //
 // description : 	constructor for the OLong command of the

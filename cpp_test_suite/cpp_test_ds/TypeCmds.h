@@ -228,6 +228,16 @@ public:
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
 };
 
+class IOBooleanArray : public Tango::Command
+{
+public:
+	IOBooleanArray(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
+	~IOBooleanArray() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};
+
 
 class OLong : public Tango::Command
 {

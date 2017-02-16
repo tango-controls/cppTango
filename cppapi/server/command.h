@@ -643,6 +643,18 @@ public:
 	void extract(const CORBA::Any &in,const Tango::DevVarStringArray *&data);
 
 /**
+ * Extract a string array from a CORBA Any object.
+ *
+ * @param in The CORBA Any object
+ * @param data Reference to the extracted string array
+ * @exception DevFailed If the Any object does not contains a data of the
+ * waited type.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+        void extract(const CORBA::Any &in,const Tango::DevVarBooleanArray *&data);
+
+/**
  * Extract a DevVarLongStringArray data from a CORBA Any object.
  *
  * @param in The CORBA Any object
@@ -1088,6 +1100,20 @@ public:
  * <b>DevFailed</b> exception specification
  */
 	CORBA::Any *insert(Tango::DevVarStringArray *data);
+
+        //TODO templates
+		/**
+ * Create a CORBA Any object and insert a Tango::DevVarBooleanArray data in it.
+ *
+ * This method will do a <b>deep copy</b> of the array into the Any object.
+ *
+ * @param data The array to be inserted into the Any object
+ * @exception DevFailed If the Any object creation failed.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+		CORBA::Any *insert(DevVarBooleanArray *data);
+        CORBA::Any *insert(DevVarBooleanArray &data);
 
 /**
  * Create a CORBA Any object and insert a Tango::DevVarLongStringArray data in it.
