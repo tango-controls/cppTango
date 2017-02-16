@@ -132,6 +132,11 @@ void DevTestClass::command_factory()
 					    Tango::DEV_ULONG,
 					    "Number",
 					    "Number * 2"));
+	command_list.push_back(new IOBooleanArray("IOBoolArray",
+										   Tango::DEVVAR_BOOLEANARRAY,
+										   Tango::DEVVAR_BOOLEANARRAY,
+										   "Array of boolean",
+										   "Echo"));
 	command_list.push_back(new IOCharArray("IOCharArray",
 					    Tango::DEVVAR_CHARARRAY,
 					    Tango::DEVVAR_CHARARRAY,

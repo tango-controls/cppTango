@@ -1058,7 +1058,34 @@ int main(int argc, char **argv)
 		delete lo;
 	}
 	cout << "   Spectrum unsigned long 64 bits (DevVarULong64Array) --> OK" << endl;
-	
+
+//    Test SPECTRUM boolean
+
+    for (i = 0;i < loop;i++)
+    {
+        DeviceAttribute da;
+        try
+        {
+            da = device->read_attribute("ULong64_spec_attr_rw");
+        }
+        catch (CORBA::Exception &e)
+        {
+            Except::print_exception(e);
+            exit(-1);
+        }
+        DevVarULong64Array *lo;
+        bool ret = (da >> lo);
+
+        assert (ret == true);
+        assert ( (*lo)[0] == 8888 );
+        assert ( (*lo)[1] == 88888 );
+        assert ( (*lo)[2] == 888888 );
+        assert ( (*lo)[3] == 0 );
+
+        delete lo;
+    }
+    cout << "   Spectrum unsigned long 64 bits (DevVarULong64Array) --> OK" << endl;
+
 // Test SPECTRUM state
 
 	for (i = 0;i < loop;i++)

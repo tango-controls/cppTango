@@ -293,6 +293,10 @@ int DeviceData::get_type()
 			tc_seq = tc_al->content_type();
 			switch (tc_seq->kind())
 			{
+			case CORBA::tk_boolean:
+				data_type = Tango::DEVVAR_BOOLEANARRAY;
+				break;
+
 			case CORBA::tk_octet:
 				data_type = Tango::DEVVAR_CHARARRAY;
 				break;
@@ -710,6 +714,82 @@ bool DeviceData::operator >> (DevState& datum)
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not a DevState",
+				        	(const char*)"DeviceData::operator>>");
+		}
+	}
+	return ret;
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceData::operator >>(vector<bool> &) - extract a vector<bool> from DeviceData
+//
+//	@return true if operation was successful, otherwise - false
+//	@throws ApiDataExcept in case underlying value is not a boolean array
+//-----------------------------------------------------------------------------
+
+bool DeviceData::operator >> (vector<bool>& datum)
+{
+    ext->ext_state.reset();
+
+	const DevVarBooleanArray *bool_array = NULL;
+	bool ret = (any.inout() >>= bool_array);
+
+    bool success = ret && bool_array != NULL;
+
+    if(success){
+        datum.resize(bool_array->length());
+        for (size_t i=0; i<bool_array->length(); i++)
+        {
+            datum[i] = (*bool_array)[i];
+        }
+
+        return true;
+    } else {
+        if (any_is_null())
+            return false;
+
+        if(bool_array == NULL){
+            ext->ext_state.set(wrongtype_flag);
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
+                                           (const char *)"Incoherent data received from server",
+                                           (const char *)"DeviceData::operator>>");
+        }
+
+        ext->ext_state.set(wrongtype_flag);
+        if (exceptions_flags.test(wrongtype_flag))
+        {
+            ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
+                                           (const char*)"Cannot extract, data in DeviceData object is not an array of boolean",
+                                           (const char*)"DeviceData::operator>>");
+        }
+
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceData::operator >>(DevVarBooleanArray *) - extract a DevVarBooleanArray from DeviceData
+//
+//-----------------------------------------------------------------------------
+
+bool DeviceData::operator >> (const DevVarBooleanArray* &datum)
+{
+    ext->ext_state.reset();
+
+	bool ret = (any.inout() >>= datum);
+
+	if (ret == false)
+	{
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
+		if (exceptions_flags.test(wrongtype_flag))
+		{
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
+				       		(const char*)"Cannot extract, data in DeviceData object is not an array of boolean",
 				        	(const char*)"DeviceData::operator>>");
 		}
 	}
@@ -1546,6 +1626,23 @@ bool DeviceData::operator >> (DevEncoded &datum)
 
 //-----------------------------------------------------------------------------
 //
+// DeviceData::operator <<(vector<bool> &) - insert a vector<bool> into DeviceData
+//
+//-----------------------------------------------------------------------------
+
+void DeviceData::operator << (vector<bool>& datum)
+{
+	DevVarBooleanArray *bool_array = new DevVarBooleanArray();
+	bool_array->length(datum.size());
+	for (unsigned int i=0; i<datum.size(); i++)
+	{
+		(*bool_array)[i] = datum[i];
+	}
+	any.inout() <<= bool_array;
+}
+
+//-----------------------------------------------------------------------------
+//
 // DeviceData::operator <<(vector<unsigned char> &) - insert a vector<unsigned char> into DeviceData
 //
 //-----------------------------------------------------------------------------
@@ -2173,6 +2270,12 @@ ostream &operator<<(ostream &o_str,DeviceData &dd)
 				Tango::DevVarCharArray *ch_arr;
 				dd.any.inout() >>= ch_arr;
 				o_str << *ch_arr;
+				break;
+
+			case CORBA::tk_boolean:
+				Tango::DevVarBooleanArray *bl_arr;
+				dd.any.inout() >>= bl_arr;
+				o_str << *bl_arr;
 				break;
 
 			case CORBA::tk_short:
