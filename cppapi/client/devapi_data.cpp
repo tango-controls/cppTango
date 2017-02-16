@@ -724,6 +724,8 @@ bool DeviceData::operator >> (DevState& datum)
 //
 // DeviceData::operator >>(vector<bool> &) - extract a vector<bool> from DeviceData
 //
+//	@return true if operation was successful, otherwise - false
+//	@throws ApiDataExcept in case underlying value is not a boolean array
 //-----------------------------------------------------------------------------
 
 bool DeviceData::operator >> (vector<bool>& datum)
@@ -732,38 +734,38 @@ bool DeviceData::operator >> (vector<bool>& datum)
 
 	const DevVarBooleanArray *bool_array = NULL;
 	bool ret = (any.inout() >>= bool_array);
-	if (ret == false)
-	{
-        if (any_is_null())
-            return ret;
 
-        ext->ext_state.set(wrongtype_flag);
-		if (exceptions_flags.test(wrongtype_flag))
-		{
-			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
-				       		(const char*)"Cannot extract, data in DeviceData object is not an array of boolean",
-				        	(const char*)"DeviceData::operator>>");
-		}
-	}
-	else
-	{
-	    if (bool_array == NULL)
-	    {
+    bool success = ret && bool_array != NULL;
+
+    if(success){
+        datum.resize(bool_array->length());
+        for (size_t i=0; i<bool_array->length(); i++)
+        {
+            datum[i] = (*bool_array)[i];
+        }
+
+        return true;
+    } else {
+        if (any_is_null())
+            return false;
+
+        if(bool_array == NULL){
             ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
-                                       (const char *)"Incoherent data received from server",
-                                       (const char *)"DeviceData::operator>>");
-	    }
-        else
-        {
-            datum.resize(bool_array->length());
-            for (unsigned int i=0; i<bool_array->length(); i++)
-            {
-                datum[i] = (*bool_array)[i];
-            }
+                                           (const char *)"Incoherent data received from server",
+                                           (const char *)"DeviceData::operator>>");
         }
-	}
-	return ret;
+
+        ext->ext_state.set(wrongtype_flag);
+        if (exceptions_flags.test(wrongtype_flag))
+        {
+            ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
+                                           (const char*)"Cannot extract, data in DeviceData object is not an array of boolean",
+                                           (const char*)"DeviceData::operator>>");
+        }
+
+        return false;
+    }
 }
 
 //-----------------------------------------------------------------------------
