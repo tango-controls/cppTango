@@ -589,7 +589,7 @@ namespace Tango {
         alloc_any(out_any);
 
         (*out_any) <<= data;
-        delete data;
+        //delete data;
 
         return out_any;
     }
