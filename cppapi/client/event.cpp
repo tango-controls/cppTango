@@ -791,6 +791,14 @@ void EventConsumer::attr_to_device(const AttributeValue_4 *attr_value_4,DeviceAt
 	{
 	    att_union_to_device(&attr_value_4->value,dev_attr);
 	}
+	//
+	// Warning: Since Tango 9, data type SHORT is used for both short attribute and enumeration attribute!
+	// Therefore, we need to store somewhere which exact type it is. With IDL 5, it is easy, because the data type is
+	// transferred on the network (modified IDL), For previous release, we do not have enumerated data type and therefore
+	// the data type could be used only for SHORT.
+	//
+	dev_attr->data_type = Tango::DEV_SHORT;
+	dev_attr->data_format = attr_value_4->data_format;
 }
 
 
