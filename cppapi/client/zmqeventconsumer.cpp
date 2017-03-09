@@ -1361,8 +1361,8 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 #endif
         length++;
 
-        ::strcpy(&(buffer[length]),ev_svr_data->svalue[valid_endpoint].in());
-        length = length + ::strlen(ev_svr_data->svalue[valid_endpoint].in()) + 1;
+        ::strcpy(&(buffer[length]),ev_svr_data->svalue[valid_endpoint << 1].in());
+        length = length + ::strlen(ev_svr_data->svalue[valid_endpoint << 1].in()) + 1;
 
         string sub(channel_name);
         sub = sub + '.' + HEARTBEAT_EVENT_NAME;
@@ -1424,7 +1424,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 		evt_ch.last_heartbeat = time(NULL);
 		evt_ch.heartbeat_skipped = false;
 		evt_ch.event_system_failed = false;
-		evt_ch.endpoint = ev_svr_data->svalue[valid_endpoint].in();
+		evt_ch.endpoint = ev_svr_data->svalue[valid_endpoint << 1].in();
 		evt_ch.valid_endpoint = valid_endpoint;
 	}
 	else
@@ -1441,7 +1441,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 
 		new_event_channel_struct.event_system_failed = false;
 		set_channel_type(new_event_channel_struct);
-		new_event_channel_struct.endpoint = ev_svr_data->svalue[valid_endpoint].in();
+		new_event_channel_struct.endpoint = ev_svr_data->svalue[valid_endpoint << 1].in();
 		new_event_channel_struct.valid_endpoint = valid_endpoint;
 
 		channel_map[channel_name] = new_event_channel_struct;
