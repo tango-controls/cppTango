@@ -60,6 +60,5 @@ add_subdirectory(helpers)
 
 add_library(client_objects OBJECT ${SOURCES})
 target_compile_options(client_objects PRIVATE -fPIC)
-add_dependencies(client_objects idl_objects)
 
 install(FILES ${HEADERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
