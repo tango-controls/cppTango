@@ -1,4 +1,9 @@
-message("Generate tango.h, tangoSK.cpp and tangoDybSK.cpp from idl")
+message("Remove tango.h, tangoSK.cpp and tangoDynSK.cpp from idl if exist")
+
+execute_process(COMMAND rm tango.h tangoSK.cpp tangoDynSK.cpp
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+message("Generate tango.h, tangoSK.cpp and tangoDynSK.cpp from idl")
 
 execute_process(COMMAND ${OMNIIDL_PATH}omniidl -I${IDL_PKG_INCLUDE_DIRS} -bcxx -Wbh=.h -Wbs=SK.cpp -Wbd=DynSK.cpp -Wba ${IDL_PKG_INCLUDE_DIRS}/tango.idl
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
