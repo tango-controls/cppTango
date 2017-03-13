@@ -1628,3 +1628,18 @@ CORBA::Any *OEncoded::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any
     }
 }
 #endif
+
+IODevEnum::IODevEnum() :
+        Command("IODevEnum", Tango::CmdArgType::DEV_ENUM, Tango::CmdArgType::DEV_ENUM, "DevEnum", "DevEnum"){
+
+}
+
+bool IODevEnum::is_allowed(Tango::DeviceImpl *, const CORBA::Any &) {
+    return true;
+}
+
+CORBA::Any *IODevEnum::execute(Tango::DeviceImpl *, const CORBA::Any &any) {
+    Tango::DevShort in;
+    extract(any, in);
+    return insert(in);
+}
