@@ -115,6 +115,7 @@ namespace Tango {
 		string in_type_desc;       ///< Input parameter description
 		string out_type_desc;      ///< Ouptput parameter description
 
+
 ///@privatesection
 		bool operator==(const _DevCommandInfo &);
 	} DevCommandInfo;
