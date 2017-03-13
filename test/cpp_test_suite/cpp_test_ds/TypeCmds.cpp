@@ -1630,7 +1630,7 @@ CORBA::Any *OEncoded::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any
 #endif
 
 IODevEnum::IODevEnum() :
-        Command("IODevEnum", Tango::CmdArgType::DEV_ENUM, Tango::CmdArgType::DEV_ENUM, "DevEnum", "DevEnum"){
+        CommandWithEnumArg("IODevEnum", Tango::CmdArgType::DEV_ENUM, "DevEnum", "DevEnum"){
 
 }
 

@@ -47,7 +47,7 @@ set(CLIENT_HEADERS
         tango/client/DevicePipe.h
         tango/client/Connection.h
         tango/client/DeviceProxy.h
-        tango/client/AttributeProxy.h tango/client/device/device_command_info.hxx)
+        tango/client/AttributeProxy.h)
 
 set(CLIENT_HELPERS
         tango/client/helpers/DeviceProxyHelper.h
@@ -106,6 +106,7 @@ set(SERVER_HEADERS tango/server/attrdesc.h
         tango/server/rootattreg.h
         tango/server/seqvec.h
         tango/server/tango_config.h
+        tango/server/tango_const.h
         tango/server/tango_monitor.h
         tango/server/tangoappender.h
         tango/server/tangorollingfileappender.h
@@ -116,7 +117,7 @@ set(SERVER_HEADERS tango/server/attrdesc.h
         tango/server/subdev_diag.h
         tango/server/encoded_attribute.h
         tango/server/encoded_format.h
-        tango/server/device_6.h)
+        tango/server/command_with_enum_arg.h)
 
 
 set(SERVER_TEMPLATES
@@ -138,8 +139,6 @@ set(SERVER_TEMPLATES
         tango/server/w_attrsetval.tpp
         tango/server/w_attribute_spec.tpp
         tango/server/w_pipe.tpp)
-
-configure_file(tango/server/tango_const.h.in ${PROJECT_BINARY_DIR}/include/tango/server/tango_const.h)
 
 add_library(include_objects OBJECT tango.h ${SERVER_HEADERS} ${CLIENT_HEADERS} ${CLIENT_HELPERS} ${LOG4TANGO_HEADERS} ${LOG4TANGO_THREADING})
 
