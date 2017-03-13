@@ -101,7 +101,7 @@ For information on how to run individual tests see [INSTALL file](https://github
 
 # How to contribute
 
-See [CONTRIBUTE file](https://github.com/tango-controls/cppTango/blob/master/CONTRIBUTE.md)
+See [corresponding wiki page](https://github.com/tango-controls/cppTango/wiki/Contribution-Guide)
 
 # Usage workflow (draft)
 
