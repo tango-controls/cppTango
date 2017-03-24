@@ -1424,4 +1424,28 @@ Tango::DevPipeData *Device_5Impl::write_read_pipe_5(const Tango::DevPipeData &pi
 	return back;
 }
 
+    DevCmdInfo_3 *Device_5Impl::command_query_5(const char *cmd_name) {
+        DevCmdInfo_2* cmdInfo_2 = command_query_2(cmd_name);
+
+        DevCmdInfo_3* result = new DevCmdInfo_3();
+        result->cmd_name = cmdInfo_2->cmd_name;
+        result->level = cmdInfo_2->level;
+        result->cmd_tag = cmdInfo_2->cmd_tag;
+        result->in_type = cmdInfo_2->in_type;
+        result->out_type = cmdInfo_2->out_type;
+        result->in_type_desc = cmdInfo_2->in_type_desc;
+        result->out_type_desc = cmdInfo_2->out_type_desc;
+
+        string cmd(cmd_name);
+        Command* cmd_ptr = get_cmd_ptr(cmd);
+        
+
+        //TODO copy if cmd_ptr is actually a cmd with enum in/out
+        DevVarStringArray in_enum_lables;
+        DevVarStringArray out_enum_labels;
+
+
+        return result;
+    }
+
 } // End of Tango namespace

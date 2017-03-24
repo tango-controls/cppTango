@@ -330,7 +330,7 @@ private:
 #endif
 
 	protected:
-		Command *get_cmd_ptr(const string &cmd_name);
+		Command *get_cmd_ptr(const string &cmd);
 	};
 
 } // End of Tango namespace
