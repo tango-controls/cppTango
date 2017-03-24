@@ -1,8 +1,8 @@
 //
 // Created by ingvord on 3/13/17.
 //
-#ifndef CmdInOutEnumTestSuite_h
-#define CmdInOutEnumTestSuite_h
+#ifndef CmdInOutTestSuite_h
+#define CmdInOutTestSuite_h
 
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/TangoPrinter.h>
@@ -15,9 +15,9 @@ using namespace std;
 #define cout cout << "\t"
 
 #undef SUITE_NAME
-#define SUITE_NAME CmdInOutEnumTestSuite
+#define SUITE_NAME CmdInOutTestSuite
 
-class CmdInOutEnumTestSuite: public CxxTest::TestSuite
+class CmdInOutTestSuite: public CxxTest::TestSuite
 {
 protected:
     DeviceProxy *device1, *dserver;
@@ -77,61 +77,21 @@ public:
 // Tests -------------------------------------------------------
 //
 
-    void test_cmd_DevEnum_in(void) {
-        DeviceData in, out;
-        in << (DevEnum) 1;
+void test_cmd_DevEnum(void){
+    DeviceData in, out;
+    in << (DevEnum)1;
 
-        out = device1->command_inout("IODevEnum", in);
-
-
-        short result;
-        out >> result;
-
-        TS_ASSERT_EQUALS(1, result);
-    }
-
-    void test_cmd_DevEnum_query(void){
-        CommandInfo cmd_info;
-
-        cmd_info = device1->command_query("IODevEnum");
+    out = device1->command_inout("IODevEnum", in);
 
 
-        TS_ASSERT_EQUALS("IODevEnum", cmd_info.cmd_name);
-        TS_ASSERT_EQUALS(3, cmd_info.in_enum_labels.size());
-        TS_ASSERT_EQUALS("IN Label 1", cmd_info.in_enum_labels[0]);
-        TS_ASSERT_EQUALS("IN Label 2", cmd_info.in_enum_labels[1]);
-        TS_ASSERT_EQUALS("IN Label 3", cmd_info.in_enum_labels[2]);
-        TS_ASSERT_EQUALS(3, cmd_info.out_enum_labels.size());
-        TS_ASSERT_EQUALS("OUT Label 1", cmd_info.out_enum_labels[0]);
-        TS_ASSERT_EQUALS("OUT Label 2", cmd_info.out_enum_labels[1]);
-        TS_ASSERT_EQUALS("OUT Label 3", cmd_info.out_enum_labels[2]);
-    }
+    short result;
+    out >> result;
 
-    void test_cmd_DevEnum_query_list(void){
-        auto cmd_info_list = device1->command_list_query();
-
-        CommandInfo cmd_info;
-        auto found = find_if(cmd_info_list->begin(), cmd_info_list->end(), [](CommandInfo item){
-            return item.cmd_name == "IODevEnum";
-        });
-        cmd_info = *found;
-
-        TS_ASSERT_EQUALS("IODevEnum", cmd_info.cmd_name);
-        TS_ASSERT_EQUALS(3, cmd_info.in_enum_labels.size());
-        TS_ASSERT_EQUALS("IN Label 1", cmd_info.in_enum_labels[0]);
-        TS_ASSERT_EQUALS("IN Label 2", cmd_info.in_enum_labels[1]);
-        TS_ASSERT_EQUALS("IN Label 3", cmd_info.in_enum_labels[2]);
-        TS_ASSERT_EQUALS(3, cmd_info.out_enum_labels.size());
-        TS_ASSERT_EQUALS("OUT Label 1", cmd_info.out_enum_labels[0]);
-        TS_ASSERT_EQUALS("OUT Label 2", cmd_info.out_enum_labels[1]);
-        TS_ASSERT_EQUALS("OUT Label 3", cmd_info.out_enum_labels[2]);
-    }
-
-
-
+    TS_ASSERT_EQUALS(1, result);
+}
 
 };
 #undef cout
-#endif // CmdInOutEnumTestSuite_h
+#endif // CmdInOutTestSuite_h
 
 
