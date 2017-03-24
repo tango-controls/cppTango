@@ -1199,10 +1199,15 @@ protected:
 //@}
 
 private:
-    class CommandExt
-    {
+    class CommandExt {
     public:
-        CommandExt() {}
+        CommandExt():
+                in_enum_labels(),
+                out_enum_labels()
+        {}
+
+		vector<string> in_enum_labels;
+        vector<string> out_enum_labels;
     };
 
 	void alloc_any(CORBA::Any *&);
