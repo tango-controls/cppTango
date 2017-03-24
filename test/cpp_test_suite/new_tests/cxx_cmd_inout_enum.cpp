@@ -1,8 +1,8 @@
 //
 // Created by ingvord on 3/13/17.
 //
-#ifndef CmdInOutTestSuite_h
-#define CmdInOutTestSuite_h
+#ifndef CmdInOutEnumTestSuite_h
+#define CmdInOutEnumTestSuite_h
 
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/TangoPrinter.h>
@@ -15,9 +15,9 @@ using namespace std;
 #define cout cout << "\t"
 
 #undef SUITE_NAME
-#define SUITE_NAME CmdInOutTestSuite
+#define SUITE_NAME CmdInOutEnumTestSuite
 
-class CmdInOutTestSuite: public CxxTest::TestSuite
+class CmdInOutEnumTestSuite: public CxxTest::TestSuite
 {
 protected:
     DeviceProxy *device1, *dserver;
@@ -77,7 +77,18 @@ public:
 // Tests -------------------------------------------------------
 //
 
-void test_cmd_DevEnum(void){
+    void test_cmd_DevEnum_query(void){
+        CommandInfo cmd_info;
+
+        cmd_info = device1->command_query("IODevEnum");
+
+
+        TS_ASSERT_EQUALS("IODevEnum", cmd_info.cmd_name);
+        TS_ASSERT_EQUALS("Some label", cmd_info.in_enum_labels[0]);
+    }
+
+
+void test_cmd_DevEnum_in(void){
     DeviceData in, out;
     in << (DevEnum)1;
 
@@ -92,6 +103,6 @@ void test_cmd_DevEnum(void){
 
 };
 #undef cout
-#endif // CmdInOutTestSuite_h
+#endif // CmdInOutEnumTestSuite_h
 
 
