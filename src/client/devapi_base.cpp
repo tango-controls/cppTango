@@ -424,75 +424,33 @@ void Connection::connect(string &corba_name)
 					omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
 			}
 
-			device_5 = Device_5::_narrow(obj);
-
-            if (CORBA::is_nil(device_5))
-            {
-                device_4 = Device_4::_narrow(obj);
-
-                if (CORBA::is_nil(device_4))
-                {
-                    device_3 = Device_3::_narrow(obj);
-
-                    if (CORBA::is_nil(device_3))
-                    {
-                        device_2 = Device_2::_narrow(obj);
-                        if (CORBA::is_nil(device_2))
-                        {
-                            device = Device::_narrow(obj);
-                            if (CORBA::is_nil(device))
-                            {
-                                cerr << "Can't build connection to object " << corba_name <<  endl;
-                                connection_state = CONNECTION_NOTOK;
-
-                                TangoSys_OMemStream desc;
-                                desc << "Failed to connect to device " << dev_name();
-                                desc << " (device nil after _narrowing)" << ends;
-                                ApiConnExcept::throw_exception((const char*)API_CantConnectToDevice,
-                                                        desc.str(),
-                                                        (const char*)"Connection::connect()");
-                            }
-                            else
-                            {
-                            	device->_non_existent();
-                                version = 1;
-                            }
-                        }
-                        else
-                        {
-                        	device_2->_non_existent();
-                            version = 2;
-                            device = Device_2::_duplicate(device_2);
-                        }
-                    }
-                    else
-                    {
-						device_3->_non_existent();
-                        version = 3;
-                        device_2 = Device_3::_duplicate(device_3);
-                        device = Device_3::_duplicate(device_3);
-                    }
-                }
-                else
-                {
-					device_4->_non_existent();
-                    version = 4;
+            auto version = resolve_obj_version(corba_name, obj);
+            switch (version){
+                case 6:
+                    device_5 = Device_6::_duplicate(obj);
+                case 5:
+                    device_4 = Device_5::_duplicate(device_5);
+                case 4:
                     device_3 = Device_4::_duplicate(device_4);
-                    device_2 = Device_4::_duplicate(device_4);
-                    device = Device_4::_duplicate(device_4);
-                }
-            }
-            else
-            {
-				device_5->_non_existent();
-                version = 5;
-                device_4 = Device_5::_duplicate(device_5);
-                device_3 = Device_5::_duplicate(device_5);
-                device_2 = Device_5::_duplicate(device_5);
-                device = Device_5::_duplicate(device_5);
+                case 3:
+                    device_2 = Device_3::_duplicate(device_3);
+                case 2:
+                    device = Device_2::_duplicate(device_2);
+                case 1:
+                    break;
+                default:
+                    cerr << "Can't build connection to object " << corba_name <<  endl;
+                    connection_state = CONNECTION_NOTOK;
+
+                    TangoSys_OMemStream desc;
+                    desc << "Failed to connect to device " << dev_name();
+                    desc << " (device nil after _narrowing)" << ends;
+                    ApiConnExcept::throw_exception((const char*)API_CantConnectToDevice,
+                                                   desc.str(),
+                                                   (const char*)"Connection::connect()");
             }
 
-//
+            //
 // Warning! Some non standard code (omniORB specific).
 // Set a flag if the object is running on a host with several net addresses. This is used during re-connection
 // algo.
@@ -601,6 +559,78 @@ void Connection::connect(string &corba_name)
 		}
 	}
 }
+
+    int8_t Connection::resolve_obj_version(const string &corba_name, const Object_var &obj) {
+
+
+        device_5 = Device_5::_narrow(obj);
+
+        if (is_nil(device_5))
+                {
+                    device_4 = Device_4::_narrow(obj);
+
+                    if (is_nil(device_4))
+                    {
+                        device_3 = Device_3::_narrow(obj);
+
+                        if (is_nil(device_3))
+                        {
+                            device_2 = Device_2::_narrow(obj);
+                            if (is_nil(device_2))
+                            {
+                                device = Device::_narrow(obj);
+                                if (is_nil(device))
+                                {
+                                    cerr << "Can't build connection to object " << corba_name <<  endl;
+                                    connection_state = CONNECTION_NOTOK;
+
+                                    TangoSys_OMemStream desc;
+                                    desc << "Failed to connect to device " << dev_name();
+                                    desc << " (device nil after _narrowing)" << ends;
+                                    ApiConnExcept::throw_exception((const char*)API_CantConnectToDevice,
+                                                                   desc.str(),
+                                                                   (const char*)"Connection::connect()");
+                                }
+                                else
+                                {
+                                    device->_non_existent();
+                                    version = 1;
+                                }
+                            }
+                            else
+                            {
+                                device_2->_non_existent();
+                                version = 2;
+                                device = Device_2::_duplicate(device_2);
+                            }
+                        }
+                        else
+                        {
+                            device_3->_non_existent();
+                            version = 3;
+                            device_2 = Device_3::_duplicate(device_3);
+                            device = Device_3::_duplicate(device_3);
+                        }
+                    }
+                    else
+                    {
+                        device_4->_non_existent();
+                        version = 4;
+                        device_3 = Device_4::_duplicate(device_4);
+                        device_2 = Device_4::_duplicate(device_4);
+                        device = Device_4::_duplicate(device_4);
+                    }
+                }
+                else
+                {
+                    device_5->_non_existent();
+                    version = 5;
+                    device_4 = Device_5::_duplicate(device_5);
+                    device_3 = Device_5::_duplicate(device_5);
+                    device_2 = Device_5::_duplicate(device_5);
+                    device = Device_5::_duplicate(device_5);
+                }
+    }
 
 
 //-----------------------------------------------------------------------------

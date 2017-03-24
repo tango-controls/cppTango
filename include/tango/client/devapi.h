@@ -115,7 +115,8 @@ namespace Tango {
 		string in_type_desc;       ///< Input parameter description
 		string out_type_desc;      ///< Ouptput parameter description
 
-
+        vector<string>  in_enum_labels; ///< Labels for enum arg or empty
+        vector<string> out_enum_labels; ///< Labels for enum result or empty
 ///@privatesection
 		bool operator==(const _DevCommandInfo &);
 	} DevCommandInfo;

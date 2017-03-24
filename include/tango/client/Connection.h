@@ -148,6 +148,7 @@ namespace Tango {
 		bool tango_host_localhost;
 
 		Tango::Device_5_var device_5;
+		Tango::Device_6_var device_6;
 
 	public :
 ///@publicsection
@@ -629,7 +630,9 @@ namespace Tango {
 		DeviceData omni420_except(int, char *, TgRequest &);
 
 		void toIOR(const char *, IOP::IOR &);
-	};
+
+        int8_t resolve_obj_version(const string &corba_name, const CORBA::Object_var &obj);
+    };
 
 }//Tango
 #endif /* _CONNECTION_H */
