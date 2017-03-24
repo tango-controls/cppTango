@@ -588,8 +588,8 @@ namespace Tango {
         CORBA::Any *out_any;
         alloc_any(out_any);
 
-        (*out_any) <<= data;
-        //delete data;
+        (*out_any) <<= *data;
+        delete data;
 
         return out_any;
     }
