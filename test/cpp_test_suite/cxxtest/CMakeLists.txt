@@ -59,7 +59,7 @@ CXX_GENERATE_TEST(cxx_misc_util)
 CXX_GENERATE_TEST(cxx_templ_cmd)
 CXX_GENERATE_TEST(cxx_exception)
 CXX_GENERATE_TEST(cxx_cmd_query)
-CXX_GENERATE_TEST(cxx_cmd_inout)
+CXX_GENERATE_TEST(cxx_cmd_inout_enum)
 CXX_GENERATE_TEST(cxx_seq_vec)
 CXX_GENERATE_TEST(cxx_signal)#TODO Windows
 CXX_GENERATE_TEST(cxx_test_state_on)
