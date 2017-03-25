@@ -1198,6 +1198,9 @@ protected:
 	string			out_type_desc;
 //@}
 
+	shared_ptr<CommandExt> get_ext(){
+		return ext;
+	}
 private:
     class CommandExt {
     public:
@@ -1213,11 +1216,7 @@ private:
 	void alloc_any(CORBA::Any *&);
 	void throw_bad_type(const char *);
 
-#ifdef HAS_UNIQUE_PTR
-    unique_ptr<CommandExt>          ext;           // Class extension
-#else
-	CommandExt		                *ext;
-#endif
+	shared_ptr<CommandExt> ext; //Class extension
 
 //
 // Ported from the extension class
