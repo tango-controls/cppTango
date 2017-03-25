@@ -383,7 +383,8 @@ private:
 	Device_5ImplExt				    *ext_5;
 #endif
 
-};
+        void handle_cmd_info_enum_labels(DevVarStringArray* result, const vector<string> &enum_labels) const;
+    };
 
 } // End of Tango namespace
 

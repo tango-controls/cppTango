@@ -117,7 +117,7 @@ set(SERVER_HEADERS tango/server/attrdesc.h
         tango/server/subdev_diag.h
         tango/server/encoded_attribute.h
         tango/server/encoded_format.h
-        tango/server/command_with_enum_arg.h)
+        )
 
 
 set(SERVER_TEMPLATES
