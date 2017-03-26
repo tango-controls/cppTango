@@ -28,7 +28,7 @@ set(SOURCES dbapi_class.cpp
         eventkeepalive.cpp
         eventqueue.cpp
         notifdeventconsumer.cpp
-        zmqeventconsumer.cpp)
+        zmqeventconsumer.cpp device/device_command_info.cxx)
 
 add_library(client_objects OBJECT ${SOURCES})
 target_compile_options(client_objects PRIVATE -fPIC)

@@ -1198,9 +1198,6 @@ protected:
 	string			out_type_desc;
 //@}
 
-	shared_ptr<CommandExt> get_ext(){
-		return ext;
-	}
 private:
     class CommandExt {
     public:
@@ -1224,7 +1221,10 @@ private:
 
     Tango::DispLevel	cmd_disp_level;		    // Display  level
     long			    poll_period;		    // Polling period
-
+    public:
+        shared_ptr<CommandExt> get_ext(){
+            return ext;
+        }
 };
 
 //=============================================================================

@@ -1440,8 +1440,8 @@ Tango::DevPipeData *Device_5Impl::write_read_pipe_5(const Tango::DevPipeData &pi
         string cmd(cmd_name);
         Command* cmd_ptr = get_cmd_ptr(cmd);
 
-		vector<string>& in_enum_labels = cmd_ptr->get_ext().in_enum_labels;
-        vector<string>& out_enum_labels = cmd_ptr->get_ext().out_enum_labels;
+		vector<string>& in_enum_labels = cmd_ptr->get_ext()->in_enum_labels;
+        vector<string>& out_enum_labels = cmd_ptr->get_ext()->out_enum_labels;
 
         handle_cmd_info_enum_labels(&(result->in_enum_labels), in_enum_labels);
         handle_cmd_info_enum_labels(&(result->out_enum_labels), out_enum_labels);
@@ -1454,7 +1454,7 @@ Tango::DevPipeData *Device_5Impl::write_read_pipe_5(const Tango::DevPipeData &pi
         result->length(enum_labels.size());
 
         for(size_t i = 0, size = enum_labels.size(); i < size; ++i){
-            result->[i] = string_dup(enum_labels[i].c_str());
+            (*result)[i] = string_dup(enum_labels[i].c_str());
         }
     }
 
