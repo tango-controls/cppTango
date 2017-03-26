@@ -148,7 +148,6 @@ namespace Tango {
 		bool tango_host_localhost;
 
 		Tango::Device_5_var device_5;
-		Tango::Device_6_var device_6;
 
 	public :
 ///@publicsection

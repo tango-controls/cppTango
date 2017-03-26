@@ -424,21 +424,24 @@ void Connection::connect(string &corba_name)
 					omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
 			}
 
-            auto version = resolve_obj_version(corba_name, obj);
-            switch (version){
-                case 6:
-                    device_5 = Device_6::_duplicate(obj);
-                case 5:
-                    device_4 = Device_5::_duplicate(device_5);
-                case 4:
-                    device_3 = Device_4::_duplicate(device_4);
-                case 3:
-                    device_2 = Device_3::_duplicate(device_3);
-                case 2:
-                    device = Device_2::_duplicate(device_2);
-                case 1:
-                    break;
-                default:
+			device_5 = Device_5::_narrow(obj);
+
+            if (CORBA::is_nil(device_5))
+            {
+                device_4 = Device_4::_narrow(obj);
+
+                if (CORBA::is_nil(device_4))
+                {
+                    device_3 = Device_3::_narrow(obj);
+
+                    if (CORBA::is_nil(device_3))
+                    {
+                        device_2 = Device_2::_narrow(obj);
+                        if (CORBA::is_nil(device_2))
+                        {
+                            device = Device::_narrow(obj);
+                            if (CORBA::is_nil(device))
+                            {
                     cerr << "Can't build connection to object " << corba_name <<  endl;
                     connection_state = CONNECTION_NOTOK;
 
@@ -448,6 +451,45 @@ void Connection::connect(string &corba_name)
                     ApiConnExcept::throw_exception((const char*)API_CantConnectToDevice,
                                                    desc.str(),
                                                    (const char*)"Connection::connect()");
+            }
+                            else
+                            {
+                            	device->_non_existent();
+                                version = 1;
+                            }
+                        }
+                        else
+                        {
+                        	device_2->_non_existent();
+                            version = 2;
+                            device = Device_2::_duplicate(device_2);
+                        }
+                    }
+                    else
+                    {
+						device_3->_non_existent();
+                        version = 3;
+                        device_2 = Device_3::_duplicate(device_3);
+                        device = Device_3::_duplicate(device_3);
+                    }
+                }
+                else
+                {
+					device_4->_non_existent();
+                    version = 4;
+                    device_3 = Device_4::_duplicate(device_4);
+                    device_2 = Device_4::_duplicate(device_4);
+                    device = Device_4::_duplicate(device_4);
+                }
+            }
+            else
+            {
+				device_5->_non_existent();
+                version = 5;
+                device_4 = Device_5::_duplicate(device_5);
+                device_3 = Device_5::_duplicate(device_5);
+                device_2 = Device_5::_duplicate(device_5);
+                device = Device_5::_duplicate(device_5);
             }
 
             //
@@ -3262,12 +3304,15 @@ DeviceInfo const &DeviceProxy::info()
 //
 //-----------------------------------------------------------------------------
 
+
+
 CommandInfo DeviceProxy::command_query(string cmd)
 {
-	CommandInfo command_info;
+	CommandInfo result;
 	DevCmdInfo_var cmd_info;
 	DevCmdInfo_2_var cmd_info_2;
-	int ctr = 0;
+    DevCmdInfo_3_var cmd_info_3;
+    int ctr = 0;
 
 	while (ctr < 2)
 	{
@@ -3275,33 +3320,27 @@ CommandInfo DeviceProxy::command_query(string cmd)
 		{
 			check_and_reconnect();
 
-			if (version == 1)
-			{
-				Device_var dev = Device::_duplicate(device);
-				cmd_info = dev->command_query(cmd.c_str());
 
-				command_info.cmd_name = cmd_info->cmd_name;
-				command_info.cmd_tag = cmd_info->cmd_tag;
-				command_info.in_type = cmd_info->in_type;
-				command_info.out_type = cmd_info->out_type;
-				command_info.in_type_desc = cmd_info->in_type_desc;
-				command_info.out_type_desc = cmd_info->out_type_desc;
-				command_info.disp_level = Tango::OPERATOR;
-			}
-			else
-			{
-				Device_2_var dev = Device_2::_duplicate(device_2);
-				cmd_info_2 = dev->command_query_2(cmd.c_str());
+			Device_var dev;
+			Device_2_var dev_2;
+			Device_5_var dev_5;
+            switch(version){
+                case 1:
+                    dev = Device::_duplicate(device);
+                    cmd_info = dev->command_query(cmd.c_str());
 
-				command_info.cmd_name = cmd_info_2->cmd_name;
-				command_info.cmd_tag = cmd_info_2->cmd_tag;
-				command_info.in_type = cmd_info_2->in_type;
-				command_info.out_type = cmd_info_2->out_type;
-				command_info.in_type_desc = cmd_info_2->in_type_desc;
-				command_info.out_type_desc = cmd_info_2->out_type_desc;
-				command_info.disp_level = cmd_info_2->level;
-			}
-			ctr = 2;
+                    return newCommandInfo(cmd_info);
+                case 2:
+                    dev_2 = Device_2::_duplicate(device_2);
+                    cmd_info_2 = dev_2->command_query_2(cmd.c_str());
+
+                    return newCommandInfo(cmd_info_2);
+                case 5:
+                    dev_5 = Device_5::_duplicate(device_5);
+                    cmd_info_3 = dev_5->command_query_5(cmd.c_str());
+
+                    return newCommandInfo(cmd_info_3);
+            }
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
@@ -3353,8 +3392,6 @@ CommandInfo DeviceProxy::command_query(string cmd)
 						   (const char*)"DeviceProxy::command_query()");
 		}
 	}
-
-	return(command_info);
 }
 
 //-----------------------------------------------------------------------------

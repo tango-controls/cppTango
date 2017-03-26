@@ -84,7 +84,34 @@ public:
 
 
         TS_ASSERT_EQUALS("IODevEnum", cmd_info.cmd_name);
-        TS_ASSERT_EQUALS("Some label", cmd_info.in_enum_labels[0]);
+        TS_ASSERT_EQUALS(3, cmd_info.in_enum_labels.size());
+        TS_ASSERT_EQUALS("IN Label 1", cmd_info.in_enum_labels[0]);
+        TS_ASSERT_EQUALS("IN Label 2", cmd_info.in_enum_labels[1]);
+        TS_ASSERT_EQUALS("IN Label 3", cmd_info.in_enum_labels[2]);
+        TS_ASSERT_EQUALS(3, cmd_info.out_enum_labels.size());
+        TS_ASSERT_EQUALS("OUT Label 1", cmd_info.out_enum_labels[0]);
+        TS_ASSERT_EQUALS("OUT Label 2", cmd_info.out_enum_labels[1]);
+        TS_ASSERT_EQUALS("OUT Label 3", cmd_info.out_enum_labels[2]);
+    }
+
+    void test_cmd_DevEnum_query_list(void){
+        auto cmd_info_list = device1->command_list_query();
+
+        CommandInfo cmd_info;
+        auto found = find_if(cmd_info_list->begin(), cmd_info_list->end(), [](CommandInfo item){
+            return item.cmd_name == "IODevEnum";
+        });
+        cmd_info = *found;
+
+        TS_ASSERT_EQUALS("IODevEnum", cmd_info.cmd_name);
+        TS_ASSERT_EQUALS(3, cmd_info.in_enum_labels.size());
+        TS_ASSERT_EQUALS("IN Label 1", cmd_info.in_enum_labels[0]);
+        TS_ASSERT_EQUALS("IN Label 2", cmd_info.in_enum_labels[1]);
+        TS_ASSERT_EQUALS("IN Label 3", cmd_info.in_enum_labels[2]);
+        TS_ASSERT_EQUALS(3, cmd_info.out_enum_labels.size());
+        TS_ASSERT_EQUALS("OUT Label 1", cmd_info.out_enum_labels[0]);
+        TS_ASSERT_EQUALS("OUT Label 2", cmd_info.out_enum_labels[1]);
+        TS_ASSERT_EQUALS("OUT Label 3", cmd_info.out_enum_labels[2]);
     }
 
 

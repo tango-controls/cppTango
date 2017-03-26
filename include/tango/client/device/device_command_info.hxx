@@ -1,29 +1,6 @@
-//===================================================================================================================
 //
-// file :		device_command_info.hxx
+// Created by ingvord on 3/26/17.
 //
-// project :		tango
-//
-// author(s) :		ingvord
-//
-// Copyright (C) :      2004-2017
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
-// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public License along with Tango.
-// If not, see <http://www.gnu.org/licenses/>.
-//===================================================================================================================
 
 #pragma once
 
@@ -77,12 +54,12 @@ namespace Tango {
         bool operator==(const _CommandInfo &);
     } CommandInfo;
 
-    CommandInfo newCommandInfo(const DevCmdInfo&);
-    CommandInfo newCommandInfo(const DevCmdInfo_2&);
-    CommandInfo newCommandInfo(const DevCmdInfo_3&);
+    CommandInfo newCommandInfo(DevCmdInfo_var);
+    CommandInfo newCommandInfo(DevCmdInfo_2_var);
+    CommandInfo newCommandInfo(DevCmdInfo_3_var);
 
 //TODO template
-    void fill_vector(vector<string> &, const DevVarStringArray &);
+    void fill_vector(vector<string> &, DevVarStringArray &);
 
 /**
  * A vector of CommandInfo structure
@@ -91,15 +68,4 @@ namespace Tango {
  * @ingroup Client
  */
     typedef vector<CommandInfo> CommandInfoList;
-
-    template<typename DevCommandInfoList>
-    CommandInfoList* newCommandInfoList(DevCommandInfoList devCmdInfoList_var){
-        auto result = new CommandInfoList(devCmdInfoList_var->length());
-
-        for (size_t i=0, size = devCmdInfoList_var->length(); i < size; ++i) {
-            (*result)[i] = newCommandInfo(devCmdInfoList_var[i]);
-        }
-
-        return(result);
-    }
 }

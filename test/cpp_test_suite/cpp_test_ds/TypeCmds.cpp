@@ -1630,8 +1630,9 @@ CORBA::Any *OEncoded::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any
 #endif
 
 IODevEnum::IODevEnum() :
-        CommandWithEnumArg("IODevEnum", Tango::CmdArgType::DEV_ENUM, "DevEnum", "DevEnum"){
-
+        Command("IODevEnum", Tango::CmdArgType::DEV_ENUM, Tango::CmdArgType::DEV_ENUM, "DevEnum", "DevEnum"){
+    get_ext()->in_enum_labels = {"IN Label 1", "IN Label 2", "IN Label 3"};
+    get_ext()->out_enum_labels = {"OUT Label 1", "OUT Label 2", "OUT Label 3"};
 }
 
 bool IODevEnum::is_allowed(Tango::DeviceImpl *, const CORBA::Any &) {

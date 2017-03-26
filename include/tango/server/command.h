@@ -1198,9 +1198,6 @@ protected:
 	string			out_type_desc;
 //@}
 
-	shared_ptr<CommandExt> get_ext(){
-		return ext;
-	}
 private:
     class CommandExt {
     public:
