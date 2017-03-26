@@ -1,5 +1,4 @@
 #include <tango.h>
-#include <tango/server/command_with_enum_arg.h>
 
 
 class IOVoid : public Tango::Command {
@@ -305,7 +304,7 @@ public:
 	Tango::DevLong encoded_cmd_ctr;
 };
 
-struct IODevEnum : public Tango::server::CommandWithEnumArg {
+struct IODevEnum : public Tango::Command {
 	IODevEnum();
 	~IODevEnum() {};
 

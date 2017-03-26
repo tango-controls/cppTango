@@ -998,8 +998,6 @@ namespace Tango {
         cout4 << "DeviceImpl::command_query_2 arrived" << endl;
 
         Tango::DevCmdInfo_2 *back = NULL;
-        string cmd(command);
-        transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
 
 //
 // Record operation request in black box
@@ -1025,6 +1023,7 @@ namespace Tango {
 // (in case of dyn command instaleld at device level)
 //
 
+        string cmd(command);
         Command *cmd_ptr = get_cmd_ptr(cmd);
 
         if (cmd_ptr != Tango_nullptr) {
@@ -1067,18 +1066,20 @@ namespace Tango {
         return back;
     }
 
-    Command *Device_2Impl::get_cmd_ptr(const string &cmd) {
+    Command *Device_2Impl::get_cmd_ptr(const string &cmd_name) {
+        string cmd_name_lower{cmd_name};
+        transform(cmd_name.begin(), cmd_name.end(), cmd_name_lower.begin(), ::tolower);
         //TODO
-//        auto found = find_if(device_class->get_command_list().begin(), device_class->get_command_list().end(),[](){device_class->get_command_list()[i]->get_lower_name() == cmd})
+//        auto found = find_if(device_class->get_command_list().begin(), device_class->get_command_list().end(),[](){device_class->get_command_list()[i]->get_lower_name() == cmd_name})
 //        if(found != device_class->get_command_list().end()) return *found;
         for (size_t i = 0, size = device_class->get_command_list().size(); i < size; i++) {
-            if (device_class->get_command_list()[i]->get_lower_name() == cmd) {
+            if (device_class->get_command_list()[i]->get_lower_name() == cmd_name_lower) {
                 return device_class->get_command_list()[i];
             }
         }
 
         for (size_t i = 0, size = get_local_command_list().size(); i < size; i++) {
-            if (get_local_command_list()[i]->get_lower_name() == cmd) {
+            if (get_local_command_list()[i]->get_lower_name() == cmd_name_lower) {
                 return get_local_command_list()[i];
             }
         }

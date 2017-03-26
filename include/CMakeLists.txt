@@ -47,7 +47,7 @@ set(CLIENT_HEADERS
         tango/client/DevicePipe.h
         tango/client/Connection.h
         tango/client/DeviceProxy.h
-        tango/client/AttributeProxy.h)
+        tango/client/AttributeProxy.h tango/client/device/device_command_info.hxx)
 
 set(CLIENT_HELPERS
         tango/client/helpers/DeviceProxyHelper.h
