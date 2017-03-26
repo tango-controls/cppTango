@@ -3329,17 +3329,19 @@ CommandInfo DeviceProxy::command_query(string cmd)
                     dev = Device::_duplicate(device);
                     cmd_info = dev->command_query(cmd.c_str());
 
-                    return newCommandInfo(cmd_info);
+                    return newCommandInfo(cmd_info.in());
                 case 2:
+                case 3:
+                case 4:
                     dev_2 = Device_2::_duplicate(device_2);
                     cmd_info_2 = dev_2->command_query_2(cmd.c_str());
 
-                    return newCommandInfo(cmd_info_2);
+                    return newCommandInfo(cmd_info_2.in());
                 case 5:
                     dev_5 = Device_5::_duplicate(device_5);
                     cmd_info_3 = dev_5->command_query_5(cmd.c_str());
 
-                    return newCommandInfo(cmd_info_3);
+                    return newCommandInfo(cmd_info_3.in());
             }
 		}
 		catch (CORBA::TRANSIENT &trans)
@@ -3451,52 +3453,41 @@ CommandInfoList *DeviceProxy::command_list_query()
 	CommandInfoList *command_info_list = NULL;
 	DevCmdInfoList_var cmd_info_list;
 	DevCmdInfoList_2_var cmd_info_list_2;
+    DevCmdInfoList_3_var cmd_info_list_3;
 	int ctr = 0;
 
+    //TODO extract common code as template function that takes other function to execute inside this loop, see also command_query
 	while (ctr < 2)
 	{
 		try
 		{
 			check_and_reconnect();
 
-			if (version == 1)
-			{
-				Device_var dev = Device::_duplicate(device);
-				cmd_info_list = dev->command_list_query();
+            Device_var dev;
+            Device_2_var dev_2;
+            Device_5_var dev_5;
+            switch(version){
+                case 1:
+                    dev = Device::_duplicate(device);
+                    cmd_info_list = dev->command_list_query();
 
-				command_info_list = new CommandInfoList(cmd_info_list->length());
-//				command_info_list->resize(cmd_info_list->length());
+                    return newCommandInfoList(cmd_info_list);
+                case 2:
+                case 3:
+                case 4:
+                    dev_2 = Device_2::_duplicate(device_2);
+                    cmd_info_list_2 = dev_2->command_list_query_2();
 
-				for (unsigned int i=0; i < cmd_info_list->length(); i++)
-				{
-					(*command_info_list)[i].cmd_name = cmd_info_list[i].cmd_name;
-					(*command_info_list)[i].cmd_tag = cmd_info_list[i].cmd_tag;
-					(*command_info_list)[i].in_type = cmd_info_list[i].in_type;
-					(*command_info_list)[i].out_type = cmd_info_list[i].out_type;
-					(*command_info_list)[i].in_type_desc = cmd_info_list[i].in_type_desc;
-					(*command_info_list)[i].out_type_desc = cmd_info_list[i].out_type_desc;
-					(*command_info_list)[i].disp_level = Tango::OPERATOR;
-				}
-			}
-			else
-			{
-				Device_2_var dev = Device_2::_duplicate(device_2);
-				cmd_info_list_2 = dev->command_list_query_2();
+                    return newCommandInfoList(cmd_info_list_2);
+                case 5:
+                    dev_5 = Device_5::_duplicate(device_5);
+                    cmd_info_list_3 = dev_5->command_list_query_5();
 
-				command_info_list = new CommandInfoList(cmd_info_list_2->length());
-//				command_info_list->resize(cmd_info_list_2->length());
+                    return newCommandInfoList(cmd_info_list_3);
+            }
 
-				for (unsigned int i=0; i < cmd_info_list_2->length(); i++)
-				{
-					(*command_info_list)[i].cmd_name = cmd_info_list_2[i].cmd_name;
-					(*command_info_list)[i].cmd_tag = cmd_info_list_2[i].cmd_tag;
-					(*command_info_list)[i].in_type = cmd_info_list_2[i].in_type;
-					(*command_info_list)[i].out_type = cmd_info_list_2[i].out_type;
-					(*command_info_list)[i].in_type_desc = cmd_info_list_2[i].in_type_desc;
-					(*command_info_list)[i].out_type_desc = cmd_info_list_2[i].out_type_desc;
-					(*command_info_list)[i].disp_level = cmd_info_list_2[i].level;
-				}
-			}
+
+
 			ctr = 2;
 		}
 		catch (CORBA::TRANSIENT &trans)

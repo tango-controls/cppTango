@@ -54,12 +54,12 @@ namespace Tango {
         bool operator==(const _CommandInfo &);
     } CommandInfo;
 
-    CommandInfo newCommandInfo(DevCmdInfo_var);
-    CommandInfo newCommandInfo(DevCmdInfo_2_var);
-    CommandInfo newCommandInfo(DevCmdInfo_3_var);
+    CommandInfo newCommandInfo(const DevCmdInfo&);
+    CommandInfo newCommandInfo(const DevCmdInfo_2&);
+    CommandInfo newCommandInfo(const DevCmdInfo_3&);
 
 //TODO template
-    void fill_vector(vector<string> &, DevVarStringArray &);
+    void fill_vector(vector<string> &, const DevVarStringArray &);
 
 /**
  * A vector of CommandInfo structure
@@ -68,4 +68,15 @@ namespace Tango {
  * @ingroup Client
  */
     typedef vector<CommandInfo> CommandInfoList;
+
+    template<typename DevCommandInfoList>
+    CommandInfoList* newCommandInfoList(DevCommandInfoList devCmdInfoList_var){
+        auto result = new CommandInfoList(devCmdInfoList_var->length());
+
+        for (size_t i=0, size = devCmdInfoList_var->length(); i < size; ++i) {
+            (*result)[i] = newCommandInfo(devCmdInfoList_var[i]);
+        }
+
+        return(result);
+    }
 }

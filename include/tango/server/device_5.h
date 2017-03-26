@@ -365,6 +365,8 @@ public:
 	virtual Tango::DevPipeData *write_read_pipe_5(const Tango::DevPipeData &pipe_value,const Tango::ClntIdent& cl_ident);
 
     DevCmdInfo_3* command_query_5(const char* cmd_name);
+
+	DevCmdInfoList_3* command_list_query_5();
 //@}
 
 /// @privatesection
