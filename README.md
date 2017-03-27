@@ -1,4 +1,4 @@
-# cppTango [![Build Status](https://travis-ci.org/tango-controls/cppTango.png)](https://travis-ci.org/tango-controls/cppTango)
+# cppTango [![Build Status](https://travis-ci.org/tango-controls/cppTango.svg?branch=tango-9-lts)](https://travis-ci.org/tango-controls/cppTango)
 This repository is the result of svn2git migration of tango source code. It is combined from api/cppapi, api/log4tango, api/cpp_test_suite anf api/cpp_test_ds
 
 # How to build and install using cmake
