@@ -1205,10 +1205,22 @@ void ServRestartThread::run(void *ptr)
 	dev->set_poll_th_pool_size(DEFAULT_POLLING_THREADS_POOL_SIZE);
 
     tg->set_svr_starting(true);
+	
+	vector<DeviceClass *> empty_class;
+	tg->set_class_list(&empty_class);
+	
 	{
 		AutoPyLock PyLo;
 		dev->init_device();
 	}
+	
+//
+// Set the class list pointer in the Util class and add the DServer object class
+//
+
+	tg->set_class_list(&(dev->get_class_list()));
+	tg->add_class_to_list(dev->get_device_class());
+	
 	tg->set_svr_starting(false);
 
 //
