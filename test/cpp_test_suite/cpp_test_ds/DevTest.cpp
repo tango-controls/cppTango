@@ -5,10 +5,7 @@
 #include <sys/timeb.h>
 #include <process.h>
 #else
-#include <sys/time.h>
 #endif
-
-#include <iterator>
 
 void EventCallBack::push_event(Tango::EventData* event_data)
 {
@@ -51,24 +48,8 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 //-----------------------------------------------------------------------------
 
 #ifndef COMPAT
-DevTest::DevTest(Tango::DeviceClass *cl,string &s):TANGO_BASE_CLASS(cl,s.c_str())
-{
-	init_device();
-}
 
-DevTest::DevTest(Tango::DeviceClass *cl,const char *s):TANGO_BASE_CLASS(cl,s)
-{
-	init_device();
-}
-
-DevTest::DevTest(Tango::DeviceClass *cl,const char *s,const char *d)
-:TANGO_BASE_CLASS(cl,s,d)
-{
-	init_device();
-}
-
-DevTest::DevTest(Tango::DeviceClass *cl,const char *s,const char *d, Tango::DevState state, const char *status )
-:TANGO_BASE_CLASS(cl,s,d, state, status)
+DevTest::DevTest(Tango::DeviceClass *cl, string &s) : TANGO_BASE_CLASS(cl, s)
 {
 	init_device();
 }
