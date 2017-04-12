@@ -28,8 +28,6 @@
 #include <tango.h>
 
 Tango::DevCmdInfo_3 *Tango::Device_6Impl::command_query_6(const char *cmd_name) {
-    cout4 << "Device_6Impl::command_query_6 arrived" << endl;
-
     DevCmdInfo_2 *cmdInfo_2 = command_query_2(cmd_name);
 
     DevCmdInfo_3 *result = new DevCmdInfo_3();
@@ -50,13 +48,10 @@ Tango::DevCmdInfo_3 *Tango::Device_6Impl::command_query_6(const char *cmd_name) 
     handle_cmd_info_enum_labels(&(result->in_enum_labels), in_enum_labels);
     handle_cmd_info_enum_labels(&(result->out_enum_labels), out_enum_labels);
 
-    cout4 << "Leaving Device_6Impl::command_query_6" << endl;
     return result;
 }
 
 Tango::DevCmdInfoList_3 *Tango::Device_6Impl::command_list_query_6() {
-    cout4 << "Device_6Impl::command_list_query_6 arrived" << endl;
-
     DevCmdInfoList_2 *cmdInfoList_2 = command_list_query_2();
 
     DevCmdInfoList_3 *result = new DevCmdInfoList_3();
@@ -66,7 +61,6 @@ Tango::DevCmdInfoList_3 *Tango::Device_6Impl::command_list_query_6() {
         (*result)[i] = *command_query_6((*cmdInfoList_2)[i].cmd_name);
     }
 
-    cout4 << "Leaving Device_6Impl::command_list_query_6" << endl;
     return result;
 }
 
