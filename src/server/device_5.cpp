@@ -36,7 +36,6 @@
 #endif
 
 #include <tango.h>
-#include <tango/server/device_5.h>
 #include <tango/server/eventsupplier.h>
 #include <tango/server/device_3.tpp>
 
@@ -1424,69 +1423,5 @@ Tango::DevPipeData *Device_5Impl::write_read_pipe_5(const Tango::DevPipeData &pi
 
 	return back;
 }
-
-    DevCmdInfo_3 *Device_5Impl::command_query_5(const char *cmd_name) {
-        DevCmdInfo_2* cmdInfo_2 = command_query_2(cmd_name);
-
-        DevCmdInfo_3* result = new DevCmdInfo_3();
-        result->cmd_name = cmdInfo_2->cmd_name;
-        result->level = cmdInfo_2->level;
-        result->cmd_tag = cmdInfo_2->cmd_tag;
-        result->in_type = cmdInfo_2->in_type;
-        result->out_type = cmdInfo_2->out_type;
-        result->in_type_desc = cmdInfo_2->in_type_desc;
-        result->out_type_desc = cmdInfo_2->out_type_desc;
-
-        string cmd(cmd_name);
-        Command* cmd_ptr = get_cmd_ptr(cmd);
-
-		vector<string>& in_enum_labels = cmd_ptr->get_ext()->in_enum_labels;
-        vector<string>& out_enum_labels = cmd_ptr->get_ext()->out_enum_labels;
-
-        handle_cmd_info_enum_labels(&(result->in_enum_labels), in_enum_labels);
-        handle_cmd_info_enum_labels(&(result->out_enum_labels), out_enum_labels);
-
-        return result;
-    }
-
-    void Device_5Impl::handle_cmd_info_enum_labels(DevVarStringArray* result, const vector<string> &enum_labels) const {
-        *result = DevVarStringArray();
-        result->length(enum_labels.size());
-
-        for(size_t i = 0, size = enum_labels.size(); i < size; ++i){
-            (*result)[i] = string_dup(enum_labels[i].c_str());
-        }
-    }
-
-    DevCmdInfoList_3 *Device_5Impl::command_list_query_5() {
-        DevCmdInfoList_2* cmdInfoList_2 = command_list_query_2();
-
-        DevCmdInfoList_3* result = new DevCmdInfoList_3();
-        result->length(cmdInfoList_2->length());
-
-        for(size_t i = 0, size = cmdInfoList_2->length(); i < size;++i){
-            (*result)[i] = DevCmdInfo_3();
-            DevCmdInfo_2& cmdInfo_2 = (*cmdInfoList_2)[i];
-            (*result)[i].cmd_name = cmdInfo_2.cmd_name;
-            (*result)[i].level = cmdInfo_2.level;
-            (*result)[i].cmd_tag = cmdInfo_2.cmd_tag;
-            (*result)[i].in_type = cmdInfo_2.in_type;
-            (*result)[i].out_type = cmdInfo_2.out_type;
-            (*result)[i].in_type_desc = cmdInfo_2.in_type_desc;
-            (*result)[i].out_type_desc = cmdInfo_2.out_type_desc;
-
-            string cmd((*result)[i].cmd_name);
-            Command* cmd_ptr = get_cmd_ptr(cmd);
-
-            vector<string>& in_enum_labels = cmd_ptr->get_ext()->in_enum_labels;
-            vector<string>& out_enum_labels = cmd_ptr->get_ext()->out_enum_labels;
-
-            handle_cmd_info_enum_labels(&((*result)[i].in_enum_labels), in_enum_labels);
-            handle_cmd_info_enum_labels(&((*result)[i].out_enum_labels), out_enum_labels);
-
-        }
-
-        return result;
-    }
 
 } // End of Tango namespace
