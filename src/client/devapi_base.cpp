@@ -1025,28 +1025,16 @@ namespace Tango {
             omniORB::setClientCallTimeout(device, millisecs);
 
             switch (version) {
+                case 6:
+                    omniORB::setClientCallTimeout(device_6, millisecs);
                 case 5:
                     omniORB::setClientCallTimeout(device_5, millisecs);
-                    omniORB::setClientCallTimeout(device_4, millisecs);
-                    omniORB::setClientCallTimeout(device_3, millisecs);
-                    omniORB::setClientCallTimeout(device_2, millisecs);
-                    break;
-
                 case 4:
                     omniORB::setClientCallTimeout(device_4, millisecs);
-                    omniORB::setClientCallTimeout(device_3, millisecs);
-                    omniORB::setClientCallTimeout(device_2, millisecs);
-                    break;
-
                 case 3:
                     omniORB::setClientCallTimeout(device_3, millisecs);
-                    omniORB::setClientCallTimeout(device_2, millisecs);
-                    break;
-
                 case 2:
                     omniORB::setClientCallTimeout(device_2, millisecs);
-                    break;
-
                 default:
                     break;
             }
@@ -3542,7 +3530,9 @@ namespace Tango {
                     }
                         break;
 
-                    case 5: {
+                    case 5:
+                    case 6:
+                    {
                         Device_5_var dev = Device_5::_duplicate(device_5);
                         attr_config_list_5 = dev->get_attribute_config_5(attr_list);
                         dev_attr_config->resize(attr_config_list_5->length());
@@ -3578,6 +3568,8 @@ namespace Tango {
                         break;
 
                     default:
+                        //TODO an exception must be thrown here, but it produces segfault in ~AttributeProxy
+                        //Tango::Except::throw_exception("Unsupported TANGO protocol version=" + version,"Unsupported TANGO protocol version=" + version,"DeviceProxy::get_attribute_config_ex");
                         break;
                 }
 
