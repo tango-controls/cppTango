@@ -1022,8 +1022,6 @@ namespace Tango {
             if (connection_state != CONNECTION_OK)
                 reconnect(dbase_used);
 
-            omniORB::setClientCallTimeout(device, millisecs);
-
             switch (version) {
                 case 5:
                     omniORB::setClientCallTimeout(device_5, millisecs);
@@ -1048,7 +1046,7 @@ namespace Tango {
                     break;
 
                 default:
-                    break;
+                    omniORB::setClientCallTimeout(device, millisecs);
             }
         }
         catch (Tango::DevFailed &) {}
