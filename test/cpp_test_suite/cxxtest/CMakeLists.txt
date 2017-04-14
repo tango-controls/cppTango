@@ -64,6 +64,7 @@ CXX_GENERATE_TEST(cxx_seq_vec)
 CXX_GENERATE_TEST(cxx_signal)#TODO Windows
 CXX_GENERATE_TEST(cxx_test_state_on)
 CXX_GENERATE_TEST(cxx_misc)
+CXX_GENERATE_TEST(cxx_misc_devproxy)
 CXX_GENERATE_TEST(cxx_cmd_types)
 CXX_GENERATE_TEST(cxx_group)
 CXX_GENERATE_TEST(cxx_encoded)
