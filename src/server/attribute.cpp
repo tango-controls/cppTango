@@ -3823,9 +3823,11 @@ void Attribute::fire_change_event(DevFailed *except)
 		{
 			switch (*ite)
 			{
-				case 5:
-				if (change5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(5,string(EventName[CHANGE_EVENT]));
+                //TODO extract class hierarchy based on version!!!
+                case 6:
+                case 5:
+                    if (change5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+                        remove_client_lib(5, string(EventName[CHANGE_EVENT]));
 				break;
 
 				case 4:
@@ -4247,9 +4249,11 @@ void Attribute::fire_archive_event(DevFailed *except)
 		{
 			switch (*ite)
 			{
-				case 5:
-				if (archive5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(5,string(EventName[ARCHIVE_EVENT]));
+                //TODO extract class hierarchy based on version!!!
+                case 6:
+                case 5:
+                    if (archive5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+                        remove_client_lib(5, string(EventName[ARCHIVE_EVENT]));
 				break;
 
 				case 4:
@@ -4690,9 +4694,11 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 		{
 			switch (*ite)
 			{
-				case 5:
-				if (user5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(5,string(EventName[USER_EVENT]));
+                //TODO extract class hierarchy based on version!!!
+                case 6:
+                case 5:
+                    if (user5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+                        remove_client_lib(5, string(EventName[USER_EVENT]));
 				break;
 
 				case 4:
@@ -4931,9 +4937,11 @@ void Attribute::fire_error_periodic_event(DevFailed *except)
 	{
 		switch (*ite)
 		{
-			case 5:
-			if (periodic5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-				remove_client_lib(5,string(EventName[PERIODIC_EVENT]));
+            //TODO extract class hierarchy based on version!!!
+            case 6:
+            case 5:
+                if (periodic5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+                    remove_client_lib(5, string(EventName[PERIODIC_EVENT]));
 			break;
 
 			case 4:

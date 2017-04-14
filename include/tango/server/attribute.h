@@ -2598,8 +2598,10 @@ inline void Attribute::set_change_event_sub(int cl_lib)
 {
 	switch (cl_lib)
 	{
-		case 5:
-		event_change5_subscription = time(NULL);
+        //TODO extract class hierarchy based on version!!!
+        case 6:
+        case 5:
+            event_change5_subscription = time(NULL);
 		break;
 
 		case 4:
@@ -2617,8 +2619,10 @@ inline void Attribute::set_periodic_event_sub(int cl_lib)
 {
 	switch (cl_lib)
 	{
-		case 5:
-		event_periodic5_subscription = time(NULL);
+        //TODO extract class hierarchy based on version!!!
+        case 6:
+        case 5:
+            event_periodic5_subscription = time(NULL);
 		break;
 
 		case 4:
@@ -2636,8 +2640,10 @@ inline void Attribute::set_archive_event_sub(int cl_lib)
 {
 	switch (cl_lib)
 	{
-		case 5:
-		event_archive5_subscription = time(NULL);
+        //TODO extract class hierarchy based on version!!!
+        case 6:
+        case 5:
+            event_archive5_subscription = time(NULL);
 		break;
 
 		case 4:
@@ -2655,8 +2661,10 @@ inline void Attribute::set_user_event_sub(int cl_lib)
 {
 	switch (cl_lib)
 	{
-		case 5:
-		event_user5_subscription = time(NULL);
+        //TODO extract class hierarchy based on version!!!
+        case 6:
+        case 5:
+            event_user5_subscription = time(NULL);
 		break;
 
 		case 4:
@@ -2674,8 +2682,10 @@ inline void Attribute::set_att_conf_event_sub(int cl_lib)
 {
 	switch (cl_lib)
 	{
-		case 5:
-		event_attr_conf5_subscription = time(NULL);
+        //TODO extract class hierarchy based on version!!!
+        case 6:
+        case 5:
+            event_attr_conf5_subscription = time(NULL);
 		break;
 
 		default:
