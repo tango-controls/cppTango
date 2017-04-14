@@ -1083,7 +1083,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 		{
 			if (version >= 3)
 			{
-			    if (version == 5)
+				if (version >= 5)
                     ApiUtil::attr_to_device(&((*received_5)[i]),version,&((*dev_attr)[i]));
 				else if (version == 4)
 					ApiUtil::attr_to_device(&((*received_4)[i]),version,&((*dev_attr)[i]));
@@ -1279,7 +1279,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 
 		if (version >= 3)
 		{
-		    if (version == 5)
+			if (version >= 5)
                 ApiUtil::attr_to_device(&((*received_5)[0]),version,dev_attr);
 			else if (version == 4)
 				ApiUtil::attr_to_device(&((*received_4)[0]),version,dev_attr);
@@ -1524,7 +1524,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 	{
 		if (version >= 3)
 		{
-			if (version == 5)
+			if (version >= 5)
                 ApiUtil::attr_to_device(&((*received_5)[i]),version,&((*dev_attr)[i]));
 			else if (version == 4)
 				ApiUtil::attr_to_device(&((*received_4)[i]),version,&((*dev_attr)[i]));
@@ -1757,7 +1757,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 
 	if (version >= 3)
 	{
-	    if (version == 5)
+		if (version >= 5)
             ApiUtil::attr_to_device(&((*received_5)[0]),version,dev_attr);
 		else if (version == 4)
 			ApiUtil::attr_to_device(&((*received_4)[0]),version,dev_attr);
