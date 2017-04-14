@@ -77,6 +77,19 @@ public:
 // Tests -------------------------------------------------------
 //
 
+    void test_cmd_DevEnum_in(void) {
+        DeviceData in, out;
+        in << (DevEnum) 1;
+
+        out = device1->command_inout("IODevEnum", in);
+
+
+        short result;
+        out >> result;
+
+        TS_ASSERT_EQUALS(1, result);
+    }
+
     void test_cmd_DevEnum_query(void){
         CommandInfo cmd_info;
 
@@ -115,18 +128,7 @@ public:
     }
 
 
-void test_cmd_DevEnum_in(void){
-    DeviceData in, out;
-    in << (DevEnum)1;
 
-    out = device1->command_inout("IODevEnum", in);
-
-
-    short result;
-    out >> result;
-
-    TS_ASSERT_EQUALS(1, result);
-}
 
 };
 #undef cout
