@@ -4049,7 +4049,7 @@ namespace Tango {
                     ApiUtil *au = ApiUtil::instance();
                     ci.cpp_clnt(au->get_client_pid());
 
-                    if (version == 5) {
+                    if (version >= 5) {
                         Device_5_var dev = Device_5::_duplicate(device_5);
                         dev->set_attribute_config_5(attr_config_list_5, ci);
                     } else {
@@ -4748,7 +4748,7 @@ namespace Tango {
                 ApiUtil *au = ApiUtil::instance();
                 ci.cpp_clnt(au->get_client_pid());
 
-                if (version == 5) {
+                if (version >= 5) {
                     Device_5_var dev = Device_5::_duplicate(device_5);
                     attr_value_list_5 = dev->read_attributes_5(attr_list, local_source, ci);
                 } else if (version == 4) {
@@ -4850,7 +4850,7 @@ namespace Tango {
 
         for (i = 0; i < nb_received; i++) {
             if (version >= 3) {
-                if (version == 5)
+                if (version >= 5)
                     ApiUtil::attr_to_device(&(attr_value_list_5[i]), version, &(*dev_attr)[i]);
                 else if (version == 4)
                     ApiUtil::attr_to_device(&(attr_value_list_4[i]), version, &(*dev_attr)[i]);
