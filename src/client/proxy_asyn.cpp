@@ -1056,8 +1056,9 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 
         switch (version)
         {
+            case 6:
             case 5:
-			dii_any >>= received_5;
+                dii_any >>= received_5;
 			nb_received = received_5->length();
             break;
 
@@ -1260,8 +1261,9 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 
         switch (version)
         {
+            case 6:
             case 5:
-            dii_any >>= received_5;
+                dii_any >>= received_5;
             break;
 
             case 4:
@@ -1497,8 +1499,9 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 
     switch (version)
     {
+        case 6:
         case 5:
-        dii_any >>= received_5;
+            dii_any >>= received_5;
         nb_received = received_5->length();
         break;
 
@@ -1738,8 +1741,9 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 
     switch (version)
     {
+        case 6:
         case 5:
-		dii_any >>= received_5;
+            dii_any >>= received_5;
         break;
 
         case 4:

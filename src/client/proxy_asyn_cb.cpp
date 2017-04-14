@@ -476,8 +476,9 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 
         switch (version)
         {
+            case 6:
             case 5:
-			dii_any >>= received_5;
+                dii_any >>= received_5;
 			nb_received = received_5->length();
             break;
 
