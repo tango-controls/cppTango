@@ -19,7 +19,6 @@ set(TESTS   acc_right
             mem_att
             misc_devattr
             misc_devdata
-            misc_devproxy
             multiple_new
             new_devproxy
             obj_prop
