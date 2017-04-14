@@ -503,7 +503,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 		{
 			if (version >= 3)
 			{
-			    if (version == 5)
+				if (version >= 5)
                     ApiUtil::attr_to_device(&((*received_5)[i]),version,&((*dev_attr)[i]));
 				else if (version == 4)
 					ApiUtil::attr_to_device(&((*received_4)[i]),version,&((*dev_attr)[i]));
