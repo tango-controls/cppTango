@@ -402,12 +402,13 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
 
 			switch (*ite)
 			{
-				case 5:
-				{
-					convert_att_event_to_5(attr_value,sent_value,need_free,attr);
-					ev_name = EVENT_COMPAT_IDL5 + ev_name;
-					name_changed = true;
-				}
+                //TODO extract class hierarchy based on version
+                case 6:
+                case 5: {
+                    convert_att_event_to_5(attr_value, sent_value, need_free, attr);
+                    ev_name = EVENT_COMPAT_IDL5 + ev_name;
+                    name_changed = true;
+                }
 				break;
 
 				case 4:
@@ -717,12 +718,13 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Suppli
 
 			switch (*ite)
 			{
-				case 5:
-				{
-					convert_att_event_to_5(attr_value,sent_value,need_free,attr);
-					ev_name = EVENT_COMPAT_IDL5 + ev_name;
-					name_changed = true;
-				}
+                //TODO extract class hierarchy based on version
+                case 6:
+                case 5: {
+                    convert_att_event_to_5(attr_value, sent_value, need_free, attr);
+                    ev_name = EVENT_COMPAT_IDL5 + ev_name;
+                    name_changed = true;
+                }
 				break;
 
 				case 4:
@@ -907,12 +909,13 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struc
 
 			switch (*ite)
 			{
-				case 5:
-				{
-					convert_att_event_to_5(attr_value,sent_value,need_free,attr);
-					ev_name = EVENT_COMPAT_IDL5 + ev_name;
-					name_changed = true;
-				}
+                //TODO extract class hierarchy based on version
+                case 6:
+                case 5: {
+                    convert_att_event_to_5(attr_value, sent_value, need_free, attr);
+                    ev_name = EVENT_COMPAT_IDL5 + ev_name;
+                    name_changed = true;
+                }
 				break;
 
 				case 4:
