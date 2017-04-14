@@ -8496,6 +8496,11 @@ namespace Tango {
                 ret = 902;
                 break;
 
+                //TODO extract class hierarchy based on version!!!
+            case 6:
+                ret = 1001;
+                break;
+
             default:
                 break;
         }
