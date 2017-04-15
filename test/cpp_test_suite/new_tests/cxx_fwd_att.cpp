@@ -213,9 +213,9 @@ public:
 		Tango::DevState ds = fwd_device->state();
 		string dev_status = fwd_device->status();
 
-		TS_ASSERT(ds == Tango::ALARM);
+		TS_ASSERT_EQUALS(ds, Tango::ALARM);
 		string::size_type pos = dev_status.find("Error: Wrong syntax in root attribute definition");
-		TS_ASSERT(pos != string::npos);
+		TS_ASSERT_DIFFERS(pos, string::npos);
 
 		// A wrong root attribute configuration in db (root device is local device)
 
@@ -230,9 +230,9 @@ public:
 		ds = fwd_device->state();
 		dev_status = fwd_device->status();
 
-		TS_ASSERT(ds == Tango::ALARM);
+		TS_ASSERT_EQUALS(ds, Tango::ALARM);
 		pos = dev_status.find("Error: Root device is local device");
-		TS_ASSERT(pos != string::npos);
+		TS_ASSERT_DIFFERS(pos, string::npos);
 
 		// A wrong root attribute configuration in db (unknown root device)
 
@@ -245,9 +245,9 @@ public:
 		ds = fwd_device->state();
 		dev_status = fwd_device->status();
 
-		TS_ASSERT(ds == Tango::ALARM);
+		TS_ASSERT_EQUALS(ds, Tango::ALARM);
 		pos = dev_status.find("Error: Wrong root device");
-		TS_ASSERT(pos != string::npos);
+		TS_ASSERT_DIFFERS(pos, string::npos);
 
 		// Reset root attribute configuration to a correct value
 
@@ -262,9 +262,9 @@ public:
 		ds = fwd_device->state();
 		dev_status = fwd_device->status();
 
-		TS_ASSERT(ds == Tango::ON);
+		TS_ASSERT_EQUALS(ds, Tango::ON);
 		pos = dev_status.find("The device is in ON state");
-		TS_ASSERT(pos != string::npos);
+		TS_ASSERT_DIFFERS(pos, string::npos);
 		CxxTest::TangoPrinter::restore_unset("fwd_att_conf");
 	}
 
@@ -280,43 +280,43 @@ public:
 		TS_ASSERT_THROWS_NOTHING(short_attr = fwd_device->read_attribute("fwd_short_rw"));
 		DevShort sh;
 		short_attr >> sh;
-		TS_ASSERT(short_attr.name == "fwd_short_rw");
-		TS_ASSERT(short_attr.quality == Tango::ATTR_VALID);
-		TS_ASSERT(short_attr.dim_x == 1);
-		TS_ASSERT(short_attr.dim_y == 0);	
-		TS_ASSERT(sh == 66);
+		TS_ASSERT_EQUALS(short_attr.name, "fwd_short_rw");
+		TS_ASSERT_EQUALS(short_attr.quality, Tango::ATTR_VALID);
+		TS_ASSERT_EQUALS(short_attr.dim_x, 1);
+		TS_ASSERT_EQUALS(short_attr.dim_y, 0);
+		TS_ASSERT_EQUALS(sh, 66);
 
 		TS_ASSERT_THROWS_NOTHING(string_attr = fwd_device->read_attribute("fwd_string_w"));
 		string str;
 		string_attr >> str;
-		TS_ASSERT(string_attr.name == "fwd_string_w");
-		TS_ASSERT(string_attr.quality == Tango::ATTR_VALID);
-		TS_ASSERT(string_attr.dim_x == 1);
-		TS_ASSERT(string_attr.dim_y == 0);
-		TS_ASSERT(str == "Not initialised");
+		TS_ASSERT_EQUALS(string_attr.name, "fwd_string_w");
+		TS_ASSERT_EQUALS(string_attr.quality, Tango::ATTR_VALID);
+		TS_ASSERT_EQUALS(string_attr.dim_x, 1);
+		TS_ASSERT_EQUALS(string_attr.dim_y, 0);
+		TS_ASSERT_EQUALS(str, "Not initialised");
 
 		TS_ASSERT_THROWS_NOTHING(sp_db = fwd_device->read_attribute("fwd_spec_double"));
 		vector<double> v_db;
 		sp_db >> v_db;
-		TS_ASSERT(sp_db.name == "fwd_spec_double");
-		TS_ASSERT(sp_db.quality == Tango::ATTR_VALID);
-		TS_ASSERT(sp_db.dim_x == 2);
-		TS_ASSERT(sp_db.dim_y == 0);
-		TS_ASSERT(v_db.size() == 2);
-		TS_ASSERT(v_db[0] == 1.11);
-		TS_ASSERT(v_db[1] == 2.22);
+		TS_ASSERT_EQUALS(sp_db.name, "fwd_spec_double");
+		TS_ASSERT_EQUALS(sp_db.quality, Tango::ATTR_VALID);
+		TS_ASSERT_EQUALS(sp_db.dim_x, 2);
+		TS_ASSERT_EQUALS(sp_db.dim_y, 0);
+		TS_ASSERT_EQUALS(v_db.size(), 2);
+		TS_ASSERT_EQUALS(v_db[0], 1.11);
+		TS_ASSERT_EQUALS(v_db[1], 2.22);
 
 		TS_ASSERT_THROWS_NOTHING(ima_str = fwd_device->read_attribute("fwd_ima_string_rw"));
 		vector<string> v_str;
 		ima_str >> v_str;
-		TS_ASSERT(ima_str.name == "fwd_ima_string_rw");
-		TS_ASSERT(ima_str.quality == Tango::ATTR_VALID);
-		TS_ASSERT(ima_str.dim_x == 2);
-		TS_ASSERT(ima_str.dim_y == 1);
-		TS_ASSERT(v_str.size() == 3);
-		TS_ASSERT(v_str[0] == "Alors la, pour une surprise");
-		TS_ASSERT(v_str[1] == "c'est une surprise");
-		TS_ASSERT(v_str[2] == "Not initialised");
+		TS_ASSERT_EQUALS(ima_str.name, "fwd_ima_string_rw");
+		TS_ASSERT_EQUALS(ima_str.quality, Tango::ATTR_VALID);
+		TS_ASSERT_EQUALS(ima_str.dim_x, 2);
+		TS_ASSERT_EQUALS(ima_str.dim_y, 1);
+		TS_ASSERT_EQUALS(v_str.size(), 3);
+		TS_ASSERT_EQUALS(v_str[0], "Alors la, pour une surprise");
+		TS_ASSERT_EQUALS(v_str[1], "c'est une surprise");
+		TS_ASSERT_EQUALS(v_str[2], "Not initialised");
 	}
 
 // Test attribute writing
@@ -334,15 +334,15 @@ public:
 		Tango::DevShort sh_read;
 		da_sh_read >> sh_read;
 
-		TS_ASSERT(sh_read == 33);
+		TS_ASSERT_EQUALS(sh_read, 33);
 
 		Tango::DeviceAttribute da_sh_read_root = device1->read_attribute("short_attr_rw");
 		vector<Tango::DevShort> v_sh_read;
 		da_sh_read_root >> v_sh_read;
 
-		TS_ASSERT(v_sh_read.size() == 2);
-		TS_ASSERT(v_sh_read[0] == 33);
-		TS_ASSERT(v_sh_read[1] == 33);
+		TS_ASSERT_EQUALS(v_sh_read.size(), 2);
+		TS_ASSERT_EQUALS(v_sh_read[0], 33);
+		TS_ASSERT_EQUALS(v_sh_read[1], 33);
 
 // Second writable attribute
 
@@ -354,13 +354,13 @@ public:
 		string str_read;
 		da_str_read >> str_read;
 
-		TS_ASSERT(str_read == "Hello");
+		TS_ASSERT_EQUALS(str_read, "Hello");
 
 		Tango::DeviceAttribute da_str_read_root = device1->read_attribute("string_attr_w2");
 		string str_read_root;
 		da_str_read_root >> str_read_root;
 
-		TS_ASSERT(str_read_root == "Hello");
+		TS_ASSERT_EQUALS(str_read_root, "Hello");
 
 // Third writable attribute
 
@@ -373,19 +373,19 @@ public:
 		vector<string> v_str_read;
 		da_v_str_read >> v_str_read;
 
-		TS_ASSERT(v_str_read.size() == 3);
-		TS_ASSERT(v_str_read[0] == "Alors la, pour une surprise");
-		TS_ASSERT(v_str_read[1] == "c'est une surprise");
-		TS_ASSERT(v_str_read[2] == "Tango");
+		TS_ASSERT_EQUALS(v_str_read.size(), 3);
+		TS_ASSERT_EQUALS(v_str_read[0], "Alors la, pour une surprise");
+		TS_ASSERT_EQUALS(v_str_read[1], "c'est une surprise");
+		TS_ASSERT_EQUALS(v_str_read[2], "Tango");
 
 		Tango::DeviceAttribute da_v_str_read_root = device2->read_attribute("string_ima_attr_rw");
 		vector<string> v_str_read_root;
 		da_v_str_read_root >> v_str_read_root;
 
-		TS_ASSERT(v_str_read_root.size() == 3);
-		TS_ASSERT(v_str_read_root[0] == "Alors la, pour une surprise");
-		TS_ASSERT(v_str_read_root[1] == "c'est une surprise");
-		TS_ASSERT(v_str_read_root[2] == "Tango");
+		TS_ASSERT_EQUALS(v_str_read_root.size(), 3);
+		TS_ASSERT_EQUALS(v_str_read_root[0], "Alors la, pour une surprise");
+		TS_ASSERT_EQUALS(v_str_read_root[1], "c'est une surprise");
+		TS_ASSERT_EQUALS(v_str_read_root[2], "Tango");
 	}
 
 // Test data propagation
@@ -403,7 +403,7 @@ public:
 		Tango::DevShort sh_read;
 		da_sh_read >> sh_read;
 
-		TS_ASSERT(sh_read == 44);
+		TS_ASSERT_EQUALS(sh_read, 44);
 
 // Second writable attribute
 
@@ -415,7 +415,7 @@ public:
 		string str_read;
 		da_str_read >> str_read;
 
-		TS_ASSERT(str_read == "Hola");
+		TS_ASSERT_EQUALS(str_read, "Hola");
 
 // Third writable attribute
 
@@ -428,10 +428,10 @@ public:
 		vector<string> v_str_read;
 		da_v_str_read >> v_str_read;
 
-		TS_ASSERT(v_str_read.size() == 3);
-		TS_ASSERT(v_str_read[0] == "Alors la, pour une surprise");
-		TS_ASSERT(v_str_read[1] == "c'est une surprise");
-		TS_ASSERT(v_str_read[2] == "Samba");
+		TS_ASSERT_EQUALS(v_str_read.size(), 3);
+		TS_ASSERT_EQUALS(v_str_read[0], "Alors la, pour une surprise");
+		TS_ASSERT_EQUALS(v_str_read[1], "c'est une surprise");
+		TS_ASSERT_EQUALS(v_str_read[2], "Samba");
 	}
 
 // Test attribute configuration
@@ -446,93 +446,93 @@ public:
 
 		AttributeInfoListEx *confs = fwd_device->get_attribute_config_ex(att_names);
 
-		TS_ASSERT((*confs)[0].name == "fwd_short_rw");
+		TS_ASSERT_EQUALS((*confs)[0].name, "fwd_short_rw");
 		string tango_host(getenv("TANGO_HOST"));
 		string local_root_base("tango://");
 		local_root_base = local_root_base + tango_host + "/" +device1_name;
 		string local_root = local_root_base + "/short_attr_rw";
 		cout << (*confs)[0].root_attr_name << "==" << local_root << endl;
-		TS_ASSERT((*confs)[0].root_attr_name == local_root);
+		TS_ASSERT_EQUALS((*confs)[0].root_attr_name, local_root);
 
-		TS_ASSERT((*confs)[0].writable == Tango::READ_WRITE);
-		TS_ASSERT((*confs)[0].data_format == Tango::SCALAR);
-		TS_ASSERT((*confs)[0].data_type == Tango::DEV_SHORT);
-		TS_ASSERT((*confs)[0].max_dim_x == 1);
-		TS_ASSERT((*confs)[0].max_dim_y == 0);
-		TS_ASSERT((*confs)[0].description == "No description");
-		TS_ASSERT((*confs)[0].label == "Gasp a fwd attribute");
-		TS_ASSERT((*confs)[0].unit == "Kg");
-		TS_ASSERT((*confs)[0].standard_unit == "1.0");
-		TS_ASSERT((*confs)[0].display_unit == "No display unit");
-		TS_ASSERT((*confs)[0].format == "%d");
-		TS_ASSERT((*confs)[0].min_value == "Not specified");
-		TS_ASSERT((*confs)[0].max_value == "Not specified");
-		TS_ASSERT((*confs)[0].min_alarm == "Not specified");
-		TS_ASSERT((*confs)[0].max_alarm == "Not specified");
-		TS_ASSERT((*confs)[0].writable_attr_name == "fwd_short_rw");
+		TS_ASSERT_EQUALS((*confs)[0].writable, Tango::READ_WRITE);
+		TS_ASSERT_EQUALS((*confs)[0].data_format, Tango::SCALAR);
+		TS_ASSERT_EQUALS((*confs)[0].data_type, Tango::DEV_SHORT);
+		TS_ASSERT_EQUALS((*confs)[0].max_dim_x, 1);
+		TS_ASSERT_EQUALS((*confs)[0].max_dim_y, 0);
+		TS_ASSERT_EQUALS((*confs)[0].description, "No description");
+		TS_ASSERT_EQUALS((*confs)[0].label, "Gasp a fwd attribute");
+		TS_ASSERT_EQUALS((*confs)[0].unit, "Kg");
+		TS_ASSERT_EQUALS((*confs)[0].standard_unit, "1.0");
+		TS_ASSERT_EQUALS((*confs)[0].display_unit, "No display unit");
+		TS_ASSERT_EQUALS((*confs)[0].format, "%d");
+		TS_ASSERT_EQUALS((*confs)[0].min_value, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[0].max_value, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[0].min_alarm, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[0].max_alarm, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[0].writable_attr_name, "fwd_short_rw");
 
-		TS_ASSERT((*confs)[1].name == "fwd_string_w");
+		TS_ASSERT_EQUALS((*confs)[1].name, "fwd_string_w");
 		local_root = local_root_base + "/string_attr_w2";
-		TS_ASSERT((*confs)[1].root_attr_name == local_root);
+		TS_ASSERT_EQUALS((*confs)[1].root_attr_name, local_root);
 
-		TS_ASSERT((*confs)[1].writable == Tango::WRITE);
-		TS_ASSERT((*confs)[1].data_format == Tango::SCALAR);
-		TS_ASSERT((*confs)[1].data_type == Tango::DEV_STRING);
-		TS_ASSERT((*confs)[1].max_dim_x == 1);
-		TS_ASSERT((*confs)[1].max_dim_y == 0);
-		TS_ASSERT((*confs)[1].description == "No description");
-		TS_ASSERT((*confs)[1].label == "fwd_string_w");
-		TS_ASSERT((*confs)[1].unit == "");
-		TS_ASSERT((*confs)[1].standard_unit == "No standard unit");
-		TS_ASSERT((*confs)[1].display_unit == "No display unit");
-		TS_ASSERT((*confs)[1].format == "%s");
-		TS_ASSERT((*confs)[1].min_value == "Not specified");
-		TS_ASSERT((*confs)[1].max_value == "Not specified");
-		TS_ASSERT((*confs)[1].min_alarm == "Not specified");
-		TS_ASSERT((*confs)[1].max_alarm == "Not specified");
-		TS_ASSERT((*confs)[1].writable_attr_name == "None");
+		TS_ASSERT_EQUALS((*confs)[1].writable, Tango::WRITE);
+		TS_ASSERT_EQUALS((*confs)[1].data_format, Tango::SCALAR);
+		TS_ASSERT_EQUALS((*confs)[1].data_type, Tango::DEV_STRING);
+		TS_ASSERT_EQUALS((*confs)[1].max_dim_x, 1);
+		TS_ASSERT_EQUALS((*confs)[1].max_dim_y, 0);
+		TS_ASSERT_EQUALS((*confs)[1].description, "No description");
+		TS_ASSERT_EQUALS((*confs)[1].label, "fwd_string_w");
+		TS_ASSERT_EQUALS((*confs)[1].unit, "");
+		TS_ASSERT_EQUALS((*confs)[1].standard_unit, "No standard unit");
+		TS_ASSERT_EQUALS((*confs)[1].display_unit, "No display unit");
+		TS_ASSERT_EQUALS((*confs)[1].format, "%s");
+		TS_ASSERT_EQUALS((*confs)[1].min_value, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[1].max_value, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[1].min_alarm, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[1].max_alarm, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[1].writable_attr_name, "None");
 
-		TS_ASSERT((*confs)[2].name == "fwd_spec_double");
+		TS_ASSERT_EQUALS((*confs)[2].name, "fwd_spec_double");
 		local_root = local_root_base + "/double_spec_attr";
-		TS_ASSERT((*confs)[2].root_attr_name == local_root);
+		TS_ASSERT_EQUALS((*confs)[2].root_attr_name, local_root);
 
-		TS_ASSERT((*confs)[2].writable == Tango::READ);
-		TS_ASSERT((*confs)[2].data_format == Tango::SPECTRUM);
-		TS_ASSERT((*confs)[2].data_type == Tango::DEV_DOUBLE);
-		TS_ASSERT((*confs)[2].max_dim_x == 3);
-		TS_ASSERT((*confs)[2].max_dim_y == 0);
-		TS_ASSERT((*confs)[2].description == "No description");
-		TS_ASSERT((*confs)[2].label == "fwd_spec_double");
-		TS_ASSERT((*confs)[2].unit == "");
-		TS_ASSERT((*confs)[2].standard_unit == "No standard unit");
-		TS_ASSERT((*confs)[2].display_unit == "No display unit");
-		TS_ASSERT((*confs)[2].format == "%6.2f");
-		TS_ASSERT((*confs)[2].min_value == "Not specified");
-		TS_ASSERT((*confs)[2].max_value == "Not specified");
-		TS_ASSERT((*confs)[2].min_alarm == "Not specified");
-		TS_ASSERT((*confs)[2].max_alarm == "Not specified");
-		TS_ASSERT((*confs)[2].writable_attr_name == "None");
+		TS_ASSERT_EQUALS((*confs)[2].writable, Tango::READ);
+		TS_ASSERT_EQUALS((*confs)[2].data_format, Tango::SPECTRUM);
+		TS_ASSERT_EQUALS((*confs)[2].data_type, Tango::DEV_DOUBLE);
+		TS_ASSERT_EQUALS((*confs)[2].max_dim_x, 3);
+		TS_ASSERT_EQUALS((*confs)[2].max_dim_y, 0);
+		TS_ASSERT_EQUALS((*confs)[2].description, "No description");
+		TS_ASSERT_EQUALS((*confs)[2].label, "fwd_spec_double");
+		TS_ASSERT_EQUALS((*confs)[2].unit, "");
+		TS_ASSERT_EQUALS((*confs)[2].standard_unit, "No standard unit");
+		TS_ASSERT_EQUALS((*confs)[2].display_unit, "No display unit");
+		TS_ASSERT_EQUALS((*confs)[2].format, "%6.2f");
+		TS_ASSERT_EQUALS((*confs)[2].min_value, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[2].max_value, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[2].min_alarm, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[2].max_alarm, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[2].writable_attr_name, "None");
 
-		TS_ASSERT((*confs)[3].name == "fwd_ima_string_rw");
+		TS_ASSERT_EQUALS((*confs)[3].name, "fwd_ima_string_rw");
 		local_root = "tango://" + tango_host + "/" + device2_name + "/string_ima_attr_rw";
-		TS_ASSERT((*confs)[3].root_attr_name == local_root);
+		TS_ASSERT_EQUALS((*confs)[3].root_attr_name, local_root);
 
-		TS_ASSERT((*confs)[3].writable == Tango::READ_WRITE);
-		TS_ASSERT((*confs)[3].data_format == Tango::IMAGE);
-		TS_ASSERT((*confs)[3].data_type == Tango::DEV_STRING);
-		TS_ASSERT((*confs)[3].max_dim_x == 2);
-		TS_ASSERT((*confs)[3].max_dim_y == 2);
-		TS_ASSERT((*confs)[3].description == "No description");
-		TS_ASSERT((*confs)[3].label == "fwd_ima_string_rw");
-		TS_ASSERT((*confs)[3].unit == "");
-		TS_ASSERT((*confs)[3].standard_unit == "No standard unit");
-		TS_ASSERT((*confs)[3].display_unit == "No display unit");
-		TS_ASSERT((*confs)[3].format == "%s");
-		TS_ASSERT((*confs)[3].min_value == "Not specified");
-		TS_ASSERT((*confs)[3].max_value == "Not specified");
-		TS_ASSERT((*confs)[3].min_alarm == "Not specified");
-		TS_ASSERT((*confs)[3].max_alarm == "Not specified");
-		TS_ASSERT((*confs)[3].writable_attr_name == "fwd_ima_string_rw");
+		TS_ASSERT_EQUALS((*confs)[3].writable, Tango::READ_WRITE);
+		TS_ASSERT_EQUALS((*confs)[3].data_format, Tango::IMAGE);
+		TS_ASSERT_EQUALS((*confs)[3].data_type, Tango::DEV_STRING);
+		TS_ASSERT_EQUALS((*confs)[3].max_dim_x, 2);
+		TS_ASSERT_EQUALS((*confs)[3].max_dim_y, 2);
+		TS_ASSERT_EQUALS((*confs)[3].description, "No description");
+		TS_ASSERT_EQUALS((*confs)[3].label, "fwd_ima_string_rw");
+		TS_ASSERT_EQUALS((*confs)[3].unit, "");
+		TS_ASSERT_EQUALS((*confs)[3].standard_unit, "No standard unit");
+		TS_ASSERT_EQUALS((*confs)[3].display_unit, "No display unit");
+		TS_ASSERT_EQUALS((*confs)[3].format, "%s");
+		TS_ASSERT_EQUALS((*confs)[3].min_value, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[3].max_value, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[3].min_alarm, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[3].max_alarm, "Not specified");
+		TS_ASSERT_EQUALS((*confs)[3].writable_attr_name, "fwd_ima_string_rw");
 
 		delete confs;
 	}
@@ -553,7 +553,7 @@ public:
 		Tango_sleep(1);
 
 		confs = fwd_device->get_attribute_config_ex(att_names);
-		TS_ASSERT((*confs)[0].description == "houla houla");
+		TS_ASSERT_EQUALS((*confs)[0].description, "houla houla");
 
 		(*confs)[0].min_value = "0";
 		fwd_device->set_attribute_config(*confs);
@@ -561,7 +561,7 @@ public:
 		Tango_sleep(1);
 
 		confs_root = device1->get_attribute_config_ex(att_names_root);
-		TS_ASSERT((*confs_root)[0].min_value == "0");
+		TS_ASSERT_EQUALS((*confs_root)[0].min_value, "0");
 
 		delete confs;
 		delete confs_root;
@@ -581,16 +581,16 @@ public:
 		device1->set_attribute_config(*confs_root);	
 
 		confs = fwd_device->get_attribute_config_ex(att_names);
-		TS_ASSERT((*confs)[0].label == "Gasp a fwd attribute");
+		TS_ASSERT_EQUALS((*confs)[0].label, "Gasp a fwd attribute");
 
 		(*confs)[0].label = "Hai Hai Hai";
 		fwd_device->set_attribute_config(*confs);
 
 		confs = fwd_device->get_attribute_config_ex(att_names);
-		TS_ASSERT((*confs)[0].label == "Hai Hai Hai");
+		TS_ASSERT_EQUALS((*confs)[0].label, "Hai Hai Hai");
 
 		confs_root = device1->get_attribute_config_ex(att_names_root);
-		TS_ASSERT((*confs_root)[0].label == "Ca marche?");	
+		TS_ASSERT_EQUALS((*confs_root)[0].label, "Ca marche?");
 
 		delete confs;
 		delete confs_root;			
@@ -606,13 +606,13 @@ public:
 		Tango::DevShort read_sh;
 		da_read >> read_sh;
 
-		TS_ASSERT(read_sh == 22);
+		TS_ASSERT_EQUALS(read_sh, 22);
 
 		DeviceAttribute da_root_read = device1->read_attribute("short_attr_rw");
 		Tango::DevShort sh_root;
 		da_root_read >> sh_root;
 
-		TS_ASSERT(sh_root == 22);
+		TS_ASSERT_EQUALS(sh_root, 22);
 	}
 
 // Polling and forwarded attribute
@@ -627,11 +627,11 @@ public:
 		const DevVarStringArray *polled_devices;
 		TS_ASSERT_THROWS_NOTHING(dout = ad->command_inout("PolledDevice"));
 		dout >> polled_devices;
-		TS_ASSERT((*polled_devices).length() == 0);
+		TS_ASSERT_EQUALS((*polled_devices).length(), 0);
 
 		TS_ASSERT_THROWS_NOTHING(dout = root_admin->command_inout("PolledDevice"));
 		dout >> polled_devices;
-		TS_ASSERT((*polled_devices).length() == 0);
+		TS_ASSERT_EQUALS((*polled_devices).length(), 0);
 
 		// Impossible to start polling on a forwarded attribute
 
@@ -662,7 +662,7 @@ public:
 		DeviceAttribute da_cache = fwd_device->read_attribute("fwd_short_rw");
 		DevShort ds;
 		da_cache >> ds;
-		TS_ASSERT(ds == 22);
+		TS_ASSERT_EQUALS(ds, 22);
 
 		// Read data history
 
@@ -673,11 +673,11 @@ public:
  		for (int i = 0;i < 5;i++)
  		{
     		bool fail = (*hist)[i].has_failed();
-			TS_ASSERT(fail == false);
+			TS_ASSERT(!fail);
 
 			DevShort hist_val;
 			(*hist)[i] >> hist_val;
-			TS_ASSERT(hist_val == 22);
+			TS_ASSERT_EQUALS(hist_val, 22);
  		}
  		delete hist;
 
@@ -694,7 +694,7 @@ public:
 
 		TS_ASSERT_THROWS_NOTHING(dout = root_admin->command_inout("PolledDevice"));
 		dout >> polled_devices;
-		TS_ASSERT((*polled_devices).length() == 0);
+		TS_ASSERT_EQUALS((*polled_devices).length(), 0);
 
 		// Read data from cache when polling on root attribute is stopped fails
 
@@ -746,12 +746,12 @@ public:
 
 		Tango_sleep(3);
 
-		TS_ASSERT(cb.cb_err == 1);
-		TS_ASSERT(cb.cb_executed >= 3);
+		TS_ASSERT_EQUALS(cb.cb_err, 1);
+		TS_ASSERT_LESS_THAN_EQUALS(3, cb.cb_executed);
 
 		string at_name = fwd_device_name + "/fwd_short_rw";
 		string::size_type pos = cb.ev_name.find(at_name);
-		TS_ASSERT(pos != string::npos);
+		TS_ASSERT_DIFFERS(pos, string::npos);
 
 		// unsubscribe from event
 
@@ -777,32 +777,32 @@ public:
 		fwd_device->lock();
 		
 		bool lo = device1->is_locked();
-		TS_ASSERT(lo == true);
+		TS_ASSERT(lo);
 
 		lo = device2->is_locked();
-		TS_ASSERT(lo == true);
+		TS_ASSERT(lo);
 
 		Tango::Database db;
 		DbDevFullInfo fi = db.get_device_info(fwd_device_name);
 
 		LockerInfo li;
 		device1->get_locker(li);
-		TS_ASSERT(li.ll == Tango::CPP);
-		TS_ASSERT(li.li.LockerPid == fi.pid);
+		TS_ASSERT_EQUALS(li.ll, Tango::CPP);
+		TS_ASSERT_EQUALS(li.li.LockerPid, fi.pid);
 
 		device2->get_locker(li);
-		TS_ASSERT(li.ll == Tango::CPP);
-		TS_ASSERT(li.li.LockerPid == fi.pid);
+		TS_ASSERT_EQUALS(li.ll, Tango::CPP);
+		TS_ASSERT_EQUALS(li.li.LockerPid, fi.pid);
 
 		fwd_device->unlock();
 		lo = fwd_device->is_locked();
-		TS_ASSERT(lo == false);
+		TS_ASSERT(!lo);
 
 		lo = device1->is_locked();
-		TS_ASSERT(lo == false);
+		TS_ASSERT(!lo);
 
 		lo = device2->is_locked();
-		TS_ASSERT(lo == false);
+		TS_ASSERT(!lo);
 	}
 };
 
