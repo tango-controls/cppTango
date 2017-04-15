@@ -163,7 +163,10 @@ int main(int argc, char **argv)
 		device->command_inout("IOSetWAttrLimit",d_in);
 				
 		Tango_sleep(1);
-		
+
+        coutv << "cb_executed = " << cb.cb_executed << endl;
+        coutv << "min_value = " << cb.min_value << endl;
+        coutv << "max_value = " << cb.max_value << endl;
 		assert (cb.cb_executed == 6);
 		assert (cb.min_value == "0");
 		assert (cb.max_value == "10");

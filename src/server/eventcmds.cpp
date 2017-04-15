@@ -268,7 +268,8 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 				cout4 << "DServer::event_subscription(): update attr_conf subscription\n";
 
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				if (client_lib == 5)
+                //TODO extract class hierarchy based on versions
+                if (client_lib >= 5)
 					attribute.event_attr_conf5_subscription = time(NULL);
 				else
 					attribute.event_attr_conf_subscription = time(NULL);
