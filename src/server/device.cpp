@@ -5269,7 +5269,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
 		}
 		else if (aid.data_4 != Tango_nullptr)
 		{
-			if (vers == 5)
+            if (vers >= 5)
 			{
 				AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false);
 				DevVarEncodedArray &polled_seq = att_val.value.encoded_att_value();
