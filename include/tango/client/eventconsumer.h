@@ -296,14 +296,14 @@ inline void ZmqAttrValUnion::init_seq(char *base_ptr,_CORBA_ULong &length,TangoC
  * 																				*
  *******************************************************************************/
 
-class KeepAliveThCmd:public omni_mutex
+struct KeepAliveThCmd
 {
-public :
-	KeepAliveThCmd():cmd_pending(false),cond(this) {};
+	KeepAliveThCmd():cmd_pending(false) {};
 
+    std::mutex mut;
 	bool				cmd_pending;	// The new command flag
 	KeepAliveCmdCode	cmd_code;		// The command code
-	omni_condition 		cond;
+	std::condition_variable 		cond;
 };
 
 

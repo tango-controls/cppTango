@@ -530,22 +530,15 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 //
 
 		{
-			omni_mutex_lock sync(shared_cmd);
+			Lock sync(shared_cmd.mut);
 			if (shared_cmd.cmd_pending == false)
 			{
-				unsigned long s,n;
-
-				unsigned long nb_sec,nb_nanos;
-				nb_sec = time_to_sleep ;
-				nb_nanos = 0;
-
-				omni_thread::get_time(&s,&n,nb_sec,nb_nanos);
-				shared_cmd.cond.timedwait(s,n);
+				shared_cmd.cond.wait_for(sync, std::chrono::seconds(time_to_sleep));
 			}
 			if (shared_cmd.cmd_pending == true)
 			{
 				exit_th = true;
-				return (void *)NULL;
+				return nullptr;
 			}
 		}
 
