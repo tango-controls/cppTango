@@ -5282,6 +5282,21 @@ DeviceClass *Attribute::get_att_device_class(string &dev_name)
         {
             if (tmp_cl_list[loop]->get_device_factory_done() == false)
                 break;
+            else
+            {
+                // If a server wants to set attribute properties during a "write memorized attribute value at init"
+                // phase, we might be in this case...
+                vector< DeviceImpl * > & dev_list = tmp_cl_list[loop]->get_device_list();
+                // Check whether our device is listed in this class
+                for (size_t i = 0; i < dev_list.size(); ++i)
+                {
+                    if (dev_list[i]->name() == dev_name)
+                    {
+                        // Our device is listed in this class, returns the corresponding DeviceClass pointer
+                        return tmp_cl_list[loop];
+                    }
+                }
+            }
         }
 
         if (loop != tmp_cl_list.size())
