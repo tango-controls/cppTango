@@ -160,7 +160,7 @@ This part is a guide to test suites development with the use of the CxxTest fram
  2.1. Create a new test suite
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To create a new test suite simply copy and rename the 'cxx_suite_template.cpp' file which can be found in the 'new_tests'
+To create a new test suite simply copy and rename the 'cxx_template.cpp' file which can be found in the 'new_tests'
 directory.
 
 Modify the header guard 'TemplateTestSuite_h' (lines 1, 2 and the last one) by providing your test suite name. Follow
