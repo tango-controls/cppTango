@@ -650,7 +650,7 @@ void DbDatum::operator << (float datum)
 
 bool DbDatum::operator >> (float& datum)
 {
-	bool ret;
+	bool ret = true;
 	if (value_string.size() == 0)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -667,13 +667,29 @@ bool DbDatum::operator >> (float& datum)
 		istream >> datum;
 		if (!istream)
 		{
-			if (exceptions_flags.test(wrongtype_flag))
+			if(TG_strcasecmp("nan",value_string[0].c_str()) == 0)
+			{
+				datum = std::numeric_limits<float>::quiet_NaN();
+			}
+			else if (TG_strcasecmp("-inf",value_string[0].c_str()) == 0)
+			{
+				datum = -std::numeric_limits<float>::infinity();
+			}
+			else if ((TG_strcasecmp("inf",value_string[0].c_str()) == 0) ||
+			         (TG_strcasecmp("+inf",value_string[0].c_str()) == 0))
+			{
+				datum = std::numeric_limits<float>::infinity();
+			}
+			else if (exceptions_flags.test(wrongtype_flag))
 			{
 				ApiDataExcept::throw_exception((const char *)API_IncompatibleArgumentType,
-							       (const char *)"Cannot extract, data in DbDatum is not a float",
-							       (const char *)"DbDatum::operator >>(float)");
+				                               (const char *)"Cannot extract, data in DbDatum is not a float",
+				                               (const char *)"DbDatum::operator >>(float)");
 			}
-			ret = false;
+			else
+			{
+				ret = false;
+			}
 		}
 		else
 			ret = true;
@@ -708,7 +724,7 @@ void DbDatum::operator << (double datum)
 
 bool DbDatum::operator >> (double& datum)
 {
-	bool ret;
+	bool ret = true;
 	if (value_string.size() == 0)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -725,13 +741,29 @@ bool DbDatum::operator >> (double& datum)
 		istream >> std::setprecision(TANGO_FLOAT_PRECISION) >> datum;
 		if (!istream)
 		{
-			if (exceptions_flags.test(wrongtype_flag))
+			if(TG_strcasecmp("nan",value_string[0].c_str()) == 0)
+			{
+				datum = std::numeric_limits<double>::quiet_NaN();
+			}
+			else if (TG_strcasecmp("-inf",value_string[0].c_str()) == 0)
+			{
+				datum = -std::numeric_limits<double>::infinity();
+			}
+			else if ((TG_strcasecmp("inf",value_string[0].c_str()) == 0) ||
+				(TG_strcasecmp("+inf",value_string[0].c_str()) == 0))
+			{
+				datum = std::numeric_limits<double>::infinity();
+			}
+			else if (exceptions_flags.test(wrongtype_flag))
 			{
 				ApiDataExcept::throw_exception((const char *)API_IncompatibleArgumentType,
-							       (const char *)"Cannot extract, data in DbDatum is not a double",
-							       (const char *)"DbDatum::operator >>(double)");
+				                               (const char *)"Cannot extract, data in DbDatum is not a double",
+				                               (const char *)"DbDatum::operator >>(double)");
 			}
-			ret = false;
+			else
+			{
+				ret = false;
+			}
 		}
 		else
 			ret = true;
@@ -1329,29 +1361,42 @@ bool DbDatum::operator >> (vector<float>& datum)
 	else
 	{
 		stringstream iostream;
-
 		datum.resize(value_string.size());
 		for (unsigned int i=0; i<value_string.size(); i++)
 		{
-			iostream.seekp (0); iostream.seekg(0); iostream.clear();
+			iostream.clear(); iostream.seekp(0); iostream.seekg(0);
 			iostream << value_string[i] << ends;
 			iostream >> datum[i];
 			if (!iostream)
 			{
-				if (exceptions_flags.test(wrongtype_flag))
+				if(TG_strcasecmp("nan",value_string[i].c_str()) == 0)
+				{
+					datum[i] = std::numeric_limits<float>::quiet_NaN();
+				} else if (TG_strcasecmp("-inf",value_string[i].c_str()) == 0)
+				{
+					datum[i] = -std::numeric_limits<float>::infinity();
+				}
+				else if ((TG_strcasecmp("inf",value_string[i].c_str()) == 0) ||
+					(TG_strcasecmp("+inf",value_string[i].c_str()) == 0))
+				{
+					datum[i] = std::numeric_limits<float>::infinity();
+				}
+				else if (exceptions_flags.test(wrongtype_flag))
 				{
 					TangoSys_OMemStream desc;
 					desc << "Cannot extract float vector, elt number ";
 					desc << i+1 << " is not a float" << ends;
-
 					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
-					     desc.str(),
-					     (const char*)"DbDatum::operator >>(vector<float>)");
+					                               desc.str(),
+					                               (const char*)"DbDatum::operator >>(vector<float>)");
 				}
-				ret = false;
-				break;
+				else
+				{
+					ret = false;
+					break;
+				}
 			}
-		}
+		} // for (unsigned int i=0; i<value_string.size(); i++)
 	}
 
 	return ret;
@@ -1406,27 +1451,40 @@ bool DbDatum::operator >> (vector<double>& datum)
 		datum.resize(value_string.size());
 		for (unsigned int i=0; i<value_string.size(); i++)
 		{
-			iostream.seekp (0); iostream.seekg(0); iostream.clear();
+			iostream.clear(); iostream.seekp(0); iostream.seekg(0);
 			iostream << value_string[i] << ends;
 			iostream >> std::setprecision(TANGO_FLOAT_PRECISION) >> datum[i];
 			if (!iostream)
 			{
-				if (exceptions_flags.test(wrongtype_flag))
+				if(TG_strcasecmp("nan",value_string[i].c_str()) == 0)
+				{
+					datum[i] = std::numeric_limits<double>::quiet_NaN();
+				} else if (TG_strcasecmp("-inf",value_string[i].c_str()) == 0)
+				{
+					datum[i] = -std::numeric_limits<double>::infinity();
+				}
+				else if ((TG_strcasecmp("inf",value_string[i].c_str()) == 0) ||
+				         (TG_strcasecmp("+inf",value_string[i].c_str()) == 0))
+				{
+					datum[i] = std::numeric_limits<double>::infinity();
+				}
+				else if (exceptions_flags.test(wrongtype_flag))
 				{
 					TangoSys_OMemStream desc;
 					desc << "Cannot extract double vector, elt number ";
 					desc << i+1 << " is not a double" << ends;
-
 					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
-					     desc.str(),
-					     (const char*)"DbDatum::operator >>(vector<double>)");
+					                               desc.str(),
+					                               (const char*)"DbDatum::operator >>(vector<double>)");
 				}
-				ret = false;
-				break;
+				else
+				{
+					ret = false;
+					break;
+				}
 			}
-		}
+		} // for (unsigned int i=0; i<value_string.size(); i++)
 	}
-
 	return ret;
 }
 
