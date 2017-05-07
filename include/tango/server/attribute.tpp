@@ -219,10 +219,10 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
 // If the server is in its starting phase, give a NULL ptr to the AutoLock object
 //
 
-    Tango::Util *tg = Tango::Util::instance();
-    Tango::TangoMonitor *mon_ptr = NULL;
-    if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
-        mon_ptr = &(get_att_device()->get_att_conf_monitor());
+	Tango::Util *tg = Tango::Util::instance();
+	Tango::TangoMonitor *mon_ptr = NULL;
+	if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
+		mon_ptr = &(get_att_device()->get_att_conf_monitor());
 	AutoTangoMonitor sync1(mon_ptr);
 
 //
@@ -1051,10 +1051,10 @@ void Attribute::get_properties(Tango::MultiAttrProp<T> &props)
 // If the server is in its starting phase, gives a NULL ptr to the AutoLock object
 //
 
-    Tango::Util *tg = Tango::Util::instance();
-    Tango::TangoMonitor *mon_ptr = NULL;
-    if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
-        mon_ptr = &(get_att_device()->get_att_conf_monitor());
+	Tango::Util *tg = Tango::Util::instance();
+	Tango::TangoMonitor *mon_ptr = NULL;
+	if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
+		mon_ptr = &(get_att_device()->get_att_conf_monitor());
 	AutoTangoMonitor sync1(mon_ptr);
 
 	AttributeConfig_5 conf;
@@ -1153,10 +1153,10 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 // If the server is in its starting phase, give a NULL ptr to the AutoLock object
 //
 
-    Tango::Util *tg = Tango::Util::instance();
-    Tango::TangoMonitor *mon_ptr = NULL;
-    if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
-        mon_ptr = &(get_att_device()->get_att_conf_monitor());
+	Tango::Util *tg = Tango::Util::instance();
+	Tango::TangoMonitor *mon_ptr = NULL;
+	if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
+		mon_ptr = &(get_att_device()->get_att_conf_monitor());
 	AutoTangoMonitor sync1(mon_ptr);
 
 //
