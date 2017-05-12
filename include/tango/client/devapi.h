@@ -30,7 +30,7 @@
 
 #include <tango.h>
 #include <tango/server/tango_const.h>
-#include <tango/client/device/device_command_info.hxx>
+#include <tango/client/device/device_command_info.h>
 #include <tango/client/apiexcept.h>
 #include <tango/client/cbthread.h>
 #include <tango/client/lockthread.h>
