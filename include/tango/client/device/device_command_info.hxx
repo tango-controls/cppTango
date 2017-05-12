@@ -86,19 +86,19 @@ typedef struct _CommandInfo: public DevCommandInfo
  *
  * @return CommandInfo created on stack
  */
-CommandInfo createCommandInfo(const DevCmdInfo &);
+CommandInfo create_CommandInfo(const DevCmdInfo &);
 
 /**
  *
  * @return CommandInfo created on stack
  */
-CommandInfo createCommandInfo(const DevCmdInfo_2 &);
+CommandInfo create_CommandInfo(const DevCmdInfo_2 &);
 
 /**
  *
  * @return CommandInfo created on stack
  */
-CommandInfo createCommandInfo(const DevCmdInfo_3 &);
+CommandInfo create_CommandInfo(const DevCmdInfo_3 &);
 
 //TODO template
 void fill_vector(vector<string> &, const DevVarStringArray &);
@@ -118,7 +118,7 @@ CommandInfoList *newCommandInfoList(DevCommandInfoList devCmdInfoList_var)
 
     for (size_t i = 0, size = devCmdInfoList_var->length(); i < size; ++i)
     {
-        (*result)[i] = createCommandInfo(devCmdInfoList_var[i]);
+        (*result)[i] = create_CommandInfo(devCmdInfoList_var[i]);
     }
 
     return (result);

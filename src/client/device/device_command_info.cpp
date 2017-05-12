@@ -32,7 +32,7 @@ namespace Tango
 {
 
 
-CommandInfo createCommandInfo(const DevCmdInfo &devCmdInfo)
+CommandInfo create_CommandInfo(const DevCmdInfo &devCmdInfo)
 {
     CommandInfo result;
 
@@ -46,7 +46,7 @@ CommandInfo createCommandInfo(const DevCmdInfo &devCmdInfo)
     return (result);
 }
 
-CommandInfo createCommandInfo(const DevCmdInfo_2 &devCmdInfo_2)
+CommandInfo create_CommandInfo(const DevCmdInfo_2 &devCmdInfo_2)
 {
     CommandInfo result;
 
@@ -60,7 +60,7 @@ CommandInfo createCommandInfo(const DevCmdInfo_2 &devCmdInfo_2)
     return (result);
 }
 
-CommandInfo createCommandInfo(const DevCmdInfo_3 &devCmdInfo_3)
+CommandInfo create_CommandInfo(const DevCmdInfo_3 &devCmdInfo_3)
 {
     CommandInfo result;
 
