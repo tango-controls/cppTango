@@ -2872,7 +2872,7 @@ namespace Tango {
                         dev = Device::_duplicate(device);
                         cmd_info = dev->command_query(cmd.c_str());
 
-                        return newCommandInfo(cmd_info.in());
+                        return createCommandInfo(cmd_info.in());
                     case 2:
                     case 3:
                     case 4:
@@ -2880,12 +2880,12 @@ namespace Tango {
                         dev_2 = Device_2::_duplicate(device_2);
                         cmd_info_2 = dev_2->command_query_2(cmd.c_str());
 
-                        return newCommandInfo(cmd_info_2.in());
+                        return createCommandInfo(cmd_info_2.in());
                     case 6:
                         dev_6 = Device_6::_duplicate(device_6);
                         cmd_info_3 = dev_6->command_query_6(cmd.c_str());
 
-                        return newCommandInfo(cmd_info_3.in());
+                        return createCommandInfo(cmd_info_3.in());
                 }
             }
             catch (CORBA::TRANSIENT &trans) {

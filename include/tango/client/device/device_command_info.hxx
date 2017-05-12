@@ -28,27 +28,29 @@
 #pragma once
 
 
-namespace Tango {
+namespace Tango
+{
 /**
  * Base structure for command information
  *
  * @headerfile tango.h
  */
 #ifdef GEN_DOC
-    typedef struct DevCommandInfo
+typedef struct DevCommandInfo
 #else
-    typedef struct _DevCommandInfo
+
+typedef struct _DevCommandInfo
 #endif
-    {
-        string cmd_name;           ///< The command name
-        long cmd_tag;            ///< The command tag
-        long in_type;            ///< Input parameter data type
-        long out_type;           ///< Output parameter data type
-        string in_type_desc;       ///< Input parameter description
-        string out_type_desc;      ///< Ouptput parameter description
+{
+    string cmd_name;           ///< The command name
+    long cmd_tag;            ///< The command tag
+    long in_type;            ///< Input parameter data type
+    long out_type;           ///< Output parameter data type
+    string in_type_desc;       ///< Input parameter description
+    string out_type_desc;      ///< Ouptput parameter description
 ///@privatesection
-        bool operator==(const _DevCommandInfo &);
-    } DevCommandInfo;
+    bool operator==(const _DevCommandInfo &);
+} DevCommandInfo;
 
 /**
  * Command information data extension
@@ -57,34 +59,49 @@ namespace Tango {
  * @ingroup Client
  */
 #ifdef GEN_DOC
-    typedef struct CommandInfo : public DevCommandInfo
+typedef struct CommandInfo : public DevCommandInfo
 #else
-    typedef struct _CommandInfo : public DevCommandInfo
+
+typedef struct _CommandInfo: public DevCommandInfo
 #endif
-    {
-        Tango::DispLevel disp_level;    ///< The command display level
+{
+    Tango::DispLevel disp_level;    ///< The command display level
 
-        vector<string> in_enum_labels; ///< Labels for enum arg or empty
-        vector<string> out_enum_labels; ///< Labels for enum result or empty
+    vector<string> in_enum_labels; ///< Labels for enum arg or empty
+    vector<string> out_enum_labels; ///< Labels for enum result or empty
 
-        _CommandInfo() : DevCommandInfo(),
-                         in_enum_labels(),
-                         out_enum_labels() {}
+    _CommandInfo()
+        : DevCommandInfo(),
+          in_enum_labels(),
+          out_enum_labels()
+    {}
 
 /// @privatesection
-        friend ostream &operator<<(ostream &, _CommandInfo &);
+    friend ostream &operator<<(ostream &, _CommandInfo &);
 
-        bool operator==(const _CommandInfo &);
-    } CommandInfo;
+    bool operator==(const _CommandInfo &);
+} CommandInfo;
 
-    CommandInfo newCommandInfo(const DevCmdInfo &);
+/**
+ *
+ * @return CommandInfo created on stack
+ */
+CommandInfo createCommandInfo(const DevCmdInfo &);
 
-    CommandInfo newCommandInfo(const DevCmdInfo_2 &);
+/**
+ *
+ * @return CommandInfo created on stack
+ */
+CommandInfo createCommandInfo(const DevCmdInfo_2 &);
 
-    CommandInfo newCommandInfo(const DevCmdInfo_3 &);
+/**
+ *
+ * @return CommandInfo created on stack
+ */
+CommandInfo createCommandInfo(const DevCmdInfo_3 &);
 
 //TODO template
-    void fill_vector(vector<string> &, const DevVarStringArray &);
+void fill_vector(vector<string> &, const DevVarStringArray &);
 
 /**
  * A vector of CommandInfo structure
@@ -92,16 +109,18 @@ namespace Tango {
  * @headerfile tango.h
  * @ingroup Client
  */
-    typedef vector<CommandInfo> CommandInfoList;
+typedef vector<CommandInfo> CommandInfoList;
 
-    template<typename DevCommandInfoList>
-    CommandInfoList *newCommandInfoList(DevCommandInfoList devCmdInfoList_var) {
-        auto result = new CommandInfoList(devCmdInfoList_var->length());
+template<typename DevCommandInfoList>
+CommandInfoList *newCommandInfoList(DevCommandInfoList devCmdInfoList_var)
+{
+    auto result = new CommandInfoList(devCmdInfoList_var->length());
 
-        for (size_t i = 0, size = devCmdInfoList_var->length(); i < size; ++i) {
-            (*result)[i] = newCommandInfo(devCmdInfoList_var[i]);
-        }
-
-        return (result);
+    for (size_t i = 0, size = devCmdInfoList_var->length(); i < size; ++i)
+    {
+        (*result)[i] = createCommandInfo(devCmdInfoList_var[i]);
     }
+
+    return (result);
+}
 }
