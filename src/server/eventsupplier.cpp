@@ -145,7 +145,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,stru
             case 6:
             case 5:
                 if (change5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-                    attr.remove_client_lib(5, string(EventName[CHANGE_EVENT]));
+                    attr.remove_client_lib(*ite, string(EventName[CHANGE_EVENT]));
 			break;
 
 			case 4:
@@ -183,7 +183,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,stru
             case 6:
             case 5:
                 if (periodic5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-                    attr.remove_client_lib(5, string(EventName[PERIODIC_EVENT]));
+                    attr.remove_client_lib(*ite, string(EventName[PERIODIC_EVENT]));
 			break;
 
 			case 4:
@@ -221,7 +221,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,stru
             case 6:
             case 5:
                 if (archive5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-                    attr.remove_client_lib(5, string(EventName[ARCHIVE_EVENT]));
+                    attr.remove_client_lib(*ite, string(EventName[ARCHIVE_EVENT]));
 			break;
 
 			case 4:
