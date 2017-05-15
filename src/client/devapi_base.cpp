@@ -566,7 +566,7 @@ namespace Tango {
         desc << " (device nil after _narrowing)" << ends;
         ApiConnExcept::throw_exception((const char *) API_CantConnectToDevice,
                                        desc.str(),
-                                       (const char *) "Connection::connect()");
+                                       (const char *) "Connection::resolve_obj_version()");
     }
 
 
@@ -2853,7 +2853,6 @@ namespace Tango {
 
 
     CommandInfo DeviceProxy::command_query(string cmd) {
-        CommandInfo result;
         DevCmdInfo_var cmd_info;
         DevCmdInfo_2_var cmd_info_2;
         DevCmdInfo_3_var cmd_info_3;
@@ -2882,6 +2881,7 @@ namespace Tango {
 
                         return create_CommandInfo(cmd_info_2.in());
                     case 6:
+                    default:
                         dev_6 = Device_6::_duplicate(device_6);
                         cmd_info_3 = dev_6->command_query_6(cmd.c_str());
 
@@ -2928,6 +2928,8 @@ namespace Tango {
                                                   (const char *) "DeviceProxy::command_query()");
             }
         }
+
+        assert(false);//Can not reach this point
     }
 
 //-----------------------------------------------------------------------------
@@ -2979,7 +2981,6 @@ namespace Tango {
 //-----------------------------------------------------------------------------
 
     CommandInfoList *DeviceProxy::command_list_query() {
-        CommandInfoList *command_info_list = NULL;
         DevCmdInfoList_var cmd_info_list;
         DevCmdInfoList_2_var cmd_info_list_2;
         DevCmdInfoList_3_var cmd_info_list_3;
@@ -3008,14 +3009,12 @@ namespace Tango {
 
                         return newCommandInfoList(cmd_info_list_2);
                     case 6:
+                    default:
                         dev_6 = Device_6::_duplicate(device_6);
                         cmd_info_list_3 = dev_6->command_list_query_6();
 
                         return newCommandInfoList(cmd_info_list_3);
                 }
-
-
-                ctr = 2;
             }
             catch (CORBA::TRANSIENT &trans) {
                 TRANSIENT_NOT_EXIST_EXCEPT(trans, "DeviceProxy", "command_list_query", this);
@@ -3058,7 +3057,7 @@ namespace Tango {
             }
         }
 
-        return (command_info_list);
+        assert(false);//Can not reach this point
     }
 
 //-----------------------------------------------------------------------------
