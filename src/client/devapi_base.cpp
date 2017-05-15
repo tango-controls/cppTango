@@ -2928,8 +2928,6 @@ namespace Tango {
                                                   (const char *) "DeviceProxy::command_query()");
             }
         }
-
-        assert(false);//Can not reach this point
     }
 
 //-----------------------------------------------------------------------------
@@ -3056,8 +3054,6 @@ namespace Tango {
                                                   (const char *) "DeviceProxy::command_list_query()");
             }
         }
-
-        assert(false);//Can not reach this point
     }
 
 //-----------------------------------------------------------------------------
