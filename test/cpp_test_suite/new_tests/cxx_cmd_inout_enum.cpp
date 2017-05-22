@@ -66,7 +66,7 @@ public:
             DevVarStringArray rem_attr_poll;
             rem_attr_poll.length(3);
             rem_attr_poll[0] = device1->name().c_str();
-            rem_attr_poll[1] = "attribute";
+            rem_attr_poll[1] = "command";
             rem_attr_poll[2] = "EnumLabelsDynCommandPolled";
             din << rem_attr_poll;
             try
