@@ -191,7 +191,24 @@ void DevTest::init_device()
         }
     };
 
+    class EnumLabelsDynCommandPolled: public DynCommand
+    {
+    public:
+        EnumLabelsDynCommandPolled()
+            : DynCommand(
+            "EnumLabelsDynCommandPolled", Tango::CmdArgType::DEV_VOID, Tango::CmdArgType::DEV_ENUM, "", "Enum labels")
+        {
+            get_ext()->out_enum_labels = {"OUT Dyn Label 1", "OUT Dyn Label 2", "OUT Dyn Label 3"};
+        }
+
+        virtual CORBA::Any *execute(Tango::DeviceImpl *, const CORBA::Any &)
+        {
+            return insert((Tango::DevEnum) 1);
+        }
+    };
+
     this->add_command(new EnumLabelsDynCommand(), true);
+    this->add_command(new EnumLabelsDynCommandPolled(), false);
 
     cout << "DevTest::DevTest(): End of init_device() method for device " << device_name << endl;
 

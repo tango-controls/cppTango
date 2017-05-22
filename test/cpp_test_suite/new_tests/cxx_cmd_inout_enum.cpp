@@ -8,6 +8,7 @@
 #include <cxxtest/TangoPrinter.h>
 #include <tango.h>
 #include <iostream>
+#include <thread>
 
 using namespace Tango;
 using namespace std;
@@ -59,6 +60,26 @@ public:
 
     virtual ~SUITE_NAME()
     {
+        if (CxxTest::TangoPrinter::is_restore_set("dev1_EnumLabelsDynCommandPolled_polling"))
+        {
+            DeviceData din;
+            DevVarStringArray rem_attr_poll;
+            rem_attr_poll.length(3);
+            rem_attr_poll[0] = device1->name().c_str();
+            rem_attr_poll[1] = "attribute";
+            rem_attr_poll[2] = "EnumLabelsDynCommandPolled";
+            din << rem_attr_poll;
+            try
+            {
+                dserver->command_inout("RemObjPolling", din);
+            }
+            catch (DevFailed &e)
+            {
+                cout << endl << "Exception in suite tearDown():" << endl;
+                Except::print_exception(e);
+            }
+        }
+
         delete device1;
         delete dserver;
     }
@@ -77,7 +98,8 @@ public:
 // Tests -------------------------------------------------------
 //
 
-    void test_cmd_DevEnum_in(void) {
+    void test_cmd_DevEnum_in(void)
+    {
         DeviceData in, out;
         in << (DevEnum) 1;
 
@@ -90,7 +112,8 @@ public:
         TS_ASSERT_EQUALS(1, result);
     }
 
-    void test_cmd_DevEnum_query(void){
+    void test_cmd_DevEnum_query(void)
+    {
         CommandInfo cmd_info;
 
         cmd_info = device1->command_query("IODevEnum");
@@ -107,11 +130,13 @@ public:
         TS_ASSERT_EQUALS("OUT Label 3", cmd_info.out_enum_labels[2]);
     }
 
-    void test_cmd_DevEnum_query_list(void){
+    void test_cmd_DevEnum_query_list(void)
+    {
         auto cmd_info_list = device1->command_list_query();
 
         CommandInfo cmd_info;
-        auto found = find_if(cmd_info_list->begin(), cmd_info_list->end(), [](CommandInfo item){
+        auto found = find_if(cmd_info_list->begin(), cmd_info_list->end(), [](CommandInfo item)
+        {
             return item.cmd_name == "IODevEnum";
         });
         cmd_info = *found;
@@ -142,7 +167,33 @@ public:
         TS_ASSERT_EQUALS("OUT Dyn Label 3", cmd_info.out_enum_labels[2]);
     }
 
+    void test_poll_cmd_DevEnum(void)
+    {
+        DevVarLongStringArray cmd_poll;
+        DeviceData din;
 
+        cmd_poll.lvalue.length(1);
+        cmd_poll.lvalue[0] = 200;
+        cmd_poll.svalue.length(3);
+        cmd_poll.svalue[0] = device1->name().c_str();
+        cmd_poll.svalue[1] = "command";
+        cmd_poll.svalue[2] = "EnumLabelsDynCommandPolled";
+        din << cmd_poll;
+        TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddObjPolling", din));
+        CxxTest::TangoPrinter::restore_set("dev1_EnumLabelsDynCommandPolled_polling");
+
+        TS_ASSERT_THROWS_NOTHING(device1->set_source(Tango::CACHE));
+
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(1000));
+
+        DeviceData dout;
+        DevEnum result;
+        TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("EnumLabelsDynCommandPolled"));
+        dout >> result;
+        TS_ASSERT_EQUALS(result, 1);
+
+    }
 };
 #undef cout
 #endif // CmdInOutEnumTestSuite_h
