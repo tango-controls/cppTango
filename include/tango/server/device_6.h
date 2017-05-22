@@ -62,9 +62,9 @@ namespace Tango {
          * @param cmd_name
          * @return CommandInfo with enum labels
          */
-        DevCmdInfo_3 *command_query_6(const char *cmd_name) override;
+        DevCmdInfo_6 *command_query_6(const char *cmd_name) override;
 
-        DevCmdInfoList_3 *command_list_query_6() override;
+        DevCmdInfoList_6 *command_list_query_6() override;
 
     private:
         friend void handle_cmd_info_enum_labels(DevVarStringArray *result, const vector<string> &enum_labels);

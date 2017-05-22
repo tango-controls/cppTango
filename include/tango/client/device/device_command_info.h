@@ -98,7 +98,7 @@ CommandInfo create_CommandInfo(const DevCmdInfo_2 &);
  *
  * @return CommandInfo created on stack
  */
-CommandInfo create_CommandInfo(const DevCmdInfo_3 &);
+CommandInfo create_CommandInfo(const DevCmdInfo_6 &);
 
 //TODO template
 void fill_vector(vector<string> &, const DevVarStringArray &);

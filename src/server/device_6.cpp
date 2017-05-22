@@ -27,12 +27,13 @@
 
 #include <tango.h>
 
-Tango::DevCmdInfo_3 *Tango::Device_6Impl::command_query_6(const char *cmd_name) {
+Tango::DevCmdInfo_6 *Tango::Device_6Impl::command_query_6(const char *cmd_name)
+{
     cout4 << "Device_6Impl::command_query_6 arrived" << endl;
 
     DevCmdInfo_2 *cmdInfo_2 = command_query_2(cmd_name);
 
-    DevCmdInfo_3 *result = new DevCmdInfo_3();
+    DevCmdInfo_6 *result = new DevCmdInfo_6();
     result->cmd_name = cmdInfo_2->cmd_name;
     result->level = cmdInfo_2->level;
     result->cmd_tag = cmdInfo_2->cmd_tag;
@@ -54,12 +55,13 @@ Tango::DevCmdInfo_3 *Tango::Device_6Impl::command_query_6(const char *cmd_name) 
     return result;
 }
 
-Tango::DevCmdInfoList_3 *Tango::Device_6Impl::command_list_query_6() {
+Tango::DevCmdInfoList_6 *Tango::Device_6Impl::command_list_query_6()
+{
     cout4 << "Device_6Impl::command_list_query_6 arrived" << endl;
 
     DevCmdInfoList_2 *cmdInfoList_2 = command_list_query_2();
 
-    DevCmdInfoList_3 *result = new DevCmdInfoList_3();
+    DevCmdInfoList_6 *result = new DevCmdInfoList_6();
     result->length(cmdInfoList_2->length());
 
     for (size_t i = 0, size = cmdInfoList_2->length(); i < size; ++i) {

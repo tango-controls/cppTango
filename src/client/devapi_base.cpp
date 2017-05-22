@@ -2855,7 +2855,7 @@ namespace Tango {
     CommandInfo DeviceProxy::command_query(string cmd) {
         DevCmdInfo_var cmd_info;
         DevCmdInfo_2_var cmd_info_2;
-        DevCmdInfo_3_var cmd_info_3;
+        DevCmdInfo_6_var cmd_info_6;
         int ctr = 0;
 
         while (ctr < 2) {
@@ -2883,9 +2883,9 @@ namespace Tango {
                     case 6:
                     default:
                         dev_6 = Device_6::_duplicate(device_6);
-                        cmd_info_3 = dev_6->command_query_6(cmd.c_str());
+                        cmd_info_6 = dev_6->command_query_6(cmd.c_str());
 
-                        return create_CommandInfo(cmd_info_3.in());
+                        return create_CommandInfo(cmd_info_6.in());
                 }
             }
             catch (CORBA::TRANSIENT &trans) {
@@ -2981,7 +2981,7 @@ namespace Tango {
     CommandInfoList *DeviceProxy::command_list_query() {
         DevCmdInfoList_var cmd_info_list;
         DevCmdInfoList_2_var cmd_info_list_2;
-        DevCmdInfoList_3_var cmd_info_list_3;
+        DevCmdInfoList_6_var cmd_info_list_6;
         int ctr = 0;
 
         //TODO extract common code as template function that takes other function to execute inside this loop, see also command_query
@@ -3009,9 +3009,9 @@ namespace Tango {
                     case 6:
                     default:
                         dev_6 = Device_6::_duplicate(device_6);
-                        cmd_info_list_3 = dev_6->command_list_query_6();
+                        cmd_info_list_6 = dev_6->command_list_query_6();
 
-                        return newCommandInfoList(cmd_info_list_3);
+                        return newCommandInfoList(cmd_info_list_6);
                 }
             }
             catch (CORBA::TRANSIENT &trans) {

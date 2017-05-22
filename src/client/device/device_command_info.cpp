@@ -60,7 +60,7 @@ CommandInfo create_CommandInfo(const DevCmdInfo_2 &devCmdInfo_2)
     return (result);
 }
 
-CommandInfo create_CommandInfo(const DevCmdInfo_3 &devCmdInfo_3)
+CommandInfo create_CommandInfo(const DevCmdInfo_6 &devCmdInfo_3)
 {
     CommandInfo result;
 
