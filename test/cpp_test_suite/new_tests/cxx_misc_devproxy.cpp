@@ -250,7 +250,7 @@ public:
         TS_ASSERT_THROWS_NOTHING(cmd_name_list = device->get_command_list());
 
         cout << "cmd_name_list size = " << cmd_name_list->size() << endl;
-        TS_ASSERT_EQUALS (116, cmd_name_list->size());
+        TS_ASSERT_EQUALS (117, cmd_name_list->size());
 //        TS_ASSERT_EQUALS ("FileDb" , (*cmd_list)[0].cmd_name);
 //        TS_ASSERT_EQUALS ("Status", (*cmd_list)[87].cmd_name);
 
