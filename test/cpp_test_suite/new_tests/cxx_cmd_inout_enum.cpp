@@ -127,7 +127,20 @@ public:
         TS_ASSERT_EQUALS("OUT Label 3", cmd_info.out_enum_labels[2]);
     }
 
+    void test_dyn_cmd_DevEnum_query(void)
+    {
+        auto cmd_info = device1->command_query("EnumLabelsDynCommand");
 
+        TS_ASSERT_EQUALS("EnumLabelsDynCommand", cmd_info.cmd_name);
+        TS_ASSERT_EQUALS(3, cmd_info.in_enum_labels.size());
+        TS_ASSERT_EQUALS("IN Dyn Label 1", cmd_info.in_enum_labels[0]);
+        TS_ASSERT_EQUALS("IN Dyn Label 2", cmd_info.in_enum_labels[1]);
+        TS_ASSERT_EQUALS("IN Dyn Label 3", cmd_info.in_enum_labels[2]);
+        TS_ASSERT_EQUALS(3, cmd_info.out_enum_labels.size());
+        TS_ASSERT_EQUALS("OUT Dyn Label 1", cmd_info.out_enum_labels[0]);
+        TS_ASSERT_EQUALS("OUT Dyn Label 2", cmd_info.out_enum_labels[1]);
+        TS_ASSERT_EQUALS("OUT Dyn Label 3", cmd_info.out_enum_labels[2]);
+    }
 
 
 };

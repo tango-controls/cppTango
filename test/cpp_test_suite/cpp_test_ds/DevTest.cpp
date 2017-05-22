@@ -186,8 +186,8 @@ void DevTest::init_device()
             : DynCommand(
             "EnumLabelsDynCommand", Tango::CmdArgType::DEV_ENUM, Tango::CmdArgType::DEV_ENUM, "", "Enum labels")
         {
-            get_ext()->in_enum_labels;
-            get_ext()->out_enum_labels;
+            get_ext()->in_enum_labels = {"IN Dyn Label 1", "IN Dyn Label 2", "IN Dyn Label 3"};
+            get_ext()->out_enum_labels = {"OUT Dyn Label 1", "OUT Dyn Label 2", "OUT Dyn Label 3"};
         }
     };
 
