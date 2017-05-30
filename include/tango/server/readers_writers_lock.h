@@ -29,127 +29,88 @@
 #ifndef _ReadersWritersLock_h_
 #define _ReadersWritersLock_h_
 
-#include <omnithread.h>
+#include <mutex>
+#include <condition_variable>
+#include <thread>
+#include <atomic>
 
 class ReadersWritersLock {
+    using thread = std::thread;
+    using Lock = unique_lock<recursive_mutex>;
 
+    struct ReadLock {
+        ReadLock(ReadersWritersLock &parent) noexcept
+                : parent(parent) {}
+
+        void lock() {
+            Lock self{parent.condition_mutex_, try_to_lock};
+            if (!self.owns_lock())
+                while (parent.is_writer_) {
+                    //we are not the writer so wait when writer notifies us
+                    Lock lock{parent.condition_mutex_};
+                    parent.condition_.wait(lock);
+                }//release lock
+            parent.readers_++;
+        }
+
+        void unlock() noexcept {
+            if (parent.readers_-- == 0) {
+                parent.condition_.notify_one();//notify one writer
+            }
+        }
+
+        ReadersWritersLock &parent;
+    };
+
+    struct WriteLock {
+        WriteLock(ReadersWritersLock &parent) noexcept
+                : parent(parent) {}
+
+        void lock() {
+            Lock lock{parent.condition_mutex_};
+            while (parent.readers_.load() > 0) {
+                parent.condition_.wait(lock);//unlock
+            }
+            parent.is_writer_ = true;
+        }
+
+        void unlock() noexcept {
+            parent.is_writer_ = false;
+            parent.condition_.notify_all();
+        }
+
+        ReadersWritersLock &parent;
+    };
+
+    recursive_mutex condition_mutex_;
+    condition_variable_any condition_;
+
+    atomic_int readers_;
+    atomic_bool is_writer_{false};
+
+    ReadLock reader_lock_;
+    WriteLock writer_lock_;
 public:
-  omni_mutex mut;
-  omni_condition cond;
-  int n;	// 0 means no-one active, > 0 means n readers, < 0 means writer
-		// (-n times).
-  int writerId;
+    ReadersWritersLock(void) noexcept
+            : readers_(0), reader_lock_(*this), writer_lock_(*this) {}
 
-  ReadersWritersLock(void) : cond(&mut), n(0), writerId(0), auto_self(NULL) {}
 
-  void readerIn(void)
-  {
-    mut.lock();
-
-	 // In the case of usage with another threading library, omni_thread::self() might
-	 // return a NULL pointer!
-	 int threadId = 0;
-	 omni_thread *th = omni_thread::self();
-	 if ( th != NULL )
-	 {
-		threadId = th->id();
-	 }
-
-     if ((n < 0) && (writerId == threadId))
-	 {
-      // this thread already has lock as writer, simply decrement n
-      n--;
-      mut.unlock();
-      return;
-     }
-     while (n < 0)
-       cond.wait();
-     n++;
-     mut.unlock();
-  }
-
-  void readerOut(void)
-  {
-    mut.lock();
-    if (n < 0)
-	{
-      // this thread already had lock as writer, simply increment n
-      n++;
-      mut.unlock();
-      return;
+    void readerIn(void) {
+        reader_lock_.lock();
     }
-    n--;
-    if (n == 0)
-      cond.signal();
-    mut.unlock();
-  }
 
-  void writerIn(void)
-  {
-    mut.lock();
+    void readerOut(void) noexcept {
+        reader_lock_.unlock();
+    }
 
-	 // In the case of usage with another threading library, omni_thread::self() might
-	 // return a NULL pointer!
-	 int threadId = 0;
-	 omni_thread *th = omni_thread::self();
-	 if ( th != NULL )
-	 {
-		threadId = th->id();
-	 }
+    void writerIn(void) {
+        writer_lock_.lock();
+    }
 
-     if ((n < 0) && (writerId == threadId))
-	 {
-      // this thread already has lock as writer, simply decrement n
-      n--;
-      mut.unlock();
-      return;
-     }
-     while (n != 0)
-       cond.wait();
-
-	 n--;
-
-	 // Now the writer lock was taken.
-	 // Make sure we get a correct thread ID
-	 // With the class ensure_self it should return always a thread ID.
-	 // Create the ensure_self object only for the thread which takes the writer lock!
-	 if (th == NULL)
-	 	auto_self = new omni_thread::ensure_self();
-	 writerId  = omni_thread::self()->id();
-
-     mut.unlock();
-  }
-
-  void writerOut(void)
-  {
-    mut.lock();
-    n++;
-    if (n == 0)
-	{
-		// delete the dummy thread when it was created.
-		if (auto_self != NULL)
-		{
-			delete auto_self;
-			auto_self = NULL;
-		}
-
-		cond.broadcast();	// might as well wake up all readers
-	}
-    mut.unlock();
-  }
-
-private:
-	// in the case of usage with another threading library, omni_thread::self() might
-	// return a NULL pointer!
-    // To avoid this problem we use the class ensure_self to get a dummy thread ID!
-	//
-	// The class ensure_self should be created on the stack. If created in
-    // a thread without an associated omni_thread, it creates a dummy
-    // thread which is released when the ensure_self object is deleted.
-
-	 omni_thread::ensure_self	*auto_self;
+    void writerOut(void) noexcept {
+        writer_lock_.unlock();
+    }
 };
-
 
 //
 // As an alternative to:
@@ -171,10 +132,11 @@ private:
 //
 
 class ReaderLock {
-  ReadersWritersLock& rwl;
+    ReadersWritersLock &rwl;
 public:
-  ReaderLock(ReadersWritersLock& l) : rwl(l) { rwl.readerIn(); }
-  ~ReaderLock(void) { rwl.readerOut(); }
+    ReaderLock(ReadersWritersLock &l) : rwl(l) { rwl.readerIn(); }
+
+    ~ReaderLock(void) { rwl.readerOut(); }
 };
 
 
@@ -184,10 +146,11 @@ public:
 //
 
 class WriterLock {
-  ReadersWritersLock& rwl;
+    ReadersWritersLock &rwl;
 public:
-  WriterLock(ReadersWritersLock& l) : rwl(l) { rwl.writerIn(); }
-  ~WriterLock(void) { rwl.writerOut(); }
+    WriterLock(ReadersWritersLock &l) : rwl(l) { rwl.writerIn(); }
+
+    ~WriterLock(void) { rwl.writerOut(); }
 };
 
 #endif
