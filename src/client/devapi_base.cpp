@@ -497,7 +497,8 @@ namespace Tango {
         //TODO extract template or Macro or class hierarchy, 'cauz this code clearly is a duplication
         device_6 = Device_6::_narrow(obj);
 
-        if (!is_nil(device_6)) {
+        if (not is_nil(device_6))
+        {
             version = 6;
             device_6->_non_existent();
             device_5 = Device_6::_duplicate(device_6);
@@ -510,7 +511,8 @@ namespace Tango {
 
         device_5 = Device_5::_narrow(obj);
 
-        if (!is_nil(device_5)) {
+        if (not is_nil(device_5))
+        {
             version = 5;
             device_5->_non_existent();
             device_4 = Device_5::_duplicate(device_5);
@@ -522,7 +524,8 @@ namespace Tango {
 
         device_4 = Device_4::_narrow(obj);
 
-        if (!is_nil(device_4)) {
+        if (not is_nil(device_4))
+        {
             version = 4;
             device_4->_non_existent();
             device_3 = Device_4::_duplicate(device_4);
@@ -533,7 +536,8 @@ namespace Tango {
 
         device_3 = Device_3::_narrow(obj);
 
-        if (!is_nil(device_3)) {
+        if (not is_nil(device_3))
+        {
             version = 3;
             device_3->_non_existent();
             device_2 = Device_3::_duplicate(device_3);
@@ -543,7 +547,8 @@ namespace Tango {
 
         device_2 = Device_2::_narrow(obj);
 
-        if (!is_nil(device_2)) {
+        if (not is_nil(device_2))
+        {
             version = 2;
             device_2->_non_existent();
             device = Device_2::_duplicate(device_2);
@@ -552,7 +557,8 @@ namespace Tango {
 
         device = Device::_narrow(obj);
 
-        if (!is_nil(device)) {
+        if (not is_nil(device))
+        {
             version = 1;
             device->_non_existent();
             return;
