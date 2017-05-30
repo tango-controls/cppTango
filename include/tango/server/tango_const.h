@@ -1092,6 +1092,7 @@ enum EventType {
 	numEventType
 };
 
+    //TODO replace with map
 const char * const EventName[] = {
     "change",
     "quality",
