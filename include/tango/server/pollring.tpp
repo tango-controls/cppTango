@@ -168,7 +168,7 @@ void PollRing::force_copy_data(T *attr_value)
 			{
 				const DevVarStringArray &union_seq = (*attr_value)[loop].value.string_att_value();
 				DevVarStringArray tmp_seq = union_seq;
-				(const_cast<DevVarStringArray &>(union_seq)).replace(0,0,NULL,true);
+				(const_cast<DevVarStringArray &>(union_seq)).replace(0,0, nullptr, true);
 				(*attr_value)[loop].value.string_att_value(tmp_seq);
 			}
 			break;

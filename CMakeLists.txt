@@ -17,7 +17,7 @@ message("System TANGO_HOST=$ENV{TANGO_HOST}")
 set(TANGO_HOST $ENV{TANGO_HOST})
 include(configure/CMakeLists.txt)
 
-include_directories(generated)
+#include_directories(generated)
 include_directories(include)
 #required for generated config.h
 include_directories(${PROJECT_BINARY_DIR}/include)
@@ -25,13 +25,13 @@ include_directories(${PROJECT_BINARY_DIR}/include)
 add_subdirectory(include)
 add_subdirectory(doxygen)
 #source code
-add_subdirectory(generated/idl)
+#add_subdirectory(generated/idl)
 add_subdirectory(src)
 add_subdirectory(test)
 
 add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:client_objects>
-                            $<TARGET_OBJECTS:idl_objects>
+#                            $<TARGET_OBJECTS:idl_objects>
                             $<TARGET_OBJECTS:jpeg_objects>
                             $<TARGET_OBJECTS:jpeg_mmx_objects>
                             $<TARGET_OBJECTS:server_objects>

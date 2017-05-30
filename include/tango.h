@@ -43,7 +43,8 @@
 // Include IDL generated files which includes CORBA include files
 //
 
-#include <idl/tango.h>
+#include <tango/frontend/DevVarStringArray.hxx>
+#include <tango/frontend/idl.h>
 
 //
 // A short inline function to hide the CORBA::string_dup function

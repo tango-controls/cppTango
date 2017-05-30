@@ -3278,7 +3278,8 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::D
 				break;
 
 			case Tango::DEV_STRING :
-				str_tmp_ptr = get_string_value()->get_buffer();
+				//TODO fix this
+				str_tmp_ptr = reinterpret_cast<char**>(get_string_value()->get_buffer());
 				str_seq = new Tango::DevVarStringArray(seq_length,seq_length,str_tmp_ptr,false);
 				a <<= *str_seq;
 				delete str_seq;

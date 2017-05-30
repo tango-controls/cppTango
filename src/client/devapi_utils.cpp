@@ -375,7 +375,7 @@ void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<De
 
 			case Tango::DEVVAR_STRINGARRAY:
 			{
-				const Tango::ConstDevString *c_seq_buff = tmp_str->get_buffer();
+				const Tango::ConstDevString *c_seq_buff = reinterpret_cast<const Tango::ConstDevString *>(tmp_str->get_buffer());
 				char **seq_buff = const_cast<char **>(c_seq_buff);
 				Tango::DevVarStringArray StrSeq = DevVarStringArray(data_length,data_length,&(seq_buff[base - data_length]),false);
 
