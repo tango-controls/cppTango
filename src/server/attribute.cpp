@@ -3246,6 +3246,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::D
 			CORBA::Any &a = ptr->value;
 			long	seq_length = value.sh_seq->length();
 
+			//TODO cases code snippets can be replaced with std::move
 			switch (data_type)
 			{
 			case Tango::DEV_SHORT :
