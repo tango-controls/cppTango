@@ -668,7 +668,8 @@ bool DbDatum::operator >> (float& datum)
 		istream >> datum;
 		if (!istream)
 		{
-			if(TG_strcasecmp("nan",value_string[0].c_str()) == 0)
+			if ((TG_strcasecmp("nan",value_string[0].c_str()) == 0) ||
+			    (TG_strcasecmp("-nan",value_string[0].c_str()) == 0))
 			{
 				datum = std::numeric_limits<float>::quiet_NaN();
 			}
@@ -742,7 +743,8 @@ bool DbDatum::operator >> (double& datum)
 		istream >> std::setprecision(TANGO_FLOAT_PRECISION) >> datum;
 		if (!istream)
 		{
-			if(TG_strcasecmp("nan",value_string[0].c_str()) == 0)
+			if ((TG_strcasecmp("nan",value_string[0].c_str()) == 0) ||
+			    (TG_strcasecmp("-nan",value_string[0].c_str()) == 0))
 			{
 				datum = std::numeric_limits<double>::quiet_NaN();
 			}
@@ -1370,7 +1372,8 @@ bool DbDatum::operator >> (vector<float>& datum)
 			iostream >> datum[i];
 			if (!iostream)
 			{
-				if(TG_strcasecmp("nan",value_string[i].c_str()) == 0)
+				if ((TG_strcasecmp("nan",value_string[i].c_str()) == 0) ||
+				    (TG_strcasecmp("-nan",value_string[i].c_str()) == 0))
 				{
 					datum[i] = std::numeric_limits<float>::quiet_NaN();
 				} else if (TG_strcasecmp("-inf",value_string[i].c_str()) == 0)
@@ -1457,7 +1460,8 @@ bool DbDatum::operator >> (vector<double>& datum)
 			iostream >> std::setprecision(TANGO_FLOAT_PRECISION) >> datum[i];
 			if (!iostream)
 			{
-				if(TG_strcasecmp("nan",value_string[i].c_str()) == 0)
+				if ((TG_strcasecmp("nan",value_string[i].c_str()) == 0) ||
+				    (TG_strcasecmp("-nan",value_string[i].c_str()) == 0))
 				{
 					datum[i] = std::numeric_limits<double>::quiet_NaN();
 				} else if (TG_strcasecmp("-inf",value_string[i].c_str()) == 0)
