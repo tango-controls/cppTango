@@ -290,7 +290,7 @@ public:
 		// Extract as a double array:
 		vector<Tango::DevDouble> double_array_val;
 		TS_ASSERT(db_data_r[0] >> double_array_val);
-		TS_ASSERT_EQUALS(double_array_val.size(),(size_t) 7);
+		TS_ASSERT_EQUALS(double_array_val.size(),(size_t) 9);
 		TS_ASSERT_EQUALS(double_array_val[0],Tango::DevDouble(1.2));
 		TS_ASSERT(std::isnan(double_array_val[1]));
 		TS_ASSERT_EQUALS(double_array_val[2],Tango::DevDouble(3.4));
