@@ -915,6 +915,12 @@ void MultiAttribute::add_fwd_attribute(string &dev_name,DeviceClass *dev_class_p
 			alarm_attr_list.push_back(index);
 	}
 
+//
+// Check if the writable_attr_name property is set and in this case, check if the associated attribute exists and is
+// writable
+//
+	check_associated(index,dev_name);
+
 	cout4 << "Leaving MultiAttribute::add_fwd_attribute" << endl;
 }
 
