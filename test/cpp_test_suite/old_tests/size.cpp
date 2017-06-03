@@ -42,20 +42,20 @@ int main(int argc, char **argv)
 	check_size("WAttribute",sizeof(WAttribute),3200, &isOK);	// Was 252 in V4
 	check_size("MultiAttribute",sizeof(MultiAttribute),80, &isOK);
 	
-	check_size("Command",sizeof(Command),72, &isOK);
-	check_size("TemplCommand",sizeof(TemplCommand),112, &isOK);
-	check_size("TemplCommandIn",sizeof(TemplCommandIn<int>),136, &isOK);
-	check_size("TemplCommandOut",sizeof(TemplCommandOut<void>),136, &isOK);
-	check_size("TemplCommandInOut",sizeof(TemplCommandInOut<int,int>),136, &isOK);
+	check_size("Command",sizeof(Command),80, &isOK);
+	check_size("TemplCommand",sizeof(TemplCommand),120, &isOK);
+	check_size("TemplCommandIn",sizeof(TemplCommandIn<int>),144, &isOK);
+	check_size("TemplCommandOut",sizeof(TemplCommandOut<void>),144, &isOK);
+	check_size("TemplCommandInOut",sizeof(TemplCommandInOut<int,int>),144, &isOK);
 
-	check_size("DeviceProxy",sizeof(DeviceProxy),576, &isOK);	// Was 100 in V4
+	check_size("DeviceProxy", sizeof(DeviceProxy), 584, &isOK);    // Was 100 in V4
 	check_size("DeviceData",sizeof(DeviceData),32, &isOK);
 	check_size("DeviceDataHistory",sizeof(DeviceDataHistory),80, &isOK);
 	check_size("DeviceAttribute",sizeof(DeviceAttribute),200, &isOK);	// Was 52 in V4
 	check_size("DeviceAttributeHistory",sizeof(DeviceAttributeHistory),232, &isOK);   // Was 76 in V4
 
 	check_size("ApiUtil",sizeof(ApiUtil),312, &isOK);
-	check_size("Database",sizeof(Database),624, &isOK);    // Was 108 in V4
+	check_size("Database", sizeof(Database), 632, &isOK);    // Was 108 in V4
 	check_size("DbDevice",sizeof(DbDevice),32, &isOK);
 	check_size("DbClass",sizeof(DbClass),32, &isOK);
 	check_size("DbServer",sizeof(DbServer),32, &isOK);

@@ -248,8 +248,10 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
 				switch (client_lib)
 				{
-					case 5:
-					attribute.event_user5_subscription = time(NULL);
+                    //TODO extract class hierarchy based on version!!!
+                    case 6:
+                    case 5:
+                        attribute.event_user5_subscription = time(NULL);
 					break;
 
 					case 4:
@@ -266,7 +268,8 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 				cout4 << "DServer::event_subscription(): update attr_conf subscription\n";
 
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				if (client_lib == 5)
+                //TODO extract class hierarchy based on versions
+                if (client_lib >= 5)
 					attribute.event_attr_conf5_subscription = time(NULL);
 				else
 					attribute.event_attr_conf_subscription = time(NULL);
@@ -369,8 +372,10 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 
 					switch (client_lib)
 					{
-						case 5:
-						attribute.event_change5_subscription = time(NULL);
+                        //TODO extract class hierarchy based on version!!!
+                        case 6:
+                        case 5:
+                            attribute.event_change5_subscription = time(NULL);
 						break;
 
 						case 4:
@@ -394,8 +399,10 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 					omni_mutex_lock oml(EventSupplier::get_event_mutex());
 					switch (client_lib)
 					{
-						case 5:
-						attribute.event_periodic5_subscription = time(NULL);
+                        //TODO extract class hierarchy based on version!!!
+                        case 6:
+                        case 5:
+                            attribute.event_periodic5_subscription = time(NULL);
 						break;
 
 						case 4:
@@ -447,8 +454,10 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 					omni_mutex_lock oml(EventSupplier::get_event_mutex());
 					switch (client_lib)
 					{
-						case 5:
-						attribute.event_archive5_subscription = time(NULL);
+                        //TODO extract class hierarchy based on version!!!
+                        case 6:
+                        case 5:
+                            attribute.event_archive5_subscription = time(NULL);
 						break;
 
 						case 4:

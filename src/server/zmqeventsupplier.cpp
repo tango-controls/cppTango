@@ -1707,9 +1707,10 @@ void ZmqEventSupplier::push_event_loop(DeviceImpl *device_impl,EventType event_t
         {
             switch (*ite)
             {
-                case 5:
-                {
-                    convert_att_event_to_5(attr_value,sent_value,need_free,att);
+                //TODO extract class hierarchy based on version
+                case 6:
+                case 5: {
+                    convert_att_event_to_5(attr_value, sent_value, need_free, att);
                     ev_name = EVENT_COMPAT_IDL5 + ev_name;
                     name_changed = true;
                 }

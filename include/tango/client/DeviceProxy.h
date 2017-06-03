@@ -29,6 +29,8 @@
 #define _DEVICEPROXY_H
 
 
+#include <tango/client/device/device_command_info.h>
+
 /****************************************************************************************
  * 																						*
  * 					The DeviceProxy class												*

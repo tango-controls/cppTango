@@ -55,7 +55,8 @@ set(SOURCES attrdesc.cpp
         utils_shut.cpp
         w_attribute.cpp
         w_pipe.cpp
-        zmqeventsupplier.cpp)
+        zmqeventsupplier.cpp
+        device_6.cpp)
 
 
 add_subdirectory(jpeg)

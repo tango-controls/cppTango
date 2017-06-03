@@ -328,7 +328,10 @@ private:
 #else
 	Device_2ImplExt				    *ext_2;
 #endif
-};
+
+	protected:
+		Command *get_cmd_ptr(const string &cmd_name);
+	};
 
 } // End of Tango namespace
 
