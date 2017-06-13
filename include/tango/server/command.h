@@ -221,12 +221,7 @@ public:
 /**
  * The object desctructor.
  */
-#ifdef HAS_UNIQUE_PTR
-    virtual ~Command()
-    {}
-#else
-    virtual ~Command() {delete ext;}
-#endif
+virtual ~Command() {delete ext;}
 //@}
 
 /**@name Miscellaneous methods */
