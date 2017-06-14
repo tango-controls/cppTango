@@ -221,7 +221,7 @@ public:
 /**
  * The object desctructor.
  */
-virtual ~Command() {delete ext;}
+virtual ~Command() {}
 //@}
 
 /**@name Miscellaneous methods */
