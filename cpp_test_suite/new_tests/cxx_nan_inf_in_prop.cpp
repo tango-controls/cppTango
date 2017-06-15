@@ -119,7 +119,10 @@ public:
         vector<T> array_val;
         array_val.push_back(T(1.2));
         if(std::numeric_limits<T>::has_quiet_NaN)
-            array_val.push_back(std::numeric_limits<T>::quiet_NaN());
+        {
+	        array_val.push_back(std::numeric_limits<T>::quiet_NaN());
+	        array_val.push_back(-std::numeric_limits<T>::quiet_NaN());
+        }
         array_val.push_back(T(3.4));
         if(std::numeric_limits<T>::has_infinity)
         {
@@ -141,7 +144,7 @@ public:
         // Extract as T array:
         size_t expected_size = 3;
         if(std::numeric_limits<T>::has_quiet_NaN)
-            expected_size += 1;
+            expected_size += 2;
         if(std::numeric_limits<T>::has_infinity)
             expected_size += 2;
         vector<T> read_array_val;
@@ -153,6 +156,9 @@ public:
         if(std::numeric_limits<T>::has_quiet_NaN)
         {
             TS_ASSERT(std::isnan(read_array_val[index]));
+	        index++;
+	        // -NaN is extracted as NaN
+	        TS_ASSERT(std::isnan(read_array_val[index]));
             index++;
         }
         TS_ASSERT_EQUALS(read_array_val[index],T(3.4));
@@ -175,6 +181,47 @@ public:
             TS_ASSERT(!(db_data_r[0] >> long_array_val));
         }
     }
+
+	void NaN_in_scalar_property(const string & prop_value)
+	{
+		//
+		// if your code modifies the default (device) configuration, append the following line straight after
+		CxxTest::TangoPrinter::restore_set("NanInfScalarProp_restore_point");
+
+		// Write NaNInfArrayProperty device property
+		Tango::DbData db_data_r;
+
+		// Write NaNInfScalarProperty device property
+		set_property("NaNInfScalarProperty", prop_value.c_str());
+
+		// Read NaNInfScalarProperty device property
+		string prop_name = "NaNInfScalarProperty";
+		TS_ASSERT_THROWS_NOTHING(device1->get_property(prop_name,db_data_r));
+		// Extract as a string:
+		string string_scalar_val;
+		TS_ASSERT(db_data_r[0] >> string_scalar_val);
+		TS_ASSERT_EQUALS(string_scalar_val,prop_value);
+
+		// Extract as float:
+		Tango::DevFloat float_val;
+		TS_ASSERT(db_data_r[0] >> float_val);
+		TS_ASSERT(std::isnan(float_val));
+
+		// Extract as double:
+		Tango::DevDouble double_val;
+		TS_ASSERT(db_data_r[0] >> double_val);
+		TS_ASSERT(std::isnan(double_val));
+
+		// Extract as short
+		Tango::DevShort short_val;
+		TS_ASSERT(!(db_data_r[0] >> short_val));
+
+		// Restore the default configuration
+		TS_ASSERT_THROWS_NOTHING(device1->delete_property(prop_name));
+		// if the test suite fails here, thanks to the restore point, the test suite TearDown method will restore the defaults
+		// after you set back the default configuration, append the following line
+		CxxTest::TangoPrinter::restore_unset("NanInfScalarProp_restore_point");
+	}
 //
 // Tests -------------------------------------------------------
 //
@@ -197,6 +244,8 @@ public:
 		str_val.push_back("nan");
 		str_val.push_back("-iNf");
 		str_val.push_back("-9.78");
+		str_val.push_back("-NaN");
+		str_val.push_back("-89101112.1314");
 
 		Tango::DbDatum db_datum("NaNInfArrayProperty");
 		TS_ASSERT_THROWS_NOTHING(db_datum << str_val);
@@ -211,7 +260,7 @@ public:
 		// Extract as a string array:
 		vector<string> string_array_val;
 		TS_ASSERT(db_data_r[0] >> string_array_val);
-		TS_ASSERT_EQUALS(string_array_val.size(),(size_t) 7);
+		TS_ASSERT_EQUALS(string_array_val.size(),(size_t) 9);
 		TS_ASSERT_EQUALS(string_array_val[0],"1.2");
 		TS_ASSERT_EQUALS(string_array_val[1],"NaN");
 		TS_ASSERT_EQUALS(string_array_val[2],"3.4");
@@ -219,11 +268,13 @@ public:
 		TS_ASSERT_EQUALS(string_array_val[4],"nan");
 		TS_ASSERT_EQUALS(string_array_val[5],"-iNf");
 		TS_ASSERT_EQUALS(string_array_val[6],"-9.78");
+		TS_ASSERT_EQUALS(string_array_val[7],"-NaN");
+		TS_ASSERT_EQUALS(string_array_val[8],"-89101112.1314");
 
 		// Extract as a float array:
 		vector<Tango::DevFloat> float_array_val;
 		TS_ASSERT(db_data_r[0] >> float_array_val);
-		TS_ASSERT_EQUALS(float_array_val.size(),(size_t) 7);
+		TS_ASSERT_EQUALS(float_array_val.size(),(size_t) 9);
 		TS_ASSERT_EQUALS(float_array_val[0],Tango::DevFloat(1.2));
 		TS_ASSERT(std::isnan(float_array_val[1]));
 		TS_ASSERT_EQUALS(float_array_val[2],Tango::DevFloat(3.4));
@@ -232,11 +283,14 @@ public:
 		TS_ASSERT(std::isinf(float_array_val[5]));
 		TS_ASSERT_LESS_THAN(float_array_val[5],0);
 		TS_ASSERT_EQUALS(float_array_val[6],Tango::DevFloat(-9.78));
+		TS_ASSERT(std::isnan(float_array_val[7]));
+		TS_ASSERT_EQUALS(float_array_val[8],Tango::DevFloat(-89101112.1314));
+
 
 		// Extract as a double array:
 		vector<Tango::DevDouble> double_array_val;
 		TS_ASSERT(db_data_r[0] >> double_array_val);
-		TS_ASSERT_EQUALS(double_array_val.size(),(size_t) 7);
+		TS_ASSERT_EQUALS(double_array_val.size(),(size_t) 9);
 		TS_ASSERT_EQUALS(double_array_val[0],Tango::DevDouble(1.2));
 		TS_ASSERT(std::isnan(double_array_val[1]));
 		TS_ASSERT_EQUALS(double_array_val[2],Tango::DevDouble(3.4));
@@ -245,10 +299,12 @@ public:
 		TS_ASSERT(std::isinf(double_array_val[5]));
 		TS_ASSERT_LESS_THAN(double_array_val[5],0);
 		TS_ASSERT_EQUALS(double_array_val[6],Tango::DevDouble(-9.78));
+		TS_ASSERT(std::isnan(double_array_val[7]));
+		TS_ASSERT_EQUALS(double_array_val[8],Tango::DevDouble(-89101112.1314));
 
 		// Extract as long array:
 		vector<Tango::DevLong> long_array_val;
-		TS_ASSERT(!(db_data_r[0] >> long_array_val));
+		TS_ASSERT(not (db_data_r[0] >> long_array_val));
 
 		// Restore the default configuration
 		TS_ASSERT_THROWS_NOTHING(device1->delete_property(prop_name));
@@ -294,43 +350,17 @@ public:
     // test NaN in scalar property
 	void test_NaN_in_scalar_property()
 	{
-		//
-		// if your code modifies the default (device) configuration, append the following line straight after
-		CxxTest::TangoPrinter::restore_set("NanInfScalarProp_restore_point");
+		NaN_in_scalar_property("NaN");
+		NaN_in_scalar_property("nan");
+		NaN_in_scalar_property("Nan");
+	}
 
-		// Write NaNInfArrayProperty device property
-		Tango::DbData db_data_r;
-
-		// Write NaNInfScalarProperty device property
-		set_property("NaNInfScalarProperty", "NaN");
-
-		// Read NaNInfScalarProperty device property
-        string prop_name = "NaNInfScalarProperty";
-		TS_ASSERT_THROWS_NOTHING(device1->get_property(prop_name,db_data_r));
-		// Extract as a string:
-		string string_scalar_val;
-		TS_ASSERT(db_data_r[0] >> string_scalar_val);
-		TS_ASSERT_EQUALS(string_scalar_val,"NaN");
-
-		// Extract as float:
-		Tango::DevFloat float_val;
-		TS_ASSERT(db_data_r[0] >> float_val);
-		TS_ASSERT(std::isnan(float_val));
-
-		// Extract as double:
-		Tango::DevDouble double_val;
-		TS_ASSERT(db_data_r[0] >> double_val);
-		TS_ASSERT(std::isnan(double_val));
-
-		// Extract as short
-		Tango::DevShort short_val;
-		TS_ASSERT(!(db_data_r[0] >> short_val));
-
-		// Restore the default configuration
-		TS_ASSERT_THROWS_NOTHING(device1->delete_property(prop_name));
-		// if the test suite fails here, thanks to the restore point, the test suite TearDown method will restore the defaults
-		// after you set back the default configuration, append the following line
-		CxxTest::TangoPrinter::restore_unset("NanInfScalarProp_restore_point");
+	// test -NaN in scalar property
+	void test_Negative_NaN_in_scalar_property()
+	{
+		NaN_in_scalar_property("-NaN");
+		NaN_in_scalar_property("-nan");
+		NaN_in_scalar_property("-naN");
 	}
 
     // test infinity in scalar property
