@@ -1,5 +1,3 @@
-static const char *RcsId = "$Id$\n$Name$";
-
 //
 // devapi_datahist.cpp 	- C++ source code file for TANGO devapi class
 //			  DeviceDataHistory and DeviceAttributeHistory

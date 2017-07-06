@@ -1,5 +1,3 @@
-static const char *RcsId = "$Id: api_util.cpp 30271 2016-11-09 12:19:27Z bourtemb $\n$Name$";
-
 //+==================================================================================================================
 //
 // C++ source code file for TANGO api class ApiUtil

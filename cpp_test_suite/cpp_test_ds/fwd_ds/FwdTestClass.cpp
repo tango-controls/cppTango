@@ -1,5 +1,4 @@
 /*----- PROTECTED REGION ID(FwdTestClass.cpp) ENABLED START -----*/
-static const char *RcsId      = "$Id$";
 static const char *TagName    = "$Name:  $";
 static const char *CvsPath    = "$Source:  $";
 static const char *SvnPath    = "$HeadURL$";

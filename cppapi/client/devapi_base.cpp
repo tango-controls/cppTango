@@ -1,5 +1,3 @@
-static const char *RcsId = "$Id$\n$Name$";
-
 //===================================================================================================================
 //
 // devapi_base.cpp 	- C++ source code file for TANGO device api
