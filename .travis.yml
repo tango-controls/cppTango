@@ -10,6 +10,10 @@ env:
 #    - OS_TYPE=win32
 # etc
 
+# Temporary fix to work-around Travis update with Trusty 'sudo:required' environment
+# TODO To be fixed before September 2017
+group: deprecated-2017Q2
+
 notifications:
   email: false
 
