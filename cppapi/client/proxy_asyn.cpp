@@ -1,4 +1,3 @@
-static const char *RcsId = "$Id: proxy_asyn.cpp 30242 2016-10-27 11:48:23Z bourtemb $\n$Name$";
 //====================================================================================
 //
 // cpp 	- C++ source code file for TANGO api Connection and DeviceProxy

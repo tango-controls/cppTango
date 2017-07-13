@@ -1,5 +1,3 @@
-static const char *RcsId = "$Id$\n$Name$";
-
 //
 // cpp 	- C++ source code file for TANGO api class and asynchronous callback
 //	  related methods

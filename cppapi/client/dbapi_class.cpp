@@ -1,5 +1,3 @@
-static const char *RcsId = "$Id$\n$Name$";
-
 //==================================================================================================================
 //
 // dbapi_class.cpp - C++ source code file for TANGO dbapi class DbClass
