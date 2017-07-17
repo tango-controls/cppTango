@@ -27,7 +27,7 @@ before_script:
   - CONTAINER=$(docker run --name tango_cs -e TANGO_HOST=127.0.0.1:10000 -e MYSQL_HOST=mysql_db:3306 -e MYSQL_USER=tango -e MYSQL_PASSWORD=tango -e MYSQL_DATABASE=tango --link mysql_db:mysql_db -d tangocs/tango-cs:latest)
   - IPADDR=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' $CONTAINER)
   - TANGO_HOST=${IPADDR}:10000
-  - docker build -t cpp_tango .travis/${OS_TYPE}
+  - docker build --build-arg APP_UID=$(id -u) --build-arg APP_GID=$(id -g) -t cpp_tango .travis/${OS_TYPE}
   - docker run --name cpp_tango -e TANGO_HOST=${TANGO_HOST} --link tango_cs:tango_cs -v `pwd`:/home/tango/src -v `pwd`/idl:/home/tango/idl -dit cpp_tango
 
 script:
