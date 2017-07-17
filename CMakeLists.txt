@@ -37,9 +37,15 @@ add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:server_objects>
                             $<TARGET_OBJECTS:include_objects>)
 target_include_directories(tango PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS} ${OMNIDYN_PKG_INCLUDE_DIRS})
-target_link_libraries(tango PUBLIC ${ZMQ_PKG_LIBRARIES} ${OMNIORB_PKG_LIBRARIES} ${OMNICOS_PKG_LIBRARIES} ${OMNIDYN_PKG_LIBRARIES} -fsanitize=thread -shared ${CMAKE_DL_LIBS})
+target_link_libraries(tango PUBLIC ${ZMQ_PKG_LIBRARIES} ${OMNIORB_PKG_LIBRARIES} ${OMNICOS_PKG_LIBRARIES} ${OMNIDYN_PKG_LIBRARIES})
 target_compile_options(tango PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
-target_compile_options(tango PRIVATE -fPIC -fsanitize=thread -g)
+target_compile_options(tango PRIVATE -fPIC)
+if (CMAKE_BUILD_TYPE MATCHES DEBUG)
+    find_package(Threads)
+    target_link_libraries(tango PRIVATE -fsanitize=thread -shared ${CMAKE_THREAD_LIBS_INIT})
+    target_compile_options(tango PRIVATE -fsanitize=thread -g)
+endif (CMAKE_BUILD_TYPE MATCHES DEBUG)
+target_link_libraries(tango PUBLIC ${CMAKE_DL_LIBS})
 target_compile_definitions(tango PRIVATE OMNI_UNLOADABLE_STUBS _TANGO_LIB)
 
 set_target_properties(tango PROPERTIES
