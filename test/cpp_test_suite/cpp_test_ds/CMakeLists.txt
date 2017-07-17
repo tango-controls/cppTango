@@ -1,3 +1,4 @@
+find_package(Threads)
 set(SOURCES main.cpp
         TypeCmds.cpp
         SigThrow.cpp
@@ -20,4 +21,5 @@ add_subdirectory(fwd_ds)
 
 add_executable(DevTest ${SOURCES})
 target_include_directories(DevTest PUBLIC .)
-target_link_libraries(DevTest PUBLIC tango)
+target_link_libraries(DevTest PUBLIC tango -fsanitize=thread -pie ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_DL_LIBS})
+target_compile_options(DevTest PUBLIC -fPIE -fsanitize=thread -g)
