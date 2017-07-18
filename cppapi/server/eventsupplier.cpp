@@ -334,7 +334,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
 // if no attribute of this name is registered with change then insert the current value
 //
 
-    if (!attr.prev_change_event.inited)
+    if (attr.prev_change_event.inited == false)
     {
         if (except != NULL)
         {
@@ -1011,13 +1011,17 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
     else
     {
 #ifdef _TG_WINDOWS_
-        double tmp = (double)eve_period * DELTA_PERIODIC;
-        double int_part,eve_round;
-        double frac = modf(tmp,&int_part);
+        double tmp = (double) eve_period * DELTA_PERIODIC;
+        double int_part, eve_round;
+        double frac = modf(tmp, &int_part);
         if (frac >= 0.5)
+        {
             eve_round = ceil(tmp);
+        }
         else
+        {
             eve_round = floor(tmp);
+        }
 #else
         double eve_round = round((double) eve_period * DELTA_PERIODIC);
 #endif
@@ -1334,7 +1338,7 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
 
     TangoMonitor &mon1 = dev->get_att_conf_monitor();
     mon1.get_monitor();
-    if (!archive)
+    if (not archive)
     {
         rel_change[0] = attr.rel_change[0];
         rel_change[1] = attr.rel_change[1];

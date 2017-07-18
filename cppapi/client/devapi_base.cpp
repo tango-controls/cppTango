@@ -36,7 +36,7 @@
 #include <devapi_utils.tpp>
 
 #ifdef _TG_WINDOWS_
-                                                                                                                        #include <sys/timeb.h>
+#include <sys/timeb.h>
 #include <process.h>
 #include <ws2tcpip.h>
 #else
@@ -211,13 +211,15 @@ Connection::Connection(const Connection &sou)
         *(ext.get()) = *(sou.ext.get());
     }
 #else
-                                                                                                                            if (sou.ext != NULL)
-	{
-		ext = new ConnectionExt();
-		*ext = *(sou.ext);
-	}
-	else
-		ext = NULL;
+    if (sou.ext != NULL)
+    {
+        ext = new ConnectionExt();
+        *ext = *(sou.ext);
+    }
+    else
+    {
+        ext = NULL;
+    }
 #endif
 }
 
@@ -281,13 +283,15 @@ Connection &Connection::operator=(const Connection &rval)
         ext.reset(Tango_nullptr);
     }
 #else
-                                                                                                                            if (rval.ext != NULL)
-	{
-		ext = new ConnectionExt();
-		*ext = *(rval.ext);
-	}
-	else
-		ext = NULL;
+    if (rval.ext != NULL)
+    {
+        ext = new ConnectionExt();
+        *ext = *(rval.ext);
+    }
+    else
+    {
+        ext = NULL;
+    }
 #endif
 
     return *this;
@@ -732,10 +736,10 @@ void Connection::reconnect(bool db_used)
 #ifndef _TG_WINDOWS_
     gettimeofday(&now, NULL);
 #else
-                                                                                                                            struct _timeb now_win;
-	_ftime(&now_win);
-	now.tv_sec = (unsigned long)now_win.time;
-	now.tv_usec = (long)now_win.millitm * 1000;
+    struct _timeb now_win;
+    _ftime(&now_win);
+    now.tv_sec = (unsigned long) now_win.time;
+    now.tv_usec = (long) now_win.millitm * 1000;
 #endif /* _TG_WINDOWS_ */
 
     double t = (double) now.tv_sec + ((double) now.tv_usec / 1000000);
@@ -942,24 +946,24 @@ int Connection::get_env_var(const char *env_var_name, string &env_var)
             }
         }
 #else
-                                                                                                                                char *env_tango_root;
+        char *env_tango_root;
 
-		env_tango_root = getenv(WindowsEnvVariable);
-		if (env_tango_root != NULL)
-		{
-			string home_file(env_tango_root);
-			home_file = home_file + "/" + WINDOWS_ENV_VAR_FILE;
+        env_tango_root = getenv(WindowsEnvVariable);
+        if (env_tango_root != NULL)
+        {
+            string home_file(env_tango_root);
+            home_file = home_file + "/" + WINDOWS_ENV_VAR_FILE;
 
-			int local_ret;
-			string local_env_var;
-			local_ret = get_env_var_from_file(home_file,env_var_name,local_env_var);
+            int local_ret;
+            string local_env_var;
+            local_ret = get_env_var_from_file(home_file, env_var_name, local_env_var);
 
-			if (local_ret == 0)
-			{
-				env_var = local_env_var;
-				ret = 0;
-			}
-		}
+            if (local_ret == 0)
+            {
+                env_var = local_env_var;
+                ret = 0;
+            }
+        }
 
 #endif
     }
@@ -993,7 +997,7 @@ int Connection::get_env_var_from_file(string &f_name, const char *env_var, strin
     int ret = -1;
 
     inFile.open(f_name.c_str());
-    if (!inFile)
+    if (not inFile)
     {
         return ret;
     }
@@ -1002,7 +1006,7 @@ int Connection::get_env_var_from_file(string &f_name, const char *env_var, strin
 
     string::size_type pos_env, pos_comment;
 
-    while (!inFile.eof())
+    while (not inFile.eof())
     {
         getline(inFile, file_line);
         transform(file_line.begin(), file_line.end(), file_line.begin(), ::tolower);
@@ -1948,13 +1952,15 @@ DeviceProxy::DeviceProxy(const DeviceProxy &sou)
         *(ext_proxy.get()) = *(sou.ext_proxy.get());
     }
 #else
-                                                                                                                            if (sou.ext_proxy == NULL)
-		ext_proxy = NULL;
-	else
-	{
-		ext_proxy = new DeviceProxyExt();
-		*ext_proxy = *(sou.ext_proxy);
-	}
+    if (sou.ext_proxy == NULL)
+    {
+        ext_proxy = NULL;
+    }
+    else
+    {
+        ext_proxy = new DeviceProxyExt();
+        *ext_proxy = *(sou.ext_proxy);
+    }
 #endif
 
 }
@@ -2033,7 +2039,9 @@ DeviceProxy &DeviceProxy::operator=(const DeviceProxy &rval)
             *ext_proxy = *(rval.ext_proxy);
         }
         else
+        {
             ext_proxy = NULL;
+        }
 #endif
     }
 
@@ -2696,9 +2704,9 @@ int DeviceProxy::ping()
 
     gettimeofday(&before, NULL);
 #else
-                                                                                                                            struct _timeb before, after;
+    struct _timeb before, after;
 
-	_ftime(&before);
+    _ftime(&before);
 #endif /* _TG_WINDOWS_ */
 
     int ctr = 0;
@@ -2768,9 +2776,9 @@ int DeviceProxy::ping()
     elapsed = (after.tv_sec - before.tv_sec) * 1000000;
     elapsed = (after.tv_usec - before.tv_usec) + elapsed;
 #else
-                                                                                                                            _ftime(&after);
-	elapsed = (after.time-before.time)*1000000;
-	elapsed = (after.millitm-before.millitm)*1000 + elapsed;
+    _ftime(&after);
+    elapsed = (after.time - before.time) * 1000000;
+    elapsed = (after.millitm - before.millitm) * 1000 + elapsed;
 #endif /* _TG_WINDOWS_ */
 
     return (elapsed);
@@ -9286,8 +9294,8 @@ bool DeviceProxy::get_locker(LockerInfo &lock_info)
             si.sin_family = AF_INET;
             si.sin_port = 0;
 #ifdef _TG_WINDOWS_
-                                                                                                                                    int slen = sizeof(si);
-			WSAStringToAddress((char *)full_ip.c_str(),AF_INET,NULL,(SOCKADDR *)&si,&slen);
+            int slen = sizeof(si);
+            WSAStringToAddress((char *) full_ip.c_str(), AF_INET, NULL, (SOCKADDR * ) & si, &slen);
 #else
             inet_pton(AF_INET, full_ip.c_str(), &si.sin_addr);
 #endif
@@ -10166,12 +10174,14 @@ int DeviceProxy::get_tango_lib_version()
                                    return cc.cmd_name == "QueryWizardClassProperty";
                                });
 #else
-                                                                                                                                    vector<CommandInfo>::iterator pos,end;
-		for (pos = (*cmd_list).begin(), end = (*cmd_list).end();pos != end;++pos)
-		{
-			if (pos->cmd_name == "QueryWizardClassProperty")
-				break;
-		}
+            vector<CommandInfo>::iterator pos, end;
+            for (pos = (*cmd_list).begin(), end = (*cmd_list).end(); pos != end; ++pos)
+            {
+                if (pos->cmd_name == "QueryWizardClassProperty")
+                {
+                    break;
+                }
+            }
 #endif
             if (pos != (*cmd_list).end())
             {
@@ -10209,18 +10219,20 @@ int DeviceProxy::get_tango_lib_version()
                 }
             }
 #else
-                                                                                                                                    vector<CommandInfo>::iterator pos,pos_end;
-		for (pos = (*cmd_list).begin(), pos_end = (*cmd_list).end();pos != pos_end;++pos)
-		{
-			if (pos->cmd_name == "EventConfirmSubscription")
-			{
-				ecs = true;
-				break;
-			}
+            vector<CommandInfo>::iterator pos, pos_end;
+            for (pos = (*cmd_list).begin(), pos_end = (*cmd_list).end(); pos != pos_end; ++pos)
+            {
+                if (pos->cmd_name == "EventConfirmSubscription")
+                {
+                    ecs = true;
+                    break;
+                }
 
-			if  (pos->cmd_name == "ZmqEventSubscriptionChange")
-				zesc = true;
-		}
+                if (pos->cmd_name == "ZmqEventSubscriptionChange")
+                {
+                    zesc = true;
+                }
+            }
 #endif
             if (ecs == true)
             {

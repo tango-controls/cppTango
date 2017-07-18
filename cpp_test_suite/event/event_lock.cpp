@@ -23,7 +23,7 @@ const int NODATA = -9999;
 class EventCallback: public Tango::CallBack
 {
 public:
-    EventCallback()
+    EventCallback(): cb_executed(0),cb_err(0)
     {};
     ~EventCallback()
     {};
@@ -51,8 +51,6 @@ int main(int argc, char *argv[])
     int eventID;
     const vector<string> filters;
     EventCallback *eventCallback = new EventCallback();
-    eventCallback->cb_executed = 0;
-    eventCallback->cb_err = 0;
 
     if (argc != 2)
     {

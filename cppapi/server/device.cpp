@@ -919,7 +919,7 @@ vector<PollObj *>::iterator DeviceImpl::get_polled_obj_by_type_name(
 //
 
 // exclude the return value for VC8+
-#if !defined(_TG_WINDOWS_) || (defined(_MSC_VER) && _MSC_VER < 1400)
+#if not defined(_TG_WINDOWS_) || (defined(_MSC_VER) && _MSC_VER < 1400)
     return (vector<PollObj *>::iterator) NULL;
 #endif
 }
@@ -1065,7 +1065,7 @@ long DeviceImpl::get_attr_poll_ring_depth(string &attr_name)
             {
                 TangoSys_MemStream s;
                 s << attr_poll_ring_depth[k + 1];
-                if (!(s >> ret))
+                if (not(s >> ret))
                 {
                     TangoSys_OMemStream o;
                     o << "System property attr_poll_ring_depth for device " << device_name << " has wrong syntax"

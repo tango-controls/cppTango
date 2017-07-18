@@ -215,7 +215,9 @@ DeviceDataHistory &DeviceDataHistory::operator=(const DeviceDataHistory &rval)
             *ext_hist = *(rval.ext_hist);
         }
         else
+        {
             ext_hist = NULL;
+        }
 #endif
     }
 
@@ -683,7 +685,9 @@ DeviceAttributeHistory::DeviceAttributeHistory(const DeviceAttributeHistory &sou
     }
 #else
     if (source.ext_hist == NULL)
+    {
         ext_hist = NULL;
+    }
     else
     {
         ext_hist = new DeviceAttributeHistoryExt();
@@ -761,7 +765,9 @@ DeviceAttributeHistory &DeviceAttributeHistory::operator=(const DeviceAttributeH
             *ext_hist = *(rval.ext_hist);
         }
         else
+        {
             ext_hist = NULL;
+        }
 #endif
     }
 

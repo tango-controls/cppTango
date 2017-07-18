@@ -3019,7 +3019,7 @@ bool WAttribute::check_rds_alarm()
                         if (Tango_isnan(float_array_val[0]) || Tango_isnan(tmp_fl[0]))
                         {
                             // send an alarm if only read or set value are NAN
-                            if (!(Tango_isnan(float_array_val[0]) && Tango_isnan(tmp_fl[0])))
+                            if (not(Tango_isnan(float_array_val[0]) && Tango_isnan(tmp_fl[0])))
                             {
                                 quality = Tango::ATTR_ALARM;
                                 alarm.set(rds);
