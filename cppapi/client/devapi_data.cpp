@@ -55,7 +55,9 @@ DeviceData::DeviceData()
 
     ApiUtil *au = ApiUtil::instance();
     if (CORBA::is_nil(au->get_orb()) == true)
+    {
         au->create_orb();
+    }
 
     any = new CORBA::Any();
     exceptions_flags.set(isempty_flag);
@@ -107,7 +109,9 @@ DeviceData::DeviceData(DeviceData &&source)
     any = source.any._retn();
 
     if (source.ext.get() != NULL)
+    {
         ext = move(source.ext);
+    }
 }
 #endif
 
@@ -135,7 +139,9 @@ DeviceData &DeviceData::operator=(const DeviceData &rval)
             *(ext.get()) = *(rval.ext.get());
         }
         else
+        {
             ext.reset();
+        }
 #else
         delete ext;
 
@@ -164,9 +170,13 @@ DeviceData &DeviceData::operator=(DeviceData &&rval)
     any = rval.any._retn();
 
     if (rval.ext.get() != NULL)
+    {
         ext = move(rval.ext);
+    }
     else
+    {
         ext.reset();
+    }
 
     return *this;
 }
@@ -237,7 +247,9 @@ int DeviceData::get_type()
     int data_type = 0;
 
     if (any_is_null() == true)
+    {
         return -1;
+    }
     else
     {
         CORBA::TypeCode_ptr tc;
@@ -403,7 +415,9 @@ bool DeviceData::operator>>(bool &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -430,7 +444,9 @@ bool DeviceData::operator>>(short &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -458,7 +474,9 @@ bool DeviceData::operator>>(unsigned short &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -485,7 +503,9 @@ bool DeviceData::operator>>(DevLong &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -512,7 +532,9 @@ bool DeviceData::operator>>(DevULong &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -539,7 +561,9 @@ bool DeviceData::operator>>(DevLong64 &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -566,7 +590,9 @@ bool DeviceData::operator>>(DevULong64 &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -593,7 +619,9 @@ bool DeviceData::operator>>(float &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -621,7 +649,9 @@ bool DeviceData::operator>>(double &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -649,7 +679,9 @@ bool DeviceData::operator>>(string &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -680,7 +712,9 @@ bool DeviceData::operator>>(const char *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -707,7 +741,9 @@ bool DeviceData::operator>>(DevState &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -750,7 +786,9 @@ bool DeviceData::operator>>(vector<bool> &datum)
     else
     {
         if (any_is_null())
+        {
             return false;
+        }
 
         if (bool_array == NULL)
         {
@@ -787,7 +825,9 @@ bool DeviceData::operator>>(const DevVarBooleanArray *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -815,7 +855,9 @@ bool DeviceData::operator>>(vector<unsigned char> &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -862,7 +904,9 @@ bool DeviceData::operator>>(const DevVarCharArray *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -890,7 +934,9 @@ bool DeviceData::operator>>(vector<short> &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -938,7 +984,9 @@ bool DeviceData::operator>>(const DevVarShortArray *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -966,7 +1014,9 @@ bool DeviceData::operator>>(vector<unsigned short> &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1013,7 +1063,9 @@ bool DeviceData::operator>>(const DevVarUShortArray *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1041,7 +1093,9 @@ bool DeviceData::operator>>(vector<DevLong> &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1088,7 +1142,9 @@ bool DeviceData::operator>>(const DevVarLongArray *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1117,7 +1173,9 @@ bool DeviceData::operator>>(vector<DevULong> &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1164,7 +1222,9 @@ bool DeviceData::operator>>(const DevVarULongArray *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1193,7 +1253,9 @@ bool DeviceData::operator>>(const DevVarLong64Array *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1221,7 +1283,9 @@ bool DeviceData::operator>>(const DevVarULong64Array *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1249,7 +1313,9 @@ bool DeviceData::operator>>(vector<DevLong64> &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1295,7 +1361,9 @@ bool DeviceData::operator>>(vector<DevULong64> &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1341,7 +1409,9 @@ bool DeviceData::operator>>(vector<float> &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1388,7 +1458,9 @@ bool DeviceData::operator>>(const DevVarFloatArray *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1417,7 +1489,9 @@ bool DeviceData::operator>>(vector<double> &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1464,7 +1538,9 @@ bool DeviceData::operator>>(const DevVarDoubleArray *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1493,7 +1569,9 @@ bool DeviceData::operator>>(vector<string> &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1539,7 +1617,9 @@ bool DeviceData::operator>>(const DevVarStringArray *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1567,7 +1647,9 @@ bool DeviceData::operator>>(const DevEncoded *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1596,7 +1678,9 @@ bool DeviceData::operator>>(DevEncoded &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1860,7 +1944,9 @@ bool DeviceData::extract(vector<DevLong> &long_datum, vector<string> &string_dat
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1912,7 +1998,9 @@ bool DeviceData::operator>>(const DevVarLongStringArray *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -1968,7 +2056,9 @@ bool DeviceData::extract(vector<double> &double_datum, vector<string> &string_da
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -2020,7 +2110,9 @@ bool DeviceData::operator>>(const DevVarDoubleStringArray *&datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -2098,7 +2190,9 @@ bool DeviceData::extract(const char *&str, const unsigned char *&data_ptr, unsig
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -2144,7 +2238,9 @@ bool DeviceData::extract(string &str, vector<unsigned char> &datum)
     if (ret == false)
     {
         if (any_is_null())
+        {
             return ret;
+        }
 
         ext->ext_state.set(wrongtype_flag);
         if (exceptions_flags.test(wrongtype_flag))
@@ -2187,7 +2283,9 @@ bool DeviceData::extract(string &str, vector<unsigned char> &datum)
 ostream &operator<<(ostream &o_str, DeviceData &dd)
 {
     if (dd.any_is_null() == true)
+    {
         o_str << "No data in DeviceData object";
+    }
     else
     {
         CORBA::TypeCode_ptr tc;
@@ -2202,9 +2300,13 @@ ostream &operator<<(ostream &o_str, DeviceData &dd)
                 bool bo_tmp;
                 dd.any >>= CORBA::Any::to_boolean(bo_tmp);
                 if (bo_tmp == true)
+                {
                     o_str << "true";
+                }
                 else
+                {
                     o_str << "false";
+                }
                 break;
 
             case CORBA::tk_short:
@@ -2379,7 +2481,9 @@ ostream &operator<<(ostream &o_str, DeviceData &dd)
                             {
                                 o_str << "Data element number [" << i << "] = " << (int) enc->encoded_data[i];
                                 if (i < (nb_data_elt - 1))
+                                {
                                     o_str << '\n';
+                                }
                             }
                         }
                         break;

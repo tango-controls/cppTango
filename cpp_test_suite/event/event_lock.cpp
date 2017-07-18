@@ -36,9 +36,13 @@ public:
 void EventCallback::push_event(Tango::EventData *ed)
 {
     if (0 == ed->err)
+    {
         cb_executed++;
+    }
     else
+    {
         cb_err++;
+    }
 }
 
 int main(int argc, char *argv[])
@@ -83,7 +87,9 @@ int main(int argc, char *argv[])
         cout << "   Device unlocked --> OK" << endl;
 
         if (eventID != NODATA)
+        {
             dev->unsubscribe_event(eventID);
+        }
 
         dev->stop_poll_attribute(att_name);
     }

@@ -100,9 +100,13 @@ ApiUtil::ApiUtil()
 //
 
     if (Util::_constructed == true)
+    {
         in_serv = true;
+    }
     else
+    {
         in_serv = false;
+    }
 
 //
 // Create the Asynchronous polling request Id generator
@@ -144,7 +148,9 @@ ApiUtil::ApiUtil()
         istringstream iss(var);
         iss >> user_to;
         if (iss)
+        {
             user_connect_timeout = user_to;
+        }
     }
 
 //
@@ -158,7 +164,9 @@ ApiUtil::ApiUtil()
         istringstream iss(var);
         iss >> sub_hwm;
         if (iss)
+        {
             user_sub_hwm = sub_hwm;
+        }
     }
 }
 
@@ -270,13 +278,17 @@ void ApiUtil::set_sig_handler()
         if (sigaction(SIGTERM, NULL, &old_action) != -1)
         {
             if (old_action.sa_handler == NULL)
+            {
                 sigaction(SIGTERM, &sa, NULL);
+            }
         }
 
         if (sigaction(SIGINT, NULL, &old_action) != -1)
         {
             if (old_action.sa_handler == NULL)
+            {
                 sigaction(SIGINT, &sa, NULL);
+            }
         }
     }
 #endif
@@ -315,7 +327,9 @@ void ApiUtil::create_orb()
     sa.sa_handler = NULL;
 
     if (sigaction(SIGPIPE, NULL, &sa) == -1)
+    {
         sa.sa_handler = NULL;
+    }
 #endif
 
 //
@@ -326,7 +340,9 @@ void ApiUtil::create_orb()
     bool omni_42_compat = false;
     CORBA::ULong omni_vers_hex = omniORB::versionHex();
     if (omni_vers_hex > 0x04020000)
+    {
         omni_42_compat = true;
+    }
 
     const char *options[][2] = {
         {"clientCallTimeOutPeriod", CLNT_TIMEOUT_STR},
@@ -383,7 +399,9 @@ int ApiUtil::get_db_ind()
     for (unsigned int i = 0; i < db_vect.size(); i++)
     {
         if (db_vect[i]->get_from_env_var() == true)
+        {
             return i;
+        }
     }
 
 //
@@ -405,7 +423,9 @@ int ApiUtil::get_db_ind(string &host, int port)
         if (db_vect[i]->get_db_port_num() == port)
         {
             if (db_vect[i]->get_db_host() == host)
+            {
                 return i;
+            }
         }
     }
 
@@ -481,7 +501,9 @@ void ApiUtil::get_asynch_replies()
     catch (CORBA::BAD_INV_ORDER &e)
     {
         if (e.minor() != omni::BAD_INV_ORDER_RequestNotSentYet)
+        {
             throw;
+        }
     }
 
 //
@@ -642,7 +664,9 @@ void ApiUtil::get_asynch_replies(long call_timeout)
                 catch (CORBA::BAD_INV_ORDER &e)
                 {
                     if (e.minor() != omni::BAD_INV_ORDER_RequestNotSentYet)
+                    {
                         throw;
+                    }
                 }
             }
 
@@ -706,7 +730,9 @@ void ApiUtil::get_asynch_replies(long call_timeout)
                 catch (CORBA::BAD_INV_ORDER &e)
                 {
                     if (e.minor() != omni::BAD_INV_ORDER_RequestNotSentYet)
+                    {
                         throw;
+                    }
                 }
             }
         }
@@ -833,16 +859,22 @@ void ApiUtil::clean_locking_threads(bool clean)
 
                     pos->second.shared->cmd_pending = true;
                     if (clean == true)
+                    {
                         pos->second.shared->cmd_code = LOCK_UNLOCK_ALL_EXIT;
+                    }
                     else
+                    {
                         pos->second.shared->cmd_code = LOCK_EXIT;
+                    }
 
                     pos->second.mon->signal();
 
                     cout4 << "Cmd sent to locking thread" << endl;
 
                     if (pos->second.shared->cmd_pending == true)
+                    {
                         pos->second.mon->wait(DEFAULT_TIMEOUT);
+                    }
                 }
                 delete pos->second.shared;
                 delete pos->second.mon;
@@ -850,7 +882,9 @@ void ApiUtil::clean_locking_threads(bool clean)
         }
 
         if (clean == false)
+        {
             lock_threads.clear();
+        }
     }
 }
 
@@ -919,9 +953,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
     {
         CORBA::TypeCode_var ty;
         if (vers == 3)
+        {
             ty = attr_value_3->value.type();
+        }
         else
+        {
             ty = attr_value->value.type();
+        }
 
         if (ty->kind() == CORBA::tk_enum)
         {
@@ -936,9 +974,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
         {
             case CORBA::tk_long:
                 if (vers == 3)
+                {
                     attr_value_3->value >>= tmp_seq_lo;
+                }
                 else
+                {
                     attr_value->value >>= tmp_seq_lo;
+                }
                 max = tmp_seq_lo->maximum();
                 len = tmp_seq_lo->length();
                 if (tmp_seq_lo->release() == true)
@@ -955,9 +997,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
 
             case CORBA::tk_longlong:
                 if (vers == 3)
+                {
                     attr_value_3->value >>= tmp_seq_64;
+                }
                 else
+                {
                     attr_value->value >>= tmp_seq_64;
+                }
                 max = tmp_seq_64->maximum();
                 len = tmp_seq_64->length();
                 if (tmp_seq_64->release() == true)
@@ -974,9 +1020,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
 
             case CORBA::tk_short:
                 if (vers == 3)
+                {
                     attr_value_3->value >>= tmp_seq_sh;
+                }
                 else
+                {
                     attr_value->value >>= tmp_seq_sh;
+                }
                 max = tmp_seq_sh->maximum();
                 len = tmp_seq_sh->length();
                 if (tmp_seq_sh->release() == true)
@@ -993,9 +1043,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
 
             case CORBA::tk_double:
                 if (vers == 3)
+                {
                     attr_value_3->value >>= tmp_seq_db;
+                }
                 else
+                {
                     attr_value->value >>= tmp_seq_db;
+                }
                 max = tmp_seq_db->maximum();
                 len = tmp_seq_db->length();
                 if (tmp_seq_db->release() == true)
@@ -1012,9 +1066,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
 
             case CORBA::tk_string:
                 if (vers == 3)
+                {
                     attr_value_3->value >>= tmp_seq_str;
+                }
                 else
+                {
                     attr_value->value >>= tmp_seq_str;
+                }
                 max = tmp_seq_str->maximum();
                 len = tmp_seq_str->length();
                 if (tmp_seq_str->release() == true)
@@ -1031,9 +1089,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
 
             case CORBA::tk_float:
                 if (vers == 3)
+                {
                     attr_value_3->value >>= tmp_seq_fl;
+                }
                 else
+                {
                     attr_value->value >>= tmp_seq_fl;
+                }
                 max = tmp_seq_fl->maximum();
                 len = tmp_seq_fl->length();
                 if (tmp_seq_fl->release() == true)
@@ -1050,9 +1112,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
 
             case CORBA::tk_boolean:
                 if (vers == 3)
+                {
                     attr_value_3->value >>= tmp_seq_boo;
+                }
                 else
+                {
                     attr_value->value >>= tmp_seq_boo;
+                }
                 max = tmp_seq_boo->maximum();
                 len = tmp_seq_boo->length();
                 if (tmp_seq_boo->release() == true)
@@ -1069,9 +1135,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
 
             case CORBA::tk_ushort:
                 if (vers == 3)
+                {
                     attr_value_3->value >>= tmp_seq_ush;
+                }
                 else
+                {
                     attr_value->value >>= tmp_seq_ush;
+                }
                 max = tmp_seq_ush->maximum();
                 len = tmp_seq_ush->length();
                 if (tmp_seq_ush->release() == true)
@@ -1088,9 +1158,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
 
             case CORBA::tk_octet:
                 if (vers == 3)
+                {
                     attr_value_3->value >>= tmp_seq_uch;
+                }
                 else
+                {
                     attr_value->value >>= tmp_seq_uch;
+                }
                 max = tmp_seq_uch->maximum();
                 len = tmp_seq_uch->length();
                 if (tmp_seq_uch->release() == true)
@@ -1107,9 +1181,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
 
             case CORBA::tk_ulong:
                 if (vers == 3)
+                {
                     attr_value_3->value >>= tmp_seq_ulo;
+                }
                 else
+                {
                     attr_value->value >>= tmp_seq_ulo;
+                }
                 max = tmp_seq_ulo->maximum();
                 len = tmp_seq_ulo->length();
                 if (tmp_seq_ulo->release() == true)
@@ -1126,9 +1204,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
 
             case CORBA::tk_ulonglong:
                 if (vers == 3)
+                {
                     attr_value_3->value >>= tmp_seq_u64;
+                }
                 else
+                {
                     attr_value->value >>= tmp_seq_u64;
+                }
                 max = tmp_seq_u64->maximum();
                 len = tmp_seq_u64->length();
                 if (tmp_seq_u64->release() == true)
@@ -1145,9 +1227,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
 
             case CORBA::tk_enum:
                 if (vers == 3)
+                {
                     attr_value_3->value >>= tmp_seq_state;
+                }
                 else
+                {
                     attr_value->value >>= tmp_seq_state;
+                }
                 max = tmp_seq_state->maximum();
                 len = tmp_seq_state->length();
                 if (tmp_seq_state->release() == true)
@@ -1214,31 +1300,57 @@ void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr, AttributeValue_4 &
     att.data_format = Tango::FMT_UNKNOWN;
 
     if (dev_attr.LongSeq.operator->() != NULL)
+    {
         att.value.long_att_value(dev_attr.LongSeq.in());
+    }
     else if (dev_attr.ShortSeq.operator->() != NULL)
+    {
         att.value.short_att_value(dev_attr.ShortSeq.in());
+    }
     else if (dev_attr.DoubleSeq.operator->() != NULL)
+    {
         att.value.double_att_value(dev_attr.DoubleSeq.in());
+    }
     else if (dev_attr.StringSeq.operator->() != NULL)
+    {
         att.value.string_att_value(dev_attr.StringSeq.in());
+    }
     else if (dev_attr.FloatSeq.operator->() != NULL)
+    {
         att.value.float_att_value(dev_attr.FloatSeq.in());
+    }
     else if (dev_attr.BooleanSeq.operator->() != NULL)
+    {
         att.value.bool_att_value(dev_attr.BooleanSeq.in());
+    }
     else if (dev_attr.UShortSeq.operator->() != NULL)
+    {
         att.value.ushort_att_value(dev_attr.UShortSeq.in());
+    }
     else if (dev_attr.UCharSeq.operator->() != NULL)
+    {
         att.value.uchar_att_value(dev_attr.UCharSeq.in());
+    }
     else if (dev_attr.Long64Seq.operator->() != NULL)
+    {
         att.value.long64_att_value(dev_attr.Long64Seq.in());
+    }
     else if (dev_attr.ULongSeq.operator->() != NULL)
+    {
         att.value.ulong_att_value(dev_attr.ULongSeq.in());
+    }
     else if (dev_attr.ULong64Seq.operator->() != NULL)
+    {
         att.value.ulong64_att_value(dev_attr.ULong64Seq.in());
+    }
     else if (dev_attr.StateSeq.operator->() != NULL)
+    {
         att.value.state_att_value(dev_attr.StateSeq.in());
+    }
     else if (dev_attr.EncodedSeq.operator->() != NULL)
+    {
         att.value.encoded_att_value(dev_attr.EncodedSeq.in());
+    }
 }
 
 void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr, AttributeValue &att, string &d_name)
@@ -1251,29 +1363,53 @@ void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr, AttributeValue &at
     att.dim_y = dev_attr.dim_y;
 
     if (dev_attr.LongSeq.operator->() != NULL)
+    {
         att.value <<= dev_attr.LongSeq.in();
+    }
     else if (dev_attr.ShortSeq.operator->() != NULL)
+    {
         att.value <<= dev_attr.ShortSeq.in();
+    }
     else if (dev_attr.DoubleSeq.operator->() != NULL)
+    {
         att.value <<= dev_attr.DoubleSeq.in();
+    }
     else if (dev_attr.StringSeq.operator->() != NULL)
+    {
         att.value <<= dev_attr.StringSeq.in();
+    }
     else if (dev_attr.FloatSeq.operator->() != NULL)
+    {
         att.value <<= dev_attr.FloatSeq.in();
+    }
     else if (dev_attr.BooleanSeq.operator->() != NULL)
+    {
         att.value <<= dev_attr.BooleanSeq.in();
+    }
     else if (dev_attr.UShortSeq.operator->() != NULL)
+    {
         att.value <<= dev_attr.UShortSeq.in();
+    }
     else if (dev_attr.UCharSeq.operator->() != NULL)
+    {
         att.value <<= dev_attr.UCharSeq.in();
+    }
     else if (dev_attr.Long64Seq.operator->() != NULL)
+    {
         att.value <<= dev_attr.Long64Seq.in();
+    }
     else if (dev_attr.ULongSeq.operator->() != NULL)
+    {
         att.value <<= dev_attr.ULongSeq.in();
+    }
     else if (dev_attr.ULong64Seq.operator->() != NULL)
+    {
         att.value <<= dev_attr.ULong64Seq.in();
+    }
     else if (dev_attr.StateSeq.operator->() != NULL)
+    {
         att.value <<= dev_attr.StateSeq.in();
+    }
     else if (dev_attr.EncodedSeq.operator->() != NULL)
     {
         TangoSys_OMemStream desc;
@@ -1677,9 +1813,13 @@ ostream &operator<<(ostream &o_str, AttributeInfo &p)
     }
 
     if ((p.writable == Tango::WRITE) || (p.writable == Tango::READ_WRITE))
+    {
         o_str << "Attribute is writable" << endl;
+    }
     else
+    {
         o_str << "Attribute is not writable" << endl;
+    }
     o_str << "Attribute label = " << p.label << endl;
     o_str << "Attribute description = " << p.description << endl;
     o_str << "Attribute unit = " << p.unit;
@@ -1846,13 +1986,19 @@ AttributeInfoEx &AttributeInfoEx::operator=(const AttributeConfig_5 *att_5)
     disp_level = att_5->level;
     root_attr_name = att_5->root_attr_name;
     if (att_5->memorized == false)
+    {
         memorized = NONE;
+    }
     else
     {
         if (att_5->mem_init == false)
+        {
             memorized = MEMORIZED;
+        }
         else
+        {
             memorized = MEMORIZED_WRITE_INIT;
+        }
     }
     enum_labels.clear();
     for (unsigned int j = 0; j < att_5->enum_labels.length(); j++)
@@ -1972,7 +2118,9 @@ ostream &operator<<(ostream &o_str, AttributeInfoEx &p)
         case Tango::DEV_ENUM :
             o_str << "Tango::DevEnum" << endl;
             for (size_t loop = 0; loop < p.enum_labels.size(); loop++)
+            {
                 o_str << "\tEnumeration label = " << p.enum_labels[loop] << endl;
+            }
             break;
 
         case Tango::DATA_TYPE_UNKNOWN :
@@ -2069,7 +2217,9 @@ ostream &operator<<(ostream &o_str, AttributeInfoEx &p)
 
     o_str << "Attribute writable_attr_name = " << p.writable_attr_name << endl;
     if (p.root_attr_name.empty() == false)
+    {
         o_str << "Root attribute name = " << p.root_attr_name << endl;
+    }
     o_str << "Attribute label = " << p.label << endl;
     o_str << "Attribute description = " << p.description << endl;
     o_str << "Attribute unit = " << p.unit;
@@ -2081,7 +2231,9 @@ ostream &operator<<(ostream &o_str, AttributeInfoEx &p)
 
     unsigned int i;
     for (i = 0; i < p.extensions.size(); i++)
+    {
         o_str << "Attribute extensions " << i + 1 << " = " << p.extensions[i] << endl;
+    }
 
     o_str << "Attribute alarm : min alarm = ";
     p.alarms.min_alarm.empty() == true ? o_str << "Not specified" : o_str << p.alarms.min_alarm;
@@ -2108,7 +2260,9 @@ ostream &operator<<(ostream &o_str, AttributeInfoEx &p)
     o_str << endl;
 
     for (i = 0; i < p.alarms.extensions.size(); i++)
+    {
         o_str << "Attribute alarm extensions " << i + 1 << " = " << p.alarms.extensions[i] << endl;
+    }
 
     o_str << "Attribute event : change event absolute change = ";
     p.events.ch_event.abs_change.empty() == true ? o_str << "Not specified" : o_str << p.events.ch_event.abs_change;
@@ -2119,16 +2273,20 @@ ostream &operator<<(ostream &o_str, AttributeInfoEx &p)
     o_str << endl;
 
     for (i = 0; i < p.events.ch_event.extensions.size(); i++)
+    {
         o_str << "Attribute alarm : change event extensions " << i + 1 << " = " << p.events.ch_event.extensions[i]
               << endl;
+    }
 
     o_str << "Attribute event : periodic event period = ";
     p.events.per_event.period.empty() == true ? o_str << "Not specified" : o_str << p.events.per_event.period;
     o_str << endl;
 
     for (i = 0; i < p.events.per_event.extensions.size(); i++)
+    {
         o_str << "Attribute alarm : periodic event extensions " << i + 1 << " = " << p.events.per_event.extensions[i]
               << endl;
+    }
 
     o_str << "Attribute event : archive event absolute change = ";
     p.events.arch_event.archive_abs_change.empty() == true ? o_str << "Not specified" : o_str
@@ -2148,10 +2306,14 @@ ostream &operator<<(ostream &o_str, AttributeInfoEx &p)
     for (i = 0; i < p.events.arch_event.extensions.size(); i++)
     {
         if (i == 0)
+        {
             o_str << endl;
+        }
         o_str << "Attribute alarm : archive event extensions " << i + 1 << " = " << p.events.arch_event.extensions[i];
         if (i != p.events.arch_event.extensions.size() - 1)
+        {
             o_str << endl;
+        }
     }
 
     return o_str;
@@ -2180,9 +2342,13 @@ ostream &operator<<(ostream &o_str, PipeInfo &p)
 
     o_str << "Pipe writable type = ";
     if (p.writable == PIPE_READ)
+    {
         o_str << "READ" << endl;
+    }
     else
+    {
         o_str << "READ_WRITE" << endl;
+    }
 
     o_str << "Pipe display level = ";
     switch (p.disp_level)
@@ -2207,7 +2373,9 @@ ostream &operator<<(ostream &o_str, PipeInfo &p)
     for (i = 0; i < p.extensions.size(); i++)
     {
         if (i == 0)
+        {
             o_str << endl;
+        }
         o_str << "Pipe extensions " << i + 1 << " = " << p.extensions[i] << endl;
     }
 

@@ -74,7 +74,9 @@ EventSupplier::EventSupplier(Util *tg)
     {
         fqdn_prefix = "tango://";
         if (Util::_UseDb == false || Util::_FileDb == true)
+        {
             fqdn_prefix = fqdn_prefix + tg->get_host_name() + ':' + tg->get_svr_port_num() + '/';
+        }
         else
         {
             Database *db = tg->get_database();
@@ -150,17 +152,23 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
         {
             case 5:
                 if (change5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+                {
                     attr.remove_client_lib(5, string(EventName[CHANGE_EVENT]));
+                }
                 break;
 
             case 4:
                 if (change4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+                {
                     attr.remove_client_lib(4, string(EventName[CHANGE_EVENT]));
+                }
                 break;
 
             default:
                 if (change3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+                {
                     attr.remove_client_lib(3, string(EventName[CHANGE_EVENT]));
+                }
                 break;
         }
 
@@ -169,7 +177,9 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
     if (client_libs.empty() == false)
     {
         if (detect_and_push_change_event(device_impl, attr_value, attr, attr_name, except) == true)
+        {
             ret.change = true;
+        }
     }
 
 //
@@ -186,17 +196,23 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
         {
             case 5:
                 if (periodic5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+                {
                     attr.remove_client_lib(5, string(EventName[PERIODIC_EVENT]));
+                }
                 break;
 
             case 4:
                 if (periodic4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+                {
                     attr.remove_client_lib(4, string(EventName[PERIODIC_EVENT]));
+                }
                 break;
 
             default:
                 if (periodic3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+                {
                     attr.remove_client_lib(3, string(EventName[PERIODIC_EVENT]));
+                }
                 break;
         }
 
@@ -205,7 +221,9 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
     if (client_libs.empty() == false)
     {
         if (detect_and_push_periodic_event(device_impl, attr_value, attr, attr_name, except, time_bef_attr) == true)
+        {
             ret.periodic = true;
+        }
     }
 
 //
@@ -222,17 +240,23 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
         {
             case 5:
                 if (archive5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+                {
                     attr.remove_client_lib(5, string(EventName[ARCHIVE_EVENT]));
+                }
                 break;
 
             case 4:
                 if (archive4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+                {
                     attr.remove_client_lib(4, string(EventName[ARCHIVE_EVENT]));
+                }
                 break;
 
             default:
                 if (archive3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+                {
                     attr.remove_client_lib(3, string(EventName[ARCHIVE_EVENT]));
+                }
                 break;
         }
 
@@ -241,7 +265,9 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
     if (client_libs.empty() == false)
     {
         if (detect_and_push_archive_event(device_impl, attr_value, attr, attr_name, except, time_bef_attr) == true)
+        {
             ret.archive = true;
+        }
     }
 
     return ret;
@@ -282,13 +308,21 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
     Tango::AttrQuality the_quality;
 
     if (attr_value.attr_val_5 != NULL)
+    {
         the_quality = attr_value.attr_val_5->quality;
+    }
     else if (attr_value.attr_val_4 != NULL)
+    {
         the_quality = attr_value.attr_val_4->quality;
+    }
     else if (attr_value.attr_val_3 != NULL)
+    {
         the_quality = attr_value.attr_val_3->quality;
+    }
     else
+    {
         the_quality = attr_value.attr_val->quality;
+    }
 
 //
 // get the mutex to synchronize the sending of events
@@ -310,20 +344,30 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
         else
         {
             if (attr_value.attr_val_5 != NULL)
+            {
                 attr.prev_change_event.value_4 = attr_value.attr_val_5->value;
+            }
             else if (attr_value.attr_val_4 != NULL)
+            {
                 attr.prev_change_event.value_4 = attr_value.attr_val_4->value;
+            }
             else if (attr_value.attr_val_3 != NULL)
+            {
                 attr.prev_change_event.value = attr_value.attr_val_3->value;
+            }
             else
+            {
                 attr.prev_change_event.value = attr_value.attr_val->value;
+            }
 
             attr.prev_change_event.quality = the_quality;
             attr.prev_change_event.err = false;
         }
         attr.prev_change_event.inited = true;
         if (user_push == true)
+        {
             is_change = true;
+        }
     }
     else
     {
@@ -369,13 +413,21 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
         else
         {
             if (attr_value.attr_val_5 != NULL)
+            {
                 attr.prev_change_event.value_4 = attr_value.attr_val_5->value;
+            }
             else if (attr_value.attr_val_4 != NULL)
+            {
                 attr.prev_change_event.value_4 = attr_value.attr_val_4->value;
+            }
             else if (attr_value.attr_val_3 != NULL)
+            {
                 attr.prev_change_event.value = attr_value.attr_val_3->value;
+            }
             else
+            {
                 attr.prev_change_event.value = attr_value.attr_val->value;
+            }
             attr.prev_change_event.quality = the_quality;
             attr.prev_change_event.err = false;
         }
@@ -392,15 +444,23 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
 
         filterable_names.push_back("forced_event");
         if (force_change == true)
+        {
             filterable_data.push_back((double) 1.0);
+        }
         else
+        {
             filterable_data.push_back((double) 0.0);
+        }
 
         filterable_names.push_back("quality");
         if (quality_change == true)
+        {
             filterable_data.push_back((double) 1.0);
+        }
         else
+        {
             filterable_data.push_back((double) 0.0);
+        }
 
         vector<int> &client_libs = attr.get_client_lib(CHANGE_EVENT);
         vector<int>::iterator ite;
@@ -453,16 +513,26 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
             if (need_free == true)
             {
                 if (sent_value.attr_val_5 != NULL)
+                {
                     delete sent_value.attr_val_5;
+                }
                 else if (sent_value.attr_val_4 != NULL)
+                {
                     delete sent_value.attr_val_4;
+                }
                 else if (sent_value.attr_val_3 != NULL)
+                {
                     delete sent_value.attr_val_3;
+                }
                 else
+                {
                     delete sent_value.attr_val;
+                }
             }
             if (name_changed == true)
+            {
                 ev_name = EventName[CHANGE_EVENT];
+            }
         }
         ret = true;
 
@@ -515,13 +585,21 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
     Tango::AttrQuality the_quality;
 
     if (attr_value.attr_val_5 != NULL)
+    {
         the_quality = attr_value.attr_val_5->quality;
+    }
     else if (attr_value.attr_val_4 != NULL)
+    {
         the_quality = attr_value.attr_val_4->quality;
+    }
     else if (attr_value.attr_val_3 != NULL)
+    {
         the_quality = attr_value.attr_val_3->quality;
+    }
     else
+    {
         the_quality = attr_value.attr_val->quality;
+    }
 
     struct timeval now;
     if (time_bef_attr == NULL)
@@ -552,9 +630,13 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 //
 
     if (time_bef_attr != NULL)
+    {
         now_ms = (double) time_bef_attr->tv_sec * 1000. + (double) time_bef_attr->tv_usec / 1000.;
+    }
     else
+    {
         now_ms = (double) now.tv_sec * 1000. + (double) now.tv_usec / 1000.;
+    }
     ms_since_last_periodic = now_ms - attr.archive_last_periodic;
 
     int arch_period;
@@ -618,13 +700,21 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         else
         {
             if (attr_value.attr_val_5 != NULL)
+            {
                 attr.prev_archive_event.value_4 = attr_value.attr_val_5->value;
+            }
             else if (attr_value.attr_val_4 != NULL)
+            {
                 attr.prev_archive_event.value_4 = attr_value.attr_val_4->value;
+            }
             else if (attr_value.attr_val_3 != NULL)
+            {
                 attr.prev_archive_event.value = attr_value.attr_val_3->value;
+            }
             else
+            {
                 attr.prev_archive_event.value = attr_value.attr_val->value;
+            }
 
             attr.prev_archive_event.quality = the_quality;
             attr.prev_archive_event.err = false;
@@ -633,7 +723,9 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         attr.archive_last_event = now_ms;
         attr.prev_archive_event.inited = true;
         if (user_push == true)
+        {
             is_change = true;
+        }
     }
     else
     {
@@ -683,13 +775,21 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         else
         {
             if (attr_value.attr_val_5 != NULL)
+            {
                 attr.prev_archive_event.value_4 = attr_value.attr_val_5->value;
+            }
             else if (attr_value.attr_val_4 != NULL)
+            {
                 attr.prev_archive_event.value_4 = attr_value.attr_val_4->value;
+            }
             else if (attr_value.attr_val_3 != NULL)
+            {
                 attr.prev_archive_event.value = attr_value.attr_val_3->value;
+            }
             else
+            {
                 attr.prev_archive_event.value = attr_value.attr_val->value;
+            }
             attr.prev_archive_event.quality = the_quality;
             attr.prev_archive_event.err = false;
         }
@@ -716,15 +816,23 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         filterable_data.push_back(delta_change_abs);
         filterable_names.push_back("forced_event");
         if (force_change == true)
+        {
             filterable_data.push_back((double) 1.0);
+        }
         else
+        {
             filterable_data.push_back((double) 0.0);
+        }
 
         filterable_names.push_back("quality");
         if (quality_change == true)
+        {
             filterable_data.push_back((double) 1.0);
+        }
         else
+        {
             filterable_data.push_back((double) 0.0);
+        }
 
         filterable_names.push_back("delta_event");
         filterable_data.push_back(now_ms - attr.archive_last_event);
@@ -781,16 +889,26 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
             if (need_free == true)
             {
                 if (sent_value.attr_val_5 != NULL)
+                {
                     delete sent_value.attr_val_5;
+                }
                 else if (sent_value.attr_val_4 != NULL)
+                {
                     delete sent_value.attr_val_4;
+                }
                 else if (sent_value.attr_val_3 != NULL)
+                {
                     delete sent_value.attr_val_3;
+                }
                 else
+                {
                     delete sent_value.attr_val;
+                }
             }
             if (name_changed == true)
+            {
                 ev_name = EventName[ARCHIVE_EVENT];
+            }
         }
 
         ret = true;
@@ -853,9 +971,13 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
 //
 
     if (time_bef_attr != NULL)
+    {
         now_ms = (double) time_bef_attr->tv_sec * 1000. + (double) time_bef_attr->tv_usec / 1000.;
+    }
     else
+    {
         now_ms = (double) now.tv_sec * 1000. + (double) now.tv_usec / 1000.;
+    }
 
 //
 // get the mutex to synchronize the sending of events
@@ -977,16 +1099,26 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
             if (need_free == true)
             {
                 if (sent_value.attr_val_5 != NULL)
+                {
                     delete sent_value.attr_val_5;
+                }
                 else if (sent_value.attr_val_4 != NULL)
+                {
                     delete sent_value.attr_val_4;
+                }
                 else if (sent_value.attr_val_3 != NULL)
+                {
                     delete sent_value.attr_val_3;
+                }
                 else
+                {
                     delete sent_value.attr_val;
+                }
             }
             if (name_changed == true)
+            {
                 ev_name = EventName[PERIODIC_EVENT];
+            }
         }
         ret = true;
     }
@@ -1030,9 +1162,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
     const CORBA::Any *the_new_any = NULL;
 
     if (attr_value.attr_val_5 != NULL)
+    {
         the_new_quality = attr_value.attr_val_5->quality;
+    }
     else if (attr_value.attr_val_4 != NULL)
+    {
         the_new_quality = attr_value.attr_val_4->quality;
+    }
     else if (attr_value.attr_val_3 != NULL)
     {
         the_new_quality = attr_value.attr_val_3->quality;
@@ -1202,7 +1338,9 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
         abs_change[1] = attr.abs_change[1];
         inited = attr.prev_change_event.inited;
         if ((attr.prev_change_event.quality != Tango::ATTR_INVALID) && (the_new_quality != Tango::ATTR_INVALID))
+        {
             enable_check = true;
+        }
     }
     else
     {
@@ -1212,7 +1350,9 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
         abs_change[1] = attr.archive_abs_change[1];
         inited = attr.prev_archive_event.inited;
         if ((attr.prev_archive_event.quality != Tango::ATTR_INVALID) && (the_new_quality != Tango::ATTR_INVALID))
+        {
             enable_check = true;
+        }
     }
     mon1.rel_monitor();
 
@@ -1224,7 +1364,9 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
             unsigned int i;
 
             if (the_new_any != NULL)
+            {
                 ty = the_new_any->type();
+            }
 
 //
 // First, analyse the DevEncoded data type
@@ -1239,9 +1381,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
 
                 const Tango::DevVarEncodedArray *un_seq;
                 if (attr_value.attr_val_5 != NULL)
+                {
                     un_seq = &(attr_value.attr_val_5->value.encoded_att_value());
+                }
                 else
+                {
                     un_seq = &(attr_value.attr_val_4->value.encoded_att_value());
+                }
 
                 curr_seq_str_nb = strlen((*un_seq)[0].encoded_format.in());
                 curr_seq_nb = (*un_seq)[0].encoded_data.length();
@@ -1293,7 +1439,9 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                             {
                                 delta_change_rel = 100;
                                 if ((*curr_data_ptr)[i] == (*prev_data_ptr)[i])
+                                {
                                     delta_change_rel = 0;
+                                }
                             }
                             if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
                             {
@@ -1327,27 +1475,39 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                     dev_state_type = true;
                     curr_sta = attr_value.attr_val_5->value.dev_state_att();
                     if (archive == true)
+                    {
                         prev_sta = attr.prev_archive_event.value_4.dev_state_att();
+                    }
                     else
+                    {
                         prev_sta = attr.prev_change_event.value_4.dev_state_att();
+                    }
                 }
                 else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == DEVICE_STATE))
                 {
                     dev_state_type = true;
                     curr_sta = attr_value.attr_val_4->value.dev_state_att();
                     if (archive == true)
+                    {
                         prev_sta = attr.prev_archive_event.value_4.dev_state_att();
+                    }
                     else
+                    {
                         prev_sta = attr.prev_change_event.value_4.dev_state_att();
+                    }
                 }
                 else if ((the_new_any != NULL) && (ty->kind() == CORBA::tk_enum))
                 {
                     dev_state_type = true;
                     *the_new_any >>= curr_sta;
                     if (archive == true)
+                    {
                         attr.prev_archive_event.value >>= prev_sta;
+                    }
                     else
+                    {
                         attr.prev_change_event.value >>= prev_sta;
+                    }
 
                 }
 
@@ -1389,9 +1549,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                     long_type = true;
                     *the_new_any >>= curr_seq_lo;
                     if (archive == true)
+                    {
                         attr.prev_archive_event.value >>= prev_seq_lo;
+                    }
                     else
+                    {
                         attr.prev_change_event.value >>= prev_seq_lo;
+                    }
                 }
 
                 if (long_type == true)
@@ -1414,7 +1578,8 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                             else
                             {
                                 delta_change_rel = 100;
-                                if ((*curr_seq_lo)[i] == (*prev_seq_lo)[i]) delta_change_rel = 0;
+                                if ((*curr_seq_lo)[i] == (*prev_seq_lo)[i])
+                                { delta_change_rel = 0; }
                             }
 
                             if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
@@ -1455,9 +1620,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                     long_long_type = true;
                     *the_new_any >>= curr_seq_64;
                     if (archive == true)
+                    {
                         attr.prev_archive_event.value >>= prev_seq_64;
+                    }
                     else
+                    {
                         attr.prev_change_event.value >>= prev_seq_64;
+                    }
                 }
 
                 if (long_long_type == true)
@@ -1481,7 +1650,8 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                             else
                             {
                                 delta_change_rel = 100;
-                                if ((*curr_seq_64)[i] == (*prev_seq_64)[i]) delta_change_rel = 0;
+                                if ((*curr_seq_64)[i] == (*prev_seq_64)[i])
+                                { delta_change_rel = 0; }
                             }
                             if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
                             {
@@ -1521,9 +1691,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                     short_type = true;
                     *the_new_any >>= curr_seq_sh;
                     if (archive == true)
+                    {
                         attr.prev_archive_event.value >>= prev_seq_sh;
+                    }
                     else
+                    {
                         attr.prev_change_event.value >>= prev_seq_sh;
+                    }
                 }
 
                 if (short_type == true)
@@ -1562,7 +1736,8 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                                 else
                                 {
                                     delta_change_rel = 100;
-                                    if ((*curr_seq_sh)[i] == (*prev_seq_sh)[i]) delta_change_rel = 0;
+                                    if ((*curr_seq_sh)[i] == (*prev_seq_sh)[i])
+                                    { delta_change_rel = 0; }
                                 }
                                 if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
                                 {
@@ -1603,9 +1778,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                     double_type = true;
                     *the_new_any >>= curr_seq_db;
                     if (archive == true)
+                    {
                         attr.prev_archive_event.value >>= prev_seq_db;
+                    }
                     else
+                    {
                         attr.prev_change_event.value >>= prev_seq_db;
+                    }
                 }
 
                 if (double_type == true)
@@ -1635,7 +1814,8 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                             else
                             {
                                 delta_change_rel = 100;
-                                if ((*curr_seq_db)[i] == (*prev_seq_db)[i]) delta_change_rel = 0;
+                                if ((*curr_seq_db)[i] == (*prev_seq_db)[i])
+                                { delta_change_rel = 0; }
                             }
 
                             if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
@@ -1688,9 +1868,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                     string_type = true;
                     *the_new_any >>= curr_seq_str;
                     if (archive == true)
+                    {
                         attr.prev_archive_event.value >>= prev_seq_str;
+                    }
                     else
+                    {
                         attr.prev_change_event.value >>= prev_seq_str;
+                    }
                 }
 
                 if (string_type == true)
@@ -1733,9 +1917,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                     float_type = true;
                     *the_new_any >>= curr_seq_fl;
                     if (archive == true)
+                    {
                         attr.prev_archive_event.value >>= prev_seq_fl;
+                    }
                     else
+                    {
                         attr.prev_change_event.value >>= prev_seq_fl;
+                    }
                 }
 
                 if (float_type == true)
@@ -1765,7 +1953,8 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                             else
                             {
                                 delta_change_rel = 100;
-                                if ((*curr_seq_fl)[i] == (*prev_seq_fl)[i]) delta_change_rel = 0;
+                                if ((*curr_seq_fl)[i] == (*prev_seq_fl)[i])
+                                { delta_change_rel = 0; }
                             }
                             if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
                             {
@@ -1817,9 +2006,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                     unsigned_short_type = true;
                     *the_new_any >>= curr_seq_ush;
                     if (archive == true)
+                    {
                         attr.prev_archive_event.value >>= prev_seq_ush;
+                    }
                     else
+                    {
                         attr.prev_change_event.value >>= prev_seq_ush;
+                    }
                 }
 
                 if (unsigned_short_type == true)
@@ -1842,7 +2035,8 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                             else
                             {
                                 delta_change_rel = 100;
-                                if ((*curr_seq_ush)[i] == (*prev_seq_ush)[i]) delta_change_rel = 0;
+                                if ((*curr_seq_ush)[i] == (*prev_seq_ush)[i])
+                                { delta_change_rel = 0; }
                             }
                             if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
                             {
@@ -1882,9 +2076,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                     boolean_type = true;
                     *the_new_any >>= curr_seq_bo;
                     if (archive == true)
+                    {
                         attr.prev_archive_event.value >>= prev_seq_bo;
+                    }
                     else
+                    {
                         attr.prev_change_event.value >>= prev_seq_bo;
+                    }
                 }
 
                 if (boolean_type == true)
@@ -1927,9 +2125,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                     char_type = true;
                     *the_new_any >>= curr_seq_uch;
                     if (archive == true)
+                    {
                         attr.prev_archive_event.value >>= prev_seq_uch;
+                    }
                     else
+                    {
                         attr.prev_change_event.value >>= prev_seq_uch;
+                    }
                 }
 
                 if (char_type == true)
@@ -1952,7 +2154,8 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                             else
                             {
                                 delta_change_rel = 100;
-                                if ((*curr_seq_uch)[i] == (*prev_seq_uch)[i]) delta_change_rel = 0;
+                                if ((*curr_seq_uch)[i] == (*prev_seq_uch)[i])
+                                { delta_change_rel = 0; }
                             }
                             if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
                             {
@@ -1992,9 +2195,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                     unsigned_long_type = true;
                     *the_new_any >>= curr_seq_ulo;
                     if (archive == true)
+                    {
                         attr.prev_archive_event.value >>= prev_seq_ulo;
+                    }
                     else
+                    {
                         attr.prev_change_event.value >>= prev_seq_ulo;
+                    }
                 }
 
                 if (unsigned_long_type == true)
@@ -2017,7 +2224,8 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                             else
                             {
                                 delta_change_rel = 100;
-                                if ((*curr_seq_ulo)[i] == (*prev_seq_ulo)[i]) delta_change_rel = 0;
+                                if ((*curr_seq_ulo)[i] == (*prev_seq_ulo)[i])
+                                { delta_change_rel = 0; }
                             }
                             if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
                             {
@@ -2057,9 +2265,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                     unsigned_64_type = true;
                     *the_new_any >>= curr_seq_u64;
                     if (archive == true)
+                    {
                         attr.prev_archive_event.value >>= prev_seq_u64;
+                    }
                     else
+                    {
                         attr.prev_change_event.value >>= prev_seq_u64;
+                    }
 
                 }
 
@@ -2084,7 +2296,8 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                             else
                             {
                                 delta_change_rel = 100;
-                                if ((*curr_seq_u64)[i] == (*prev_seq_u64)[i]) delta_change_rel = 0;
+                                if ((*curr_seq_u64)[i] == (*prev_seq_u64)[i])
+                                { delta_change_rel = 0; }
                             }
                             if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
                             {
@@ -2124,9 +2337,13 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
                     state_type = true;
                     *the_new_any >>= curr_seq_state;
                     if (archive == true)
+                    {
                         attr.prev_archive_event.value >>= prev_seq_state;
+                    }
                     else
+                    {
                         attr.prev_change_event.value >>= prev_seq_state;
+                    }
                 }
 
                 if (state_type == true)
@@ -2258,13 +2475,19 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,
         omni_mutex_lock oml(event_mutex);
 
         if (conf5 == true)
+        {
             attr_sub = attr.event_attr_conf5_subscription;
+        }
         else
+        {
             attr_sub = attr.event_attr_conf_subscription;
+        }
     }
 
     if (attr_sub == 0)
+    {
         return;
+    }
 
     now = time(NULL);
     att_conf_subscription = now - attr_sub;
@@ -2288,7 +2511,9 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,
 
     string ev_type = CONF_TYPE_EVENT;
     if (conf5 == true)
+    {
         ev_type = EVENT_COMPAT_IDL5 + ev_type;
+    }
 
     push_event(device_impl,
                ev_type,
@@ -2406,7 +2631,9 @@ bool EventSupplier::any_dev_intr_client(DeviceImpl *device_impl)
     time_t dev_intr_subscription = now - device_impl->get_event_intr_change_subscription();
 
     if (dev_intr_subscription < EVENT_RESUBSCRIBE_PERIOD)
+    {
         ret = true;
+    }
 
     return ret;
 }
@@ -2430,7 +2657,9 @@ void EventSupplier::convert_att_event_to_5(struct EventSupplier::SuppliedEventDa
         need_free = true;
     }
     else
+    {
         sent_value.attr_val_5 = attr_value.attr_val_5;
+    }
 }
 
 void EventSupplier::convert_att_event_to_4(struct EventSupplier::SuppliedEventData &attr_value,
@@ -2452,7 +2681,9 @@ void EventSupplier::convert_att_event_to_4(struct EventSupplier::SuppliedEventDa
         need_free = true;
     }
     else
+    {
         sent_value.attr_val_4 = attr_value.attr_val_4;
+    }
 }
 
 void EventSupplier::convert_att_event_to_3(struct EventSupplier::SuppliedEventData &attr_value,
@@ -2474,7 +2705,9 @@ void EventSupplier::convert_att_event_to_3(struct EventSupplier::SuppliedEventDa
         need_free = true;
     }
     else
+    {
         sent_value.attr_val_3 = attr_value.attr_val_3;
+    }
 }
 
 } /* End of Tango namespace */

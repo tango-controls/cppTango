@@ -100,14 +100,20 @@ Connection::Connection(ORB *orb_in)
     if ((orb_in == NULL) && (CORBA::is_nil(au->get_orb()) == true))
     {
         if (au->in_server() == true)
+        {
             ApiUtil::instance()->set_orb(Util::instance()->get_orb());
+        }
         else
+        {
             ApiUtil::instance()->create_orb();
+        }
     }
     else
     {
         if (orb_in != NULL)
+        {
             au->set_orb(orb_in);
+        }
     }
 
 //
@@ -116,7 +122,9 @@ Connection::Connection(ORB *orb_in)
 
     int ucto = au->get_user_connect_timeout();
     if (ucto != -1)
+    {
         user_connect_timeout = ucto;
+    }
 }
 
 Connection::Connection(bool dummy)
@@ -171,7 +179,9 @@ Connection::Connection(const Connection &sou)
 
     device = sou.device;
     if (sou.version >= 2)
+    {
         device_2 = sou.device_2;
+    }
 
     timeout = sou.timeout;
     connection_state = sou.connection_state;
@@ -235,7 +245,9 @@ Connection &Connection::operator=(const Connection &rval)
 
     device = rval.device;
     if (rval.version >= 2)
+    {
         device_2 = rval.device_2;
+    }
 
     timeout = rval.timeout;
     connection_state = rval.connection_state;
@@ -265,7 +277,9 @@ Connection &Connection::operator=(const Connection &rval)
         *(ext.get()) = *(rval.ext.get());
     }
     else
+    {
         ext.reset(Tango_nullptr);
+    }
 #else
                                                                                                                             if (rval.ext != NULL)
 	{
@@ -301,7 +315,9 @@ void Connection::check_and_reconnect()
     {
         WriterLock guard(con_to_mon);
         if (connection_state != CONNECTION_OK)
+        {
             reconnect(dbase_used);
+        }
     }
 }
 
@@ -317,7 +333,9 @@ void Connection::check_and_reconnect(Tango::DevSource &sou)
     {
         WriterLock guard(con_to_mon);
         if (connection_state != CONNECTION_OK)
+        {
             reconnect(dbase_used);
+        }
     }
 }
 
@@ -415,14 +433,20 @@ void Connection::connect(string &corba_name)
 //
 
             if (corba_name.find(DbObjName) != string::npos)
+            {
                 connect_to_db = true;
+            }
 
             if (connect_to_db == false)
             {
                 if (user_connect_timeout != -1)
+                {
                     omniORB::setClientConnectTimeout(user_connect_timeout);
+                }
                 else
+                {
                     omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
+                }
             }
 
             device_5 = Device_5::_narrow(obj);
@@ -517,7 +541,9 @@ void Connection::connect(string &corba_name)
                         break;
                     }
                     else
+                    {
                         ext->has_alt_adr = false;
+                    }
                 }
             }
 
@@ -532,7 +558,9 @@ void Connection::connect(string &corba_name)
 
             connection_state = CONNECTION_OK;
             if (timeout != CLNT_TIMEOUT)
+            {
                 set_timeout_millis(timeout);
+            }
         }
         catch (CORBA::SystemException &ce)
         {
@@ -568,17 +596,25 @@ void Connection::connect(string &corba_name)
                             reason << "API_CantConnectToDatabase" << ends;
                             db_retries--;
                             if (db_retries != 0)
+                            {
                                 db_connect = true;
+                            }
                         }
                         else
                         {
                             desc << "device " << dev_name() << ends;
                             if (CORBA::OBJECT_NOT_EXIST::_downcast(&ce) != 0)
+                            {
                                 reason << "API_DeviceNotDefined" << ends;
+                            }
                             else if (CORBA::TRANSIENT::_downcast(&ce) != 0)
+                            {
                                 reason << "API_ServerNotRunning" << ends;
+                            }
                             else
+                            {
                                 reason << API_CantConnectToDevice << ends;
+                            }
                         }
                     }
                     else
@@ -616,13 +652,17 @@ void Connection::toIOR(const char *iorstr, IOP::IOR &ior)
 {
     size_t s = (iorstr ? strlen(iorstr) : 0);
     if (s < 4)
+    {
         throw CORBA::MARSHAL(0, CORBA::COMPLETED_NO);
+    }
     const char *p = iorstr;
     if (p[0] != 'I' ||
         p[1] != 'O' ||
         p[2] != 'R' ||
         p[3] != ':')
+    {
         throw CORBA::MARSHAL(0, CORBA::COMPLETED_NO);
+    }
 
     s = (s - 4) / 2;  // how many octets are there in the string
     p += 4;
@@ -647,7 +687,9 @@ void Connection::toIOR(const char *iorstr, IOP::IOR &ior)
             v = ((p[j] - 'A' + 10) << 4);
         }
         else
+        {
             throw CORBA::MARSHAL(0, CORBA::COMPLETED_NO);
+        }
 
         if (p[j + 1] >= '0' && p[j + 1] <= '9')
         {
@@ -662,7 +704,9 @@ void Connection::toIOR(const char *iorstr, IOP::IOR &ior)
             v += (p[j + 1] - 'A' + 10);
         }
         else
+        {
             throw CORBA::MARSHAL(0, CORBA::COMPLETED_NO);
+        }
 
         buf.marshalOctet(v);
     }
@@ -726,14 +770,20 @@ void Connection::reconnect(bool db_used)
                     ApiUtil *au = ApiUtil::instance();
                     int db_num;
                     if (get_from_env_var() == true)
+                    {
                         db_num = au->get_db_ind();
+                    }
                     else
+                    {
                         db_num = au->get_db_ind(get_db_host(), get_db_port_num());
+                    }
                     (au->get_db_vect())[db_num]->clear_access_except_errors();
                 }
             }
             else
+            {
                 corba_name = build_corba_name();
+            }
 
             connect(corba_name);
         }
@@ -805,7 +855,9 @@ bool Connection::is_connected()
     bool connected = true;
     ReaderLock guard(con_to_mon);
     if (connection_state != CONNECTION_OK)
+    {
         connected = false;
+    }
     return connected;
 }
 
@@ -959,7 +1011,9 @@ int Connection::get_env_var_from_file(string &f_name, const char *env_var, strin
         {
             pos_comment = file_line.find('#');
             if ((pos_comment != string::npos) && (pos_comment < pos_env))
+            {
                 continue;
+            }
 
             string::size_type pos;
             if ((pos = file_line.find('=')) != string::npos)
@@ -1007,7 +1061,9 @@ void Connection::get_fqdn(string &the_host)
     if (gethostname(buffer, 80) == 0)
     {
         if (::strcmp(buffer, the_host.c_str()) == 0)
+        {
             local_host = true;
+        }
     }
 
     struct addrinfo hints;
@@ -1035,7 +1091,9 @@ void Connection::get_fqdn(string &the_host)
         hints.ai_flags |= AI_NUMERICHOST;
     }
     else
+    {
         ip_list.push_back(the_host);
+    }
 
 //
 // Try to get FQDN
@@ -1111,7 +1169,9 @@ void Connection::set_timeout_millis(int millisecs)
     try
     {
         if (connection_state != CONNECTION_OK)
+        {
             reconnect(dbase_used);
+        }
 
         omniORB::setClientCallTimeout(device, millisecs);
 
@@ -1203,15 +1263,21 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
                 vector<Database *> &v_d = au->get_db_vect();
                 Database *db;
                 if (v_d.empty() == true)
+                {
                     db = static_cast<Database *>(this);
+                }
                 else
                 {
                     int db_num;
 
                     if (get_from_env_var() == true)
+                    {
                         db_num = au->get_db_ind();
+                    }
                     else
+                    {
                         db_num = au->get_db_ind(get_db_host(), get_db_port_num());
+                    }
                     db = v_d[db_num];
 /*					if (db->is_control_access_checked() == false)
 						db = static_cast<Database *>(this);*/
@@ -1250,7 +1316,9 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 
                     TangoSys_OMemStream desc;
                     if (e.length() == 0)
+                    {
                         desc << "Command " << command << " on device " << dev_name() << " is not authorized" << ends;
+                    }
                     else
                     {
                         desc << "Command " << command << " on device " << dev_name()
@@ -1258,7 +1326,9 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
                              << ends;
                         string ex(e[0].desc);
                         if (ex.find("defined") != string::npos)
+                        {
                             desc << "\n" << ex;
+                        }
                         desc << ends;
                     }
 
@@ -1310,11 +1380,15 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
             desc << ", command " << command << ends;
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
+            {
                 DeviceUnlockedExcept::re_throw_exception(e, (const char *) DEVICE_UNLOCKED_REASON,
                                                          desc.str(), (const char *) "Connection::command_inout()");
+            }
             else
+            {
                 Except::re_throw_exception(e, (const char *) API_CommandFailed,
                                            desc.str(), (const char *) "Connection::command_inout()");
+            }
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -1406,15 +1480,21 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
                 vector<Database *> &v_d = au->get_db_vect();
                 Database *db;
                 if (v_d.empty() == true)
+                {
                     db = static_cast<Database *>(this);
+                }
                 else
                 {
                     int db_num;
 
                     if (get_from_env_var() == true)
+                    {
                         db_num = au->get_db_ind();
+                    }
                     else
+                    {
                         db_num = au->get_db_ind(get_db_host(), get_db_port_num());
+                    }
                     db = v_d[db_num];
 /*					if (db->is_control_access_checked() == false)
 						db = static_cast<Database *>(this);*/
@@ -1452,7 +1532,9 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 
                     TangoSys_OMemStream desc;
                     if (e.length() == 0)
+                    {
                         desc << "Command " << command << " on device " << dev_name() << " is not authorized" << ends;
+                    }
                     else
                     {
                         desc << "Command " << command << " on device " << dev_name()
@@ -1460,7 +1542,9 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
                              << ends;
                         string ex(e[0].desc);
                         if (ex.find("defined") != string::npos)
+                        {
                             desc << "\n" << ex;
+                        }
                         desc << ends;
                     }
 
@@ -1505,11 +1589,15 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
             desc << ", command " << command << ends;
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
+            {
                 DeviceUnlockedExcept::re_throw_exception(e, (const char *) DEVICE_UNLOCKED_REASON,
                                                          desc.str(), (const char *) "Connection::command_inout()");
+            }
             else
+            {
                 Except::re_throw_exception(e, (const char *) API_CommandFailed,
                                            desc.str(), (const char *) "Connection::command_inout()");
+            }
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -1694,7 +1782,9 @@ void DeviceProxy::real_constructor(string &name, bool need_check_acc)
                                                   (const char *) "DeviceProxy::DeviceProxy");
             }
             else if (strcmp(dfe.errors[0].reason, API_DeviceNotExported) == 0)
+            {
                 exported = false;
+            }
         }
     }
     else
@@ -1735,14 +1825,18 @@ void DeviceProxy::real_constructor(string &name, bool need_check_acc)
         if (dbase_used == false)
         {
             if (strcmp(dfe.errors[1].reason, "API_DeviceNotDefined") == 0)
+            {
                 throw;
+            }
         }
     }
     catch (CORBA::SystemException &)
     {
         set_connection_state(CONNECTION_NOTOK);
         if (dbase_used == false)
+        {
             throw;
+        }
     }
 
 //
@@ -1759,7 +1853,9 @@ void DeviceProxy::real_constructor(string &name, bool need_check_acc)
         catch (Tango::ConnectionFailed &dfe)
         {
             if (strcmp(dfe.errors[1].reason, "API_DeviceNotDefined") == 0)
+            {
                 throw;
+            }
         }
     }
 
@@ -1780,7 +1876,9 @@ void DeviceProxy::real_constructor(string &name, bool need_check_acc)
     catch (Tango::DevFailed &e)
     {
         if (::strcmp(e.errors[0].reason.in(), "API_UtilSingletonNotCreated") != 0)
+        {
             throw;
+        }
     }
 
     return;
@@ -1812,9 +1910,13 @@ DeviceProxy::DeviceProxy(const DeviceProxy &sou)
         {
             ApiUtil *ui = ApiUtil::instance();
             if (ui->in_server() == true)
+            {
                 db_dev = new DbDevice(device_name, Tango::Util::instance()->get_database());
+            }
             else
+            {
                 db_dev = new DbDevice(device_name);
+            }
         }
         else
         {
@@ -1827,7 +1929,9 @@ DeviceProxy::DeviceProxy(const DeviceProxy &sou)
 //
 
     if (sou.adm_device == NULL)
+    {
         adm_device = NULL;
+    }
     else
     {
         adm_device = new DeviceProxy(sou.adm_device->dev_name().c_str());
@@ -1886,9 +1990,13 @@ DeviceProxy &DeviceProxy::operator=(const DeviceProxy &rval)
             {
                 ApiUtil *ui = ApiUtil::instance();
                 if (ui->in_server() == true)
+                {
                     db_dev = new DbDevice(device_name, Tango::Util::instance()->get_database());
+                }
                 else
+                {
                     db_dev = new DbDevice(device_name);
+                }
             }
             else
             {
@@ -1903,7 +2011,9 @@ DeviceProxy &DeviceProxy::operator=(const DeviceProxy &rval)
             adm_device = new DeviceProxy(rval.adm_device->dev_name().c_str());
         }
         else
+        {
             adm_device = NULL;
+        }
 
 #ifdef HAS_UNIQUE_PTR
         if (rval.ext_proxy.get() != NULL)
@@ -1912,9 +2022,11 @@ DeviceProxy &DeviceProxy::operator=(const DeviceProxy &rval)
             *(ext_proxy.get()) = *(rval.ext_proxy.get());
         }
         else
+        {
             ext_proxy.reset();
+        }
 #else
-                                                                                                                                delete ext_proxy;
+        delete ext_proxy;
         if (rval.ext_proxy != NULL)
         {
             ext_proxy = new DeviceProxyExt;
@@ -1975,12 +2087,18 @@ void DeviceProxy::parse_name(string &full_name)
         if (full_name_low.size() > 2)
         {
             if ((full_name_low[0] == '/') && (full_name_low[1] == '/'))
+            {
                 name_wo_prot = full_name_low.substr(2);
+            }
             else
+            {
                 name_wo_prot = full_name_low;
+            }
         }
         else
+        {
             name_wo_prot = full_name_low;
+        }
     }
     else
     {
@@ -2235,7 +2353,9 @@ void DeviceProxy::parse_name(string &full_name)
                 string safe_tmp_host(tmp_host);
 
                 if (tmp_host.find('.') == string::npos)
+                {
                     get_fqdn(tmp_host);
+                }
 
                 string::size_type pos2 = tmp_host.find('.');
                 bool alias_used = false;
@@ -2245,7 +2365,9 @@ void DeviceProxy::parse_name(string &full_name)
                     string h_name = tmp_host.substr(0, pos2);
                     fq = tmp_host.substr(pos2);
                     if (h_name != tmp_host)
+                    {
                         alias_used = true;
+                    }
                 }
 
                 if (alias_used == true)
@@ -2253,10 +2375,14 @@ void DeviceProxy::parse_name(string &full_name)
                     ext_proxy->nethost_alias = true;
                     ext_proxy->orig_tango_host = safe_tmp_host;
                     if (safe_tmp_host.find('.') == string::npos)
+                    {
                         ext_proxy->orig_tango_host = ext_proxy->orig_tango_host + fq;
+                    }
                 }
                 else
+                {
                     ext_proxy->nethost_alias = false;
+                }
 
                 db_host = tmp_host;
                 db_port = bef_sep.substr(tmp + 1);
@@ -2368,7 +2494,9 @@ string DeviceProxy::get_corba_name(bool need_check_acc)
 
     string local_ior;
     if (ApiUtil::instance()->in_server() == true)
+    {
         local_import(local_ior);
+    }
 
 //
 // If we are not in a server or if the device is not in the same process,
@@ -2397,14 +2525,22 @@ string DeviceProxy::get_corba_name(bool need_check_acc)
 //
 
     if (need_check_acc == true)
+    {
         access = db_dev->check_access_control();
+    }
     else
+    {
         check_acc = false;
+    }
 
     if (local_ior.size() != 0)
+    {
         return local_ior;
+    }
     else
+    {
         return import_info.ior;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -2488,7 +2624,9 @@ DbDevImportInfo DeviceProxy::import_info()
 DeviceProxy::~DeviceProxy()
 {
     if (dbase_used == true)
+    {
         delete db_dev;
+    }
 
 //
 // If the device has some subscribed event, unsubscribe them
@@ -2726,7 +2864,9 @@ string DeviceProxy::alias()
     {
         Database *db = this->get_device_db();
         if (db != NULL)
+        {
             db->get_alias(device_name, alias_name);
+        }
         else
         {
             Tango::Except::throw_exception((const char *) "DB_AliasNotDefined",
@@ -2915,7 +3055,9 @@ string DeviceProxy::adm_name()
             {
                 string prot("tango://");
                 if (host.find('.') == string::npos)
+                {
                     Connection::get_fqdn(host);
+                }
                 prot = prot + host + ':' + port + '/';
                 adm_name_str.insert(0, prot);
                 adm_name_str.append(MODIFIER_DBASE_NO);
@@ -3356,7 +3498,9 @@ CommandInfoList *DeviceProxy::get_command_config(vector<string> &cmd_names)
 //
 
     if (cmd_names.size() == 1 && cmd_names[0] == AllCmd)
+    {
         return all_cmds;
+    }
 
 //
 // Return only the required commands config
@@ -3789,19 +3933,29 @@ AttributeInfoList *DeviceProxy::get_attribute_config(vector<string> &attr_string
         if (attr_string_list[i] == AllAttr)
         {
             if (version >= 3)
+            {
                 attr_list[i] = string_dup(AllAttr_3);
+            }
             else
+            {
                 attr_list[i] = string_dup(AllAttr);
+            }
         }
         else if (attr_string_list[i] == AllAttr_3)
         {
             if (version < 3)
+            {
                 attr_list[i] = string_dup(AllAttr);
+            }
             else
+            {
                 attr_list[i] = string_dup(AllAttr_3);
+            }
         }
         else
+        {
             attr_list[i] = string_dup(attr_string_list[i].c_str());
+        }
     }
 
     while (ctr < 2)
@@ -3961,19 +4115,29 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string> &attr_s
         if (attr_string_list[i] == AllAttr)
         {
             if (version >= 3)
+            {
                 attr_list[i] = string_dup(AllAttr_3);
+            }
             else
+            {
                 attr_list[i] = string_dup(AllAttr);
+            }
         }
         else if (attr_string_list[i] == AllAttr_3)
         {
             if (version < 3)
+            {
                 attr_list[i] = string_dup(AllAttr);
+            }
             else
+            {
                 attr_list[i] = string_dup(AllAttr_3);
+            }
         }
         else
+        {
             attr_list[i] = string_dup(attr_string_list[i].c_str());
+        }
     }
 
     while (ctr < 2)
@@ -4065,19 +4229,27 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string> &attr_s
                         (*dev_attr_config)[i].max_alarm = attr_config_list_5[i].att_alarm.max_alarm;
                         (*dev_attr_config)[i].root_attr_name = attr_config_list_5[i].root_attr_name;
                         if (attr_config_list_5[i].memorized == false)
+                        {
                             (*dev_attr_config)[i].memorized = NONE;
+                        }
                         else
                         {
                             if (attr_config_list_5[i].mem_init == false)
+                            {
                                 (*dev_attr_config)[i].memorized = MEMORIZED;
+                            }
                             else
+                            {
                                 (*dev_attr_config)[i].memorized = MEMORIZED_WRITE_INIT;
+                            }
                         }
                         if (attr_config_list_5[i].data_type == DEV_ENUM)
                         {
                             for (size_t loop = 0; loop < attr_config_list_5[i].enum_labels.length(); loop++)
+                            {
                                 (*dev_attr_config)[i].enum_labels
                                     .push_back(attr_config_list_5[i].enum_labels[loop].in());
+                            }
                         }
                         COPY_ALARM_CONFIG((*dev_attr_config), attr_config_list_5)
 
@@ -4256,7 +4428,9 @@ void DeviceProxy::get_remaining_param(AttributeInfoListEx *dev_attr_config)
                     prop_value = tmp[0] + ", " + tmp[1];
                 }
                 else
+                {
                     db_data_class[i] >> prop_value;
+                }
                 i++;
 
 //
@@ -4268,25 +4442,45 @@ void DeviceProxy::get_remaining_param(AttributeInfoListEx *dev_attr_config)
                     if ((*dev_attr_config)[k].name == att_name)
                     {
                         if (prop_name == "min_warning")
+                        {
                             (*dev_attr_config)[k].alarms.min_warning = prop_value;
+                        }
                         else if (prop_name == "max_warning")
+                        {
                             (*dev_attr_config)[k].alarms.max_warning = prop_value;
+                        }
                         else if (prop_name == "delta_t")
+                        {
                             (*dev_attr_config)[k].alarms.delta_t = prop_value;
+                        }
                         else if (prop_name == "delta_val")
+                        {
                             (*dev_attr_config)[k].alarms.delta_val = prop_value;
+                        }
                         else if (prop_name == "abs_change")
+                        {
                             (*dev_attr_config)[k].events.ch_event.abs_change = prop_value;
+                        }
                         else if (prop_name == "rel_change")
+                        {
                             (*dev_attr_config)[k].events.ch_event.rel_change = prop_value;
+                        }
                         else if (prop_name == "period")
+                        {
                             (*dev_attr_config)[k].events.per_event.period = prop_value;
+                        }
                         else if (prop_name == "archive_abs_change")
+                        {
                             (*dev_attr_config)[k].events.arch_event.archive_abs_change = prop_value;
+                        }
                         else if (prop_name == "archive_rel_change")
+                        {
                             (*dev_attr_config)[k].events.arch_event.archive_rel_change = prop_value;
+                        }
                         else if (prop_name == "archive_period")
+                        {
                             (*dev_attr_config)[k].events.arch_event.archive_period = prop_value;
+                        }
                     }
                 }
             }
@@ -4320,7 +4514,9 @@ void DeviceProxy::get_remaining_param(AttributeInfoListEx *dev_attr_config)
                     prop_value = tmp[0] + ", " + tmp[1];
                 }
                 else
+                {
                     db_data_device[i] >> prop_value;
+                }
                 i++;
 
 //
@@ -4332,25 +4528,45 @@ void DeviceProxy::get_remaining_param(AttributeInfoListEx *dev_attr_config)
                     if ((*dev_attr_config)[k].name == att_name)
                     {
                         if (prop_name == "min_warning")
+                        {
                             (*dev_attr_config)[k].alarms.min_warning = prop_value;
+                        }
                         else if (prop_name == "max_warning")
+                        {
                             (*dev_attr_config)[k].alarms.max_warning = prop_value;
+                        }
                         else if (prop_name == "delta_t")
+                        {
                             (*dev_attr_config)[k].alarms.delta_t = prop_value;
+                        }
                         else if (prop_name == "delta_val")
+                        {
                             (*dev_attr_config)[k].alarms.delta_val = prop_value;
+                        }
                         else if (prop_name == "abs_change")
+                        {
                             (*dev_attr_config)[k].events.ch_event.abs_change = prop_value;
+                        }
                         else if (prop_name == "rel_change")
+                        {
                             (*dev_attr_config)[k].events.ch_event.rel_change = prop_value;
+                        }
                         else if (prop_name == "period")
+                        {
                             (*dev_attr_config)[k].events.per_event.period = prop_value;
+                        }
                         else if (prop_name == "archive_abs_change")
+                        {
                             (*dev_attr_config)[k].events.arch_event.archive_abs_change = prop_value;
+                        }
                         else if (prop_name == "archive_rel_change")
+                        {
                             (*dev_attr_config)[k].events.arch_event.archive_rel_change = prop_value;
+                        }
                         else if (prop_name == "archive_period")
+                        {
                             (*dev_attr_config)[k].events.arch_event.archive_period = prop_value;
+                        }
                     }
                 }
             }
@@ -4446,7 +4662,9 @@ void DeviceProxy::set_attribute_config(AttributeInfoList &dev_attr_list)
                                                          (const char *) "DeviceProxy::set_attribute_config()");
             }
             else
+            {
                 throw;
+            }
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -4674,7 +4892,9 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
                                                          (const char *) "DeviceProxy::set_attribute_config()");
             }
             else
+            {
                 throw;
+            }
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -4765,9 +4985,13 @@ PipeInfoList *DeviceProxy::get_pipe_config(vector<string> &pipe_string_list)
     for (unsigned int i = 0; i < pipe_string_list.size(); i++)
     {
         if (pipe_string_list[i] == AllPipe)
+        {
             pipe_list[i] = string_dup(AllPipe);
+        }
         else
+        {
             pipe_list[i] = string_dup(pipe_string_list[i].c_str());
+        }
     }
 
 //
@@ -4938,7 +5162,9 @@ void DeviceProxy::set_pipe_config(PipeInfoList &dev_pipe_list)
                                                          desc.str(), "DeviceProxy::set_pipe_config()");
             }
             else
+            {
                 throw;
+            }
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -5174,7 +5400,9 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
     pipe_value_5.name = dev_pipe.get_name().c_str();
     const string &bl_name = dev_pipe.get_root_blob().get_name();
     if (bl_name.size() != 0)
+    {
         pipe_value_5.data_blob.name = bl_name.c_str();
+    }
 
     DevVarPipeDataEltArray *tmp_ptr = dev_pipe.get_root_blob().get_insert_data();
     if (tmp_ptr == Tango_nullptr)
@@ -5311,7 +5539,9 @@ DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
     pipe_value_5.name = pipe_data.get_name().c_str();
     const string &bl_name = pipe_data.get_root_blob().get_name();
     if (bl_name.size() != 0)
+    {
         pipe_value_5.data_blob.name = bl_name.c_str();
+    }
 
     DevVarPipeDataEltArray *tmp_ptr = pipe_data.get_root_blob().get_insert_data();
     CORBA::ULong max, len;
@@ -5500,7 +5730,9 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string> &attr_strin
             {
                 desc << attr_string_list[i];
                 if (i != nb_attr - 1)
+                {
                     desc << ", ";
+                }
             }
             desc << ends;
             ApiConnExcept::re_throw_exception(e, (const char *) API_AttributeFailed,
@@ -5516,7 +5748,9 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string> &attr_strin
             {
                 desc << attr_string_list[i];
                 if (i != nb_attr - 1)
+                {
                     desc << ", ";
+                }
             }
             desc << ends;
             Except::re_throw_exception(e, (const char *) API_AttributeFailed,
@@ -5574,13 +5808,21 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string> &attr_strin
 
     unsigned long nb_received;
     if (version >= 5)
+    {
         nb_received = attr_value_list_5->length();
+    }
     else if (version == 4)
+    {
         nb_received = attr_value_list_4->length();
+    }
     else if (version == 3)
+    {
         nb_received = attr_value_list_3->length();
+    }
     else
+    {
         nb_received = attr_value_list->length();
+    }
 
     vector<DeviceAttribute> *dev_attr = new(vector<DeviceAttribute>);
     dev_attr->resize(nb_received);
@@ -5590,11 +5832,17 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string> &attr_strin
         if (version >= 3)
         {
             if (version == 5)
+            {
                 ApiUtil::attr_to_device(&(attr_value_list_5[i]), version, &(*dev_attr)[i]);
+            }
             else if (version == 4)
+            {
                 ApiUtil::attr_to_device(&(attr_value_list_4[i]), version, &(*dev_attr)[i]);
+            }
             else
+            {
                 ApiUtil::attr_to_device(NULL, &(attr_value_list_3[i]), version, &(*dev_attr)[i]);
+            }
 
 //
 // Add an error in the error stack in case there is one
@@ -5692,11 +5940,17 @@ DeviceAttribute DeviceProxy::read_attribute(string &attr_string)
     if (version >= 3)
     {
         if (version >= 5)
+        {
             ApiUtil::attr_to_device(&(attr_value_list_5[0]), version, &dev_attr);
+        }
         else if (version == 4)
+        {
             ApiUtil::attr_to_device(&(attr_value_list_4[0]), version, &dev_attr);
+        }
         else
+        {
             ApiUtil::attr_to_device(NULL, &(attr_value_list_3[0]), version, &dev_attr);
+        }
 
 //
 // Add an error in the error stack in case there is one
@@ -5958,12 +6212,18 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute> &attr_list)
     Tango::AccessControlType local_act;
 
     if (version == 0)
+    {
         check_and_reconnect(local_act);
+    }
 
     if (version >= 4)
+    {
         attr_value_list_4.length(attr_list.size());
+    }
     else
+    {
         attr_value_list.length(attr_list.size());
+    }
 
     for (unsigned int i = 0; i < attr_list.size(); i++)
     {
@@ -5988,97 +6248,145 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute> &attr_list)
         if (attr_list[i].LongSeq.operator->() != NULL)
         {
             if (version >= 4)
+            {
                 attr_value_list_4[i].value.long_att_value(attr_list[i].LongSeq.in());
+            }
             else
+            {
                 attr_value_list[i].value <<= attr_list[i].LongSeq.in();
+            }
             continue;
         }
         if (attr_list[i].Long64Seq.operator->() != NULL)
         {
             if (version >= 4)
+            {
                 attr_value_list_4[i].value.long64_att_value(attr_list[i].Long64Seq.in());
+            }
             else
+            {
                 attr_value_list[i].value <<= attr_list[i].Long64Seq.in();
+            }
             continue;
         }
         if (attr_list[i].ShortSeq.operator->() != NULL)
         {
             if (version >= 4)
+            {
                 attr_value_list_4[i].value.short_att_value(attr_list[i].ShortSeq.in());
+            }
             else
+            {
                 attr_value_list[i].value <<= attr_list[i].ShortSeq.in();
+            }
             continue;
         }
         if (attr_list[i].DoubleSeq.operator->() != NULL)
         {
             if (version >= 4)
+            {
                 attr_value_list_4[i].value.double_att_value(attr_list[i].DoubleSeq.in());
+            }
             else
+            {
                 attr_value_list[i].value <<= attr_list[i].DoubleSeq.in();
+            }
             continue;
         }
         if (attr_list[i].StringSeq.operator->() != NULL)
         {
             if (version >= 4)
+            {
                 attr_value_list_4[i].value.string_att_value(attr_list[i].StringSeq.in());
+            }
             else
+            {
                 attr_value_list[i].value <<= attr_list[i].StringSeq.in();
+            }
             continue;
         }
         if (attr_list[i].FloatSeq.operator->() != NULL)
         {
             if (version >= 4)
+            {
                 attr_value_list_4[i].value.float_att_value(attr_list[i].FloatSeq.in());
+            }
             else
+            {
                 attr_value_list[i].value <<= attr_list[i].FloatSeq.in();
+            }
             continue;
         }
         if (attr_list[i].BooleanSeq.operator->() != NULL)
         {
             if (version >= 4)
+            {
                 attr_value_list_4[i].value.bool_att_value(attr_list[i].BooleanSeq.in());
+            }
             else
+            {
                 attr_value_list[i].value <<= attr_list[i].BooleanSeq.in();
+            }
             continue;
         }
         if (attr_list[i].UShortSeq.operator->() != NULL)
         {
             if (version >= 4)
+            {
                 attr_value_list_4[i].value.ushort_att_value(attr_list[i].UShortSeq.in());
+            }
             else
+            {
                 attr_value_list[i].value <<= attr_list[i].UShortSeq.in();
+            }
             continue;
         }
         if (attr_list[i].UCharSeq.operator->() != NULL)
         {
             if (version >= 4)
+            {
                 attr_value_list_4[i].value.uchar_att_value(attr_list[i].UCharSeq.in());
+            }
             else
+            {
                 attr_value_list[i].value <<= attr_list[i].UCharSeq.in();
+            }
             continue;
         }
         if (attr_list[i].ULongSeq.operator->() != NULL)
         {
             if (version >= 4)
+            {
                 attr_value_list_4[i].value.ulong_att_value(attr_list[i].ULongSeq.in());
+            }
             else
+            {
                 attr_value_list[i].value <<= attr_list[i].ULongSeq.in();
+            }
             continue;
         }
         if (attr_list[i].ULong64Seq.operator->() != NULL)
         {
             if (version >= 4)
+            {
                 attr_value_list_4[i].value.ulong64_att_value(attr_list[i].ULong64Seq.in());
+            }
             else
+            {
                 attr_value_list[i].value <<= attr_list[i].ULong64Seq.in();
+            }
             continue;
         }
         if (attr_list[i].StateSeq.operator->() != NULL)
         {
             if (version >= 4)
+            {
                 attr_value_list_4[i].value.state_att_value(attr_list[i].StateSeq.in());
+            }
             else
+            {
                 attr_value_list[i].value <<= attr_list[i].StateSeq.in();
+            }
             continue;
         }
     }
@@ -6157,16 +6465,22 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute> &attr_list)
             {
                 desc << attr_value_list[i].name.in();
                 if (i != nb_attr - 1)
+                {
                     desc << ", ";
+                }
             }
             desc << ends;
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
+            {
                 DeviceUnlockedExcept::re_throw_exception(e, (const char *) DEVICE_UNLOCKED_REASON,
                                                          desc.str(), (const char *) "DeviceProxy::write_attribute()");
+            }
             else
+            {
                 Except::re_throw_exception(e, (const char *) API_AttributeFailed,
                                            desc.str(), (const char *) "DeviceProxy::write_attribute()");
+            }
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -6235,7 +6549,9 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
     Tango::AccessControlType local_act;
 
     if (version == 0)
+    {
         check_and_reconnect(local_act);
+    }
 
     if (version >= 4)
     {
@@ -6249,31 +6565,57 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
         attr_value_list_4[0].w_dim.dim_y = dev_attr.dim_y;
 
         if (dev_attr.LongSeq.operator->() != NULL)
+        {
             attr_value_list_4[0].value.long_att_value(dev_attr.LongSeq.in());
+        }
         else if (dev_attr.Long64Seq.operator->() != NULL)
+        {
             attr_value_list_4[0].value.long64_att_value(dev_attr.Long64Seq.in());
+        }
         else if (dev_attr.ShortSeq.operator->() != NULL)
+        {
             attr_value_list_4[0].value.short_att_value(dev_attr.ShortSeq.in());
+        }
         else if (dev_attr.DoubleSeq.operator->() != NULL)
+        {
             attr_value_list_4[0].value.double_att_value(dev_attr.DoubleSeq.in());
+        }
         else if (dev_attr.StringSeq.operator->() != NULL)
+        {
             attr_value_list_4[0].value.string_att_value(dev_attr.StringSeq.in());
+        }
         else if (dev_attr.FloatSeq.operator->() != NULL)
+        {
             attr_value_list_4[0].value.float_att_value(dev_attr.FloatSeq.in());
+        }
         else if (dev_attr.BooleanSeq.operator->() != NULL)
+        {
             attr_value_list_4[0].value.bool_att_value(dev_attr.BooleanSeq.in());
+        }
         else if (dev_attr.UShortSeq.operator->() != NULL)
+        {
             attr_value_list_4[0].value.ushort_att_value(dev_attr.UShortSeq.in());
+        }
         else if (dev_attr.UCharSeq.operator->() != NULL)
+        {
             attr_value_list_4[0].value.uchar_att_value(dev_attr.UCharSeq.in());
+        }
         else if (dev_attr.ULongSeq.operator->() != NULL)
+        {
             attr_value_list_4[0].value.ulong_att_value(dev_attr.ULongSeq.in());
+        }
         else if (dev_attr.ULong64Seq.operator->() != NULL)
+        {
             attr_value_list_4[0].value.ulong64_att_value(dev_attr.ULong64Seq.in());
+        }
         else if (dev_attr.StateSeq.operator->() != NULL)
+        {
             attr_value_list_4[0].value.state_att_value(dev_attr.StateSeq.in());
+        }
         else if (dev_attr.EncodedSeq.operator->() != NULL)
+        {
             attr_value_list_4[0].value.encoded_att_value(dev_attr.EncodedSeq.in());
+        }
     }
     else
     {
@@ -6286,29 +6628,53 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
         attr_value_list[0].dim_y = dev_attr.dim_y;
 
         if (dev_attr.LongSeq.operator->() != NULL)
+        {
             attr_value_list[0].value <<= dev_attr.LongSeq.in();
+        }
         else if (dev_attr.Long64Seq.operator->() != NULL)
+        {
             attr_value_list[0].value <<= dev_attr.Long64Seq.in();
+        }
         else if (dev_attr.ShortSeq.operator->() != NULL)
+        {
             attr_value_list[0].value <<= dev_attr.ShortSeq.in();
+        }
         else if (dev_attr.DoubleSeq.operator->() != NULL)
+        {
             attr_value_list[0].value <<= dev_attr.DoubleSeq.in();
+        }
         else if (dev_attr.StringSeq.operator->() != NULL)
+        {
             attr_value_list[0].value <<= dev_attr.StringSeq.in();
+        }
         else if (dev_attr.FloatSeq.operator->() != NULL)
+        {
             attr_value_list[0].value <<= dev_attr.FloatSeq.in();
+        }
         else if (dev_attr.BooleanSeq.operator->() != NULL)
+        {
             attr_value_list[0].value <<= dev_attr.BooleanSeq.in();
+        }
         else if (dev_attr.UShortSeq.operator->() != NULL)
+        {
             attr_value_list[0].value <<= dev_attr.UShortSeq.in();
+        }
         else if (dev_attr.UCharSeq.operator->() != NULL)
+        {
             attr_value_list[0].value <<= dev_attr.UCharSeq.in();
+        }
         else if (dev_attr.ULongSeq.operator->() != NULL)
+        {
             attr_value_list[0].value <<= dev_attr.ULongSeq.in();
+        }
         else if (dev_attr.ULong64Seq.operator->() != NULL)
+        {
             attr_value_list[0].value <<= dev_attr.ULong64Seq.in();
+        }
         else if (dev_attr.StateSeq.operator->() != NULL)
+        {
             attr_value_list[0].value <<= dev_attr.StateSeq.in();
+        }
     }
 
     int ctr = 0;
@@ -6395,11 +6761,15 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
             desc << ends;
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
+            {
                 DeviceUnlockedExcept::re_throw_exception(e, (const char *) DEVICE_UNLOCKED_REASON,
                                                          desc.str(), (const char *) "DeviceProxy::write_attribute()");
+            }
             else
+            {
                 Except::re_throw_exception(e, (const char *) API_AttributeFailed,
                                            desc.str(), (const char *) "DeviceProxy::write_attribute()");
+            }
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -6541,11 +6911,15 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
             desc << ends;
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
+            {
                 DeviceUnlockedExcept::re_throw_exception(e, (const char *) DEVICE_UNLOCKED_REASON,
                                                          desc.str(), (const char *) "DeviceProxy::write_attribute()");
+            }
             else
+            {
                 Except::re_throw_exception(e, (const char *) API_AttributeFailed,
                                            desc.str(), (const char *) "DeviceProxy::write_attribute()");
+            }
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -6607,7 +6981,9 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
     Tango::AccessControlType local_act;
 
     if (version == 0)
+    {
         check_and_reconnect(local_act);
+    }
 
 //
 // Check that the device supports IDL V4
@@ -6696,11 +7072,15 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
             desc << ends;
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
+            {
                 DeviceUnlockedExcept::re_throw_exception(e, (const char *) DEVICE_UNLOCKED_REASON,
                                                          desc.str(), (const char *) "DeviceProxy::write_attribute()");
+            }
             else
+            {
                 Except::re_throw_exception(e, (const char *) API_AttributeFailed,
                                            desc.str(), (const char *) "DeviceProxy::write_attribute()");
+            }
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -6926,7 +7306,9 @@ vector<DeviceDataHistory> *DeviceProxy::command_history(string &cmd_name, int de
     {
         ddh->reserve(hist_4->dates.length());
         for (unsigned int i = 0; i < hist_4->dates.length(); i++)
+        {
             ddh->push_back(DeviceDataHistory());
+        }
         from_hist4_2_DataHistory(hist_4, ddh);
     }
 
@@ -7047,16 +7429,22 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
     {
         ddh->reserve(hist_5->dates.length());
         for (unsigned int i = 0; i < hist_5->dates.length(); i++)
+        {
             ddh->push_back(DeviceAttributeHistory());
+        }
         from_hist_2_AttHistory(hist_5, ddh);
         for (unsigned int i = 0; i < hist_5->dates.length(); i++)
+        {
             (*ddh)[i].data_type = hist_5->data_type;
+        }
     }
     else if (version == 4)
     {
         ddh->reserve(hist_4->dates.length());
         for (unsigned int i = 0; i < hist_4->dates.length(); i++)
+        {
             ddh->push_back(DeviceAttributeHistory());
+        }
         from_hist_2_AttHistory(hist_4, ddh);
     }
     else if (version == 3)
@@ -7171,14 +7559,18 @@ bool DeviceProxy::is_polled(polled_object obj, string &obj_name, string &upd)
         if (obj_type == "command")
         {
             if (obj == Attr)
+            {
                 continue;
+            }
         }
         else if (obj_type == "attribute")
         {
             if (obj == Cmd)
             {
                 if ((loc_obj_name != "state") && (loc_obj_name != "status"))
+                {
                     continue;
+                }
             }
         }
 
@@ -7186,7 +7578,9 @@ bool DeviceProxy::is_polled(polled_object obj, string &obj_name, string &upd)
         pos = pos + 2;
         end = tmp_str.find(". S", pos + 1);
         if (end == string::npos)
+        {
             end = tmp_str.find('\n', pos + 1);
+        }
         string name = tmp_str.substr(pos, end - pos);
         transform(name.begin(), name.end(), name.begin(), ::tolower);
 
@@ -7243,7 +7637,9 @@ int DeviceProxy::get_command_poll_period(string &cmd_name)
         stream >> ret;
     }
     else
+    {
         ret = 0;
+    }
 
     return ret;
 }
@@ -7269,7 +7665,9 @@ int DeviceProxy::get_attribute_poll_period(string &attr_name)
         stream >> ret;
     }
     else
+    {
         ret = 0;
+    }
 
     return ret;
 }
@@ -7309,7 +7707,9 @@ void DeviceProxy::poll_command(string &cmd_name, int period)
         stream >> per;
 
         if ((per == period) || (per == 0))
+        {
             return;
+        }
         else
         {
 
@@ -7392,7 +7792,9 @@ void DeviceProxy::poll_attribute(string &attr_name, int period)
         stream >> per;
 
         if ((per == period) || (per == 0))
+        {
             return;
+        }
         else
         {
 
@@ -7765,7 +8167,9 @@ int DeviceProxy::subscribe_event(const string &attr_name, EventType event,
                 ->subscribe_event(this, attr_name, event, callback, filters, stateless);
         }
         else
+        {
             throw;
+        }
     }
 
     return ret;
@@ -7816,7 +8220,9 @@ int DeviceProxy::subscribe_event(const string &attr_name, EventType event,
                 ->subscribe_event(this, attr_name, event, event_queue_size, filters, stateless);
         }
         else
+        {
             throw;
+        }
     }
 
     return ret;
@@ -8197,7 +8603,9 @@ int DeviceProxy::event_queue_size(int event_id)
                 (const char *) "DeviceProxy::event_queue_size()");
         }
         else
+        {
             ev = api_ptr->get_notifd_event_consumer();
+        }
     }
 
     return ev->event_queue_size(event_id);
@@ -8246,7 +8654,9 @@ bool DeviceProxy::is_event_queue_empty(int event_id)
                 (const char *) "DeviceProxy::is_event_queue_empty()");
         }
         else
+        {
             ev = api_ptr->get_notifd_event_consumer();
+        }
     }
 
     return (ev->is_event_queue_empty(event_id));
@@ -8295,7 +8705,9 @@ TimeVal DeviceProxy::get_last_event_date(int event_id)
                 (const char *) "DeviceProxy::get_last_event_date()");
         }
         else
+        {
             ev = api_ptr->get_notifd_event_consumer();
+        }
     }
 
     return (ev->get_last_event_date(event_id));
@@ -8311,9 +8723,13 @@ TimeVal DeviceProxy::get_last_event_date(int event_id)
 Database *DeviceProxy::get_device_db()
 {
     if ((db_port_num != 0) && (db_dev != NULL))
+    {
         return db_dev->get_dbase();
+    }
     else
+    {
         return (Database *) NULL;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -8547,9 +8963,13 @@ void DeviceProxy::unlock(bool force)
     sent_data.svalue[0] = CORBA::string_dup(device_name.c_str());
     sent_data.lvalue.length(1);
     if (force == true)
+    {
         sent_data.lvalue[0] = 1;
+    }
     else
+    {
         sent_data.lvalue[0] = 0;
+    }
     din << sent_data;
 
 //
@@ -8573,7 +8993,9 @@ void DeviceProxy::unlock(bool force)
 
         lock_ctr--;
         if (glob_ctr != lock_ctr)
+        {
             lock_ctr = glob_ctr;
+        }
         local_lock_ctr = lock_ctr;
     }
 
@@ -8741,7 +9163,9 @@ bool DeviceProxy::is_locked_by_me()
     bool ret = false;
 
     if (v_l[0] == 0)
+    {
         ret = false;
+    }
     else
     {
 #ifndef _TG_WINDOWS_
@@ -8749,9 +9173,13 @@ bool DeviceProxy::is_locked_by_me()
 #else
             if (_getpid() != v_l[1])
 #endif
+        {
             ret = false;
+        }
         else if ((v_l[2] != 0) || (v_l[3] != 0) || (v_l[4] != 0) || (v_l[5] != 0))
+        {
             ret = false;
+        }
         else
         {
             string full_ip_str;
@@ -8762,7 +9190,9 @@ bool DeviceProxy::is_locked_by_me()
 //
 
             if (full_ip_str == TG_LOCAL_HOST)
+            {
                 ret = true;
+            }
             else
             {
 
@@ -8807,7 +9237,9 @@ bool DeviceProxy::get_locker(LockerInfo &lock_info)
     ask_locking_status(v_str, v_l);
 
     if (v_l[0] == 0)
+    {
         return false;
+    }
     else
     {
 
@@ -8827,7 +9259,9 @@ bool DeviceProxy::get_locker(LockerInfo &lock_info)
         {
             lock_info.ll = Tango::JAVA;
             for (int loop = 0; loop < 4; loop++)
+            {
                 lock_info.li.UUID[loop] = v_l[2 + loop];
+            }
 
             string full_ip;
             get_locker_host(v_str[1], full_ip);
@@ -8863,9 +9297,13 @@ bool DeviceProxy::get_locker(LockerInfo &lock_info)
             int res = getnameinfo((const sockaddr *) &si, sizeof(si), host_os, 512, 0, 0, 0);
 
             if (res == 0)
+            {
                 lock_info.locker_host = host_os;
+            }
             else
+            {
                 lock_info.locker_host = full_ip;
+            }
         }
         else
         {
@@ -8942,7 +9380,9 @@ void DeviceProxy::get_locker_host(string &f_addr, string &ip_addr)
     bool ipv6 = false;
 
     if (f_addr.find('[') != string::npos)
+    {
         ipv6 = true;
+    }
 
     if (f_addr.find(":unix:") != string::npos)
     {
@@ -9037,31 +9477,57 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
     attr_value_list[0].w_dim.dim_y = dev_attr.dim_y;
 
     if (dev_attr.LongSeq.operator->() != NULL)
+    {
         attr_value_list[0].value.long_att_value(dev_attr.LongSeq.in());
+    }
     else if (dev_attr.Long64Seq.operator->() != NULL)
+    {
         attr_value_list[0].value.long64_att_value(dev_attr.Long64Seq.in());
+    }
     else if (dev_attr.ShortSeq.operator->() != NULL)
+    {
         attr_value_list[0].value.short_att_value(dev_attr.ShortSeq.in());
+    }
     else if (dev_attr.DoubleSeq.operator->() != NULL)
+    {
         attr_value_list[0].value.double_att_value(dev_attr.DoubleSeq.in());
+    }
     else if (dev_attr.StringSeq.operator->() != NULL)
+    {
         attr_value_list[0].value.string_att_value(dev_attr.StringSeq.in());
+    }
     else if (dev_attr.FloatSeq.operator->() != NULL)
+    {
         attr_value_list[0].value.float_att_value(dev_attr.FloatSeq.in());
+    }
     else if (dev_attr.BooleanSeq.operator->() != NULL)
+    {
         attr_value_list[0].value.bool_att_value(dev_attr.BooleanSeq.in());
+    }
     else if (dev_attr.UShortSeq.operator->() != NULL)
+    {
         attr_value_list[0].value.ushort_att_value(dev_attr.UShortSeq.in());
+    }
     else if (dev_attr.UCharSeq.operator->() != NULL)
+    {
         attr_value_list[0].value.uchar_att_value(dev_attr.UCharSeq.in());
+    }
     else if (dev_attr.ULongSeq.operator->() != NULL)
+    {
         attr_value_list[0].value.ulong_att_value(dev_attr.ULongSeq.in());
+    }
     else if (dev_attr.ULong64Seq.operator->() != NULL)
+    {
         attr_value_list[0].value.ulong64_att_value(dev_attr.ULong64Seq.in());
+    }
     else if (dev_attr.StateSeq.operator->() != NULL)
+    {
         attr_value_list[0].value.state_att_value(dev_attr.StateSeq.in());
+    }
     else if (dev_attr.EncodedSeq.operator->() != NULL)
+    {
         attr_value_list[0].value.encoded_att_value(dev_attr.EncodedSeq.in());
+    }
 
     Tango::DevVarStringArray dvsa;
     dvsa.length(1);
@@ -9150,13 +9616,17 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
             desc << ends;
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
+            {
                 DeviceUnlockedExcept::re_throw_exception(e,
                                                          (const char *) DEVICE_UNLOCKED_REASON,
                                                          desc.str(),
                                                          (const char *) "DeviceProxy::write_read_attribute()");
+            }
             else
+            {
                 Except::re_throw_exception(e, (const char *) API_AttributeFailed,
                                            desc.str(), (const char *) "DeviceProxy::write_read_attribute()");
+            }
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -9215,9 +9685,13 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 
     DeviceAttribute ret_dev_attr;
     if (version >= 5)
+    {
         ApiUtil::attr_to_device(&(attr_value_list_5[0]), version, &ret_dev_attr);
+    }
     else
+    {
         ApiUtil::attr_to_device(&(attr_value_list_4[0]), version, &ret_dev_attr);
+    }
 
 //
 // Add an error in the error stack in case there is one
@@ -9283,31 +9757,57 @@ vector<DeviceAttribute> *DeviceProxy::write_read_attributes(vector<DeviceAttribu
         attr_value_list[i].w_dim.dim_y = attr_list[i].dim_y;
 
         if (attr_list[i].LongSeq.operator->() != NULL)
+        {
             attr_value_list[i].value.long_att_value(attr_list[i].LongSeq.in());
+        }
         else if (attr_list[i].Long64Seq.operator->() != NULL)
+        {
             attr_value_list[i].value.long64_att_value(attr_list[i].Long64Seq.in());
+        }
         else if (attr_list[i].ShortSeq.operator->() != NULL)
+        {
             attr_value_list[i].value.short_att_value(attr_list[i].ShortSeq.in());
+        }
         else if (attr_list[i].DoubleSeq.operator->() != NULL)
+        {
             attr_value_list[i].value.double_att_value(attr_list[i].DoubleSeq.in());
+        }
         else if (attr_list[i].StringSeq.operator->() != NULL)
+        {
             attr_value_list[i].value.string_att_value(attr_list[i].StringSeq.in());
+        }
         else if (attr_list[i].FloatSeq.operator->() != NULL)
+        {
             attr_value_list[i].value.float_att_value(attr_list[i].FloatSeq.in());
+        }
         else if (attr_list[i].BooleanSeq.operator->() != NULL)
+        {
             attr_value_list[i].value.bool_att_value(attr_list[i].BooleanSeq.in());
+        }
         else if (attr_list[i].UShortSeq.operator->() != NULL)
+        {
             attr_value_list[i].value.ushort_att_value(attr_list[i].UShortSeq.in());
+        }
         else if (attr_list[i].UCharSeq.operator->() != NULL)
+        {
             attr_value_list[i].value.uchar_att_value(attr_list[i].UCharSeq.in());
+        }
         else if (attr_list[i].ULongSeq.operator->() != NULL)
+        {
             attr_value_list[i].value.ulong_att_value(attr_list[i].ULongSeq.in());
+        }
         else if (attr_list[i].ULong64Seq.operator->() != NULL)
+        {
             attr_value_list[i].value.ulong64_att_value(attr_list[i].ULong64Seq.in());
+        }
         else if (attr_list[i].StateSeq.operator->() != NULL)
+        {
             attr_value_list[i].value.state_att_value(attr_list[i].StateSeq.in());
+        }
         else if (attr_list[i].EncodedSeq.operator->() != NULL)
+        {
             attr_value_list[i].value.encoded_att_value(attr_list[i].EncodedSeq.in());
+        }
     }
 
 //
@@ -9394,13 +9894,17 @@ vector<DeviceAttribute> *DeviceProxy::write_read_attributes(vector<DeviceAttribu
             desc << ends;
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
+            {
                 DeviceUnlockedExcept::re_throw_exception(e,
                                                          (const char *) DEVICE_UNLOCKED_REASON,
                                                          desc.str(),
                                                          (const char *) "DeviceProxy::write_read_attributes()");
+            }
             else
+            {
                 Except::re_throw_exception(e, (const char *) API_AttributeFailed,
                                            desc.str(), (const char *) "DeviceProxy::write_read_attributes()");
+            }
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -9512,7 +10016,9 @@ void DeviceProxy::same_att_name(vector<string> &attr_list, const char *met_name)
         vector<string> same_att = attr_list;
 
         for (i = 0; i < same_att.size(); ++i)
+        {
             transform(same_att[i].begin(), same_att[i].end(), same_att[i].begin(), ::tolower);
+        }
         sort(same_att.begin(), same_att.end());
         vector<string> same_att_lower = same_att;
 
@@ -9533,7 +10039,9 @@ void DeviceProxy::same_att_name(vector<string> &attr_list, const char *met_name)
                     ctr++;
                     desc << same_att_lower[i];
                     if (ctr < duplicate_att)
+                    {
                         desc << ", ";
+                    }
                 }
             }
             desc << ends;
@@ -9567,7 +10075,9 @@ void DeviceProxy::local_import(string &local_ior)
     {
         string reas(e.errors[0].reason);
         if (reas == "API_UtilSingletonNotCreated")
+        {
             return;
+        }
     }
 
     const vector<Tango::DeviceClass *> *cl_list_ptr = tg->get_class_list();
@@ -9583,7 +10093,9 @@ void DeviceProxy::local_import(string &local_ior)
                 {
                     Database *db = tg->get_database();
                     if (db->get_db_host() != get_db_host())
+                    {
                         return;
+                    }
                 }
 
                 Tango::Device_var d_var = dev_list[lo]->get_d_var();
@@ -9662,9 +10174,13 @@ int DeviceProxy::get_tango_lib_version()
 		}
 #endif
             if (pos != (*cmd_list).end())
+            {
                 ret = 520;
+            }
             else
+            {
                 ret = 500;
+            }
             break;
         }
 
@@ -9688,7 +10204,9 @@ int DeviceProxy::get_tango_lib_version()
                 }
 
                 if (cmd.cmd_name == "ZmqEventSubscriptionChange")
+                {
                     zesc = true;
+                }
             }
 #else
                                                                                                                                     vector<CommandInfo>::iterator pos,pos_end;
@@ -9705,11 +10223,17 @@ int DeviceProxy::get_tango_lib_version()
 		}
 #endif
             if (ecs == true)
+            {
                 ret = 810;
+            }
             else if (zesc == true)
+            {
                 ret = 800;
+            }
             else
+            {
                 ret = 700;
+            }
 
             break;
         }

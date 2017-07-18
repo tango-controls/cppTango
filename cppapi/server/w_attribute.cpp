@@ -196,86 +196,134 @@ void WAttribute::set_rvalue()
         case Tango::DEV_SHORT:
         case Tango::DEV_ENUM:
             if (data_format == Tango::SCALAR)
+            {
                 set_value(&short_val, 1, 0, false);
+            }
             else
+            {
                 set_value(const_cast<DevShort *>(short_array_val.get_buffer()), w_dim_x, w_dim_y, false);
+            }
             break;
 
         case Tango::DEV_LONG:
             if (data_format == Tango::SCALAR)
+            {
                 set_value(&long_val, 1, 0, false);
+            }
             else
+            {
                 set_value(const_cast<DevLong *>(long_array_val.get_buffer()), w_dim_x, w_dim_y, false);
+            }
             break;
 
         case Tango::DEV_LONG64:
             if (data_format == Tango::SCALAR)
+            {
                 set_value(&long64_val, 1, 0, false);
+            }
             else
+            {
                 set_value(const_cast<DevLong64 *>(long64_array_val.get_buffer()), w_dim_x, w_dim_y, false);
+            }
             break;
 
         case Tango::DEV_DOUBLE:
             if (data_format == Tango::SCALAR)
+            {
                 set_value(&double_val, 1, 0, false);
+            }
             else
+            {
                 set_value(const_cast<DevDouble *>(double_array_val.get_buffer()), w_dim_x, w_dim_y, false);
+            }
             break;
 
         case Tango::DEV_STRING:
             if (data_format == Tango::SCALAR)
+            {
                 set_value(&str_val, 1, 0, false);
+            }
             else
+            {
                 set_value(const_cast<DevString *>(str_array_val.get_buffer()), w_dim_x, w_dim_y, false);
+            }
             break;
 
         case Tango::DEV_FLOAT:
             if (data_format == Tango::SCALAR)
+            {
                 set_value(&float_val, 1, 0, false);
+            }
             else
+            {
                 set_value(const_cast<DevFloat *>(float_array_val.get_buffer()), w_dim_x, w_dim_y, false);
+            }
             break;
 
         case Tango::DEV_BOOLEAN:
             if (data_format == Tango::SCALAR)
+            {
                 set_value(&boolean_val, 1, 0, false);
+            }
             else
+            {
                 set_value(const_cast<DevBoolean *>(boolean_array_val.get_buffer()), w_dim_x, w_dim_y, false);
+            }
             break;
 
         case Tango::DEV_USHORT:
             if (data_format == Tango::SCALAR)
+            {
                 set_value(&ushort_val, 1, 0, false);
+            }
             else
+            {
                 set_value(const_cast<DevUShort *>(ushort_array_val.get_buffer()), w_dim_x, w_dim_y, false);
+            }
             break;
 
         case Tango::DEV_UCHAR:
             if (data_format == Tango::SCALAR)
+            {
                 set_value(&uchar_val, 1, 0, false);
+            }
             else
+            {
                 set_value(const_cast<DevUChar *>(uchar_array_val.get_buffer()), w_dim_x, w_dim_y, false);
+            }
             break;
 
         case Tango::DEV_ULONG:
             if (data_format == Tango::SCALAR)
+            {
                 set_value(&ulong_val, 1, 0, false);
+            }
             else
+            {
                 set_value(const_cast<DevULong *>(ulong_array_val.get_buffer()), w_dim_x, w_dim_y, false);
+            }
             break;
 
         case Tango::DEV_ULONG64:
             if (data_format == Tango::SCALAR)
+            {
                 set_value(&ulong64_val, 1, 0, false);
+            }
             else
+            {
                 set_value(const_cast<DevULong64 *>(ulong64_array_val.get_buffer()), w_dim_x, w_dim_y, false);
+            }
             break;
 
         case Tango::DEV_STATE:
             if (data_format == Tango::SCALAR)
+            {
                 set_value(&dev_state_val, 1, 0, false);
+            }
             else
+            {
                 set_value(const_cast<DevState *>(state_array_val.get_buffer()), w_dim_x, w_dim_y, false);
+            }
             break;
 
         case Tango::DEV_ENCODED:
@@ -308,7 +356,9 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
     Tango::Util *tg = Tango::Util::instance();
     Tango::TangoMonitor *mon_ptr = NULL;
     if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
+    {
         mon_ptr = &(get_att_device()->get_att_conf_monitor());
+    }
 
     switch (data_type)
     {
@@ -1164,7 +1214,9 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
     Tango::Util *tg = Tango::Util::instance();
     Tango::TangoMonitor *mon_ptr = NULL;
     if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
+    {
         mon_ptr = &(get_att_device()->get_att_conf_monitor());
+    }
 
     switch (data_type)
     {
@@ -1912,11 +1964,17 @@ long WAttribute::get_write_value_length()
     long ret_val;
 
     if (data_format == Tango::SCALAR)
+    {
         ret_val = 1;
+    }
     else if (data_format == Tango::SPECTRUM)
+    {
         ret_val = w_dim_x;
+    }
     else
+    {
         ret_val = w_dim_x * w_dim_y;
+    }
 
     return ret_val;
 }
@@ -1954,9 +2012,13 @@ void WAttribute::set_write_value(Tango::DevShort *val, long x, long y)
     long nb_data;
 
     if (y == 0)
+    {
         nb_data = x;
+    }
     else
+    {
         nb_data = x * y;
+    }
 
     Tango::DevVarShortArray tmp_seq(nb_data, nb_data, val, false);
 
@@ -2000,9 +2062,13 @@ void WAttribute::set_write_value(Tango::DevLong *val, long x, long y)
     long nb_data;
 
     if (y == 0)
+    {
         nb_data = x;
+    }
     else
+    {
         nb_data = x * y;
+    }
 
     Tango::DevVarLongArray tmp_seq(nb_data, nb_data, val, false);
 
@@ -2045,9 +2111,13 @@ void WAttribute::set_write_value(Tango::DevLong64 *val, long x, long y)
     long nb_data;
 
     if (y == 0)
+    {
         nb_data = x;
+    }
     else
+    {
         nb_data = x * y;
+    }
 
     Tango::DevVarLong64Array tmp_seq(nb_data, nb_data, val, false);
 
@@ -2089,9 +2159,13 @@ void WAttribute::set_write_value(Tango::DevDouble *val, long x, long y)
     long nb_data;
 
     if (y == 0)
+    {
         nb_data = x;
+    }
     else
+    {
         nb_data = x * y;
+    }
 
     Tango::DevVarDoubleArray tmp_seq(nb_data, nb_data, val, false);
 
@@ -2146,9 +2220,13 @@ void WAttribute::set_write_value(Tango::DevString *val, long x, long y)
     long nb_data;
 
     if (y == 0)
+    {
         nb_data = x;
+    }
     else
+    {
         nb_data = x * y;
+    }
 
     Tango::DevVarStringArray tmp_seq(nb_data, nb_data, val, false);
 
@@ -2191,9 +2269,13 @@ void WAttribute::set_write_value(Tango::DevFloat *val, long x, long y)
     long nb_data;
 
     if (y == 0)
+    {
         nb_data = x;
+    }
     else
+    {
         nb_data = x * y;
+    }
 
     Tango::DevVarFloatArray tmp_seq(nb_data, nb_data, val, false);
     CORBA::Any tmp_any;
@@ -2234,9 +2316,13 @@ void WAttribute::set_write_value(Tango::DevBoolean *val, long x, long y)
     long nb_data;
 
     if (y == 0)
+    {
         nb_data = x;
+    }
     else
+    {
         nb_data = x * y;
+    }
 
     Tango::DevVarBooleanArray tmp_seq(nb_data, nb_data, val, false);
 
@@ -2279,9 +2365,13 @@ void WAttribute::set_write_value(Tango::DevUShort *val, long x, long y)
     long nb_data;
 
     if (y == 0)
+    {
         nb_data = x;
+    }
     else
+    {
         nb_data = x * y;
+    }
 
     Tango::DevVarUShortArray tmp_seq(nb_data, nb_data, val, false);
 
@@ -2323,9 +2413,13 @@ void WAttribute::set_write_value(Tango::DevUChar *val, long x, long y)
     long nb_data;
 
     if (y == 0)
+    {
         nb_data = x;
+    }
     else
+    {
         nb_data = x * y;
+    }
 
     Tango::DevVarUCharArray tmp_seq(nb_data, nb_data, val, false);
 
@@ -2367,9 +2461,13 @@ void WAttribute::set_write_value(Tango::DevULong *val, long x, long y)
     long nb_data;
 
     if (y == 0)
+    {
         nb_data = x;
+    }
     else
+    {
         nb_data = x * y;
+    }
 
     Tango::DevVarULongArray tmp_seq(nb_data, nb_data, val, false);
 
@@ -2411,9 +2509,13 @@ void WAttribute::set_write_value(Tango::DevULong64 *val, long x, long y)
     long nb_data;
 
     if (y == 0)
+    {
         nb_data = x;
+    }
     else
+    {
         nb_data = x * y;
+    }
 
     Tango::DevVarULong64Array tmp_seq(nb_data, nb_data, val, false);
 
@@ -2455,9 +2557,13 @@ void WAttribute::set_write_value(Tango::DevState *val, long x, long y)
     long nb_data;
 
     if (y == 0)
+    {
         nb_data = x;
+    }
     else
+    {
         nb_data = x * y;
+    }
 
     Tango::DevVarStateArray tmp_seq(nb_data, nb_data, val, false);
 
@@ -2750,7 +2856,9 @@ bool WAttribute::check_rds_alarm()
 //
 
     if (write_date.tv_sec == 0)
+    {
         return false;
+    }
 
 //
 // First, check if it is necessary to check attribute value
@@ -2831,9 +2939,13 @@ bool WAttribute::check_rds_alarm()
 
                     DevLong64 abs_delta;
                     if (delta < 0)
+                    {
                         abs_delta = -delta;
+                    }
                     else
+                    {
                         abs_delta = delta;
+                    }
 
                     if (abs_delta >= delta_val.lg64)
                     {
@@ -3012,9 +3124,13 @@ bool WAttribute::check_rds_alarm()
 
                     DevULong64 abs_delta;
                     if (delta < 0)
+                    {
                         abs_delta = -delta;
+                    }
                     else
+                    {
                         abs_delta = delta;
+                    }
 
                     if (abs_delta >= delta_val.ulg64)
                     {
@@ -3104,7 +3220,9 @@ bool WAttribute::mem_value_below_above(MinMaxValueCheck check_type, string &ret_
     bool ret = false;
 
     if (mem_value == MemNotUsed)
+    {
         return false;
+    }
 
 //
 // Check last written attribute value with the new threshold

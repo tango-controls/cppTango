@@ -240,11 +240,17 @@ void BlackBox::insert_cmd_nl(const char *cmd, long vers, DevSource sour)
     box[insert_elt].req_type = Req_Operation;
     box[insert_elt].attr_type = Attr_Unknown;
     if (vers == 1)
+    {
         box[insert_elt].op_type = Op_Command_inout;
+    }
     else if (vers <= 3)
+    {
         box[insert_elt].op_type = Op_Command_inout_2;
+    }
     else
+    {
         box[insert_elt].op_type = Op_Command_inout_4;
+    }
     box[insert_elt].cmd_name = cmd;
     box[insert_elt].source = sour;
     box[insert_elt].client_ident = false;
@@ -355,7 +361,9 @@ void BlackBox::add_cl_ident(const ClntIdent &cl_ident, client_addr *cl_addr)
         {
             string::size_type pos = str.find(' ');
             if (pos != string::npos)
+            {
                 cl_addr->client_ip[pos] = '\0';
+            }
         }
     }
     else
@@ -385,9 +393,13 @@ void BlackBox::update_client_host(client_addr *ip)
 {
     long local_insert_elt = insert_elt;
     if (local_insert_elt == 0)
+    {
         local_insert_elt = max_elt - 1;
+    }
     else
+    {
         local_insert_elt--;
+    }
 
     box[local_insert_elt].client_ident = true;
     box[local_insert_elt].client_lang = ip->client_lang;
@@ -601,9 +613,13 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names, const ClntIden
     box[insert_elt].attr_type = Attr_Unknown;
 
     if (vers == 5)
+    {
         box[insert_elt].op_type = Op_Read_Attr_5;
+    }
     else
+    {
         box[insert_elt].op_type = Op_Read_Attr_4;
+    }
 
     box[insert_elt].source = sour;
     box[insert_elt].client_ident = false;
@@ -646,7 +662,9 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names, const ClntIden
     if (box[insert_elt].host_ip_str[0] == 'p' ||
         box[insert_elt].host_ip_str[0] == 'u' ||
         box[insert_elt].host_ip_str[0] == 'i')
+    {
         poll_user = true;
+    }
 
     inc_indexes();
 
@@ -729,7 +747,9 @@ void BlackBox::insert_attr(const char *name, const ClntIdent &cl_id, TANGO_UNUSE
     if (box[insert_elt].host_ip_str[0] == 'p' ||
         box[insert_elt].host_ip_str[0] == 'u' ||
         box[insert_elt].host_ip_str[0] == 'i')
+    {
         poll_user = true;
+    }
 
     inc_indexes();
 
@@ -768,9 +788,13 @@ void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val, const ClntIdent &
     box[insert_elt].attr_type = Attr_Unknown;
 
     if (vers == 0)
+    {
         box[insert_elt].op_type = Op_Write_Pipe_5;
+    }
     else
+    {
         box[insert_elt].op_type = Op_Write_Read_Pipe_5;
+    }
     box[insert_elt].client_ident = false;
 
 
@@ -807,7 +831,9 @@ void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val, const ClntIdent &
     if (box[insert_elt].host_ip_str[0] == 'p' ||
         box[insert_elt].host_ip_str[0] == 'u' ||
         box[insert_elt].host_ip_str[0] == 'i')
+    {
         poll_user = true;
+    }
 
     inc_indexes();
 
@@ -877,11 +903,17 @@ void BlackBox::insert_attr_nl(const Tango::AttributeValueList &att_list, long ve
     box[insert_elt].req_type = Req_Operation;
     box[insert_elt].attr_type = Attr_Unknown;
     if (vers == 1)
+    {
         box[insert_elt].op_type = Op_Write_Attr;
+    }
     else if (vers < 4)
+    {
         box[insert_elt].op_type = Op_Write_Attr_3;
+    }
     else
+    {
         box[insert_elt].op_type = Op_Write_Attr_4;
+    }
 
     box[insert_elt].attr_names.clear();
     for (unsigned long i = 0; i < att_list.length(); i++)
@@ -1026,9 +1058,13 @@ void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list,
     box[insert_elt].req_type = Req_Operation;
     box[insert_elt].attr_type = Attr_Unknown;
     if (vers == 5)
+    {
         box[insert_elt].op_type = Op_Write_Read_Attributes_5;
+    }
     else
+    {
         box[insert_elt].op_type = Op_Write_Read_Attributes_4;
+    }
 
     box[insert_elt].attr_names.clear();
     for (unsigned long i = 0; i < att_list.length(); i++)
@@ -1089,10 +1125,14 @@ void BlackBox::inc_indexes()
 {
     insert_elt++;
     if (insert_elt == max_elt)
+    {
         insert_elt = 0;
+    }
 
     if (nb_elt != max_elt)
+    {
         nb_elt++;
+    }
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -1109,7 +1149,9 @@ void BlackBox::get_client_host()
 {
     omni_thread *th_id = omni_thread::self();
     if (th_id == NULL)
+    {
         th_id = omni_thread::create_dummy();
+    }
 
     omni_thread::value_t *ip = th_id->get_value(key);
     if (ip == NULL)
@@ -1136,20 +1178,30 @@ void BlackBox::get_client_host()
         if (tg->is_svr_starting() == true)
         {
             if (found_thread == true)
+            {
                 strcpy(box[insert_elt].host_ip_str, "polling");
+            }
             else
+            {
                 strcpy(box[insert_elt].host_ip_str, "init");
+            }
         }
         else
         {
             if (found_thread == true)
+            {
                 strcpy(box[insert_elt].host_ip_str, "polling");
+            }
             else
+            {
                 strcpy(box[insert_elt].host_ip_str, "user thread");
+            }
         }
     }
     else
+    {
         strcpy(box[insert_elt].host_ip_str, (static_cast<client_addr *>(ip))->client_ip);
+    }
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -1230,7 +1282,9 @@ void BlackBox::build_info_as_str(long index)
                 {
                     elt_str = elt_str + box[index].attr_names[i];
                     if (i != nb_in_vect - 1)
+                    {
                         elt_str = elt_str + ", ";
+                    }
                 }
                 elt_str = elt_str + ") from ";
                 add_source(index);
@@ -1243,7 +1297,9 @@ void BlackBox::build_info_as_str(long index)
                 {
                     elt_str = elt_str + box[index].attr_names[i];
                     if (i != nb_in_vect - 1)
+                    {
                         elt_str = elt_str + ", ";
+                    }
                 }
                 elt_str = elt_str + ") ";
                 break;
@@ -1255,7 +1311,9 @@ void BlackBox::build_info_as_str(long index)
                 {
                     elt_str = elt_str + box[index].attr_names[i];
                     if (i != nb_in_vect - 1)
+                    {
                         elt_str = elt_str + ", ";
+                    }
                 }
                 elt_str = elt_str + ") ";
                 break;
@@ -1284,7 +1342,9 @@ void BlackBox::build_info_as_str(long index)
                 {
                     elt_str = elt_str + box[index].attr_names[i];
                     if (i != nb_in_vect - 1)
+                    {
                         elt_str = elt_str + ", ";
+                    }
                 }
                 elt_str = elt_str + ") from ";
                 add_source(index);
@@ -1297,7 +1357,9 @@ void BlackBox::build_info_as_str(long index)
                 {
                     elt_str = elt_str + box[index].attr_names[i];
                     if (i != nb_in_vect - 1)
+                    {
                         elt_str = elt_str + ", ";
+                    }
                 }
                 elt_str = elt_str + ") from ";
                 add_source(index);
@@ -1347,7 +1409,9 @@ void BlackBox::build_info_as_str(long index)
                 {
                     elt_str = elt_str + box[index].attr_names[i];
                     if (i != nb_in_vect - 1)
+                    {
                         elt_str = elt_str + ", ";
+                    }
                 }
                 elt_str = elt_str + ") from ";
                 add_source(index);
@@ -1360,7 +1424,9 @@ void BlackBox::build_info_as_str(long index)
                 {
                     elt_str = elt_str + box[index].attr_names[i];
                     if (i != nb_in_vect - 1)
+                    {
                         elt_str = elt_str + ", ";
+                    }
                 }
                 elt_str = elt_str + ") ";
                 break;
@@ -1376,7 +1442,9 @@ void BlackBox::build_info_as_str(long index)
                 {
                     elt_str = elt_str + box[index].attr_names[i];
                     if (i != nb_in_vect - 1)
+                    {
                         elt_str = elt_str + ", ";
+                    }
                 }
                 elt_str = elt_str + ") ";
                 break;
@@ -1396,7 +1464,9 @@ void BlackBox::build_info_as_str(long index)
                 {
                     elt_str = elt_str + box[index].attr_names[i];
                     if (i != nb_in_vect - 1)
+                    {
                         elt_str = elt_str + ", ";
+                    }
                 }
                 elt_str = elt_str + ") from ";
                 add_source(index);
@@ -1411,7 +1481,9 @@ void BlackBox::build_info_as_str(long index)
                     if (i != nb_in_vect - 1 && box[index].attr_names[i] != "/")
                     {
                         if (box[index].attr_names[i + 1] != "/")
+                        {
                             elt_str = elt_str + ", ";
+                        }
                     }
                 }
                 elt_str = elt_str + ") ";
@@ -1436,7 +1508,9 @@ void BlackBox::build_info_as_str(long index)
                 {
                     elt_str = elt_str + box[index].attr_names[i];
                     if (i != nb_in_vect - 1)
+                    {
                         elt_str = elt_str + ", ";
+                    }
                 }
                 elt_str = elt_str + ") ";
                 break;
@@ -1448,7 +1522,9 @@ void BlackBox::build_info_as_str(long index)
                 {
                     elt_str = elt_str + box[index].attr_names[i];
                     if (i != nb_in_vect - 1)
+                    {
                         elt_str = elt_str + ", ";
+                    }
                 }
                 elt_str = elt_str + ") ";
                 break;
@@ -1460,7 +1536,9 @@ void BlackBox::build_info_as_str(long index)
                 {
                     elt_str = elt_str + box[index].attr_names[i];
                     if (i != nb_in_vect - 1)
+                    {
                         elt_str = elt_str + ", ";
+                    }
                 }
                 elt_str = elt_str + ") ";
                 break;
@@ -1522,52 +1600,74 @@ void BlackBox::build_info_as_str(long index)
         string omni_addr = box[index].host_ip_str;
         string::size_type pos;
         if ((pos = omni_addr.find(':')) == string::npos)
+        {
             return;
+        }
         pos++;
         if ((pos = omni_addr.find(':', pos)) == string::npos)
+        {
             return;
+        }
         pos++;
         string ip_str = omni_addr.substr(pos);
         if (ip_str[0] == '[')
+        {
             ipv6 = true;
+        }
 
         string full_ip_str;
         if (ipv6 == false)
         {
             if ((pos = ip_str.find(':')) == string::npos)
+            {
                 return;
+            }
             full_ip_str = ip_str.substr(0, pos);
         }
         else
         {
             if ((pos = ip_str.find(':')) == string::npos)
+            {
                 return;
+            }
             pos++;
             if ((pos = ip_str.find(':', pos)) == string::npos)
+            {
                 return;
+            }
             pos++;
             if ((pos = ip_str.find(':', pos)) == string::npos)
+            {
                 return;
+            }
             pos++;
             string tmp_ip = ip_str.substr(pos);
             if ((pos = tmp_ip.find(']')) == string::npos)
+            {
                 return;
+            }
             full_ip_str = tmp_ip.substr(0, pos);
         }
 
         if ((pos = full_ip_str.find('.')) == string::npos)
+        {
             return;
+        }
         string ip1_str = full_ip_str.substr(0, pos);
         string::size_type old_pos;
         pos++;
         old_pos = pos;
         if ((pos = full_ip_str.find('.', pos)) == string::npos)
+        {
             return;
+        }
         string ip2_str = full_ip_str.substr(old_pos, pos - old_pos);
         pos++;
         old_pos = pos;
         if ((pos = full_ip_str.find('.', pos)) == string::npos)
+        {
             return;
+        }
         string ip3_str = full_ip_str.substr(old_pos, pos - old_pos);
         pos++;
         string ip4_str = full_ip_str.substr(pos);
@@ -1752,10 +1852,14 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
 //
 
     if (wanted_elt > max_elt)
+    {
         wanted_elt = max_elt;
+    }
 
     if (wanted_elt > nb_elt)
+    {
         wanted_elt = nb_elt;
+    }
 
 //
 // Read black box elements
@@ -1770,9 +1874,13 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
 
         long read_index;
         if (insert_elt == 0)
+        {
             read_index = max_elt - 1;
+        }
         else
+        {
             read_index = insert_elt - 1;
+        }
         for (long i = 0; i < wanted_elt; i++)
         {
             build_info_as_str(read_index);
@@ -1780,7 +1888,9 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
 
             read_index--;
             if (read_index < 0)
+            {
                 read_index = max_elt - 1;
+            }
         }
     }
     catch (bad_alloc &)
@@ -1837,16 +1947,22 @@ void BlackBox::date_ux_to_str(timeval &ux_date, char *str_date)
 /* Copy day */
 
     for (i = 0; i < 2; i++)
+    {
         str_date[i] = unix_date[i + 8];
+    }
     str_date[2] = '/';
     str_date[3] = '\0';
     if (str_date[0] == ' ')
+    {
         str_date[0] = '0';
+    }
 
 /* Copy month */
 
     for (i = 0; i < 3; i++)
+    {
         month[i] = unix_date[i + 4];
+    }
     month[3] = '\0';
 
     switch (month[0])
@@ -1855,12 +1971,18 @@ void BlackBox::date_ux_to_str(timeval &ux_date, char *str_date)
             if (month[1] == 'u')
             {
                 if (month[2] == 'n')
+                {
                     strcat(str_date, "06/");
+                }
                 else
+                {
                     strcat(str_date, "07/");
+                }
             }
             else
+            {
                 strcat(str_date, "01/");
+            }
             break;
 
         case 'F' :
@@ -1869,16 +1991,24 @@ void BlackBox::date_ux_to_str(timeval &ux_date, char *str_date)
 
         case 'M' :
             if (month[2] == 'r')
+            {
                 strcat(str_date, "03/");
+            }
             else
+            {
                 strcat(str_date, "05/");
+            }
             break;
 
         case 'A' :
             if (month[1] == 'p')
+            {
                 strcat(str_date, "04/");
+            }
             else
+            {
                 strcat(str_date, "08/");
+            }
             break;
 
         case 'S' :
@@ -1909,7 +2039,9 @@ void BlackBox::date_ux_to_str(timeval &ux_date, char *str_date)
 
     strcat(str_date, " ");
     for (i = 0; i < 8; i++)
+    {
         str_date[i + 11] = unix_date[i + 11];
+    }
     str_date[19] = '\0';
 
 /* Add milliseconds */
@@ -1956,7 +2088,9 @@ client_addr::client_addr(const client_addr &rhs)
 client_addr &client_addr::operator=(const client_addr &rhs)
 {
     if (this == &rhs)
+    {
         return *this;
+    }
 
     client_ident = rhs.client_ident;
     client_lang = rhs.client_lang;
@@ -1981,32 +2115,46 @@ client_addr &client_addr::operator=(const client_addr &rhs)
 bool client_addr::operator==(const client_addr &rhs)
 {
     if (client_ident != rhs.client_ident)
+    {
         return false;
+    }
 
     if (client_lang != rhs.client_lang)
+    {
         return false;
+    }
     else
     {
         if (client_lang == Tango::CPP)
         {
             if (client_pid != rhs.client_pid)
+            {
                 return false;
+            }
 
             char *tmp = client_ip;
             const char *rhs_tmp = rhs.client_ip;
 
             if (strlen(tmp) != strlen(rhs_tmp))
+            {
                 return false;
+            }
 
             if (strcmp(tmp, rhs_tmp) != 0)
+            {
                 return false;
+            }
         }
         else
         {
             if (java_ident[0] != rhs.java_ident[0])
+            {
                 return false;
+            }
             if (java_ident[1] != rhs.java_ident[1])
+            {
                 return false;
+            }
         }
     }
 
@@ -2026,32 +2174,46 @@ bool client_addr::operator==(const client_addr &rhs)
 bool client_addr::operator!=(const client_addr &rhs)
 {
     if (client_ident != rhs.client_ident)
+    {
         return true;
+    }
 
     if (client_lang != rhs.client_lang)
+    {
         return true;
+    }
     else
     {
         if (client_lang == Tango::CPP)
         {
             if (client_pid != rhs.client_pid)
+            {
                 return true;
+            }
 
             char *tmp = client_ip;
             const char *rhs_tmp = rhs.client_ip;
 
             if (strlen(tmp) != strlen(rhs_tmp))
+            {
                 return true;
+            }
 
             if (strcmp(tmp, rhs_tmp) != 0)
+            {
                 return true;
+            }
         }
         else
         {
             if (java_ident[0] != rhs.java_ident[0])
+            {
                 return true;
+            }
             if (java_ident[1] != rhs.java_ident[1])
+            {
                 return true;
+            }
         }
     }
 
@@ -2075,24 +2237,32 @@ int client_addr::client_ip_2_client_name(string &cl_host_name) const
 
     string::size_type pos;
     if ((pos = client_ip_str.find(':')) == string::npos)
+    {
         ret = -1;
+    }
     else
     {
         pos++;
         if ((pos = client_ip_str.find(':', pos)) == string::npos)
+        {
             ret = -1;
+        }
         else
         {
             pos++;
             string ip_str = client_ip_str.substr(pos);
             if ((pos = ip_str.find(':')) == string::npos)
+            {
                 ret = -1;
+            }
             else
             {
                 string full_ip_str = ip_str.substr(0, pos);
 
                 if ((pos = full_ip_str.find('.')) == string::npos)
+                {
                     ret = -1;
+                }
                 else
                 {
                     string ip1_str = full_ip_str.substr(0, pos);
@@ -2101,14 +2271,18 @@ int client_addr::client_ip_2_client_name(string &cl_host_name) const
                     pos++;
                     old_pos = pos;
                     if ((pos = full_ip_str.find('.', pos)) == string::npos)
+                    {
                         ret = -1;
+                    }
                     else
                     {
                         string ip2_str = full_ip_str.substr(old_pos, pos - old_pos);
                         pos++;
                         old_pos = pos;
                         if ((pos = full_ip_str.find('.', pos)) == string::npos)
+                        {
                             ret = -1;
+                        }
                         else
                         {
                             string ip3_str = full_ip_str.substr(old_pos, pos - old_pos);
@@ -2135,7 +2309,9 @@ int client_addr::client_ip_2_client_name(string &cl_host_name) const
                                 ret = 0;
                             }
                             else
+                            {
                                 ret = -1;
+                            }
                         }
                     }
                 }
@@ -2159,7 +2335,9 @@ int client_addr::client_ip_2_client_name(string &cl_host_name) const
 ostream &operator<<(ostream &o_str, const client_addr &ca)
 {
     if (ca.client_ident == false)
+    {
         o_str << "Client identification not available";
+    }
     else
     {
         if (ca.client_lang == Tango::CPP)
@@ -2167,18 +2345,26 @@ ostream &operator<<(ostream &o_str, const client_addr &ca)
             string cl_name;
             o_str << "CPP or Python client with PID " << ca.client_pid << " from host ";
             if (ca.client_ip_2_client_name(cl_name) == 0)
+            {
                 o_str << cl_name;
+            }
             else
+            {
                 o_str << ca.client_ip;
+            }
         }
         else
         {
             o_str << "JAVA client class " << ca.java_main_class << " from host ";
             string cl_name;
             if (ca.client_ip_2_client_name(cl_name) == 0)
+            {
                 o_str << cl_name;
+            }
             else
+            {
                 o_str << ca.client_ip;
+            }
         }
     }
 

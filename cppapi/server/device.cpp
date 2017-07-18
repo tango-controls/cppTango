@@ -244,7 +244,9 @@ void DeviceImpl::stop_polling(bool with_db_upd)
 
     vector<PollingThreadInfo *> &v_th_info = tg->get_polling_threads_info();
     if (v_th_info.empty() == true)
+    {
         return;
+    }
 
 //
 // Find out which thread is in charge of the device.
@@ -324,9 +326,13 @@ void DeviceImpl::stop_polling(bool with_db_upd)
     {
         pos = conf_entry.find(device_name_lower);
         if ((pos + device_name_lower.size()) != conf_entry.size())
+        {
             conf_entry.erase(pos, device_name_lower.size() + 1);
+        }
         else
+        {
             conf_entry.erase(pos - 1);
+        }
     }
     else
     {
@@ -457,7 +463,9 @@ DeviceImpl::~DeviceImpl()
     vector<DeviceImpl *> &dev_vect = get_device_class()->get_device_list();
     vector<DeviceImpl *>::iterator ite = find(dev_vect.begin(), dev_vect.end(), this);
     if (ite != dev_vect.end())
+    {
         *ite = NULL;
+    }
 
     cout4 << "Leaving DeviceImpl destructor for device " << device_name << endl;
 }
@@ -483,9 +491,13 @@ void DeviceImpl::black_box_create()
     try
     {
         if (blackbox_depth == 0)
+        {
             blackbox_ptr = new BlackBox();
+        }
         else
+        {
             blackbox_ptr = new BlackBox(blackbox_depth);
+        }
     }
     catch (bad_alloc &)
     {
@@ -554,9 +566,13 @@ void DeviceImpl::get_dev_system_resource()
         }
 
         if (db_data[0].is_empty() == false)
+        {
             db_data[0] >> blackbox_depth;
+        }
         if (db_data[1].is_empty() == false)
+        {
             db_data[1] >> desc;
+        }
         if (db_data[2].is_empty() == false)
         {
             long tmp_depth;
@@ -564,13 +580,21 @@ void DeviceImpl::get_dev_system_resource()
             set_poll_ring_depth(tmp_depth);
         }
         if (db_data[3].is_empty() == false)
+        {
             db_data[3] >> get_polled_cmd();
+        }
         if (db_data[4].is_empty() == false)
+        {
             db_data[4] >> get_polled_attr();
+        }
         if (db_data[5].is_empty() == false)
+        {
             db_data[5] >> get_non_auto_polled_cmd();
+        }
         if (db_data[6].is_empty() == false)
+        {
             db_data[6] >> get_non_auto_polled_attr();
+        }
         if (db_data[7].is_empty() == false)
         {
             long tmp_poll;
@@ -578,7 +602,9 @@ void DeviceImpl::get_dev_system_resource()
             set_poll_old_factor(tmp_poll);
         }
         else
+        {
             set_poll_old_factor(DEFAULT_POLL_OLD_FACTOR);
+        }
         if (db_data[8].is_empty() == false)
         {
             db_data[8] >> cmd_poll_ring_depth;
@@ -593,10 +619,12 @@ void DeviceImpl::get_dev_system_resource()
                                         (const char *) "DeviceImpl::get_dev_system_resource()");
             }
             for (unsigned int i = 0; i < nb_prop; i = i + 2)
+            {
                 transform(cmd_poll_ring_depth[i].begin(),
                           cmd_poll_ring_depth[i].end(),
                           cmd_poll_ring_depth[i].begin(),
                           ::tolower);
+            }
         }
         if (db_data[9].is_empty() == false)
         {
@@ -612,10 +640,12 @@ void DeviceImpl::get_dev_system_resource()
                                         (const char *) "DeviceImpl::get_dev_system_resource()");
             }
             for (unsigned int i = 0; i < nb_prop; i = i + 2)
+            {
                 transform(attr_poll_ring_depth[i].begin(),
                           attr_poll_ring_depth[i].end(),
                           attr_poll_ring_depth[i].begin(),
                           ::tolower);
+            }
         }
 
 //
@@ -623,7 +653,9 @@ void DeviceImpl::get_dev_system_resource()
 //
 
         if (db_data[10].is_empty() == false)
+        {
             db_data[10] >> min_poll_period;
+        }
 
         if (db_data[11].is_empty() == false)
         {
@@ -639,10 +671,12 @@ void DeviceImpl::get_dev_system_resource()
                                         (const char *) "DeviceImpl::get_dev_system_resource()");
             }
             for (unsigned int i = 0; i < nb_prop; i = i + 2)
+            {
                 transform(cmd_min_poll_period[i].begin(),
                           cmd_min_poll_period[i].end(),
                           cmd_min_poll_period[i].begin(),
                           ::tolower);
+            }
         }
 
         if (db_data[12].is_empty() == false)
@@ -659,10 +693,12 @@ void DeviceImpl::get_dev_system_resource()
                                         (const char *) "DeviceImpl::get_dev_system_resource()");
             }
             for (unsigned int i = 0; i < nb_prop; i = i + 2)
+            {
                 transform(attr_min_poll_period[i].begin(),
                           attr_min_poll_period[i].end(),
                           attr_min_poll_period[i].begin(),
                           ::tolower);
+            }
         }
 
 //
@@ -671,7 +707,9 @@ void DeviceImpl::get_dev_system_resource()
 //
 
         if ((get_polled_cmd()).size() != 0)
+        {
             poll_lists_2_v5();
+        }
     }
 }
 
@@ -915,9 +953,13 @@ long DeviceImpl::get_cmd_poll_ring_depth(string &cmd_name)
 // No specific depth defined
 //
         if (poll_ring_depth == 0)
+        {
             ret = DefaultPollRingDepth;
+        }
         else
+        {
             ret = poll_ring_depth;
+        }
     }
     else
     {
@@ -951,9 +993,13 @@ long DeviceImpl::get_cmd_poll_ring_depth(string &cmd_name)
 //
 
             if (poll_ring_depth == 0)
+            {
                 ret = DefaultPollRingDepth;
+            }
             else
+            {
                 ret = poll_ring_depth;
+            }
         }
     }
 
@@ -997,9 +1043,13 @@ long DeviceImpl::get_attr_poll_ring_depth(string &attr_name)
 //
 
             if (poll_ring_depth == 0)
+            {
                 ret = DefaultPollRingDepth;
+            }
             else
+            {
                 ret = poll_ring_depth;
+            }
         }
     }
     else
@@ -1040,9 +1090,13 @@ long DeviceImpl::get_attr_poll_ring_depth(string &attr_name)
 //
 
                 if (poll_ring_depth == 0)
+                {
                     ret = DefaultPollRingDepth;
+                }
                 else
+                {
                     ret = poll_ring_depth;
+                }
             }
         }
     }
@@ -1072,7 +1126,9 @@ Tango::DevState DeviceImpl::dev_state()
 //
 
     if (run_att_conf_loop == true)
+    {
         att_conf_loop();
+    }
 
     if (device_state != Tango::FAULT && force_alarm_state == true)
     {
@@ -1109,7 +1165,9 @@ Tango::DevState DeviceImpl::dev_state()
                             ite = attr_list_2.erase(ite);
                         }
                         else
+                        {
                             ++ite;
+                        }
                     }
                     nb_wanted_attr = attr_list_2.size();
                 }
@@ -1120,9 +1178,13 @@ Tango::DevState DeviceImpl::dev_state()
                     {
                         Attribute &att = dev_attr->get_attr_by_ind(*ite);
                         if (att.is_polled() == true)
+                        {
                             ite = attr_list.erase(ite);
+                        }
                         else
+                        {
                             ++ite;
+                        }
                     }
                     nb_wanted_attr = attr_list.size();
                 }
@@ -1162,9 +1224,13 @@ Tango::DevState DeviceImpl::dev_state()
 
                     long idx;
                     if ((vers >= 3) && (state_from_read == true))
+                    {
                         idx = attr_list_2[i];
+                    }
                     else
+                    {
                         idx = attr_list[i];
+                    }
 
                     Attribute &att = dev_attr->get_attr_by_ind(idx);
                     att.save_alarm_quality();
@@ -1172,7 +1238,9 @@ Tango::DevState DeviceImpl::dev_state()
                     try
                     {
                         if (vers < 3)
+                        {
                             read_attr(att);
+                        }
                         else
                         {
 
@@ -1210,14 +1278,20 @@ Tango::DevState DeviceImpl::dev_state()
                         {
                             long idx;
                             if ((vers >= 3) && (state_from_read == true))
+                            {
                                 idx = attr_list_2[j];
+                            }
                             else
+                            {
                                 idx = attr_list[j];
+                            }
                             Tango::Attribute &tmp_att = dev_attr->get_attr_by_ind(idx);
                             if (att.get_wanted_date() == false)
                             {
                                 if (tmp_att.get_quality() != Tango::ATTR_INVALID)
+                                {
                                     tmp_att.delete_seq();
+                                }
                                 tmp_att.wanted_date(true);
                             }
                         }
@@ -1242,7 +1316,9 @@ Tango::DevState DeviceImpl::dev_state()
                 else
                 {
                     if (ext->alarm_state_kernel > ext->alarm_state_user)
+                    {
                         device_state = Tango::ON;
+                    }
                 }
 
 
@@ -1254,14 +1330,20 @@ Tango::DevState DeviceImpl::dev_state()
                 {
                     long idx;
                     if ((vers >= 3) && (state_from_read == true))
+                    {
                         idx = attr_list_2[i];
+                    }
                     else
+                    {
                         idx = attr_list[i];
+                    }
                     Tango::Attribute &att = dev_attr->get_attr_by_ind(idx);
                     if (att.get_wanted_date() == false)
                     {
                         if (att.get_quality() != Tango::ATTR_INVALID)
+                        {
                             att.delete_seq();
+                        }
                         att.wanted_date(true);
                     }
                 }
@@ -1269,7 +1351,9 @@ Tango::DevState DeviceImpl::dev_state()
             else
             {
                 if (ext->alarm_state_kernel > ext->alarm_state_user)
+                {
                     device_state = Tango::ON;
+                }
             }
 
 
@@ -1290,7 +1374,9 @@ Tango::DevState DeviceImpl::dev_state()
                     }
                 }
                 else
+                {
                     device_state = Tango::ON;
+                }
             }
         }
     }
@@ -1315,7 +1401,9 @@ Tango::ConstDevString DeviceImpl::dev_status()
     const char *returned_str;
 
     if (run_att_conf_loop == true)
+    {
         att_conf_loop();
+    }
 
     if (device_state != Tango::FAULT && force_alarm_state == true)
     {
@@ -1381,7 +1469,9 @@ Tango::ConstDevString DeviceImpl::dev_status()
                 returned_str = alarm_status.c_str();
             }
             else
+            {
                 returned_str = device_status.c_str();
+            }
         }
     }
 
@@ -1435,7 +1525,9 @@ CORBA::Any *DeviceImpl::command_inout(const char *in_cmd,
 //
 
         if (store_in_bb == true)
+        {
             blackbox_ptr->insert_cmd(in_cmd);
+        }
         store_in_bb = true;
 
 //
@@ -1491,9 +1583,13 @@ char *DeviceImpl::name()
     {
         CORBA::IMP_LIMIT lim;
         if (strcmp(e.errors[0].reason, API_CommandTimedOut) == 0)
+        {
             lim.minor(TG_IMP_MINOR_TO);
+        }
         else
+        {
             lim.minor(TG_IMP_MINOR_DEVFAILED);
+        }
         cout4 << "Leaving DeviceImpl::name throwing IMP_LIMIT" << endl;
         throw lim;
     }
@@ -1541,9 +1637,13 @@ char *DeviceImpl::adm_name()
     {
         CORBA::IMP_LIMIT lim;
         if (strcmp(e.errors[0].reason, API_CommandTimedOut) == 0)
+        {
             lim.minor(TG_IMP_MINOR_TO);
+        }
         else
+        {
             lim.minor(TG_IMP_MINOR_DEVFAILED);
+        }
         cout4 << "Leaving DeviceImpl::adm_name throwing IMP_LIMIT" << endl;
         throw lim;
     }
@@ -1593,9 +1693,13 @@ char *DeviceImpl::description()
     {
         CORBA::IMP_LIMIT lim;
         if (strcmp(e.errors[0].reason, API_CommandTimedOut) == 0)
+        {
             lim.minor(TG_IMP_MINOR_TO);
+        }
         else
+        {
             lim.minor(TG_IMP_MINOR_DEVFAILED);
+        }
         cout4 << "Leaving DeviceImpl::description throwing IMP_LIMIT" << endl;
         throw lim;
     }
@@ -1670,9 +1774,13 @@ Tango::DevState DeviceImpl::state()
 
         CORBA::IMP_LIMIT lim;
         if (strcmp(e.errors[0].reason, API_CommandTimedOut) == 0)
+        {
             lim.minor(TG_IMP_MINOR_TO);
+        }
         else
+        {
             lim.minor(TG_IMP_MINOR_DEVFAILED);
+        }
         cout4 << "Leaving DeviceImpl::state (attribute) throwing IMP_LIMIT" << endl;
         throw lim;
     }
@@ -1758,9 +1866,13 @@ char *DeviceImpl::status()
         }
 
         if (strcmp(e.errors[0].reason, API_CommandTimedOut) == 0)
+        {
             tmp = CORBA::string_dup("Not able to acquire device monitor");
+        }
         else
+        {
             tmp = CORBA::string_dup("Got exception	when trying to build device status");
+        }
     }
     catch (...)
     {
@@ -1855,14 +1967,22 @@ Tango::DevCmdInfoList *DeviceImpl::command_list_query()
             tmp.out_type = (long) ((device_class->get_command_list())[i]->get_out_type());
             string &str_in = (device_class->get_command_list())[i]->get_in_type_desc();
             if (str_in.size() != 0)
+            {
                 tmp.in_type_desc = CORBA::string_dup(str_in.c_str());
+            }
             else
+            {
                 tmp.in_type_desc = CORBA::string_dup(NotSet);
+            }
             string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
             if (str_out.size() != 0)
+            {
                 tmp.out_type_desc = CORBA::string_dup(str_out.c_str());
+            }
             else
+            {
                 tmp.out_type_desc = CORBA::string_dup(NotSet);
+            }
 
             (*back)[i] = tmp;
         }
@@ -1939,14 +2059,22 @@ Tango::DevCmdInfo *DeviceImpl::command_query(const char *command)
             back->out_type = (long) ((device_class->get_command_list())[i]->get_out_type());
             string &str_in = (device_class->get_command_list())[i]->get_in_type_desc();
             if (str_in.size() != 0)
+            {
                 back->in_type_desc = CORBA::string_dup(str_in.c_str());
+            }
             else
+            {
                 back->in_type_desc = CORBA::string_dup(NotSet);
+            }
             string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
             if (str_out.size() != 0)
+            {
                 back->out_type_desc = CORBA::string_dup(str_out.c_str());
+            }
             else
+            {
                 back->out_type_desc = CORBA::string_dup(NotSet);
+            }
             break;
         }
     }
@@ -2168,9 +2296,13 @@ Tango::AttributeConfigList *DeviceImpl::get_attribute_config(const Tango::DevVar
         {
             all_attr = true;
             if (vers < 3)
+            {
                 nb_attr = nb_dev_attr;
+            }
             else
+            {
                 nb_attr = nb_dev_attr - 2;
+            }
         }
         else if (in_name == AllAttr_3)
         {
@@ -2316,7 +2448,9 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
             vector<Attribute::AttPropDb> v_db;
             attr.set_properties(new_conf[i], device_name, false, v_db);
             if (Tango::Util::_UseDb == true)
+            {
                 attr.upd_database(v_db);
+            }
 
 //
 // In case the attribute quality factor was set to ALARM, reset it to VALID
@@ -2325,21 +2459,31 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
             if ((attr.get_quality() == Tango::ATTR_ALARM) &&
                 (old_alarm == true) &&
                 (attr.is_alarmed().any() == false))
+            {
                 attr.set_quality(Tango::ATTR_VALID);
+            }
 
 //
 // Send the event
 //
 
             if (attr.use_notifd_event() == true)
+            {
                 event_supplier_nd = tg->get_notifd_event_supplier();
+            }
             else
+            {
                 event_supplier_nd = NULL;
+            }
 
             if (attr.use_zmq_event() == true)
+            {
                 event_supplier_zmq = tg->get_zmq_event_supplier();
+            }
             else
+            {
                 event_supplier_zmq = NULL;
+            }
 
             if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
             {
@@ -2355,9 +2499,13 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
                     attr.get_properties(attr_conf_2);
                     ad.attr_conf_2 = &attr_conf_2;
                     if (event_supplier_nd != NULL)
+                    {
                         event_supplier_nd->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, tmp_name);
+                    }
                     if (event_supplier_zmq != NULL)
+                    {
                         event_supplier_zmq->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, tmp_name);
+                    }
                 }
                 else if (vers <= 4)
                 {
@@ -2365,9 +2513,13 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
                     attr.get_properties(attr_conf_3);
                     ad.attr_conf_3 = &attr_conf_3;
                     if (event_supplier_nd != NULL)
+                    {
                         event_supplier_nd->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, tmp_name);
+                    }
                     if (event_supplier_zmq != NULL)
+                    {
                         event_supplier_zmq->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, tmp_name);
+                    }
                 }
                 else
                 {
@@ -2375,9 +2527,13 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
                     attr.get_properties(attr_conf_5);
                     ad.attr_conf_5 = &attr_conf_5;
                     if (event_supplier_nd != NULL)
+                    {
                         event_supplier_nd->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, tmp_name);
+                    }
                     if (event_supplier_zmq != NULL)
+                    {
                         event_supplier_zmq->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, tmp_name);
+                    }
                 }
             }
         }
@@ -2397,7 +2553,9 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
             if (att.is_alarmed().any() == true)
             {
                 if (att.get_writable() != Tango::WRITE)
+                {
                     dev_attr->get_alarm_list().push_back(j);
+                }
             }
         }
 
@@ -2409,9 +2567,13 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
 
         o << e.errors[0].reason;
         if (i != 0)
+        {
             o << "\nAll previous attribute(s) have been successfully updated";
+        }
         if (i != (nb_attr - 1))
+        {
             o << "\nAll remaining attribute(s) have not been updated";
+        }
         o << ends;
 
         string s = o.str();
@@ -2432,7 +2594,9 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
         if (attr.is_alarmed().any() == true)
         {
             if (w_type != Tango::WRITE)
+            {
                 dev_attr->get_alarm_list().push_back(i);
+            }
         }
     }
 
@@ -2487,7 +2651,9 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 //
 
         if (store_in_bb == true)
+        {
             blackbox_ptr->insert_attr(names);
+        }
         store_in_bb = true;
 
 //
@@ -2507,7 +2673,9 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
                                     (const char *) "DeviceImpl::read_attributes");
         }
         if (vers >= 3)
+        {
             nb_dev_attr = nb_dev_attr - 2;
+        }
 
 //
 // Build a sequence with the names of the attribute to be read.
@@ -2525,7 +2693,9 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
             {
                 real_names.length(nb_dev_attr);
                 for (i = 0; i < nb_dev_attr; i++)
+                {
                     real_names[i] = dev_attr->get_attr_by_ind(i).get_name().c_str();
+                }
             }
             else
             {
@@ -2618,7 +2788,9 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 //
 
         if (nb_wanted_attr != 0)
+        {
             read_attr_hardware(wanted_attr);
+        }
 
 //
 // Set attr value (for readable attribute)
@@ -2629,7 +2801,9 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
         for (i = 0; i < nb_wanted_attr; i++)
         {
             if (vers < 3)
+            {
                 read_attr(dev_attr->get_attr_by_ind(wanted_attr[i]));
+            }
             else
             {
                 Attribute &att = dev_attr->get_attr_by_ind(wanted_attr[i]);
@@ -2670,7 +2844,9 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
             Tango::AttrWriteType w_type = dev_attr->get_attr_by_ind(wanted_w_attr[i]).get_writable();
             if ((w_type == Tango::READ_WITH_WRITE) ||
                 (w_type == Tango::WRITE))
+            {
                 dev_attr->get_attr_by_ind(wanted_w_attr[i]).set_rvalue();
+            }
         }
 
 //
@@ -2751,10 +2927,14 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
                     {
                         if ((w_type == Tango::READ_WRITE) ||
                             (w_type == Tango::READ_WITH_WRITE))
+                        {
                             dev_attr->add_write_value(att);
+                        }
 
                         if ((att.is_alarmed().any() == true) && (qual != Tango::ATTR_INVALID))
+                        {
                             att.check_alarm();
+                        }
                     }
 
                     CORBA::Any &a = (*back)[i].value;
@@ -2861,7 +3041,9 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
             }
 
             if (att.get_when().tv_sec == 0)
+            {
                 att.set_time();
+            }
 
             (*back)[i].time = att.get_when();
             (*back)[i].quality = att.get_quality();
@@ -2999,7 +3181,9 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
             catch (Tango::DevFailed &)
             {
                 for (long j = 0; j < i; j++)
+                {
                     dev_attr->get_w_attr_by_ind(updated_attr[j]).rollback();
+                }
 
                 throw;
             }
@@ -3043,9 +3227,13 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
                 attr_vect[att.get_attr_idx()]->write(this, att);
                 att.copy_data(values[i].value);
                 if (att.is_memorized() == true)
+                {
                     att_in_db.push_back(i);
+                }
                 if (att.is_alarmed().test(Attribute::rds) == true)
+                {
                     att.set_written_date();
+                }
             }
 
             if ((Tango::Util::_UseDb == true) && (att_in_db.empty() == false))
@@ -3173,7 +3361,9 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
             }
 
             if (th_running == false)
+            {
                 devintr_shared.interface.get_interface(this);
+            }
         }
     }
 
@@ -3238,7 +3428,9 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
         dev_attr->add_fwd_attribute(device_name, device_class, i, new_attr);
     }
     else
+    {
         dev_attr->add_attribute(device_name, device_class, i);
+    }
 
 //
 // Eventually start or update device interface change event thread
@@ -3253,14 +3445,18 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
     long per = new_attr->get_polling_period();
     Tango::Util *tg = Tango::Util::instance();
     if (tg->is_svr_starting() == false && per != 0)
+    {
         poll_attribute(attr_name, per);
+    }
 
 //
 // Free memory if needed
 //
 
     if (need_free == true)
+    {
         delete new_attr;
+    }
 
 }
 
@@ -3331,7 +3527,9 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it, bool clea
             }
 
             if (th_running == false)
+            {
                 devintr_shared.interface.get_interface(this);
+            }
         }
     }
 
@@ -3391,7 +3589,9 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it, bool clea
         else
         {
             if (tg->is_device_restarting(get_name()) == false)
+            {
                 adm_dev->rem_obj_polling(&send, clean_db);
+            }
         }
     }
 
@@ -3410,7 +3610,9 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it, bool clea
         {
             tg->get_all_dyn_attr_names().push_back(attr_name);
             if (tg->get_dyn_att_dev_name().size() == 0)
+            {
                 tg->get_dyn_att_dev_name() = device_name;
+            }
 
         }
     }
@@ -3439,7 +3641,9 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it, bool clea
                 Attribute &att = dev_list[i]->get_device_attr()->get_attr_by_name(attr_name.c_str());
                 vector<Tango::Attr *> &attr_list = device_class->get_class_attr()->get_attr_list();
                 if (attr_list[att.get_attr_idx()]->get_cl_name() != rem_attr->get_cl_name())
+                {
                     nb_except++;
+                }
             }
             catch (Tango::DevFailed &)
             {
@@ -3464,7 +3668,9 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it, bool clea
 //
 
     if ((free_it == true) && (update_idx == true))
+    {
         delete rem_attr;
+    }
 
 //
 // Eventually start or update device interface change event thread
@@ -3614,7 +3820,9 @@ void DeviceImpl::add_command(Tango::Command *new_cmd, bool device_level)
             }
 
             if (th_running == false)
+            {
                 devintr_shared.interface.get_interface(this);
+            }
         }
     }
 
@@ -3713,7 +3921,9 @@ void DeviceImpl::remove_command(Tango::Command *rem_cmd, bool free_it, bool clea
             }
 
             if (th_running == false)
+            {
                 devintr_shared.interface.get_interface(this);
+            }
         }
     }
 
@@ -3772,7 +3982,9 @@ void DeviceImpl::remove_command(Tango::Command *rem_cmd, bool free_it, bool clea
         else
         {
             if (tg->is_device_restarting(get_name()) == false)
+            {
                 adm_dev->rem_obj_polling(&send, clean_db);
+            }
         }
     }
 
@@ -3781,16 +3993,22 @@ void DeviceImpl::remove_command(Tango::Command *rem_cmd, bool free_it, bool clea
 //
 
     if (device_cmd == false)
+    {
         device_class->remove_command(cmd_name_low);
+    }
     else
+    {
         remove_local_command(cmd_name_low);
+    }
 
 //
 // Delete Command object if wanted
 //
 
     if (free_it == true)
+    {
         delete rem_cmd;
+    }
 
 //
 // Eventually start or update device interface change event thread
@@ -4345,7 +4563,9 @@ void DeviceImpl::init_attr_poll_period()
                 ss << poll_list[i + 1];
                 ss >> per;
                 if (ss)
+                {
                     att.set_polling_period(per);
+                }
             }
             catch (Tango::DevFailed &)
             {}
@@ -4375,9 +4595,13 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
     Tango::Util *tg = Tango::Util::instance();
 
     if (attr->use_notifd_event() == true)
+    {
         event_supplier_nd = tg->get_notifd_event_supplier();
+    }
     if (attr->use_zmq_event() == true)
+    {
         event_supplier_zmq = tg->get_zmq_event_supplier();
+    }
 
     if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
     {
@@ -4391,9 +4615,13 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
             attr->get_properties(attr_conf_2);
             ad.attr_conf_2 = &attr_conf_2;
             if (event_supplier_nd != NULL)
+            {
                 event_supplier_nd->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, attr->get_name());
+            }
             if (event_supplier_zmq != NULL)
+            {
                 event_supplier_zmq->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, attr->get_name());
+            }
         }
         else if (vers <= 4)
         {
@@ -4401,9 +4629,13 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
             attr->get_properties(attr_conf_3);
             ad.attr_conf_3 = &attr_conf_3;
             if (event_supplier_nd != NULL)
+            {
                 event_supplier_nd->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, attr->get_name());
+            }
             if (event_supplier_zmq != NULL)
+            {
                 event_supplier_zmq->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, attr->get_name());
+            }
         }
         else
         {
@@ -4411,9 +4643,13 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
             attr->get_properties(attr_conf_5);
             ad.attr_conf_5 = &attr_conf_5;
             if (event_supplier_nd != NULL)
+            {
                 event_supplier_nd->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, attr->get_name());
+            }
             if (event_supplier_zmq != NULL)
+            {
                 event_supplier_zmq->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, attr->get_name());
+            }
         }
     }
 }
@@ -4493,7 +4729,9 @@ void DeviceImpl::lock(client_addr *cl, int validity)
 //
 
     if (get_with_fwd_att() == true)
+    {
         lock_root_devices(validity, true);
+    }
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -4595,9 +4833,13 @@ Tango::DevLong DeviceImpl::unlock(bool forced)
     }
 
     if (lock_ctr > 0)
+    {
         lock_ctr--;
+    }
     if ((lock_ctr <= 0) || (forced == true))
+    {
         basic_unlock(forced);
+    }
 
     return lock_ctr;
 }
@@ -4620,9 +4862,13 @@ void DeviceImpl::basic_unlock(bool forced)
 {
     device_locked = false;
     if (forced == true)
+    {
         old_locker_client = locker_client;
+    }
     else
+    {
         delete locker_client;
+    }
     locker_client = NULL;
     lock_ctr = 0;
 
@@ -4631,7 +4877,9 @@ void DeviceImpl::basic_unlock(bool forced)
 //
 
     if (get_with_fwd_att() == true)
+    {
         lock_root_devices(0, false);
+    }
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -4649,9 +4897,13 @@ bool DeviceImpl::valid_lock()
 {
     time_t now = time(NULL);
     if (now > (locking_date + lock_validity))
+    {
         return false;
+    }
     else
+    {
         return true;
+    }
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -4711,7 +4963,9 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
             {
                 dvlsa->svalue[2] = CORBA::string_dup("Not defined");
                 for (long loop = 2; loop < 6; loop++)
+                {
                     dvlsa->lvalue[loop] = 0;
+                }
             }
         }
         else
@@ -4721,7 +4975,9 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
             dvlsa->svalue[1] = CORBA::string_dup("Not defined");
             dvlsa->svalue[2] = CORBA::string_dup("Not defined");
             for (long loop = 0; loop < 6; loop++)
+            {
                 dvlsa->lvalue[loop] = 0;
+            }
         }
     }
     else
@@ -4730,7 +4986,9 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
         dvlsa->svalue[1] = CORBA::string_dup("Not defined");
         dvlsa->svalue[2] = CORBA::string_dup("Not defined");
         for (long loop = 0; loop < 6; loop++)
+        {
             dvlsa->lvalue[loop] = 0;
+        }
     }
 
     dvlsa->svalue[0] = CORBA::string_dup(lock_stat.c_str());
@@ -4805,7 +5063,9 @@ void DeviceImpl::check_lock(const char *meth, const char *cmd)
                     }
                 }
                 else
+                {
                     throw_locked_exception(meth);
+                }
             }
 
             if (*cl != *(locker_client))
@@ -4824,7 +5084,9 @@ void DeviceImpl::check_lock(const char *meth, const char *cmd)
                     }
                 }
                 else
+                {
                     throw_locked_exception(meth);
+                }
             }
         }
         else
@@ -4999,9 +5261,13 @@ void DeviceImpl::data_into_net_object(Attribute &att, AttributeIdlData &aid,
                     DevVarEncodedArray &the_seq = (*aid.data_5)[index].value.encoded_att_value();
 
                     if ((w_type == Tango::READ) || (w_type == Tango::WRITE))
+                    {
                         the_seq.length(1);
+                    }
                     else
+                    {
                         the_seq.length(2);
+                    }
 
                     the_seq[0].encoded_format = CORBA::string_dup((*ptr)[0].encoded_format);
 
@@ -5013,9 +5279,11 @@ void DeviceImpl::data_into_net_object(Attribute &att, AttributeIdlData &aid,
                         (*ptr)[0].encoded_data.replace(0, 0, NULL, false);
                     }
                     else
+                    {
                         the_seq[0].encoded_data.replace((*ptr)[0].encoded_data.length(),
                                                         (*ptr)[0].encoded_data.length(),
                                                         (*ptr)[0].encoded_data.get_buffer());
+                    }
 
                     if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
                     {
@@ -5031,9 +5299,13 @@ void DeviceImpl::data_into_net_object(Attribute &att, AttributeIdlData &aid,
                     DevVarEncodedArray &the_seq = (*aid.data_4)[index].value.encoded_att_value();
 
                     if ((w_type == Tango::READ) || (w_type == Tango::WRITE))
+                    {
                         the_seq.length(1);
+                    }
                     else
+                    {
                         the_seq.length(2);
+                    }
 
                     the_seq[0].encoded_format = CORBA::string_dup((*ptr)[0].encoded_format);
 
@@ -5045,9 +5317,11 @@ void DeviceImpl::data_into_net_object(Attribute &att, AttributeIdlData &aid,
                         (*ptr)[0].encoded_data.replace(0, 0, NULL, false);
                     }
                     else
+                    {
                         the_seq[0].encoded_data.replace((*ptr)[0].encoded_data.length(),
                                                         (*ptr)[0].encoded_data.length(),
                                                         (*ptr)[0].encoded_data.get_buffer());
+                    }
 
                     if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
                     {
@@ -5058,7 +5332,9 @@ void DeviceImpl::data_into_net_object(Attribute &att, AttributeIdlData &aid,
                     }
                 }
                 if (del_seq == true)
+                {
                     delete ptr;
+                }
             }
             break;
         }
@@ -5391,14 +5667,20 @@ void DeviceImpl::att_conf_loop()
         {
             force_alarm_state = true;
             if (att_list[i]->is_startup_exception() == true)
+            {
                 wrong_conf_att_list.push_back(att_list[i]->get_name());
+            }
             else
+            {
                 mem_att_list.push_back(att_list[i]->get_name());
+            }
         }
     }
 
     if (force_alarm_state == false && fwd_att_wrong_conf.empty() == false)
+    {
         force_alarm_state = true;
+    }
 
     run_att_conf_loop = false;
 }
@@ -5417,7 +5699,9 @@ void DeviceImpl::check_att_conf()
     dev_attr->check_idl_release(this);
 
     if (run_att_conf_loop == true)
+    {
         att_conf_loop();
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -5451,14 +5735,20 @@ void DeviceImpl::build_att_list_in_status_mess(size_t nb_att, AttErrorType att_t
         {
             alarm_status = alarm_status + "\nForwarded attribute " + fwd_att_wrong_conf[i].att_name;
             if (fwd_att_wrong_conf[i].fae != FWD_ROOT_DEV_NOT_STARTED)
+            {
                 alarm_status = alarm_status + " is not correctly configured! ";
+            }
             else
+            {
                 alarm_status = alarm_status + " not reachable! ";
+            }
 
             alarm_status = alarm_status + "Root attribute name = ";
             alarm_status = alarm_status + fwd_att_wrong_conf[i].full_root_att_name;
             if (fwd_att_wrong_conf[i].fae != FWD_ROOT_DEV_NOT_STARTED)
+            {
                 alarm_status = alarm_status + "\nYou can update it using the Jive tool";
+            }
             alarm_status = alarm_status + "\nError: ";
             switch (fwd_att_wrong_conf[i].fae)
             {
@@ -5524,23 +5814,35 @@ void DeviceImpl::build_att_list_in_status_mess(size_t nb_att, AttErrorType att_t
 //
 
         if (nb_att > 1)
+        {
             alarm_status = alarm_status + "s";
+        }
         alarm_status = alarm_status + " ";
         for (size_t i = 0; i < nb_att; ++i)
         {
             if (att_type == Tango::DeviceImpl::CONF)
+            {
                 alarm_status = alarm_status + att_wrong_db_conf[i];
+            }
             else
+            {
                 alarm_status = alarm_status + att_mem_failed[i];
+            }
 
             if ((nb_att > 1) && (i <= nb_att - 2))
+            {
                 alarm_status = alarm_status + ", ";
+            }
         }
 
         if (nb_att == 1)
+        {
             alarm_status = alarm_status + " has ";
+        }
         else
+        {
             alarm_status = alarm_status + " have ";
+        }
     }
 }
 
@@ -5694,7 +5996,9 @@ void DeviceImpl::lock_root_devices(int validity, bool lock_action)
             string &dev_name = fwd_att->get_fwd_dev_name();
             ite = find(root_devs.begin(), root_devs.end(), dev_name);
             if (ite == root_devs.end())
+            {
                 root_devs.push_back(dev_name);
+            }
         }
     }
 
@@ -5708,9 +6012,13 @@ void DeviceImpl::lock_root_devices(int validity, bool lock_action)
         DeviceProxy *dp = rar.get_root_att_dp(root_devs[loop]);
 
         if (lock_action == true)
+        {
             dp->lock(validity);
+        }
         else
+        {
             dp->unlock();
+        }
     }
 }
 
@@ -5733,7 +6041,9 @@ Command &DeviceImpl::get_local_cmd_by_name(const string &cmd_name)
                   [&](Command *cmd) -> bool
                   {
                       if (cmd_name.size() != cmd->get_lower_name().size())
+                      {
                           return false;
+                      }
                       string tmp_name(cmd_name);
                       transform(tmp_name.begin(), tmp_name.end(), tmp_name.begin(), ::tolower);
                       return cmd->get_lower_name() == tmp_name;
@@ -5774,7 +6084,9 @@ void DeviceImpl::remove_local_command(const string &cmd_name)
                   [&](Command *cmd) -> bool
                   {
                       if (cmd_name.size() != cmd->get_lower_name().size())
+                      {
                           return false;
+                      }
                       return cmd->get_lower_name() == cmd_name;
                   });
 #else
@@ -5850,7 +6162,9 @@ void DeviceImpl::set_event_param(vector<EventPar> &eve)
         if (eve[loop].attr_id == -1)
         {
             if (eve[loop].dev_intr_change == true)
+            {
                 set_event_intr_change_subscription(time(NULL));
+            }
             break;
         }
     }
@@ -5956,7 +6270,9 @@ void DeviceImpl::end_pipe_config()
         if (tg->_UseDb == true)
         {
             for (size_t i = 0; i < nb_pipe; i++)
+            {
                 db_list.push_back(DbDatum(pipe_list[i]->get_name()));
+            }
 
 //
 // On some small and old computers, this request could take time if at the same time some other processes also access
@@ -5966,14 +6282,20 @@ void DeviceImpl::end_pipe_config()
 
             int old_db_timeout = 0;
             if (Util::_FileDb == false)
+            {
                 old_db_timeout = tg->get_database()->get_timeout_millis();
+            }
             try
             {
                 if (old_db_timeout != 0)
+                {
                     tg->get_database()->set_timeout_millis(6000);
+                }
                 tg->get_database()->get_device_pipe_property(device_name, db_list, tg->get_db_cache());
                 if (old_db_timeout != 0)
+                {
                     tg->get_database()->set_timeout_millis(old_db_timeout);
+                }
             }
             catch (Tango::DevFailed &)
             {
@@ -6017,7 +6339,9 @@ void DeviceImpl::end_pipe_config()
                         dev_prop.push_back(PipeProperty(db_list[ind].name, tmp));
                     }
                     else
+                    {
                         dev_prop.push_back(PipeProperty(db_list[ind].name, db_list[ind].value_string[0]));
+                    }
                     ind++;
                 }
 
@@ -6069,9 +6393,13 @@ void DeviceImpl::set_pipe_prop(vector<PipeProperty> &dev_prop, Pipe *pi_ptr, Pip
     bool found = false;
     string req_p_name;
     if (ppt == LABEL)
+    {
         req_p_name = "label";
+    }
     else
+    {
         req_p_name = "description";
+    }
 
     vector<PipeProperty>::iterator dev_ite;
     for (dev_ite = dev_prop.begin(); dev_ite != dev_prop.end(); ++dev_ite)
@@ -6089,9 +6417,13 @@ void DeviceImpl::set_pipe_prop(vector<PipeProperty> &dev_prop, Pipe *pi_ptr, Pip
     if (found == true)
     {
         if (ppt == LABEL)
+        {
             pi_ptr->set_label(dev_ite->get_value());
+        }
         else
+        {
             pi_ptr->set_desc(dev_ite->get_value());
+        }
     }
     else
     {
@@ -6103,9 +6435,13 @@ void DeviceImpl::set_pipe_prop(vector<PipeProperty> &dev_prop, Pipe *pi_ptr, Pip
 
         bool still_default;
         if (ppt == LABEL)
+        {
             still_default = pi_ptr->is_label_lib_default();
+        }
         else
+        {
             still_default = pi_ptr->is_desc_lib_default();
+        }
 
         if (still_default == true)
         {
@@ -6130,9 +6466,13 @@ void DeviceImpl::set_pipe_prop(vector<PipeProperty> &dev_prop, Pipe *pi_ptr, Pip
                 if (found == true)
                 {
                     if (ppt == LABEL)
+                    {
                         pi_ptr->set_label(class_ite->get_value());
+                    }
                     else
+                    {
                         pi_ptr->set_desc(class_ite->get_value());
+                    }
                 }
             }
             catch (Tango::DevFailed &)

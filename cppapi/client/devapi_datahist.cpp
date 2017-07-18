@@ -81,7 +81,9 @@ DeviceDataHistory::DeviceDataHistory(const DeviceDataHistory &source)
     seq_ptr = source.seq_ptr;
     ref_ctr_ptr = source.ref_ctr_ptr;
     if (ref_ctr_ptr != NULL)
+    {
         (*ref_ctr_ptr)++;
+    }
 
 #ifdef HAS_UNIQUE_PTR
     if (source.ext_hist.get() != NULL)
@@ -112,9 +114,13 @@ DeviceDataHistory::DeviceDataHistory(DeviceDataHistory &&source)
     ref_ctr_ptr = source.ref_ctr_ptr;
 
     if (source.ext_hist.get() != NULL)
+    {
         ext_hist = move(source.ext_hist);
+    }
     else
+    {
         ext_hist.reset();
+    }
 }
 #endif
 
@@ -196,7 +202,9 @@ DeviceDataHistory &DeviceDataHistory::operator=(const DeviceDataHistory &rval)
             *(ext_hist.get()) = *(rval.ext_hist.get());
         }
         else
+        {
             ext_hist.reset();
+        }
 #else
         delete ext_hist;
         if (rval.ext_hist != NULL)
@@ -261,9 +269,13 @@ DeviceDataHistory &DeviceDataHistory::operator=(DeviceDataHistory &&rval)
 //
 
     if (rval.ext_hist.get() != NULL)
+    {
         ext_hist = move(rval.ext_hist);
+    }
     else
+    {
         ext_hist.reset();
+    }
 
     return *this;
 }
@@ -330,7 +342,9 @@ ostream &operator<<(ostream &o_str, DeviceDataHistory &dh)
             o_str << "Desc : " << (dh.err.in())[i].desc.in() << endl;
             o_str << "Origin : " << (dh.err.in())[i].origin.in();
             if (i != nb_err - 1)
+            {
                 o_str << endl;
+            }
         }
     }
     else
@@ -683,7 +697,9 @@ DeviceAttributeHistory::DeviceAttributeHistory(DeviceAttributeHistory &&source)
     fail = source.fail;
 
     if (source.ext_hist.get() != NULL)
+    {
         ext_hist = move(source.ext_hist);
+    }
 
 }
 #endif
@@ -732,7 +748,9 @@ DeviceAttributeHistory &DeviceAttributeHistory::operator=(const DeviceAttributeH
             *(ext_hist.get()) = *(rval.ext_hist.get());
         }
         else
+        {
             ext_hist.reset();
+        }
 #else
         delete ext_hist;
         if (rval.ext_hist != NULL)
@@ -765,9 +783,13 @@ DeviceAttributeHistory &DeviceAttributeHistory::operator=(DeviceAttributeHistory
     fail = rval.fail;
 
     if (rval.ext_hist.get() != NULL)
+    {
         ext_hist = move(rval.ext_hist);
+    }
     else
+    {
         ext_hist.reset();
+    }
 
     return *this;
 }
@@ -882,7 +904,9 @@ ostream &operator<<(ostream &o_str, DeviceAttributeHistory &dah)
             o_str << "Desc : " << dah.err_list[i].desc.in() << endl;
             o_str << "Origin : " << dah.err_list[i].origin.in();
             if (i != nb_err - 1)
+            {
                 o_str << endl;
+            }
         }
     }
     else
@@ -890,35 +914,63 @@ ostream &operator<<(ostream &o_str, DeviceAttributeHistory &dah)
         if (dah.quality != Tango::ATTR_INVALID)
         {
             if (dah.is_empty() == true)
+            {
                 o_str << "No data in DeviceData object";
+            }
             else
             {
                 if (dah.LongSeq.operator->() != NULL)
+                {
                     o_str << *(dah.LongSeq.operator->());
+                }
                 else if (dah.ShortSeq.operator->() != NULL)
+                {
                     o_str << *(dah.ShortSeq.operator->());
+                }
                 else if (dah.DoubleSeq.operator->() != NULL)
+                {
                     o_str << *(dah.DoubleSeq.operator->());
+                }
                 else if (dah.FloatSeq.operator->() != NULL)
+                {
                     o_str << *(dah.FloatSeq.operator->());
+                }
                 else if (dah.BooleanSeq.operator->() != NULL)
+                {
                     o_str << *(dah.BooleanSeq.operator->());
+                }
                 else if (dah.UShortSeq.operator->() != NULL)
+                {
                     o_str << *(dah.UShortSeq.operator->());
+                }
                 else if (dah.UCharSeq.operator->() != NULL)
+                {
                     o_str << *(dah.UCharSeq.operator->());
+                }
                 else if (dah.Long64Seq.operator->() != NULL)
+                {
                     o_str << *(dah.Long64Seq.operator->());
+                }
                 else if (dah.ULongSeq.operator->() != NULL)
+                {
                     o_str << *(dah.ULongSeq.operator->());
+                }
                 else if (dah.ULong64Seq.operator->() != NULL)
+                {
                     o_str << *(dah.ULong64Seq.operator->());
+                }
                 else if (dah.StateSeq.operator->() != NULL)
+                {
                     o_str << *(dah.StateSeq.operator->());
+                }
                 else if (dah.EncodedSeq.operator->() != NULL)
+                {
                     o_str << *(dah.EncodedSeq.operator->());
+                }
                 else
+                {
                     o_str << *(dah.StringSeq.operator->());
+                }
             }
         }
     }
