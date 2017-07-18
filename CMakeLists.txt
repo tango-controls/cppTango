@@ -6,7 +6,7 @@ enable_testing()
 #need to define the version of the library
 set(MAJOR_VERSION "10")
 set(MINOR_VERSION "0")
-set(PATCH_VERSION "1")
+set(PATCH_VERSION "2")
 
 #convenient versions
 set(LIBRARY_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
