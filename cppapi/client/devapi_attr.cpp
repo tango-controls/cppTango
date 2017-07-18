@@ -536,7 +536,7 @@ DeviceAttribute & DeviceAttribute::operator=(DeviceAttribute &&rval)
         ext = move(rval.ext);
     }
     else
-        ext.reset();
+		ext.reset();
 
 	return *this;
 }

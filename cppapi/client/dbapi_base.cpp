@@ -365,12 +365,12 @@ Database::Database(const Database &sou):Connection(sou),ext(Tango_nullptr)
         filedb = Tango_nullptr;
     else
         filedb = new FileDatabase(file_name);
-	serv_version = sou.serv_version;
+    serv_version = sou.serv_version;
 
     if (sou.access_proxy == Tango_nullptr)
-        access_proxy = Tango_nullptr;
+		access_proxy = Tango_nullptr;
     else
-        access_proxy = new AccessProxy(sou.access_proxy->name().c_str());
+		access_proxy = new AccessProxy(sou.access_proxy->name().c_str());
 	access_checked = sou.access_checked;
 	access_except_errors = sou.access_except_errors;
 

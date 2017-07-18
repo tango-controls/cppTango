@@ -20,85 +20,89 @@ using namespace std;
 
 const int NODATA = -9999;
 
-class EventCallback : public Tango::CallBack
+class EventCallback: public Tango::CallBack
 {
 public:
-    EventCallback()  { };
-    ~EventCallback() { };
-    void push_event( Tango::EventData *ed );
+    EventCallback(): cb_executed(0),cb_err(0)
+    {};
+    ~EventCallback()
+    {};
+    void push_event(Tango::EventData *ed);
 
-	int cb_executed;
-	int cb_err;
+    int cb_executed;
+    int cb_err;
 };
 
-
-void EventCallback::push_event( Tango::EventData *ed )
+void EventCallback::push_event(Tango::EventData *ed)
 {
-    if( 0 == ed->err )
-		cb_executed++;
+    if (0 == ed->err)
+    {
+        cb_executed++;
+    }
     else
-		cb_err++;
+    {
+        cb_err++;
+    }
 }
 
-
-int main(int argc,char *argv[])
+int main(int argc, char *argv[])
 {
-    Tango::DeviceProxy * dev;
+    Tango::DeviceProxy *dev;
     int eventID;
-    const vector< string >  filters;
+    const vector<string> filters;
     EventCallback *eventCallback = new EventCallback();
-	eventCallback->cb_executed = 0;
-	eventCallback->cb_err = 0;
 
-	if (argc != 2)
-	{
-		cout << "usage: event_lock <device>" << endl;
-		exit(-1);
-	}
+    if (argc != 2)
+    {
+        cout << "usage: event_lock <device>" << endl;
+        exit(-1);
+    }
 
     string devName(argv[1]);
-	string att_name ("event_change_tst");
+    string att_name("event_change_tst");
 
     try
     {
-        dev = new Tango::DeviceProxy( devName );
-		dev->poll_attribute(att_name,1000);
+        dev = new Tango::DeviceProxy(devName);
+        dev->poll_attribute(att_name, 1000);
 
         eventID = NODATA;
-        eventID = dev -> subscribe_event( att_name, Tango::CHANGE_EVENT, eventCallback, filters );
+        eventID = dev->subscribe_event(att_name, Tango::CHANGE_EVENT, eventCallback, filters);
 
         dev->lock();
 
-		cout << "   Device locked and subscribed to one change event --> OK" << endl;
-    
+        cout << "   Device locked and subscribed to one change event --> OK" << endl;
+
         int cnt = 0;
-        while( cnt < 3 )
+        while (cnt < 3)
         {
             dev->command_inout("IOIncValue");
-            Tango_sleep( 2 );
+            Tango_sleep(2);
             cnt++;
         }
 
         dev->unlock();
-		cout << "   Device unlocked --> OK" << endl;
+        cout << "   Device unlocked --> OK" << endl;
 
-    	if( eventID != NODATA )
-        	dev->unsubscribe_event( eventID );
+        if (eventID != NODATA)
+        {
+            dev->unsubscribe_event(eventID);
+        }
 
-		dev->stop_poll_attribute(att_name);
+        dev->stop_poll_attribute(att_name);
     }
-    catch( Tango::DevFailed &ex )
+    catch (Tango::DevFailed &ex)
     {
-        Tango::Except::print_exception( ex );
+        Tango::Except::print_exception(ex);
     }
-	catch(...)
-	{
-		cout << "Unknown exception....." << endl;
-	}
+    catch (...)
+    {
+        cout << "Unknown exception....." << endl;
+    }
 
     delete dev;
 
-	cout << "   Memory corruption at process exit--> ??" << endl;
+    cout << "   Memory corruption at process exit--> ??" << endl;
 
     return 0;
 }

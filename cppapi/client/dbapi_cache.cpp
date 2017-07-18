@@ -897,7 +897,7 @@ int DbServerCache::find_obj(DevString obj_name,int &obj_ind)
 {
 
     if (ctrl_serv_prop.first_idx == -1)
-        return -1;
+		return -1;
 
 	if (TG_strcasecmp((*data_list)[ctrl_serv_prop.first_idx],obj_name) == 0)
 	{

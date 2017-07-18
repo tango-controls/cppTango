@@ -76,8 +76,9 @@ extern omni_thread::key_t key;
 
 CORBA::Boolean get_client_addr(omni::omniInterceptors::serverReceiveRequest_T::info_T &info)
 {
-    omni_thread::self()->set_value(key,new client_addr(((omni::giopStrand &)info.giop_s.strand()).connection->peeraddress()));
-	return true;
+    omni_thread::self()
+        ->set_value(key, new client_addr(((omni::giopStrand &) info.giop_s.strand()).connection->peeraddress()));
+    return true;
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -92,13 +93,13 @@ CORBA::Boolean get_client_addr(omni::omniInterceptors::serverReceiveRequest_T::i
 
 BlackBoxElt::BlackBoxElt()
 {
-	req_type = Req_Unknown;
-	attr_type = Attr_Unknown;
-	op_type = Op_Unknown;
-	when.tv_sec = when.tv_usec = 0;
-	host_ip_str[0] = '\0';
-	client_ident = false;
-	attr_names.reserve(DEFAULT_ATTR_NB);
+    req_type = Req_Unknown;
+    attr_type = Attr_Unknown;
+    op_type = Op_Unknown;
+    when.tv_sec = when.tv_usec = 0;
+    host_ip_str[0] = '\0';
+    client_ident = false;
+    attr_names.reserve(DEFAULT_ATTR_NB);
 }
 
 BlackBoxElt::~BlackBoxElt()
@@ -120,18 +121,20 @@ BlackBoxElt::~BlackBoxElt()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-BlackBox::BlackBox():box(DefaultBlackBoxDepth)
+BlackBox::BlackBox()
+    : box(DefaultBlackBoxDepth)
 {
-	insert_elt = 0;
-	nb_elt = 0;
-	max_elt = DefaultBlackBoxDepth;
+    insert_elt = 0;
+    nb_elt = 0;
+    max_elt = DefaultBlackBoxDepth;
 }
 
-BlackBox::BlackBox(long max_size):box(max_size)
+BlackBox::BlackBox(long max_size)
+    : box(max_size)
 {
-	insert_elt = 0;
-	nb_elt = 0;
-	max_elt = max_size;
+    insert_elt = 0;
+    nb_elt = 0;
+    max_elt = max_size;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -156,49 +159,49 @@ void BlackBox::insert_corba_attr(BlackBoxElt_AttrType attr)
 // Take mutex
 //
 
-	sync.lock();
+    sync.lock();
 
 //
 // Insert elt in the box
 //
 
-	box[insert_elt].req_type = Req_Attribute;
-	box[insert_elt].attr_type = attr;
-	box[insert_elt].op_type = Op_Unknown;
-	box[insert_elt].client_ident = false;
+    box[insert_elt].req_type = Req_Attribute;
+    box[insert_elt].attr_type = attr;
+    box[insert_elt].op_type = Op_Unknown;
+    box[insert_elt].client_ident = false;
 
 #ifdef _TG_WINDOWS_
-//
-// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-// This save some times in unnecessary computation
-//
-	struct _timeb t;
-	_ftime(&t);
+    //
+    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+    // This save some times in unnecessary computation
+    //
+        struct _timeb t;
+        _ftime(&t);
 
-	box[insert_elt].when.tv_usec = (long)t.millitm;
-	box[insert_elt].when.tv_sec = (unsigned long)t.time;
+        box[insert_elt].when.tv_usec = (long)t.millitm;
+        box[insert_elt].when.tv_sec = (unsigned long)t.time;
 #else
-	struct timezone tz;
-	gettimeofday(&box[insert_elt].when,&tz);
+    struct timezone tz;
+    gettimeofday(&box[insert_elt].when, &tz);
 #endif
 
 //
 // get client address
 //
 
-	get_client_host();
+    get_client_host();
 
 //
 // manage insert and read indexes
 //
 
-	inc_indexes();
+    inc_indexes();
 
 //
 // Release mutex
 //
 
-	sync.unlock();
+    sync.unlock();
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -218,59 +221,65 @@ void BlackBox::insert_corba_attr(BlackBoxElt_AttrType attr)
 //-------------------------------------------------------------------------------------------------------------------
 
 
-void BlackBox::insert_cmd(const char *cmd,long vers,DevSource sour)
+void BlackBox::insert_cmd(const char *cmd, long vers, DevSource sour)
 {
-	sync.lock();
+    sync.lock();
 
-	insert_cmd_nl(cmd,vers,sour);
+    insert_cmd_nl(cmd, vers, sour);
 
-	sync.unlock();
+    sync.unlock();
 }
 
-void BlackBox::insert_cmd_nl(const char *cmd,long vers,DevSource sour)
+void BlackBox::insert_cmd_nl(const char *cmd, long vers, DevSource sour)
 {
 
 //
 // Insert elt in the box
 //
 
-	box[insert_elt].req_type = Req_Operation;
-	box[insert_elt].attr_type = Attr_Unknown;
-	if (vers == 1)
-		box[insert_elt].op_type = Op_Command_inout;
-	else if (vers <= 3)
-		box[insert_elt].op_type = Op_Command_inout_2;
-	else
-		box[insert_elt].op_type = Op_Command_inout_4;
-	box[insert_elt].cmd_name = cmd;
-	box[insert_elt].source = sour;
-	box[insert_elt].client_ident = false;
+    box[insert_elt].req_type = Req_Operation;
+    box[insert_elt].attr_type = Attr_Unknown;
+    if (vers == 1)
+    {
+        box[insert_elt].op_type = Op_Command_inout;
+    }
+    else if (vers <= 3)
+    {
+        box[insert_elt].op_type = Op_Command_inout_2;
+    }
+    else
+    {
+        box[insert_elt].op_type = Op_Command_inout_4;
+    }
+    box[insert_elt].cmd_name = cmd;
+    box[insert_elt].source = sour;
+    box[insert_elt].client_ident = false;
 #ifdef _TG_WINDOWS_
-//
-// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-// This save some times in unnecessary computation
-//
-	struct _timeb t;
-	_ftime(&t);
+    //
+    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+    // This save some times in unnecessary computation
+    //
+        struct _timeb t;
+        _ftime(&t);
 
-	box[insert_elt].when.tv_usec = (long)t.millitm;
-	box[insert_elt].when.tv_sec = (unsigned long)t.time;
+        box[insert_elt].when.tv_usec = (long)t.millitm;
+        box[insert_elt].when.tv_sec = (unsigned long)t.time;
 #else
-	struct timezone tz;
-	gettimeofday(&box[insert_elt].when,&tz);
+    struct timezone tz;
+    gettimeofday(&box[insert_elt].when, &tz);
 #endif
 
 //
 // get client address
 //
 
-	get_client_host();
+    get_client_host();
 
 //
 // manage insert and read indexes
 //
 
-	inc_indexes();
+    inc_indexes();
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -290,38 +299,38 @@ void BlackBox::insert_cmd_nl(const char *cmd,long vers,DevSource sour)
 //------------------------------------------------------------------------------------------------------------------
 
 
-void BlackBox::insert_cmd_cl_ident(const char *cmd,const ClntIdent &cl_id,long vers,DevSource sour)
+void BlackBox::insert_cmd_cl_ident(const char *cmd, const ClntIdent &cl_id, long vers, DevSource sour)
 {
-	sync.lock();
+    sync.lock();
 
 //
 // Add basic info in the box
 //
 
     long old_insert = insert_elt;
-	insert_cmd_nl(cmd,vers,sour);
+    insert_cmd_nl(cmd, vers, sour);
 
 //
 // Check if the command is executed due to polling. If true, simply return
 //
 
-	if (box[old_insert].host_ip_str[0] == 'p' ||
+    if (box[old_insert].host_ip_str[0] == 'p' ||
         box[old_insert].host_ip_str[0] == 'u' ||
         box[old_insert].host_ip_str[0] == 'i')
-	{
-		sync.unlock();
-		return;
-	}
+    {
+        sync.unlock();
+        return;
+    }
 
 //
 // Add client ident info into the client_addr instance and into the box
 //
 
     omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-	update_client_host(static_cast<client_addr *>(ip));
+    add_cl_ident(cl_id, static_cast<client_addr *>(ip));
+    update_client_host(static_cast<client_addr *>(ip));
 
-	sync.unlock();
+    sync.unlock();
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -339,29 +348,31 @@ void BlackBox::insert_cmd_cl_ident(const char *cmd,const ClntIdent &cl_id,long v
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void BlackBox::add_cl_ident(const ClntIdent &cl_ident,client_addr *cl_addr)
+void BlackBox::add_cl_ident(const ClntIdent &cl_ident, client_addr *cl_addr)
 {
-	cl_addr->client_ident = true;
-	Tango::LockerLanguage cl_lang = cl_ident._d();
-	cl_addr->client_lang = cl_lang;
-	if (cl_lang == Tango::CPP)
-	{
-		cl_addr->client_pid = cl_ident.cpp_clnt();
-		string str(cl_addr->client_ip);
-		if (str.find(":unix:") != string::npos)
-		{
-		    string::size_type pos = str.find(' ');
-		    if (pos != string::npos)
+    cl_addr->client_ident = true;
+    Tango::LockerLanguage cl_lang = cl_ident._d();
+    cl_addr->client_lang = cl_lang;
+    if (cl_lang == Tango::CPP)
+    {
+        cl_addr->client_pid = cl_ident.cpp_clnt();
+        string str(cl_addr->client_ip);
+        if (str.find(":unix:") != string::npos)
+        {
+            string::size_type pos = str.find(' ');
+            if (pos != string::npos)
+            {
                 cl_addr->client_ip[pos] = '\0';
-		}
-	}
-	else
-	{
-		Tango::JavaClntIdent jci = cl_ident.java_clnt();
-		cl_addr->java_main_class = jci.MainClass;
-		cl_addr->java_ident[0] = jci.uuid[0];
-		cl_addr->java_ident[1] = jci.uuid[1];
-	}
+            }
+        }
+    }
+    else
+    {
+        Tango::JavaClntIdent jci = cl_ident.java_clnt();
+        cl_addr->java_main_class = jci.MainClass;
+        cl_addr->java_ident[0] = jci.uuid[0];
+        cl_addr->java_ident[1] = jci.uuid[1];
+    }
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -380,16 +391,20 @@ void BlackBox::add_cl_ident(const ClntIdent &cl_ident,client_addr *cl_addr)
 
 void BlackBox::update_client_host(client_addr *ip)
 {
-	long local_insert_elt = insert_elt;
-	if (local_insert_elt == 0)
-		local_insert_elt = max_elt - 1;
-	else
-		local_insert_elt--;
+    long local_insert_elt = insert_elt;
+    if (local_insert_elt == 0)
+    {
+        local_insert_elt = max_elt - 1;
+    }
+    else
+    {
+        local_insert_elt--;
+    }
 
-	box[local_insert_elt].client_ident = true;
-	box[local_insert_elt].client_lang = ip->client_lang;
-	box[local_insert_elt].client_pid = ip->client_pid;
-	box[local_insert_elt].java_main_class = ip->java_main_class;
+    box[local_insert_elt].client_ident = true;
+    box[local_insert_elt].client_lang = ip->client_lang;
+    box[local_insert_elt].client_pid = ip->client_pid;
+    box[local_insert_elt].java_main_class = ip->java_main_class;
 }
 
 
@@ -410,41 +425,41 @@ void BlackBox::update_client_host(client_addr *ip)
 
 void BlackBox::insert_op(BlackBoxElt_OpType op)
 {
-	sync.lock();
+    sync.lock();
 
-	insert_op_nl(op);
+    insert_op_nl(op);
 
-	sync.unlock();
+    sync.unlock();
 }
 
-void BlackBox::insert_op(BlackBoxElt_OpType op,const ClntIdent &cl_id)
+void BlackBox::insert_op(BlackBoxElt_OpType op, const ClntIdent &cl_id)
 {
-	sync.lock();
+    sync.lock();
 
     long old_insert = insert_elt;
-	insert_op_nl(op);
+    insert_op_nl(op);
 
 //
 // Check if the command is executed due to polling. If true, simply return
 //
 
-	if (box[old_insert].host_ip_str[0] == 'p' ||
+    if (box[old_insert].host_ip_str[0] == 'p' ||
         box[old_insert].host_ip_str[0] == 'u' ||
         box[old_insert].host_ip_str[0] == 'i')
-	{
-		sync.unlock();
-		return;
-	}
+    {
+        sync.unlock();
+        return;
+    }
 
 //
 // Add client ident info into the client_addr instance and into the box
 //
 
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-	update_client_host(static_cast<client_addr *>(ip));
+    omni_thread::value_t *ip = omni_thread::self()->get_value(key);
+    add_cl_ident(cl_id, static_cast<client_addr *>(ip));
+    update_client_host(static_cast<client_addr *>(ip));
 
-	sync.unlock();
+    sync.unlock();
 }
 
 void BlackBox::insert_op_nl(BlackBoxElt_OpType op)
@@ -453,36 +468,36 @@ void BlackBox::insert_op_nl(BlackBoxElt_OpType op)
 // Insert elt in the box
 //
 
-	box[insert_elt].req_type = Req_Operation;
-	box[insert_elt].attr_type = Attr_Unknown;
-	box[insert_elt].op_type = op;
-	box[insert_elt].client_ident = false;
+    box[insert_elt].req_type = Req_Operation;
+    box[insert_elt].attr_type = Attr_Unknown;
+    box[insert_elt].op_type = op;
+    box[insert_elt].client_ident = false;
 #ifdef _TG_WINDOWS_
-//
-// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-// This save some times in unnecessary computation
-//
-	struct _timeb t;
-	_ftime(&t);
+    //
+    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+    // This save some times in unnecessary computation
+    //
+        struct _timeb t;
+        _ftime(&t);
 
-	box[insert_elt].when.tv_usec = (long)t.millitm;
-	box[insert_elt].when.tv_sec = (unsigned long)t.time;
+        box[insert_elt].when.tv_usec = (long)t.millitm;
+        box[insert_elt].when.tv_sec = (unsigned long)t.time;
 #else
-	struct timezone tz;
-	gettimeofday(&box[insert_elt].when,&tz);
+    struct timezone tz;
+    gettimeofday(&box[insert_elt].when, &tz);
 #endif
 
 //
 // get client address
 //
 
-	get_client_host();
+    get_client_host();
 
 //
 // manage insert and read indexes
 //
 
-	inc_indexes();
+    inc_indexes();
 }
 
 //+--------------------------------------------------------------------------------------------------------------------
@@ -503,136 +518,140 @@ void BlackBox::insert_op_nl(BlackBoxElt_OpType op)
 //---------------------------------------------------------------------------------------------------------------------
 
 
-void BlackBox::insert_attr(const Tango::DevVarStringArray &names,long vers,DevSource sour)
+void BlackBox::insert_attr(const Tango::DevVarStringArray &names, long vers, DevSource sour)
 {
 
 //
 // Take mutex
 //
 
-	sync.lock();
+    sync.lock();
 
 //
 // Insert elt in the box
 //
 
-	box[insert_elt].req_type = Req_Operation;
-	box[insert_elt].attr_type = Attr_Unknown;
-	switch (vers)
-	{
-	case 1 :
-		box[insert_elt].op_type = Op_Read_Attr;
-		break;
+    box[insert_elt].req_type = Req_Operation;
+    box[insert_elt].attr_type = Attr_Unknown;
+    switch (vers)
+    {
+        case 1 :
+            box[insert_elt].op_type = Op_Read_Attr;
+            break;
 
-	case 2 :
-		box[insert_elt].op_type = Op_Read_Attr_2;
-		break;
+        case 2 :
+            box[insert_elt].op_type = Op_Read_Attr_2;
+            break;
 
-	case 3 :
-		box[insert_elt].op_type = Op_Read_Attr_3;
-		break;
+        case 3 :
+            box[insert_elt].op_type = Op_Read_Attr_3;
+            break;
 
-	case 4 :
-		box[insert_elt].op_type = Op_Read_Attr_4;
-		break;
-	}
-	box[insert_elt].source = sour;
-	box[insert_elt].client_ident = false;
+        case 4 :
+            box[insert_elt].op_type = Op_Read_Attr_4;
+            break;
+    }
+    box[insert_elt].source = sour;
+    box[insert_elt].client_ident = false;
 
 
-	box[insert_elt].attr_names.clear();
-	for (unsigned long i = 0;i < names.length();i++)
-	{
-		string tmp_str(names[i]);
-		box[insert_elt].attr_names.push_back(tmp_str);
-	}
+    box[insert_elt].attr_names.clear();
+    for (unsigned long i = 0; i < names.length(); i++)
+    {
+        string tmp_str(names[i]);
+        box[insert_elt].attr_names.push_back(tmp_str);
+    }
 
 #ifdef _TG_WINDOWS_
-//
-// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-// This save some times in unnecessary computation
-//
-	struct _timeb t;
-	_ftime(&t);
+    //
+    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+    // This save some times in unnecessary computation
+    //
+        struct _timeb t;
+        _ftime(&t);
 
-	box[insert_elt].when.tv_usec = (long)t.millitm;
-	box[insert_elt].when.tv_sec = (unsigned long)t.time;
+        box[insert_elt].when.tv_usec = (long)t.millitm;
+        box[insert_elt].when.tv_sec = (unsigned long)t.time;
 #else
-	struct timezone tz;
-	gettimeofday(&box[insert_elt].when,&tz);
+    struct timezone tz;
+    gettimeofday(&box[insert_elt].when, &tz);
 #endif
 
 //
 // get client address
 //
 
-	get_client_host();
+    get_client_host();
 
 //
 // manage insert and read indexes
 //
 
-	inc_indexes();
+    inc_indexes();
 
 //
 // Release mutex
 //
 
-	sync.unlock();
+    sync.unlock();
 }
 
-void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent &cl_id,long vers,DevSource sour)
+void BlackBox::insert_attr(const Tango::DevVarStringArray &names, const ClntIdent &cl_id, long vers, DevSource sour)
 {
 
 //
 // Take mutex
 //
 
-	sync.lock();
+    sync.lock();
 
 //
 // Insert elt in the box
 //
 
-	box[insert_elt].req_type = Req_Operation;
-	box[insert_elt].attr_type = Attr_Unknown;
+    box[insert_elt].req_type = Req_Operation;
+    box[insert_elt].attr_type = Attr_Unknown;
 
-	if (vers == 5)
-		box[insert_elt].op_type = Op_Read_Attr_5;
-	else
-		box[insert_elt].op_type = Op_Read_Attr_4;
+    if (vers == 5)
+    {
+        box[insert_elt].op_type = Op_Read_Attr_5;
+    }
+    else
+    {
+        box[insert_elt].op_type = Op_Read_Attr_4;
+    }
 
-	box[insert_elt].source = sour;
-	box[insert_elt].client_ident = false;
+    box[insert_elt].source = sour;
+    box[insert_elt].client_ident = false;
 
 
-	box[insert_elt].attr_names.clear();
-	for (unsigned long i = 0;i < names.length();i++)
-	{
-		string tmp_str(names[i]);
-		box[insert_elt].attr_names.push_back(tmp_str);
-	}
+    box[insert_elt].attr_names.clear();
+    for (unsigned long i = 0; i < names.length(); i++)
+    {
+        string tmp_str(names[i]);
+        box[insert_elt].attr_names.push_back(tmp_str);
+    }
 
 #ifdef _TG_WINDOWS_
-//
-// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-// This save some times in unnecessary computation
-//
-	struct _timeb t;
-	_ftime(&t);
+    //
+    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+    // This save some times in unnecessary computation
+    //
+        struct _timeb t;
+        _ftime(&t);
 
-	box[insert_elt].when.tv_usec = (long)t.millitm;
-	box[insert_elt].when.tv_sec = (unsigned long)t.time;
+        box[insert_elt].when.tv_usec = (long)t.millitm;
+        box[insert_elt].when.tv_sec = (unsigned long)t.time;
 #else
-	struct timezone tz;
-	gettimeofday(&box[insert_elt].when,&tz);
+    struct timezone tz;
+    gettimeofday(&box[insert_elt].when, &tz);
 #endif
 
 //
 // get client address
 //
 
-	get_client_host();
+    get_client_host();
 
 //
 // manage insert and read indexes but before changing indexex, memorize if the request is done by polling or user
@@ -643,19 +662,21 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
     if (box[insert_elt].host_ip_str[0] == 'p' ||
         box[insert_elt].host_ip_str[0] == 'u' ||
         box[insert_elt].host_ip_str[0] == 'i')
+    {
         poll_user = true;
+    }
 
-	inc_indexes();
+    inc_indexes();
 
 //
 // If request is executed due to polling or from a user thread, simply return
 //
 
-	if (poll_user == true)
-	{
-		sync.unlock();
-		return;
-	}
+    if (poll_user == true)
+    {
+        sync.unlock();
+        return;
+    }
 
     omni_thread::value_t *ip = omni_thread::self()->get_value(key);
 
@@ -663,60 +684,60 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
 // Add client ident info into the client_addr instance and into the box
 //
 
-	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-	update_client_host(static_cast<client_addr *>(ip));
+    add_cl_ident(cl_id, static_cast<client_addr *>(ip));
+    update_client_host(static_cast<client_addr *>(ip));
 
 //
 // Release mutex
 //
 
-	sync.unlock();
+    sync.unlock();
 }
 
-void BlackBox::insert_attr(const char *name,const ClntIdent &cl_id,TANGO_UNUSED(long vers))
+void BlackBox::insert_attr(const char *name, const ClntIdent &cl_id, TANGO_UNUSED(long vers))
 {
 
 //
 // Take mutex
 //
 
-	sync.lock();
+    sync.lock();
 
 //
 // Insert elt in the box
 //
 
-	box[insert_elt].req_type = Req_Operation;
-	box[insert_elt].attr_type = Attr_Unknown;
+    box[insert_elt].req_type = Req_Operation;
+    box[insert_elt].attr_type = Attr_Unknown;
 
-	box[insert_elt].op_type = Op_Read_Pipe_5;
-	box[insert_elt].client_ident = false;
+    box[insert_elt].op_type = Op_Read_Pipe_5;
+    box[insert_elt].client_ident = false;
 
 
-	box[insert_elt].attr_names.clear();
-	string tmp_str(name);
-	box[insert_elt].attr_names.push_back(tmp_str);
+    box[insert_elt].attr_names.clear();
+    string tmp_str(name);
+    box[insert_elt].attr_names.push_back(tmp_str);
 
 #ifdef _TG_WINDOWS_
-//
-// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-// This save some times in unnecessary computation
-//
-	struct _timeb t;
-	_ftime(&t);
+    //
+    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+    // This save some times in unnecessary computation
+    //
+        struct _timeb t;
+        _ftime(&t);
 
-	box[insert_elt].when.tv_usec = (long)t.millitm;
-	box[insert_elt].when.tv_sec = (unsigned long)t.time;
+        box[insert_elt].when.tv_usec = (long)t.millitm;
+        box[insert_elt].when.tv_sec = (unsigned long)t.time;
 #else
-	struct timezone tz;
-	gettimeofday(&box[insert_elt].when,&tz);
+    struct timezone tz;
+    gettimeofday(&box[insert_elt].when, &tz);
 #endif
 
 //
 // get client address
 //
 
-	get_client_host();
+    get_client_host();
 
 //
 // manage insert and read indexes
@@ -726,9 +747,11 @@ void BlackBox::insert_attr(const char *name,const ClntIdent &cl_id,TANGO_UNUSED(
     if (box[insert_elt].host_ip_str[0] == 'p' ||
         box[insert_elt].host_ip_str[0] == 'u' ||
         box[insert_elt].host_ip_str[0] == 'i')
+    {
         poll_user = true;
+    }
 
-	inc_indexes();
+    inc_indexes();
 
 //
 // Add client ident info into the client_addr instance and into the box
@@ -737,7 +760,7 @@ void BlackBox::insert_attr(const char *name,const ClntIdent &cl_id,TANGO_UNUSED(
     if (poll_user == false)
     {
         omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-        add_cl_ident(cl_id,static_cast<client_addr *>(ip));
+        add_cl_ident(cl_id, static_cast<client_addr *>(ip));
         update_client_host(static_cast<client_addr *>(ip));
     }
 
@@ -745,56 +768,60 @@ void BlackBox::insert_attr(const char *name,const ClntIdent &cl_id,TANGO_UNUSED(
 // Release mutex
 //
 
-	sync.unlock();
+    sync.unlock();
 }
 
-void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val,const ClntIdent &cl_id,long vers)
+void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val, const ClntIdent &cl_id, long vers)
 {
 
 //
 // Take mutex
 //
 
-	sync.lock();
+    sync.lock();
 
 //
 // Insert elt in the box
 //
 
-	box[insert_elt].req_type = Req_Operation;
-	box[insert_elt].attr_type = Attr_Unknown;
+    box[insert_elt].req_type = Req_Operation;
+    box[insert_elt].attr_type = Attr_Unknown;
 
-	if (vers == 0)
-		box[insert_elt].op_type = Op_Write_Pipe_5;
-	else
-		box[insert_elt].op_type = Op_Write_Read_Pipe_5;
-	box[insert_elt].client_ident = false;
+    if (vers == 0)
+    {
+        box[insert_elt].op_type = Op_Write_Pipe_5;
+    }
+    else
+    {
+        box[insert_elt].op_type = Op_Write_Read_Pipe_5;
+    }
+    box[insert_elt].client_ident = false;
 
 
-	box[insert_elt].attr_names.clear();
-	string tmp_str(pipe_val.name);
-	box[insert_elt].attr_names.push_back(tmp_str);
+    box[insert_elt].attr_names.clear();
+    string tmp_str(pipe_val.name);
+    box[insert_elt].attr_names.push_back(tmp_str);
 
 #ifdef _TG_WINDOWS_
-//
-// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-// This save some times in unnecessary computation
-//
-	struct _timeb t;
-	_ftime(&t);
+    //
+    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+    // This save some times in unnecessary computation
+    //
+        struct _timeb t;
+        _ftime(&t);
 
-	box[insert_elt].when.tv_usec = (long)t.millitm;
-	box[insert_elt].when.tv_sec = (unsigned long)t.time;
+        box[insert_elt].when.tv_usec = (long)t.millitm;
+        box[insert_elt].when.tv_sec = (unsigned long)t.time;
 #else
-	struct timezone tz;
-	gettimeofday(&box[insert_elt].when,&tz);
+    struct timezone tz;
+    gettimeofday(&box[insert_elt].when, &tz);
 #endif
 
 //
 // get client address
 //
 
-	get_client_host();
+    get_client_host();
 
 //
 // manage insert and read indexes
@@ -804,9 +831,11 @@ void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val,const ClntIdent &c
     if (box[insert_elt].host_ip_str[0] == 'p' ||
         box[insert_elt].host_ip_str[0] == 'u' ||
         box[insert_elt].host_ip_str[0] == 'i')
+    {
         poll_user = true;
+    }
 
-	inc_indexes();
+    inc_indexes();
 
 //
 // Add client ident info into the client_addr instance and into the box
@@ -815,7 +844,7 @@ void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val,const ClntIdent &c
     if (poll_user == false)
     {
         omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-        add_cl_ident(cl_id,static_cast<client_addr *>(ip));
+        add_cl_ident(cl_id, static_cast<client_addr *>(ip));
         update_client_host(static_cast<client_addr *>(ip));
     }
 
@@ -823,46 +852,46 @@ void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val,const ClntIdent &c
 // Release mutex
 //
 
-	sync.unlock();
+    sync.unlock();
 }
 
 void BlackBox::insert_attr(const Tango::AttributeValueList &att_list, long vers)
 {
-	sync.lock();
+    sync.lock();
 
-	insert_attr_nl(att_list,vers);
+    insert_attr_nl(att_list, vers);
 
-	sync.unlock();
+    sync.unlock();
 }
 
-void BlackBox::insert_attr(const Tango::AttributeValueList_4 &att_list, const ClntIdent &cl_id,TANGO_UNUSED(long vers))
+void BlackBox::insert_attr(const Tango::AttributeValueList_4 &att_list, const ClntIdent &cl_id, TANGO_UNUSED(long vers))
 {
-	sync.lock();
+    sync.lock();
 
     long old_insert = insert_elt;
-	insert_attr_nl_4(att_list);
+    insert_attr_nl_4(att_list);
 
 //
 // Check if the command is executed due to polling. If true, simply return
 //
 
-	if (box[old_insert].host_ip_str[0] == 'p' ||
+    if (box[old_insert].host_ip_str[0] == 'p' ||
         box[old_insert].host_ip_str[0] == 'u' ||
         box[old_insert].host_ip_str[0] == 'i')
-	{
-		sync.unlock();
-		return;
-	}
+    {
+        sync.unlock();
+        return;
+    }
 
 //
 // Add client ident info into the client_addr instance and into the box
 //
 
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-	update_client_host(static_cast<client_addr *>(ip));
+    omni_thread::value_t *ip = omni_thread::self()->get_value(key);
+    add_cl_ident(cl_id, static_cast<client_addr *>(ip));
+    update_client_host(static_cast<client_addr *>(ip));
 
-	sync.unlock();
+    sync.unlock();
 }
 
 void BlackBox::insert_attr_nl(const Tango::AttributeValueList &att_list, long vers)
@@ -871,49 +900,55 @@ void BlackBox::insert_attr_nl(const Tango::AttributeValueList &att_list, long ve
 // Insert elt in the box
 //
 
-	box[insert_elt].req_type = Req_Operation;
-	box[insert_elt].attr_type = Attr_Unknown;
-	if (vers == 1)
-		box[insert_elt].op_type = Op_Write_Attr;
-	else if (vers < 4)
-		box[insert_elt].op_type = Op_Write_Attr_3;
-	else
-		box[insert_elt].op_type = Op_Write_Attr_4;
+    box[insert_elt].req_type = Req_Operation;
+    box[insert_elt].attr_type = Attr_Unknown;
+    if (vers == 1)
+    {
+        box[insert_elt].op_type = Op_Write_Attr;
+    }
+    else if (vers < 4)
+    {
+        box[insert_elt].op_type = Op_Write_Attr_3;
+    }
+    else
+    {
+        box[insert_elt].op_type = Op_Write_Attr_4;
+    }
 
-	box[insert_elt].attr_names.clear();
-	for (unsigned long i = 0;i < att_list.length();i++)
-	{
-		string tmp_str(att_list[i].name);
-		box[insert_elt].attr_names.push_back(tmp_str);
-	}
-	box[insert_elt].client_ident = false;
+    box[insert_elt].attr_names.clear();
+    for (unsigned long i = 0; i < att_list.length(); i++)
+    {
+        string tmp_str(att_list[i].name);
+        box[insert_elt].attr_names.push_back(tmp_str);
+    }
+    box[insert_elt].client_ident = false;
 
 #ifdef _TG_WINDOWS_
-//
-// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-// This save some times in unnecessary computation
-//
-	struct _timeb t;
-	_ftime(&t);
+    //
+    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+    // This save some times in unnecessary computation
+    //
+        struct _timeb t;
+        _ftime(&t);
 
-	box[insert_elt].when.tv_usec = (long)t.millitm;
-	box[insert_elt].when.tv_sec = (unsigned long)t.time;
+        box[insert_elt].when.tv_usec = (long)t.millitm;
+        box[insert_elt].when.tv_sec = (unsigned long)t.time;
 #else
-	struct timezone tz;
-	gettimeofday(&box[insert_elt].when,&tz);
+    struct timezone tz;
+    gettimeofday(&box[insert_elt].when, &tz);
 #endif
 
 //
 // get client address
 //
 
-	get_client_host();
+    get_client_host();
 
 //
 // manage insert and read indexes
 //
 
-	inc_indexes();
+    inc_indexes();
 }
 
 void BlackBox::insert_attr_nl_4(const Tango::AttributeValueList_4 &att_list)
@@ -922,43 +957,43 @@ void BlackBox::insert_attr_nl_4(const Tango::AttributeValueList_4 &att_list)
 // Insert elt in the box
 //
 
-	box[insert_elt].req_type = Req_Operation;
-	box[insert_elt].attr_type = Attr_Unknown;
-	box[insert_elt].op_type = Op_Write_Attr_4;
+    box[insert_elt].req_type = Req_Operation;
+    box[insert_elt].attr_type = Attr_Unknown;
+    box[insert_elt].op_type = Op_Write_Attr_4;
 
-	box[insert_elt].attr_names.clear();
-	for (unsigned long i = 0;i < att_list.length();i++)
-	{
-		string tmp_str(att_list[i].name);
-		box[insert_elt].attr_names.push_back(tmp_str);
-	}
+    box[insert_elt].attr_names.clear();
+    for (unsigned long i = 0; i < att_list.length(); i++)
+    {
+        string tmp_str(att_list[i].name);
+        box[insert_elt].attr_names.push_back(tmp_str);
+    }
 
 #ifdef _TG_WINDOWS_
-//
-// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-// This save some times in unnecessary computation
-//
-	struct _timeb t;
-	_ftime(&t);
+    //
+    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+    // This save some times in unnecessary computation
+    //
+        struct _timeb t;
+        _ftime(&t);
 
-	box[insert_elt].when.tv_usec = (long)t.millitm;
-	box[insert_elt].when.tv_sec = (unsigned long)t.time;
+        box[insert_elt].when.tv_usec = (long)t.millitm;
+        box[insert_elt].when.tv_sec = (unsigned long)t.time;
 #else
-	struct timezone tz;
-	gettimeofday(&box[insert_elt].when,&tz);
+    struct timezone tz;
+    gettimeofday(&box[insert_elt].when, &tz);
 #endif
 
 //
 // get client address
 //
 
-	get_client_host();
+    get_client_host();
 
 //
 // manage insert and read indexes
 //
 
-	inc_indexes();
+    inc_indexes();
 }
 
 //+--------------------------------------------------------------------------------------------------------------------
@@ -979,90 +1014,99 @@ void BlackBox::insert_attr_nl_4(const Tango::AttributeValueList_4 &att_list)
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-void BlackBox::insert_wr_attr(const Tango::AttributeValueList_4 &att_list,const Tango::DevVarStringArray &r_names,const ClntIdent &cl_id,long vers)
+void BlackBox::insert_wr_attr(const Tango::AttributeValueList_4 &att_list,
+                              const Tango::DevVarStringArray &r_names,
+                              const ClntIdent &cl_id,
+                              long vers)
 {
-	sync.lock();
+    sync.lock();
 
     long old_insert = insert_elt;
-	insert_attr_wr_nl(att_list,r_names,vers);
+    insert_attr_wr_nl(att_list, r_names, vers);
 
 //
 // If request coming from polling thread or user thread, leave method
 //
 
-	if (box[old_insert].host_ip_str[0] == 'p' ||
+    if (box[old_insert].host_ip_str[0] == 'p' ||
         box[old_insert].host_ip_str[0] == 'u' ||
         box[old_insert].host_ip_str[0] == 'i')
-	{
-		sync.unlock();
-		return;
-	}
+    {
+        sync.unlock();
+        return;
+    }
 
 //
 // Add client ident info into the client_addr instance and into the box
 //
 
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-	update_client_host(static_cast<client_addr *>(ip));
+    omni_thread::value_t *ip = omni_thread::self()->get_value(key);
+    add_cl_ident(cl_id, static_cast<client_addr *>(ip));
+    update_client_host(static_cast<client_addr *>(ip));
 
-	sync.unlock();
+    sync.unlock();
 }
 
-void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list,const Tango::DevVarStringArray &r_names,long vers)
+void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list,
+                                 const Tango::DevVarStringArray &r_names,
+                                 long vers)
 {
 //
 // Insert elt in the box
 //
 
-	box[insert_elt].req_type = Req_Operation;
-	box[insert_elt].attr_type = Attr_Unknown;
-	if (vers == 5)
-		box[insert_elt].op_type = Op_Write_Read_Attributes_5;
-	else
-		box[insert_elt].op_type = Op_Write_Read_Attributes_4;
+    box[insert_elt].req_type = Req_Operation;
+    box[insert_elt].attr_type = Attr_Unknown;
+    if (vers == 5)
+    {
+        box[insert_elt].op_type = Op_Write_Read_Attributes_5;
+    }
+    else
+    {
+        box[insert_elt].op_type = Op_Write_Read_Attributes_4;
+    }
 
-	box[insert_elt].attr_names.clear();
-	for (unsigned long i = 0;i < att_list.length();i++)
-	{
-		string tmp_str(att_list[i].name);
-		box[insert_elt].attr_names.push_back(tmp_str);
-	}
+    box[insert_elt].attr_names.clear();
+    for (unsigned long i = 0; i < att_list.length(); i++)
+    {
+        string tmp_str(att_list[i].name);
+        box[insert_elt].attr_names.push_back(tmp_str);
+    }
 
-	box[insert_elt].attr_names.push_back(string("/"));
+    box[insert_elt].attr_names.push_back(string("/"));
 
-	for (unsigned long i = 0;i < r_names.length();i++)
-	{
-		string tmp_str(r_names[i]);
-		box[insert_elt].attr_names.push_back(tmp_str);
-	}
+    for (unsigned long i = 0; i < r_names.length(); i++)
+    {
+        string tmp_str(r_names[i]);
+        box[insert_elt].attr_names.push_back(tmp_str);
+    }
 
 #ifdef _TG_WINDOWS_
-//
-// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-// This save some times in unnecessary computation
-//
-	struct _timeb t;
-	_ftime(&t);
+    //
+    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+    // This save some times in unnecessary computation
+    //
+        struct _timeb t;
+        _ftime(&t);
 
-	box[insert_elt].when.tv_usec = (long)t.millitm;
-	box[insert_elt].when.tv_sec = (unsigned long)t.time;
+        box[insert_elt].when.tv_usec = (long)t.millitm;
+        box[insert_elt].when.tv_sec = (unsigned long)t.time;
 #else
-	struct timezone tz;
-	gettimeofday(&box[insert_elt].when,&tz);
+    struct timezone tz;
+    gettimeofday(&box[insert_elt].when, &tz);
 #endif
 
 //
 // get client address
 //
 
-	get_client_host();
+    get_client_host();
 
 //
 // manage insert and read indexes
 //
 
-	inc_indexes();
+    inc_indexes();
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -1079,12 +1123,16 @@ void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list,con
 
 void BlackBox::inc_indexes()
 {
-	insert_elt++;
-	if (insert_elt == max_elt)
-		insert_elt = 0;
+    insert_elt++;
+    if (insert_elt == max_elt)
+    {
+        insert_elt = 0;
+    }
 
-	if (nb_elt != max_elt)
-		nb_elt++;
+    if (nb_elt != max_elt)
+    {
+        nb_elt++;
+    }
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -1099,12 +1147,14 @@ void BlackBox::inc_indexes()
 
 void BlackBox::get_client_host()
 {
-	omni_thread *th_id = omni_thread::self();
-	if (th_id == NULL)
-		th_id = omni_thread::create_dummy();
+    omni_thread *th_id = omni_thread::self();
+    if (th_id == NULL)
+    {
+        th_id = omni_thread::create_dummy();
+    }
 
-	omni_thread::value_t *ip = th_id->get_value(key);
-	if (ip == NULL)
+    omni_thread::value_t *ip = th_id->get_value(key);
+    if (ip == NULL)
     {
         Tango::Util *tg = Tango::Util::instance();
         vector<PollingThreadInfo *> &poll_ths = tg->get_polling_threads_info();
@@ -1115,7 +1165,7 @@ void BlackBox::get_client_host()
             int this_thread_id = th_id->id();
             size_t nb_poll_th = poll_ths.size();
             size_t loop;
-            for (loop = 0;loop < nb_poll_th;loop++)
+            for (loop = 0; loop < nb_poll_th; loop++)
             {
                 if (this_thread_id == poll_ths[loop]->thread_id)
                 {
@@ -1128,20 +1178,30 @@ void BlackBox::get_client_host()
         if (tg->is_svr_starting() == true)
         {
             if (found_thread == true)
-                strcpy(box[insert_elt].host_ip_str,"polling");
+            {
+                strcpy(box[insert_elt].host_ip_str, "polling");
+            }
             else
-                strcpy(box[insert_elt].host_ip_str,"init");
+            {
+                strcpy(box[insert_elt].host_ip_str, "init");
+            }
         }
         else
         {
             if (found_thread == true)
-                strcpy(box[insert_elt].host_ip_str,"polling");
+            {
+                strcpy(box[insert_elt].host_ip_str, "polling");
+            }
             else
-                strcpy(box[insert_elt].host_ip_str,"user thread");
+            {
+                strcpy(box[insert_elt].host_ip_str, "user thread");
+            }
         }
     }
-	else
-		strcpy(box[insert_elt].host_ip_str,(static_cast<client_addr *>(ip))->client_ip);
+    else
+    {
+        strcpy(box[insert_elt].host_ip_str, (static_cast<client_addr *>(ip))->client_ip);
+    }
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -1160,343 +1220,369 @@ void BlackBox::get_client_host()
 
 void BlackBox::build_info_as_str(long index)
 {
-	char date_str[25];
+    char date_str[25];
 //
 // Convert time to a string
 //
 
-	date_ux_to_str(box[index].when,date_str);
-	elt_str = date_str;
+    date_ux_to_str(box[index].when, date_str);
+    elt_str = date_str;
 
 //
 // Add request type and command name in case of
 //
 
-	elt_str = elt_str + " : ";
+    elt_str = elt_str + " : ";
 
-	if (box[index].req_type == Req_Operation)
-	{
-		elt_str = elt_str + "Operation ";
-		unsigned long i;
-		unsigned long nb_in_vect;
+    if (box[index].req_type == Req_Operation)
+    {
+        elt_str = elt_str + "Operation ";
+        unsigned long i;
+        unsigned long nb_in_vect;
 
-		switch (box[index].op_type)
-		{
-		case Op_Command_inout :
-			elt_str = elt_str + "command_inout (cmd = " + box[index].cmd_name + ") from ";
-			add_source(index);
-			break;
+        switch (box[index].op_type)
+        {
+            case Op_Command_inout :
+                elt_str = elt_str + "command_inout (cmd = " + box[index].cmd_name + ") from ";
+                add_source(index);
+                break;
 
-		case Op_Ping :
-			elt_str = elt_str + "ping ";
-			break;
+            case Op_Ping :
+                elt_str = elt_str + "ping ";
+                break;
 
-		case Op_Info :
-			elt_str = elt_str + "info ";
-			break;
+            case Op_Info :
+                elt_str = elt_str + "info ";
+                break;
 
-		case Op_BlackBox :
-			elt_str = elt_str + "blackbox ";
-			break;
+            case Op_BlackBox :
+                elt_str = elt_str + "blackbox ";
+                break;
 
-		case Op_Command_list :
-			elt_str = elt_str + "command_list_query ";
-			break;
+            case Op_Command_list :
+                elt_str = elt_str + "command_list_query ";
+                break;
 
-		case Op_Command :
-			elt_str = elt_str + "command_query ";
-			break;
+            case Op_Command :
+                elt_str = elt_str + "command_query ";
+                break;
 
-		case Op_Get_Attr_Config :
-			elt_str = elt_str + "get_attribute_config ";
-			break;
+            case Op_Get_Attr_Config :
+                elt_str = elt_str + "get_attribute_config ";
+                break;
 
-		case Op_Set_Attr_Config :
-			elt_str = elt_str + "set_attribute_config ";
-			break;
+            case Op_Set_Attr_Config :
+                elt_str = elt_str + "set_attribute_config ";
+                break;
 
-		case Op_Read_Attr :
-			elt_str = elt_str + "read_attributes (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") from ";
-			add_source(index);
-			break;
+            case Op_Read_Attr :
+                elt_str = elt_str + "read_attributes (";
+                nb_in_vect = box[index].attr_names.size();
+                for (i = 0; i < nb_in_vect; i++)
+                {
+                    elt_str = elt_str + box[index].attr_names[i];
+                    if (i != nb_in_vect - 1)
+                    {
+                        elt_str = elt_str + ", ";
+                    }
+                }
+                elt_str = elt_str + ") from ";
+                add_source(index);
+                break;
 
-		case Op_Write_Attr :
-			elt_str = elt_str + "write_attributes (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") ";
-			break;
+            case Op_Write_Attr :
+                elt_str = elt_str + "write_attributes (";
+                nb_in_vect = box[index].attr_names.size();
+                for (i = 0; i < nb_in_vect; i++)
+                {
+                    elt_str = elt_str + box[index].attr_names[i];
+                    if (i != nb_in_vect - 1)
+                    {
+                        elt_str = elt_str + ", ";
+                    }
+                }
+                elt_str = elt_str + ") ";
+                break;
 
-		case Op_Write_Attr_3 :
-			elt_str = elt_str + "write_attributes_3 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") ";
-			break;
+            case Op_Write_Attr_3 :
+                elt_str = elt_str + "write_attributes_3 (";
+                nb_in_vect = box[index].attr_names.size();
+                for (i = 0; i < nb_in_vect; i++)
+                {
+                    elt_str = elt_str + box[index].attr_names[i];
+                    if (i != nb_in_vect - 1)
+                    {
+                        elt_str = elt_str + ", ";
+                    }
+                }
+                elt_str = elt_str + ") ";
+                break;
 
-		case Op_Command_inout_2 :
-			elt_str = elt_str + "command_inout_2 (cmd = " + box[index].cmd_name + ") from ";
-			add_source(index);
-			break;
+            case Op_Command_inout_2 :
+                elt_str = elt_str + "command_inout_2 (cmd = " + box[index].cmd_name + ") from ";
+                add_source(index);
+                break;
 
-		case Op_Command_list_2 :
-			elt_str = elt_str + "command_list_query_2 ";
-			break;
+            case Op_Command_list_2 :
+                elt_str = elt_str + "command_list_query_2 ";
+                break;
 
-		case Op_Command_2 :
-			elt_str = elt_str + "command_query_2 ";
-			break;
+            case Op_Command_2 :
+                elt_str = elt_str + "command_query_2 ";
+                break;
 
-		case Op_Get_Attr_Config_2 :
-			elt_str = elt_str + "get_attribute_config_2 ";
-			break;
+            case Op_Get_Attr_Config_2 :
+                elt_str = elt_str + "get_attribute_config_2 ";
+                break;
 
-		case Op_Read_Attr_2 :
-			elt_str = elt_str + "read_attributes_2 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") from ";
-			add_source(index);
-			break;
+            case Op_Read_Attr_2 :
+                elt_str = elt_str + "read_attributes_2 (";
+                nb_in_vect = box[index].attr_names.size();
+                for (i = 0; i < nb_in_vect; i++)
+                {
+                    elt_str = elt_str + box[index].attr_names[i];
+                    if (i != nb_in_vect - 1)
+                    {
+                        elt_str = elt_str + ", ";
+                    }
+                }
+                elt_str = elt_str + ") from ";
+                add_source(index);
+                break;
 
-		case Op_Read_Attr_3 :
-			elt_str = elt_str + "read_attributes_3 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") from ";
-			add_source(index);
-			break;
+            case Op_Read_Attr_3 :
+                elt_str = elt_str + "read_attributes_3 (";
+                nb_in_vect = box[index].attr_names.size();
+                for (i = 0; i < nb_in_vect; i++)
+                {
+                    elt_str = elt_str + box[index].attr_names[i];
+                    if (i != nb_in_vect - 1)
+                    {
+                        elt_str = elt_str + ", ";
+                    }
+                }
+                elt_str = elt_str + ") from ";
+                add_source(index);
+                break;
 
-		case Op_Command_inout_history_2 :
-			elt_str = elt_str + "command_inout_history_2 ";
-			break;
+            case Op_Command_inout_history_2 :
+                elt_str = elt_str + "command_inout_history_2 ";
+                break;
 
-		case Op_Read_Attr_history_2 :
-			elt_str = elt_str + "read_attribute_history_2 ";
-			break;
+            case Op_Read_Attr_history_2 :
+                elt_str = elt_str + "read_attribute_history_2 ";
+                break;
 
-		case Op_Read_Attr_history_3 :
-			elt_str = elt_str + "read_attribute_history_3 ";
-			break;
+            case Op_Read_Attr_history_3 :
+                elt_str = elt_str + "read_attribute_history_3 ";
+                break;
 
-		case Op_Info_3 :
-			elt_str = elt_str + "info_3 ";
-			break;
+            case Op_Info_3 :
+                elt_str = elt_str + "info_3 ";
+                break;
 
-		case Op_Get_Attr_Config_3 :
-			elt_str = elt_str + "get_attribute_config_3 ";
-			break;
+            case Op_Get_Attr_Config_3 :
+                elt_str = elt_str + "get_attribute_config_3 ";
+                break;
 
-		case Op_Set_Attr_Config_3 :
-			elt_str = elt_str + "set_attribute_config_3 ";
-			break;
+            case Op_Set_Attr_Config_3 :
+                elt_str = elt_str + "set_attribute_config_3 ";
+                break;
 
-		case Op_Read_Attr_history_4 :
-			elt_str = elt_str + "read_attribute_history_4 ";
-			break;
+            case Op_Read_Attr_history_4 :
+                elt_str = elt_str + "read_attribute_history_4 ";
+                break;
 
-		case Op_Command_inout_history_4 :
-			elt_str = elt_str + "command_inout_history_4 ";
-			break;
+            case Op_Command_inout_history_4 :
+                elt_str = elt_str + "command_inout_history_4 ";
+                break;
 
-		case Op_Command_inout_4 :
-			elt_str = elt_str + "command_inout_4 (cmd = " + box[index].cmd_name + ") from ";
-			add_source(index);
-			break;
+            case Op_Command_inout_4 :
+                elt_str = elt_str + "command_inout_4 (cmd = " + box[index].cmd_name + ") from ";
+                add_source(index);
+                break;
 
-		case Op_Read_Attr_4 :
-			elt_str = elt_str + "read_attributes_4 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") from ";
-			add_source(index);
-			break;
+            case Op_Read_Attr_4 :
+                elt_str = elt_str + "read_attributes_4 (";
+                nb_in_vect = box[index].attr_names.size();
+                for (i = 0; i < nb_in_vect; i++)
+                {
+                    elt_str = elt_str + box[index].attr_names[i];
+                    if (i != nb_in_vect - 1)
+                    {
+                        elt_str = elt_str + ", ";
+                    }
+                }
+                elt_str = elt_str + ") from ";
+                add_source(index);
+                break;
 
-		case Op_Write_Attr_4 :
-			elt_str = elt_str + "write_attributes_4 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") ";
-			break;
+            case Op_Write_Attr_4 :
+                elt_str = elt_str + "write_attributes_4 (";
+                nb_in_vect = box[index].attr_names.size();
+                for (i = 0; i < nb_in_vect; i++)
+                {
+                    elt_str = elt_str + box[index].attr_names[i];
+                    if (i != nb_in_vect - 1)
+                    {
+                        elt_str = elt_str + ", ";
+                    }
+                }
+                elt_str = elt_str + ") ";
+                break;
 
-		case Op_Set_Attr_Config_4 :
-			elt_str = elt_str + "set_attribute_config_4 ";
-			break;
+            case Op_Set_Attr_Config_4 :
+                elt_str = elt_str + "set_attribute_config_4 ";
+                break;
 
-		case Op_Write_Read_Attributes_4 :
-			elt_str = elt_str + "write_read_attributes_4 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") ";
-			break;
+            case Op_Write_Read_Attributes_4 :
+                elt_str = elt_str + "write_read_attributes_4 (";
+                nb_in_vect = box[index].attr_names.size();
+                for (i = 0; i < nb_in_vect; i++)
+                {
+                    elt_str = elt_str + box[index].attr_names[i];
+                    if (i != nb_in_vect - 1)
+                    {
+                        elt_str = elt_str + ", ";
+                    }
+                }
+                elt_str = elt_str + ") ";
+                break;
 
-		case Op_Get_Attr_Config_5 :
-			elt_str = elt_str + "get_attribute_config_5 ";
-			break;
+            case Op_Get_Attr_Config_5 :
+                elt_str = elt_str + "get_attribute_config_5 ";
+                break;
 
-		case Op_Set_Attr_Config_5 :
-			elt_str = elt_str + "set_attribute_config_5 ";
-			break;
+            case Op_Set_Attr_Config_5 :
+                elt_str = elt_str + "set_attribute_config_5 ";
+                break;
 
-		case Op_Read_Attr_5 :
-			elt_str = elt_str + "read_attributes_5 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") from ";
-			add_source(index);
-			break;
+            case Op_Read_Attr_5 :
+                elt_str = elt_str + "read_attributes_5 (";
+                nb_in_vect = box[index].attr_names.size();
+                for (i = 0; i < nb_in_vect; i++)
+                {
+                    elt_str = elt_str + box[index].attr_names[i];
+                    if (i != nb_in_vect - 1)
+                    {
+                        elt_str = elt_str + ", ";
+                    }
+                }
+                elt_str = elt_str + ") from ";
+                add_source(index);
+                break;
 
-		case Op_Write_Read_Attributes_5 :
-			elt_str = elt_str + "write_read_attributes_5 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1 && box[index].attr_names[i] != "/")
-				{
-					if (box[index].attr_names[i + 1] != "/")
-						elt_str = elt_str + ", ";
-				}
-			}
-			elt_str = elt_str + ") ";
-			break;
+            case Op_Write_Read_Attributes_5 :
+                elt_str = elt_str + "write_read_attributes_5 (";
+                nb_in_vect = box[index].attr_names.size();
+                for (i = 0; i < nb_in_vect; i++)
+                {
+                    elt_str = elt_str + box[index].attr_names[i];
+                    if (i != nb_in_vect - 1 && box[index].attr_names[i] != "/")
+                    {
+                        if (box[index].attr_names[i + 1] != "/")
+                        {
+                            elt_str = elt_str + ", ";
+                        }
+                    }
+                }
+                elt_str = elt_str + ") ";
+                break;
 
-		case Op_Read_Attr_history_5 :
-			elt_str = elt_str + "read_attribute_history_5 ";
-			break;
+            case Op_Read_Attr_history_5 :
+                elt_str = elt_str + "read_attribute_history_5 ";
+                break;
 
-		case Op_Get_Pipe_Config_5 :
-			elt_str = elt_str + "get_pipe_config_5 ";
-			break;
+            case Op_Get_Pipe_Config_5 :
+                elt_str = elt_str + "get_pipe_config_5 ";
+                break;
 
-		case Op_Set_Pipe_Config_5 :
-			elt_str = elt_str + "set_pipe_config_5 ";
-			break;
+            case Op_Set_Pipe_Config_5 :
+                elt_str = elt_str + "set_pipe_config_5 ";
+                break;
 
-		case Op_Read_Pipe_5 :
-			elt_str = elt_str + "read_pipe_5 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") ";
-			break;
+            case Op_Read_Pipe_5 :
+                elt_str = elt_str + "read_pipe_5 (";
+                nb_in_vect = box[index].attr_names.size();
+                for (i = 0; i < nb_in_vect; i++)
+                {
+                    elt_str = elt_str + box[index].attr_names[i];
+                    if (i != nb_in_vect - 1)
+                    {
+                        elt_str = elt_str + ", ";
+                    }
+                }
+                elt_str = elt_str + ") ";
+                break;
 
-		case Op_Write_Pipe_5 :
-			elt_str = elt_str + "write_pipe_5 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") ";
-			break;
+            case Op_Write_Pipe_5 :
+                elt_str = elt_str + "write_pipe_5 (";
+                nb_in_vect = box[index].attr_names.size();
+                for (i = 0; i < nb_in_vect; i++)
+                {
+                    elt_str = elt_str + box[index].attr_names[i];
+                    if (i != nb_in_vect - 1)
+                    {
+                        elt_str = elt_str + ", ";
+                    }
+                }
+                elt_str = elt_str + ") ";
+                break;
 
-		case Op_Write_Read_Pipe_5 :
-			elt_str = elt_str + "write_read_pipe_5 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") ";
-			break;
+            case Op_Write_Read_Pipe_5 :
+                elt_str = elt_str + "write_read_pipe_5 (";
+                nb_in_vect = box[index].attr_names.size();
+                for (i = 0; i < nb_in_vect; i++)
+                {
+                    elt_str = elt_str + box[index].attr_names[i];
+                    if (i != nb_in_vect - 1)
+                    {
+                        elt_str = elt_str + ", ";
+                    }
+                }
+                elt_str = elt_str + ") ";
+                break;
 
-		case Op_Unknown :
-			elt_str = elt_str + "unknown operation !!!!!";
-			return;
-		}
-	}
-	else if (box[index].req_type == Req_Attribute)
-	{
-		elt_str = elt_str + "Attribute ";
-		switch (box[index].attr_type)
-		{
-		case Attr_Name :
-			elt_str = elt_str + "name ";
-			break;
+            case Op_Unknown :
+                elt_str = elt_str + "unknown operation !!!!!";
+                return;
+        }
+    }
+    else if (box[index].req_type == Req_Attribute)
+    {
+        elt_str = elt_str + "Attribute ";
+        switch (box[index].attr_type)
+        {
+            case Attr_Name :
+                elt_str = elt_str + "name ";
+                break;
 
-		case Attr_Description :
-			elt_str = elt_str + "description ";
-			break;
+            case Attr_Description :
+                elt_str = elt_str + "description ";
+                break;
 
-		case Attr_Status :
-			elt_str = elt_str + "status ";
-			break;
+            case Attr_Status :
+                elt_str = elt_str + "status ";
+                break;
 
-		case Attr_State :
-			elt_str = elt_str + "state ";
-			break;
+            case Attr_State :
+                elt_str = elt_str + "state ";
+                break;
 
-		case Attr_AdmName :
-			elt_str = elt_str + "adm_name ";
-			break;
+            case Attr_AdmName :
+                elt_str = elt_str + "adm_name ";
+                break;
 
-		case Attr_Unknown :
-			elt_str = elt_str + "unknown attribute !!!!!";
-			return;
-		}
-	}
-	else
-	{
-		elt_str = elt_str + "Unknown CORBA request type !!!!!";
-		return;
-	}
+            case Attr_Unknown :
+                elt_str = elt_str + "unknown attribute !!!!!";
+                return;
+        }
+    }
+    else
+    {
+        elt_str = elt_str + "Unknown CORBA request type !!!!!";
+        return;
+    }
 
 //
 // Add client host name.
@@ -1504,158 +1590,182 @@ void BlackBox::build_info_as_str(long index)
 // Return in case of badly formed address
 //
 
-	if ((box[index].host_ip_str[0] != '\0') &&
-	    (box[index].host_ip_str[0] != 'p') &&
-		(box[index].host_ip_str[5] != 'u') &&
+    if ((box[index].host_ip_str[0] != '\0') &&
+        (box[index].host_ip_str[0] != 'p') &&
+        (box[index].host_ip_str[5] != 'u') &&
         (box[index].host_ip_str[0] != 'i') &&
         (box[index].host_ip_str[0] != 'u'))
-	{
-		bool ipv6=false;
-		string omni_addr = box[index].host_ip_str;
-		string::size_type pos;
-		if ((pos = omni_addr.find(':')) == string::npos)
-			return;
-		pos++;
-		if ((pos = omni_addr.find(':',pos)) == string::npos)
-			return;
-		pos++;
-		string ip_str = omni_addr.substr(pos);
-		if (ip_str[0] == '[')
-			ipv6 = true;
+    {
+        bool ipv6 = false;
+        string omni_addr = box[index].host_ip_str;
+        string::size_type pos;
+        if ((pos = omni_addr.find(':')) == string::npos)
+        {
+            return;
+        }
+        pos++;
+        if ((pos = omni_addr.find(':', pos)) == string::npos)
+        {
+            return;
+        }
+        pos++;
+        string ip_str = omni_addr.substr(pos);
+        if (ip_str[0] == '[')
+        {
+            ipv6 = true;
+        }
 
-		string full_ip_str;
-		if (ipv6 == false)
-		{
-			if ((pos = ip_str.find(':')) == string::npos)
-				return;
-			full_ip_str = ip_str.substr(0,pos);
-		}
-		else
-		{
-			if ((pos = ip_str.find(':')) == string::npos)
-				return;
-			pos++;
-			if ((pos = ip_str.find(':',pos)) == string::npos)
-				return;
-			pos++;
-			if ((pos = ip_str.find(':',pos)) == string::npos)
-				return;
-			pos++;
-			string tmp_ip = ip_str.substr(pos);
-			if ((pos = tmp_ip.find(']')) == string::npos)
-				return;
-			full_ip_str = tmp_ip.substr(0,pos);
-		}
+        string full_ip_str;
+        if (ipv6 == false)
+        {
+            if ((pos = ip_str.find(':')) == string::npos)
+            {
+                return;
+            }
+            full_ip_str = ip_str.substr(0, pos);
+        }
+        else
+        {
+            if ((pos = ip_str.find(':')) == string::npos)
+            {
+                return;
+            }
+            pos++;
+            if ((pos = ip_str.find(':', pos)) == string::npos)
+            {
+                return;
+            }
+            pos++;
+            if ((pos = ip_str.find(':', pos)) == string::npos)
+            {
+                return;
+            }
+            pos++;
+            string tmp_ip = ip_str.substr(pos);
+            if ((pos = tmp_ip.find(']')) == string::npos)
+            {
+                return;
+            }
+            full_ip_str = tmp_ip.substr(0, pos);
+        }
 
-		if ((pos = full_ip_str.find('.')) == string::npos)
-			return;
-		string ip1_str = full_ip_str.substr(0,pos);
-		string::size_type old_pos;
-		pos++;
-		old_pos = pos;
-		if ((pos = full_ip_str.find('.',pos)) == string::npos)
-			return;
-		string ip2_str = full_ip_str.substr(old_pos,pos - old_pos);
-		pos++;
-		old_pos = pos;
-		if ((pos = full_ip_str.find('.',pos)) == string::npos)
-			return;
-		string ip3_str = full_ip_str.substr(old_pos,pos - old_pos);
-		pos++;
-		string ip4_str = full_ip_str.substr(pos);
+        if ((pos = full_ip_str.find('.')) == string::npos)
+        {
+            return;
+        }
+        string ip1_str = full_ip_str.substr(0, pos);
+        string::size_type old_pos;
+        pos++;
+        old_pos = pos;
+        if ((pos = full_ip_str.find('.', pos)) == string::npos)
+        {
+            return;
+        }
+        string ip2_str = full_ip_str.substr(old_pos, pos - old_pos);
+        pos++;
+        old_pos = pos;
+        if ((pos = full_ip_str.find('.', pos)) == string::npos)
+        {
+            return;
+        }
+        string ip3_str = full_ip_str.substr(old_pos, pos - old_pos);
+        pos++;
+        string ip4_str = full_ip_str.substr(pos);
 
 //
 // Finally, get host name
 //
 
-		struct sockaddr_in si;
-		si.sin_family = AF_INET;
-		si.sin_port = 0;
+        struct sockaddr_in si;
+        si.sin_family = AF_INET;
+        si.sin_port = 0;
 #ifdef _TG_WINDOWS_
-		int slen = sizeof(si);
-		WSAStringToAddress((char *)full_ip_str.c_str(),AF_INET,NULL,(SOCKADDR *)&si,&slen);
+        int slen = sizeof(si);
+        WSAStringToAddress((char *)full_ip_str.c_str(),AF_INET,NULL,(SOCKADDR *)&si,&slen);
 #else
-		inet_pton(AF_INET,full_ip_str.c_str(),&si.sin_addr);
+        inet_pton(AF_INET, full_ip_str.c_str(), &si.sin_addr);
 #endif
 
-		char host[512];
+        char host[512];
 
-		int res = getnameinfo((const sockaddr *)&si,sizeof(si),host,512,0,0,0);
+        int res = getnameinfo((const sockaddr *) &si, sizeof(si), host, 512, 0, 0, 0);
 #ifdef _TG_WINDOWS_
-		for (int i = 0;i < ::strlen(host);i++)
-			host[i] = ::tolower(host[i]);
+        for (int i = 0; i < ::strlen(host); i++)
+        {
+            host[i] = ::tolower(host[i]);
+        }
 #endif
 
-		if (res == 0)
-		{
-			elt_str = elt_str + "requested from ";
-			elt_str = elt_str + host;
-		}
-		else
-		{
-			elt_str = elt_str + "requested from ";
-			elt_str = elt_str + full_ip_str;
-		}
+        if (res == 0)
+        {
+            elt_str = elt_str + "requested from ";
+            elt_str = elt_str + host;
+        }
+        else
+        {
+            elt_str = elt_str + "requested from ";
+            elt_str = elt_str + full_ip_str;
+        }
 
 //
 // Add client identification if available
 //
 
-		if (box[index].client_ident == true)
-		{
-			if (box[index].client_lang == Tango::CPP)
-			{
-				elt_str = elt_str + " (CPP/Python client with PID ";
-				TangoSys_MemStream o;
-				o << box[index].client_pid;
-				elt_str = elt_str + o.str() + ")";
-			}
-			else
-			{
-				elt_str = elt_str + " (Java client with main class ";
-				elt_str = elt_str + box[index].java_main_class + ")";
-			}
-		}
-	}
-	else if (box[index].host_ip_str[5] == 'u')
-	{
-		Tango::Util *tg = Tango::Util::instance();
-		elt_str = elt_str + "requested from " + tg->get_host_name();
+        if (box[index].client_ident == true)
+        {
+            if (box[index].client_lang == Tango::CPP)
+            {
+                elt_str = elt_str + " (CPP/Python client with PID ";
+                TangoSys_MemStream o;
+                o << box[index].client_pid;
+                elt_str = elt_str + o.str() + ")";
+            }
+            else
+            {
+                elt_str = elt_str + " (Java client with main class ";
+                elt_str = elt_str + box[index].java_main_class + ")";
+            }
+        }
+    }
+    else if (box[index].host_ip_str[5] == 'u')
+    {
+        Tango::Util *tg = Tango::Util::instance();
+        elt_str = elt_str + "requested from " + tg->get_host_name();
 
 //
 // Add client identification if available
 //
 
-		if (box[index].client_ident == true)
-		{
-			if (box[index].client_lang == Tango::CPP)
-			{
-				elt_str = elt_str + " (CPP/Python client with PID ";
-				TangoSys_MemStream o;
-				o << box[index].client_pid;
-				elt_str = elt_str + o.str() + ")";
-			}
-			else
-			{
-				elt_str = elt_str + " (Java client with main class ";
-				elt_str = elt_str + box[index].java_main_class + ")";
-			}
-		}
-	}
-	else if (box[index].host_ip_str[0] == 'p')
-	{
+        if (box[index].client_ident == true)
+        {
+            if (box[index].client_lang == Tango::CPP)
+            {
+                elt_str = elt_str + " (CPP/Python client with PID ";
+                TangoSys_MemStream o;
+                o << box[index].client_pid;
+                elt_str = elt_str + o.str() + ")";
+            }
+            else
+            {
+                elt_str = elt_str + " (Java client with main class ";
+                elt_str = elt_str + box[index].java_main_class + ")";
+            }
+        }
+    }
+    else if (box[index].host_ip_str[0] == 'p')
+    {
         elt_str = elt_str + "requested from polling";
-	}
-	else if (box[index].host_ip_str[0] == 'i')
-	{
+    }
+    else if (box[index].host_ip_str[0] == 'i')
+    {
         elt_str = elt_str + "requested during device server process init sequence";
-	}
-	else if (box[index].host_ip_str[0] == 'u')
-	{
+    }
+    else if (box[index].host_ip_str[0] == 'u')
+    {
         elt_str = elt_str + "requested from user thread";
-	}
+    }
 
-	return;
+    return;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -1674,24 +1784,24 @@ void BlackBox::build_info_as_str(long index)
 
 void BlackBox::add_source(long index)
 {
-	switch (box[index].source)
-	{
-	case DEV :
-		elt_str = elt_str + "device ";
-		break;
+    switch (box[index].source)
+    {
+        case DEV :
+            elt_str = elt_str + "device ";
+            break;
 
-	case CACHE :
-		elt_str = elt_str + "cache ";
-		break;
+        case CACHE :
+            elt_str = elt_str + "cache ";
+            break;
 
-	case CACHE_DEV :
-		elt_str = elt_str + "cache_device ";
-		break;
+        case CACHE_DEV :
+            elt_str = elt_str + "cache_device ";
+            break;
 
-	default :
-		elt_str = elt_str + "unknown source (!) ";
-		break;
-	}
+        default :
+            elt_str = elt_str + "unknown source (!) ";
+            break;
+    }
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -1716,81 +1826,91 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
 // Take mutex
 //
 
-	sync.lock();
+    sync.lock();
 
 //
 // Throw exeception if the wanted element is stupid and if there is no element stored in the black box
 //
 
-	if (wanted_elt <= 0)
-	{
-		sync.unlock();
+    if (wanted_elt <= 0)
+    {
+        sync.unlock();
 
-		Except::throw_exception((const char *)API_BlackBoxArgument,
-				      (const char *)"Argument to read black box out of range",
-				      (const char *)"BlackBox::read");
-	}
-	if (nb_elt == 0)
-	{
-		sync.unlock();
+        Except::throw_exception((const char *) API_BlackBoxArgument,
+                                (const char *) "Argument to read black box out of range",
+                                (const char *) "BlackBox::read");
+    }
+    if (nb_elt == 0)
+    {
+        sync.unlock();
 
-		Except::throw_exception((const char *)API_BlackBoxEmpty,
-				      (const char *)"Nothing stored yet in black-box",
-				      (const char *)"BlackBox::read");
-	}
+        Except::throw_exception((const char *) API_BlackBoxEmpty,
+                                (const char *) "Nothing stored yet in black-box",
+                                (const char *) "BlackBox::read");
+    }
 
 //
 // Limit wanted element to a reasonable value
 //
 
-	if (wanted_elt > max_elt)
-		wanted_elt = max_elt;
+    if (wanted_elt > max_elt)
+    {
+        wanted_elt = max_elt;
+    }
 
-	if (wanted_elt > nb_elt)
-		wanted_elt = nb_elt;
+    if (wanted_elt > nb_elt)
+    {
+        wanted_elt = nb_elt;
+    }
 
 //
 // Read black box elements
 //
 
-	Tango::DevVarStringArray *ret = NULL;
-	try
-	{
+    Tango::DevVarStringArray *ret = NULL;
+    try
+    {
 
-		ret = new Tango::DevVarStringArray(wanted_elt);
-                ret->length(wanted_elt);
+        ret = new Tango::DevVarStringArray(wanted_elt);
+        ret->length(wanted_elt);
 
-		long read_index;
-		if (insert_elt == 0)
-			read_index = max_elt - 1;
-		else
-			read_index = insert_elt - 1;
-		for (long i = 0;i < wanted_elt;i++)
-		{
-			build_info_as_str(read_index);
-			(*ret)[i] = elt_str.c_str();
+        long read_index;
+        if (insert_elt == 0)
+        {
+            read_index = max_elt - 1;
+        }
+        else
+        {
+            read_index = insert_elt - 1;
+        }
+        for (long i = 0; i < wanted_elt; i++)
+        {
+            build_info_as_str(read_index);
+            (*ret)[i] = elt_str.c_str();
 
-			read_index--;
-			if (read_index < 0)
-				read_index = max_elt - 1;
-		}
-	}
-	catch (bad_alloc &)
-	{
-		sync.unlock();
+            read_index--;
+            if (read_index < 0)
+            {
+                read_index = max_elt - 1;
+            }
+        }
+    }
+    catch (bad_alloc &)
+    {
+        sync.unlock();
 
-		Except::throw_exception((const char *)API_MemoryAllocation,
-				      (const char *)"Can't allocate memory in server",
-				      (const char *)"BlackBox::read");
-	}
+        Except::throw_exception((const char *) API_MemoryAllocation,
+                                (const char *) "Can't allocate memory in server",
+                                (const char *) "BlackBox::read");
+    }
 
 //
 // Release mutex
 //
 
-	sync.unlock();
+    sync.unlock();
 
-	return(ret);
+    return (ret);
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -1810,11 +1930,11 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void BlackBox::date_ux_to_str(timeval &ux_date,char *str_date)
+void BlackBox::date_ux_to_str(timeval &ux_date, char *str_date)
 {
-	long i;
-	char month[5];
-	char unix_date[40];
+    long i;
+    char month[5];
+    char unix_date[40];
 
 /* Convert UNIX date to a string in UNIX format */
 
@@ -1822,86 +1942,116 @@ void BlackBox::date_ux_to_str(timeval &ux_date,char *str_date)
 #ifdef _TG_WINDOWS_
     ctime_s(unix_date,40,&tmp_val);
 #else
-    ctime_r(&tmp_val,unix_date);
+    ctime_r(&tmp_val, unix_date);
 #endif
-	unix_date[strlen(unix_date) - 1] = '\0';
+    unix_date[strlen(unix_date) - 1] = '\0';
 
 /* Copy day */
 
-	for (i = 0;i < 2;i++)
-		str_date[i] = unix_date[i + 8];
-	str_date[2] = '/';
-	str_date[3] = '\0';
-	if (str_date[0] == ' ')
-		str_date[0] = '0';
+    for (i = 0; i < 2; i++)
+    {
+        str_date[i] = unix_date[i + 8];
+    }
+    str_date[2] = '/';
+    str_date[3] = '\0';
+    if (str_date[0] == ' ')
+    {
+        str_date[0] = '0';
+    }
 
 /* Copy month */
 
-	for (i = 0;i < 3;i++)
-		month[i] = unix_date[i + 4];
-	month[3] = '\0';
+    for (i = 0; i < 3; i++)
+    {
+        month[i] = unix_date[i + 4];
+    }
+    month[3] = '\0';
 
-	switch(month[0])
-	{
-		case 'J' : if (month[1] == 'u')
-			   {
-				if (month[2] == 'n')
-					strcat(str_date,"06/");
-				else
-					strcat(str_date,"07/");
-			   }
-			   else
-				strcat(str_date,"01/");
-			   break;
+    switch (month[0])
+    {
+        case 'J' :
+            if (month[1] == 'u')
+            {
+                if (month[2] == 'n')
+                {
+                    strcat(str_date, "06/");
+                }
+                else
+                {
+                    strcat(str_date, "07/");
+                }
+            }
+            else
+            {
+                strcat(str_date, "01/");
+            }
+            break;
 
-		case 'F' : strcat(str_date,"02/");
-			   break;
+        case 'F' :
+            strcat(str_date, "02/");
+            break;
 
-		case 'M' : if (month[2] == 'r')
-				strcat(str_date,"03/");
-			   else
-				strcat(str_date,"05/");
-			   break;
+        case 'M' :
+            if (month[2] == 'r')
+            {
+                strcat(str_date, "03/");
+            }
+            else
+            {
+                strcat(str_date, "05/");
+            }
+            break;
 
-		case 'A' : if (month[1] == 'p')
-				strcat(str_date,"04/");
-			   else
-				strcat(str_date,"08/");
-			   break;
+        case 'A' :
+            if (month[1] == 'p')
+            {
+                strcat(str_date, "04/");
+            }
+            else
+            {
+                strcat(str_date, "08/");
+            }
+            break;
 
-		case 'S' : strcat(str_date,"09/");
-			   break;
+        case 'S' :
+            strcat(str_date, "09/");
+            break;
 
-		case 'O' : strcat(str_date,"10/");
-		           break;
+        case 'O' :
+            strcat(str_date, "10/");
+            break;
 
-		case 'N' : strcat(str_date,"11/");
-			   break;
+        case 'N' :
+            strcat(str_date, "11/");
+            break;
 
-		case 'D' : strcat(str_date,"12/");
-			   break;
-	}
+        case 'D' :
+            strcat(str_date, "12/");
+            break;
+    }
 
-	str_date[6] = '\0';
+    str_date[6] = '\0';
 
 /* Copy year */
 
-	strcat(str_date,&(unix_date[20]));
-	str_date[10] = '\0';
+    strcat(str_date, &(unix_date[20]));
+    str_date[10] = '\0';
 
 /* Copy date remaining */
 
-	strcat(str_date," ");
-	for (i = 0;i < 8;i++)
-		str_date[i + 11] = unix_date[i + 11];
-	str_date[19] = '\0';
+    strcat(str_date, " ");
+    for (i = 0; i < 8; i++)
+    {
+        str_date[i + 11] = unix_date[i + 11];
+    }
+    str_date[19] = '\0';
 
 /* Add milliseconds */
 
 #ifdef _TG_WINDOWS_
-	sprintf(&(str_date[19]),":%.2d",(int)(ux_date.tv_usec/10));
+    sprintf(&(str_date[19]),":%.2d",(int)(ux_date.tv_usec/10));
 #else
-	sprintf(&(str_date[19]),":%.2d",(int)(ux_date.tv_usec/10000));
+    sprintf(&(str_date[19]), ":%.2d", (int) (ux_date.tv_usec / 10000));
 #endif
 
 }
@@ -1918,13 +2068,13 @@ void BlackBox::date_ux_to_str(timeval &ux_date,char *str_date)
 
 client_addr::client_addr(const client_addr &rhs)
 {
-	client_ident = rhs.client_ident;
-	client_lang = rhs.client_lang;
-	client_pid = rhs.client_pid;
-	java_main_class = rhs.java_main_class;
-	java_ident[0] = rhs.java_ident[0];
-	java_ident[1] = rhs.java_ident[1];
-	memcpy(client_ip,rhs.client_ip,IP_ADDR_BUFFER_SIZE);
+    client_ident = rhs.client_ident;
+    client_lang = rhs.client_lang;
+    client_pid = rhs.client_pid;
+    java_main_class = rhs.java_main_class;
+    java_ident[0] = rhs.java_ident[0];
+    java_ident[1] = rhs.java_ident[1];
+    memcpy(client_ip, rhs.client_ip, IP_ADDR_BUFFER_SIZE);
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -1937,19 +2087,21 @@ client_addr::client_addr(const client_addr &rhs)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-client_addr & client_addr::operator=(const client_addr &rhs)
+client_addr &client_addr::operator=(const client_addr &rhs)
 {
-	if (this == &rhs)
-		return *this;
+    if (this == &rhs)
+    {
+        return *this;
+    }
 
-	client_ident = rhs.client_ident;
-	client_lang = rhs.client_lang;
-	client_pid = rhs.client_pid;
-	java_main_class = rhs.java_main_class;
-	java_ident[0] = rhs.java_ident[0];
-	java_ident[1] = rhs.java_ident[1];
-	memcpy(client_ip,rhs.client_ip,IP_ADDR_BUFFER_SIZE);
-	return *this;
+    client_ident = rhs.client_ident;
+    client_lang = rhs.client_lang;
+    client_pid = rhs.client_pid;
+    java_main_class = rhs.java_main_class;
+    java_ident[0] = rhs.java_ident[0];
+    java_ident[1] = rhs.java_ident[1];
+    memcpy(client_ip, rhs.client_ip, IP_ADDR_BUFFER_SIZE);
+    return *this;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -1964,37 +2116,51 @@ client_addr & client_addr::operator=(const client_addr &rhs)
 
 bool client_addr::operator==(const client_addr &rhs)
 {
-	if (client_ident != rhs.client_ident)
-		return false;
+    if (client_ident != rhs.client_ident)
+    {
+        return false;
+    }
 
-	if (client_lang != rhs.client_lang)
-		return false;
-	else
-	{
-		if (client_lang == Tango::CPP)
-		{
-			if (client_pid != rhs.client_pid)
-				return false;
-
-			char *tmp = client_ip;
-			const char *rhs_tmp = rhs.client_ip;
-
-			if (strlen(tmp) != strlen(rhs_tmp))
+    if (client_lang != rhs.client_lang)
+    {
+        return false;
+    }
+    else
+    {
+        if (client_lang == Tango::CPP)
+        {
+            if (client_pid != rhs.client_pid)
+            {
                 return false;
+            }
 
-			if (strcmp(tmp,rhs_tmp) != 0)
+            char *tmp = client_ip;
+            const char *rhs_tmp = rhs.client_ip;
+
+            if (strlen(tmp) != strlen(rhs_tmp))
+            {
                 return false;
-		}
-		else
-		{
-			if (java_ident[0] != rhs.java_ident[0])
-				return false;
-			if (java_ident[1] != rhs.java_ident[1])
-				return false;
-		}
-	}
+            }
 
-	return true;
+            if (strcmp(tmp, rhs_tmp) != 0)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (java_ident[0] != rhs.java_ident[0])
+            {
+                return false;
+            }
+            if (java_ident[1] != rhs.java_ident[1])
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2009,37 +2175,51 @@ bool client_addr::operator==(const client_addr &rhs)
 
 bool client_addr::operator!=(const client_addr &rhs)
 {
-	if (client_ident != rhs.client_ident)
-		return true;
+    if (client_ident != rhs.client_ident)
+    {
+        return true;
+    }
 
-	if (client_lang != rhs.client_lang)
-		return true;
-	else
-	{
-		if (client_lang == Tango::CPP)
-		{
-			if (client_pid != rhs.client_pid)
-				return true;
+    if (client_lang != rhs.client_lang)
+    {
+        return true;
+    }
+    else
+    {
+        if (client_lang == Tango::CPP)
+        {
+            if (client_pid != rhs.client_pid)
+            {
+                return true;
+            }
 
-			char *tmp = client_ip;
-			const char *rhs_tmp = rhs.client_ip;
+            char *tmp = client_ip;
+            const char *rhs_tmp = rhs.client_ip;
 
-			if (strlen(tmp) != strlen(rhs_tmp))
-				return true;
+            if (strlen(tmp) != strlen(rhs_tmp))
+            {
+                return true;
+            }
 
-			if (strcmp(tmp,rhs_tmp) != 0)
-				return true;
-		}
-		else
-		{
-			if (java_ident[0] != rhs.java_ident[0])
-				return true;
-			if (java_ident[1] != rhs.java_ident[1])
-				return true;
-		}
-	}
+            if (strcmp(tmp, rhs_tmp) != 0)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if (java_ident[0] != rhs.java_ident[0])
+            {
+                return true;
+            }
+            if (java_ident[1] != rhs.java_ident[1])
+            {
+                return true;
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 //+--------------------------------------------------------------------------------------------------------------------
@@ -2054,80 +2234,94 @@ bool client_addr::operator!=(const client_addr &rhs)
 
 int client_addr::client_ip_2_client_name(string &cl_host_name) const
 {
-	int ret = 0;
-	string client_ip_str(client_ip);
+    int ret = 0;
+    string client_ip_str(client_ip);
 
-	string::size_type pos;
-	if ((pos = client_ip_str.find(':')) == string::npos)
-		ret = -1;
-	else
-	{
-		pos++;
-		if ((pos = client_ip_str.find(':',pos)) == string::npos)
-			ret = -1;
-		else
-		{
-			pos++;
-			string ip_str = client_ip_str.substr(pos);
-			if ((pos = ip_str.find(':')) == string::npos)
-				ret = -1;
-			else
-			{
-				string full_ip_str = ip_str.substr(0,pos);
+    string::size_type pos;
+    if ((pos = client_ip_str.find(':')) == string::npos)
+    {
+        ret = -1;
+    }
+    else
+    {
+        pos++;
+        if ((pos = client_ip_str.find(':', pos)) == string::npos)
+        {
+            ret = -1;
+        }
+        else
+        {
+            pos++;
+            string ip_str = client_ip_str.substr(pos);
+            if ((pos = ip_str.find(':')) == string::npos)
+            {
+                ret = -1;
+            }
+            else
+            {
+                string full_ip_str = ip_str.substr(0, pos);
 
-				if ((pos = full_ip_str.find('.')) == string::npos)
-					ret = -1;
-				else
-				{
-					string ip1_str = full_ip_str.substr(0,pos);
+                if ((pos = full_ip_str.find('.')) == string::npos)
+                {
+                    ret = -1;
+                }
+                else
+                {
+                    string ip1_str = full_ip_str.substr(0, pos);
 
-					string::size_type old_pos;
-					pos++;
-					old_pos = pos;
-					if ((pos = full_ip_str.find('.',pos)) == string::npos)
-						ret = -1;
-					else
-					{
-						string ip2_str = full_ip_str.substr(old_pos,pos - old_pos);
-						pos++;
-						old_pos = pos;
-						if ((pos = full_ip_str.find('.',pos)) == string::npos)
-							ret = -1 ;
-						else
-						{
-							string ip3_str = full_ip_str.substr(old_pos,pos - old_pos);
-							pos++;
-							string ip4_str = full_ip_str.substr(pos);
+                    string::size_type old_pos;
+                    pos++;
+                    old_pos = pos;
+                    if ((pos = full_ip_str.find('.', pos)) == string::npos)
+                    {
+                        ret = -1;
+                    }
+                    else
+                    {
+                        string ip2_str = full_ip_str.substr(old_pos, pos - old_pos);
+                        pos++;
+                        old_pos = pos;
+                        if ((pos = full_ip_str.find('.', pos)) == string::npos)
+                        {
+                            ret = -1;
+                        }
+                        else
+                        {
+                            string ip3_str = full_ip_str.substr(old_pos, pos - old_pos);
+                            pos++;
+                            string ip4_str = full_ip_str.substr(pos);
 
-							struct sockaddr_in si;
-							si.sin_family = AF_INET;
-							si.sin_port = 0;
+                            struct sockaddr_in si;
+                            si.sin_family = AF_INET;
+                            si.sin_port = 0;
 #ifdef _TG_WINDOWS_
-							int slen = sizeof(si);
-							WSAStringToAddress((char *)full_ip_str.c_str(),AF_INET,NULL,(SOCKADDR *)&si,&slen);
+                            int slen = sizeof(si);
+                            WSAStringToAddress((char *)full_ip_str.c_str(),AF_INET,NULL,(SOCKADDR *)&si,&slen);
 #else
-							inet_pton(AF_INET,full_ip_str.c_str(),&si.sin_addr);
+                            inet_pton(AF_INET, full_ip_str.c_str(), &si.sin_addr);
 #endif
 
-							char host[512];
+                            char host[512];
 
-							int res = getnameinfo((const sockaddr *)&si,sizeof(si),host,512,0,0,0);
+                            int res = getnameinfo((const sockaddr *) &si, sizeof(si), host, 512, 0, 0, 0);
 
-							if (res == 0)
-							{
-								cl_host_name = host;
-								ret = 0;
-							}
-							else
-								ret = -1;
-						}
-					}
-				}
-			}
-		}
-	}
+                            if (res == 0)
+                            {
+                                cl_host_name = host;
+                                ret = 0;
+                            }
+                            else
+                            {
+                                ret = -1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	return ret;
+    return ret;
 }
 
 
@@ -2140,34 +2334,43 @@ int client_addr::client_ip_2_client_name(string &cl_host_name) const
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-ostream &operator<<(ostream &o_str,const client_addr &ca)
+ostream &operator<<(ostream &o_str, const client_addr &ca)
 {
-	if (ca.client_ident == false)
-		o_str << "Client identification not available";
-	else
-	{
-		if (ca.client_lang == Tango::CPP)
-		{
-			string cl_name;
-			o_str << "CPP or Python client with PID " << ca.client_pid << " from host ";
-			if (ca.client_ip_2_client_name(cl_name) == 0)
-				o_str << cl_name;
-			else
-				o_str << ca.client_ip;
-		}
-		else
-		{
-			o_str << "JAVA client class " << ca.java_main_class << " from host ";
-			string cl_name;
-			if (ca.client_ip_2_client_name(cl_name) == 0)
-				o_str << cl_name;
-			else
-				o_str << ca.client_ip;
-		}
-	}
+    if (ca.client_ident == false)
+    {
+        o_str << "Client identification not available";
+    }
+    else
+    {
+        if (ca.client_lang == Tango::CPP)
+        {
+            string cl_name;
+            o_str << "CPP or Python client with PID " << ca.client_pid << " from host ";
+            if (ca.client_ip_2_client_name(cl_name) == 0)
+            {
+                o_str << cl_name;
+            }
+            else
+            {
+                o_str << ca.client_ip;
+            }
+        }
+        else
+        {
+            o_str << "JAVA client class " << ca.java_main_class << " from host ";
+            string cl_name;
+            if (ca.client_ip_2_client_name(cl_name) == 0)
+            {
+                o_str << cl_name;
+            }
+            else
+            {
+                o_str << ca.client_ip;
+            }
+        }
+    }
 
-	return o_str;
+    return o_str;
 }
-
 
 } // End of Tango namespace

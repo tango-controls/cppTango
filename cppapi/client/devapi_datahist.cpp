@@ -48,37 +48,42 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-DeviceDataHistory::DeviceDataHistory():DeviceData(),ext_hist(Tango_nullptr)
+DeviceDataHistory::DeviceDataHistory()
+    : DeviceData(), ext_hist(Tango_nullptr)
 {
-	fail = false;
-	err = new DevErrorList();
-	seq_ptr = NULL;
-	ref_ctr_ptr = NULL;
+    fail = false;
+    err = new DevErrorList();
+    seq_ptr = NULL;
+    ref_ctr_ptr = NULL;
 }
 
-DeviceDataHistory::DeviceDataHistory(int n, int *ref,DevCmdHistoryList *ptr):ext_hist(Tango_nullptr)
+DeviceDataHistory::DeviceDataHistory(int n, int *ref, DevCmdHistoryList *ptr)
+    : ext_hist(Tango_nullptr)
 {
-	ref_ctr_ptr = ref;
-	seq_ptr = ptr;
+    ref_ctr_ptr = ref;
+    seq_ptr = ptr;
 
-	(*ref_ctr_ptr)++;
+    (*ref_ctr_ptr)++;
 
-	any = &((*ptr)[n].value);
-	fail = (*ptr)[n].cmd_failed;
-	time = (*ptr)[n].time;
-	err = &((*ptr)[n].errors);
+    any = &((*ptr)[n].value);
+    fail = (*ptr)[n].cmd_failed;
+    time = (*ptr)[n].time;
+    err = &((*ptr)[n].errors);
 }
 
-DeviceDataHistory::DeviceDataHistory(const DeviceDataHistory & source):DeviceData(source),ext_hist(Tango_nullptr)
+DeviceDataHistory::DeviceDataHistory(const DeviceDataHistory &source)
+    : DeviceData(source), ext_hist(Tango_nullptr)
 {
-	fail = source.fail;
-	time = source.time;
-	err = const_cast<DeviceDataHistory &>(source).err._retn();
+    fail = source.fail;
+    time = source.time;
+    err = const_cast<DeviceDataHistory &>(source).err._retn();
 
-	seq_ptr = source.seq_ptr;
-	ref_ctr_ptr = source.ref_ctr_ptr;
-	if (ref_ctr_ptr != NULL)
-		(*ref_ctr_ptr)++;
+    seq_ptr = source.seq_ptr;
+    ref_ctr_ptr = source.ref_ctr_ptr;
+    if (ref_ctr_ptr != NULL)
+    {
+        (*ref_ctr_ptr)++;
+    }
 
 #ifdef HAS_UNIQUE_PTR
     if (source.ext_hist.get() != NULL)
@@ -87,30 +92,37 @@ DeviceDataHistory::DeviceDataHistory(const DeviceDataHistory & source):DeviceDat
         *(ext_hist.get()) = *(source.ext_hist.get());
     }
 #else
-	if (source.ext_hist == NULL)
-		ext_hist = NULL;
-	else
-	{
-		ext_hist = new DeviceDataHistoryExt();
-		*ext_hist = *(source.ext_hist);
-	}
+    if (source.ext_hist == NULL)
+    {
+        ext_hist = NULL;
+    }
+    else
+    {
+        ext_hist = new DeviceDataHistoryExt();
+        *ext_hist = *(source.ext_hist);
+    }
 #endif
 }
 
 #ifdef HAS_RVALUE
-DeviceDataHistory::DeviceDataHistory(DeviceDataHistory && source):DeviceData(move(source)),ext_hist(Tango_nullptr)
+DeviceDataHistory::DeviceDataHistory(DeviceDataHistory &&source)
+    : DeviceData(move(source)), ext_hist(Tango_nullptr)
 {
-	fail = source.fail;
-	time = source.time;
-	err = source.err._retn();
+    fail = source.fail;
+    time = source.time;
+    err = source.err._retn();
 
-	seq_ptr = source.seq_ptr;
-	ref_ctr_ptr = source.ref_ctr_ptr;
+    seq_ptr = source.seq_ptr;
+    ref_ctr_ptr = source.ref_ctr_ptr;
 
     if (source.ext_hist.get() != NULL)
+    {
         ext_hist = move(source.ext_hist);
+    }
     else
+    {
         ext_hist.reset();
+    }
 }
 #endif
 
@@ -122,18 +134,18 @@ DeviceDataHistory::DeviceDataHistory(DeviceDataHistory && source):DeviceData(mov
 
 DeviceDataHistory::~DeviceDataHistory()
 {
-	if (seq_ptr != NULL)
-	{
-		any._retn();
-		err._retn();
+    if (seq_ptr != NULL)
+    {
+        any._retn();
+        err._retn();
 
-		(*ref_ctr_ptr)--;
-		if (*ref_ctr_ptr == 0)
-		{
-			delete seq_ptr;
-			delete ref_ctr_ptr;
-		}
-	}
+        (*ref_ctr_ptr)--;
+        if (*ref_ctr_ptr == 0)
+        {
+            delete seq_ptr;
+            delete ref_ctr_ptr;
+        }
+    }
 
 #ifndef HAS_UNIQUE_PTR
     delete ext_hist;
@@ -147,7 +159,7 @@ DeviceDataHistory::~DeviceDataHistory()
 //
 //-----------------------------------------------------------------------------
 
-DeviceDataHistory & DeviceDataHistory::operator=(const DeviceDataHistory &rval)
+DeviceDataHistory &DeviceDataHistory::operator=(const DeviceDataHistory &rval)
 {
 
     if (this != &rval)
@@ -192,7 +204,9 @@ DeviceDataHistory & DeviceDataHistory::operator=(const DeviceDataHistory &rval)
             *(ext_hist.get()) = *(rval.ext_hist.get());
         }
         else
+        {
             ext_hist.reset();
+        }
 #else
         delete ext_hist;
         if (rval.ext_hist != NULL)
@@ -201,11 +215,13 @@ DeviceDataHistory & DeviceDataHistory::operator=(const DeviceDataHistory &rval)
             *ext_hist = *(rval.ext_hist);
         }
         else
+        {
             ext_hist = NULL;
+        }
 #endif
     }
 
-	return *this;
+    return *this;
 }
 
 //-----------------------------------------------------------------------------
@@ -215,7 +231,7 @@ DeviceDataHistory & DeviceDataHistory::operator=(const DeviceDataHistory &rval)
 //-----------------------------------------------------------------------------
 
 #ifdef HAS_RVALUE
-DeviceDataHistory & DeviceDataHistory::operator=(DeviceDataHistory &&rval)
+DeviceDataHistory &DeviceDataHistory::operator=(DeviceDataHistory &&rval)
 {
 
 //
@@ -228,9 +244,9 @@ DeviceDataHistory & DeviceDataHistory::operator=(DeviceDataHistory &&rval)
 // Then, assignement of DeviceDataHistory members
 //
 
-	fail = rval.fail;
-	time = rval.time;
-	err = rval.err._retn();
+    fail = rval.fail;
+    time = rval.time;
+    err = rval.err._retn();
 
 //
 // Decrement old ctr
@@ -249,19 +265,23 @@ DeviceDataHistory & DeviceDataHistory::operator=(DeviceDataHistory &&rval)
 // Copy ctr (but don't increment it) and ptr
 //
 
-	seq_ptr = rval.seq_ptr;
-	ref_ctr_ptr = rval.ref_ctr_ptr;
+    seq_ptr = rval.seq_ptr;
+    ref_ctr_ptr = rval.ref_ctr_ptr;
 
 //
 // Extension class
 //
 
     if (rval.ext_hist.get() != NULL)
+    {
         ext_hist = move(rval.ext_hist);
+    }
     else
+    {
         ext_hist.reset();
+    }
 
-	return *this;
+    return *this;
 }
 #endif
 
@@ -274,67 +294,69 @@ DeviceDataHistory & DeviceDataHistory::operator=(DeviceDataHistory &&rval)
 //
 //--------------------------------------------------------------------------
 
-ostream &operator<<(ostream &o_str,DeviceDataHistory &dh)
+ostream &operator<<(ostream &o_str, DeviceDataHistory &dh)
 {
 
 //
 // First, print date
 //
 
-	time_t tmp_val = dh.time.tv_sec;
+    time_t tmp_val = dh.time.tv_sec;
     char tmp_date[128];
 #ifdef _TG_WINDOWS_
     ctime_s(tmp_date,128,&tmp_val);
 #else
-    ctime_r(&tmp_val,tmp_date);
+    ctime_r(&tmp_val, tmp_date);
 #endif
-	tmp_date[strlen(tmp_date) - 1] = '\0';
-	o_str << tmp_date;
-	o_str << " (" << dh.time.tv_sec << "," << setw(6) << setfill('0') << dh.time.tv_usec << " sec) : ";
+    tmp_date[strlen(tmp_date) - 1] = '\0';
+    o_str << tmp_date;
+    o_str << " (" << dh.time.tv_sec << "," << setw(6) << setfill('0') << dh.time.tv_usec << " sec) : ";
 
 //
 // Print data or error stack
 //
 
-	if (dh.fail == true)
-	{
-		unsigned int nb_err = dh.err.in().length();
-		for (unsigned long i = 0;i < nb_err;i++)
-		{
-			o_str << "Tango error stack" << endl;
-			o_str << "Severity = ";
-			switch ((dh.err.in())[i].severity)
-			{
-			case Tango::WARN :
-				o_str << "WARNING ";
-				break;
+    if (dh.fail == true)
+    {
+        unsigned int nb_err = dh.err.in().length();
+        for (unsigned long i = 0; i < nb_err; i++)
+        {
+            o_str << "Tango error stack" << endl;
+            o_str << "Severity = ";
+            switch ((dh.err.in())[i].severity)
+            {
+                case Tango::WARN :
+                    o_str << "WARNING ";
+                    break;
 
-			case Tango::ERR :
-				o_str << "ERROR ";
-				break;
+                case Tango::ERR :
+                    o_str << "ERROR ";
+                    break;
 
-			case Tango::PANIC :
-				o_str << "PANIC ";
-				break;
+                case Tango::PANIC :
+                    o_str << "PANIC ";
+                    break;
 
-			default :
-				o_str << "Unknown severity code";
-				break;
-			}
-			o_str << endl;
-			o_str << "Error reason = " << (dh.err.in())[i].reason.in() << endl;
-			o_str << "Desc : " << (dh.err.in())[i].desc.in() << endl;
-			o_str << "Origin : " << (dh.err.in())[i].origin.in();
-			if (i != nb_err - 1)
-				o_str << endl;
-		}
-	}
-	else
-	{
-		o_str << static_cast<DeviceData &>(dh);
-	}
+                default :
+                    o_str << "Unknown severity code";
+                    break;
+            }
+            o_str << endl;
+            o_str << "Error reason = " << (dh.err.in())[i].reason.in() << endl;
+            o_str << "Desc : " << (dh.err.in())[i].desc.in() << endl;
+            o_str << "Origin : " << (dh.err.in())[i].origin.in();
+            if (i != nb_err - 1)
+            {
+                o_str << endl;
+            }
+        }
+    }
+    else
+    {
+        o_str << static_cast<DeviceData &>(dh);
+    }
 
-	return o_str;
+    return o_str;
 }
 
 //-----------------------------------------------------------------------------
@@ -343,316 +365,317 @@ ostream &operator<<(ostream &o_str,DeviceDataHistory &dh)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttributeHistory::DeviceAttributeHistory():DeviceAttribute(),ext_hist(Tango_nullptr)
+DeviceAttributeHistory::DeviceAttributeHistory()
+    : DeviceAttribute(), ext_hist(Tango_nullptr)
 {
-	fail = false;
-	err_list = new DevErrorList();
+    fail = false;
+    err_list = new DevErrorList();
 }
 
-DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq):ext_hist(Tango_nullptr)
+DeviceAttributeHistory::DeviceAttributeHistory(int n, DevAttrHistoryList_var &seq)
+    : ext_hist(Tango_nullptr)
 {
-	fail = seq[n].attr_failed;
+    fail = seq[n].attr_failed;
 
-	err_list = new DevErrorList(seq[n].errors);
-	time = seq[n].value.time;
-	quality = seq[n].value.quality;
-	dim_x = seq[n].value.dim_x;
-	dim_y = seq[n].value.dim_y;
-	name = seq[n].value.name;
+    err_list = new DevErrorList(seq[n].errors);
+    time = seq[n].value.time;
+    quality = seq[n].value.quality;
+    dim_x = seq[n].value.dim_x;
+    dim_y = seq[n].value.dim_y;
+    name = seq[n].value.name;
 
-	const DevVarLongArray *tmp_seq_lo;
-	CORBA::Long *tmp_lo;
-	const DevVarLong64Array *tmp_seq_lolo;
-	CORBA::LongLong *tmp_lolo;
-	const DevVarShortArray *tmp_seq_sh;
-	CORBA::Short *tmp_sh;
-	const DevVarDoubleArray *tmp_seq_db;
-	CORBA::Double *tmp_db;
-	const DevVarStringArray *tmp_seq_str;
-	char **tmp_str;
-	const DevVarFloatArray *tmp_seq_fl;
-	CORBA::Float *tmp_fl;
-	const DevVarBooleanArray *tmp_seq_boo;
-	CORBA::Boolean *tmp_boo;
-	const DevVarUShortArray *tmp_seq_ush;
-	CORBA::UShort *tmp_ush;
-	const DevVarCharArray *tmp_seq_uch;
-	CORBA::Octet *tmp_uch;
-	const DevVarULongArray *tmp_seq_ulo;
-	CORBA::ULong *tmp_ulo;
-	const DevVarULong64Array *tmp_seq_ulolo;
-	CORBA::ULongLong *tmp_ulolo;
-	const DevVarStateArray *tmp_seq_state;
-	Tango::DevState *tmp_state;
+    const DevVarLongArray *tmp_seq_lo;
+    CORBA::Long *tmp_lo;
+    const DevVarLong64Array *tmp_seq_lolo;
+    CORBA::LongLong *tmp_lolo;
+    const DevVarShortArray *tmp_seq_sh;
+    CORBA::Short *tmp_sh;
+    const DevVarDoubleArray *tmp_seq_db;
+    CORBA::Double *tmp_db;
+    const DevVarStringArray *tmp_seq_str;
+    char **tmp_str;
+    const DevVarFloatArray *tmp_seq_fl;
+    CORBA::Float *tmp_fl;
+    const DevVarBooleanArray *tmp_seq_boo;
+    CORBA::Boolean *tmp_boo;
+    const DevVarUShortArray *tmp_seq_ush;
+    CORBA::UShort *tmp_ush;
+    const DevVarCharArray *tmp_seq_uch;
+    CORBA::Octet *tmp_uch;
+    const DevVarULongArray *tmp_seq_ulo;
+    CORBA::ULong *tmp_ulo;
+    const DevVarULong64Array *tmp_seq_ulolo;
+    CORBA::ULongLong *tmp_ulolo;
+    const DevVarStateArray *tmp_seq_state;
+    Tango::DevState *tmp_state;
 
-	CORBA::ULong max,len;
+    CORBA::ULong max, len;
 
-	if ((fail == false) && (quality != Tango::ATTR_INVALID))
-	{
-		CORBA::TypeCode_var ty = seq[n].value.value.type();
-		CORBA::TypeCode_var ty_alias = ty->content_type();
-		CORBA::TypeCode_var ty_seq = ty_alias->content_type();
-		switch (ty_seq->kind())
-		{
-		case tk_long:
-			seq[n].value.value >>= tmp_seq_lo;
-			max = tmp_seq_lo->maximum();
-			len = tmp_seq_lo->length();
-			tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((CORBA::Boolean)true);
-			LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
-			break;
+    if ((fail == false) && (quality != Tango::ATTR_INVALID))
+    {
+        CORBA::TypeCode_var ty = seq[n].value.value.type();
+        CORBA::TypeCode_var ty_alias = ty->content_type();
+        CORBA::TypeCode_var ty_seq = ty_alias->content_type();
+        switch (ty_seq->kind())
+        {
+            case tk_long:
+                seq[n].value.value >>= tmp_seq_lo;
+                max = tmp_seq_lo->maximum();
+                len = tmp_seq_lo->length();
+                tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((CORBA::Boolean) true);
+                LongSeq = new DevVarLongArray(max, len, tmp_lo, true);
+                break;
 
-		case tk_longlong:
-			seq[n].value.value >>= tmp_seq_lolo;
-			max = tmp_seq_lolo->maximum();
-			len = tmp_seq_lolo->length();
-			tmp_lolo = (const_cast<DevVarLong64Array *>(tmp_seq_lolo))->get_buffer((CORBA::Boolean)true);
-			Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,true);
-			break;
+            case tk_longlong:
+                seq[n].value.value >>= tmp_seq_lolo;
+                max = tmp_seq_lolo->maximum();
+                len = tmp_seq_lolo->length();
+                tmp_lolo = (const_cast<DevVarLong64Array *>(tmp_seq_lolo))->get_buffer((CORBA::Boolean) true);
+                Long64Seq = new DevVarLong64Array(max, len, tmp_lolo, true);
+                break;
 
-		case tk_short:
-			seq[n].value.value >>= tmp_seq_sh;
-			max = tmp_seq_sh->maximum();
-			len = tmp_seq_sh->length();
-			tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((CORBA::Boolean)true);
-			ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
-			break;
+            case tk_short:
+                seq[n].value.value >>= tmp_seq_sh;
+                max = tmp_seq_sh->maximum();
+                len = tmp_seq_sh->length();
+                tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((CORBA::Boolean) true);
+                ShortSeq = new DevVarShortArray(max, len, tmp_sh, true);
+                break;
 
-		case tk_double:
-			seq[n].value.value >>= tmp_seq_db;
-			max = tmp_seq_db->maximum();
-			len = tmp_seq_db->length();
-			tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((CORBA::Boolean)true);
-			DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
-			break;
+            case tk_double:
+                seq[n].value.value >>= tmp_seq_db;
+                max = tmp_seq_db->maximum();
+                len = tmp_seq_db->length();
+                tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((CORBA::Boolean) true);
+                DoubleSeq = new DevVarDoubleArray(max, len, tmp_db, true);
+                break;
 
-		case tk_string:
-			seq[n].value.value >>= tmp_seq_str;
-			max = tmp_seq_str->maximum();
-			len = tmp_seq_str->length();
-			tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((CORBA::Boolean)true);
-			StringSeq = new DevVarStringArray(max,len,tmp_str,true);
-			break;
+            case tk_string:
+                seq[n].value.value >>= tmp_seq_str;
+                max = tmp_seq_str->maximum();
+                len = tmp_seq_str->length();
+                tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((CORBA::Boolean) true);
+                StringSeq = new DevVarStringArray(max, len, tmp_str, true);
+                break;
 
-		case tk_float:
-			seq[n].value.value >>= tmp_seq_fl;
-			max = tmp_seq_fl->maximum();
-			len = tmp_seq_fl->length();
-			tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((CORBA::Boolean)true);
-			FloatSeq = new DevVarFloatArray(max,len,tmp_fl,true);
-			break;
+            case tk_float:
+                seq[n].value.value >>= tmp_seq_fl;
+                max = tmp_seq_fl->maximum();
+                len = tmp_seq_fl->length();
+                tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((CORBA::Boolean) true);
+                FloatSeq = new DevVarFloatArray(max, len, tmp_fl, true);
+                break;
 
-		case tk_boolean:
-			seq[n].value.value >>= tmp_seq_boo;
-			max = tmp_seq_boo->maximum();
-			len = tmp_seq_boo->length();
-			tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((CORBA::Boolean)true);
-			BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,true);
-			break;
+            case tk_boolean:
+                seq[n].value.value >>= tmp_seq_boo;
+                max = tmp_seq_boo->maximum();
+                len = tmp_seq_boo->length();
+                tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((CORBA::Boolean) true);
+                BooleanSeq = new DevVarBooleanArray(max, len, tmp_boo, true);
+                break;
 
-		case tk_ushort:
-			seq[n].value.value >>= tmp_seq_ush;
-			max = tmp_seq_ush->maximum();
-			len = tmp_seq_ush->length();
-			tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((CORBA::Boolean)true);
-			UShortSeq = new DevVarUShortArray(max,len,tmp_ush,true);
-			break;
+            case tk_ushort:
+                seq[n].value.value >>= tmp_seq_ush;
+                max = tmp_seq_ush->maximum();
+                len = tmp_seq_ush->length();
+                tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((CORBA::Boolean) true);
+                UShortSeq = new DevVarUShortArray(max, len, tmp_ush, true);
+                break;
 
-		case tk_octet:
-			seq[n].value.value >>= tmp_seq_uch;
-			max = tmp_seq_uch->maximum();
-			len = tmp_seq_uch->length();
-			tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((CORBA::Boolean)true);
-			UCharSeq = new DevVarCharArray(max,len,tmp_uch,true);
-			break;
+            case tk_octet:
+                seq[n].value.value >>= tmp_seq_uch;
+                max = tmp_seq_uch->maximum();
+                len = tmp_seq_uch->length();
+                tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((CORBA::Boolean) true);
+                UCharSeq = new DevVarCharArray(max, len, tmp_uch, true);
+                break;
 
-		case tk_ulong:
-			seq[n].value.value >>= tmp_seq_ulo;
-			max = tmp_seq_ulo->maximum();
-			len = tmp_seq_ulo->length();
-			tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((CORBA::Boolean)true);
-			ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
-			break;
+            case tk_ulong:
+                seq[n].value.value >>= tmp_seq_ulo;
+                max = tmp_seq_ulo->maximum();
+                len = tmp_seq_ulo->length();
+                tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((CORBA::Boolean) true);
+                ULongSeq = new DevVarULongArray(max, len, tmp_ulo, true);
+                break;
 
-		case tk_ulonglong:
-			seq[n].value.value >>= tmp_seq_ulolo;
-			max = tmp_seq_ulolo->maximum();
-			len = tmp_seq_ulolo->length();
-			tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_ulolo))->get_buffer((CORBA::Boolean)true);
-			ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
-			break;
+            case tk_ulonglong:
+                seq[n].value.value >>= tmp_seq_ulolo;
+                max = tmp_seq_ulolo->maximum();
+                len = tmp_seq_ulolo->length();
+                tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_ulolo))->get_buffer((CORBA::Boolean) true);
+                ULong64Seq = new DevVarULong64Array(max, len, tmp_ulolo, true);
+                break;
 
-		case tk_enum:
-			seq[n].value.value >>= tmp_seq_state;
-			max = tmp_seq_state->maximum();
-			len = tmp_seq_state->length();
-			tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean)true);
-			StateSeq = new DevVarStateArray(max,len,tmp_state,true);
-			break;
+            case tk_enum:
+                seq[n].value.value >>= tmp_seq_state;
+                max = tmp_seq_state->maximum();
+                len = tmp_seq_state->length();
+                tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean) true);
+                StateSeq = new DevVarStateArray(max, len, tmp_state, true);
+                break;
 
-		default:
-			break;
-		}
-	}
-
-}
-
-
-DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &seq):ext_hist(Tango_nullptr)
-{
-	fail = seq[n].attr_failed;
-
-	err_list = new DevErrorList(seq[n].value.err_list);
-	time = seq[n].value.time;
-	quality = seq[n].value.quality;
-	dim_x = seq[n].value.r_dim.dim_x;
-	dim_y = seq[n].value.r_dim.dim_y;
-	w_dim_x = seq[n].value.w_dim.dim_x;
-	w_dim_y = seq[n].value.w_dim.dim_y;
-	name = seq[n].value.name;
-
-	const DevVarLongArray *tmp_seq_lo;
-	CORBA::Long *tmp_lo;
-	const DevVarLong64Array *tmp_seq_lolo;
-	CORBA::LongLong *tmp_lolo;
-	const DevVarShortArray *tmp_seq_sh;
-	CORBA::Short *tmp_sh;
-	const DevVarDoubleArray *tmp_seq_db;
-	CORBA::Double *tmp_db;
-	const DevVarStringArray *tmp_seq_str;
-	char **tmp_str;
-	const DevVarFloatArray *tmp_seq_fl;
-	CORBA::Float *tmp_fl;
-	const DevVarBooleanArray *tmp_seq_boo;
-	CORBA::Boolean *tmp_boo;
-	const DevVarUShortArray *tmp_seq_ush;
-	CORBA::UShort *tmp_ush;
-	const DevVarCharArray *tmp_seq_uch;
-	CORBA::Octet *tmp_uch;
-	const DevVarULongArray *tmp_seq_ulo;
-	CORBA::ULong *tmp_ulo;
-	const DevVarULong64Array *tmp_seq_ulolo;
-	CORBA::ULongLong *tmp_ulolo;
-	const DevVarStateArray *tmp_seq_state;
-	Tango::DevState *tmp_state;
-
-	CORBA::ULong max,len;
-
-	if ((fail == false) && (quality != Tango::ATTR_INVALID))
-	{
-		CORBA::TypeCode_var ty = seq[n].value.value.type();
-		CORBA::TypeCode_var ty_alias = ty->content_type();
-		CORBA::TypeCode_var ty_seq = ty_alias->content_type();
-		switch (ty_seq->kind())
-		{
-		case tk_long:
-			seq[n].value.value >>= tmp_seq_lo;
-			max = tmp_seq_lo->maximum();
-			len = tmp_seq_lo->length();
-			tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((CORBA::Boolean)true);
-			LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
-			break;
-
-		case tk_longlong:
-			seq[n].value.value >>= tmp_seq_lolo;
-			max = tmp_seq_lolo->maximum();
-			len = tmp_seq_lolo->length();
-			tmp_lolo = (const_cast<DevVarLong64Array *>(tmp_seq_lolo))->get_buffer((CORBA::Boolean)true);
-			Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,true);
-			break;
-
-		case tk_short:
-			seq[n].value.value >>= tmp_seq_sh;
-			max = tmp_seq_sh->maximum();
-			len = tmp_seq_sh->length();
-			tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((CORBA::Boolean)true);
-			ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
-			break;
-
-		case tk_double:
-			seq[n].value.value >>= tmp_seq_db;
-			max = tmp_seq_db->maximum();
-			len = tmp_seq_db->length();
-			tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((CORBA::Boolean)true);
-			DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
-			break;
-
-		case tk_string:
-			seq[n].value.value >>= tmp_seq_str;
-			max = tmp_seq_str->maximum();
-			len = tmp_seq_str->length();
-			tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((CORBA::Boolean)true);
-			StringSeq = new DevVarStringArray(max,len,tmp_str,true);
-			break;
-
-		case tk_float:
-			seq[n].value.value >>= tmp_seq_fl;
-			max = tmp_seq_fl->maximum();
-			len = tmp_seq_fl->length();
-			tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((CORBA::Boolean)true);
-			FloatSeq = new DevVarFloatArray(max,len,tmp_fl,true);
-			break;
-
-		case tk_boolean:
-			seq[n].value.value >>= tmp_seq_boo;
-			max = tmp_seq_boo->maximum();
-			len = tmp_seq_boo->length();
-			tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((CORBA::Boolean)true);
-			BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,true);
-			break;
-
-		case tk_ushort:
-			seq[n].value.value >>= tmp_seq_ush;
-			max = tmp_seq_ush->maximum();
-			len = tmp_seq_ush->length();
-			tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((CORBA::Boolean)true);
-			UShortSeq = new DevVarUShortArray(max,len,tmp_ush,true);
-			break;
-
-		case tk_octet:
-			seq[n].value.value >>= tmp_seq_uch;
-			max = tmp_seq_uch->maximum();
-			len = tmp_seq_uch->length();
-			tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((CORBA::Boolean)true);
-			UCharSeq = new DevVarCharArray(max,len,tmp_uch,true);
-			break;
-
-		case tk_ulong:
-			seq[n].value.value >>= tmp_seq_ulo;
-			max = tmp_seq_ulo->maximum();
-			len = tmp_seq_ulo->length();
-			tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((CORBA::Boolean)true);
-			ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
-			break;
-
-		case tk_ulonglong:
-			seq[n].value.value >>= tmp_seq_ulolo;
-			max = tmp_seq_ulolo->maximum();
-			len = tmp_seq_ulolo->length();
-			tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_ulolo))->get_buffer((CORBA::Boolean)true);
-			ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
-			break;
-
-		case tk_enum:
-			seq[n].value.value >>= tmp_seq_state;
-			max = tmp_seq_state->maximum();
-			len = tmp_seq_state->length();
-			tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean)true);
-			StateSeq = new DevVarStateArray(max,len,tmp_state,true);
-			break;
-
-		default:
-			break;
-		}
-	}
+            default:
+                break;
+        }
+    }
 
 }
 
-
-
-DeviceAttributeHistory::DeviceAttributeHistory(const DeviceAttributeHistory & source):DeviceAttribute(source),ext_hist(Tango_nullptr)
+DeviceAttributeHistory::DeviceAttributeHistory(int n, DevAttrHistoryList_3_var &seq)
+    : ext_hist(Tango_nullptr)
 {
-	fail = source.fail;
+    fail = seq[n].attr_failed;
+
+    err_list = new DevErrorList(seq[n].value.err_list);
+    time = seq[n].value.time;
+    quality = seq[n].value.quality;
+    dim_x = seq[n].value.r_dim.dim_x;
+    dim_y = seq[n].value.r_dim.dim_y;
+    w_dim_x = seq[n].value.w_dim.dim_x;
+    w_dim_y = seq[n].value.w_dim.dim_y;
+    name = seq[n].value.name;
+
+    const DevVarLongArray *tmp_seq_lo;
+    CORBA::Long *tmp_lo;
+    const DevVarLong64Array *tmp_seq_lolo;
+    CORBA::LongLong *tmp_lolo;
+    const DevVarShortArray *tmp_seq_sh;
+    CORBA::Short *tmp_sh;
+    const DevVarDoubleArray *tmp_seq_db;
+    CORBA::Double *tmp_db;
+    const DevVarStringArray *tmp_seq_str;
+    char **tmp_str;
+    const DevVarFloatArray *tmp_seq_fl;
+    CORBA::Float *tmp_fl;
+    const DevVarBooleanArray *tmp_seq_boo;
+    CORBA::Boolean *tmp_boo;
+    const DevVarUShortArray *tmp_seq_ush;
+    CORBA::UShort *tmp_ush;
+    const DevVarCharArray *tmp_seq_uch;
+    CORBA::Octet *tmp_uch;
+    const DevVarULongArray *tmp_seq_ulo;
+    CORBA::ULong *tmp_ulo;
+    const DevVarULong64Array *tmp_seq_ulolo;
+    CORBA::ULongLong *tmp_ulolo;
+    const DevVarStateArray *tmp_seq_state;
+    Tango::DevState *tmp_state;
+
+    CORBA::ULong max, len;
+
+    if ((fail == false) && (quality != Tango::ATTR_INVALID))
+    {
+        CORBA::TypeCode_var ty = seq[n].value.value.type();
+        CORBA::TypeCode_var ty_alias = ty->content_type();
+        CORBA::TypeCode_var ty_seq = ty_alias->content_type();
+        switch (ty_seq->kind())
+        {
+            case tk_long:
+                seq[n].value.value >>= tmp_seq_lo;
+                max = tmp_seq_lo->maximum();
+                len = tmp_seq_lo->length();
+                tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((CORBA::Boolean) true);
+                LongSeq = new DevVarLongArray(max, len, tmp_lo, true);
+                break;
+
+            case tk_longlong:
+                seq[n].value.value >>= tmp_seq_lolo;
+                max = tmp_seq_lolo->maximum();
+                len = tmp_seq_lolo->length();
+                tmp_lolo = (const_cast<DevVarLong64Array *>(tmp_seq_lolo))->get_buffer((CORBA::Boolean) true);
+                Long64Seq = new DevVarLong64Array(max, len, tmp_lolo, true);
+                break;
+
+            case tk_short:
+                seq[n].value.value >>= tmp_seq_sh;
+                max = tmp_seq_sh->maximum();
+                len = tmp_seq_sh->length();
+                tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((CORBA::Boolean) true);
+                ShortSeq = new DevVarShortArray(max, len, tmp_sh, true);
+                break;
+
+            case tk_double:
+                seq[n].value.value >>= tmp_seq_db;
+                max = tmp_seq_db->maximum();
+                len = tmp_seq_db->length();
+                tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((CORBA::Boolean) true);
+                DoubleSeq = new DevVarDoubleArray(max, len, tmp_db, true);
+                break;
+
+            case tk_string:
+                seq[n].value.value >>= tmp_seq_str;
+                max = tmp_seq_str->maximum();
+                len = tmp_seq_str->length();
+                tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((CORBA::Boolean) true);
+                StringSeq = new DevVarStringArray(max, len, tmp_str, true);
+                break;
+
+            case tk_float:
+                seq[n].value.value >>= tmp_seq_fl;
+                max = tmp_seq_fl->maximum();
+                len = tmp_seq_fl->length();
+                tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((CORBA::Boolean) true);
+                FloatSeq = new DevVarFloatArray(max, len, tmp_fl, true);
+                break;
+
+            case tk_boolean:
+                seq[n].value.value >>= tmp_seq_boo;
+                max = tmp_seq_boo->maximum();
+                len = tmp_seq_boo->length();
+                tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((CORBA::Boolean) true);
+                BooleanSeq = new DevVarBooleanArray(max, len, tmp_boo, true);
+                break;
+
+            case tk_ushort:
+                seq[n].value.value >>= tmp_seq_ush;
+                max = tmp_seq_ush->maximum();
+                len = tmp_seq_ush->length();
+                tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((CORBA::Boolean) true);
+                UShortSeq = new DevVarUShortArray(max, len, tmp_ush, true);
+                break;
+
+            case tk_octet:
+                seq[n].value.value >>= tmp_seq_uch;
+                max = tmp_seq_uch->maximum();
+                len = tmp_seq_uch->length();
+                tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((CORBA::Boolean) true);
+                UCharSeq = new DevVarCharArray(max, len, tmp_uch, true);
+                break;
+
+            case tk_ulong:
+                seq[n].value.value >>= tmp_seq_ulo;
+                max = tmp_seq_ulo->maximum();
+                len = tmp_seq_ulo->length();
+                tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((CORBA::Boolean) true);
+                ULongSeq = new DevVarULongArray(max, len, tmp_ulo, true);
+                break;
+
+            case tk_ulonglong:
+                seq[n].value.value >>= tmp_seq_ulolo;
+                max = tmp_seq_ulolo->maximum();
+                len = tmp_seq_ulolo->length();
+                tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_ulolo))->get_buffer((CORBA::Boolean) true);
+                ULong64Seq = new DevVarULong64Array(max, len, tmp_ulolo, true);
+                break;
+
+            case tk_enum:
+                seq[n].value.value >>= tmp_seq_state;
+                max = tmp_seq_state->maximum();
+                len = tmp_seq_state->length();
+                tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean) true);
+                StateSeq = new DevVarStateArray(max, len, tmp_state, true);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+}
+
+DeviceAttributeHistory::DeviceAttributeHistory(const DeviceAttributeHistory &source)
+    : DeviceAttribute(source), ext_hist(Tango_nullptr)
+{
+    fail = source.fail;
 
 #ifdef HAS_UNIQUE_PTR
     if (source.ext_hist.get() != NULL)
@@ -661,23 +684,28 @@ DeviceAttributeHistory::DeviceAttributeHistory(const DeviceAttributeHistory & so
         *(ext_hist.get()) = *(source.ext_hist.get());
     }
 #else
-	if (source.ext_hist == NULL)
-		ext_hist = NULL;
-	else
-	{
-		ext_hist = new DeviceAttributeHistoryExt();
-		*ext_hist = *(source.ext_hist);
-	}
+    if (source.ext_hist == NULL)
+    {
+        ext_hist = NULL;
+    }
+    else
+    {
+        ext_hist = new DeviceAttributeHistoryExt();
+        *ext_hist = *(source.ext_hist);
+    }
 #endif
 }
 
 #ifdef HAS_RVALUE
-DeviceAttributeHistory::DeviceAttributeHistory(DeviceAttributeHistory &&source):DeviceAttribute(move(source)),ext_hist(Tango_nullptr)
+DeviceAttributeHistory::DeviceAttributeHistory(DeviceAttributeHistory &&source)
+    : DeviceAttribute(move(source)), ext_hist(Tango_nullptr)
 {
-	fail = source.fail;
+    fail = source.fail;
 
     if (source.ext_hist.get() != NULL)
+    {
         ext_hist = move(source.ext_hist);
+    }
 
 }
 #endif
@@ -702,7 +730,7 @@ DeviceAttributeHistory::~DeviceAttributeHistory()
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttributeHistory & DeviceAttributeHistory::operator=(const DeviceAttributeHistory &rval)
+DeviceAttributeHistory &DeviceAttributeHistory::operator=(const DeviceAttributeHistory &rval)
 {
 
     if (this != &rval)
@@ -726,7 +754,9 @@ DeviceAttributeHistory & DeviceAttributeHistory::operator=(const DeviceAttribute
             *(ext_hist.get()) = *(rval.ext_hist.get());
         }
         else
+        {
             ext_hist.reset();
+        }
 #else
         delete ext_hist;
         if (rval.ext_hist != NULL)
@@ -735,15 +765,17 @@ DeviceAttributeHistory & DeviceAttributeHistory::operator=(const DeviceAttribute
             *ext_hist = *(rval.ext_hist);
         }
         else
+        {
             ext_hist = NULL;
+        }
 #endif
     }
 
-	return *this;
+    return *this;
 }
 
 #ifdef HAS_RVALUE
-DeviceAttributeHistory & DeviceAttributeHistory::operator=(DeviceAttributeHistory &&rval)
+DeviceAttributeHistory &DeviceAttributeHistory::operator=(DeviceAttributeHistory &&rval)
 {
 
 //
@@ -756,14 +788,18 @@ DeviceAttributeHistory & DeviceAttributeHistory::operator=(DeviceAttributeHistor
 // Then, assignement of DeviceAttributeHistory members
 //
 
-	fail = rval.fail;
+    fail = rval.fail;
 
     if (rval.ext_hist.get() != NULL)
+    {
         ext_hist = move(rval.ext_hist);
+    }
     else
+    {
         ext_hist.reset();
+    }
 
-	return *this;
+    return *this;
 }
 #endif
 
@@ -776,148 +812,178 @@ DeviceAttributeHistory & DeviceAttributeHistory::operator=(DeviceAttributeHistor
 //
 //--------------------------------------------------------------------------
 
-ostream &operator<<(ostream &o_str,DeviceAttributeHistory &dah)
+ostream &operator<<(ostream &o_str, DeviceAttributeHistory &dah)
 {
 //
 // Print date
 //
 
-	if (dah.time.tv_sec != 0)
-	{
-		char tmp_date[128];
-		time_t tmp_val = dah.time.tv_sec;
+    if (dah.time.tv_sec != 0)
+    {
+        char tmp_date[128];
+        time_t tmp_val = dah.time.tv_sec;
 #ifdef _TG_WINDOWS_
-		ctime_s(tmp_date,128,&tmp_val);
+        ctime_s(tmp_date,128,&tmp_val);
 #else
-        ctime_r(&tmp_val,tmp_date);
+        ctime_r(&tmp_val, tmp_date);
 #endif
-		tmp_date[strlen(tmp_date) - 1] = '\0';
-		o_str << tmp_date;
-		o_str << " (" << dah.time.tv_sec << "," << setw(6) << setfill('0') << dah.time.tv_usec << " sec) : ";
-	}
+        tmp_date[strlen(tmp_date) - 1] = '\0';
+        o_str << tmp_date;
+        o_str << " (" << dah.time.tv_sec << "," << setw(6) << setfill('0') << dah.time.tv_usec << " sec) : ";
+    }
 
 //
 // print attribute name
 //
 
-	o_str << dah.name;
+    o_str << dah.name;
 
 //
 // print dim_x and dim_y
 //
 
-	o_str << " (dim_x = " << dah.dim_x << ", dim_y = " << dah.dim_y << ", ";
+    o_str << " (dim_x = " << dah.dim_x << ", dim_y = " << dah.dim_y << ", ";
 
 //
 // print write dim_x and dim_y
 //
 
-	o_str << "w_dim_x = " << dah.w_dim_x << ", w_dim_y = " << dah.w_dim_y << ", ";
+    o_str << "w_dim_x = " << dah.w_dim_x << ", w_dim_y = " << dah.w_dim_y << ", ";
 
 //
 // Print quality
 //
 
-	o_str << "Data quality factor = ";
-	switch (dah.quality)
-	{
-	case Tango::ATTR_VALID:
-		o_str << "VALID)" << endl;
-		break;
+    o_str << "Data quality factor = ";
+    switch (dah.quality)
+    {
+        case Tango::ATTR_VALID:
+            o_str << "VALID)" << endl;
+            break;
 
-	case Tango::ATTR_INVALID:
-		o_str << "INVALID)";
-		break;
+        case Tango::ATTR_INVALID:
+            o_str << "INVALID)";
+            break;
 
-	case Tango::ATTR_ALARM:
-		o_str << "ALARM)" << endl;
-		break;
+        case Tango::ATTR_ALARM:
+            o_str << "ALARM)" << endl;
+            break;
 
-	case Tango::ATTR_CHANGING:
-		o_str << "CHANGING)" << endl;
-		break;
+        case Tango::ATTR_CHANGING:
+            o_str << "CHANGING)" << endl;
+            break;
 
-	case Tango::ATTR_WARNING:
-		o_str << "WARNING) " << endl;
-		break;
-	}
+        case Tango::ATTR_WARNING:
+            o_str << "WARNING) " << endl;
+            break;
+    }
 
 //
 // Print data (if valid) or error stack
 //
 
-	if (dah.fail == true)
-	{
-		unsigned int nb_err = dah.err_list.in().length();
-		for (unsigned long i = 0;i < nb_err;i++)
-		{
-			o_str << "Tango error stack" << endl;
-			o_str << "Severity = ";
-			switch (dah.err_list[i].severity)
-			{
-			case Tango::WARN :
-				o_str << "WARNING ";
-				break;
+    if (dah.fail == true)
+    {
+        unsigned int nb_err = dah.err_list.in().length();
+        for (unsigned long i = 0; i < nb_err; i++)
+        {
+            o_str << "Tango error stack" << endl;
+            o_str << "Severity = ";
+            switch (dah.err_list[i].severity)
+            {
+                case Tango::WARN :
+                    o_str << "WARNING ";
+                    break;
 
-			case Tango::ERR :
-				o_str << "ERROR ";
-				break;
+                case Tango::ERR :
+                    o_str << "ERROR ";
+                    break;
 
-			case Tango::PANIC :
-				o_str << "PANIC ";
-				break;
+                case Tango::PANIC :
+                    o_str << "PANIC ";
+                    break;
 
-			default :
-				o_str << "Unknown severity code";
-				break;
-			}
-			o_str << endl;
-			o_str << "Error reason = " << dah.err_list[i].reason.in() << endl;
-			o_str << "Desc : " << dah.err_list[i].desc.in() << endl;
-			o_str << "Origin : " << dah.err_list[i].origin.in();
-			if (i != nb_err - 1)
-				o_str << endl;
-		}
-	}
-	else
-	{
-		if (dah.quality != Tango::ATTR_INVALID)
-		{
-			if (dah.is_empty() == true)
-				o_str << "No data in DeviceData object";
-			else
-			{
-				if (dah.LongSeq.operator->() != NULL)
-					o_str << *(dah.LongSeq.operator->());
-				else if (dah.ShortSeq.operator->() != NULL)
-					o_str << *(dah.ShortSeq.operator->());
-				else if (dah.DoubleSeq.operator->() != NULL)
-					o_str << *(dah.DoubleSeq.operator->());
-				else if (dah.FloatSeq.operator->() != NULL)
-					o_str << *(dah.FloatSeq.operator->());
-				else if (dah.BooleanSeq.operator->() != NULL)
-					o_str << *(dah.BooleanSeq.operator->());
-				else if (dah.UShortSeq.operator->() != NULL)
-					o_str << *(dah.UShortSeq.operator->());
-				else if (dah.UCharSeq.operator->() != NULL)
-					o_str << *(dah.UCharSeq.operator->());
-				else if (dah.Long64Seq.operator->() != NULL)
-					o_str << *(dah.Long64Seq.operator->());
-				else if (dah.ULongSeq.operator->() != NULL)
-					o_str << *(dah.ULongSeq.operator->());
-				else if (dah.ULong64Seq.operator->() != NULL)
-					o_str << *(dah.ULong64Seq.operator->());
-				else if (dah.StateSeq.operator->() != NULL)
-					o_str << *(dah.StateSeq.operator->());
-				else if (dah.EncodedSeq.operator->() != NULL)
-					o_str << *(dah.EncodedSeq.operator->());
-				else
-					o_str << *(dah.StringSeq.operator->());
-			}
-		}
-	}
+                default :
+                    o_str << "Unknown severity code";
+                    break;
+            }
+            o_str << endl;
+            o_str << "Error reason = " << dah.err_list[i].reason.in() << endl;
+            o_str << "Desc : " << dah.err_list[i].desc.in() << endl;
+            o_str << "Origin : " << dah.err_list[i].origin.in();
+            if (i != nb_err - 1)
+            {
+                o_str << endl;
+            }
+        }
+    }
+    else
+    {
+        if (dah.quality != Tango::ATTR_INVALID)
+        {
+            if (dah.is_empty() == true)
+            {
+                o_str << "No data in DeviceData object";
+            }
+            else
+            {
+                if (dah.LongSeq.operator->() != NULL)
+                {
+                    o_str << *(dah.LongSeq.operator->());
+                }
+                else if (dah.ShortSeq.operator->() != NULL)
+                {
+                    o_str << *(dah.ShortSeq.operator->());
+                }
+                else if (dah.DoubleSeq.operator->() != NULL)
+                {
+                    o_str << *(dah.DoubleSeq.operator->());
+                }
+                else if (dah.FloatSeq.operator->() != NULL)
+                {
+                    o_str << *(dah.FloatSeq.operator->());
+                }
+                else if (dah.BooleanSeq.operator->() != NULL)
+                {
+                    o_str << *(dah.BooleanSeq.operator->());
+                }
+                else if (dah.UShortSeq.operator->() != NULL)
+                {
+                    o_str << *(dah.UShortSeq.operator->());
+                }
+                else if (dah.UCharSeq.operator->() != NULL)
+                {
+                    o_str << *(dah.UCharSeq.operator->());
+                }
+                else if (dah.Long64Seq.operator->() != NULL)
+                {
+                    o_str << *(dah.Long64Seq.operator->());
+                }
+                else if (dah.ULongSeq.operator->() != NULL)
+                {
+                    o_str << *(dah.ULongSeq.operator->());
+                }
+                else if (dah.ULong64Seq.operator->() != NULL)
+                {
+                    o_str << *(dah.ULong64Seq.operator->());
+                }
+                else if (dah.StateSeq.operator->() != NULL)
+                {
+                    o_str << *(dah.StateSeq.operator->());
+                }
+                else if (dah.EncodedSeq.operator->() != NULL)
+                {
+                    o_str << *(dah.EncodedSeq.operator->());
+                }
+                else
+                {
+                    o_str << *(dah.StringSeq.operator->());
+                }
+            }
+        }
+    }
 
-	return o_str;
+    return o_str;
 }
 
 } // End of Tango namepsace
