@@ -1283,9 +1283,10 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 // Now, try to execute the command
 //
 
-                //TODO extract class hierarchyCORBA::Any *received;
+                //TODO extract class hierarchy
+            CORBA::Any *received;
                 if (version >= 4)
-                {    ClntIdent ci;
+                    {ClntIdent ci;
                     ApiUtil *au = ApiUtil::instance();
                     ci.cpp_clnt(au->get_client_pid());
 
@@ -5167,11 +5168,9 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
 
 
 
-    while (ctr < 2)
-    {
-        try
-        {
-            check_and_reconnect();
+        while (ctr < 2)
+    {        try {
+                check_and_reconnect();
 
             ClntIdent ci;
             ApiUtil *au = ApiUtil::instance();
@@ -5180,68 +5179,56 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
             dev->write_pipe_5(pipe_value_5, ci);
 
                 ctr = 2;
-        }
-        catch (Tango::ConnectionFailed &e)
-        {
-            dev_pipe.get_root_blob().reset_insert_ctr();
-
-
-            stringstream desc;
-            desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
-            ApiConnExcept::re_throw_exception(e, API_PipeFailed, desc.str(), "DeviceProxy::write_pipe()");
-        }
-        catch (Tango::DevFailed &e)
-        {
-            dev_pipe.get_root_blob().reset_insert_ctr();
-
-
-            stringstream desc;
-            desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
-            Except::re_throw_exception(e, API_PipeFailed, desc.str(), "DeviceProxy::write_pipe()");
-        }
-        catch (CORBA::TRANSIENT &trans)
-        {
-            TRANSIENT_NOT_EXIST_EXCEPT(trans, "DeviceProxy", "write_pipe", this);
-        }
-        catch (CORBA::OBJECT_NOT_EXIST &one)
-        {
-            if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
-            {
-                TRANSIENT_NOT_EXIST_EXCEPT(one, "DeviceProxy", "write_pipe", this);
             }
-            else
-            {
-                dev_pipe.get_root_blob().reset_insert_ctr();
+            catch (Tango::ConnectionFailed &e)
+        {        dev_pipe.get_root_blob().reset_insert_ctr();
 
 
-                set_connection_state(CONNECTION_NOTOK);
                 stringstream desc;
-                desc << "Failed to write_pipe on device " << device_name;
-                ApiCommExcept::re_throw_exception(one, "API_CommunicationFailed", desc.str(),
-                                                  "DeviceProxy::write_pipe()");
+                desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
+                ApiConnExcept::re_throw_exception(e, API_PipeFailed, desc.str(), "DeviceProxy::write_pipe()");
             }
-        }
-        catch (CORBA::COMM_FAILURE &comm)
-        {
-            if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
-            {
-                TRANSIENT_NOT_EXIST_EXCEPT(comm, "DeviceProxy", "write_pipe", this);
-            }
-            else
-            {
-                dev_pipe.get_root_blob().reset_insert_ctr();
+            catch (Tango::DevFailed &e)
+        {        dev_pipe.get_root_blob().reset_insert_ctr();
 
 
-                set_connection_state(CONNECTION_NOTOK);
                 stringstream desc;
-                desc << "Failed to write_pipe on device " << device_name;
-                ApiCommExcept::re_throw_exception(comm, "API_CommunicationFailed", desc.str(),
-                                                  "DeviceProxy::write_pipe()");
+                desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
+                Except::re_throw_exception(e, API_PipeFailed, desc.str(), "DeviceProxy::write_pipe()");
             }
-        }
-        catch (CORBA::SystemException &ce)
-        {
-            dev_pipe.get_root_blob().reset_insert_ctr();
+            catch (CORBA::TRANSIENT &trans)
+        {        TRANSIENT_NOT_EXIST_EXCEPT(trans, "DeviceProxy", "write_pipe", this);
+            }
+            catch (CORBA::OBJECT_NOT_EXIST &one)
+        {        if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+            {        TRANSIENT_NOT_EXIST_EXCEPT(one, "DeviceProxy", "write_pipe", this);
+                } else
+            {        dev_pipe.get_root_blob().reset_insert_ctr();
+
+
+                    set_connection_state(CONNECTION_NOTOK);
+                    stringstream desc;
+                    desc << "Failed to write_pipe on device " << device_name;
+                    ApiCommExcept::re_throw_exception(one, "API_CommunicationFailed", desc.str(),
+                                                      "DeviceProxy::write_pipe()");
+                }
+            }
+            catch (CORBA::COMM_FAILURE &comm)
+        {        if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+            {        TRANSIENT_NOT_EXIST_EXCEPT(comm, "DeviceProxy", "write_pipe", this);
+                } else
+            {        dev_pipe.get_root_blob().reset_insert_ctr();
+
+
+                    set_connection_state(CONNECTION_NOTOK);
+                    stringstream desc;
+                    desc << "Failed to write_pipe on device " << device_name;
+                    ApiCommExcept::re_throw_exception(comm, "API_CommunicationFailed", desc.str(),
+                                                      "DeviceProxy::write_pipe()");
+                }
+            }
+            catch (CORBA::SystemException &ce)
+        {        dev_pipe.get_root_blob().reset_insert_ctr();
 
 
             set_connection_state(CONNECTION_NOTOK);
@@ -5253,6 +5240,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
     }
 
     dev_pipe.get_root_blob().reset_insert_ctr();
+
 }
 
 DevPipeData
@@ -5275,7 +5263,7 @@ DeviceProxy::createDevPipeData(DevicePipe &dev_pipe) const
     DevULong max, len;
     max = tmp_ptr->maximum();
     len = tmp_ptr->length();
-    result.data_blob.blob_data.replace(max, len, tmp_ptr->get_buffer((DevBoolean) true), true);    delete tmp_ptr;
+    result.data_blob.blob_data.replace(max, len, tmp_ptr->get_buffer((DevBoolean) true), true);
     delete tmp_ptr;
     return result;
 }
@@ -5309,11 +5297,10 @@ DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
 // Prepare data sent to device
 //
 
-    //TODO replace with createDevPipeData
-    pipe_value_5.name = pipe_data.get_name().c_str();
-    const string &bl_name = pipe_data.get_root_blob().get_name();
-    if (bl_name.size() != 0)
-        pipe_value_5.data_blob.name = bl_name.c_str();
+        //TODO replace with createDevPipeDatapipe_value_5.name = pipe_data.get_name().c_str();
+        const string &bl_name = pipe_data.get_root_blob().get_name();
+        if (bl_name.size() != 0)
+            pipe_value_5.data_blob.name = bl_name.c_str();
 
     DevVarPipeDataEltArray *tmp_ptr = pipe_data.get_root_blob().get_insert_data();
     DevULong max, len;
@@ -7749,6 +7736,7 @@ int DeviceProxy::subscribe_event(const string &attr_name, EventType event,
 }
 
 
+
 //------------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -7774,6 +7762,7 @@ int DeviceProxy::subscribe_event(const string &attr_name, EventType event,
     return api_ptr->get_zmq_event_consumer()->subscribe_event(this, attr_name, event, event_queue_size, filters,
                                                                      stateless);
 }
+
 
 
 //-------------------------------------------------------------------------------------------------------------------
