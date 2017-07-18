@@ -1158,6 +1158,7 @@ void Connection::set_timeout_millis(int millisecs)
 }
 
 
+//TODO all command_inout methods must be moved to DeviceProxy
 //-----------------------------------------------------------------------------
 //
 // Connection::command_inout() - public method to execute a command on a TANGO device
@@ -1282,12 +1283,11 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 // Now, try to execute the command
 //
 
-            CORBA::Any *received;
-            if (version >= 4)
-            {
-                ClntIdent ci;
-                ApiUtil *au = ApiUtil::instance();
-                ci.cpp_clnt(au->get_client_pid());
+                //TODO extract class hierarchyCORBA::Any *received;
+                if (version >= 4)
+                {    ClntIdent ci;
+                    ApiUtil *au = ApiUtil::instance();
+                    ci.cpp_clnt(au->get_client_pid());
 
                 Device_4_var dev = Device_4::_duplicate(device_4);
                 received = dev->command_inout_4(command.c_str(), data_in.any, local_source, ci);
@@ -5146,7 +5146,6 @@ DevicePipe DeviceProxy::read_pipe(const string &pipe_name)
 
 void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
 {
-    DevPipeData pipe_value_5;
     int ctr = 0;
 
 //
@@ -5164,22 +5163,9 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
 //
 // Prepare data sent to device
 //
+    DevPipeData pipe_value_5 = createDevPipeData(dev_pipe);
 
-    pipe_value_5.name = dev_pipe.get_name().c_str();
-    const string &bl_name = dev_pipe.get_root_blob().get_name();
-    if (bl_name.size() != 0)
-        pipe_value_5.data_blob.name = bl_name.c_str();
 
-    DevVarPipeDataEltArray *tmp_ptr = dev_pipe.get_root_blob().get_insert_data();
-    if (tmp_ptr == Tango_nullptr)
-    {
-        Except::throw_exception(API_PipeNoDataElement, "No data in pipe!", "DeviceProxy::write_pipe()");
-    }
-
-    DevULong max, len;
-    max = tmp_ptr->maximum();
-    len = tmp_ptr->length();
-    pipe_value_5.data_blob.blob_data.replace(max, len, tmp_ptr->get_buffer((DevBoolean) true), true);
 
     while (ctr < 2)
     {
@@ -5193,12 +5179,12 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
             Device_5_var dev = Device_5::_duplicate(device_5);
             dev->write_pipe_5(pipe_value_5, ci);
 
-            ctr = 2;
+                ctr = 2;
         }
         catch (Tango::ConnectionFailed &e)
         {
             dev_pipe.get_root_blob().reset_insert_ctr();
-            delete tmp_ptr;
+
 
             stringstream desc;
             desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
@@ -5207,7 +5193,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
         catch (Tango::DevFailed &e)
         {
             dev_pipe.get_root_blob().reset_insert_ctr();
-            delete tmp_ptr;
+
 
             stringstream desc;
             desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
@@ -5226,7 +5212,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
             else
             {
                 dev_pipe.get_root_blob().reset_insert_ctr();
-                delete tmp_ptr;
+
 
                 set_connection_state(CONNECTION_NOTOK);
                 stringstream desc;
@@ -5244,7 +5230,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
             else
             {
                 dev_pipe.get_root_blob().reset_insert_ctr();
-                delete tmp_ptr;
+
 
                 set_connection_state(CONNECTION_NOTOK);
                 stringstream desc;
@@ -5256,7 +5242,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
         catch (CORBA::SystemException &ce)
         {
             dev_pipe.get_root_blob().reset_insert_ctr();
-            delete tmp_ptr;
+
 
             set_connection_state(CONNECTION_NOTOK);
             stringstream desc;
@@ -5267,7 +5253,31 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
     }
 
     dev_pipe.get_root_blob().reset_insert_ctr();
+}
+
+DevPipeData
+DeviceProxy::createDevPipeData(DevicePipe &dev_pipe) const
+{
+    DevPipeData result;
+
+    result.name = dev_pipe.get_name().c_str();
+    const string &bl_name = dev_pipe.get_root_blob().get_name();
+    if (bl_name.size() != 0)
+        result.data_blob.name = bl_name.c_str();
+
+
+    DevVarPipeDataEltArray *tmp_ptr = dev_pipe.get_root_blob().get_insert_data();
+    if (tmp_ptr == Tango_nullptr)
+    {
+        Except::throw_exception(API_PipeNoDataElement, "No data in pipe!", "DeviceProxy::write_pipe()");
+    }
+
+    DevULong max, len;
+    max = tmp_ptr->maximum();
+    len = tmp_ptr->length();
+    result.data_blob.blob_data.replace(max, len, tmp_ptr->get_buffer((DevBoolean) true), true);    delete tmp_ptr;
     delete tmp_ptr;
+    return result;
 }
 
 //-----------------------------------------------------------------------------
@@ -5299,6 +5309,7 @@ DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
 // Prepare data sent to device
 //
 
+    //TODO replace with createDevPipeData
     pipe_value_5.name = pipe_data.get_name().c_str();
     const string &bl_name = pipe_data.get_root_blob().get_name();
     if (bl_name.size() != 0)
@@ -7727,7 +7738,6 @@ int DeviceProxy::subscribe_event(const string &attr_name, EventType event,
                                  CallBack *callback, const vector<string> &filters,
                                  bool stateless)
 {
-    //TODO inject
     ApiUtil *api_ptr = ApiUtil::instance();
     if (api_ptr->get_zmq_event_consumer() == NULL)
     {
@@ -7735,8 +7745,9 @@ int DeviceProxy::subscribe_event(const string &attr_name, EventType event,
     }
 
     return api_ptr->get_zmq_event_consumer()->subscribe_event(this, attr_name, event, callback, filters,
-                                                              stateless);
+                                                                     stateless);
 }
+
 
 //------------------------------------------------------------------------------------------------------------------
 //
@@ -7761,8 +7772,9 @@ int DeviceProxy::subscribe_event(const string &attr_name, EventType event,
     }
 
     return api_ptr->get_zmq_event_consumer()->subscribe_event(this, attr_name, event, event_queue_size, filters,
-                                                              stateless);
+                                                                     stateless);
 }
+
 
 //-------------------------------------------------------------------------------------------------------------------
 //
