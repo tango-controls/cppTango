@@ -1100,7 +1100,7 @@ void Connection::get_fqdn(string &the_host)
 //
 
     size_t i;
-    for (i = 0; i < ip_list.size() && !host_found; i++)
+    for (i = 0; i < ip_list.size() &&  not host_found; i++)
     {
         int result = getaddrinfo(ip_list[i].c_str(), NULL, &hints, &info);
 
@@ -9171,7 +9171,7 @@ bool DeviceProxy::is_locked_by_me()
 #ifndef _TG_WINDOWS_
         if (getpid() != v_l[1])
 #else
-            if (_getpid() != v_l[1])
+        if (_getpid() != v_l[1])
 #endif
         {
             ret = false;

@@ -93,7 +93,9 @@ DeviceDataHistory::DeviceDataHistory(const DeviceDataHistory &source)
     }
 #else
     if (source.ext_hist == NULL)
+    {
         ext_hist = NULL;
+    }
     else
     {
         ext_hist = new DeviceDataHistoryExt();

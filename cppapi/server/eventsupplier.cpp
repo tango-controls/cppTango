@@ -661,13 +661,17 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         else
         {
 #ifdef _TG_WINDOWS_
-            double tmp = (double)arch_period * DELTA_PERIODIC;
-            double int_part,eve_round;
-            double frac = modf(tmp,&int_part);
+            double tmp = (double) arch_period * DELTA_PERIODIC;
+            double int_part, eve_round;
+            double frac = modf(tmp, &int_part);
             if (frac >= 0.5)
+            {
                 eve_round = ceil(tmp);
+            }
             else
+            {
                 eve_round = floor(tmp);
+            }
 #else
             double eve_round = round((double) arch_period * DELTA_PERIODIC);
 #endif
@@ -690,7 +694,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 //
 
 
-    if (!attr.prev_archive_event.inited)
+    if (attr.prev_archive_event.inited == false)
     {
         if (except != NULL)
         {

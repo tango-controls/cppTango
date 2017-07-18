@@ -1642,59 +1642,69 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
         // Get address from interfaces
         //
 
-                int sock = socket(AF_INET,SOCK_STREAM,0);
+        int sock = socket(AF_INET, SOCK_STREAM, 0);
 
-                INTERFACE_INFO info[64];  // Assume max 64 interfaces
-                DWORD retlen;
+        INTERFACE_INFO info[64];  // Assume max 64 interfaces
+        DWORD retlen;
 
-                if ( WSAIoctl(sock, SIO_GET_INTERFACE_LIST, NULL,0,(LPVOID)&info, sizeof(info), (LPDWORD)&retlen,NULL,NULL) == SOCKET_ERROR )
-                {
-                    closesocket(sock);
+        if (WSAIoctl(sock,
+                     SIO_GET_INTERFACE_LIST,
+                     NULL,
+                     0,
+                     (LPVOID) & info,
+                     sizeof(info),
+                     (LPDWORD) & retlen,
+                     NULL,
+                     NULL) == SOCKET_ERROR)
+        {
+            closesocket(sock);
 
-                    int err = WSAGetLastError();
-                    cerr << "Warning: WSAIoctl failed" << endl;
-                    cerr << "Unable to obtain the list of all interface addresses. Error = " << err << endl;
+            int err = WSAGetLastError();
+            cerr << "Warning: WSAIoctl failed" << endl;
+            cerr << "Unable to obtain the list of all interface addresses. Error = " << err << endl;
 
-                    TangoSys_OMemStream desc;
-                    desc << "Can't retrieve list of all interfaces addresses (WSAIoctl)! Error = " << err << ends;
+            TangoSys_OMemStream desc;
+            desc << "Can't retrieve list of all interfaces addresses (WSAIoctl)! Error = " << err << ends;
 
-                    Tango::Except::throw_exception((const char*)API_SystemCallFailed,
-                                                   (const char *)desc.str().c_str(),
-                                                   (const char *)"ApiUtil::get_ip_from_if()");
-                }
-                closesocket(sock);
+            Tango::Except::throw_exception((const char *) API_SystemCallFailed,
+                                           (const char *) desc.str().c_str(),
+                                           (const char *) "ApiUtil::get_ip_from_if()");
+        }
+        closesocket(sock);
 
         //
         // Converts addresses to string. Only for running interfaces
         //
 
-                int numAddresses = retlen / sizeof(INTERFACE_INFO);
-                for (int i = 0; i < numAddresses; i++)
+        int numAddresses = retlen / sizeof(INTERFACE_INFO);
+        for (int i = 0; i < numAddresses; i++)
+        {
+            if (info[i].iiFlags & IFF_UP)
+            {
+                if (info[i].iiAddress.Address.sa_family == AF_INET || info[i].iiAddress.Address.sa_family == AF_INET6)
                 {
-                    if (info[i].iiFlags & IFF_UP)
+                    struct sockaddr *addr = (struct sockaddr *) &info[i].iiAddress.AddressIn;
+                    char dest[NI_MAXHOST];
+                    socklen_t addrlen = sizeof(sockaddr);
+
+                    int result = getnameinfo(addr, addrlen, dest, sizeof(dest), 0, 0, NI_NUMERICHOST);
+                    if (result != 0)
                     {
-                        if (info[i].iiAddress.Address.sa_family == AF_INET || info[i].iiAddress.Address.sa_family == AF_INET6)
-                        {
-                            struct sockaddr* addr = (struct sockaddr*)&info[i].iiAddress.AddressIn;
-                            char dest[NI_MAXHOST];
-                            socklen_t addrlen = sizeof(sockaddr);
+                        cerr << "Warning: getnameinfo failed" << endl;
+                        cerr << "Unable to convert IP address to string (getnameinfo)." << endl;
 
-                            int result = getnameinfo(addr, addrlen, dest, sizeof(dest),0,0,NI_NUMERICHOST);
-                            if (result != 0)
-                            {
-                                cerr << "Warning: getnameinfo failed" << endl;
-                                cerr << "Unable to convert IP address to string (getnameinfo)." << endl;
-
-                                Tango::Except::throw_exception((const char *)API_SystemCallFailed,
-                                                           (const char *)"Can't convert IP address to string (getnameinfo)!",
-                                                           (const char *)"ApiUtil::get_ip_from_if()");
-                            }
-                            string tmp_str(dest);
-                            if (tmp_str != "0.0.0.0" && tmp_str != "0:0:0:0:0:0:0:0" &&tmp_str != "::")
-                                host_ip_adrs.push_back(tmp_str);
-                        }
+                        Tango::Except::throw_exception((const char *) API_SystemCallFailed,
+                                                       (const char *) "Can't convert IP address to string (getnameinfo)!",
+                                                       (const char *) "ApiUtil::get_ip_from_if()");
+                    }
+                    string tmp_str(dest);
+                    if (tmp_str != "0.0.0.0" && tmp_str != "0:0:0:0:0:0:0:0" && tmp_str != "::")
+                    {
+                        host_ip_adrs.push_back(tmp_str);
                     }
                 }
+            }
+        }
 #endif
     }
 
