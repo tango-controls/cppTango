@@ -232,7 +232,7 @@ bool DeviceData::any_is_null()
 // DeviceData::get_type() - return DeviceData data type
 //
 //-----------------------------------------------------------------------------
-
+//TODO replace with class hierarchy
 int DeviceData::get_type()
 {
     int data_type = 0;
@@ -2085,12 +2085,7 @@ bool DeviceData::extract(DevicePipeBlob *blob)
     bool result = any.inout() >>= tmp_blob;
     checkResult(result, tmp_blob);
     blob->set_name(string(tmp_blob->name));
-    blob->set_data_elt_nb(tmp_blob->blob_data.length());
-    for (size_t i = 0; i < tmp_blob->blob_data.length(); ++i)
-    {
-        blob->set_current_delt_name(string(tmp_blob->blob_data[i].name));
-        //TODO
-    }
+    blob->set_extract_data(&tmp_blob->blob_data);
     return result;
 }
 

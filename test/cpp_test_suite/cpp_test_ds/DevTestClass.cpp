@@ -525,6 +525,7 @@ void DevTestClass::command_factory() {
                                         "void",
                                         "DevEncoded structure to test polling/history"));
     command_list.push_back(new IODevEnum());
+    command_list.push_back(new IOPipeBlob());
     command_list.push_back(new PollingPoolTst("PollingPoolTst",
                                               Tango::DEV_VOID,
                                               Tango::DEVVAR_STRINGARRAY,

@@ -882,16 +882,21 @@ public:
         {
             DeviceData din, dout;
             DevicePipeBlob in{"TestPipeCmd"};
-            in.set_current_delt_name("level 0");
+            vector<string> names{"level0"};
+            in.set_data_elt_names(names);
             DevLong data = 123;
             in << data;
             din.insert(in);
             TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOPipeBlob", din));
-            DevicePipeBlob *received;
-            dout.extract(received);
-            int data_type = dout.get_type();
+            DevicePipeBlob received{};
+            dout.extract(&received);
 
-            //TODO
+            TS_ASSERT_EQUALS(received.get_data_elt_nb(), 1);
+            TS_ASSERT_EQUALS(received.get_data_elt_name(0), "level0");
+            int received_data;
+            received >> received_data;
+            TS_ASSERT_EQUALS(received_data, 123);
+            int data_type = dout.get_type();
             TS_ASSERT_EQUALS(data_type, Tango::DEV_PIPE_BLOB);
         }
     }
