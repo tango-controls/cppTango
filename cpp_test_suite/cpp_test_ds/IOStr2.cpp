@@ -37,7 +37,7 @@ IOStr2::IOStr2(const char *name,Tango::CmdArgType in,
 //
 //-----------------------------------------------------------------------------
 
-bool IOStr2::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOStr2::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -65,7 +65,7 @@ bool IOStr2::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 //-----------------------------------------------------------------------------
 
 
-CORBA::Any *IOStr2::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOStr2::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {	
   try {
     const char *argout;

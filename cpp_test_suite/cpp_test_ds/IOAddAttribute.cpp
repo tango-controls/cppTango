@@ -38,7 +38,7 @@ IOAddAttribute::IOAddAttribute(const char *name,Tango::CmdArgType in,
 //
 //-----------------------------------------------------------------------------
 
-bool IOAddAttribute::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOAddAttribute::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -146,7 +146,7 @@ IORemoveAttribute::IORemoveAttribute(const char *name,Tango::CmdArgType in,
 //
 //-----------------------------------------------------------------------------
 
-bool IORemoveAttribute::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IORemoveAttribute::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -233,7 +233,7 @@ DynCommand::DynCommand(const char *name,Tango::CmdArgType in,
 //
 //-----------------------------------------------------------------------------
 
-bool DynCommand::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool DynCommand::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -261,7 +261,7 @@ bool DynCommand::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 //-----------------------------------------------------------------------------
 
 
-CORBA::Any *DynCommand::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *DynCommand::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	try
 	{
@@ -316,7 +316,7 @@ IOAddCommand::IOAddCommand(const char *name,Tango::CmdArgType in,
 //
 //-----------------------------------------------------------------------------
 
-bool IOAddCommand::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOAddCommand::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -416,7 +416,7 @@ IORemoveCommand::IORemoveCommand(const char *name,Tango::CmdArgType in,
 //
 //-----------------------------------------------------------------------------
 
-bool IORemoveCommand::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IORemoveCommand::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -444,7 +444,7 @@ bool IORemoveCommand::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in
 //-----------------------------------------------------------------------------
 
 
-CORBA::Any *IORemoveCommand::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IORemoveCommand::execute(Tango::DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	try
 	{
