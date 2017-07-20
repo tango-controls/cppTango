@@ -1663,7 +1663,7 @@ bool IOPipeBlob::is_allowed(Tango::DeviceImpl *dev, const CORBA::Any &in_any)
 }
 CORBA::Any *IOPipeBlob::execute(Tango::DeviceImpl *dev, const CORBA::Any &in_any)
 {
-    Tango::DevPipeBlob *blob = nullptr;
+    Tango::DevPipeBlob *blob;
     //TODO extract
     bool extracted = in_any >>= blob;
     if (not(extracted)) throw logic_error{"DevPipeBlob has not been extracted!"};
@@ -1671,7 +1671,8 @@ CORBA::Any *IOPipeBlob::execute(Tango::DeviceImpl *dev, const CORBA::Any &in_any
     //TODO insert
     CORBA::Any *out_any = new CORBA::Any();
 
-    (*out_any) <<= blob;
+
+    (*out_any) <<= *blob;
     return out_any;
 }
 
