@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/tango-controls/cppTango.svg?branch=master)](https://travis-ci.org/tango-controls/cppTango)
 [![Coverage Status](https://coveralls.io/repos/github/tango-controls/cppTango/badge.svg?branch=master)](https://coveralls.io/github/tango-controls/cppTango?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/50bbab581a5d460d86200e68e2f460e4)](https://www.codacy.com/app/Ingvord/cppTango?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tango-controls/cppTango&amp;utm_campaign=Badge_Grade)
+[![License](https://img.shields.io/badge/license-LGPL--3.0-blue.svg)](https://github.com/tango-controls/cppTango/blob/master/LICENSE)
 
 [ ![Download](https://api.bintray.com/packages/tango-controls/debian/cppTango/images/download.svg) ](https://bintray.com/tango-controls/debian/cppTango/_latestVersion)
 
