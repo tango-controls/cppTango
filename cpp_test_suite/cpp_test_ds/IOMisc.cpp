@@ -24,7 +24,7 @@ IODServDevice::IODServDevice(const char *name, Tango::CmdArgType in,
 }
 
 
-bool IODServDevice::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IODServDevice::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -37,7 +37,7 @@ bool IODServDevice::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 		return(false);
 }
 
-CORBA::Any *IODServDevice::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IODServDevice::execute(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	try
 	{
@@ -80,7 +80,7 @@ IODevByName::IODevByName(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IODevByName::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IODevByName::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -94,7 +94,7 @@ bool IODevByName::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 }
 
 
-CORBA::Any *IODevByName::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IODevByName::execute(TANGO_UNUSED(Tango::DeviceImpl *device), const CORBA::Any &in_any)
 {
 	try
 	{
@@ -140,7 +140,7 @@ IODevListByClass::IODevListByClass(const char *name, Tango::CmdArgType in,
 }
 
 
-bool IODevListByClass::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IODevListByClass::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -154,7 +154,7 @@ bool IODevListByClass::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &i
 }
 
 
-CORBA::Any *IODevListByClass::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IODevListByClass::execute(TANGO_UNUSED(Tango::DeviceImpl *device), const CORBA::Any &in_any)
 {
 	try
 	{
@@ -206,7 +206,7 @@ IOSleep::IOSleep(const char *name, Tango::CmdArgType in,
 }
 
 
-bool IOSleep::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOSleep::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -220,7 +220,7 @@ bool IOSleep::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IOSleep::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOSleep::execute(TANGO_UNUSED(Tango::DeviceImpl *device), const CORBA::Any &in_any)
 {
 	try
 	{
@@ -265,7 +265,7 @@ IOState::IOState(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOState::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOState::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -317,7 +317,7 @@ IOStartPoll::IOStartPoll(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOStartPoll::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOStartPoll::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -329,7 +329,7 @@ bool IOStartPoll::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 
 
 
-CORBA::Any *IOStartPoll::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOStartPoll::execute(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	long theNumber = 11;
 	return insert(theNumber);
@@ -358,7 +358,7 @@ IOShortSleep::IOShortSleep(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOShortSleep::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOShortSleep::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -370,7 +370,7 @@ bool IOShortSleep::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 
 
 
-CORBA::Any *IOShortSleep::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOShortSleep::execute(TANGO_UNUSED(Tango::DeviceImpl *device), const CORBA::Any &in_any)
 {
 	const Tango::DevVarShortArray *in_array;
 	extract(in_any, in_array);
@@ -403,7 +403,7 @@ IOSleepExcept::IOSleepExcept(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOSleepExcept::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOSleepExcept::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -415,7 +415,7 @@ bool IOSleepExcept::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 
 
 
-CORBA::Any *IOSleepExcept::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOSleepExcept::execute(TANGO_UNUSED(Tango::DeviceImpl *device), const CORBA::Any &in_any)
 {
 	Tango::DevShort in;
 	extract(in_any, in);
@@ -451,7 +451,7 @@ IOExit::IOExit(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOExit::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOExit::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -461,7 +461,7 @@ bool IOExit::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 	return(true);
 }
 
-CORBA::Any *IOExit::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOExit::execute(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	exit(0);
 
@@ -490,7 +490,7 @@ IOTrigPoll::IOTrigPoll(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOTrigPoll::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOTrigPoll::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -542,7 +542,7 @@ IOAttrTrigPoll::IOAttrTrigPoll(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOAttrTrigPoll::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOAttrTrigPoll::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -594,7 +594,7 @@ IOInitWAttr::IOInitWAttr(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOInitWAttr::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOInitWAttr::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -606,7 +606,7 @@ bool IOInitWAttr::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 
 
 
-CORBA::Any *IOInitWAttr::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOInitWAttr::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 // Give some default value to some writable attribute
 
@@ -648,7 +648,7 @@ IOAttrThrowEx::IOAttrThrowEx(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOAttrThrowEx::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOAttrThrowEx::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -725,7 +725,7 @@ IOAddOneElt::IOAddOneElt(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOAddOneElt::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOAddOneElt::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -737,7 +737,7 @@ bool IOAddOneElt::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 
 
 
-CORBA::Any *IOAddOneElt::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOAddOneElt::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	(static_cast<DevTest *>(device))->attr_event_size++;
 	(static_cast<DevTest *>(device))->attr_event64_size++;
@@ -767,7 +767,7 @@ IORemoveOneElt::IORemoveOneElt(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IORemoveOneElt::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IORemoveOneElt::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -779,7 +779,7 @@ bool IORemoveOneElt::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_
 
 
 
-CORBA::Any *IORemoveOneElt::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IORemoveOneElt::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	(static_cast<DevTest *>(device))->attr_event_size--;
 	(static_cast<DevTest *>(device))->attr_event64_size--;
@@ -809,7 +809,7 @@ IOIncValue::IOIncValue(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOIncValue::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOIncValue::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -821,7 +821,7 @@ bool IOIncValue::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 
-CORBA::Any *IOIncValue::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOIncValue::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	((static_cast<DevTest *>(device))->attr_event[2])++;
 	((static_cast<DevTest *>(device))->attr_event64[0])++;
@@ -852,7 +852,7 @@ IODecValue::IODecValue(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IODecValue::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IODecValue::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -864,7 +864,7 @@ bool IODecValue::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 
-CORBA::Any *IODecValue::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IODecValue::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	((static_cast<DevTest *>(device))->attr_event[2])--;
 	((static_cast<DevTest *>(device))->attr_event64[0])--;
@@ -894,7 +894,7 @@ IOChangeQuality::IOChangeQuality(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOChangeQuality::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOChangeQuality::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -956,7 +956,7 @@ IOPushEvent::IOPushEvent(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOPushEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOPushEvent::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -968,7 +968,7 @@ bool IOPushEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 
 
 
-CORBA::Any *IOPushEvent::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOPushEvent::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 	static_cast<DevTest *>(device)->IOPushEvent();
@@ -998,7 +998,7 @@ IOPushDevEncodedEvent::IOPushDevEncodedEvent(const char *name, Tango::CmdArgType
 {
 }
 
-bool IOPushDevEncodedEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOPushDevEncodedEvent::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1010,7 +1010,7 @@ bool IOPushDevEncodedEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::A
 
 
 
-CORBA::Any *IOPushDevEncodedEvent::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOPushDevEncodedEvent::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 	static_cast<DevTest *>(device)->IOPushDevEncodedEvent();
@@ -1040,7 +1040,7 @@ IOSubscribeEvent::IOSubscribeEvent(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOSubscribeEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOSubscribeEvent::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1084,7 +1084,7 @@ IOUnSubscribeEvent::IOUnSubscribeEvent(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOUnSubscribeEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOUnSubscribeEvent::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1129,7 +1129,7 @@ IOGetCbExecuted::IOGetCbExecuted(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOGetCbExecuted::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOGetCbExecuted::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1141,7 +1141,7 @@ bool IOGetCbExecuted::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in
 
 
 
-CORBA::Any *IOGetCbExecuted::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOGetCbExecuted::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	cout << "[IOGetCbExecuted::execute] received, returned value = " << (static_cast<DevTest *>(device))->cb.cb_executed << endl;
 
@@ -1172,7 +1172,7 @@ IOFillPollBuffAttr::IOFillPollBuffAttr(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOFillPollBuffAttr::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOFillPollBuffAttr::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1184,7 +1184,7 @@ bool IOFillPollBuffAttr::is_allowed(Tango::DeviceImpl *device, const CORBA::Any 
 
 
 
-CORBA::Any *IOFillPollBuffAttr::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOFillPollBuffAttr::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	(static_cast<DevTest *>(device))->IOFillPollBuffAttr();
 	return insert();
@@ -1212,7 +1212,7 @@ IOFillPollBuffEncodedAttr::IOFillPollBuffEncodedAttr(const char *name, Tango::Cm
 {
 }
 
-bool IOFillPollBuffEncodedAttr::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOFillPollBuffEncodedAttr::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1224,7 +1224,7 @@ bool IOFillPollBuffEncodedAttr::is_allowed(Tango::DeviceImpl *device, const CORB
 
 
 
-CORBA::Any *IOFillPollBuffEncodedAttr::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOFillPollBuffEncodedAttr::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	(static_cast<DevTest *>(device))->IOFillPollBuffEncodedAttr();
 	return insert();
@@ -1252,7 +1252,7 @@ IOFillPollBuffCmd::IOFillPollBuffCmd(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOFillPollBuffCmd::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOFillPollBuffCmd::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1264,7 +1264,7 @@ bool IOFillPollBuffCmd::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &
 
 
 
-CORBA::Any *IOFillPollBuffCmd::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *IOFillPollBuffCmd::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	(static_cast<DevTest *>(device))->IOFillPollBuffCmd();
 	return insert();
@@ -1292,7 +1292,7 @@ FileDbCmd::FileDbCmd(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool FileDbCmd::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool FileDbCmd::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1304,7 +1304,7 @@ bool FileDbCmd::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 
-CORBA::Any *FileDbCmd::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *FileDbCmd::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	(static_cast<DevTest *>(device))->FileDb();
 	return insert();
@@ -1332,7 +1332,7 @@ GetLongSize::GetLongSize(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool GetLongSize::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool GetLongSize::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1344,7 +1344,7 @@ bool GetLongSize::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 
 
 
-CORBA::Any *GetLongSize::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *GetLongSize::execute(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	short size;
 #ifdef TANGO_LONG64
@@ -1378,7 +1378,7 @@ ChangeEncodedFormat::ChangeEncodedFormat(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool ChangeEncodedFormat::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool ChangeEncodedFormat::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1390,7 +1390,7 @@ bool ChangeEncodedFormat::is_allowed(Tango::DeviceImpl *device, const CORBA::Any
 
 
 
-CORBA::Any *ChangeEncodedFormat::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *ChangeEncodedFormat::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	static bool togle = false;
 
@@ -1433,7 +1433,7 @@ ChangeEncodedData::ChangeEncodedData(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool ChangeEncodedData::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool ChangeEncodedData::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1445,7 +1445,7 @@ bool ChangeEncodedData::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &
 
 
 
-CORBA::Any *ChangeEncodedData::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *ChangeEncodedData::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 #ifndef COMPAT
 	(static_cast<DevTest *>(device))->enc_attr.encoded_data[2]++;
@@ -1475,7 +1475,7 @@ PushDataReady::PushDataReady(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool PushDataReady::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool PushDataReady::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1518,7 +1518,7 @@ IOSetWAttrLimit::IOSetWAttrLimit(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool IOSetWAttrLimit::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOSetWAttrLimit::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1562,7 +1562,7 @@ AcquisitionThread::AcquisitionThread () : omni_thread()
 	start_undetached();
 }
 
-void *AcquisitionThread::run_undetached (void *arg)
+void *AcquisitionThread::run_undetached (TANGO_UNUSED(void *arg))
 {
 	Tango::Util *tg = Tango::Util::instance();
 
@@ -1581,7 +1581,7 @@ void *AcquisitionThread::run_undetached (void *arg)
 		do
 		{
 			size_t i = 0;
-			for (i; i < n - 1; i++)
+			for (; i < n - 1; i++)
 			{
 				if (dev_list_sorted[i]->get_name() > dev_list_sorted[i + 1]->get_name())
 				{
@@ -1632,7 +1632,7 @@ SubDeviceTst::SubDeviceTst(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool SubDeviceTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool SubDeviceTst::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 //
 // command always allowed
@@ -1640,7 +1640,7 @@ bool SubDeviceTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 	return(true);
 }
 
-CORBA::Any *SubDeviceTst::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *SubDeviceTst::execute(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	bool connected = false;
 
@@ -1666,7 +1666,7 @@ CORBA::Any *SubDeviceTst::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 			do
 			{
 				size_t i = 0;
-				for (i; i < n - 1; i++)
+				for (; i < n - 1; i++)
 				{
 					if (dev_list_sorted[i]->get_name() > dev_list_sorted[i + 1]->get_name())
 					{
@@ -1718,7 +1718,7 @@ PollingPoolTst::PollingPoolTst(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool PollingPoolTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool PollingPoolTst::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 //
 // command always allowed
@@ -1726,7 +1726,7 @@ bool PollingPoolTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_
 	return(true);
 }
 
-CORBA::Any *PollingPoolTst::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *PollingPoolTst::execute(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	Tango::DevVarStringArray *theOutputArray = new Tango::DevVarStringArray();
 	vector<string> pool_conf;
@@ -1761,7 +1761,7 @@ PollingInDeviceTst::PollingInDeviceTst(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool PollingInDeviceTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool PollingInDeviceTst::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 //
 // command always allowed
@@ -1769,7 +1769,7 @@ bool PollingInDeviceTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any 
 	return(true);
 }
 
-CORBA::Any *PollingInDeviceTst::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *PollingInDeviceTst::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	Tango::DevVarStringArray *theOutputArray = (static_cast<DevTest *>(device))->IOPollingInDevice();
 	return insert(theOutputArray);
@@ -1788,7 +1788,7 @@ ReynaldPollThread::ReynaldPollThread(Tango::DeviceImpl *_d):dev(_d)
     start();
 }
 
-void ReynaldPollThread::run (void *arg)
+void ReynaldPollThread::run (TANGO_UNUSED(void *arg))
 {
     string att1_name("Double_spec_attr");
     string att2_name("Short_attr");
@@ -1902,7 +1902,7 @@ SophisPollInDeviceTst::SophisPollInDeviceTst(const char *name, Tango::CmdArgType
 {
 }
 
-bool SophisPollInDeviceTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool SophisPollInDeviceTst::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 //
 // command always allowed
@@ -1910,7 +1910,7 @@ bool SophisPollInDeviceTst::is_allowed(Tango::DeviceImpl *device, const CORBA::A
 	return(true);
 }
 
-CORBA::Any *SophisPollInDeviceTst::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *SophisPollInDeviceTst::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
     ReynaldPollThread *rpt = new ReynaldPollThread(device);
 	(static_cast<DevTest *>(device))->IOSophisticatedPollInDevice();
@@ -1940,7 +1940,7 @@ GetPollMess::GetPollMess(const char *name, Tango::CmdArgType in,
 {
 }
 
-bool GetPollMess::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool GetPollMess::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 //
 // command always allowed
@@ -1948,7 +1948,7 @@ bool GetPollMess::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 	return(true);
 }
 
-CORBA::Any *GetPollMess::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *GetPollMess::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	Tango::DevVarStringArray *strs = (static_cast<DevTest *>(device))->IOGetPollMess();
 	return insert(strs);
@@ -1976,7 +1976,7 @@ WriteAttrHardwareThrow::WriteAttrHardwareThrow(const char *name, Tango::CmdArgTy
 {
 }
 
-bool WriteAttrHardwareThrow::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool WriteAttrHardwareThrow::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 //
 // command always allowed
@@ -2018,7 +2018,7 @@ SetGetAlarms::SetGetAlarms(const char *name, Tango::CmdArgType in,
 }
 
 
-bool SetGetAlarms::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool SetGetAlarms::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -2031,7 +2031,7 @@ bool SetGetAlarms::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 		return(false);
 }
 
-CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -2507,7 +2507,7 @@ SetGetRanges::SetGetRanges(const char *name, Tango::CmdArgType in,
 }
 
 
-bool SetGetRanges::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool SetGetRanges::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -2520,7 +2520,7 @@ bool SetGetRanges::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 		return(false);
 }
 
-CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -2888,7 +2888,7 @@ SetGetProperties::SetGetProperties(const char *name, Tango::CmdArgType in,
 }
 
 
-bool SetGetProperties::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool SetGetProperties::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -2908,7 +2908,7 @@ void SetGetProperties::set_vect(vector<double> &vect, double v1, double v2)
 	vect.push_back(v2);
 }
 
-CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 	Tango::Util *tg = Tango::Util::instance();
@@ -4259,7 +4259,7 @@ SetEnumLabels::SetEnumLabels(const char *name, Tango::CmdArgType in,
 }
 
 
-bool SetEnumLabels::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool SetEnumLabels::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -4272,7 +4272,7 @@ bool SetEnumLabels::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 		return(false);
 }
 
-CORBA::Any *SetEnumLabels::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *SetEnumLabels::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	(static_cast<DevTest *>(device))->set_enum_labels();
 	return insert();
@@ -4301,7 +4301,7 @@ AddEnumLabel::AddEnumLabel(const char *name, Tango::CmdArgType in,
 }
 
 
-bool AddEnumLabel::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool AddEnumLabel::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -4346,7 +4346,7 @@ ForbiddenEnumValue::ForbiddenEnumValue(const char *name, Tango::CmdArgType in,
 }
 
 
-bool ForbiddenEnumValue::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool ForbiddenEnumValue::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -4393,7 +4393,7 @@ SetPipeOutput::SetPipeOutput(const char *name, Tango::CmdArgType in,
 }
 
 
-bool SetPipeOutput::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool SetPipeOutput::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -4439,7 +4439,7 @@ PushPipeEvent::PushPipeEvent(const char *name, Tango::CmdArgType in,
 }
 
 
-bool PushPipeEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool PushPipeEvent::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -4485,7 +4485,7 @@ PushStateStatusChangeEvent::PushStateStatusChangeEvent(const char *name, Tango::
 }
 
 
-bool PushStateStatusChangeEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool PushStateStatusChangeEvent::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -4498,7 +4498,7 @@ bool PushStateStatusChangeEvent::is_allowed(Tango::DeviceImpl *device, const COR
 		return(false);
 }
 
-CORBA::Any *PushStateStatusChangeEvent::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *PushStateStatusChangeEvent::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	DevTest *dev = (static_cast<DevTest *>(device));
 	dev->cmd_push_state_status_event();

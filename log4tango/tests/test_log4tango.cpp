@@ -197,7 +197,7 @@ void test_level()
 } /* end test_level() */
 
 
-int main(int argc, char** argv) {    
+int main(int /*argc*/, char** /*argv*/) {
 
   test_level();
 

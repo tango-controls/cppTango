@@ -24,7 +24,7 @@ IOThrow::IOThrow(const char *name,Tango::CmdArgType in,
 
 
 
-bool IOThrow::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOThrow::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -38,7 +38,7 @@ bool IOThrow::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IOThrow::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOThrow::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {	
   const Tango::DevVarLongStringArray *theException;
   extract(in_any, theException);
@@ -80,7 +80,7 @@ IOExcept::IOExcept(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOExcept::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOExcept::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -94,7 +94,7 @@ bool IOExcept::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IOExcept::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOExcept::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {	
 
   Tango::Except::throw_exception((const char *)"API_ThrowException",
@@ -131,7 +131,7 @@ IOReThrow::IOReThrow(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOReThrow::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOReThrow::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -145,7 +145,7 @@ bool IOReThrow::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IOReThrow::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOReThrow::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {	
   const Tango::DevVarLongStringArray *theException;
   extract(in_any, theException);
@@ -218,7 +218,7 @@ IORegClassSig::IORegClassSig(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IORegClassSig::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IORegClassSig::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -272,7 +272,7 @@ IORegSig::IORegSig(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IORegSig::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IORegSig::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -326,7 +326,7 @@ IORegSigOwn::IORegSigOwn(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IORegSigOwn::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IORegSigOwn::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -385,7 +385,7 @@ IOUnregClassSig::IOUnregClassSig(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOUnregClassSig::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOUnregClassSig::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -439,11 +439,11 @@ IOUnregSig::IOUnregSig(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOUnregSig::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOUnregSig::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 	if (device->get_state() == Tango::ON)

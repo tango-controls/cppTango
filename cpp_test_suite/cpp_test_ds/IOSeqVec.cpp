@@ -20,7 +20,7 @@ IOSeqVecChar::IOSeqVecChar(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOSeqVecChar::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOSeqVecChar::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	if (device->get_state() == Tango::ON)
 		return(true);
@@ -29,7 +29,7 @@ bool IOSeqVecChar::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 }
 
 
-CORBA::Any *IOSeqVecChar::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOSeqVecChar::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {	
     const Tango::DevVarCharArray *theInputArray;
     extract(in_any,theInputArray);
@@ -58,7 +58,7 @@ IOSeqVecShort::IOSeqVecShort(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOSeqVecShort::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOSeqVecShort::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	if (device->get_state() == Tango::ON)
 		return(true);
@@ -67,7 +67,7 @@ bool IOSeqVecShort::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 }
 
 
-CORBA::Any *IOSeqVecShort::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOSeqVecShort::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {	
     const Tango::DevVarShortArray *theInputArray;
     extract(in_any,theInputArray);
@@ -96,7 +96,7 @@ IOSeqVecLong::IOSeqVecLong(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOSeqVecLong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOSeqVecLong::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	if (device->get_state() == Tango::ON)
 		return(true);
@@ -105,7 +105,7 @@ bool IOSeqVecLong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 }
 
 
-CORBA::Any *IOSeqVecLong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOSeqVecLong::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {	
     const Tango::DevVarLongArray *theInputArray;
     extract(in_any,theInputArray);
@@ -135,7 +135,7 @@ IOSeqVecFloat::IOSeqVecFloat(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOSeqVecFloat::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOSeqVecFloat::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	if (device->get_state() == Tango::ON)
 		return(true);
@@ -144,7 +144,7 @@ bool IOSeqVecFloat::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 }
 
 
-CORBA::Any *IOSeqVecFloat::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOSeqVecFloat::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {	
     const Tango::DevVarFloatArray *theInputArray;
     extract(in_any,theInputArray);
@@ -173,7 +173,7 @@ IOSeqVecDouble::IOSeqVecDouble(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOSeqVecDouble::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOSeqVecDouble::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	if (device->get_state() == Tango::ON)
 		return(true);
@@ -182,7 +182,7 @@ bool IOSeqVecDouble::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_
 }
 
 
-CORBA::Any *IOSeqVecDouble::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOSeqVecDouble::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {	
     const Tango::DevVarDoubleArray *theInputArray;
     extract(in_any,theInputArray);
@@ -211,7 +211,7 @@ IOSeqVecUShort::IOSeqVecUShort(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOSeqVecUShort::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOSeqVecUShort::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	if (device->get_state() == Tango::ON)
 		return(true);
@@ -220,7 +220,7 @@ bool IOSeqVecUShort::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_
 }
 
 
-CORBA::Any *IOSeqVecUShort::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOSeqVecUShort::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {	
     const Tango::DevVarUShortArray *theInputArray;
     extract(in_any,theInputArray);
@@ -249,7 +249,7 @@ IOSeqVecULong::IOSeqVecULong(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOSeqVecULong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOSeqVecULong::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	if (device->get_state() == Tango::ON)
 		return(true);
@@ -258,7 +258,7 @@ bool IOSeqVecULong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 }
 
 
-CORBA::Any *IOSeqVecULong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOSeqVecULong::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {	
     const Tango::DevVarULongArray *theInputArray;
     extract(in_any,theInputArray);
@@ -288,7 +288,7 @@ IOSeqVecString::IOSeqVecString(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOSeqVecString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOSeqVecString::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	if (device->get_state() == Tango::ON)
 		return(true);
@@ -297,7 +297,7 @@ bool IOSeqVecString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_
 }
 
 
-CORBA::Any *IOSeqVecString::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOSeqVecString::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {	
     const Tango::DevVarStringArray *theInputArray;
     extract(in_any,theInputArray);

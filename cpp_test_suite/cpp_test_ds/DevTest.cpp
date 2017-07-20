@@ -1482,7 +1482,7 @@ void DevTest::read_attr_asyn_to(Tango::Attribute &att)
       	cout << "Leaving reading attr_asyn_to attribute" << endl;
 }
 
-void DevTest::read_attr_asyn_except(Tango::Attribute &att)
+void DevTest::read_attr_asyn_except(TANGO_UNUSED(Tango::Attribute &att))
 {
        	cout << "[DevTest::read_attr] attribute attr_asyn_except" << endl;
        	Tango_sleep(2);
@@ -1691,12 +1691,12 @@ void DevTest::read_Event_quality_tst(Tango::Attribute &att)
 }
 
 
-void DevTest::read_Poll_buff(Tango::Attribute &att)
+void DevTest::read_Poll_buff(TANGO_UNUSED(Tango::Attribute &att))
 {
       	cout << "[DevTest::read_attr] attribute name Poll_buff" << endl;
 }
 
-void DevTest::read_Poll_buffRW(Tango::Attribute &att)
+void DevTest::read_Poll_buffRW(TANGO_UNUSED(Tango::Attribute &att))
 {
       	cout << "[DevTest::read_attr] attribute name Poll_buffRW" << endl;
 }
@@ -2058,7 +2058,7 @@ void DevTest::read_DynEnum_attr(Tango::Attribute &att)
 	att.set_value(&enum_value);
 }
 
-void DevTest::read_ReynaldPoll_attr(Tango::Attribute &att)
+void DevTest::read_ReynaldPoll_attr(TANGO_UNUSED(Tango::Attribute &att))
 {
 	cout << "[DevTest::read_attr] attribute name ReynaldPoll_attr" << endl;
 
@@ -2602,7 +2602,7 @@ bool DevTest::is_ConfPipe_allowed(Tango::PipeReqType)
 		return false;
 }
 
-void DevTest::read_ConfPipe(Tango::Pipe &pipe)
+void DevTest::read_ConfPipe(TANGO_UNUSED(Tango::Pipe &pipe))
 {
 
 }

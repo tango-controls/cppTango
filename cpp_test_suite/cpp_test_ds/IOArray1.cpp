@@ -37,7 +37,7 @@ IOArray1::IOArray1(const char *name,Tango::CmdArgType in,
 //
 //-----------------------------------------------------------------------------
 
-bool IOArray1::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOArray1::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -65,7 +65,7 @@ bool IOArray1::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 //-----------------------------------------------------------------------------
 
 
-CORBA::Any *IOArray1::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOArray1::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {	
   try {
     Tango::DevVarLongArray *argout;

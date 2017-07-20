@@ -27,7 +27,7 @@ IOVoid::IOVoid(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOVoid::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOVoid::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -41,7 +41,7 @@ bool IOVoid::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IOVoid::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOVoid::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {
   try {
     cout << "[IOVoid::execute] " << endl;
@@ -78,7 +78,7 @@ IOBool::IOBool(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOBool::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOBool::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -92,7 +92,7 @@ bool IOBool::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IOBool::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOBool::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     Tango::DevBoolean theNumber;
@@ -132,7 +132,7 @@ IOShort::IOShort(const char *name,Tango::CmdArgType in,
 {
 }
 
-bool IOShort::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOShort::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -146,7 +146,7 @@ bool IOShort::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IOShort::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOShort::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     Tango::DevShort theNumber;
@@ -186,7 +186,7 @@ IOLong::IOLong(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOLong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOLong::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -243,7 +243,7 @@ IOLong64::IOLong64(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOLong64::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOLong64::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -299,7 +299,7 @@ IOFloat::IOFloat(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOFloat::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOFloat::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -313,7 +313,7 @@ bool IOFloat::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IOFloat::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOFloat::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     Tango::DevFloat theNumber;
@@ -354,7 +354,7 @@ IODouble::IODouble(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IODouble::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IODouble::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -368,7 +368,7 @@ bool IODouble::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IODouble::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IODouble::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     Tango::DevDouble theNumber;
@@ -409,7 +409,7 @@ IOUShort::IOUShort(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOUShort::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOUShort::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -423,7 +423,7 @@ bool IOUShort::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IOUShort::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOUShort::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     Tango::DevUShort theNumber;
@@ -463,7 +463,7 @@ IOULong::IOULong(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOULong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOULong::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -477,7 +477,7 @@ bool IOULong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IOULong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOULong::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     Tango::DevULong theNumber;
@@ -519,7 +519,7 @@ IOULong64::IOULong64(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOULong64::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOULong64::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -533,7 +533,7 @@ bool IOULong64::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IOULong64::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOULong64::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     Tango::DevULong64 theNumber;
@@ -573,7 +573,7 @@ IOString::IOString(const char *name,Tango::CmdArgType in,
 {
 }
 
-bool IOString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOString::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -587,7 +587,7 @@ bool IOString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IOString::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOString::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
 
 	cout2 << "[IOString::execute] arrived" << endl;
@@ -638,7 +638,7 @@ IOCharArray::IOCharArray(const char *name,Tango::CmdArgType in,
 {
 }
 
-bool IOCharArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOCharArray::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -651,7 +651,7 @@ bool IOCharArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 		return(false);
 }
 
-CORBA::Any *IOCharArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOCharArray::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     cout << "[IOCharArray::execute] entering "  << endl;
@@ -696,7 +696,7 @@ IOShortArray::IOShortArray(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOShortArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOShortArray::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -710,7 +710,7 @@ bool IOShortArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 }
 
 
-CORBA::Any *IOShortArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOShortArray::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     const Tango::DevVarShortArray *theNumberArray;
@@ -755,7 +755,7 @@ IOLongArray::IOLongArray(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOLongArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOLongArray::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -769,7 +769,7 @@ bool IOLongArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 }
 
 
-CORBA::Any *IOLongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOLongArray::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     const Tango::DevVarLongArray *theNumberArray;
@@ -814,7 +814,7 @@ IOFloatArray::IOFloatArray(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOFloatArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOFloatArray::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -828,7 +828,7 @@ bool IOFloatArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 }
 
 
-CORBA::Any *IOFloatArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOFloatArray::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     const Tango::DevVarFloatArray *theNumberArray;
@@ -872,7 +872,7 @@ IODoubleArray::IODoubleArray(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IODoubleArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IODoubleArray::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -886,7 +886,7 @@ bool IODoubleArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 }
 
 
-CORBA::Any *IODoubleArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IODoubleArray::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     const Tango::DevVarDoubleArray *theNumberArray;
@@ -931,7 +931,7 @@ IOUShortArray::IOUShortArray(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOUShortArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOUShortArray::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -945,7 +945,7 @@ bool IOUShortArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 }
 
 
-CORBA::Any *IOUShortArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOUShortArray::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     const Tango::DevVarUShortArray *theNumberArray;
@@ -990,7 +990,7 @@ IOULongArray::IOULongArray(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOULongArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOULongArray::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1004,7 +1004,7 @@ bool IOULongArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 }
 
 
-CORBA::Any *IOULongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOULongArray::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     const Tango::DevVarULongArray *theNumberArray;
@@ -1048,7 +1048,7 @@ IOStringArray::IOStringArray(const char *name,Tango::CmdArgType in,
 {
 }
 
-bool IOStringArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOStringArray::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1062,7 +1062,7 @@ bool IOStringArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 }
 
 
-CORBA::Any *IOStringArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOStringArray::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     const Tango::DevVarStringArray *theStringArray;
@@ -1107,7 +1107,7 @@ IOLongString::IOLongString(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOLongString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOLongString::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1121,7 +1121,7 @@ bool IOLongString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 }
 
 
-CORBA::Any *IOLongString::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOLongString::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     const Tango::DevVarLongStringArray *theReceived;
@@ -1175,7 +1175,7 @@ IODoubleString::IODoubleString(const char *name,Tango::CmdArgType in,
 
 
 
-bool IODoubleString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IODoubleString::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1189,7 +1189,7 @@ bool IODoubleString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_
 }
 
 
-CORBA::Any *IODoubleString::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IODoubleString::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     const Tango::DevVarDoubleStringArray *theReceived;
@@ -1243,7 +1243,7 @@ IOBooleanArray::IOBooleanArray(const char *name,Tango::CmdArgType in,
 
 
 
-bool IOBooleanArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOBooleanArray::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1257,7 +1257,7 @@ bool IOBooleanArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_
 }
 
 
-CORBA::Any *IOBooleanArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOBooleanArray::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
     try {
         const Tango::DevVarBooleanArray *booleanArray;
@@ -1300,7 +1300,7 @@ OLong::OLong(const char *name,Tango::CmdArgType in,
 }
 
 
-bool OLong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool OLong::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1314,7 +1314,7 @@ bool OLong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *OLong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *OLong::execute(Tango::DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
 {
   try {
     long theNumber = 22;
@@ -1353,7 +1353,7 @@ OULong::OULong(const char *name,Tango::CmdArgType in,
 }
 
 
-bool OULong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool OULong::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1367,7 +1367,7 @@ bool OULong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *OULong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *OULong::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {
   try {
     unsigned long theNumber = 333;
@@ -1405,7 +1405,7 @@ OLongArray::OLongArray(const char *name,Tango::CmdArgType in,
 }
 
 
-bool OLongArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool OLongArray::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1419,7 +1419,7 @@ bool OLongArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *OLongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *OLongArray::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {
   try {
     Tango::DevVarLongArray *theReturnedArray = new Tango::DevVarLongArray();
@@ -1461,7 +1461,7 @@ OULongArray::OULongArray(const char *name,Tango::CmdArgType in,
 }
 
 
-bool OULongArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool OULongArray::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1475,7 +1475,7 @@ bool OULongArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 }
 
 
-CORBA::Any *OULongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *OULongArray::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {
   try {
     Tango::DevVarULongArray *theReturnedArray = new Tango::DevVarULongArray();
@@ -1517,7 +1517,7 @@ OLongString::OLongString(const char *name,Tango::CmdArgType in,
 }
 
 
-bool OLongString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool OLongString::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1531,7 +1531,7 @@ bool OLongString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 }
 
 
-CORBA::Any *OLongString::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *OLongString::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {
   try {
     Tango::DevVarLongStringArray *theReturned = new Tango::DevVarLongStringArray();
@@ -1580,7 +1580,7 @@ IOEncoded::IOEncoded(const char *name,Tango::CmdArgType in,
 }
 
 
-bool IOEncoded::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOEncoded::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1594,7 +1594,7 @@ bool IOEncoded::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *IOEncoded::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOEncoded::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
 {
   try {
     const Tango::DevEncoded *the_enc;
@@ -1641,7 +1641,7 @@ OEncoded::OEncoded(const char *name,Tango::CmdArgType in,
 }
 
 
-bool OEncoded::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool OEncoded::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -1655,7 +1655,7 @@ bool OEncoded::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 }
 
 
-CORBA::Any *OEncoded::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *OEncoded::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {
   try {
     Tango::DevEncoded *theReturned = new Tango::DevEncoded();

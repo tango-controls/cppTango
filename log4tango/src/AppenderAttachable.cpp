@@ -67,8 +67,7 @@ AppenderList AppenderAttachable::get_all_appenders (void)
 
 Appender* AppenderAttachable::get_appender (const std::string& name) 
 {
-  threading::ScopedLock guard(_appendersMutex); 
-  Appender* appender = 0;
+  threading::ScopedLock guard(_appendersMutex);
   AppenderMapIterator it = _appenders.find(name);
   if (it != _appenders.end()) {
     return it->second;

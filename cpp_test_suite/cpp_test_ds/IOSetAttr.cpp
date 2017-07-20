@@ -38,7 +38,7 @@ IOSetAttr::IOSetAttr(const char *name,Tango::CmdArgType in,
 //
 //-----------------------------------------------------------------------------
 
-bool IOSetAttr::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOSetAttr::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
