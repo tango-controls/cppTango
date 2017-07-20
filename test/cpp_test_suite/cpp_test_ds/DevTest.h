@@ -170,17 +170,26 @@ public :
 	void write_attr_asyn_write(Tango::WAttribute &att);
 	void write_attr_asyn_write_to(Tango::WAttribute &att);
 	void write_attr_asyn_write_except(Tango::WAttribute &att);
-	void write_Short_spec_attr_w(Tango::WAttribute &att) {};
-	void write_Long_spec_attr_w(Tango::WAttribute &att) {};
-	void write_Double_spec_attr_w(Tango::WAttribute &att) {};
+    void write_Short_spec_attr_w(TANGO_UNUSED(Tango::WAttribute &att))
+    {};
+    void write_Long_spec_attr_w(TANGO_UNUSED(Tango::WAttribute &att))
+    {};
+    void write_Double_spec_attr_w(TANGO_UNUSED(Tango::WAttribute &att))
+    {};
 	void write_String_spec_attr_w(Tango::WAttribute &att);
-	void write_Short_ima_attr_w(Tango::WAttribute &att) {};
-	void write_String_ima_attr_w(Tango::WAttribute &att) {};
-	void write_Short_spec_attr_rw(Tango::WAttribute &att) {};
-	void write_String_spec_attr_rw(Tango::WAttribute &att) {};
+    void write_Short_ima_attr_w(TANGO_UNUSED(Tango::WAttribute &att))
+    {};
+    void write_String_ima_attr_w(TANGO_UNUSED(Tango::WAttribute &att))
+    {};
+    void write_Short_spec_attr_rw(TANGO_UNUSED(Tango::WAttribute &att))
+    {};
+    void write_String_spec_attr_rw(TANGO_UNUSED(Tango::WAttribute &att))
+    {};
 	void write_Long_spec_attr_rw(Tango::WAttribute &att);
-	void write_Short_ima_attr_rw(Tango::WAttribute &att) {};
-	void write_String_ima_attr_rw(Tango::WAttribute &att) {};
+    void write_Short_ima_attr_rw(TANGO_UNUSED(Tango::WAttribute &att))
+    {};
+    void write_String_ima_attr_rw(TANGO_UNUSED(Tango::WAttribute &att))
+    {};
 	void write_Float_attr_w(Tango::WAttribute &att);
 	void write_Boolean_attr_w(Tango::WAttribute &att);
 	void write_UShort_attr_w(Tango::WAttribute &att);

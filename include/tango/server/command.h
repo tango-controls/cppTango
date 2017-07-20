@@ -3431,7 +3431,7 @@ void TemplCommandOut<OUTARG>::init_types()
 //--------------------------------------------------------------------------
 
 template<typename OUTARG>
-CORBA::Any *TemplCommandOut<OUTARG>::execute(DeviceImpl *dev_ptr, const CORBA::Any &in_any)
+CORBA::Any *TemplCommandOut<OUTARG>::execute(DeviceImpl *dev_ptr, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
