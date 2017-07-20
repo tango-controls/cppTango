@@ -114,7 +114,7 @@ Filter* Appender::get_filter (void)
 }
 #endif // APPENDERS_HAVE_FILTERS
 
-void Appender::level_changed (Level::Value new_level) 
+void Appender::level_changed(Level::Value /*new_level*/)
 {
   //--noop
 }

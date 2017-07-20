@@ -67,7 +67,7 @@ namespace log4tango {
     {
       //no-op
     }
-    virtual void append(std::ostringstream& out, const LoggingEvent& event) 
+      virtual void append(std::ostringstream &out, const LoggingEvent & /*event*/)
     {
       out << _literal;
     }
@@ -144,7 +144,8 @@ namespace log4tango {
     };
 
     struct ProcessorTimeComponent : public PatternLayout::PatternComponent {
-        virtual void append(std::ostringstream& out, const LoggingEvent& event) {
+        virtual void append(std::ostringstream &out, const LoggingEvent & /*event*/)
+        {
             out << ::clock();
         }
     };

@@ -37,7 +37,7 @@ IOStruct::IOStruct(const char *name,Tango::CmdArgType in,
 //
 //-----------------------------------------------------------------------------
 
-bool IOStruct::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool IOStruct::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //
@@ -65,7 +65,7 @@ bool IOStruct::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 //-----------------------------------------------------------------------------
 
 
-CORBA::Any *IOStruct::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *IOStruct::execute(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {	
   try {
     Tango::DevVarLongStringArray	*argout = new Tango::DevVarLongStringArray();
