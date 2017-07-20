@@ -341,6 +341,12 @@ int DeviceData::get_type()
 
             case CORBA::tk_struct:
                 tc_field = tc->member_type(0);
+                if(tc_field->kind() == tk_string)
+                {
+                    // The first field in a DevPipeBlob structure is a string (name field)
+                    data_type = Tango::DEV_PIPE_BLOB;
+                    break;
+                }
                 tc_al = tc_field->content_type();
                 switch (tc_al->kind())
                 {
