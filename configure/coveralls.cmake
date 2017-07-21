@@ -1,10 +1,8 @@
 option(COVERALLS "Generate coveralls data" OFF)
 
 if (COVERALLS)
-    execute_process(COMMAND git clone https://github.com/JoakimSoderberg/coveralls-cmake ${PROJECT_BINARY_DIR}/coveralls-cmake)
-
     # Add project cmake modules to path.
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_BINARY_DIR}/coveralls-cmake/cmake)
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${COVERALLS_MODULE_PATH})
 
     include(Coveralls)
     coveralls_turn_on_coverage()
