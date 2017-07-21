@@ -3,9 +3,8 @@ sudo: false
 language: cpp
 
 env:
-  - COVERALLS_MODULE_PATH=/home/tango/coveralls-cmake/cmake
   matrix:
-    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=DEBUG COVERALLS=ON
+    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=DEBUG COVERALLS=ON COVERALLS_MODULE_PATH=/home/tango/coveralls-cmake/cmake
     - OS_TYPE=debian8 CMAKE_BUILD_TYPE=RELEASE COVERALLS=OFF
 #    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=RELEASE
 #    - OS_TYPE=win32
