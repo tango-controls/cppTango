@@ -11,7 +11,7 @@ fi
 echo "Install tango-idl"
 docker exec cpp_tango make -C /home/tango/idl/build install
 echo "Build cppTango:$CMAKE_BUILD_TYPE"
-docker exec cpp_tango cmake -H/home/tango/src -B/home/tango/src/build -DCMAKE_VERBOSE_MAKEFILE=true -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
+docker exec cpp_tango cmake -H/home/tango/src -B/home/tango/src/build -DCOVERALLS=$COVERALLS -DCMAKE_VERBOSE_MAKEFILE=true -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
 if [ $? -ne "0" ]
 then
     exit -1

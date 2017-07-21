@@ -78,3 +78,4 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 include(configure/config.cmake)
+include(configure/coveralls.cmake)
