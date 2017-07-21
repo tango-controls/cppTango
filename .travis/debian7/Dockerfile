@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y build-essential cmake
 
 RUN apt-get update && apt-get install -y omniidl libomniorb4-dev libcos4-dev libomnithread3-dev libzmq3-dev
 
+RUN apt-get update && apt-get install -y curl
+
 RUN groupadd -g "$APP_GID" tango
 
 RUN useradd -u "$APP_UID" -g "$APP_GID" -ms /bin/bash tango
