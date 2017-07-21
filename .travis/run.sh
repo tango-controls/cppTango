@@ -13,7 +13,6 @@ docker exec cpp_tango make -C /home/tango/idl/build install
 echo "Build cppTango:$CMAKE_BUILD_TYPE"
 echo "Using COVERALLS=$COVERALLS"
 echo "Using COVERALLS_MODULE_PATH=$COVERALLS_MODULE_PATH"
-ech "`ls $COVERALLS_MODULE_PATH`"
 docker exec cpp_tango cmake -H/home/tango/src -B/home/tango/src/build -DCOVERALLS=$COVERALLS -DCOVERALLS_MODULE_PATH=$COVERALLS_MODULE_PATH -DCMAKE_VERBOSE_MAKEFILE=true -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
 if [ $? -ne "0" ]
 then
