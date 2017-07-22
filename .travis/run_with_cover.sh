@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-#!/usr/bin/env bash
 #this script is executed from within Travis environment. TANGO_HOST is already set
 echo "TANGO_HOST=$TANGO_HOST"
 
