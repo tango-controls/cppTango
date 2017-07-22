@@ -32,6 +32,7 @@ before_script:
   - docker run --name cpp_tango -e TANGO_HOST=${TANGO_HOST} -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} --link tango_cs:tango_cs -v `pwd`:/home/tango/src -v `pwd`/idl:/home/tango/idl -v `pwd`/coveralls-cmake:/home/tango/coveralls-cmake -dit cpp_tango
 
 script:
+  - chmod 777 .travis/install_tango_idl.sh .travis/${RUN}.sh
   - .travis/install_tango_idl.sh
   - .travis/${RUN}.sh
 
