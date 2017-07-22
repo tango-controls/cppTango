@@ -4,8 +4,8 @@ language: cpp
 
 env:
   matrix:
-    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=Debug COVERALLS=ON COVERALLS_MODULE_PATH=/home/tango/coveralls-cmake/cmake
-    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=Release COVERALLS=OFF
+    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=Debug COVERALLS=ON RUN=run_with_cover
+    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=Release COVERALLS=OFF RUN=run
 #    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=RELEASE
 #    - OS_TYPE=win32
 # etc
@@ -29,12 +29,11 @@ before_script:
   - IPADDR=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' $CONTAINER)
   - TANGO_HOST=${IPADDR}:10000
   - docker build --build-arg APP_UID=$(id -u) --build-arg APP_GID=$(id -g) -t cpp_tango .travis/${OS_TYPE}
-  - docker run --name cpp_tango -e TANGO_HOST=${TANGO_HOST} --link tango_cs:tango_cs -v `pwd`:/home/tango/src -v `pwd`/idl:/home/tango/idl -v `pwd`/coveralls-cmake:/home/tango/coveralls-cmake -dit cpp_tango
+  - docker run --name cpp_tango -e TANGO_HOST=${TANGO_HOST} -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} --link tango_cs:tango_cs -v `pwd`:/home/tango/src -v `pwd`/idl:/home/tango/idl -v `pwd`/coveralls-cmake:/home/tango/coveralls-cmake -dit cpp_tango
 
 script:
-  - .travis/run.sh
-after-success:
-  - test $COVERALLS = "ON" && docker exec cpp_tango /bin/sh -c 'cd /home/tango/src/build; make coveralls'
+  - .travis/install_tango_idl.sh
+  - .travis/${RUN}.sh
 
 after-script:
   - docker stop cpp_tango

@@ -7,11 +7,11 @@ if (COVERALLS)
     include(Coveralls)
     coveralls_turn_on_coverage()
 
-    FILE(GLOB SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+    FILE(GLOB_RECURSE COVERAGE_SRCS ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.h)
 
     # Create the coveralls target.
     coveralls_setup(
-            "${SOURCES}" # The source files.
+            "${COVERAGE_SRCS}" # The source files.
             ON                 # If we should upload.
     )
 endif ()
