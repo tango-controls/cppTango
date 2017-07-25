@@ -587,18 +587,15 @@ CORBA::Any *IOString::execute(TANGO_UNUSED(Tango::DeviceImpl *device), const COR
 
         Tango::DevString theWord;
         extract(in_any, theWord);
-        string palindrome;
+
         string firstWord = theWord;
         string::reverse_iterator currentChar(firstWord.rbegin());
         string::reverse_iterator endChar(firstWord.rend());
 
         cout << "[IOString::execute] firstWord = " << firstWord << endl;
 
-        for (; currentChar != endChar; currentChar++)
-        {
-            cout << "[IOString::execute]  currentChar = " << *currentChar << endl;
-            palindrome += *currentChar;
-        }
+        string palindrome{currentChar, endChar};
+
         cout << "[IOString::execute] palindrome = " << palindrome << endl;
         return insert(palindrome.c_str());
     }

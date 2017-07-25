@@ -2341,8 +2341,11 @@ void DeviceData::insert(DevicePipeBlob *blob)
     DevVarPipeDataEltArray *tmp_ptr;
     tmp_ptr = blob->get_insert_data();
     const string &bl_name = blob->get_name();
+    //TODO do we really need this if, maybe we can set name no matter what?
     if (bl_name.size() != 0)
+    {
         tmp->name = bl_name.c_str();
+    }
     if (tmp_ptr == Tango_nullptr)
     {
         Except::throw_exception(API_PipeNoDataElement, "No data in pipe!", "DeviceData::insert(DevicePipeBlob)");

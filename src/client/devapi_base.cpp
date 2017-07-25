@@ -965,7 +965,7 @@ int Connection::get_env_var_from_file(string &f_name, const char *env_var, strin
     int ret = -1;
 
     inFile.open(f_name.c_str());
-    if (!inFile)
+    if (not(inFile))
     {
         return ret;
     }
@@ -974,7 +974,7 @@ int Connection::get_env_var_from_file(string &f_name, const char *env_var, strin
 
     string::size_type pos_env, pos_comment;
 
-    while (!inFile.eof())
+    while (not(inFile.eof()))
     {
         getline(inFile, file_line);
         transform(file_line.begin(), file_line.end(), file_line.begin(), ::tolower);
@@ -1066,7 +1066,7 @@ void Connection::get_fqdn(string &the_host)
 //
 
     size_t i;
-    for (i = 0; i < ip_list.size() && !host_found; i++)
+    for (i = 0; i < ip_list.size() && not(host_found); i++)
     {
         int result = getaddrinfo(ip_list[i].c_str(), NULL, &hints, &info);
 

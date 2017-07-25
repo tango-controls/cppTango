@@ -642,8 +642,8 @@ public:
             TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOStringArray", din));
             const DevVarStringArray *received;
             dout >> received;
-            TS_ASSERT(!strcmp((*received)[0], "def"));
-            TS_ASSERT(!strcmp((*received)[1], "abc"));
+            TS_ASSERT(not(strcmp((*received)[0], "def")));
+            TS_ASSERT(not(strcmp((*received)[1], "abc")));
         }
     }
 
@@ -694,8 +694,8 @@ public:
 
             TS_ASSERT_EQUALS(received->lvalue[0], (111 * 2));
             TS_ASSERT_EQUALS(received->lvalue[1], (222 * 2));
-            TS_ASSERT(!strcmp(received->svalue[0], "zxc"));
-            TS_ASSERT(!strcmp(received->svalue[1], "qwe"));
+            TS_ASSERT(not(strcmp(received->svalue[0], "zxc")));
+            TS_ASSERT(not(strcmp(received->svalue[1], "qwe")));
         }
 
         for (size_t i = 0; i < loop; i++)
@@ -716,8 +716,8 @@ public:
 
             TS_ASSERT_EQUALS(received->lvalue[0], (in.lvalue[0] * 2));
             TS_ASSERT_EQUALS(received->lvalue[1], (in.lvalue[1] * 2));
-            TS_ASSERT(!strcmp(received->svalue[0], in.svalue[0]));
-            TS_ASSERT(!strcmp(received->svalue[1], in.svalue[1]));
+            TS_ASSERT(not(strcmp(received->svalue[0], in.svalue[0])));
+            TS_ASSERT(not(strcmp(received->svalue[1], in.svalue[1])));
             TS_ASSERT_EQUALS(data_type, Tango::DEVVAR_LONGSTRINGARRAY);
         }
     }
@@ -772,9 +772,9 @@ public:
 
             TS_ASSERT_EQUALS(received->dvalue[0], (1.11 * 2));
             TS_ASSERT_EQUALS(received->dvalue[1], (22.2 * 2));
-            TS_ASSERT(!strcmp(received->svalue[0], "iop"));
-            TS_ASSERT(!strcmp(received->svalue[1], "jkl"));
-            TS_ASSERT(!strcmp(received->svalue[2], "bnm"));
+            TS_ASSERT(not(strcmp(received->svalue[0], "iop")));
+            TS_ASSERT(not(strcmp(received->svalue[1], "jkl")));
+            TS_ASSERT(not(strcmp(received->svalue[2], "bnm")));
         }
 
 
@@ -796,9 +796,9 @@ public:
 
             TS_ASSERT_EQUALS(received->dvalue[0], (in.dvalue[0] * 2));
             TS_ASSERT_EQUALS(received->dvalue[1], (in.dvalue[1] * 2));
-            TS_ASSERT(!strcmp(received->svalue[0], in.svalue[0]));
-            TS_ASSERT(!strcmp(received->svalue[1], in.svalue[1]));
-            TS_ASSERT(!strcmp(received->svalue[2], in.svalue[2]));
+            TS_ASSERT(not(strcmp(received->svalue[0], in.svalue[0])));
+            TS_ASSERT(not(strcmp(received->svalue[1], in.svalue[1])));
+            TS_ASSERT(not(strcmp(received->svalue[2], in.svalue[2])));
         }
     }
 
@@ -822,7 +822,7 @@ public:
             TS_ASSERT_EQUALS(received->encoded_data.length(), 2);
             TS_ASSERT_EQUALS(received->encoded_data[0], (11 * 2));
             TS_ASSERT_EQUALS(received->encoded_data[1], (22 * 2));
-            TS_ASSERT(!strcmp(received->encoded_format, "Returned string"));
+            TS_ASSERT(not(strcmp(received->encoded_format, "Returned string")));
             TS_ASSERT_EQUALS(data_type, Tango::DEV_ENCODED);
         }
 
@@ -844,14 +844,13 @@ public:
             TS_ASSERT_EQUALS(received.encoded_data.length(), 2);
             TS_ASSERT_EQUALS(received.encoded_data[0], (15 * 2));
             TS_ASSERT_EQUALS(received.encoded_data[1], (25 * 2));
-            TS_ASSERT(!strcmp(received.encoded_format, "Returned string"));
+            TS_ASSERT(not(strcmp(received.encoded_format, "Returned string")));
             TS_ASSERT_EQUALS(data_type, Tango::DEV_ENCODED);
         }
 
         for (size_t i = 0; i < loop; i++)
         {
             DeviceData din, dout;
-            string in_str("Sent");
             DevVarCharArray in_data;
 
             in_data.length(4);
@@ -871,7 +870,7 @@ public:
             TS_ASSERT_EQUALS(received.encoded_data[1], (25 * 2));
             TS_ASSERT_EQUALS(received.encoded_data[2], (35 * 2));
             TS_ASSERT_EQUALS(received.encoded_data[3], (45 * 2));
-            TS_ASSERT(!strcmp(received.encoded_format, "Returned string"));
+            TS_ASSERT(not(strcmp(received.encoded_format, "Returned string")));
             TS_ASSERT_EQUALS(data_type, Tango::DEV_ENCODED);
         }
     }
