@@ -226,7 +226,6 @@ bool DeviceData::any_is_null()
     return (false);
 }
 
-
 //-----------------------------------------------------------------------------
 //
 // DeviceData::get_type() - return DeviceData data type
@@ -339,23 +338,24 @@ int DeviceData::get_type()
                 }
                 break;
 
-		case CORBA::tk_struct:
-			tc_field = tc->member_type(0);
-			if(tc_field->kind() == tk_string)
+            case CORBA::tk_struct:
+                tc_field = tc->member_type(0);
+                if (tc_field->kind() == tk_string)
                 {
                     // The first field in a DevPipeBlob structure is a string (name field)
                     data_type = Tango::DEV_PIPE_BLOB;
                     break;
-                }tc_al = tc_field->content_type();
-            switch (tc_al->kind())
-            {
-                case CORBA::tk_sequence:
-                    tc_seq = tc_al->content_type();
-                    switch (tc_seq->kind())
-                    {
-                    case CORBA::tk_long:
-                        data_type = Tango::DEVVAR_LONGSTRINGARRAY;
-                        break;
+                }
+                tc_al = tc_field->content_type();
+                switch (tc_al->kind())
+                {
+                    case CORBA::tk_sequence:
+                        tc_seq = tc_al->content_type();
+                        switch (tc_seq->kind())
+                        {
+                            case CORBA::tk_long:
+                                data_type = Tango::DEVVAR_LONGSTRINGARRAY;
+                                break;
 
                             case CORBA::tk_double:
                                 data_type = Tango::DEVVAR_DOUBLESTRINGARRAY;
@@ -1550,6 +1550,11 @@ bool DeviceData::operator>>(DevEncoded &datum)
     return ret;
 }
 
+bool DeviceData::operator>>(DevicePipeBlob *&datum)
+{
+    return extract(datum);
+}
+
 //-----------------------------------------------------------------------------
 //
 // DeviceData::operator <<(vector<unsigned char> &) - insert a vector<unsigned char> into DeviceData
@@ -1669,6 +1674,11 @@ void DeviceData::operator<<(vector<double> &datum)
         (*double_array)[i] = datum[i];
     }
     any.inout() <<= double_array;
+}
+
+void DeviceData::operator<<(DevicePipeBlob &data)
+{
+    insert(data);
 }
 
 

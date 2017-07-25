@@ -452,6 +452,8 @@ public :
     void operator<<(DevEncoded &datum)
     { (any.inout()) <<= datum; }
 
+    void operator<<(DevicePipeBlob &data);
+
 //	void insert(vector<DevLong>&, vector<string>&);
 //	void insert(vector<double>&, vector<string>&);
 
@@ -619,6 +621,8 @@ public :
     bool operator>>(const DevEncoded *&datum);
 
     bool operator>>(DevEncoded &datum);
+
+    bool operator>>(DevicePipeBlob *&datum);
 
 ///@publicsection
 /**@name Exception and error related methods methods
