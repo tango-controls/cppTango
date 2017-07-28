@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 	check_size("Device_2Impl",sizeof(Device_2Impl),1776, &isOK);
 	
 	check_size("DeviceClass",sizeof(DeviceClass),416, &isOK);  	// Was 48 in V4
-	check_size("Util",sizeof(Util),1616, &isOK);	// Was 68 in V4
+	check_size("Util",sizeof(Util),1608, &isOK);	// Was 68 in V4
 
 	check_size("Attribute",sizeof(Attribute),2536, &isOK);		// Was 208 in V4
 	check_size("WAttribute",sizeof(WAttribute),3200, &isOK);	// Was 252 in V4
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 	check_size("DeviceAttribute",sizeof(DeviceAttribute),200, &isOK);	// Was 52 in V4
 	check_size("DeviceAttributeHistory",sizeof(DeviceAttributeHistory),232, &isOK);   // Was 76 in V4
 
-	check_size("ApiUtil",sizeof(ApiUtil),312, &isOK);
+	check_size("ApiUtil",sizeof(ApiUtil),304, &isOK);
 	check_size("Database", sizeof(Database), 632, &isOK);    // Was 108 in V4
 	check_size("DbDevice",sizeof(DbDevice),32, &isOK);
 	check_size("DbClass",sizeof(DbClass),32, &isOK);
