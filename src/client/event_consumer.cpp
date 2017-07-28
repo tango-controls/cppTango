@@ -730,29 +730,29 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                                           long vers, DeviceAttribute *dev_attr)
 {
     const DevVarLongArray *tmp_seq_lo;
-    DevLong *tmp_lo;
+
     const DevVarLong64Array *tmp_seq_64;
-    DevLong64 *tmp_64;
+
     const DevVarShortArray *tmp_seq_sh;
-    DevShort *tmp_sh;
+
     const DevVarDoubleArray *tmp_seq_db;
-    DevDouble *tmp_db;
+
     const DevVarStringArray *tmp_seq_str;
-    char **tmp_str;
+
     const DevVarFloatArray *tmp_seq_fl;
-    DevFloat *tmp_fl;
+
     const DevVarBooleanArray *tmp_seq_boo;
-    DevBoolean *tmp_boo;
+
     const DevVarUShortArray *tmp_seq_ush;
-    DevUShort *tmp_ush;
+
     const DevVarCharArray *tmp_seq_uch;
-    DevUChar *tmp_uch;
+
     const DevVarULongArray *tmp_seq_ulo;
-    DevULong *tmp_ulo;
+
     const DevVarULong64Array *tmp_seq_u64;
-    DevULong64 *tmp_ulolo;
+
     const DevVarStateArray *tmp_seq_state;
-    Tango::DevState *tmp_state;
+
 
     DevULong max, len;
 
@@ -795,6 +795,7 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
             CORBA::TypeCode_var ty_seq = ty_alias->content_type();
             switch (ty_seq->kind())
             {
+                //TODO extract template
                 case CORBA::tk_long:
                     if (vers == 3)
                         attr_value_3->value >>= tmp_seq_lo;
@@ -804,12 +805,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_lo->length();
                     if (tmp_seq_lo->release() == true)
                     {
+                        DevLong *tmp_lo;
                         tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((DevBoolean)
                                                                                              true);
                         dev_attr->LongSeq = new DevVarLongArray(max, len, tmp_lo, true);
                     }
                     else
                     {
+                        DevLong *tmp_lo;
                         tmp_lo = const_cast<DevLong *>(tmp_seq_lo->get_buffer());
                         dev_attr->LongSeq = new DevVarLongArray(max, len, tmp_lo, false);
                     }
@@ -824,12 +827,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_64->length();
                     if (tmp_seq_64->release() == true)
                     {
+                        DevLong64 *tmp_64;
                         tmp_64 = (const_cast<DevVarLong64Array *>(tmp_seq_64))->get_buffer((DevBoolean)
                                                                                                true);
                         dev_attr->Long64Seq = new DevVarLong64Array(max, len, tmp_64, true);
                     }
                     else
                     {
+                        DevLong64 *tmp_64;
                         tmp_64 = const_cast<DevLong64 *>(tmp_seq_64->get_buffer());
                         dev_attr->Long64Seq = new DevVarLong64Array(max, len, tmp_64, false);
                     }
@@ -844,12 +849,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_sh->length();
                     if (tmp_seq_sh->release() == true)
                     {
+                        DevShort *tmp_sh;
                         tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((DevBoolean)
                                                                                               true);
                         dev_attr->ShortSeq = new DevVarShortArray(max, len, tmp_sh, true);
                     }
                     else
                     {
+                        DevShort *tmp_sh;
                         tmp_sh = const_cast<DevShort *>(tmp_seq_sh->get_buffer());
                         dev_attr->ShortSeq = new DevVarShortArray(max, len, tmp_sh, false);
                     }
@@ -864,12 +871,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_db->length();
                     if (tmp_seq_db->release() == true)
                     {
+                        DevDouble *tmp_db;
                         tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((DevBoolean)
                                                                                                true);
                         dev_attr->DoubleSeq = new DevVarDoubleArray(max, len, tmp_db, true);
                     }
                     else
                     {
+                        DevDouble *tmp_db;
                         tmp_db = const_cast<DevDouble *>(tmp_seq_db->get_buffer());
                         dev_attr->DoubleSeq = new DevVarDoubleArray(max, len, tmp_db, false);
                     }
@@ -884,12 +893,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_str->length();
                     if (tmp_seq_str->release() == true)
                     {
+                        char **tmp_str;
                         tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((DevBoolean)
                                                                                                  true);
                         dev_attr->StringSeq = new DevVarStringArray(max, len, tmp_str, true);
                     }
                     else
                     {
+                        char **tmp_str;
                         tmp_str = const_cast<char **>(tmp_seq_str->get_buffer());
                         dev_attr->StringSeq = new DevVarStringArray(max, len, tmp_str, false);
                     }
@@ -904,12 +915,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_fl->length();
                     if (tmp_seq_fl->release() == true)
                     {
+                        DevFloat *tmp_fl;
                         tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((DevBoolean)
                                                                                               true);
                         dev_attr->FloatSeq = new DevVarFloatArray(max, len, tmp_fl, true);
                     }
                     else
                     {
+                        DevFloat *tmp_fl;
                         tmp_fl = const_cast<DevFloat *>(tmp_seq_fl->get_buffer());
                         dev_attr->FloatSeq = new DevVarFloatArray(max, len, tmp_fl, false);
                     }
@@ -924,12 +937,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_boo->length();
                     if (tmp_seq_boo->release() == true)
                     {
+                        DevBoolean *tmp_boo;
                         tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((DevBoolean)
                                                                                                   true);
                         dev_attr->BooleanSeq = new DevVarBooleanArray(max, len, tmp_boo, true);
                     }
                     else
                     {
+                        DevBoolean *tmp_boo;
                         tmp_boo = const_cast<DevBoolean *>(tmp_seq_boo->get_buffer());
                         dev_attr->BooleanSeq = new DevVarBooleanArray(max, len, tmp_boo, false);
                     }
@@ -944,12 +959,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_ush->length();
                     if (tmp_seq_ush->release() == true)
                     {
+                        DevUShort *tmp_ush;
                         tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((DevBoolean)
                                                                                                  true);
                         dev_attr->UShortSeq = new DevVarUShortArray(max, len, tmp_ush, true);
                     }
                     else
                     {
+                        DevUShort *tmp_ush;
                         tmp_ush = const_cast<DevUShort *>(tmp_seq_ush->get_buffer());
                         dev_attr->UShortSeq = new DevVarUShortArray(max, len, tmp_ush, false);
                     }
@@ -964,12 +981,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_uch->length();
                     if (tmp_seq_uch->release() == true)
                     {
+                        DevUChar *tmp_uch;
                         tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((DevBoolean)
                                                                                                true);
                         dev_attr->UCharSeq = new DevVarCharArray(max, len, tmp_uch, true);
                     }
                     else
                     {
+                        DevUChar *tmp_uch;
                         tmp_uch = const_cast<DevUChar *>(tmp_seq_uch->get_buffer());
                         dev_attr->UCharSeq = new DevVarCharArray(max, len, tmp_uch, false);
                     }
@@ -984,12 +1003,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_ulo->length();
                     if (tmp_seq_ulo->release() == true)
                     {
+                        DevULong *tmp_ulo;
                         tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((DevBoolean)
                                                                                                 true);
                         dev_attr->ULongSeq = new DevVarULongArray(max, len, tmp_ulo, true);
                     }
                     else
                     {
+                        DevULong *tmp_ulo;
                         tmp_ulo = const_cast<DevULong *>(tmp_seq_ulo->get_buffer());
                         dev_attr->ULongSeq = new DevVarULongArray(max, len, tmp_ulo, false);
                     }
@@ -1004,12 +1025,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_u64->length();
                     if (tmp_seq_u64->release() == true)
                     {
+                        DevULong64 *tmp_ulolo;
                         tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_u64))->get_buffer((DevBoolean)
                                                                                                     true);
                         dev_attr->ULong64Seq = new DevVarULong64Array(max, len, tmp_ulolo, true);
                     }
                     else
                     {
+                        DevULong64 *tmp_ulolo;
                         tmp_ulolo = const_cast<DevULong64 *>(tmp_seq_u64->get_buffer());
                         dev_attr->ULong64Seq = new DevVarULong64Array(max, len, tmp_ulolo, false);
                     }
@@ -1024,12 +1047,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_state->length();
                     if (tmp_seq_state->release() == true)
                     {
+                        Tango::DevState *tmp_state;
                         tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((DevBoolean)
                                                                                                     true);
                         dev_attr->StateSeq = new DevVarStateArray(max, len, tmp_state, true);
                     }
                     else
                     {
+                        Tango::DevState *tmp_state;
                         tmp_state = const_cast<Tango::DevState *>(tmp_seq_state->get_buffer());
                         dev_attr->StateSeq = new DevVarStateArray(max, len, tmp_state, false);
                     }
@@ -1099,7 +1124,7 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr, De
 {
     DevLong *tmp_lo;
     DevShort *tmp_sh;
-    DevDouble *tmp_db;
+
     char **tmp_str;
     DevFloat *tmp_fl;
     DevBoolean *tmp_boo;
@@ -1110,7 +1135,6 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr, De
     DevULong64 *tmp_ulolo;
     Tango::DevState *tmp_state;
     Tango::DevState sta_dev;
-    Tango::DevEncoded *tmp_enc;
 
     DevULong max, len;
 
@@ -1218,12 +1242,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr, De
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
+                DevDouble *tmp_db;
                 tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((DevBoolean)
                                                                                    true);
                 dev_attr->DoubleSeq = new DevVarDoubleArray(max, len, tmp_db, true);
             }
             else
             {
+                DevDouble *tmp_db;
                 tmp_db = const_cast<DevDouble *>(tmp_seq.get_buffer());
                 dev_attr->DoubleSeq = new DevVarDoubleArray(max, len, tmp_db, false);
             }
@@ -1360,12 +1386,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr, De
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
+                Tango::DevEncoded *tmp_enc;
                 tmp_enc = (const_cast<DevVarEncodedArray &>(tmp_seq)).get_buffer((DevBoolean)
                                                                                      true);
                 dev_attr->EncodedSeq = new DevVarEncodedArray(max, len, tmp_enc, true);
             }
             else
             {
+                Tango::DevEncoded *tmp_enc;
                 tmp_enc = const_cast<Tango::DevEncoded *>(tmp_seq.get_buffer());
                 dev_attr->EncodedSeq = new DevVarEncodedArray(max, len, tmp_enc, false);
             }
