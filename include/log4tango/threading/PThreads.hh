@@ -30,6 +30,11 @@
 
 #include "../Portability.hh"
 #include <stdio.h>
+#ifdef _WIN32
+  #if _MSC_VER == 1900
+    #define HAVE_STRUCT_TIMESPEC
+  #endif
+#endif
 #include <pthread.h>
 #include <string>
 #include <assert.h>
