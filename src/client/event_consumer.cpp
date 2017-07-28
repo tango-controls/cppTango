@@ -4,7 +4,7 @@
 
 #include <tango.h>
 #include <tango/client/eventconsumer.h>
-#include "event_consumer.txx"
+#include "event_consumer.tpp"
 
 omni_mutex Tango::EventConsumer::ev_consumer_inst_mutex;
 
