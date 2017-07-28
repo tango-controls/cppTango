@@ -1008,12 +1008,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 				{
 					if ((ipos->second.channel_type == NOTIFD) && (epos->second.filter_ok == false))
 					{
-						try
-						{
-							re_subscribe_event(epos,ipos);
-							epos->second.filter_ok = true;
-						}
-						catch(...) {}
+                        assert(false);
 					}
 				}
 
@@ -1323,7 +1318,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 //
 
 				if (ipos->second.channel_type == NOTIFD)
-					ipos->second.has_notifd_closed_the_connection++;
+                    assert(false);
 			}
 			catch (DevFailed &e)
 			{
@@ -1435,7 +1430,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 //
 
 				if (ipos->second.channel_type == NOTIFD)
-					ipos->second.has_notifd_closed_the_connection++;
+                    assert(false);
 			}
 			catch (DevFailed &e)
 			{

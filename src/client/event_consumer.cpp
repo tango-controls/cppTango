@@ -4,20 +4,27 @@
 
 #include <tango.h>
 #include <tango/client/eventconsumer.h>
-#include "event_consumer.tpp"
+#include <tango/client/event_consumer.tpp>
 
 omni_mutex Tango::EventConsumer::ev_consumer_inst_mutex;
 
 Tango::EventConsumerKeepAliveThread *Tango::EventConsumer::keep_alive_thread = NULL;
-map<std::string,std::string> Tango::EventConsumer::device_channel_map;
-map<std::string,Tango::EventChannelStruct> Tango::EventConsumer::channel_map;
-map<std::string,Tango::EventCallBackStruct> Tango::EventConsumer::event_callback_map;
-ReadersWritersLock 	Tango::EventConsumer::map_modification_lock;
+
+map<std::string, std::string> Tango::EventConsumer::device_channel_map;
+
+map<std::string, Tango::EventChannelStruct> Tango::EventConsumer::channel_map;
+
+map<std::string, Tango::EventCallBackStruct> Tango::EventConsumer::event_callback_map;
+
+ReadersWritersLock    Tango::EventConsumer::map_modification_lock;
 
 vector<Tango::EventNotConnected> Tango::EventConsumer::event_not_connected;
+
 int Tango::EventConsumer::subscribe_event_id = 0;
+
 vector<string> Tango::EventConsumer::env_var_fqdn_prefix;
-map<string,string> Tango::EventConsumer::alias_map;
+
+map<string, string> Tango::EventConsumer::alias_map;
 
 Tango::KeepAliveThCmd Tango::EventConsumer::cmd;
 
@@ -38,11 +45,13 @@ Tango::KeepAliveThCmd Tango::EventConsumer::cmd;
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-int Tango::EventConsumer::add_new_callback(EvCbIte &iter, CallBack *callback, EventQueue *ev_queue, int event_id) {
+int Tango::EventConsumer::add_new_callback(EvCbIte &iter, CallBack *callback, EventQueue *ev_queue, int event_id)
+{
     EventSubscribeStruct ess;
     int ret_event_id = event_id;
 
-    if (ret_event_id <= 0) {
+    if (ret_event_id <= 0)
+    {
         subscribe_event_id++;
         ret_event_id = subscribe_event_id;
     }
@@ -81,7 +90,8 @@ int Tango::EventConsumer::add_new_callback(EvCbIte &iter, CallBack *callback, Ev
 void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *callback, EventQueue *ev_queue,
                                                EventType event,
                                                string &event_name, const string &obj_name, EventCallBackStruct &cb,
-                                               string &callback_key) {
+                                               string &callback_key)
+{
 
 //
 // A small 10 mS sleep here! This is required in case there is a push_event in the read_attribute (or pipe)
@@ -102,41 +112,51 @@ void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *ca
         (event == QUALITY_EVENT) ||
         (event == ARCHIVE_EVENT) ||
         (event == USER_EVENT) ||
-        (event == PERIODIC_EVENT)) {
+        (event == PERIODIC_EVENT))
+    {
         DevErrorList err;
         err.length(0);
 
         string domain_name;
         string::size_type pos;
 
-        if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos) {
+        if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos)
+        {
             domain_name = device_name;
             string tmp = '/' + obj_name_lower;
             domain_name.insert(pos, tmp);
-        } else
+        }
+        else
             domain_name = device_name + '/' + obj_name_lower;
 
         AttributeValue_5 *av_5 = Tango_nullptr;
         DeviceAttribute *da = Tango_nullptr;
         FwdEventData *event_data;
 
-        try {
-            if (cb.fwd_att == true) {
+        try
+        {
+            if (cb.fwd_att == true)
+            {
                 device->read_attribute(obj_name.c_str(), av_5);
-                if (av_5->err_list.length() != 0) {
+                if (av_5->err_list.length() != 0)
+                {
                     err = av_5->err_list;
                     err.length(err.length() - 1);
                 }
-            } else {
+            }
+            else
+            {
                 da = new DeviceAttribute();
                 *da = device->read_attribute(obj_name.c_str());
-                if (da->has_failed() == true) {
+                if (da->has_failed() == true)
+                {
                     err = da->get_err_stack();
                     err.length(err.length() - 1);
                 }
             }
         }
-        catch (DevFailed &e) {
+        catch (DevFailed &e)
+        {
             err = e.errors;
         }
 
@@ -145,11 +165,14 @@ void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *ca
         if (pos != string::npos)
             local_event_name.erase(0, EVENT_COMPAT_IDL5_SIZE);
 
-        if (cb.fwd_att == true) {
+        if (cb.fwd_att == true)
+        {
             da = new DeviceAttribute();
             event_data = new FwdEventData(device, domain_name, local_event_name, da, err);
             event_data->set_av_5(av_5);
-        } else {
+        }
+        else
+        {
             event_data = new FwdEventData(device, domain_name, local_event_name, da, err);
         }
 
@@ -159,11 +182,14 @@ void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *ca
 // If a callback method was specified, call it!
 //
 
-        if (callback != NULL) {
-            try {
+        if (callback != NULL)
+        {
+            try
+            {
                 callback->push_event(event_data);
             }
-            catch (...) {
+            catch (...)
+            {
                 cerr << "EventConsumer::subscribe_event() exception in callback method of " << callback_key << endl;
             }
 
@@ -176,10 +202,13 @@ void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *ca
 // No calback method, the event has to be inserted into the event queue
 //
 
-        else {
+        else
+        {
             ev_queue->insert_event(event_data);
         }
-    } else if (event == ATTR_CONF_EVENT) {
+    }
+    else if (event == ATTR_CONF_EVENT)
+    {
         DevErrorList err;
         err.length(0);
         string domain_name = device_name + "/" + obj_name_lower;
@@ -190,11 +219,13 @@ void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *ca
         if (pos != string::npos)
             local_event_name.erase(0, EVENT_COMPAT_IDL5_SIZE);
 
-        try {
+        try
+        {
             aie = new AttributeInfoEx();
             *aie = device->get_attribute_config(const_cast<string &>(obj_name));
         }
-        catch (DevFailed &e) {
+        catch (DevFailed &e)
+        {
             err = e.errors;
         }
 
@@ -209,11 +240,14 @@ void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *ca
 // If a callback method was specified, call it!
 //
 
-        if (callback != NULL) {
-            try {
+        if (callback != NULL)
+        {
+            try
+            {
                 callback->push_event(event_data);
             }
-            catch (...) {
+            catch (...)
+            {
                 cerr << "EventConsumer::subscribe_event() exception in callback method of " << callback_key << endl;
             }
             delete event_data;
@@ -223,21 +257,26 @@ void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *ca
 // No calback method, the event has to be inserted into the event queue
 //
 
-        else {
+        else
+        {
             ev_queue->insert_event(event_data);
         }
-    } else if (event == INTERFACE_CHANGE_EVENT) {
+    }
+    else if (event == INTERFACE_CHANGE_EVENT)
+    {
         DevErrorList err;
         err.length(0);
         CommandInfoList *c_list = Tango_nullptr;
         AttributeInfoListEx *a_list = Tango_nullptr;
         string ev_name(EventName[INTERFACE_CHANGE_EVENT]);
 
-        try {
+        try
+        {
             c_list = device->command_list_query();
             a_list = device->attribute_list_query_ex();
         }
-        catch (DevFailed &e) {
+        catch (DevFailed &e)
+        {
             delete c_list;
             c_list = Tango_nullptr;
             delete a_list;
@@ -257,11 +296,14 @@ void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *ca
 // if a callback method was specified, call it!
 //
 
-        if (callback != NULL) {
-            try {
+        if (callback != NULL)
+        {
+            try
+            {
                 callback->push_event(event_data);
             }
-            catch (...) {
+            catch (...)
+            {
                 cerr << "EventConsumer::subscribe_event() exception in callback method of " << callback_key << endl;
             }
 
@@ -274,31 +316,38 @@ void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *ca
 // No calback method, the event has to be instered into the event queue
 //
 
-        else {
+        else
+        {
             ev_queue->insert_event(event_data);
         }
-    } else if (event == PIPE_EVENT) {
+    }
+    else if (event == PIPE_EVENT)
+    {
         DevErrorList err;
         err.length(0);
 
         string domain_name;
         string::size_type pos;
 
-        if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos) {
+        if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos)
+        {
             domain_name = device_name;
             string tmp = '/' + obj_name_lower;
             domain_name.insert(pos, tmp);
-        } else
+        }
+        else
             domain_name = device_name + '/' + obj_name_lower;
 
         DevicePipe *da = Tango_nullptr;
         PipeEventData *event_data;
 
-        try {
+        try
+        {
             da = new DevicePipe();
             *da = device->read_pipe(obj_name);
         }
-        catch (DevFailed &e) {
+        catch (DevFailed &e)
+        {
             err = e.errors;
         }
 
@@ -310,11 +359,14 @@ void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *ca
 // If a callback method was specified, call it!
 //
 
-        if (callback != NULL) {
-            try {
+        if (callback != NULL)
+        {
+            try
+            {
                 callback->push_event(event_data);
             }
-            catch (...) {
+            catch (...)
+            {
                 cerr << "EventConsumer::subscribe_event() exception in callback method of " << callback_key << endl;
             }
 
@@ -325,7 +377,8 @@ void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *ca
 // No calback method, the event has to be inserted into the event queue
 //
 
-        else {
+        else
+        {
             ev_queue->insert_event(event_data);
         }
     }
@@ -353,22 +406,25 @@ Tango::EventConsumer::EventConsumer(ApiUtil *api_ptr)
         try
         {
             Database *db = (api_ptr->get_db_vect())[api_ptr->get_db_ind()];
-            string prefix = "tango://" + db->get_db_host() + ':' + db->get_db_port() + '/' ;
+            string prefix = "tango://" + db->get_db_host() + ':' + db->get_db_port() + '/';
             env_var_fqdn_prefix.push_back(prefix);
 
             if (db->is_multi_tango_host() == true)
             {
                 vector<string> &tango_hosts = db->get_multi_host();
                 vector<string> &tango_ports = db->get_multi_port();
-                for (unsigned int i = 1;i < tango_hosts.size();i++)
+                for (unsigned int i = 1; i < tango_hosts.size(); i++)
                 {
-                    string prefix = "tango://" + tango_hosts[i] + ':' + tango_ports[i] + '/' ;
+                    string prefix = "tango://" + tango_hosts[i] + ':' + tango_ports[i] + '/';
                     env_var_fqdn_prefix.push_back(prefix);
                 }
             }
 
-            for (size_t loop = 0;loop < env_var_fqdn_prefix.size();++loop)
-                transform(env_var_fqdn_prefix[loop].begin(),env_var_fqdn_prefix[loop].end(),env_var_fqdn_prefix[loop].begin(),::tolower);
+            for (size_t loop = 0; loop < env_var_fqdn_prefix.size(); ++loop)
+                transform(env_var_fqdn_prefix[loop].begin(),
+                          env_var_fqdn_prefix[loop].end(),
+                          env_var_fqdn_prefix[loop].begin(),
+                          ::tolower);
 
 //
 // Also get Db server defined in DB but not in the user TANGO_HOST env. variable
@@ -460,13 +516,13 @@ void Tango::EventConsumer::get_cs_tango_host(Database *db)
         if (vs.size() == 1)
         {
             string lower_vs(vs[0]);
-            transform(lower_vs.begin(),lower_vs.end(),lower_vs.begin(),::tolower);
+            transform(lower_vs.begin(), lower_vs.end(), lower_vs.begin(), ::tolower);
             string::size_type pos = lower_vs.find(':');
             if (pos != string::npos)
                 lower_vs.erase(pos);
 
             string tg_host(db->get_orig_tango_host());
-            transform(tg_host.begin(),tg_host.end(),tg_host.begin(),::tolower);
+            transform(tg_host.begin(), tg_host.end(), tg_host.begin(), ::tolower);
 
             if (tg_host.empty() == false && lower_vs != tg_host)
             {
@@ -475,7 +531,7 @@ void Tango::EventConsumer::get_cs_tango_host(Database *db)
 #ifdef INIT_LIST
                     alias_map.insert({lower_vs,tg_host});
 #else
-                    alias_map.insert(make_pair(lower_vs,tg_host));
+                    alias_map.insert(make_pair(lower_vs, tg_host));
 #endif
                 }
             }
@@ -487,9 +543,9 @@ void Tango::EventConsumer::get_cs_tango_host(Database *db)
 
         vector<string>::iterator pos;
 
-        for (unsigned int i = 0;i < vs.size();i++)
+        for (unsigned int i = 0; i < vs.size(); i++)
         {
-            transform(vs[i].begin(),vs[i].end(),vs[i].begin(),::tolower);
+            transform(vs[i].begin(), vs[i].end(), vs[i].begin(), ::tolower);
 #ifdef HAS_LAMBDA_FUNC
             pos = find_if(env_var_fqdn_prefix.begin(),env_var_fqdn_prefix.end(),
                           [&] (string str) -> bool
@@ -507,25 +563,25 @@ void Tango::EventConsumer::get_cs_tango_host(Database *db)
             }
 #else
             unsigned int j;
-			for (j = 0;j < env_var_fqdn_prefix.size();++j)
-			{
-				if (env_var_fqdn_prefix[j].find(vs[i]) != string::npos)
-				{
-					break;
-				}
-			}
+            for (j = 0; j < env_var_fqdn_prefix.size(); ++j)
+            {
+                if (env_var_fqdn_prefix[j].find(vs[i]) != string::npos)
+                {
+                    break;
+                }
+            }
 
-			if (j == env_var_fqdn_prefix.size())
-			{
-				string prefix = "tango://" + vs[i] + '/';
-				env_var_fqdn_prefix.push_back(prefix);
-			}
+            if (j == env_var_fqdn_prefix.size())
+            {
+                string prefix = "tango://" + vs[i] + '/';
+                env_var_fqdn_prefix.push_back(prefix);
+            }
 #endif
         }
     }
-    catch(...) {}
+    catch (...)
+    {}
 }
-
 
 //+--------------------------------------------------------------------------------------------------------------------
 //
@@ -581,7 +637,7 @@ void Tango::EventConsumer::shutdown_keep_alive_thread()
         }
 
         int *rv;
-        keep_alive_thread->join((void **)&rv);
+        keep_alive_thread->join((void **) &rv);
 
         keep_alive_thread = NULL;
     }
@@ -606,12 +662,13 @@ void Tango::EventConsumer::shutdown_keep_alive_thread()
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Tango::EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,DeviceData &dd,string &adm_name,bool &necm)
+void
+Tango::EventConsumer::connect(DeviceProxy *device_proxy, string &d_name, DeviceData &dd, string &adm_name, bool &necm)
 {
     string channel_name = adm_name;
     if (device_proxy->get_from_env_var() == true)
     {
-        channel_name.insert(0,env_var_fqdn_prefix[0]);
+        channel_name.insert(0, env_var_fqdn_prefix[0]);
     }
 
 //
@@ -619,16 +676,16 @@ void Tango::EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,Devi
 // to the notifd. In such a case, the lock is already locked before the method is called
 //
 
-    std::map<std::string,EventChannelStruct>::iterator ipos = channel_map.find(channel_name);
+    std::map<std::string, EventChannelStruct>::iterator ipos = channel_map.find(channel_name);
     if (ipos == channel_map.end())
     {
-        connect_event_channel(channel_name,device_proxy->get_device_db(),false,dd);
+        connect_event_channel(channel_name, device_proxy->get_device_db(), false, dd);
     }
 
 
     if (device_proxy->get_from_env_var() == true)
     {
-        adm_name.insert(0,env_var_fqdn_prefix[0]);
+        adm_name.insert(0, env_var_fqdn_prefix[0]);
     }
 
 //
@@ -669,8 +726,8 @@ void Tango::EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,Devi
 //-------------------------------------------------------------------------------------------------------------------
 
 void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
-                                   const AttributeValue_3 *attr_value_3,
-                                   long vers,DeviceAttribute *dev_attr)
+                                          const AttributeValue_3 *attr_value_3,
+                                          long vers, DeviceAttribute *dev_attr)
 {
     const DevVarLongArray *tmp_seq_lo;
     DevLong *tmp_lo;
@@ -697,7 +754,7 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
     const DevVarStateArray *tmp_seq_state;
     Tango::DevState *tmp_state;
 
-    DevULong max,len;
+    DevULong max, len;
 
     if (vers == 3)
     {
@@ -747,13 +804,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_lo->length();
                     if (tmp_seq_lo->release() == true)
                     {
-                        tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((DevBoolean)true);
-                        dev_attr->LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
+                        tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((DevBoolean)
+                                                                                             true);
+                        dev_attr->LongSeq = new DevVarLongArray(max, len, tmp_lo, true);
                     }
                     else
                     {
                         tmp_lo = const_cast<DevLong *>(tmp_seq_lo->get_buffer());
-                        dev_attr->LongSeq = new DevVarLongArray(max,len,tmp_lo,false);
+                        dev_attr->LongSeq = new DevVarLongArray(max, len, tmp_lo, false);
                     }
                     break;
 
@@ -766,13 +824,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_64->length();
                     if (tmp_seq_64->release() == true)
                     {
-                        tmp_64 = (const_cast<DevVarLong64Array *>(tmp_seq_64))->get_buffer((DevBoolean)true);
-                        dev_attr->Long64Seq = new DevVarLong64Array(max,len,tmp_64,true);
+                        tmp_64 = (const_cast<DevVarLong64Array *>(tmp_seq_64))->get_buffer((DevBoolean)
+                                                                                               true);
+                        dev_attr->Long64Seq = new DevVarLong64Array(max, len, tmp_64, true);
                     }
                     else
                     {
                         tmp_64 = const_cast<DevLong64 *>(tmp_seq_64->get_buffer());
-                        dev_attr->Long64Seq = new DevVarLong64Array(max,len,tmp_64,false);
+                        dev_attr->Long64Seq = new DevVarLong64Array(max, len, tmp_64, false);
                     }
                     break;
 
@@ -785,13 +844,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_sh->length();
                     if (tmp_seq_sh->release() == true)
                     {
-                        tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((DevBoolean)true);
-                        dev_attr->ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
+                        tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((DevBoolean)
+                                                                                              true);
+                        dev_attr->ShortSeq = new DevVarShortArray(max, len, tmp_sh, true);
                     }
                     else
                     {
                         tmp_sh = const_cast<DevShort *>(tmp_seq_sh->get_buffer());
-                        dev_attr->ShortSeq = new DevVarShortArray(max,len,tmp_sh,false);
+                        dev_attr->ShortSeq = new DevVarShortArray(max, len, tmp_sh, false);
                     }
                     break;
 
@@ -804,13 +864,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_db->length();
                     if (tmp_seq_db->release() == true)
                     {
-                        tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((DevBoolean)true);
-                        dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
+                        tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((DevBoolean)
+                                                                                               true);
+                        dev_attr->DoubleSeq = new DevVarDoubleArray(max, len, tmp_db, true);
                     }
                     else
                     {
                         tmp_db = const_cast<DevDouble *>(tmp_seq_db->get_buffer());
-                        dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,false);
+                        dev_attr->DoubleSeq = new DevVarDoubleArray(max, len, tmp_db, false);
                     }
                     break;
 
@@ -823,13 +884,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_str->length();
                     if (tmp_seq_str->release() == true)
                     {
-                        tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((DevBoolean)true);
-                        dev_attr->StringSeq = new DevVarStringArray(max,len,tmp_str,true);
+                        tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((DevBoolean)
+                                                                                                 true);
+                        dev_attr->StringSeq = new DevVarStringArray(max, len, tmp_str, true);
                     }
                     else
                     {
                         tmp_str = const_cast<char **>(tmp_seq_str->get_buffer());
-                        dev_attr->StringSeq = new DevVarStringArray(max,len,tmp_str,false);
+                        dev_attr->StringSeq = new DevVarStringArray(max, len, tmp_str, false);
                     }
                     break;
 
@@ -842,13 +904,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_fl->length();
                     if (tmp_seq_fl->release() == true)
                     {
-                        tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((DevBoolean)true);
-                        dev_attr->FloatSeq = new DevVarFloatArray(max,len,tmp_fl,true);
+                        tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((DevBoolean)
+                                                                                              true);
+                        dev_attr->FloatSeq = new DevVarFloatArray(max, len, tmp_fl, true);
                     }
                     else
                     {
                         tmp_fl = const_cast<DevFloat *>(tmp_seq_fl->get_buffer());
-                        dev_attr->FloatSeq = new DevVarFloatArray(max,len,tmp_fl,false);
+                        dev_attr->FloatSeq = new DevVarFloatArray(max, len, tmp_fl, false);
                     }
                     break;
 
@@ -861,13 +924,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_boo->length();
                     if (tmp_seq_boo->release() == true)
                     {
-                        tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((DevBoolean)true);
-                        dev_attr->BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,true);
+                        tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((DevBoolean)
+                                                                                                  true);
+                        dev_attr->BooleanSeq = new DevVarBooleanArray(max, len, tmp_boo, true);
                     }
                     else
                     {
                         tmp_boo = const_cast<DevBoolean *>(tmp_seq_boo->get_buffer());
-                        dev_attr->BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,false);
+                        dev_attr->BooleanSeq = new DevVarBooleanArray(max, len, tmp_boo, false);
                     }
                     break;
 
@@ -880,13 +944,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_ush->length();
                     if (tmp_seq_ush->release() == true)
                     {
-                        tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((DevBoolean)true);
-                        dev_attr->UShortSeq = new DevVarUShortArray(max,len,tmp_ush,true);
+                        tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((DevBoolean)
+                                                                                                 true);
+                        dev_attr->UShortSeq = new DevVarUShortArray(max, len, tmp_ush, true);
                     }
                     else
                     {
                         tmp_ush = const_cast<DevUShort *>(tmp_seq_ush->get_buffer());
-                        dev_attr->UShortSeq = new DevVarUShortArray(max,len,tmp_ush,false);
+                        dev_attr->UShortSeq = new DevVarUShortArray(max, len, tmp_ush, false);
                     }
                     break;
 
@@ -899,13 +964,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_uch->length();
                     if (tmp_seq_uch->release() == true)
                     {
-                        tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((DevBoolean)true);
-                        dev_attr->UCharSeq = new DevVarCharArray(max,len,tmp_uch,true);
+                        tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((DevBoolean)
+                                                                                               true);
+                        dev_attr->UCharSeq = new DevVarCharArray(max, len, tmp_uch, true);
                     }
                     else
                     {
                         tmp_uch = const_cast<DevUChar *>(tmp_seq_uch->get_buffer());
-                        dev_attr->UCharSeq = new DevVarCharArray(max,len,tmp_uch,false);
+                        dev_attr->UCharSeq = new DevVarCharArray(max, len, tmp_uch, false);
                     }
                     break;
 
@@ -918,13 +984,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_ulo->length();
                     if (tmp_seq_ulo->release() == true)
                     {
-                        tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((DevBoolean)true);
-                        dev_attr->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
+                        tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((DevBoolean)
+                                                                                                true);
+                        dev_attr->ULongSeq = new DevVarULongArray(max, len, tmp_ulo, true);
                     }
                     else
                     {
                         tmp_ulo = const_cast<DevULong *>(tmp_seq_ulo->get_buffer());
-                        dev_attr->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,false);
+                        dev_attr->ULongSeq = new DevVarULongArray(max, len, tmp_ulo, false);
                     }
                     break;
 
@@ -937,13 +1004,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_u64->length();
                     if (tmp_seq_u64->release() == true)
                     {
-                        tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_u64))->get_buffer((DevBoolean)true);
-                        dev_attr->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
+                        tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_u64))->get_buffer((DevBoolean)
+                                                                                                    true);
+                        dev_attr->ULong64Seq = new DevVarULong64Array(max, len, tmp_ulolo, true);
                     }
                     else
                     {
                         tmp_ulolo = const_cast<DevULong64 *>(tmp_seq_u64->get_buffer());
-                        dev_attr->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,false);
+                        dev_attr->ULong64Seq = new DevVarULong64Array(max, len, tmp_ulolo, false);
                     }
                     break;
 
@@ -956,13 +1024,14 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
                     len = tmp_seq_state->length();
                     if (tmp_seq_state->release() == true)
                     {
-                        tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((DevBoolean)true);
-                        dev_attr->StateSeq = new DevVarStateArray(max,len,tmp_state,true);
+                        tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((DevBoolean)
+                                                                                                    true);
+                        dev_attr->StateSeq = new DevVarStateArray(max, len, tmp_state, true);
                     }
                     else
                     {
                         tmp_state = const_cast<Tango::DevState *>(tmp_seq_state->get_buffer());
-                        dev_attr->StateSeq = new DevVarStateArray(max,len,tmp_state,false);
+                        dev_attr->StateSeq = new DevVarStateArray(max, len, tmp_state, false);
                     }
                     break;
 
@@ -973,7 +1042,7 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue *attr_value,
     }
 }
 
-void Tango::EventConsumer::attr_to_device(const AttributeValue_4 *attr_value_4,DeviceAttribute *dev_attr)
+void Tango::EventConsumer::attr_to_device(const AttributeValue_4 *attr_value_4, DeviceAttribute *dev_attr)
 {
     dev_attr->name = attr_value_4->name;
     dev_attr->quality = attr_value_4->quality;
@@ -986,14 +1055,13 @@ void Tango::EventConsumer::attr_to_device(const AttributeValue_4 *attr_value_4,D
 
     if (dev_attr->quality != Tango::ATTR_INVALID)
     {
-        att_union_to_device(&attr_value_4->value,dev_attr);
+        att_union_to_device(&attr_value_4->value, dev_attr);
     }
 }
 
-
-void Tango::EventConsumer::attr_to_device(const ZmqAttributeValue_4 *attr_value_4,DeviceAttribute *dev_attr)
+void Tango::EventConsumer::attr_to_device(const ZmqAttributeValue_4 *attr_value_4, DeviceAttribute *dev_attr)
 {
-    base_attr_to_device(attr_value_4,dev_attr);
+    base_attr_to_device(attr_value_4, dev_attr);
 
     //
     // Warning: Since Tango 9, data type SHORT is used for both short attribute and enumeration attribute!
@@ -1004,9 +1072,9 @@ void Tango::EventConsumer::attr_to_device(const ZmqAttributeValue_4 *attr_value_
     dev_attr->data_type = Tango::DEV_SHORT;
 }
 
-void Tango::EventConsumer::attr_to_device(const ZmqAttributeValue_5 *attr_value_5,DeviceAttribute *dev_attr)
+void Tango::EventConsumer::attr_to_device(const ZmqAttributeValue_5 *attr_value_5, DeviceAttribute *dev_attr)
 {
-    base_attr_to_device(attr_value_5,dev_attr);
+    base_attr_to_device(attr_value_5, dev_attr);
     dev_attr->data_type = attr_value_5->data_type;
 }
 
@@ -1027,7 +1095,7 @@ void Tango::EventConsumer::attr_to_device(const ZmqAttributeValue_5 *attr_value_
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttribute *dev_attr)
+void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr, DeviceAttribute *dev_attr)
 {
     DevLong *tmp_lo;
     DevShort *tmp_sh;
@@ -1044,7 +1112,7 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
     Tango::DevState sta_dev;
     Tango::DevEncoded *tmp_enc;
 
-    DevULong max,len;
+    DevULong max, len;
 
     switch (union_ptr->_d())
     {
@@ -1055,13 +1123,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_boo = (const_cast<DevVarBooleanArray &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,true);
+                tmp_boo = (const_cast<DevVarBooleanArray &>(tmp_seq)).get_buffer((DevBoolean)
+                                                                                     true);
+                dev_attr->BooleanSeq = new DevVarBooleanArray(max, len, tmp_boo, true);
             }
             else
             {
                 tmp_boo = const_cast<DevBoolean *>(tmp_seq.get_buffer());
-                dev_attr->BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,false);
+                dev_attr->BooleanSeq = new DevVarBooleanArray(max, len, tmp_boo, false);
             }
         }
             break;
@@ -1073,13 +1142,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_sh = (const_cast<DevVarShortArray &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
+                tmp_sh = (const_cast<DevVarShortArray &>(tmp_seq)).get_buffer((DevBoolean)
+                                                                                  true);
+                dev_attr->ShortSeq = new DevVarShortArray(max, len, tmp_sh, true);
             }
             else
             {
                 tmp_sh = const_cast<DevShort *>(tmp_seq.get_buffer());
-                dev_attr->ShortSeq = new DevVarShortArray(max,len,tmp_sh,false);
+                dev_attr->ShortSeq = new DevVarShortArray(max, len, tmp_sh, false);
             }
         }
             break;
@@ -1091,13 +1161,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_lo = (const_cast<DevVarLongArray &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
+                tmp_lo = (const_cast<DevVarLongArray &>(tmp_seq)).get_buffer((DevBoolean)
+                                                                                 true);
+                dev_attr->LongSeq = new DevVarLongArray(max, len, tmp_lo, true);
             }
             else
             {
                 tmp_lo = const_cast<DevLong *>(tmp_seq.get_buffer());
-                dev_attr->LongSeq = new DevVarLongArray(max,len,tmp_lo,false);
+                dev_attr->LongSeq = new DevVarLongArray(max, len, tmp_lo, false);
             }
         }
             break;
@@ -1109,13 +1180,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_lolo = (const_cast<DevVarLong64Array &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,true);
+                tmp_lolo = (const_cast<DevVarLong64Array &>(tmp_seq)).get_buffer((DevBoolean)
+                                                                                     true);
+                dev_attr->Long64Seq = new DevVarLong64Array(max, len, tmp_lolo, true);
             }
             else
             {
                 tmp_lolo = const_cast<DevLong64 *>(tmp_seq.get_buffer());
-                dev_attr->Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,false);
+                dev_attr->Long64Seq = new DevVarLong64Array(max, len, tmp_lolo, false);
             }
         }
             break;
@@ -1127,13 +1199,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_fl = (const_cast<DevVarFloatArray &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->FloatSeq = new DevVarFloatArray(max,len,tmp_fl,true);
+                tmp_fl = (const_cast<DevVarFloatArray &>(tmp_seq)).get_buffer((DevBoolean)
+                                                                                  true);
+                dev_attr->FloatSeq = new DevVarFloatArray(max, len, tmp_fl, true);
             }
             else
             {
                 tmp_fl = const_cast<DevFloat *>(tmp_seq.get_buffer());
-                dev_attr->FloatSeq = new DevVarFloatArray(max,len,tmp_fl,false);
+                dev_attr->FloatSeq = new DevVarFloatArray(max, len, tmp_fl, false);
             }
         }
             break;
@@ -1145,13 +1218,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
+                tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((DevBoolean)
+                                                                                   true);
+                dev_attr->DoubleSeq = new DevVarDoubleArray(max, len, tmp_db, true);
             }
             else
             {
                 tmp_db = const_cast<DevDouble *>(tmp_seq.get_buffer());
-                dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,false);
+                dev_attr->DoubleSeq = new DevVarDoubleArray(max, len, tmp_db, false);
             }
         }
             break;
@@ -1163,13 +1237,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_uch = (const_cast<DevVarCharArray &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->UCharSeq = new DevVarCharArray(max,len,tmp_uch,true);
+                tmp_uch = (const_cast<DevVarCharArray &>(tmp_seq)).get_buffer((DevBoolean)
+                                                                                  true);
+                dev_attr->UCharSeq = new DevVarCharArray(max, len, tmp_uch, true);
             }
             else
             {
                 tmp_uch = const_cast<DevUChar *>(tmp_seq.get_buffer());
-                dev_attr->UCharSeq = new DevVarCharArray(max,len,tmp_uch,false);
+                dev_attr->UCharSeq = new DevVarCharArray(max, len, tmp_uch, false);
             }
         }
             break;
@@ -1181,13 +1256,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_ush = (const_cast<DevVarUShortArray &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->UShortSeq = new DevVarUShortArray(max,len,tmp_ush,true);
+                tmp_ush = (const_cast<DevVarUShortArray &>(tmp_seq)).get_buffer((DevBoolean)
+                                                                                    true);
+                dev_attr->UShortSeq = new DevVarUShortArray(max, len, tmp_ush, true);
             }
             else
             {
                 tmp_ush = const_cast<DevUShort *>(tmp_seq.get_buffer());
-                dev_attr->UShortSeq = new DevVarUShortArray(max,len,tmp_ush,false);
+                dev_attr->UShortSeq = new DevVarUShortArray(max, len, tmp_ush, false);
             }
         }
             break;
@@ -1199,13 +1275,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_ulo = (const_cast<DevVarULongArray &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
+                tmp_ulo = (const_cast<DevVarULongArray &>(tmp_seq)).get_buffer((DevBoolean)
+                                                                                   true);
+                dev_attr->ULongSeq = new DevVarULongArray(max, len, tmp_ulo, true);
             }
             else
             {
                 tmp_ulo = const_cast<DevULong *>(tmp_seq.get_buffer());
-                dev_attr->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,false);
+                dev_attr->ULongSeq = new DevVarULongArray(max, len, tmp_ulo, false);
             }
         }
             break;
@@ -1217,13 +1294,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_ulolo = (const_cast<DevVarULong64Array &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
+                tmp_ulolo = (const_cast<DevVarULong64Array &>(tmp_seq)).get_buffer((DevBoolean)
+                                                                                       true);
+                dev_attr->ULong64Seq = new DevVarULong64Array(max, len, tmp_ulolo, true);
             }
             else
             {
                 tmp_ulolo = const_cast<DevULong64 *>(tmp_seq.get_buffer());
-                dev_attr->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,false);
+                dev_attr->ULong64Seq = new DevVarULong64Array(max, len, tmp_ulolo, false);
             }
         }
             break;
@@ -1235,13 +1313,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_str = (const_cast<DevVarStringArray &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->StringSeq = new DevVarStringArray(max,len,tmp_str,true);
+                tmp_str = (const_cast<DevVarStringArray &>(tmp_seq)).get_buffer((DevBoolean)
+                                                                                    true);
+                dev_attr->StringSeq = new DevVarStringArray(max, len, tmp_str, true);
             }
             else
             {
                 tmp_str = const_cast<char **>(tmp_seq.get_buffer());
-                dev_attr->StringSeq = new DevVarStringArray(max,len,tmp_str,false);
+                dev_attr->StringSeq = new DevVarStringArray(max, len, tmp_str, false);
             }
         }
             break;
@@ -1253,13 +1332,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_state = (const_cast<DevVarStateArray &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->StateSeq = new DevVarStateArray(max,len,tmp_state,true);
+                tmp_state = (const_cast<DevVarStateArray &>(tmp_seq)).get_buffer((DevBoolean)
+                                                                                     true);
+                dev_attr->StateSeq = new DevVarStateArray(max, len, tmp_state, true);
             }
             else
             {
                 tmp_state = const_cast<Tango::DevState *>(tmp_seq.get_buffer());
-                dev_attr->StateSeq = new DevVarStateArray(max,len,tmp_state,false);
+                dev_attr->StateSeq = new DevVarStateArray(max, len, tmp_state, false);
             }
         }
             break;
@@ -1280,13 +1360,14 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_enc = (const_cast<DevVarEncodedArray &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->EncodedSeq = new DevVarEncodedArray(max,len,tmp_enc,true);
+                tmp_enc = (const_cast<DevVarEncodedArray &>(tmp_seq)).get_buffer((DevBoolean)
+                                                                                     true);
+                dev_attr->EncodedSeq = new DevVarEncodedArray(max, len, tmp_enc, true);
             }
             else
             {
                 tmp_enc = const_cast<Tango::DevEncoded *>(tmp_seq.get_buffer());
-                dev_attr->EncodedSeq = new DevVarEncodedArray(max,len,tmp_enc,false);
+                dev_attr->EncodedSeq = new DevVarEncodedArray(max, len, tmp_enc, false);
             }
         }
             break;
@@ -1313,22 +1394,21 @@ void Tango::EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,Dev
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
-                                    const string &attribute,
-                                    EventType event,
-                                    CallBack *callback,
-                                    const vector<string> &filters,
-                                    bool stateless)
+int Tango::EventConsumer::subscribe_event(DeviceProxy *device,
+                                          const string &attribute,
+                                          EventType event,
+                                          CallBack *callback,
+                                          const vector<string> &filters,
+                                          bool stateless)
 {
     if ((device == NULL) || (callback == NULL))
     {
         EventSystemExcept::throw_exception(API_InvalidArgs,
-                                           "Device or callback pointer NULL","EventConsumer::subscribe_event()");
+                                           "Device or callback pointer NULL", "EventConsumer::subscribe_event()");
     }
 
-    return (subscribe_event (device, attribute, event, callback, NULL, filters, stateless));
+    return (subscribe_event(device, attribute, event, callback, NULL, filters, stateless));
 }
-
 
 //+------------------------------------------------------------------------------------------------------------------
 //
@@ -1349,12 +1429,12 @@ int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
 //          - stateless : Flag to enable the stateless connection when set to true
 //
 //-------------------------------------------------------------------------------------------------------------------
-int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
-                                    const string &attribute,
-                                    EventType event,
-                                    int event_queue_size,
-                                    const vector<string> &filters,
-                                    bool stateless)
+int Tango::EventConsumer::subscribe_event(DeviceProxy *device,
+                                          const string &attribute,
+                                          EventType event,
+                                          int event_queue_size,
+                                          const vector<string> &filters,
+                                          bool stateless)
 {
     if ((device == NULL) || (event_queue_size < 0))
     {
@@ -1367,9 +1447,8 @@ int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
 
     EventQueue *ev_queue = new EventQueue(event_queue_size);
 
-    return (subscribe_event (device, attribute, event, NULL, ev_queue, filters, stateless));
+    return (subscribe_event(device, attribute, event, NULL, ev_queue, filters, stateless));
 }
-
 
 //+-------------------------------------------------------------------------------------------------------------------
 //
@@ -1389,13 +1468,13 @@ int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
 //			- stateless : Stateless subsription flag
 //
 //--------------------------------------------------------------------------------------------------------------------
-int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
-                                    const string &attribute,
-                                    EventType event,
-                                    CallBack *callback,
-                                    EventQueue *ev_queue,
-                                    const vector<string> &filters,
-                                    bool stateless)
+int Tango::EventConsumer::subscribe_event(DeviceProxy *device,
+                                          const string &attribute,
+                                          EventType event,
+                                          CallBack *callback,
+                                          EventQueue *ev_queue,
+                                          const vector<string> &filters,
+                                          bool stateless)
 {
     string event_name;
     if (event == QUALITY_EVENT)
@@ -1428,7 +1507,15 @@ int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
             subscribe_event_id++;
             int ret_event_id = subscribe_event_id;
 
-            DelayedEventSubThread *th = new DelayedEventSubThread(this,device,attribute,event,callback,ev_queue,stateless,event_name,ret_event_id);
+            DelayedEventSubThread *th = new DelayedEventSubThread(this,
+                                                                  device,
+                                                                  attribute,
+                                                                  event,
+                                                                  callback,
+                                                                  ev_queue,
+                                                                  stateless,
+                                                                  event_name,
+                                                                  ret_event_id);
             th->start();
 
             return ret_event_id;
@@ -1447,7 +1534,7 @@ int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
 
     try
     {
-        int event_id = connect_event (device,attribute,event,callback,ev_queue,filters,event_name);
+        int event_id = connect_event(device, attribute, event, callback, ev_queue, filters, event_name);
         return event_id;
     }
     catch (Tango::DevFailed &e)
@@ -1464,27 +1551,27 @@ int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
         // Retry to connect in the next heartbeat period.
 
         EventNotConnected conn_params;
-        conn_params.device           = device;
-        conn_params.attribute        = attribute;
-        conn_params.event_type       = event;
-        conn_params.event_name       = event_name;
-        conn_params.callback         = callback;
-        conn_params.ev_queue         = ev_queue;
-        conn_params.filters          = filters;
-        conn_params.last_heartbeat   = time(NULL);
+        conn_params.device = device;
+        conn_params.attribute = attribute;
+        conn_params.event_type = event;
+        conn_params.event_name = event_name;
+        conn_params.callback = callback;
+        conn_params.ev_queue = ev_queue;
+        conn_params.filters = filters;
+        conn_params.last_heartbeat = time(NULL);
         if (env_var_fqdn_prefix.empty() == false)
-            conn_params.prefix			 = env_var_fqdn_prefix[0];
+            conn_params.prefix = env_var_fqdn_prefix[0];
         // protect the vector as the other maps!
 
         // create and save the unique event ID
         subscribe_event_id++;
         conn_params.event_id = subscribe_event_id;
 
-        event_not_connected.push_back (conn_params);
+        event_not_connected.push_back(conn_params);
 
         vector<EventNotConnected>::iterator vpos = event_not_connected.end() - 1;
         time_t now = time(NULL);
-        keep_alive_thread->stateless_subscription_failed(vpos,e,now);
+        keep_alive_thread->stateless_subscription_failed(vpos, e, now);
         return subscribe_event_id;
     }
 }
@@ -1507,31 +1594,32 @@ int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
-                                    EventType event,
-                                    CallBack *callback,
-                                    bool stateless)
+int Tango::EventConsumer::subscribe_event(DeviceProxy *device,
+                                          EventType event,
+                                          CallBack *callback,
+                                          bool stateless)
 {
     if ((device == NULL) || (callback == NULL) || (event != INTERFACE_CHANGE_EVENT))
     {
         EventSystemExcept::throw_exception(API_InvalidArgs,
-                                           "Device,callback pointer NULL or unsupported event type","EventConsumer::subscribe_event()");
+                                           "Device,callback pointer NULL or unsupported event type",
+                                           "EventConsumer::subscribe_event()");
     }
 
     vector<string> filters;
 
-    return (subscribe_event(device,"dummy",event,callback,NULL,filters,stateless));
+    return (subscribe_event(device, "dummy", event, callback, NULL, filters, stateless));
 }
 
-int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
-                                    EventType event,
-                                    int event_queue_size,
-                                    bool stateless)
+int Tango::EventConsumer::subscribe_event(DeviceProxy *device,
+                                          EventType event,
+                                          int event_queue_size,
+                                          bool stateless)
 {
     if ((device == NULL) || (event != INTERFACE_CHANGE_EVENT))
     {
         EventSystemExcept::throw_exception(API_InvalidArgs,
-                                           "Device NULL or unsupported event type","EventConsumer::subscribe_event()");
+                                           "Device NULL or unsupported event type", "EventConsumer::subscribe_event()");
     }
 
     vector<string> filters;
@@ -1539,7 +1627,7 @@ int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
 // create an event queue object
 
     EventQueue *ev_queue = new EventQueue(event_queue_size);
-    return (subscribe_event(device,"dummy",event,NULL,ev_queue,filters,stateless));
+    return (subscribe_event(device, "dummy", event, NULL, ev_queue, filters, stateless));
 }
 //+-------------------------------------------------------------------------------------------------------------------
 //
@@ -1563,17 +1651,17 @@ int Tango::EventConsumer::subscribe_event (DeviceProxy *device,
 //--------------------------------------------------------------------------------------------------------------------
 
 int Tango::EventConsumer::connect_event(DeviceProxy *device,
-                                 const string &obj_name,
-                                 EventType event,
-                                 CallBack *callback,
-                                 EventQueue *ev_queue,
-                                 const vector<string> &filters,
-                                 string &event_name,
-                                 int event_id)
+                                        const string &obj_name,
+                                        EventType event,
+                                        CallBack *callback,
+                                        EventQueue *ev_queue,
+                                        const vector<string> &filters,
+                                        string &event_name,
+                                        int event_id)
 {
     int ret_event_id = event_id;
     device_name = device->dev_name();
-    cout3 << "Tango::EventConsumer::connect_event(" << device_name << "," << obj_name <<"," << event << ")\n";
+    cout3 << "Tango::EventConsumer::connect_event(" << device_name << "," << obj_name << "," << event << ")\n";
 
     bool inter_event = false;
     if (event == INTERFACE_CHANGE_EVENT)
@@ -1600,19 +1688,19 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
         }
         else
             prot = prot + device->get_db_host() + ':' + device->get_db_port() + '/';
-        device_name.insert(0,prot);
+        device_name.insert(0, prot);
         if (device->is_dbase_used() == false)
             device_name = device_name + MODIFIER_DBASE_NO;
     }
     else
     {
-        device_name.insert(0,env_var_fqdn_prefix[0]);
+        device_name.insert(0, env_var_fqdn_prefix[0]);
     }
 
-    transform(device_name.begin(),device_name.end(),device_name.begin(),::tolower);
+    transform(device_name.begin(), device_name.end(), device_name.begin(), ::tolower);
 
     obj_name_lower = obj_name;
-    transform(obj_name_lower.begin(),obj_name_lower.end(),obj_name_lower.begin(),::tolower);
+    transform(obj_name_lower.begin(), obj_name_lower.end(), obj_name_lower.begin(), ::tolower);
     string local_callback_key(device_name);
 
     string::size_type pos;
@@ -1621,7 +1709,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
         if (inter_event == true)
             local_callback_key = local_callback_key + "." + event_name;
         else
-            local_callback_key = local_callback_key + "/" +obj_name_lower + "." + event_name;
+            local_callback_key = local_callback_key + "/" + obj_name_lower + "." + event_name;
     }
     else
     {
@@ -1653,11 +1741,11 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 
     if (iter == event_callback_map.end() && add_compat_info == true)
     {
-        for (int i = 0;i < ATT_CONF_REL_NB;i++)
+        for (int i = 0; i < ATT_CONF_REL_NB; i++)
         {
             string mod_local_callback_key(local_callback_key);
             string::size_type pos = mod_local_callback_key.rfind('.');
-            mod_local_callback_key.insert(pos + 1,EVENT_COMPAT_IDL5);
+            mod_local_callback_key.insert(pos + 1, EVENT_COMPAT_IDL5);
             iter = event_callback_map.find(mod_local_callback_key);
             if (iter != event_callback_map.end())
                 break;
@@ -1666,8 +1754,8 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 
     if (iter != event_callback_map.end())
     {
-        int new_event_id = add_new_callback(iter,callback,ev_queue,event_id);
-        get_fire_sync_event(device,callback,ev_queue,event,event_name,obj_name,iter->second,local_callback_key);
+        int new_event_id = add_new_callback(iter, callback, ev_queue, event_id);
+        get_fire_sync_event(device, callback, ev_queue, event, event_name, obj_name, iter->second, local_callback_key);
         return new_event_id;
     }
 
@@ -1688,7 +1776,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
     DeviceProxy *adm_dev = NULL;
     bool allocated = false;
 
-    map<std::string,std::string>::iterator ipos = device_channel_map.find(device_name);
+    map<std::string, std::string>::iterator ipos = device_channel_map.find(device_name);
     EvChanIte evt_it = channel_map.end();
 
     string adm_name;
@@ -1701,12 +1789,12 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
             adm_dev = new DeviceProxy(adm_name);
             allocated = true;
         }
-        catch(...)
+        catch (...)
         {
             TangoSys_OMemStream o;
             o << "Can't subscribe to event for device " << device_name << "\n";
             o << "Check that device server is running..." << ends;
-            Except::throw_exception(API_CantConnectToDevice,o.str(),"EventConsumer::connect_event()");
+            Except::throw_exception(API_CantConnectToDevice, o.str(), "EventConsumer::connect_event()");
         }
     }
     else
@@ -1717,7 +1805,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
             TangoSys_OMemStream o;
             o << "Can't subscribe to event for device " << device_name << "\n";
             o << "Corrupted internal map. Please report bug" << ends;
-            Except::throw_exception(API_BadConfigurationProperty,o.str(),"EventConsumer::connect_event()");
+            Except::throw_exception(API_BadConfigurationProperty, o.str(), "EventConsumer::connect_event()");
         }
         const EventChannelStruct &evt_ch = evt_it->second;
         {
@@ -1743,7 +1831,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
         }
 
         subscriber_in << subscriber_info;
-        dd = adm_dev->command_inout(cmd_name,subscriber_in);
+        dd = adm_dev->command_inout(cmd_name, subscriber_in);
 
         dd.reset_exceptions(DeviceData::isempty_flag);
 
@@ -1759,17 +1847,18 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
             {
                 string::size_type pos = device_name.find("://");
                 pos = pos + 3;
-                pos = device_name.find('/',pos);
-                string fqdn_prefix = device_name.substr(0,pos + 1);
-                transform(fqdn_prefix.begin(),fqdn_prefix.end(),fqdn_prefix.begin(),::tolower);
+                pos = device_name.find('/', pos);
+                string fqdn_prefix = device_name.substr(0, pos + 1);
+                transform(fqdn_prefix.begin(), fqdn_prefix.end(), fqdn_prefix.begin(), ::tolower);
 
                 if (fqdn_prefix != env_var_fqdn_prefix[0])
                 {
                     TangoSys_OMemStream o;
                     o << "Device server for device " << device_name;
-                    o << " is too old to generate event in a multi TANGO_HOST environment. Please, use Tango >= 7.1" << ends;
+                    o << " is too old to generate event in a multi TANGO_HOST environment. Please, use Tango >= 7.1"
+                      << ends;
 
-                    EventSystemExcept::throw_exception(API_DSFailedRegisteringEvent,o.str(),
+                    EventSystemExcept::throw_exception(API_DSFailedRegisteringEvent, o.str(),
                                                        "EventConsumer::connect_event()");
                 }
             }
@@ -1783,7 +1872,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
         if (reason == API_CommandNotFound)
             throw;
         else
-            EventSystemExcept::re_throw_exception(e,API_DSFailedRegisteringEvent,
+            EventSystemExcept::re_throw_exception(e, API_DSFailedRegisteringEvent,
                                                   "Device server send exception while trying to register event",
                                                   "EventConsumer::connect_event()");
     }
@@ -1792,7 +1881,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 // Some Zmq specific code (Check release compatibility,....)
 //
 
-    zmq_specific(dd,adm_name,device,obj_name);
+    zmq_specific(dd, adm_name, device, obj_name);
 
 //	if (allocated == true)
 //		delete adm_dev;
@@ -1813,7 +1902,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
     {
         event_name = EVENT_COMPAT_IDL5 + event_name;
         string::size_type pos = local_callback_key.rfind('.');
-        local_callback_key.insert(pos + 1,EVENT_COMPAT_IDL5);
+        local_callback_key.insert(pos + 1, EVENT_COMPAT_IDL5);
     }
 
 //
@@ -1829,7 +1918,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 
         try
         {
-            connect(device,device_name,dd,adm_name,new_entry_in_channel_map);
+            connect(device, device_name, dd, adm_name, new_entry_in_channel_map);
         }
         catch (Tango::DevFailed &e)
         {
@@ -1847,9 +1936,9 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
             TangoSys_OMemStream o;
 
             o << "Failed to connect to event channel for device " << device_name << ends;
-            EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
+            EventSystemExcept::throw_exception((const char *) API_NotificationServiceFailed,
                                                o.str(),
-                                               (const char*)"EventConsumer::connect_event()");
+                                               (const char *) "EventConsumer::connect_event()");
         }
 
         if (evt_it == channel_map.end())
@@ -1917,7 +2006,14 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
     new_ess.callback = callback;
     new_ess.ev_queue = ev_queue;
 
-    connect_event_system(device_name,obj_name_lower,event_name,filters,evt_it,new_event_callback,dd,valid_endpoint_nb);
+    connect_event_system(device_name,
+                         obj_name_lower,
+                         event_name,
+                         filters,
+                         evt_it,
+                         new_event_callback,
+                         dd,
+                         valid_endpoint_nb);
 
 //
 // Check if this subscription is for a fwd attribute root attribute (when relevant)
@@ -1966,9 +2062,9 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 // If we have a CS for which TANGO_HOST is one alias (host name in alias map), set flag in map
 //
 
-    pos = local_callback_key.find(':',6);
-    string tg_host = local_callback_key.substr(8,pos - 8);
-    map<string,string>::iterator ite = alias_map.find(tg_host);
+    pos = local_callback_key.find(':', 6);
+    string tg_host = local_callback_key.substr(8, pos - 8);
+    map<string, string>::iterator ite = alias_map.find(tg_host);
     if (ite != alias_map.end())
     {
         new_event_callback.alias_used = true;
@@ -1978,7 +2074,8 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 // Insert new entry in map
 //
 
-    pair<EvCbIte, bool> ret = event_callback_map.insert(pair<string, EventCallBackStruct>(local_callback_key, new_event_callback));
+    pair<EvCbIte, bool>
+        ret = event_callback_map.insert(pair<string, EventCallBackStruct>(local_callback_key, new_event_callback));
     if (!ret.second)
     {
         TangoSys_OMemStream o;
@@ -1995,7 +2092,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 // Force callback execution when it is done
 //
 
-    get_fire_sync_event(device,callback,ev_queue,event,event_name,obj_name,iter->second,local_callback_key);
+    get_fire_sync_event(device, callback, ev_queue, event, event_name, obj_name, iter->second, local_callback_key);
 
 //
 // Sleep for some mS (20) in order to give to ZMQ some times to propagate the subscription to the publisher
@@ -2006,7 +2103,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
     ts.tv_nsec = 20000000;
     ts.tv_sec = 0;
 
-    nanosleep(&ts,NULL);
+    nanosleep(&ts, NULL);
 #else
     Sleep(20);
 #endif
@@ -2033,12 +2130,12 @@ void Tango::EventConsumer::unsubscribe_event(int event_id)
 {
     if (event_id == 0)
     {
-        EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
-                                           (const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
-                                           (const char*)"EventConsumer::unsubscribe_event()");
+        EventSystemExcept::throw_exception((const char *) "API_EventNotFound",
+                                           (const char *) "Failed to unsubscribe event, the event id specified does not correspond with any known one",
+                                           (const char *) "EventConsumer::unsubscribe_event()");
     }
 
-    std::map<std::string,EventCallBackStruct>::iterator epos;
+    std::map<std::string, EventCallBackStruct>::iterator epos;
     std::vector<EventSubscribeStruct>::iterator esspos;
 
 //
@@ -2053,7 +2150,7 @@ void Tango::EventConsumer::unsubscribe_event(int event_id)
         {
             for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
             {
-                if(esspos->id == event_id)
+                if (esspos->id == event_id)
                 {
 
 //
@@ -2069,7 +2166,8 @@ void Tango::EventConsumer::unsubscribe_event(int event_id)
                             //                           cout << event_id << ": Unsubscribing for an event while it is in its callback !!!!!!!!!!" << endl;
                             esspos->id = -event_id;
 
-                            DelayedEventUnsubThread *th = new DelayedEventUnsubThread(this,event_id,epos->second.callback_monitor);
+                            DelayedEventUnsubThread
+                                *th = new DelayedEventUnsubThread(this, event_id, epos->second.callback_monitor);
                             th->start();
 
                             return;
@@ -2097,7 +2195,7 @@ void Tango::EventConsumer::unsubscribe_event(int event_id)
         EventCallBackStruct &evt_cb = epos->second;
         for (esspos = evt_cb.callback_list.begin(); esspos != evt_cb.callback_list.end(); ++esspos)
         {
-            if(esspos->id == event_id)
+            if (esspos->id == event_id)
             {
 
 //
@@ -2122,22 +2220,13 @@ void Tango::EventConsumer::unsubscribe_event(int event_id)
                     EventChannelStruct &evt_ch = evt_it->second;
                     if (evt_ch.channel_type == NOTIFD)
                     {
-                        try
-                        {
-                            CosNotifyFilter::Filter_var f = evt_ch.structuredProxyPushSupplier->get_filter(evt_cb.filter_id);
-                            evt_ch.structuredProxyPushSupplier->remove_filter(evt_cb.filter_id);
-                            f->destroy();
-                        }
-                        catch (...)
-                        {
-                            EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
-                                                               (const char*)"Failed to unsubscribe event, caught exception while calling remove_filter() or destroy() (hint: check the Notification daemon is running ",
-                                                               (const char*)"EventConsumer::unsubscribe_event()");
-                        }
+                        EventSystemExcept::throw_exception((const char *) "API_EventNotFound",
+                                                           (const char *) "Failed to unsubscribe event, caught exception while calling remove_filter() or destroy() (hint: check the Notification daemon is running ",
+                                                           (const char *) "EventConsumer::unsubscribe_event()");
                     }
                     else
                     {
-                        disconnect_event(evt_cb.fully_qualified_event_name,evt_cb.endpoint);
+                        disconnect_event(evt_cb.fully_qualified_event_name, evt_cb.endpoint);
                     }
 
                     // delete the allocated callback monitor
@@ -2151,7 +2240,7 @@ void Tango::EventConsumer::unsubscribe_event(int event_id)
 // Check if there is another callback using the same channel
 //
 
-                    std::map<std::string,EventCallBackStruct>::iterator cb_pos;
+                    std::map<std::string, EventCallBackStruct>::iterator cb_pos;
                     bool channel_used_elsewhere = false;
                     for (cb_pos = event_callback_map.begin(); cb_pos != event_callback_map.end(); ++cb_pos)
                     {
@@ -2168,7 +2257,7 @@ void Tango::EventConsumer::unsubscribe_event(int event_id)
 
                     if (channel_used_elsewhere == false)
                     {
-                        std::map<std::string,EventChannelStruct>::iterator chan_pos;
+                        std::map<std::string, EventChannelStruct>::iterator chan_pos;
                         for (chan_pos = channel_map.begin(); chan_pos != channel_map.end(); ++chan_pos)
                         {
                             EventChannelStruct &evt_ch = chan_pos->second;
@@ -2178,32 +2267,15 @@ void Tango::EventConsumer::unsubscribe_event(int event_id)
                                 {
                                     if (evt_ch.channel_type == NOTIFD)
                                     {
-                                        try
-                                        {
-                                            CosNotifyFilter::Filter_var f = evt_ch.structuredProxyPushSupplier->get_filter(evt_ch.heartbeat_filter_id);
-                                            evt_ch.structuredProxyPushSupplier->remove_filter(evt_ch.heartbeat_filter_id);
-                                            f->destroy();
-                                            try
-                                            {
-                                                omniORB::setClientCallTimeout(evt_ch.structuredProxyPushSupplier,1000);
-                                                evt_ch.structuredProxyPushSupplier->disconnect_structured_push_supplier();
-                                            }
-                                            catch(CORBA::TRANSIENT &c_t)
-                                            {
-                                                if (c_t.minor() != omni::TRANSIENT_CallTimedout)
-                                                    throw;
-                                            }
-                                        }
-                                        catch (...)
-                                        {
-                                            EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
-                                                                               (const char*)"Failed to unsubscribe event, caught exception while calling remove_filter() or destroy() on the heartbeat filter (hint: check the Notification daemon is running ",
-                                                                               (const char*)"EventConsumer::unsubscribe_event()");
-                                        }
+                                        EventSystemExcept::throw_exception((const char *) "API_EventNotFound",
+                                                                           (const char *) "Failed to unsubscribe event, caught exception while calling remove_filter() or destroy() on the heartbeat filter (hint: check the Notification daemon is running ",
+                                                                           (const char *) "EventConsumer::unsubscribe_event()");
                                     }
                                     else
                                     {
-                                        disconnect_event_channel(deleted_channel_name,evt_ch.endpoint,deleted_event_endpoint);
+                                        disconnect_event_channel(deleted_channel_name,
+                                                                 evt_ch.endpoint,
+                                                                 deleted_event_endpoint);
                                     }
 
                                     delete evt_ch.adm_device_proxy;
@@ -2215,7 +2287,7 @@ void Tango::EventConsumer::unsubscribe_event(int event_id)
                             }
                         }
 
-                        std::map<std::string,std::string>::iterator dev_pos,dev_pos_del;
+                        std::map<std::string, std::string>::iterator dev_pos, dev_pos_del;
                         for (dev_pos = device_channel_map.begin(); dev_pos != device_channel_map.end();)
                         {
                             if (dev_pos->second == deleted_channel_name)
@@ -2242,13 +2314,13 @@ void Tango::EventConsumer::unsubscribe_event(int event_id)
 
     // check also the vector of not yet connected events
 
-    if ( event_not_connected.empty() == false )
+    if (event_not_connected.empty() == false)
     {
         std::vector<EventNotConnected>::iterator vpos;
-        for (vpos =  event_not_connected.begin();
+        for (vpos = event_not_connected.begin();
              vpos != event_not_connected.end(); ++vpos)
         {
-            if ( vpos->event_id == event_id)
+            if (vpos->event_id == event_id)
             {
                 // delete the event queue when used
                 delete vpos->ev_queue;
@@ -2262,9 +2334,9 @@ void Tango::EventConsumer::unsubscribe_event(int event_id)
 
     // nothing was found!
 
-    EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
-                                       (const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
-                                       (const char*)"EventConsumer::unsubscribe_event()");
+    EventSystemExcept::throw_exception((const char *) "API_EventNotFound",
+                                       (const char *) "Failed to unsubscribe event, the event id specified does not correspond with any known one",
+                                       (const char *) "EventConsumer::unsubscribe_event()");
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2284,16 +2356,16 @@ void Tango::EventConsumer::unsubscribe_event(int event_id)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Tango::EventConsumer::add_not_connected_event(DevFailed &e,EventNotConnected &not_con)
+void Tango::EventConsumer::add_not_connected_event(DevFailed &e, EventNotConnected &not_con)
 {
     if (env_var_fqdn_prefix.empty() == false)
         not_con.prefix = env_var_fqdn_prefix[0];
 
-    event_not_connected.push_back (not_con);
+    event_not_connected.push_back(not_con);
 
     vector<EventNotConnected>::iterator vpos = event_not_connected.end() - 1;
     time_t now = time(NULL);
-    keep_alive_thread->stateless_subscription_failed(vpos,e,now);
+    keep_alive_thread->stateless_subscription_failed(vpos, e, now);
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2314,7 +2386,7 @@ void Tango::EventConsumer::add_not_connected_event(DevFailed &e,EventNotConnecte
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Tango::EventConsumer::get_events (int event_id, EventDataList &event_list)
+void Tango::EventConsumer::get_events(int event_id, EventDataList &event_list)
 {
 
     cout3 << "EventConsumer::get_events() : event_id = " << event_id << endl;
@@ -2326,7 +2398,7 @@ void Tango::EventConsumer::get_events (int event_id, EventDataList &event_list)
 // First search the event entry in the callback map
 //
 
-    std::map<std::string,EventCallBackStruct>::iterator epos;
+    std::map<std::string, EventCallBackStruct>::iterator epos;
     std::vector<EventSubscribeStruct>::iterator esspos;
 
     for (epos = event_callback_map.begin(); epos != event_callback_map.end(); ++epos)
@@ -2334,13 +2406,13 @@ void Tango::EventConsumer::get_events (int event_id, EventDataList &event_list)
         EventCallBackStruct &evt_cb = epos->second;
         for (esspos = evt_cb.callback_list.begin(); esspos != evt_cb.callback_list.end(); ++esspos)
         {
-            if(esspos->id == event_id)
+            if (esspos->id == event_id)
             {
                 // check wether an event queue is used!
-                if ( esspos->callback == NULL )
+                if (esspos->callback == NULL)
                 {
                     // get the events from the queue
-                    esspos->ev_queue->get_events (event_list);
+                    esspos->ev_queue->get_events(event_list);
                     return;
                 }
                 else
@@ -2348,9 +2420,9 @@ void Tango::EventConsumer::get_events (int event_id, EventDataList &event_list)
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::get_events()");
+                                                       (const char *) "EventConsumer::get_events()");
                 }
             }
         }
@@ -2360,19 +2432,19 @@ void Tango::EventConsumer::get_events (int event_id, EventDataList &event_list)
 // check also the vector of not yet connected events
 //
 
-    if ( event_not_connected.empty() == false )
+    if (event_not_connected.empty() == false)
     {
         std::vector<EventNotConnected>::iterator vpos;
-        for (vpos =  event_not_connected.begin();
+        for (vpos = event_not_connected.begin();
              vpos != event_not_connected.end(); ++vpos)
         {
-            if ( vpos->event_id == event_id)
+            if (vpos->event_id == event_id)
             {
                 // check wether an event queue is used!
-                if ( vpos->callback == NULL )
+                if (vpos->callback == NULL)
                 {
                     // get the events from the queue
-                    vpos->ev_queue->get_events (event_list);
+                    vpos->ev_queue->get_events(event_list);
                     return;
                 }
                 else
@@ -2380,9 +2452,9 @@ void Tango::EventConsumer::get_events (int event_id, EventDataList &event_list)
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::get_events()");
+                                                       (const char *) "EventConsumer::get_events()");
                 }
             }
         }
@@ -2390,9 +2462,9 @@ void Tango::EventConsumer::get_events (int event_id, EventDataList &event_list)
 
     // nothing was found!
 
-    EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
-                                       (const char*)"Failed to get event, the event id specified does not correspond with any known one",
-                                       (const char*)"EventConsumer::get_events()");
+    EventSystemExcept::throw_exception((const char *) "API_EventNotFound",
+                                       (const char *) "Failed to get event, the event id specified does not correspond with any known one",
+                                       (const char *) "EventConsumer::get_events()");
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2413,7 +2485,7 @@ void Tango::EventConsumer::get_events (int event_id, EventDataList &event_list)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Tango::EventConsumer::get_events (int event_id, AttrConfEventDataList &event_list)
+void Tango::EventConsumer::get_events(int event_id, AttrConfEventDataList &event_list)
 {
     cout3 << "EventConsumer::get_events() : event_id = " << event_id << endl;
 
@@ -2424,7 +2496,7 @@ void Tango::EventConsumer::get_events (int event_id, AttrConfEventDataList &even
 // First search the event entry in the callback map
 //
 
-    std::map<std::string,EventCallBackStruct>::iterator epos;
+    std::map<std::string, EventCallBackStruct>::iterator epos;
     std::vector<EventSubscribeStruct>::iterator esspos;
 
     for (epos = event_callback_map.begin(); epos != event_callback_map.end(); ++epos)
@@ -2432,13 +2504,13 @@ void Tango::EventConsumer::get_events (int event_id, AttrConfEventDataList &even
         EventCallBackStruct &evt_cb = epos->second;
         for (esspos = evt_cb.callback_list.begin(); esspos != evt_cb.callback_list.end(); ++esspos)
         {
-            if(esspos->id == event_id)
+            if (esspos->id == event_id)
             {
                 // check wether an event queue is used!
-                if ( esspos->callback == NULL )
+                if (esspos->callback == NULL)
                 {
                     // get the events from the queue
-                    esspos->ev_queue->get_events (event_list);
+                    esspos->ev_queue->get_events(event_list);
                     return;
                 }
                 else
@@ -2446,9 +2518,9 @@ void Tango::EventConsumer::get_events (int event_id, AttrConfEventDataList &even
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::get_events()");
+                                                       (const char *) "EventConsumer::get_events()");
                 }
             }
         }
@@ -2458,19 +2530,19 @@ void Tango::EventConsumer::get_events (int event_id, AttrConfEventDataList &even
 // check also the vector of not yet connected events
 //
 
-    if ( event_not_connected.empty() == false )
+    if (event_not_connected.empty() == false)
     {
         std::vector<EventNotConnected>::iterator vpos;
-        for (vpos =  event_not_connected.begin();
+        for (vpos = event_not_connected.begin();
              vpos != event_not_connected.end(); ++vpos)
         {
-            if ( vpos->event_id == event_id)
+            if (vpos->event_id == event_id)
             {
                 // check wether an event queue is used!
-                if ( vpos->callback == NULL )
+                if (vpos->callback == NULL)
                 {
                     // get the events from the queue
-                    vpos->ev_queue->get_events (event_list);
+                    vpos->ev_queue->get_events(event_list);
                     return;
                 }
                 else
@@ -2478,9 +2550,9 @@ void Tango::EventConsumer::get_events (int event_id, AttrConfEventDataList &even
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::get_events()");
+                                                       (const char *) "EventConsumer::get_events()");
                 }
             }
         }
@@ -2488,9 +2560,9 @@ void Tango::EventConsumer::get_events (int event_id, AttrConfEventDataList &even
 
     // nothing was found!
 
-    EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
-                                       (const char*)"Failed to get event, the event id specified does not correspond with any known one",
-                                       (const char*)"EventConsumer::get_events()");
+    EventSystemExcept::throw_exception((const char *) "API_EventNotFound",
+                                       (const char *) "Failed to get event, the event id specified does not correspond with any known one",
+                                       (const char *) "EventConsumer::get_events()");
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2511,7 +2583,7 @@ void Tango::EventConsumer::get_events (int event_id, AttrConfEventDataList &even
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Tango::EventConsumer::get_events (int event_id, DataReadyEventDataList &event_list)
+void Tango::EventConsumer::get_events(int event_id, DataReadyEventDataList &event_list)
 {
     cout3 << "EventConsumer::get_events() : event_id = " << event_id << endl;
 
@@ -2522,7 +2594,7 @@ void Tango::EventConsumer::get_events (int event_id, DataReadyEventDataList &eve
 // First search the event entry in the callback map
 //
 
-    std::map<std::string,EventCallBackStruct>::iterator epos;
+    std::map<std::string, EventCallBackStruct>::iterator epos;
     std::vector<EventSubscribeStruct>::iterator esspos;
 
     for (epos = event_callback_map.begin(); epos != event_callback_map.end(); ++epos)
@@ -2530,13 +2602,13 @@ void Tango::EventConsumer::get_events (int event_id, DataReadyEventDataList &eve
         EventCallBackStruct &evt_cb = epos->second;
         for (esspos = evt_cb.callback_list.begin(); esspos != evt_cb.callback_list.end(); ++esspos)
         {
-            if(esspos->id == event_id)
+            if (esspos->id == event_id)
             {
                 // check wether an event queue is used!
-                if ( esspos->callback == NULL )
+                if (esspos->callback == NULL)
                 {
                     // get the events from the queue
-                    esspos->ev_queue->get_events (event_list);
+                    esspos->ev_queue->get_events(event_list);
                     return;
                 }
                 else
@@ -2544,9 +2616,9 @@ void Tango::EventConsumer::get_events (int event_id, DataReadyEventDataList &eve
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::get_events()");
+                                                       (const char *) "EventConsumer::get_events()");
                 }
             }
         }
@@ -2556,19 +2628,19 @@ void Tango::EventConsumer::get_events (int event_id, DataReadyEventDataList &eve
 // check also the vector of not yet connected events
 //
 
-    if ( event_not_connected.empty() == false )
+    if (event_not_connected.empty() == false)
     {
         std::vector<EventNotConnected>::iterator vpos;
-        for (vpos =  event_not_connected.begin();
+        for (vpos = event_not_connected.begin();
              vpos != event_not_connected.end(); ++vpos)
         {
-            if ( vpos->event_id == event_id)
+            if (vpos->event_id == event_id)
             {
                 // check wether an event queue is used!
-                if ( vpos->callback == NULL )
+                if (vpos->callback == NULL)
                 {
                     // get the events from the queue
-                    vpos->ev_queue->get_events (event_list);
+                    vpos->ev_queue->get_events(event_list);
                     return;
                 }
                 else
@@ -2576,9 +2648,9 @@ void Tango::EventConsumer::get_events (int event_id, DataReadyEventDataList &eve
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::get_events()");
+                                                       (const char *) "EventConsumer::get_events()");
                 }
             }
         }
@@ -2586,9 +2658,9 @@ void Tango::EventConsumer::get_events (int event_id, DataReadyEventDataList &eve
 
     // nothing was found!
 
-    EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
-                                       (const char*)"Failed to get event, the event id specified does not correspond with any known one",
-                                       (const char*)"EventConsumer::get_events()");
+    EventSystemExcept::throw_exception((const char *) "API_EventNotFound",
+                                       (const char *) "Failed to get event, the event id specified does not correspond with any known one",
+                                       (const char *) "EventConsumer::get_events()");
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2609,7 +2681,7 @@ void Tango::EventConsumer::get_events (int event_id, DataReadyEventDataList &eve
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Tango::EventConsumer::get_events (int event_id, DevIntrChangeEventDataList &event_list)
+void Tango::EventConsumer::get_events(int event_id, DevIntrChangeEventDataList &event_list)
 {
     cout3 << "EventConsumer::get_events() : event_id = " << event_id << endl;
 
@@ -2620,7 +2692,7 @@ void Tango::EventConsumer::get_events (int event_id, DevIntrChangeEventDataList 
 // First search the event entry in the callback map
 //
 
-    std::map<std::string,EventCallBackStruct>::iterator epos;
+    std::map<std::string, EventCallBackStruct>::iterator epos;
     std::vector<EventSubscribeStruct>::iterator esspos;
 
     for (epos = event_callback_map.begin(); epos != event_callback_map.end(); ++epos)
@@ -2628,13 +2700,13 @@ void Tango::EventConsumer::get_events (int event_id, DevIntrChangeEventDataList 
         EventCallBackStruct &evt_cb = epos->second;
         for (esspos = evt_cb.callback_list.begin(); esspos != evt_cb.callback_list.end(); ++esspos)
         {
-            if(esspos->id == event_id)
+            if (esspos->id == event_id)
             {
                 // check wether an event queue is used!
-                if ( esspos->callback == NULL )
+                if (esspos->callback == NULL)
                 {
                     // get the events from the queue
-                    esspos->ev_queue->get_events (event_list);
+                    esspos->ev_queue->get_events(event_list);
                     return;
                 }
                 else
@@ -2643,7 +2715,7 @@ void Tango::EventConsumer::get_events (int event_id, DevIntrChangeEventDataList 
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
                     EventSystemExcept::throw_exception(API_EventQueues,
-                                                       o.str(),"EventConsumer::get_events()");
+                                                       o.str(), "EventConsumer::get_events()");
                 }
             }
         }
@@ -2653,19 +2725,19 @@ void Tango::EventConsumer::get_events (int event_id, DevIntrChangeEventDataList 
 // check also the vector of not yet connected events
 //
 
-    if ( event_not_connected.empty() == false )
+    if (event_not_connected.empty() == false)
     {
         std::vector<EventNotConnected>::iterator vpos;
-        for (vpos =  event_not_connected.begin();
+        for (vpos = event_not_connected.begin();
              vpos != event_not_connected.end(); ++vpos)
         {
-            if ( vpos->event_id == event_id)
+            if (vpos->event_id == event_id)
             {
                 // check wether an event queue is used!
-                if ( vpos->callback == NULL )
+                if (vpos->callback == NULL)
                 {
                     // get the events from the queue
-                    vpos->ev_queue->get_events (event_list);
+                    vpos->ev_queue->get_events(event_list);
                     return;
                 }
                 else
@@ -2674,7 +2746,7 @@ void Tango::EventConsumer::get_events (int event_id, DevIntrChangeEventDataList 
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
                     EventSystemExcept::throw_exception(API_EventQueues,
-                                                       o.str(),"EventConsumer::get_events()");
+                                                       o.str(), "EventConsumer::get_events()");
                 }
             }
         }
@@ -2705,7 +2777,7 @@ void Tango::EventConsumer::get_events (int event_id, DevIntrChangeEventDataList 
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Tango::EventConsumer::get_events (int event_id, PipeEventDataList &event_list)
+void Tango::EventConsumer::get_events(int event_id, PipeEventDataList &event_list)
 {
     cout3 << "EventConsumer::get_events() : event_id = " << event_id << endl;
 
@@ -2716,7 +2788,7 @@ void Tango::EventConsumer::get_events (int event_id, PipeEventDataList &event_li
 // First search the event entry in the callback map
 //
 
-    std::map<std::string,EventCallBackStruct>::iterator epos;
+    std::map<std::string, EventCallBackStruct>::iterator epos;
     std::vector<EventSubscribeStruct>::iterator esspos;
 
     for (epos = event_callback_map.begin(); epos != event_callback_map.end(); ++epos)
@@ -2724,13 +2796,13 @@ void Tango::EventConsumer::get_events (int event_id, PipeEventDataList &event_li
         EventCallBackStruct &evt_cb = epos->second;
         for (esspos = evt_cb.callback_list.begin(); esspos != evt_cb.callback_list.end(); ++esspos)
         {
-            if(esspos->id == event_id)
+            if (esspos->id == event_id)
             {
                 // check wether an event queue is used!
-                if ( esspos->callback == NULL )
+                if (esspos->callback == NULL)
                 {
                     // get the events from the queue
-                    esspos->ev_queue->get_events (event_list);
+                    esspos->ev_queue->get_events(event_list);
                     return;
                 }
                 else
@@ -2739,7 +2811,7 @@ void Tango::EventConsumer::get_events (int event_id, PipeEventDataList &event_li
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
                     EventSystemExcept::throw_exception(API_EventQueues,
-                                                       o.str(),"EventConsumer::get_events()");
+                                                       o.str(), "EventConsumer::get_events()");
                 }
             }
         }
@@ -2749,19 +2821,19 @@ void Tango::EventConsumer::get_events (int event_id, PipeEventDataList &event_li
 // check also the vector of not yet connected events
 //
 
-    if ( event_not_connected.empty() == false )
+    if (event_not_connected.empty() == false)
     {
         std::vector<EventNotConnected>::iterator vpos;
-        for (vpos =  event_not_connected.begin();
+        for (vpos = event_not_connected.begin();
              vpos != event_not_connected.end(); ++vpos)
         {
-            if ( vpos->event_id == event_id)
+            if (vpos->event_id == event_id)
             {
                 // check wether an event queue is used!
-                if ( vpos->callback == NULL )
+                if (vpos->callback == NULL)
                 {
                     // get the events from the queue
-                    vpos->ev_queue->get_events (event_list);
+                    vpos->ev_queue->get_events(event_list);
                     return;
                 }
                 else
@@ -2770,7 +2842,7 @@ void Tango::EventConsumer::get_events (int event_id, PipeEventDataList &event_li
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
                     EventSystemExcept::throw_exception(API_EventQueues,
-                                                       o.str(),"EventConsumer::get_events()");
+                                                       o.str(), "EventConsumer::get_events()");
                 }
             }
         }
@@ -2801,7 +2873,7 @@ void Tango::EventConsumer::get_events (int event_id, PipeEventDataList &event_li
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Tango::EventConsumer::get_events (int event_id, CallBack *cb)
+void Tango::EventConsumer::get_events(int event_id, CallBack *cb)
 {
 
     cout3 << "EventConsumer::get_events() : event_id = " << event_id << endl;
@@ -2813,7 +2885,7 @@ void Tango::EventConsumer::get_events (int event_id, CallBack *cb)
 // First search the event entry in the callback map
 //
 
-    std::map<std::string,EventCallBackStruct>::iterator epos;
+    std::map<std::string, EventCallBackStruct>::iterator epos;
     std::vector<EventSubscribeStruct>::iterator esspos;
 
     for (epos = event_callback_map.begin(); epos != event_callback_map.end(); ++epos)
@@ -2821,13 +2893,13 @@ void Tango::EventConsumer::get_events (int event_id, CallBack *cb)
         EventCallBackStruct &evt_cb = epos->second;
         for (esspos = evt_cb.callback_list.begin(); esspos != evt_cb.callback_list.end(); ++esspos)
         {
-            if(esspos->id == event_id)
+            if (esspos->id == event_id)
             {
                 // check wether an event queue is used!
-                if ( esspos->callback == NULL )
+                if (esspos->callback == NULL)
                 {
                     // get the events from the queue
-                    esspos->ev_queue->get_events (cb);
+                    esspos->ev_queue->get_events(cb);
                     return;
                 }
                 else
@@ -2835,9 +2907,9 @@ void Tango::EventConsumer::get_events (int event_id, CallBack *cb)
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::get_events()");
+                                                       (const char *) "EventConsumer::get_events()");
                 }
             }
         }
@@ -2847,19 +2919,19 @@ void Tango::EventConsumer::get_events (int event_id, CallBack *cb)
 // check also the vector of not yet connected events
 //
 
-    if ( event_not_connected.empty() == false )
+    if (event_not_connected.empty() == false)
     {
         std::vector<EventNotConnected>::iterator vpos;
-        for (vpos =  event_not_connected.begin();
+        for (vpos = event_not_connected.begin();
              vpos != event_not_connected.end(); ++vpos)
         {
-            if ( vpos->event_id == event_id)
+            if (vpos->event_id == event_id)
             {
                 // check wether an event queue is used!
-                if ( vpos->callback == NULL )
+                if (vpos->callback == NULL)
                 {
                     // get the events from the queue
-                    vpos->ev_queue->get_events (cb);
+                    vpos->ev_queue->get_events(cb);
                     return;
                 }
                 else
@@ -2867,9 +2939,9 @@ void Tango::EventConsumer::get_events (int event_id, CallBack *cb)
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::get_events()");
+                                                       (const char *) "EventConsumer::get_events()");
                 }
             }
         }
@@ -2877,9 +2949,9 @@ void Tango::EventConsumer::get_events (int event_id, CallBack *cb)
 
     // nothing was found!
 
-    EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
-                                       (const char*)"Failed to get event, the event id specified does not correspond with any known one",
-                                       (const char*)"EventConsumer::get_events()");
+    EventSystemExcept::throw_exception((const char *) "API_EventNotFound",
+                                       (const char *) "Failed to get event, the event id specified does not correspond with any known one",
+                                       (const char *) "EventConsumer::get_events()");
 }
 
 
@@ -2897,7 +2969,7 @@ void Tango::EventConsumer::get_events (int event_id, CallBack *cb)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-int  Tango::EventConsumer::event_queue_size(int event_id)
+int Tango::EventConsumer::event_queue_size(int event_id)
 {
     cout3 << "EventConsumer::event_queue_size() : event_id = " << event_id << endl;
 
@@ -2908,7 +2980,7 @@ int  Tango::EventConsumer::event_queue_size(int event_id)
 // First search the event entry in the callback map
 //
 
-    std::map<std::string,EventCallBackStruct>::iterator epos;
+    std::map<std::string, EventCallBackStruct>::iterator epos;
     std::vector<EventSubscribeStruct>::iterator esspos;
 
     for (epos = event_callback_map.begin(); epos != event_callback_map.end(); ++epos)
@@ -2916,10 +2988,10 @@ int  Tango::EventConsumer::event_queue_size(int event_id)
         EventCallBackStruct &evt_cb = epos->second;
         for (esspos = evt_cb.callback_list.begin(); esspos != evt_cb.callback_list.end(); ++esspos)
         {
-            if(esspos->id == event_id)
+            if (esspos->id == event_id)
             {
                 // check wether an event queue is used!
-                if ( esspos->callback == NULL )
+                if (esspos->callback == NULL)
                 {
                     // get the event queue size
                     return (esspos->ev_queue->size());
@@ -2929,9 +3001,9 @@ int  Tango::EventConsumer::event_queue_size(int event_id)
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::event_queue_size()");
+                                                       (const char *) "EventConsumer::event_queue_size()");
                 }
             }
         }
@@ -2941,16 +3013,16 @@ int  Tango::EventConsumer::event_queue_size(int event_id)
 // check also the vector of not yet connected events
 //
 
-    if ( event_not_connected.empty() == false )
+    if (event_not_connected.empty() == false)
     {
         std::vector<EventNotConnected>::iterator vpos;
-        for (vpos =  event_not_connected.begin();
+        for (vpos = event_not_connected.begin();
              vpos != event_not_connected.end(); ++vpos)
         {
-            if ( vpos->event_id == event_id)
+            if (vpos->event_id == event_id)
             {
                 // check wether an event queue is used!
-                if ( vpos->callback == NULL )
+                if (vpos->callback == NULL)
                 {
                     // get the event queue size
                     return (vpos->ev_queue->size());
@@ -2961,9 +3033,9 @@ int  Tango::EventConsumer::event_queue_size(int event_id)
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::event_queue_size()");
+                                                       (const char *) "EventConsumer::event_queue_size()");
                 }
             }
         }
@@ -2971,9 +3043,9 @@ int  Tango::EventConsumer::event_queue_size(int event_id)
 
     // nothing was found!
 
-    EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
-                                       (const char*)"Failed to get event, the event id specified does not correspond with any known one",
-                                       (const char*)"EventConsumer::event_queue_size()");
+    EventSystemExcept::throw_exception((const char *) "API_EventNotFound",
+                                       (const char *) "Failed to get event, the event id specified does not correspond with any known one",
+                                       (const char *) "EventConsumer::event_queue_size()");
 
     // Should never reach here. To make compiler happy
 
@@ -3006,7 +3078,7 @@ bool Tango::EventConsumer::is_event_queue_empty(int event_id)
 // First search the event entry in the callback map
 //
 
-    std::map<std::string,EventCallBackStruct>::iterator epos;
+    std::map<std::string, EventCallBackStruct>::iterator epos;
     std::vector<EventSubscribeStruct>::iterator esspos;
 
     for (epos = event_callback_map.begin(); epos != event_callback_map.end(); ++epos)
@@ -3014,10 +3086,10 @@ bool Tango::EventConsumer::is_event_queue_empty(int event_id)
         EventCallBackStruct &evt_cb = epos->second;
         for (esspos = evt_cb.callback_list.begin(); esspos != evt_cb.callback_list.end(); ++esspos)
         {
-            if(esspos->id == event_id)
+            if (esspos->id == event_id)
             {
                 // check wether an event queue is used!
-                if ( esspos->callback == NULL )
+                if (esspos->callback == NULL)
                 {
                     // check whether the event queue is empty
                     return (esspos->ev_queue->is_empty());
@@ -3027,9 +3099,9 @@ bool Tango::EventConsumer::is_event_queue_empty(int event_id)
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::is_event_queue_empty()");
+                                                       (const char *) "EventConsumer::is_event_queue_empty()");
                 }
             }
         }
@@ -3039,16 +3111,16 @@ bool Tango::EventConsumer::is_event_queue_empty(int event_id)
 // check also the vector of not yet connected events
 //
 
-    if ( event_not_connected.empty() == false )
+    if (event_not_connected.empty() == false)
     {
         std::vector<EventNotConnected>::iterator vpos;
-        for (vpos =  event_not_connected.begin();
+        for (vpos = event_not_connected.begin();
              vpos != event_not_connected.end(); ++vpos)
         {
-            if ( vpos->event_id == event_id)
+            if (vpos->event_id == event_id)
             {
                 // check wether an event queue is used!
-                if ( vpos->callback == NULL )
+                if (vpos->callback == NULL)
                 {
                     // check whether the event queue is empty
                     return (vpos->ev_queue->is_empty());
@@ -3058,9 +3130,9 @@ bool Tango::EventConsumer::is_event_queue_empty(int event_id)
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::is_event_queue_empty()");
+                                                       (const char *) "EventConsumer::is_event_queue_empty()");
                 }
             }
         }
@@ -3068,9 +3140,9 @@ bool Tango::EventConsumer::is_event_queue_empty(int event_id)
 
     // nothing was found!
 
-    EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
-                                       (const char*)"Failed to get event, the event id specified does not correspond with any known one",
-                                       (const char*)"EventConsumer::is_event_queue_empty()");
+    EventSystemExcept::throw_exception((const char *) "API_EventNotFound",
+                                       (const char *) "Failed to get event, the event id specified does not correspond with any known one",
+                                       (const char *) "EventConsumer::is_event_queue_empty()");
 
     // Should never reach here. To make compiler happy
 
@@ -3103,7 +3175,7 @@ Tango::TimeVal Tango::EventConsumer::get_last_event_date(int event_id)
 // First search the event entry in the callback map
 //
 
-    std::map<std::string,EventCallBackStruct>::iterator epos;
+    std::map<std::string, EventCallBackStruct>::iterator epos;
     std::vector<EventSubscribeStruct>::iterator esspos;
 
     for (epos = event_callback_map.begin(); epos != event_callback_map.end(); ++epos)
@@ -3111,10 +3183,10 @@ Tango::TimeVal Tango::EventConsumer::get_last_event_date(int event_id)
         EventCallBackStruct &evt_cb = epos->second;
         for (esspos = evt_cb.callback_list.begin(); esspos != evt_cb.callback_list.end(); ++esspos)
         {
-            if(esspos->id == event_id)
+            if (esspos->id == event_id)
             {
                 // check wether an event queue is used!
-                if ( esspos->callback == NULL )
+                if (esspos->callback == NULL)
                 {
                     // get the last insertion date
                     return (esspos->ev_queue->get_last_event_date());
@@ -3124,9 +3196,9 @@ Tango::TimeVal Tango::EventConsumer::get_last_event_date(int event_id)
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::get_last_event_date()");
+                                                       (const char *) "EventConsumer::get_last_event_date()");
                 }
             }
         }
@@ -3136,16 +3208,16 @@ Tango::TimeVal Tango::EventConsumer::get_last_event_date(int event_id)
 // check also the vector of not yet connected events
 //
 
-    if ( event_not_connected.empty() == false )
+    if (event_not_connected.empty() == false)
     {
         std::vector<EventNotConnected>::iterator vpos;
-        for (vpos =  event_not_connected.begin();
+        for (vpos = event_not_connected.begin();
              vpos != event_not_connected.end(); ++vpos)
         {
-            if ( vpos->event_id == event_id)
+            if (vpos->event_id == event_id)
             {
                 // check wether an event queue is used!
-                if ( vpos->callback == NULL )
+                if (vpos->callback == NULL)
                 {
                     // get the last insertion date
                     return (vpos->ev_queue->get_last_event_date());
@@ -3155,9 +3227,9 @@ Tango::TimeVal Tango::EventConsumer::get_last_event_date(int event_id)
                     TangoSys_OMemStream o;
                     o << "No event queue specified during subscribe_event()\n";
                     o << "Cannot return any event data" << ends;
-                    EventSystemExcept::throw_exception((const char *)API_EventQueues,
+                    EventSystemExcept::throw_exception((const char *) API_EventQueues,
                                                        o.str(),
-                                                       (const char *)"EventConsumer::get_last_event_date()");
+                                                       (const char *) "EventConsumer::get_last_event_date()");
                 }
             }
         }
@@ -3165,9 +3237,9 @@ Tango::TimeVal Tango::EventConsumer::get_last_event_date(int event_id)
 
     // nothing was found!
 
-    EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
-                                       (const char*)"Failed to get event, the event id specified does not correspond with any known one",
-                                       (const char*)"EventConsumer::get_last_event_date()");
+    EventSystemExcept::throw_exception((const char *) "API_EventNotFound",
+                                       (const char *) "Failed to get event, the event id specified does not correspond with any known one",
+                                       (const char *) "EventConsumer::get_last_event_date()");
 
     // Should never reach here. To make compiler happy
 
@@ -3206,9 +3278,9 @@ Tango::ChannelType Tango::EventConsumer::get_event_system_for_event_id(int event
 
     if (event_id == 0)
     {
-        EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
-                                           (const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
-                                           (const char*)"EventConsumer::get_event_system_for_event_id()");
+        EventSystemExcept::throw_exception((const char *) "API_EventNotFound",
+                                           (const char *) "Failed to unsubscribe event, the event id specified does not correspond with any known one",
+                                           (const char *) "EventConsumer::get_event_system_for_event_id()");
     }
 
     bool found = false;
@@ -3218,7 +3290,7 @@ Tango::ChannelType Tango::EventConsumer::get_event_system_for_event_id(int event
         EventCallBackStruct &ecs = epos->second;
         for (esspos = ecs.callback_list.begin(); esspos != ecs.callback_list.end(); ++esspos)
         {
-            if(esspos->id == event_id)
+            if (esspos->id == event_id)
             {
                 found = true;
                 EvChanIte evt_it = channel_map.find(ecs.channel_name);
@@ -3227,9 +3299,9 @@ Tango::ChannelType Tango::EventConsumer::get_event_system_for_event_id(int event
                     TangoSys_OMemStream o;
                     o << "Can't unsubscribe to event with id " << event_id << "\n";
                     o << "Corrupted internal map. Please report bug" << ends;
-                    Except::throw_exception((const char *)API_BadConfigurationProperty,
+                    Except::throw_exception((const char *) API_BadConfigurationProperty,
                                             o.str(),
-                                            (const char *)"EventConsumer::get_event_system_for_event_id()");
+                                            (const char *) "EventConsumer::get_event_system_for_event_id()");
                 }
                 EventChannelStruct &evt_ch = evt_it->second;
                 ret = evt_ch.channel_type;
@@ -3247,7 +3319,7 @@ Tango::ChannelType Tango::EventConsumer::get_event_system_for_event_id(int event
     if (found == false && event_not_connected.empty() == false)
     {
         std::vector<EventNotConnected>::iterator vpos;
-        for (vpos = event_not_connected.begin();vpos != event_not_connected.end();++vpos)
+        for (vpos = event_not_connected.begin(); vpos != event_not_connected.end(); ++vpos)
         {
             if (vpos->event_id == event_id)
             {
@@ -3263,9 +3335,9 @@ Tango::ChannelType Tango::EventConsumer::get_event_system_for_event_id(int event
 
     if (found == false)
     {
-        EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
-                                           (const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
-                                           (const char*)"EventConsumer::get_event_system_for_event_id()");
+        EventSystemExcept::throw_exception((const char *) "API_EventNotFound",
+                                           (const char *) "Failed to unsubscribe event, the event id specified does not correspond with any known one",
+                                           (const char *) "EventConsumer::get_event_system_for_event_id()");
     }
 
     return ret;
