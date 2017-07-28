@@ -45,8 +45,8 @@
 #ifndef _TG_WINDOWS_
 	#include <unistd.h>
 #else
-	#include <coutbuf.h>
-	#include <w32win.h>
+	#include "tango/server/coutbuf.h"
+	#include "w32win.h"
 #endif /* _TG_WINDOWS_ */
 
 //
