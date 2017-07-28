@@ -61,6 +61,7 @@ namespace Tango {
 	#if (_WIN32_WINNT >= 0x0400)
 		#include <winsock2.h>
 		#include <mswsock.h>
+		#include <algorithm>
 	#else
 		#include <winsock.h>
 	#endif
@@ -125,6 +126,7 @@ namespace Tango {
 	#include <tango/server/device_4.h>
 	#include <tango/server/device_5.h>
 	#include <tango/server/command.h>
+	#include <tango/server/attribute.h>
 	#include <tango/server/pipedesc.h>
 	#include <tango/server/pipe.h>
 	#include <tango/server/w_pipe.h>
