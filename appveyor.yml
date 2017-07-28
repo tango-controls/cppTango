@@ -1,7 +1,7 @@
 version: 1.0.{build}
 branches:
   only:
-    - NexeyaSGara-CI
+    - continuous-integration
 
 image: Visual Studio 2015
 
