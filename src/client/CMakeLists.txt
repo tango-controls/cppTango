@@ -27,7 +27,6 @@ set(SOURCES dbapi_class.cpp
         event.cpp
         eventkeepalive.cpp
         eventqueue.cpp
-        event_consumer.tpp
         event_consumer.cpp
         zmqeventconsumer.cpp
         device/device_command_info.cpp)
