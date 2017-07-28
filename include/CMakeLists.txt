@@ -62,17 +62,17 @@ set(CLIENT_TEMPLATES
         tango/client/devapi_pipe.tpp
         tango/client/event_consumer.tpp)
 
-set(SERVER_HEADERS tango/server/attrdesc.h
-        tango/server/attribute.h
-        tango/server/attrmanip.h
+set(SERVER_HEADERS
+        tango/server/attrdesc.h
         tango/server/attrprop.h
+        tango/server/attrmanip.h
+        tango/server/attribute.h
         tango/server/auto_tango_monitor.h
         tango/server/basiccommand.h
         tango/server/blackbox.h
         tango/server/classattribute.h
         tango/server/classpipe.h
         tango/server/command.h
-        tango/server/pipe.h
         tango/server/coutappender.h
         tango/server/coutbuf.h
         tango/server/device.h
@@ -86,6 +86,8 @@ set(SERVER_HEADERS tango/server/attrdesc.h
         tango/server/dserver.h
         tango/server/dserverclass.h
         tango/server/dserversignal.h
+        tango/server/encoded_attribute.h
+        tango/server/encoded_format.h
         tango/server/eventsupplier.h
         tango/server/except.h
         tango/server/fwdattrdesc.h
@@ -96,6 +98,7 @@ set(SERVER_HEADERS tango/server/attrdesc.h
         tango/server/logstream.h
         tango/server/multiattribute.h
         tango/server/ntservice.h
+        tango/server/pipe.h
         tango/server/pipedesc.h
         tango/server/pollcmds.h
         tango/server/pollext.h
@@ -114,8 +117,6 @@ set(SERVER_HEADERS tango/server/attrdesc.h
         tango/server/w_attribute.h
         tango/server/w_pipe.h
         tango/server/subdev_diag.h
-        tango/server/encoded_attribute.h
-        tango/server/encoded_format.h
         tango/server/device_6.h)
 
 
@@ -138,9 +139,30 @@ set(SERVER_TEMPLATES
         tango/server/w_attrsetval.tpp
         tango/server/w_attribute_spec.tpp
         tango/server/w_pipe.tpp)
-
 configure_file(tango/server/tango_const.h.in ${PROJECT_BINARY_DIR}/include/tango/server/tango_const.h)
 
+set_source_files_properties(${SERVER_HEADERS} PROPERTIES LANGUAGE CXX)
+set_source_files_properties(${SERVER_TEMPLATES} PROPERTIES LANGUAGE CXX)
+set_source_files_properties(${CLIENT_TEMPLATES} PROPERTIES LANGUAGE CXX)
+
+IF(WIN32)
+set(INCLUDE_OBJECT_MS
+        tango.h
+        ${SERVER_HEADERS}
+        ${CLIENT_HEADERS}
+        ${CLIENT_HELPERS}
+        ${LOG4TANGO_HEADERS}
+        ${LOG4TANGO_THREADING})
+install(FILES tango.h DESTINATION include)
+install(FILES ${SERVER_HEADERS} ${SERVER_TEMPLATES} DESTINATION "include/tango/server")
+install(FILES ${CLIENT_HEADERS} ${CLIENT_TEMPLATES} ${CLIENT_HELPERS} DESTINATION "include/tango/client")
+
+install(FILES ${LOG4TANGO_HEADERS}
+        DESTINATION include/log4tango)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/log4tango/config.h DESTINATION include/log4tango)
+install(FILES ${LOG4TANGO_THREADING}
+        DESTINATION include/log4tango/threading)
+ELSE()
 add_library(include_objects OBJECT tango.h ${SERVER_HEADERS} ${CLIENT_HEADERS} ${CLIENT_HELPERS} ${LOG4TANGO_HEADERS} ${LOG4TANGO_THREADING})
 
 install(FILES tango.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
@@ -153,3 +175,4 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION "${CMAKE_INSTALL_FU
 #install configured files
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/log4tango/config.h DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/log4tango)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tango/server/tango_const.h DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/server)
+ENDIF()
