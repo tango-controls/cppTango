@@ -58,9 +58,15 @@ LOG4TANGO_CHECK_COMPILER_FEATURE("configure/check_snprintf.cpp" SNPRINTF)
 
 #check types
 check_type_size(int64_t INT64_SIZE)
+IF(WIN32)
+    IF(CMAKE_CL_64)
+        set(LOG4TANGO_HAVE_INT64_T "/**/")
+    ENDIF()
+ELSE()
 if(${INT64_SIZE} EQUAL 8)
     set(LOG4TANGO_HAVE_INT64_T "/**/")
 endif()
+ENDIF()
 
 #
 # +1 : ? : +1  == new interface that does not break old one
