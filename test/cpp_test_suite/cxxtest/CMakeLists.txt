@@ -14,8 +14,9 @@ macro(CXX_GENERATE_TEST name)
 
     add_executable(${name} $<TARGET_OBJECTS:compare_test_object> ${name}.cpp)
     target_include_directories(${name} PRIVATE include ${CMAKE_CURRENT_BINARY_DIR}/include)
-    target_link_libraries(${name} PRIVATE tango ${CMAKE_THREAD_LIBS_INIT})
+    target_link_libraries(${name} PRIVATE -fsanitize=thread -no-pie tango ${CMAKE_THREAD_LIBS_INIT})
     target_compile_definitions(${name} PRIVATE "-DVALGRIND -D_PTHREADS -D_REENTRANT")
+    target_compile_options(${name} PRIVATE -fsanitize=thread -g)
 
     add_test(NAME "CXX::${name}" COMMAND $<TARGET_FILE:${name}>
             --device1=${DEV1}
