@@ -321,7 +321,7 @@ int main(int argc, char **argv)
 //
 
 #ifdef NOTIFD
-        assert(fasle);
+        assert(false);
 #endif
 
 //
