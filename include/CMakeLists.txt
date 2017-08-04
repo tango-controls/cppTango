@@ -145,8 +145,11 @@ add_library(include_objects OBJECT tango.h ${SERVER_HEADERS} ${CLIENT_HEADERS} $
 
 install(FILES tango.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
 
+#install current dir
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}"
         PATTERN "CMakeLists.txt" EXCLUDE
         PATTERN "*.in" EXCLUDE)
 
+#install configured files
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/log4tango/config.h DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/log4tango)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tango/server/tango_const.h DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/server)
