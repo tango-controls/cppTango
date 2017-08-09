@@ -35,9 +35,6 @@
 #include <tango/server/attribute.h>
 #include <tango/server/except.h>
 #include <tango/server/tango_const.h>
-#include <COS/CosNotification.hh>
-#include <COS/CosNotifyChannelAdmin.hh>
-#include <COS/CosNotifyComm.hh>
 #include <omnithread.h>
 #include <map>
 
@@ -381,8 +378,6 @@ typedef struct event_callback_zmq
 
 typedef struct event_callback: public EventCallBackBase, public EventCallBackZmq
 {
-    string filter_constraint;
-    CosNotifyFilter::FilterID filter_id;
     bool filter_ok;
 } EventCallBackStruct;
 
@@ -408,12 +403,7 @@ typedef struct event_channel_zmq
 //TODO #295 remove as Notifd is no longer used
 typedef struct channel_struct: public EventChannelBase, public EventChannelZmq
 {
-    CosNotifyChannelAdmin::EventChannel_var eventChannel;
-    CosNotifyChannelAdmin::StructuredProxyPushSupplier_var structuredProxyPushSupplier;
-    CosNotifyFilter::FilterID heartbeat_filter_id;
-    string notifyd_host;
     bool event_system_failed;
-    long has_notifd_closed_the_connection;
 } EventChannelStruct;
 
 typedef std::map<std::string, EventChannelStruct>::iterator EvChanIte;
@@ -699,9 +689,6 @@ protected :
 
 private :
     void *run_undetached(void *arg);
-    bool reconnect_to_channel(EvChanIte &, EventConsumer *);
-    void reconnect_to_event(EvChanIte &, EventConsumer *);
-    void re_subscribe_event(EvCbIte &, EvChanIte &);
 
     bool reconnect_to_zmq_channel(EvChanIte &, EventConsumer *, DeviceData &);
     void reconnect_to_zmq_event(EvChanIte &, EventConsumer *, DeviceData &);

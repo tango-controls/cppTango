@@ -49,10 +49,6 @@
 #define USE_stub_in_nt_dll
 #endif
 
-#include <COS/CosNotification.hh>
-#include <COS/CosNotifyChannelAdmin.hh>
-#include <COS/CosNotifyComm.hh>
-
 #include <zmq.hpp>
 
 #if defined (_TG_WINDOWS_) && defined (_USRDLL) && !defined(_TANGO_LIB)
@@ -70,23 +66,11 @@
 namespace Tango
 {
 
-typedef struct _NotifService
-{
-	CosNotifyChannelAdmin::SupplierAdmin_var 				SupAdm;
-	CosNotifyChannelAdmin::ProxyID 							pID;
-	CosNotifyChannelAdmin::ProxyConsumer_var 				ProCon;
-	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var 	StrProPush;
-	CosNotifyChannelAdmin::EventChannelFactory_var 			EveChaFac;
-	CosNotifyChannelAdmin::EventChannel_var 				EveCha;
-	string													ec_ior;
-} NotifService;
-
 //---------------------------------------------------------------------
 //
 //              EventSupplier base class
 //
 //---------------------------------------------------------------------
-
 class EventSupplier
 {
 public :

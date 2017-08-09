@@ -79,56 +79,6 @@ namespace Tango {
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool EventConsumerKeepAliveThread::reconnect_to_channel(EvChanIte &ipos,EventConsumer *event_consumer)
-{
-	bool ret = true;
-	EvCbIte epos;
-
-	cout3 << "Entering KeepAliveThread::reconnect()" << endl;
-
-	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
-	{
-		if (epos->second.channel_name == ipos->first)
-		{
-			bool need_reconnect = false;
-			vector<EventSubscribeStruct>:: iterator esspos;
-			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
-			{
-				if (esspos->callback != NULL || esspos->ev_queue != NULL)
-				{
-					need_reconnect = true;
-					break;
-				}
-			}
-
-			if (need_reconnect == true)
-			{
-				try
-				{
-				    DeviceData dummy;
-					string adm_name = ipos->second.full_adm_name;
-					event_consumer->connect_event_channel(adm_name,
-									      epos->second.device->get_device_db(),
-									      true,dummy);
-
-					if (ipos->second.adm_device_proxy != NULL)
-						delete ipos->second.adm_device_proxy;
-					ipos->second.adm_device_proxy = new DeviceProxy(ipos->second.full_adm_name);
-					cout3 << "Reconnected to event channel" << endl;
-				}
-				catch(...)
-				{
-					ret = false;
-				}
-
-				break;
-			}
-		}
-	}
-
-	return ret;
-}
-
 
 //---------------------------------------------------------------------------------------------------------------------
 //
@@ -236,59 +186,6 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void EventConsumerKeepAliveThread::reconnect_to_event(EvChanIte &ipos,EventConsumer *event_consumer)
-{
-	EvCbIte epos;
-
-	cout3 << "Entering KeepAliveThread::reconnect_to_event()" << endl;
-
-	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
-	{
-		if (epos->second.channel_name == ipos->first)
-		{
-			bool need_reconnect = false;
-			vector<EventSubscribeStruct>:: iterator esspos;
-			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
-			{
-				if (esspos->callback != NULL || esspos->ev_queue != NULL)
-				{
-					need_reconnect = true;
-					break;
-				}
-			}
-
-			if (need_reconnect == true)
-			{
-				try
-				{
-					epos->second.callback_monitor->get_monitor();
-
-					try
-					{
-						re_subscribe_event(epos,ipos);
-						epos->second.filter_ok = true;
-						cout3 << "Reconnected to event" << endl;
-					}
-					catch(...)
-					{
-						epos->second.filter_ok = false;
-					}
-
-					epos->second.callback_monitor->rel_monitor();
-				}
-				catch (...)
-				{
-					ApiUtil *au = ApiUtil::instance();
-					stringstream ss;
-
-					ss << "EventConsumerKeepAliveThread::reconnect_to_event() cannot get callback monitor for " << epos->first;
-					au->print_error_message(ss.str().c_str());
-				}
-			}
-		}
-	}
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -303,89 +200,6 @@ void EventConsumerKeepAliveThread::reconnect_to_event(EvChanIte &ipos,EventConsu
 //			- ipos : Pointer to the EventChannel structure in the Event Channel map
 //
 //--------------------------------------------------------------------------------------------------------------------
-
-void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &ipos)
-{
-
-//
-// Build a filter using the CORBA Notify constraint Language (use attribute name in lowercase letters)
-//
-
-	CosNotifyFilter::FilterFactory_var ffp;
-	CosNotifyFilter::Filter_var filter = CosNotifyFilter::Filter::_nil();
-	CosNotifyFilter::FilterID filter_id;
-
-	string channel_name = epos->second.channel_name;
-
-	try
-	{
-		ffp    = ipos->second.eventChannel->default_filter_factory();
-		filter = ffp->create_filter("EXTENDED_TCL");
-  	}
-	catch (CORBA::COMM_FAILURE &)
-	{
-		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
-                       	(const char*)"Caught CORBA::COMM_FAILURE exception while creating event filter (check filter)",
-                       	(const char*)"EventConsumerKeepAliveThread::re_subscribe_event()");
-	}
-	catch (...)
-	{
-		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
-                       	(const char*)"Caught exception while creating event filter (check filter)",
-                       	(const char*)"EventConsumerKeepAliveThread::re_subscribe_event()");
-	}
-
-//
-// Construct a simple constraint expression; add it to fadmin
-//
-
-	string constraint_expr = epos->second.filter_constraint;
-
-	CosNotification::EventTypeSeq evs;
-	CosNotifyFilter::ConstraintExpSeq exp;
-	exp.length(1);
-	exp[0].event_types = evs;
-	exp[0].constraint_expr = Tango::string_dup(constraint_expr.c_str());
-	DevBoolean res = 0; // OK
-	try
-	{
-		CosNotifyFilter::ConstraintInfoSeq_var dummy = filter->add_constraints(exp);
-
-		filter_id = ipos->second.structuredProxyPushSupplier->add_filter(filter);
-
-		epos->second.filter_id = filter_id;
-	}
-	catch(CosNotifyFilter::InvalidConstraint &)
-	{
-		//cerr << "Exception thrown : Invalid constraint given "
-		//     << (const char *)constraint_expr << endl;
-		res = 1;
-	}
-	catch (...)
-	{
-		//cerr << "Exception thrown while adding constraint "
-	 	//     << (const char *)constraint_expr << endl;
-		res = 1;
-	}
-
-//
-// If error, destroy filter
-//
-
-	if (res == 1)
-	{
-		try
-		{
-			filter->destroy();
-		}
-		catch (...) { }
-
-    	filter = CosNotifyFilter::Filter::_nil();
-		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
-                       	(const char*)"Caught exception while creating event filter (check filter)",
-                       	(const char*)"EventConsumerKeepAliveThread::re_subscribe_event()");
-	}
-}
 
 //--------------------------------------------------------------------------------------------------------------------
 //
