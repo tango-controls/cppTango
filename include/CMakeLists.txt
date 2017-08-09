@@ -145,7 +145,7 @@ set_source_files_properties(${SERVER_HEADERS} PROPERTIES LANGUAGE CXX)
 set_source_files_properties(${SERVER_TEMPLATES} PROPERTIES LANGUAGE CXX)
 set_source_files_properties(${CLIENT_TEMPLATES} PROPERTIES LANGUAGE CXX)
 
-IF(WIN32)
+if(WIN32)
 set(INCLUDE_OBJECT_MS
         tango.h
         ${SERVER_HEADERS}
@@ -162,7 +162,7 @@ install(FILES ${LOG4TANGO_HEADERS}
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/log4tango/config.h DESTINATION include/log4tango)
 install(FILES ${LOG4TANGO_THREADING}
         DESTINATION include/log4tango/threading)
-ELSE()
+else(WIN32)
 add_library(include_objects OBJECT tango.h ${SERVER_HEADERS} ${CLIENT_HEADERS} ${CLIENT_HELPERS} ${LOG4TANGO_HEADERS} ${LOG4TANGO_THREADING})
 
 install(FILES tango.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
@@ -175,4 +175,4 @@ install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION "${CMAKE_INSTALL_FU
 #install configured files
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/log4tango/config.h DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/log4tango)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tango/server/tango_const.h DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/server)
-ENDIF()
+endif(WIN32)
