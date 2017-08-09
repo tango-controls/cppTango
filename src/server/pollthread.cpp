@@ -1874,7 +1874,6 @@ void PollThread::poll_attr(WorkItem &to_do)
 // two times. The detect_and_push_events() method returns true if the event is detected.
 //
 
-                SendEventType send_event;
                 if (event_supplier_zmq != NULL)
                 {
                     event_supplier_zmq->detect_and_push_events(to_do.dev,ad,save_except,to_do.name[ctr],&before_cmd);
@@ -1898,8 +1897,6 @@ void PollThread::poll_attr(WorkItem &to_do)
 // Eventually push the event (if detected). When we have both notifd and zmq event supplier, do not detect the event
 // two times. The detect_and_push_events() method returns true if the event is detected.
 //
-
-                SendEventType send_event;
 
                 map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
                 Tango::DevFailed *tmp_except;
