@@ -13,6 +13,9 @@ set(SO_VERSION "${MAJOR_VERSION}")
 
 message("System TANGO_HOST=$ENV{TANGO_HOST}")
 set(TANGO_HOST $ENV{TANGO_HOST})
+if(WIN32)
+include(configure/cmake_win_defs.cmake)
+endif(WIN32)
 include(configure/CMakeLists.txt)
 
 include_directories(generated)
