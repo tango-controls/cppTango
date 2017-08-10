@@ -2336,29 +2336,16 @@ void DeviceData::insert(DevicePipeBlob &blob)
 
 void DeviceData::insert(DevicePipeBlob *blob)
 {
-    DevPipeBlob *tmp = new DevPipeBlob();
+    DevPipeBlob *the_pipe_blob = new DevPipeBlob();
+    the_pipe_blob->name = Tango::string_dup(blob->get_name().c_str());
+    DevVarPipeDataEltArray *blob_data_in = blob->get_insert_data();
 
-    DevVarPipeDataEltArray *tmp_ptr;
-    tmp_ptr = blob->get_insert_data();
-    const string &bl_name = blob->get_name();
-    //TODO do we really need this if, maybe we can set name no matter what?
-    if (bl_name.size() != 0)
-    {
-        tmp->name = bl_name.c_str();
-    }
-    if (tmp_ptr == Tango_nullptr)
+    if (blob_data_in == Tango_nullptr)
     {
         Except::throw_exception(API_PipeNoDataElement, "No data in pipe!", "DeviceData::insert(DevicePipeBlob)");
     }
-
-    DevULong max, len;
-    max = tmp_ptr->maximum();
-    len = tmp_ptr->length();
-    tmp->blob_data.replace(max, len, tmp_ptr->get_buffer((DevBoolean) true), true);
-
-    any.inout() <<= tmp;
-
-    delete tmp_ptr;
+    the_pipe_blob->blob_data.replace(blob_data_in->maximum(),blob_data_in->length(),blob_data_in->get_buffer(),false);
+    any.inout() <<= the_pipe_blob;
 }
 
 } // End of Tango namepsace
