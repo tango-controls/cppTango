@@ -589,8 +589,8 @@ public:
             TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOULongArray", din));
             const DevVarULongArray *received;
             dout >> received;
-            TS_ASSERT_EQUALS((*received)[0], (111 * 2));
-            TS_ASSERT_EQUALS((*received)[1], (222 * 2));
+            TS_ASSERT_EQUALS((*received)[0], (DevULong) (111 * 2));
+            TS_ASSERT_EQUALS((*received)[1], (DevULong) (222 * 2));
         }
 
         for (size_t i = 0; i < loop; i++)
@@ -819,7 +819,7 @@ public:
             dout >> received;
             int data_type = dout.get_type();
 
-            TS_ASSERT_EQUALS(received->encoded_data.length(), 2);
+            TS_ASSERT_EQUALS(received->encoded_data.length(), 2u);
             TS_ASSERT_EQUALS(received->encoded_data[0], (11 * 2));
             TS_ASSERT_EQUALS(received->encoded_data[1], (22 * 2));
             TS_ASSERT(not(strcmp(received->encoded_format, "Returned string")));
@@ -841,7 +841,7 @@ public:
             dout >> received;
             int data_type = dout.get_type();
 
-            TS_ASSERT_EQUALS(received.encoded_data.length(), 2);
+            TS_ASSERT_EQUALS(received.encoded_data.length(), 2u);
             TS_ASSERT_EQUALS(received.encoded_data[0], (15 * 2));
             TS_ASSERT_EQUALS(received.encoded_data[1], (25 * 2));
             TS_ASSERT(not(strcmp(received.encoded_format, "Returned string")));
@@ -865,7 +865,7 @@ public:
             dout >> received;
             int data_type = dout.get_type();
 
-            TS_ASSERT_EQUALS(received.encoded_data.length(), 4);
+            TS_ASSERT_EQUALS(received.encoded_data.length(), 4u);
             TS_ASSERT_EQUALS(received.encoded_data[0], (15 * 2));
             TS_ASSERT_EQUALS(received.encoded_data[1], (25 * 2));
             TS_ASSERT_EQUALS(received.encoded_data[2], (35 * 2));
@@ -879,24 +879,88 @@ public:
     {
         for (size_t i = 0; i < loop; i++)
         {
-            DeviceData din, dout;
             DevicePipeBlob in{"TestPipeCmd"};
-            vector<string> names{"level0"};
-            in.set_data_elt_names(names);
-            DevLong data = 123;
-            in << data;
-            din.insert(in);
-            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOPipeBlob", din));
-            DevicePipeBlob received{};
-            dout.extract(&received);
+            DeviceData din, dout;
+            DeviceData din2, dout2;
 
-            TS_ASSERT_EQUALS(received.get_data_elt_nb(), 1);
-            TS_ASSERT_EQUALS(received.get_data_elt_name(0), "level0");
-            int received_data;
-            received >> received_data;
-            TS_ASSERT_EQUALS(received_data, 123);
+            vector <string> names{"long", "double", "string", "double array"};
+            in.set_data_elt_names(names);
+            DevLong long_data = 123;
+            TS_ASSERT_THROWS_NOTHING(in["long"] << long_data);
+            DevDouble double_data = 3.14;
+            TS_ASSERT_THROWS_NOTHING(in["double"] << double_data);
+            string data_str = "String value";
+            TS_ASSERT_THROWS_NOTHING(in["string"] << data_str);
+            vector<double> double_array = {0.1, -0.02, 0.003, -0.0004};
+            TS_ASSERT_THROWS_NOTHING(in["double array"] << double_array);
+            TS_ASSERT_THROWS_NOTHING(din << in);
+
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOPipeBlob", din));
             int data_type = dout.get_type();
             TS_ASSERT_EQUALS(data_type, Tango::DEV_PIPE_BLOB);
+            DevicePipeBlob received{};
+            TS_ASSERT_THROWS_NOTHING(dout.extract(&received));
+
+            TS_ASSERT_EQUALS(received.get_data_elt_nb(), 4u);
+            TS_ASSERT_EQUALS(received.get_data_elt_name(0), "long");
+            TS_ASSERT_EQUALS(received.get_data_elt_name(1), "double");
+            TS_ASSERT_EQUALS(received.get_data_elt_name(2), "string");
+            TS_ASSERT_EQUALS(received.get_data_elt_name(3), "double array");
+            Tango::DevLong received_long_data;
+            TS_ASSERT_THROWS_NOTHING(received >> received_long_data);
+            TS_ASSERT_EQUALS(received_long_data, 123);
+            Tango::DevDouble received_double_data;
+            TS_ASSERT_THROWS_NOTHING(received >> received_double_data);
+            TS_ASSERT_EQUALS(received_double_data, 3.14);
+            string received_string_data;
+            TS_ASSERT_THROWS_NOTHING(received >> received_string_data);
+            TS_ASSERT_EQUALS(received_string_data, "String value");
+            vector<double> received_double_array;
+            TS_ASSERT_THROWS_NOTHING(received >> received_double_array);
+            TS_ASSERT_EQUALS(received_double_array.size(),4u);
+            TS_ASSERT_EQUALS(received_double_array[0],0.1);
+            TS_ASSERT_EQUALS(received_double_array[1],-0.02);
+            TS_ASSERT_EQUALS(received_double_array[2],0.003);
+            TS_ASSERT_EQUALS(received_double_array[3],-0.0004);
+
+            TS_ASSERT_EQUALS(in.get_data_elt_nb(),4u);
+            DevLong long_data2 = -456;
+            TS_ASSERT_THROWS_NOTHING(in["long"] << long_data2);
+            DevDouble double_data2 = 1407.1789;
+            TS_ASSERT_THROWS_NOTHING(in["double"] << double_data2);
+            string data_str2 = "Another string value";
+            TS_ASSERT_THROWS_NOTHING(in["string"] << data_str2);
+            vector<double> double_array2 = {-1.1, -2.2, 3.3, 4.4,5.5};
+            TS_ASSERT_THROWS_NOTHING(in["double array"] << double_array2);
+            TS_ASSERT_THROWS_NOTHING(din2 << in);
+            TS_ASSERT_THROWS_NOTHING(dout2 = device->command_inout("IOPipeBlob", din2));
+            int data_type2 = dout2.get_type();
+            TS_ASSERT_EQUALS(data_type2, Tango::DEV_PIPE_BLOB);
+            DevicePipeBlob received2{};
+            TS_ASSERT_THROWS_NOTHING(dout2.extract(&received2));
+
+            TS_ASSERT_EQUALS(received2.get_data_elt_nb(), 4u);
+            TS_ASSERT_EQUALS(received2.get_data_elt_name(0), "long");
+            TS_ASSERT_EQUALS(received2.get_data_elt_name(1), "double");
+            TS_ASSERT_EQUALS(received2.get_data_elt_name(2), "string");
+            TS_ASSERT_EQUALS(received2.get_data_elt_name(3), "double array");
+            Tango::DevLong received2_long_data;
+            TS_ASSERT_THROWS_NOTHING(received2 >> received2_long_data);
+            TS_ASSERT_EQUALS(received2_long_data, -456);
+            Tango::DevDouble received2_double_data;
+            TS_ASSERT_THROWS_NOTHING(received2 >> received2_double_data);
+            TS_ASSERT_EQUALS(received2_double_data, 1407.1789);
+            string received2_string_data;
+            TS_ASSERT_THROWS_NOTHING(received2 >> received2_string_data);
+            TS_ASSERT_EQUALS(received2_string_data, "Another string value");
+            vector<double> received_double_array2;
+            TS_ASSERT_THROWS_NOTHING(received2 >> received_double_array2);
+            TS_ASSERT_EQUALS(received_double_array2.size(),5u);
+            TS_ASSERT_EQUALS(received_double_array2[0],-1.1);
+            TS_ASSERT_EQUALS(received_double_array2[1],-2.2);
+            TS_ASSERT_EQUALS(received_double_array2[2],3.3);
+            TS_ASSERT_EQUALS(received_double_array2[3],4.4);
+            TS_ASSERT_EQUALS(received_double_array2[4],5.5);
         }
     }
 };
