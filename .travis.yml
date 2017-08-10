@@ -43,3 +43,9 @@ after-script:
   - docker rm tango_cs
   - docker stop mysql_db
   - docker rm mysql_db
+
+addons:
+  sonarcloud:
+    organization: "tango-controls"
+    token:
+      secure: $SONAR_TOKEN
