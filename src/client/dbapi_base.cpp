@@ -4512,18 +4512,6 @@ bool Database::is_command_allowed(string &devname,string &cmd)
 //
 //-----------------------------------------------------------------------------
 
-void Database::write_event_channel_ior_filedatabase(string &ec_ior)
-{
-	if (filedb == NULL)
-	{
-		Tango::Except::throw_exception((const char *)API_NotSupportedFeature,
-				       		(const char *)"This call is supported only when the database is a file",
-				       		(const char *)"Database::write_event_channel_ior_filedatabase");
-	}
-
-	filedb->write_event_channel_ior(ec_ior);
-}
-
 //-----------------------------------------------------------------------------
 //
 // Database::get_device_info() - public method to get device information

@@ -206,13 +206,7 @@ namespace Tango {
 // EventConsumer related methods
 //
 
-		void create_notifd_event_consumer();
-
 		void create_zmq_event_consumer();
-
-		bool is_notifd_event_consumer_created() { return notifd_event_consumer != NULL; }
-
-		NotifdEventConsumer *get_notifd_event_consumer();
 
 		bool is_zmq_event_consumer_created() { return zmq_event_consumer != NULL; }
 
@@ -285,7 +279,6 @@ namespace Tango {
 		ApiUtilExt *ext;        // Class extension
 #endif
 
-		NotifdEventConsumer *notifd_event_consumer;
 		TangoSys_Pid cl_pid;
 		int user_connect_timeout;
 		ZmqEventConsumer *zmq_event_consumer;

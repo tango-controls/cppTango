@@ -2170,7 +2170,6 @@ public:
 	bool attr_conf_event_subscribed();
 	bool data_ready_event_subscribed();
 
-	bool use_notifd_event() {return notifd_event;}
 	bool use_zmq_event() {return zmq_event;}
 
 //
@@ -2199,7 +2198,6 @@ public:
 
 // End of warning
 
-	void set_use_notifd_event() {notifd_event = true;}
 	void set_use_zmq_event() {zmq_event = true;}
 
 	long get_attr_idx() {return idx_in_attr;}

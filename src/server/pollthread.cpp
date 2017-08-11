@@ -1456,7 +1456,6 @@ void PollThread::compute_sleep_time()
 
 void PollThread::err_out_of_sync(WorkItem &to_do)
 {
-	EventSupplier *event_supplier_nd = NULL;
 	EventSupplier *event_supplier_zmq = NULL;
 
 //
@@ -1468,12 +1467,10 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
     {
         Attribute &att = to_do.dev->get_device_attr()->get_attr_by_name(to_do.name[ctr].c_str());
 
-        if (att.use_notifd_event() == true && event_supplier_nd == NULL)
-            event_supplier_nd = Util::instance()->get_notifd_event_supplier();
         if (att.use_zmq_event() == true && event_supplier_zmq == NULL)
             event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
 
-        if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
+        if ((event_supplier_zmq != NULL))
         {
             Tango::DevErrorList errs;
             errs.length(1);
@@ -1503,26 +1500,9 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 //
 
             SendEventType send_event;
-            if (event_supplier_nd != NULL)
-                send_event = event_supplier_nd->detect_and_push_events(to_do.dev,ad,&except,to_do.name[ctr],(struct timeval *)NULL);
             if (event_supplier_zmq != NULL)
             {
-                if (event_supplier_nd != NULL)
-                {
-                    vector<string> f_names;
-                    vector<double> f_data;
-                    vector<string> f_names_lg;
-                    vector<long> f_data_lg;
-
-                    if (send_event.change == true)
-                        event_supplier_zmq->push_event_loop(to_do.dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,&except);
-                    if (send_event.archive == true)
-                        event_supplier_zmq->push_event_loop(to_do.dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,&except);
-                    if (send_event.periodic == true)
-                        event_supplier_zmq->push_event_loop(to_do.dev,PERIODIC_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,&except);
-                }
-                else
-                    event_supplier_zmq->detect_and_push_events(to_do.dev,ad,&except,to_do.name[ctr],(struct timeval *)NULL);
+                event_supplier_zmq->detect_and_push_events(to_do.dev,ad,&except,to_do.name[ctr],(struct timeval *)NULL);
             }
         }
 	}
@@ -1864,19 +1844,16 @@ void PollThread::poll_attr(WorkItem &to_do)
 // We also have to retrieve which kind of clients made the subscription (zmq or notifd) and send the event accordingly
 //
 
-	EventSupplier *event_supplier_nd = NULL;
 	EventSupplier *event_supplier_zmq = NULL;
 
     for (size_t ctr = 0;ctr < nb_obj;ctr++)
     {
         Attribute &att = to_do.dev->get_device_attr()->get_attr_by_name(to_do.name[ctr].c_str());
 
-        if (att.use_notifd_event() == true && event_supplier_nd == NULL)
-            event_supplier_nd = Util::instance()->get_notifd_event_supplier();
         if (att.use_zmq_event() == true && event_supplier_zmq == NULL)
             event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
 
-        if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
+        if ((event_supplier_zmq != NULL))
         {
             if (attr_failed == true)
             {
@@ -1897,27 +1874,9 @@ void PollThread::poll_attr(WorkItem &to_do)
 // two times. The detect_and_push_events() method returns true if the event is detected.
 //
 
-                SendEventType send_event;
-                if (event_supplier_nd != NULL)
-                    send_event = event_supplier_nd->detect_and_push_events(to_do.dev,ad,save_except,to_do.name[ctr],&before_cmd);
                 if (event_supplier_zmq != NULL)
                 {
-                    if (event_supplier_nd != NULL)
-                    {
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
-
-                        if (send_event.change == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
-                        if (send_event.archive == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
-                        if (send_event.periodic == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev,PERIODIC_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
-                    }
-                    else
-                        event_supplier_zmq->detect_and_push_events(to_do.dev,ad,save_except,to_do.name[ctr],&before_cmd);
+                    event_supplier_zmq->detect_and_push_events(to_do.dev,ad,save_except,to_do.name[ctr],&before_cmd);
                 }
             }
             else
@@ -1939,8 +1898,6 @@ void PollThread::poll_attr(WorkItem &to_do)
 // two times. The detect_and_push_events() method returns true if the event is detected.
 //
 
-                SendEventType send_event;
-
                 map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
                 Tango::DevFailed *tmp_except;
                 if (ite2 == map_except.end())
@@ -1948,26 +1905,9 @@ void PollThread::poll_attr(WorkItem &to_do)
                 else
                     tmp_except = ite2->second;
 
-                if (event_supplier_nd != NULL)
-                    send_event = event_supplier_nd->detect_and_push_events(to_do.dev,ad,tmp_except,to_do.name[ctr],&before_cmd);
                 if (event_supplier_zmq != NULL)
                 {
-                    if (event_supplier_nd != NULL)
-                    {
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
-
-                        if (send_event.change == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,tmp_except);
-                        if (send_event.periodic == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev,PERIODIC_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,tmp_except);
-                        if (send_event.archive == true)
-                            event_supplier_zmq->push_event_loop(to_do.dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,tmp_except);
-                    }
-                    else
-                        event_supplier_zmq->detect_and_push_events(to_do.dev,ad,tmp_except,to_do.name[ctr],&before_cmd);
+                    event_supplier_zmq->detect_and_push_events(to_do.dev,ad,tmp_except,to_do.name[ctr],&before_cmd);
                 }
             }
 		}
@@ -2104,12 +2044,6 @@ void PollThread::eve_heartbeat()
 
 	EventSupplier *event_supplier;
 	event_supplier = Util::instance()->get_zmq_event_supplier();
-	if ((event_supplier != NULL) && (send_heartbeat == true) && (event_supplier->get_one_subscription_cmd() == true))
-	{
-		event_supplier->push_heartbeat_event();
-	}
-
-	event_supplier = Util::instance()->get_notifd_event_supplier();
 	if ((event_supplier != NULL) && (send_heartbeat == true) && (event_supplier->get_one_subscription_cmd() == true))
 	{
 		event_supplier->push_heartbeat_event();

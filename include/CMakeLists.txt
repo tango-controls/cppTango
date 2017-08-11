@@ -56,11 +56,11 @@ set(CLIENT_HELPERS
         tango/client/helpers/Xstring.h)
 
 set(CLIENT_TEMPLATES
-        tango/client/event.tpp
         tango/client/devapi_attr.tpp
         tango/client/devapi_utils.tpp
         tango/client/api_util.tpp
-        tango/client/devapi_pipe.tpp)
+        tango/client/devapi_pipe.tpp
+        tango/client/event_consumer.tpp)
 
 set(SERVER_HEADERS tango/server/attrdesc.h
         tango/server/attribute.h

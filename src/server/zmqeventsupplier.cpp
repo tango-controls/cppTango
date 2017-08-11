@@ -1031,7 +1031,6 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 
 //
 // Create full event name
-// Don't forget case where we have notifd client (thus with a fqdn_prefix modified)
 //
 
 	string loc_obj_name(obj_name);

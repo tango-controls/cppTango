@@ -21,15 +21,13 @@ endif(IDL_BASE)
 if(OMNI_BASE)
     message("Using OMNI_BASE=${OMNI_BASE}")
     set(OMNIORB_PKG_INCLUDE_DIRS ${OMNI_BASE}/include)
-    set(OMNIORB_PKG_LIBRARIES "-lomniORB4 -lomnithread -lCOS4 -lomniDynamic4")
+    set(OMNIORB_PKG_LIBRARIES "-lomniORB4 -lomnithread -lomniDynamic4")
     set(OMNIIDL_PATH ${OMNI_BASE}/bin/)
     include_directories(${OMNI_BASE}/include)
     link_directories(${OMNI_BASE}/lib)
 else(OMNI_BASE)
     #CORBA
     pkg_search_module(OMNIORB_PKG REQUIRED omniORB4)
-    #COS
-    pkg_search_module(OMNICOS_PKG REQUIRED omniCOS4)
     #dynamic CORBA
     pkg_search_module(OMNIDYN_PKG REQUIRED omniDynamic4)
     if(NOT OMNIORB_PKG_FOUND)

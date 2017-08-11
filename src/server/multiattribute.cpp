@@ -1414,11 +1414,6 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 		{
 			EventPar ep;
 
-			if (attr_list[i]->use_notifd_event() == true)
-                ep.notifd = true;
-            else
-                ep.notifd = false;
-
             if (attr_list[i]->use_zmq_event() == true)
                 ep.zmq = true;
             else
@@ -1500,8 +1495,6 @@ void MultiAttribute::set_event_param(vector<EventPar> &eve)
 					att.set_data_ready_event_sub();
 			}
 
-			if (eve[i].notifd == true)
-				att.set_use_notifd_event();
 			if (eve[i].zmq == true)
 				att.set_use_zmq_event();
 		}

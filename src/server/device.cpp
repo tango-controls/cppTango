@@ -2282,7 +2282,6 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf
 
 	Tango::Util *tg = Tango::Util::instance();
 
-	EventSupplier *event_supplier_nd = NULL;
 	EventSupplier *event_supplier_zmq = NULL;
 
 //
@@ -2326,17 +2325,12 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf
 // Send the event
 //
 
-            if (attr.use_notifd_event() == true)
-                event_supplier_nd = tg->get_notifd_event_supplier();
-            else
-                event_supplier_nd = NULL;
-
             if (attr.use_zmq_event() == true)
                 event_supplier_zmq = tg->get_zmq_event_supplier();
             else
                 event_supplier_zmq = NULL;
 
-			if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
+			if ((event_supplier_zmq != NULL))
 			{
 				string tmp_name(new_conf[i].name);
 
@@ -2349,8 +2343,6 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf
 					Tango::AttributeConfig_2 attr_conf_2;
 					attr.get_properties(attr_conf_2);
 					ad.attr_conf_2 = &attr_conf_2;
-					if (event_supplier_nd != NULL)
-                        event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
                     if (event_supplier_zmq != NULL)
                         event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 				}
@@ -2359,8 +2351,6 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf
 					Tango::AttributeConfig_3 attr_conf_3;
 					attr.get_properties(attr_conf_3);
 					ad.attr_conf_3 = &attr_conf_3;
-					if (event_supplier_nd != NULL)
-                        event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 					if (event_supplier_zmq != NULL)
                         event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 				}
@@ -2369,8 +2359,6 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf
 					Tango::AttributeConfig_5 attr_conf_5;
 					attr.get_properties(attr_conf_5);
 					ad.attr_conf_5 = &attr_conf_5;
-					if (event_supplier_nd != NULL)
-                        event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 					if (event_supplier_zmq != NULL)
                         event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 				}
@@ -4359,17 +4347,14 @@ void DeviceImpl::init_attr_poll_period()
 
 void DeviceImpl::push_att_conf_event(Attribute *attr)
 {
-    EventSupplier *event_supplier_nd = NULL;
     EventSupplier *event_supplier_zmq = NULL;
 
 	Tango::Util *tg = Tango::Util::instance();
 
-    if (attr->use_notifd_event() == true)
-        event_supplier_nd = tg->get_notifd_event_supplier();
     if (attr->use_zmq_event() == true)
         event_supplier_zmq = tg->get_zmq_event_supplier();
 
-	if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
+	if ((event_supplier_zmq != NULL))
 	{
 	    EventSupplier::SuppliedEventData ad;
 	    ::memset(&ad,0,sizeof(ad));
@@ -4380,8 +4365,6 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
 			Tango::AttributeConfig_2 attr_conf_2;
 			attr->get_properties(attr_conf_2);
 			ad.attr_conf_2 = &attr_conf_2;
-			if (event_supplier_nd != NULL)
-                event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,attr->get_name());
             if (event_supplier_zmq != NULL)
                 event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,attr->get_name());
 		}
@@ -4390,8 +4373,6 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
 			Tango::AttributeConfig_3 attr_conf_3;
 			attr->get_properties(attr_conf_3);
             ad.attr_conf_3 = &attr_conf_3;
-            if (event_supplier_nd != NULL)
-                event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,attr->get_name());
             if (event_supplier_zmq != NULL)
                 event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,attr->get_name());
 		}
@@ -4400,8 +4381,6 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
 			Tango::AttributeConfig_5 attr_conf_5;
 			attr->get_properties(attr_conf_5);
             ad.attr_conf_5 = &attr_conf_5;
-            if (event_supplier_nd != NULL)
-                event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,attr->get_name());
             if (event_supplier_zmq != NULL)
                 event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,attr->get_name());
 		}
@@ -5794,7 +5773,6 @@ void DeviceImpl::get_event_param(vector<EventPar> &eve)
 	{
 		EventPar ep;
 
-		ep.notifd = false;
 		ep.zmq = true;
 		ep.attr_id = -1;
 		ep.quality = false;

@@ -1902,9 +1902,7 @@ namespace Tango {
 
 		void reread_filedatabase();
 
-		void write_event_channel_ior_filedatabase(string &);
-
-		void build_connection();
+	    void build_connection();
 
 		void post_reconnection();
 
