@@ -5,6 +5,14 @@ else(CMAKE_BUILD_TYPE STREQUAL "Debug")
 project(tango)
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
+add_definitions(-D__x86__)
+if(CMAKE_CL_64)
+add_definitions(-D_64BITS)
+if(MSVC14)
+add_definitions(-D_TIMERS_T_)
+endif(MSVC14)
+endif(CMAKE_CL_64)
+
 #include and link directories
 
 include_directories(${INCLUDE_OBJECT_MS})
