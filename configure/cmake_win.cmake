@@ -5,7 +5,6 @@ else(CMAKE_BUILD_TYPE STREQUAL "Debug")
 project(tango)
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-add_definitions(-D__x86__)
 if(CMAKE_CL_64)
 add_definitions(-D_64BITS)
 if(MSVC14)
@@ -38,6 +37,7 @@ add_library(tangod-static SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:jpeg_mmx_objects>
                             $<TARGET_OBJECTS:server_objects>)
 SET_TARGET_PROPERTIES(tangod-static PROPERTIES OUTPUT_NAME "tango_d")
+SET_TARGET_PROPERTIES(tangod-static PROPERTIES PREFIX "lib")
 
 target_link_libraries(tangod PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES} ${ZMQ_PKG_LIBRARIES} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
 target_link_libraries(tangod-static PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES} ${ZMQ_PKG_LIBRARIES} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
@@ -82,6 +82,7 @@ add_library(tango-static SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:jpeg_mmx_objects>
                             $<TARGET_OBJECTS:server_objects>)
 SET_TARGET_PROPERTIES(tango-static PROPERTIES OUTPUT_NAME "tango")
+SET_TARGET_PROPERTIES(tango-static PROPERTIES PREFIX "lib")
                             
 target_link_libraries(tango PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES} ${ZMQ_PKG_LIBRARIES} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
 target_link_libraries(tango-static PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES} ${ZMQ_PKG_LIBRARIES} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
