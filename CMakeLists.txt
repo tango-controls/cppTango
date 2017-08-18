@@ -6,7 +6,9 @@ enable_testing()
 set(MAJOR_VERSION "10")
 set(MINOR_VERSION "2")
 set(PATCH_VERSION "2")
-
+IF(WIN32)
+include(configure/cmake_win_defs.cmake)
+ENDIF(WIN32)
 #convenient versions
 set(LIBRARY_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
 set(SO_VERSION "${MAJOR_VERSION}")
