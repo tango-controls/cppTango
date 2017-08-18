@@ -144,6 +144,7 @@ configure_file(tango/server/tango_const.h.in ${PROJECT_BINARY_DIR}/include/tango
 set_source_files_properties(${SERVER_HEADERS} PROPERTIES LANGUAGE CXX)
 set_source_files_properties(${SERVER_TEMPLATES} PROPERTIES LANGUAGE CXX)
 set_source_files_properties(${CLIENT_TEMPLATES} PROPERTIES LANGUAGE CXX)
+set_source_files_properties(${SERVER_TEMPLATES} PROPERTIES HEADER_FILE_ONLY TRUE)
 
 if(WIN32)
 set(INCLUDE_OBJECT_MS
