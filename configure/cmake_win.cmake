@@ -114,24 +114,24 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-install(TARGETS tangod
-        ARCHIVE DESTINATION lib COMPONENT static
-        RUNTIME DESTINATION bin COMPONENT dynamic
-        CONFIGURATIONS Debug)
 install(TARGETS tangod-static
         ARCHIVE DESTINATION lib COMPONENT static
         RUNTIME DESTINATION bin COMPONENT dynamic
         CONFIGURATIONS Debug)
         
+install(TARGETS tangod
+        ARCHIVE DESTINATION lib COMPONENT static
+        RUNTIME DESTINATION bin COMPONENT dynamic
+        CONFIGURATIONS Debug)
 else(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-install(TARGETS tango
-        ARCHIVE DESTINATION lib COMPONENT static
-        RUNTIME DESTINATION bin COMPONENT dynamic)
 install(TARGETS tango-static
         ARCHIVE DESTINATION lib COMPONENT static
         RUNTIME DESTINATION bin COMPONENT dynamic)
         
+install(TARGETS tango
+        ARCHIVE DESTINATION lib COMPONENT static
+        RUNTIME DESTINATION bin COMPONENT dynamic)
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 install(DIRECTORY include/log4tango DESTINATION include COMPONENT headers PATTERN "*.h" PATTERN "*.txt" EXCLUDE PATTERN "*.vcproj" EXCLUDE PATTERN "*.cmake" EXCLUDE)
