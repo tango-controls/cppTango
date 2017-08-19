@@ -37,6 +37,7 @@ add_library(tangod SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:server_objects>)
                             
 SET_TARGET_PROPERTIES(tangod-static PROPERTIES OUTPUT_NAME "tangod")
+SET_TARGET_PROPERTIES(tangod-static PROPERTIES PREFIX "lib")
 
 target_link_libraries(tangod PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES} ${ZMQ_PKG_LIBRARIES} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
 target_link_libraries(tangod-static PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES} ${ZMQ_PKG_LIBRARIES} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
@@ -81,7 +82,7 @@ add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:jpeg_mmx_objects>
                             $<TARGET_OBJECTS:server_objects>)
 SET_TARGET_PROPERTIES(tango-static PROPERTIES OUTPUT_NAME "tango")
-#SET_TARGET_PROPERTIES(tango-static PROPERTIES PREFIX "lib")
+SET_TARGET_PROPERTIES(tango-static PROPERTIES PREFIX "lib")
                             
 target_link_libraries(tango PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES} ${ZMQ_PKG_LIBRARIES} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
 target_link_libraries(tango-static PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES} ${ZMQ_PKG_LIBRARIES} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
