@@ -184,7 +184,6 @@ install:
 clone_folder: C:\projects\cppTango
 
 build:
-  parallel: true
   project: C:\projects\cppTango\tango.sln
   verbosity: minimal
   
