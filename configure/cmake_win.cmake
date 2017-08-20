@@ -40,8 +40,7 @@ add_library(tangod SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:jpeg_mmx_objects>
                             $<TARGET_OBJECTS:server_objects>)
                             
-SET_TARGET_PROPERTIES(tangod-static PROPERTIES OUTPUT_NAME "tangod" CLEAN_DIRECT_OUTPUT 1)
-SET_TARGET_PROPERTIES(tangod PROPERTIES OUTPUT_NAME "tangod" CLEAN_DIRECT_OUTPUT 1)
+SET_TARGET_PROPERTIES(tangod-static PROPERTIES OUTPUT_NAME "tangod")
 #SET_TARGET_PROPERTIES(tangod-static PROPERTIES PREFIX "lib")
 
 target_link_libraries(tangod PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES} ${ZMQ_PKG_LIBRARIES} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
@@ -86,8 +85,7 @@ add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:jpeg_objects>
                             $<TARGET_OBJECTS:jpeg_mmx_objects>
                             $<TARGET_OBJECTS:server_objects>)
-SET_TARGET_PROPERTIES(tango-static PROPERTIES OUTPUT_NAME "tango" CLEAN_DIRECT_OUTPUT 1)
-SET_TARGET_PROPERTIES(tango PROPERTIES OUTPUT_NAME "tango" CLEAN_DIRECT_OUTPUT 1)
+SET_TARGET_PROPERTIES(tango-static PROPERTIES OUTPUT_NAME "tango")
 #SET_TARGET_PROPERTIES(tango-static PROPERTIES PREFIX "lib")
                             
 target_link_libraries(tango PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES} ${ZMQ_PKG_LIBRARIES} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
@@ -122,14 +120,12 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 install(TARGETS tangod-static
-        ARCHIVE DESTINATION lib COMPONENT static
-        RUNTIME DESTINATION bin COMPONENT dynamic
-        CONFIGURATIONS Debug)
+        ARCHIVE DESTINATION lib COMPONENT static CONFIGURATIONS Debug
+        RUNTIME DESTINATION bin COMPONENT dynamic CONFIGURATIONS Debug)
         
 install(TARGETS tangod
-        ARCHIVE DESTINATION lib COMPONENT static
-        RUNTIME DESTINATION bin COMPONENT dynamic
-        CONFIGURATIONS Debug)
+        ARCHIVE DESTINATION lib COMPONENT static CONFIGURATIONS Debug
+        RUNTIME DESTINATION bin COMPONENT dynamic CONFIGURATIONS Debug)
 else(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 install(TARGETS tango-static
@@ -162,6 +158,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 #adding tango since tere seems to be a bug
 install(FILES Debug/tangod.dll DESTINATION bin COMPONENT dynamic)
 install(FILES Debug/tangod.lib DESTINATION lib COMPONENT static)
+install(FILES Debug/libtangod.lib DESTINATION lib COMPONENT static)
 install(FILES $ENV{OMNI_BASE}/lib/x86_win32/omniDynamic4d.lib DESTINATION lib COMPONENT static)
 #omniorb static lib
 install(FILES $ENV{OMNI_BASE}/lib/x86_win32/omniORB4d.lib DESTINATION lib COMPONENT static)
