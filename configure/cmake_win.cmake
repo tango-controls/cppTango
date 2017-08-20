@@ -41,7 +41,7 @@ add_library(tangod SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:server_objects>)
                             
 SET_TARGET_PROPERTIES(tangod-static PROPERTIES OUTPUT_NAME "tangod")
-#SET_TARGET_PROPERTIES(tangod-static PROPERTIES PREFIX "lib")
+SET_TARGET_PROPERTIES(tangod-static PROPERTIES PREFIX "lib")
 
 target_link_libraries(tangod PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES} ${ZMQ_PKG_LIBRARIES} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
 target_link_libraries(tangod-static PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES} ${ZMQ_PKG_LIBRARIES} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
