@@ -27,7 +27,7 @@ else(CMAKE_CL_64)
 link_directories($ENV{PTHREAD_WIN}/Pre-built.2/lib/x86/)
 endif(CMAKE_CL_64)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-add_library(tangod-static SHARED    $<TARGET_OBJECTS:log4tango_objects>
+add_library(tangod-static STATIC    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:idl_objects>
                             $<TARGET_OBJECTS:client_objects>
                             $<TARGET_OBJECTS:jpeg_objects>
@@ -56,10 +56,10 @@ target_include_directories(tangod PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_I
 target_include_directories(tangod-static PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS} ${OMNIDYN_PKG_INCLUDE_DIRS})
 
 target_compile_options(tangod PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
-target_compile_definitions(tangod PRIVATE WIN32 DEBUG _WINDOWS _USRDLL LOG4TANGO_HAS_DLL _TANGO_LIB _CRT_SECURE_NO_DEPRECATE JPG_USE_ASM)
+target_compile_definitions(tangod PRIVATE WIN32 DEBUG _WINDOWS _USRDLL LOG4TANGO_HAS_DLL _TANGO_LIB _CRT_SECURE_NO_DEPRECATE JPG_USE_ASM OMNI_UNLOADABLE_STUBS)
 
 target_compile_options(tangod-static PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
-target_compile_definitions(tangod-static PRIVATE WIN32 _LIB _DEBUG _WINDOWS _WINSTATIC _TANGO_LIB _MBCS _CRT_SECURE_NO_DEPRECATE JPG_USE_ASM STATIC_EXPORT)
+target_compile_definitions(tangod-static PRIVATE WIN32 _LIB _DEBUG _WINDOWS _WINSTATIC _TANGO_LIB _MBCS _CRT_SECURE_NO_DEPRECATE JPG_USE_ASM STATIC_EXPORT OMNI_UNLOADABLE_STUBS)
 
 set_target_properties(tangod PROPERTIES
         VERSION ${LIBRARY_VERSION}
@@ -74,7 +74,7 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Debug)
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Debug)
 SET(CMAKE_INSTALL_CONFIG_NAME Debug)
 else(CMAKE_BUILD_TYPE STREQUAL "Debug")
-add_library(tango-static SHARED    $<TARGET_OBJECTS:log4tango_objects>
+add_library(tango-static STATIC    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:idl_objects>
                             $<TARGET_OBJECTS:client_objects>
                             $<TARGET_OBJECTS:jpeg_objects>
@@ -105,9 +105,9 @@ target_include_directories(tango PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_IN
 target_include_directories(tango-static PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS} ${OMNIDYN_PKG_INCLUDE_DIRS})
 
 target_compile_options(tango PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
-target_compile_definitions(tango PRIVATE WIN32 NDEBUG _WINDOWS _USRDLL LOG4TANGO_HAS_DLL _TANGO_LIB _CRT_SECURE_NO_DEPRECATE JPG_USE_ASM)
+target_compile_definitions(tango PRIVATE WIN32 NDEBUG _WINDOWS _USRDLL LOG4TANGO_HAS_DLL _TANGO_LIB _CRT_SECURE_NO_DEPRECATE JPG_USE_ASM OMNI_UNLOADABLE_STUBS)
 target_compile_options(tango-static PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
-target_compile_definitions(tango-static PRIVATE WIN32 NDEBUG _WINDOWS _WINSTATIC _TANGO_LIB _CRT_SECURE_NO_DEPRECATE JPG_USE_ASM STATIC_EXPORT)
+target_compile_definitions(tango-static PRIVATE WIN32 NDEBUG _WINDOWS _WINSTATIC _TANGO_LIB _CRT_SECURE_NO_DEPRECATE JPG_USE_ASM STATIC_EXPORT OMNI_UNLOADABLE_STUBS)
 
 set_target_properties(tango PROPERTIES
         VERSION ${LIBRARY_VERSION}
