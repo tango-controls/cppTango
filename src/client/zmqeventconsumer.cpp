@@ -1662,6 +1662,8 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
                                             TANGO_UNUSED(EvChanIte &eve_it),TANGO_UNUSED(EventCallBackStruct &new_event_callback),
                                             DeviceData &dd,size_t valid_end)
 {
+
+
 //
 // Extract server command result
 //
@@ -1669,10 +1671,12 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
     const DevVarLongStringArray *ev_svr_data;
     dd >> ev_svr_data;
 
-    auto size = ev_svr_data->svalue.length();
-    string full_event_name{ev_svr_data->svalue[size - 1]};
 
-//
+    string full_event_name = get_full_event_name(device_name, obj_name, event_name, ev_svr_data);
+
+
+
+    //
 // Create and connect the REQ socket used to send message to the ZMQ main thread
 //
 
@@ -1799,6 +1803,51 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
 
         Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_system");
     }
+}
+string ZmqEventConsumer::get_full_event_name(const string &device_name,
+                                             const string &obj_name,
+                                             const string &event_name,
+                                             const DevVarLongStringArray *ev_svr_data) const
+{
+    string full_event_name;
+
+    auto size = ev_svr_data->svalue.length();
+
+    full_event_name = ev_svr_data->svalue[size - 1];
+    if (full_event_name.find("TOPIC:") != basic_string::npos)
+    {
+        full_event_name.erase(0, 6);
+        return full_event_name;
+    }
+
+
+    //
+    // Build full event name
+    // Don't forget case of device in a DS using file as database
+    //
+    bool inter_event = false;
+    if (event_name == EventName[INTERFACE_CHANGE_EVENT])
+        inter_event = true;
+
+    basic_string::size_type pos;
+    if ((pos = device_name.find(MODIFIER_DBASE_NO)) != basic_string::npos)
+    {
+        full_event_name = device_name;
+        if (inter_event == false)
+        {
+            string tmp = '/' + obj_name;
+            full_event_name.insert(pos, tmp);
+        }
+        full_event_name = full_event_name + '.' + event_name;
+    }
+    else
+    {
+        if (inter_event == true)
+            full_event_name = device_name + '.' + event_name;
+        else
+            full_event_name = device_name + '/' + obj_name + '.' + event_name;
+    }
+    return full_event_name;
 }
 
 //--------------------------------------------------------------------------------------------------------------------

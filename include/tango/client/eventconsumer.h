@@ -649,6 +649,10 @@ private :
     bool check_zmq_endpoint(const string &);
 
     friend class DelayEvent;
+    string get_full_event_name(const string &device_name,
+                               const string &obj_name,
+                               const string &event_name,
+                               const DevVarLongStringArray *ev_svr_data) const;
 };
 
 class DelayEvent
