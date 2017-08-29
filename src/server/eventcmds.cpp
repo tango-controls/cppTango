@@ -977,6 +977,9 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             }
         }
 
+        auto size = ret_data->svalue.length();
+        ret_data->svalue.length(size + 1);
+        ret_data->svalue[size] = Tango::string_dup(ev_name.c_str());
     }
 
 	return ret_data;

@@ -1663,42 +1663,14 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
                                             DeviceData &dd,size_t valid_end)
 {
 //
-// Build full event name
-// Don't forget case of device in a DS using file as database
-//
-
-    string full_event_name;
-    string::size_type pos;
-
-    bool inter_event = false;
-    if (event_name == EventName[INTERFACE_CHANGE_EVENT])
-		inter_event = true;
-
-    if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos)
-    {
-        full_event_name = device_name;
-        if (inter_event == false)
-		{
-			string tmp = '/' + obj_name;
-			full_event_name.insert(pos,tmp);
-		}
-        full_event_name = full_event_name + '.' + event_name;
-    }
-    else
-	{
-		if (inter_event == true)
-			full_event_name = device_name + '.' + event_name;
-		else
-			full_event_name = device_name + '/' + obj_name + '.' + event_name;
-	}
-
-
-//
 // Extract server command result
 //
 
     const DevVarLongStringArray *ev_svr_data;
     dd >> ev_svr_data;
+
+    auto size = ev_svr_data->svalue.length();
+    string full_event_name{ev_svr_data->svalue[size - 1]};
 
 //
 // Create and connect the REQ socket used to send message to the ZMQ main thread
