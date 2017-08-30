@@ -1253,7 +1253,7 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
                                                   obj_name_lower,
                                                   event == EventName[INTERFACE_CHANGE_EVENT],
                                                   dev,
-                                                  ev->get_fqdn_prefix());//TODO
+                                                  tg->get_zmq_event_supplier()->get_fqdn_prefix());//TODO may throw NPE
 
         string::size_type pos = event.find(EVENT_COMPAT);
         if (pos != string::npos)
