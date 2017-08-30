@@ -85,7 +85,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 //			- client_lib : Tango release number used by client
 //
 //--------------------------------------------------------------------------------------------------------------------
-
+//TODO looks like action is always == "subscribe"
 void
 DServer::event_subscription(string &dev_name,
                             string &obj_name,
@@ -130,24 +130,15 @@ DServer::event_subscription(string &dev_name,
         int attr_ind = m_attr->get_attr_ind_by_name(obj_name.c_str());
         Attribute &attribute = m_attr->get_attr_by_ind(attr_ind);
 
-        if (ct == NOTIFD)
+        if (attribute.is_fwd_att() == true && client_lib < 5)
         {
-                Except::throw_exception(API_NotSupportedFeature,
-                                        "Notifd is no longer supported. Please update!!!",
-                                        "DServer::event_subscription");
-        }
-        else
-        {
-            if (attribute.is_fwd_att() == true && client_lib < 5)
-            {
-                stringstream ss;
-                ss << "The attribute " << obj_name << " is a forwarded attribute.";
-                ss
-                    << "\nIt is not supported to subscribe events from forwarded attribute using Tango < 9. Please update!!";
+            stringstream ss;
+            ss << "The attribute " << obj_name << " is a forwarded attribute.";
+            ss
+                << "\nIt is not supported to subscribe events from forwarded attribute using Tango < 9. Please update!!";
 
-                Except::throw_exception(API_NotSupportedFeature,
-                                        ss.str(), "DServer::event_subscription");
-            }
+            Except::throw_exception(API_NotSupportedFeature,
+                                    ss.str(), "DServer::event_subscription");
         }
 
         if (action == "subscribe")
@@ -678,29 +669,29 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
     }
     else
     {
-        string dev_name, obj_name, action, event, obj_name_lower;
+        string dev_name, obj_name, action, event_name, obj_name_lower;
         dev_name = (*argin)[0];
         obj_name = (*argin)[1];
         action = (*argin)[2];
-        event = (*argin)[3];
+        event_name = (*argin)[3];
 
-        check_event_name_exists(event);
+        check_event_name_exists(event_name);
 
         bool intr_change = false;
-        if (event == EventName[INTERFACE_CHANGE_EVENT])
+        if (event_name == EventName[INTERFACE_CHANGE_EVENT])
             intr_change = true;
 
         bool pipe_event = false;
-        if (event == EventName[PIPE_EVENT])
+        if (event_name == EventName[PIPE_EVENT])
             pipe_event = true;
 
         obj_name_lower = obj_name;
         transform(obj_name_lower.begin(), obj_name_lower.end(), obj_name_lower.begin(), ::tolower);
 
-        int client_release = guess_client_lib_version(argin, event);
+        int client_release = guess_client_lib_version(argin, event_name);
 
         cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute/pipe " << obj_name
-              << " action " << action << " event " << event << " client lib = " << client_release << endl;
+              << " action " << action << " event " << event_name << " client lib = " << client_release << endl;
 
 //
 // If we receive this command while the DS is in its shuting down sequence, do nothing
@@ -769,18 +760,19 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         string mcast;
         int rate, ivl;
 
-        string ev_name = get_event_full_name(event, obj_name_lower, intr_change, dev, ev->get_fqdn_prefix());
+        string
+            event_full_name = get_event_full_name(event_name, obj_name_lower, intr_change, dev, ev->get_fqdn_prefix());
 
         //TODO avoid this - introduce a new object with corresponding methods
-        string::size_type pos = event.find(EVENT_COMPAT);
+        string::size_type pos = event_name.find(EVENT_COMPAT);
         if (pos != string::npos)
-            event.erase(0, EVENT_COMPAT_IDL5_SIZE);
+            event_name.erase(0, EVENT_COMPAT_IDL5_SIZE);
 
         event_subscription(dev_name,
                            obj_name,
                            action,
-                           event,
-                           ev_name,
+                           event_name,
+                           event_full_name,
                            obj_name_lower,
                            ZMQ,
                            mcast,
@@ -825,7 +817,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 //
 
         if (mcast.empty() == false)
-            ev->create_mcast_event_socket(mcast, ev_name, rate, local_call);
+            ev->create_mcast_event_socket(mcast, event_full_name, rate, local_call);
         else
             ev->create_event_socket();
 
@@ -833,7 +825,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 // Init event counter in Event Supplier
 //
 
-        ev->init_event_cptr(ev_name);
+        ev->init_event_cptr(event_full_name);
 
 //
 // Init one subscription command flag in Eventsupplier
@@ -850,7 +842,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         {
             Attribute &attribute = dev->get_device_attr()->get_attr_by_name(obj_name.c_str());
             EventType et;
-            tg->event_name_2_event_type(event, et);
+            tg->event_name_2_event_type(event_name, et);
 
             if (attribute.is_fwd_att() == true && et != ATTR_CONF_EVENT)
             {
@@ -902,7 +894,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             }
             else
             {
-                string &event_endpoint = ev->get_mcast_event_endpoint(ev_name);
+                string &event_endpoint = ev->get_mcast_event_endpoint(event_full_name);
                 ret_data->svalue[1] = Tango::string_dup(event_endpoint.c_str());
             }
         }
@@ -924,7 +916,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
         auto size = ret_data->svalue.length();
         ret_data->svalue.length(size + 1);
-        ret_data->svalue[size] = Tango::string_dup(("TOPIC:" + ev_name).c_str());
+        ret_data->svalue[size] = Tango::string_dup(("TOPIC:" + event_full_name).c_str());
     }
 
     return ret_data;

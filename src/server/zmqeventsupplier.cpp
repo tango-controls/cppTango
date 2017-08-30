@@ -1044,7 +1044,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 	if (event_type == EventName[PIPE_EVENT])
 		pipe_event = true;
 
-	event_name = fqdn_prefix;
+    string event_name = fqdn_prefix;
 
 	int size = event_name.size();
 	if (event_name[size - 1] == '#')
@@ -1072,6 +1072,9 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 // Use memcpy here. Don't use message with no-copy option because
 // it does not give any performance improvement in this case (too small amount of data)
 //
+//TODO extract class TangoMessage with header, body and etc
+
+
 
     zmq::message_t name_mess(event_name.size());
     memcpy(name_mess.data(),event_name.data(),event_name.size());
@@ -1091,6 +1094,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		bool print = false;
     	if (intr_change == false && pipe_event == false)
 		{
+            //TODO pass as argument
 			Attribute &att = device_impl->get_device_attr()->get_attr_by_name(obj_name.c_str());
 
 			if (local_event_type == "data_ready")
