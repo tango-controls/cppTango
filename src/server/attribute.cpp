@@ -84,14 +84,14 @@ static bool WantedProp_f(AttrProperty a,const char *n)
 //--------------------------------------------------------------------------------------------------------------------
 
 Attribute::Attribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string &dev_name,long idx)
-:date(true),quality(Tango::ATTR_VALID),check_min_value(false),check_max_value(false),
- enum_nb(0),loc_enum_ptr(Tango_nullptr),poll_period(0),event_period(0),archive_period(0),last_periodic(0.0),
- archive_last_periodic(0.0),periodic_counter(0),archive_periodic_counter(0),
- archive_last_event(0.0),dev(NULL),change_event_implmented(false),
- archive_event_implmented(false),check_change_event_criteria(true),
- check_archive_event_criteria(true),dr_event_implmented(false),
- scalar_str_attr_release(false),notifd_event(false),zmq_event(false),
- check_startup_exceptions(false),startup_exceptions_clear(true),att_mem_exception(false)
+: date(true), quality(Tango::ATTR_VALID), check_min_value(false), check_max_value(false),
+  enum_nb(0), loc_enum_ptr(Tango_nullptr), poll_period(0), event_period(0), archive_period(0), last_periodic(0.0),
+  archive_last_periodic(0.0), periodic_counter(0), archive_periodic_counter(0),
+  archive_last_event(0.0), dev(NULL), change_event_implmented(false),
+  archive_event_implmented(false), check_change_event_criteria(true),
+  check_archive_event_criteria(true), dr_event_implmented(false),
+  scalar_str_attr_release(false), zmq_event(false),
+  check_startup_exceptions(false), startup_exceptions_clear(true), att_mem_exception(false)
 {
 
 //
@@ -230,7 +230,6 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 	archive_abs_change[0] = INT_MAX;		// default for archive change is none
 	archive_abs_change[1] = INT_MAX;		// default for archive change is none
 
-    notifd_event = false;
 	zmq_event = false;
 
 	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
@@ -3787,16 +3786,10 @@ void Attribute::fire_change_event(DevFailed *except)
 // Get the event supplier(s)
 //
 
-		EventSupplier *event_supplier_nd = NULL;
 		EventSupplier *event_supplier_zmq = NULL;
         bool pub_socket_created = false;
 
 		Tango::Util *tg = Util::instance();
-		if (use_notifd_event() == true)
-        {
-            event_supplier_nd = tg->get_notifd_event_supplier();
-            pub_socket_created = true;
-        }
         if (use_zmq_event() == true)
             event_supplier_zmq = tg->get_zmq_event_supplier();
 
@@ -3867,7 +3860,7 @@ void Attribute::fire_change_event(DevFailed *except)
 // Simply return if event supplier(s) are not created
 //
 
-		if ((event_supplier_nd == NULL) && (event_supplier_zmq == NULL))
+		if ((event_supplier_zmq == NULL))
 		{
 			if ( name_lower != "state" )
 			{
@@ -3978,36 +3971,15 @@ void Attribute::fire_change_event(DevFailed *except)
 
 //
 // Eventually push the event (if detected)
-// When we have both notifd and zmq event supplier, do not detect the event
+// When we have zmq event supplier, do not detect the event
 // two times. The detect_and_push_events() method returns true if the event
 // is detected.
 //
 
-            bool send_event = false;
-            if (event_supplier_nd != NULL)
-                send_event = event_supplier_nd->detect_and_push_change_event(dev,ad,*this,name,except,true);
-            if (event_supplier_zmq != NULL)
+			if (event_supplier_zmq != NULL && pub_socket_created)
             {
-                if (event_supplier_nd != NULL)
-                {
-                    if (send_event == true && pub_socket_created == true)
-                    {
-
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
-
-						event_supplier_zmq->push_event_loop(dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,*this,except);
-                    }
-                }
-                else
-                {
-                     if (pub_socket_created == true)
                         event_supplier_zmq->detect_and_push_change_event(dev,ad,*this,name,except,true);
                 }
-
-            }
 		}
 		else
 		{
@@ -4096,21 +4068,17 @@ void Attribute::fire_change_event(DevFailed *except)
 // Finally push the event(s)
 //
 
-            if (event_supplier_nd != NULL)
-                event_supplier_nd->push_event(dev,
-                                        "change",
-                                        filterable_names,
-                                        filterable_data,
-                                        filterable_names_lg,
-                                        filterable_data_lg,
-                                        ad,
-                                        name,
-                                        except,
-                                        false);
-
-            if (event_supplier_zmq != NULL && pub_socket_created == true)
+			if (event_supplier_zmq != NULL && pub_socket_created == true)
 			{
-				event_supplier_zmq->push_event_loop(dev,CHANGE_EVENT,filterable_names,filterable_data,filterable_names_lg,filterable_data_lg,ad,*this,except);
+				event_supplier_zmq->push_event_loop(dev,
+													CHANGE_EVENT,
+													filterable_names,
+													filterable_data,
+													filterable_names_lg,
+													filterable_data_lg,
+													ad,
+													*this,
+													except);
 			}
 		}
 
@@ -4214,16 +4182,10 @@ void Attribute::fire_archive_event(DevFailed *except)
 // Get the event supplier(s)
 //
 
-		EventSupplier *event_supplier_nd = NULL;
 		EventSupplier *event_supplier_zmq = NULL;
 		bool pub_socket_created = false;
 
 		Tango::Util *tg = Util::instance();
-		if (use_notifd_event() == true)
-        {
-            event_supplier_nd = tg->get_notifd_event_supplier();
-            pub_socket_created = true;
-        }
         if (use_zmq_event() == true)
             event_supplier_zmq = tg->get_zmq_event_supplier();
 
@@ -4301,11 +4263,8 @@ void Attribute::fire_archive_event(DevFailed *except)
 // Simply return if event supplier(s) are not created
 //
 
-		if ((event_supplier_nd == NULL) && (event_supplier_zmq == NULL))
+		if (event_supplier_zmq == NULL && name_lower != "state")
         {
-			if ( name_lower != "state" )
-            {
-
 //
 // Delete the data values allocated in the attribute
 //
@@ -4327,7 +4286,6 @@ void Attribute::fire_archive_event(DevFailed *except)
 //						set_value_flag (false);
 					}
                 }
-            }
 			return;
         }
 
@@ -4416,6 +4374,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 // Fire event
 //
 
+		//TODO extract classes e.g. Archive.do()
 		if ( is_check_archive_criteria() == true )
 		{
 #ifdef _TG_WINDOWS_
@@ -4433,33 +4392,15 @@ void Attribute::fire_archive_event(DevFailed *except)
 
 //
 // Eventually push the event (if detected)
-// When we have both notifd and zmq event supplier, do not detect the event
+// When we have zmq event supplier, do not detect the event
 // two times. The detect_and_push_events() method returns true if the event
 // is detected.
 //
 
-            bool send_event = false;
-            if (event_supplier_nd != NULL)
-                send_event = event_supplier_nd->detect_and_push_archive_event(dev,ad,*this,name,except,&now_timeval,true);
-            if (event_supplier_zmq != NULL)
+			if (event_supplier_zmq != NULL && pub_socket_created)
             {
-                if (event_supplier_nd != NULL)
-                {
-                    if (send_event == true && pub_socket_created == true)
-                    {
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
-
-						event_supplier_zmq->push_event_loop(dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,*this,except);
-                    }
-                }
-                else
-                {
-                    if (pub_socket_created == true)
-                        event_supplier_zmq->detect_and_push_archive_event(dev,ad,*this,name,except,&now_timeval,true);
-                }
+				event_supplier_zmq
+					->detect_and_push_archive_event(dev, ad, *this, name, except, &now_timeval, true);
 
             }
 		}
@@ -4476,10 +4417,11 @@ void Attribute::fire_archive_event(DevFailed *except)
 			double delta_change_rel = 0.0;
 			double delta_change_abs = 0.0;
 
-            if (event_supplier_nd != NULL)
-                event_supplier_nd->detect_change(*this, ad,true,delta_change_rel,delta_change_abs,except,force_change,dev);
-            else if (event_supplier_zmq != NULL)
-                event_supplier_zmq->detect_change(*this, ad,true,delta_change_rel,delta_change_abs,except,force_change,dev);
+			if (event_supplier_zmq != NULL)
+			{
+				event_supplier_zmq
+					->detect_change(*this, ad, true, delta_change_rel, delta_change_abs, except, force_change, dev);
+			}
 
 
 			vector<string> filterable_names;
@@ -4542,21 +4484,17 @@ void Attribute::fire_archive_event(DevFailed *except)
 			filterable_names.push_back("delta_change_abs");
 			filterable_data.push_back(delta_change_abs);
 
-            if (event_supplier_nd != NULL)
-                event_supplier_nd->push_event(dev,
-							"archive",
-							filterable_names,
-							filterable_data,
-							filterable_names_lg,
-							filterable_data_lg,
-							ad,
-							name,
-							except,
-							false);
-
-            if (event_supplier_zmq != NULL && pub_socket_created == true)
+			if (event_supplier_zmq != NULL && pub_socket_created)
 			{
-				event_supplier_zmq->push_event_loop(dev,ARCHIVE_EVENT,filterable_names,filterable_data,filterable_names_lg,filterable_data_lg,ad,*this,except);
+				event_supplier_zmq->push_event_loop(dev,
+													ARCHIVE_EVENT,
+													filterable_names,
+													filterable_data,
+													filterable_names_lg,
+													filterable_data_lg,
+													ad,
+													*this,
+													except);
 			}
 		}
 
@@ -4664,11 +4602,6 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 		bool pub_socket_created = false;
 
 		Tango::Util *tg = Util::instance();
-		if (use_notifd_event() == true)
-        {
-            event_supplier_nd = tg->get_notifd_event_supplier();
-            pub_socket_created = true;
-        }
         if (use_zmq_event() == true)
             event_supplier_zmq = tg->get_zmq_event_supplier();
 
@@ -4959,16 +4892,13 @@ void Attribute::fire_error_periodic_event(DevFailed *except)
 // Get the event supplier, and simply return if not created
 //
 
-	EventSupplier *event_supplier_nd = NULL;
 	EventSupplier *event_supplier_zmq = NULL;
 
 	Tango::Util *tg = Util::instance();
-	if (use_notifd_event() == true)
-		event_supplier_nd = tg->get_notifd_event_supplier();
 	if (use_zmq_event() == true)
 		event_supplier_zmq = tg->get_zmq_event_supplier();
 
-	if (((event_supplier_nd == NULL) && (event_supplier_zmq == NULL)) || client_libs.empty() == true)
+	if (((event_supplier_zmq == NULL)) || client_libs.empty() == true)
 	{
 		return;
 	}
@@ -4995,20 +4925,17 @@ void Attribute::fire_error_periodic_event(DevFailed *except)
 	vector<long> filterable_data_lg;
 	vector<double> filt_vals;
 
-	if (event_supplier_nd != NULL)
-		event_supplier_nd->push_event(dev,
-				   "periodic_event",
-				   filt_names,
-				   filt_vals,
-				   filterable_names_lg,
-				   filterable_data_lg,
-				   ad,
-				   name,
-				   except,
-				   false);
 	if (event_supplier_zmq != NULL)
 	{
-		event_supplier_zmq->push_event_loop(dev,PERIODIC_EVENT,filt_names,filt_vals,filterable_names_lg,filterable_data_lg,ad,*this,except);
+		event_supplier_zmq->push_event_loop(dev,
+											PERIODIC_EVENT,
+											filt_names,
+											filt_vals,
+											filterable_names_lg,
+											filterable_data_lg,
+											ad,
+											*this,
+											except);
 	}
 }
 

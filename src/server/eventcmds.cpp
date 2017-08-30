@@ -55,114 +55,10 @@ namespace Tango
 //------------------------------------------------------------------------------------------------------------------
 DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin)
 {
-    if (argin->length() < 4)
-    {
-        TangoSys_OMemStream o;
-        o << "Not enough input arguments, needs 4 i.e. device name, attribute name, action, event name" << ends;
+    Except::throw_exception((const char *) API_UnsupportedFeature,
+                            "Notifd is not supported. Please update!!!",
+                            (const char *) "DServer::event_subscription_change");
 
-        Except::throw_exception((const char *) API_WrongNumberOfArgs,
-                                o.str(),
-                                (const char *) "DServer::event_subscription_change");
-    }
-
-    string dev_name, attr_name, action, event, attr_name_lower;
-    dev_name = (*argin)[0];
-    attr_name = (*argin)[1];
-    action = (*argin)[2];
-    event = (*argin)[3];
-
-    attr_name_lower = attr_name;
-    transform(attr_name_lower.begin(), attr_name_lower.end(), attr_name_lower.begin(), ::tolower);
-
-    cout4 << "EventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name
-          << " action " << action << " event " << event << endl;
-
-    Tango::Util *tg = Tango::Util::instance();
-
-//
-// If we receive this command while the DS is in its shuting down sequence, do nothing
-//
-
-    if (tg->get_heartbeat_thread_object() == NULL)
-    {
-        TangoSys_OMemStream o;
-        o << "The device server is shutting down! You can no longer subscribe for events" << ends;
-
-        Except::throw_exception((const char *) API_ShutdownInProgress,
-                                o.str(),
-                                (const char *) "DServer::event_subscription_change");
-    }
-
-//
-// If the EventSupplier object is not created, create it right now
-//
-
-    NotifdEventSupplier *ev;
-    if ((ev = tg->get_notifd_event_supplier()) == NULL)
-    {
-        tg->create_notifd_event_supplier();
-        ev = tg->get_notifd_event_supplier();
-    }
-
-//
-// If we are using a file as database, gives port number to event supplier
-//
-
-    if (Util::_FileDb == true && ev != NULL)
-    {
-        ev->file_db_svr();
-    }
-
-    string mcast;
-    int rate, ivl;
-
-//
-// Check if the request comes from a Tango 6 client (without client identification)
-// If true, the event has to be sent using AttributeValue_3 data structure
-// If cl is NULL, this means that the call is local (Two tango classes within the same process and with events between
-// device from class 1 and device from classs 2)
-//
-
-    int client_release = 0;
-    client_addr *cl = get_client_ident();
-
-    if (cl == NULL)
-        client_release = 4;
-    else
-    {
-        if (cl->client_ident == true)
-            client_release = 4;
-        else
-            client_release = 3;
-    }
-
-    string ev_full_name{""};//not used in case of NOTIFD
-    event_subscription(dev_name,
-                       attr_name,
-                       action,
-                       event,
-                       ev_full_name,
-                       attr_name_lower,
-                       NOTIFD,
-                       mcast,
-                       rate,
-                       ivl,
-                       NULL,
-                       client_release);
-
-//
-// Init one subscription command flag in Eventsupplier
-//
-
-    if (ev != NULL && ev->get_one_subscription_cmd() == false)
-        ev->set_one_subscription_cmd(true);
-
-//
-// Return to caller
-//
-
-    Tango::DevLong ret_val = (Tango::DevLong) tg->get_tango_lib_release();
-    return ret_val;
 }
 
 
@@ -234,22 +130,11 @@ DServer::event_subscription(string &dev_name,
         int attr_ind = m_attr->get_attr_ind_by_name(obj_name.c_str());
         Attribute &attribute = m_attr->get_attr_by_ind(attr_ind);
 
-//
-// Refuse subscription on forwarded attribute and notifd
-//
-
         if (ct == NOTIFD)
         {
-            if (attribute.is_fwd_att() == true)
-            {
-                stringstream ss;
-                ss << "The attribute " << obj_name << " is a forwarded attribute.";
-                ss
-                    << "\nIt is not supported to subscribe events from forwarded attribute using Tango < 9. Please update!!";
-
                 Except::throw_exception(API_NotSupportedFeature,
-                                        ss.str(), "DServer::event_subscription");
-            }
+                                        "Notifd is no longer supported. Please update!!!",
+                                        "DServer::event_subscription");
         }
         else
         {
@@ -507,7 +392,7 @@ DServer::event_subscription(string &dev_name,
             if (ct == ZMQ)
                 attribute.set_use_zmq_event();
             else
-                attribute.set_use_notifd_event();
+                assert(false);
 
 //
 // Check if multicast has to be used for event transport (only for ZMQ event)
