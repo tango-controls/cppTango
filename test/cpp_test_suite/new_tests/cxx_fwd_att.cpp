@@ -451,7 +451,6 @@ public:
 		string local_root_base("tango://");
 		local_root_base = local_root_base + tango_host + "/" +device1_name;
 		string local_root = local_root_base + "/short_attr_rw";
-		cout << (*confs)[0].root_attr_name << "==" << local_root << endl;
 		TS_ASSERT_EQUALS((*confs)[0].root_attr_name, local_root);
 
 		TS_ASSERT_EQUALS((*confs)[0].writable, Tango::READ_WRITE);

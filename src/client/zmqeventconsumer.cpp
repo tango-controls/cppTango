@@ -1810,15 +1810,16 @@ string ZmqEventConsumer::get_full_event_name(const string &device_name,
                                              const DevVarLongStringArray *ev_svr_data) const
 {
     string full_event_name;
+    string::size_type pos;
 
-    auto size = ev_svr_data->svalue.length();
-
-    full_event_name = ev_svr_data->svalue[size - 1];
-    if (full_event_name.find("TOPIC:") != basic_string::npos)
-    {
-        full_event_name.erase(0, 6);
-        return full_event_name;
-    }
+//    auto size = ev_svr_data->svalue.length();
+//
+//    full_event_name = ev_svr_data->svalue[size - 1];
+//    if ((pos = full_event_name.find("TOPIC:")) != string::npos)
+//    {
+//        full_event_name.erase(0, 6);
+//        return full_event_name;
+//    }
 
 
     //
@@ -1829,8 +1830,8 @@ string ZmqEventConsumer::get_full_event_name(const string &device_name,
     if (event_name == EventName[INTERFACE_CHANGE_EVENT])
         inter_event = true;
 
-    basic_string::size_type pos;
-    if ((pos = device_name.find(MODIFIER_DBASE_NO)) != basic_string::npos)
+
+    if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos)
     {
         full_event_name = device_name;
         if (inter_event == false)

@@ -2162,6 +2162,12 @@ public:
 	omni_mutex *get_attr_mutex() {return &(ext->attr_mutex);}
 	omni_mutex *get_user_attr_mutex() {return ext->user_attr_mutex;}
 
+    std::string get_zmq_subscription_topic()
+    { return ext->zmq_subscription_topic; }
+    template<typename T>
+    void set_zmq_subscription_topic(T v)
+    { ext->zmq_subscription_topic = std::move(v); }
+
 	bool change_event_subscribed();
 	bool periodic_event_subscribed();
 	bool archive_event_subscribed();
@@ -2304,16 +2310,17 @@ protected:
 // The extension class
 //
 
-    class AttributeExt
+    struct AttributeExt
     {
-    public:
         AttributeExt() : user_attr_mutex(NULL) {}
 
         omni_mutex			attr_mutex;						// Mutex to protect the attributes shared data buffer
         omni_mutex			*user_attr_mutex;				// Ptr for user mutex in case he manages exclusion
+
+        std::string zmq_subscription_topic;
     };
 
-	AttributeExt		*ext;
+    std::shared_ptr<AttributeExt> ext;
 
 	virtual void init_opt_prop(vector<AttrProperty> &,string &);
 	virtual void init_event_prop(vector<AttrProperty> &,const string &,Attr &);

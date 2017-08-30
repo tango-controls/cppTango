@@ -165,7 +165,18 @@ private:
 	void add_class(DeviceClass *);
 	void create_cpp_class(const char *,const char *);
 	void get_dev_prop(Tango::Util *);
-    void event_subscription(string &,string &,string &,string &,string &,ChannelType,string &,int &,int &,DeviceImpl *,int l=0);
+    void event_subscription(string &,
+                            string &,
+                            string &,
+                            string &,
+                            string &,
+                            string &,
+                            ChannelType,
+                            string &,
+                            int &,
+                            int &,
+                            DeviceImpl *,
+                            int l);
 	void get_event_misc_prop(Tango::Util *);
 	bool is_event_name(string &);
 	bool is_ip_address(string &);
@@ -181,6 +192,13 @@ private:
 
 	bool            polling_bef_9_def;
 	bool            polling_bef_9;
+    void check_event_name_exists(const string &event) const;
+    int guess_client_lib_version(const DevVarStringArray *argin, string &event);
+    string get_event_full_name(const string &event,
+                               const string &obj_name_lower,
+                               bool intr_change,
+                               DeviceImpl *dev,
+                               string &fqdn_prefix) const;
 };
 
 class KillThread: public omni_thread
