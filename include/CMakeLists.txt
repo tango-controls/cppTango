@@ -116,7 +116,7 @@ set(SERVER_HEADERS tango/server/attrdesc.h
         tango/server/subdev_diag.h
         tango/server/encoded_attribute.h
         tango/server/encoded_format.h
-        tango/server/device_6.h)
+        tango/server/device_6.h tango/server/pollable.h)
 
 
 set(SERVER_TEMPLATES

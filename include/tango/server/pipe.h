@@ -34,7 +34,7 @@
 #define _PIPE_H
 
 #include <tango.h>
-
+#include <tango/server/pollable.h>
 #include <stdarg.h>
 
 namespace Tango
@@ -74,7 +74,7 @@ struct WantedPipe : public binary_function<A1,A2,R>
  * @ingroup Server
  */
 
-class Pipe
+class Pipe: public Pollable
 {
 public:
 
