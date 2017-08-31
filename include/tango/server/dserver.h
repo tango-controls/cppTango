@@ -89,6 +89,12 @@ public :
 
     Tango::DevLong event_subscription_change(const Tango::DevVarStringArray *);
     Tango::DevVarLongStringArray *zmq_event_subscription_change(const Tango::DevVarStringArray *);
+    /**
+     *  It's just the call to help debugging. Returns event configuration
+     *
+     * @return zmq event configuration
+     */
+    Tango::DevVarLongStringArray *zmq_event_subscription_info() const;
     void event_confirm_subscription(const Tango::DevVarStringArray *);
 
     void delete_devices();

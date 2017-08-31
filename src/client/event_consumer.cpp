@@ -1756,13 +1756,6 @@ int EventConsumer::connect_event(DeviceProxy *device,
 // DS, we should find it in map. Otherwise, get it.
 //
 
-    DeviceData subscriber_in;
-    vector<string> subscriber_info;
-    subscriber_info.push_back(local_device_name);
-    subscriber_info.push_back(obj_name_lower);
-    subscriber_info.emplace_back("subscribe");
-    subscriber_info.push_back(event_name);
-
     //TODO replace with shared ptr
     bool allocated;
     map<std::basic_string<char, std::char_traits<char>, std::allocator<char>>,
@@ -1771,61 +1764,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
     DeviceProxy *adm_dev = get_admin_device(device, allocated, ipos, evt_it);
 
-    DeviceData dd;
-
-    try
-    {
-        string cmd_name{"ZmqEventSubscriptionChange"};
-        stringstream ss;
-        ss << DevVersion;
-        subscriber_info.push_back(ss.str());
-
-        subscriber_in << subscriber_info;
-        dd = adm_dev->command_inout(cmd_name, subscriber_in);
-
-        dd.reset_exceptions(DeviceData::isempty_flag);
-
-//
-// DS before Tango 7.1 does not send their Tango_host in the event
-// Refuse to subscribe to an event from a DS before Tango 7.1 if the device is in another CS than the one defined by
-// the TANGO_HOST env. variable
-//
-
-        if (dd.is_empty() == true)
-        {
-            if (device->get_from_env_var() == false)
-            {
-                string::size_type pos = device_name.find("://");
-                pos = pos + 3;
-                pos = device_name.find('/', pos);
-                string fqdn_prefix = device_name.substr(0, pos + 1);
-                transform(fqdn_prefix.begin(), fqdn_prefix.end(), fqdn_prefix.begin(), ::tolower);
-
-                if (fqdn_prefix != env_var_fqdn_prefix[0])
-                {
-                    TangoSys_OMemStream o;
-                    o << "Device server for device " << device_name;
-                    o << " is too old to generate event in a multi TANGO_HOST environment. Please, use Tango >= 7.1"
-                      << ends;
-
-                    EventSystemExcept::throw_exception(API_DSFailedRegisteringEvent, o.str(),
-                                                       "EventConsumer::connect_event()");
-                }
-            }
-        }
-    }
-    catch (DevFailed &e)
-    {
-        if (allocated == true)
-            delete adm_dev;
-        string reason(e.errors[0].reason.in());
-        if (reason == API_CommandNotFound)
-            throw;
-        else
-            EventSystemExcept::re_throw_exception(e, API_DSFailedRegisteringEvent,
-                                                  "Device server send exception while trying to register event",
-                                                  "EventConsumer::connect_event()");
-    }
+    DeviceData dd = execute_event_subscription_change(adm_dev, device, event_name);
 
 //
 // Some Zmq specific code (Check release compatibility,....)
@@ -1844,10 +1783,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 //
 
     const DevVarLongStringArray *dvlsa;
-    bool dd_extract_ok = true;
-
-    if ((dd >> dvlsa) == false)
-        dd_extract_ok = false;
+    bool dd_extract_ok = (dd >> dvlsa);
 
     if (dd_extract_ok == true && add_compat_info == true && dvlsa->lvalue[1] >= MIN_IDL_CONF5)
     {
@@ -2059,6 +1995,77 @@ int EventConsumer::connect_event(DeviceProxy *device,
 #endif
 
     return ret_event_id;
+}
+
+DeviceData
+EventConsumer::execute_event_subscription_change(DeviceProxy *adm_dev, DeviceProxy *dev, const string &event_name) const
+{
+    DeviceData subscriber_in;
+    vector<string> subscriber_info;
+    subscriber_info.push_back(dev->name());
+    subscriber_info.push_back(obj_name_lower);
+    subscriber_info.emplace_back("subscribe");
+    subscriber_info.push_back(event_name);
+
+
+    try
+    {
+        string cmd_name{"ZmqEventSubscriptionChange"};
+        stringstream ss;
+        ss << DevVersion;
+        subscriber_info.push_back(ss.str());
+
+        subscriber_in << subscriber_info;
+        DeviceData response;
+
+        response = adm_dev->command_inout(cmd_name, subscriber_in);
+
+        response.reset_exceptions(DeviceData::isempty_flag);
+
+
+        //
+// DS before Tango 7.1 does not send their Tango_host in the event
+// Refuse to subscribe to an event from a DS before Tango 7.1 if the device is in another CS than the one defined by
+// the TANGO_HOST env. variable
+//
+
+        if (response.is_empty() == true)
+        {
+            if (dev->get_from_env_var() == false)
+            {
+                string::size_type pos = device_name.find("://");
+                pos = pos + 3;
+                pos = device_name.find('/', pos);
+                string fqdn_prefix = device_name.substr(0, pos + 1);
+                transform(fqdn_prefix.begin(), fqdn_prefix.end(), fqdn_prefix.begin(), ::tolower);
+
+                if (fqdn_prefix != env_var_fqdn_prefix[0])
+                {
+                    TangoSys_OMemStream o;
+                    o << "Device server for device " << device_name;
+                    o << " is too old to generate event in a multi TANGO_HOST environment. Please, use Tango >= 7.1"
+                      << ends;
+
+                    EventSystemExcept::throw_exception(API_DSFailedRegisteringEvent, o.str(),
+                                                       "EventConsumer::connect_event()");
+                }
+            }
+        }
+
+        return response;
+    }
+    catch (DevFailed &e)
+    {
+//        if (allocated == true)
+//            delete adm_dev;
+        string reason(e.errors[0].reason.in());
+        if (reason == API_CommandNotFound)
+            throw;
+        else
+            EventSystemExcept::re_throw_exception(e, API_DSFailedRegisteringEvent,
+                                                  "Device server send exception while trying to register event",
+                                                  "EventConsumer::connect_event()");
+    }
 }
 
 string EventConsumer::get_local_callback_key(DeviceProxy *device,

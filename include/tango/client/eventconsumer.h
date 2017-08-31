@@ -40,6 +40,7 @@
 
 #include <tango/server/readers_writers_lock.h>
 
+#include <utility>
 #include <zmq.hpp>
 
 #ifdef ZMQ_VERSION
@@ -543,7 +544,10 @@ protected :
                                   Tango::EvChanIte &evt_it) const;
     string
     get_local_callback_key(DeviceProxy *device, const string &obj_name, const string &event_name, bool inter_event);
+    DeviceData
+    execute_event_subscription_change(DeviceProxy *adm_dev, DeviceProxy *dev, const string &event_name) const;
 };
+
 
 /********************************************************************************
  * 																				*
