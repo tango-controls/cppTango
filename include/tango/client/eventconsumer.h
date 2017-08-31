@@ -532,6 +532,17 @@ protected :
 
     virtual void set_channel_type(EventChannelStruct &) = 0;
     virtual void zmq_specific(DeviceData &, string &, DeviceProxy *, const string &) = 0;
+    DeviceProxy *get_admin_device(Tango::DeviceProxy *device,
+                                  bool &allocated,
+                                  map<std::basic_string<char,
+                                                        std::char_traits<char>,
+                                                        std::allocator<char>>,
+                                      std::basic_string<char,
+                                                        std::char_traits<char>,
+                                                        std::allocator<char>>>::iterator &ipos,
+                                  Tango::EvChanIte &evt_it) const;
+    string
+    get_local_callback_key(DeviceProxy *device, const string &obj_name, const string &event_name, bool inter_event);
 };
 
 /********************************************************************************

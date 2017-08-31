@@ -1812,14 +1812,14 @@ string ZmqEventConsumer::get_full_event_name(const string &device_name,
     string full_event_name;
     string::size_type pos;
 
-    auto size = ev_svr_data->svalue.length();
-
-    full_event_name = ev_svr_data->svalue[size - 1];
-    if ((pos = full_event_name.find("TOPIC:")) != string::npos)
-    {
-        full_event_name.erase(0, 6);
-        return full_event_name;
-    }
+//    auto size = ev_svr_data->svalue.length();
+//
+//    full_event_name = ev_svr_data->svalue[size - 1];
+//    if ((pos = full_event_name.find("TOPIC:")) != string::npos)
+//    {
+//        full_event_name.erase(0, 6);
+//        return full_event_name;
+//    }
 
 
     //

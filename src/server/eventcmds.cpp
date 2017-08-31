@@ -53,7 +53,7 @@ namespace Tango
 //		The command output data (Tango lib release number)
 //
 //------------------------------------------------------------------------------------------------------------------
-DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin)
+DevLong DServer::event_subscription_change(TANGO_UNUSED(const Tango::DevVarStringArray *argin))
 {
     Except::throw_exception((const char *) API_UnsupportedFeature,
                             "Notifd is not supported. Please update!!!",
@@ -545,12 +545,12 @@ void DServer::setup_mcast(const string &event_name,
                                         o.str(), "DServer::event_subscription");
             }
 
-            basic_string::size_type start, end;
+            string::size_type start, end;
             start = attribute.mcast_event[i].find(':');
             start++;
             end = attribute.mcast_event[i].find(':', start);
 
-            if ((end = attribute.mcast_event[i].find(':', end + 1)) == basic_string::npos)
+            if ((end = attribute.mcast_event[i].find(':', end + 1)) == string::npos)
             {
                 mcast_data = attribute.mcast_event[i].substr(start);
                 rate = 0;
@@ -566,8 +566,8 @@ void DServer::setup_mcast(const string &event_name,
 // Get rate because one is defined
 //
 
-                basic_string::size_type start_rate = end + 1;
-                if ((end = attribute.mcast_event[i].find(':', start_rate)) == basic_string::npos)
+                string::size_type start_rate = end + 1;
+                if ((end = attribute.mcast_event[i].find(':', start_rate)) == string::npos)
                 {
                     istringstream iss(attribute.mcast_event[i].substr(start_rate));
                     iss >> rate;
