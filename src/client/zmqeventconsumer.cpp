@@ -1302,7 +1302,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 // Create and connect the REQ socket used to send message to the ZMQ main thread
 //
 
-    notify_zmq_thread(channel_name, ev_svr_data->svalue[valid_endpoint << 1].in());
+    notify_zmq_thread(channel_name + "." + HEARTBEAT_EVENT_NAME, ev_svr_data->svalue[valid_endpoint << 1].in());
 
 //
 // Init (or create) EventChannelStruct
@@ -3287,7 +3287,7 @@ void ZmqEventConsumer::get_subscribed_event_ids(DeviceProxy *_dev,vector<int> &_
     }
 }
 
-void ZmqEventConsumer::notify_zmq_thread(const string &admin_device_name, const string &valid_endpoint)
+void ZmqEventConsumer::notify_zmq_thread(const string &topic, const string &valid_endpoint)
 {
     zmq::message_t reply;
     try
@@ -3349,11 +3349,8 @@ void ZmqEventConsumer::notify_zmq_thread(const string &admin_device_name, const 
         ::strcpy(&(buffer[length]), valid_endpoint.c_str());
         length = length + ::strlen(valid_endpoint.c_str()) + 1;
 
-        string sub(admin_device_name);
-        sub = sub + '.' + HEARTBEAT_EVENT_NAME;
-
-        ::strcpy(&(buffer[length]), sub.c_str());
-        length = length + sub.size() + 1;
+        ::strcpy(&(buffer[length]), topic.c_str());
+        length = length + topic.size() + 1;
 
 //
 // Send command to main ZMQ thread
