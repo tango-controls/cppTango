@@ -49,7 +49,7 @@ namespace commands
  * This structure represents AdminDevice::ZmqSubscriptionChangeResponse
  *
  */
-struct ZmqChangeSubscriptionResponse
+struct ZmqSubscriptionChangeResponse
 {
     int tango_lib_release;
     int dev_idl_version;
@@ -65,7 +65,7 @@ struct ZmqChangeSubscriptionResponse
 
     std::vector<std::pair<std::string, std::string>> alternative_endpoints;
 
-    ZmqChangeSubscriptionResponse(int tango_lib_release,
+    ZmqSubscriptionChangeResponse(int tango_lib_release,
                                   int dev_idl_version,
                                   int zmq_sub_event_hwm,
                                   int rate,
@@ -82,11 +82,11 @@ struct ZmqChangeSubscriptionResponse
             alternative_endpoints))
     {}
 
-    explicit ZmqChangeSubscriptionResponse(Tango::DeviceData *zmq_event_subscription_change_response)
+    explicit ZmqSubscriptionChangeResponse(Tango::DeviceData &response)
     {
-        const Tango::DevVarLongStringArray *value;
+        const Tango::DevVarLongStringArray *value = nullptr;
 
-        bool extract_ok = (*zmq_event_subscription_change_response) >> value;
+        bool extract_ok = response >> value;
         if (not(extract_ok))
         {
             Tango::Except::throw_exception(
@@ -103,24 +103,19 @@ struct ZmqChangeSubscriptionResponse
         ivl = value->lvalue[4];
         zmq_release_version = value->lvalue[5];
 
-        bool is_new_tango = tango_lib_release >= 1003;
 
         heartbeat_endpoint = value->svalue[0];
         event_endpoint = value->svalue[1];
 
-        int size_modifier = is_new_tango ? 3 : 2;
-        bool has_alternative_endpoints = (value->svalue.length() - size_modifier) > 0;
+        bool has_alternative_endpoints = (value->svalue.length() - 3) > 0;
         if (has_alternative_endpoints)
         {
-            alternative_endpoints = vector<pair<string, string>>{value->svalue.length() - size_modifier};
+            alternative_endpoints = vector<pair<string, string>>{value->svalue.length() - 3};
 
             //TODO
         }
 
-        if (is_new_tango)
-            zmq_topic = value->svalue[value->svalue.length() - 1];
-        else
-            zmq_topic = "";
+        zmq_topic = value->svalue[value->svalue.length() - 1];
     }
 
     Tango::DevVarLongStringArray *to_DevVarLongStringArray()

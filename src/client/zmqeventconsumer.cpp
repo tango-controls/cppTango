@@ -1302,113 +1302,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 // Create and connect the REQ socket used to send message to the ZMQ main thread
 //
 
-    zmq::message_t reply;
-    try
-    {
-        zmq::socket_t sender(zmq_context,ZMQ_REQ);
-
-//
-// In case this thread runs before the main ZMQ thread, it is possible to call connect before the main ZMQ thread has
-// binded its socket. In such a case, error code is set to ECONNREFUSED.
-// If this happens, give the main ZMQ thread a chance to run and retry the connect call
-// I have tried with a yield call but it still failed in some cases (when running the DS with a file as database  for
-// instance). Replace the yield with a 10 mS sleep !!!
-//
-
-        try
-        {
-            sender.connect(CTRL_SOCK_ENDPOINT);
-        }
-        catch (zmq::error_t &e)
-        {
-            if (e.num() == ECONNREFUSED)
-            {
-#ifndef _TG_WINDOWS_
-                struct timespec ts;
-                ts.tv_sec = 0;
-                ts.tv_nsec = 10000000;
-
-                nanosleep(&ts,NULL);
-#else
-                Sleep(10);
-#endif
-                sender.connect(CTRL_SOCK_ENDPOINT);
-            }
-            else
-                throw;
-        }
-
-//
-// Build message sent to ZMQ main thread
-// In this case, this is the command code, the publisher endpoint and the event name
-//
-
-        char buffer[1024];
-        int length = 0;
-
-        buffer[length] = ZMQ_CONNECT_HEARTBEAT;
-        length++;
-
-#ifdef ZMQ_HAS_DISCONNECT
-		buffer[length] = 0;
-#else
-        if (reconnect == true)
-            buffer[length] = 1;
-        else
-            buffer[length] = 0;
-#endif
-        length++;
-
-        ::strcpy(&(buffer[length]),ev_svr_data->svalue[valid_endpoint << 1].in());
-        length = length + ::strlen(ev_svr_data->svalue[valid_endpoint << 1].in()) + 1;
-
-        string sub(channel_name);
-        sub = sub + '.' + HEARTBEAT_EVENT_NAME;
-
-        ::strcpy(&(buffer[length]),sub.c_str());
-        length = length + sub.size() + 1;
-
-//
-// Send command to main ZMQ thread
-//
-
-        zmq::message_t send_data(length);
-        ::memcpy(send_data.data(),buffer,length);
-
-        sender.send(send_data);
-
-        sender.recv(&reply);
-    }
-    catch(zmq::error_t &e)
-    {
-        stringstream o;
-
-        o << "Failed to create connection to event channel!\n";
-        o << "Error while communicating with the ZMQ main thread\n";
-        o << "ZMQ error code = " << e.num() << "\n";
-        o << "ZMQ message: " << e.what() << ends;
-
-        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_channel");
-    }
-
-//
-// Any error during ZMQ main thread socket operations?
-//
-
-    if (reply.size() != 2)
-    {
-        char err_mess[512];
-        ::memcpy(err_mess,reply.data(),reply.size());
-        err_mess[reply.size()] = '\0';
-
-        stringstream o;
-
-        o << "Failed to create connection to event channel!\n";
-        o << "Error while trying to connect or subscribe the heartbeat ZMQ socket to the new publisher\n";
-        o << "ZMQ message: " << err_mess << ends;
-
-        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_channel");
-    }
+    notify_zmq_thread(channel_name, ev_svr_data->svalue[valid_endpoint << 1].in());
 
 //
 // Init (or create) EventChannelStruct
@@ -1444,6 +1338,24 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 
 		channel_map[channel_name] = new_event_channel_struct;
 	}
+}
+
+void ZmqEventConsumer::check_zmq_reply(const zmq::message_t &reply) const
+{
+    if (reply.size() != 2)
+    {
+        char err_mess[512];
+        memcpy(err_mess, reply.data(), reply.size());
+        err_mess[reply.size()] = '\0';
+
+        stringstream o;
+
+        o << "Failed to create connection to event channel!\n";
+        o << "Error while trying to connect or subscribe the heartbeat ZMQ socket to the new publisher\n";
+        o << "ZMQ message: " << err_mess << ends;
+
+        Except::throw_exception(API_ZmqFailed, o.str(), "ZmqEventConsumer::connect_event_channel");
+    }
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -1785,24 +1697,7 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
         Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_system");
     }
 
-//
-// Any error during ZMQ main thread socket operations?
-//
-
-    if (reply.size() != 2)
-    {
-        char err_mess[512];
-        ::memcpy(err_mess,reply.data(),reply.size());
-        err_mess[reply.size()] = '\0';
-
-        stringstream o;
-
-        o << "Failed to create connection to event!\n";
-        o << "Error while trying to connect or subscribe the event ZMQ socket to the new publisher\n";
-        o << "ZMQ message: " << err_mess << ends;
-
-        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_system");
-    }
+    check_zmq_reply(reply);
 }
 string ZmqEventConsumer::get_full_event_name(const string &device_name,
                                              const string &obj_name,
@@ -3390,6 +3285,106 @@ void ZmqEventConsumer::get_subscribed_event_ids(DeviceProxy *_dev,vector<int> &_
             _ids.push_back(ite->event_id);
         }
     }
+}
+
+void ZmqEventConsumer::notify_zmq_thread(const string &admin_device_name, const string &valid_endpoint)
+{
+    zmq::message_t reply;
+    try
+    {
+        zmq::socket_t sender(zmq_context, ZMQ_REQ);
+
+//
+// In case this thread runs before the main ZMQ thread, it is possible to call connect before the main ZMQ thread has
+// binded its socket. In such a case, error code is set to ECONNREFUSED.
+// If this happens, give the main ZMQ thread a chance to run and retry the connect call
+// I have tried with a yield call but it still failed in some cases (when running the DS with a file as database  for
+// instance). Replace the yield with a 10 mS sleep !!!
+//
+
+        try
+        {
+            sender.connect(CTRL_SOCK_ENDPOINT);
+        }
+        catch (zmq::error_t &e)
+        {
+            if (e.num() == ECONNREFUSED)
+            {
+#ifndef _TG_WINDOWS_
+                struct timespec ts;
+                ts.tv_sec = 0;
+                ts.tv_nsec = 10000000;
+
+                nanosleep(&ts, NULL);
+#else
+                Sleep(10);
+#endif
+                sender.connect(CTRL_SOCK_ENDPOINT);
+            }
+            else
+                throw;
+        }
+
+//
+// Build message sent to ZMQ main thread
+// In this case, this is the command code, the publisher endpoint and the event name
+//
+
+        char buffer[1024];
+        int length = 0;
+
+        buffer[length] = ZMQ_CONNECT_HEARTBEAT;
+        length++;
+
+#ifdef ZMQ_HAS_DISCONNECT
+        buffer[length] = 0;
+#else
+        if (reconnect == true)
+            buffer[length] = 1;
+        else
+            buffer[length] = 0;
+#endif
+        length++;
+
+        ::strcpy(&(buffer[length]), valid_endpoint.c_str());
+        length = length + ::strlen(valid_endpoint.c_str()) + 1;
+
+        string sub(admin_device_name);
+        sub = sub + '.' + HEARTBEAT_EVENT_NAME;
+
+        ::strcpy(&(buffer[length]), sub.c_str());
+        length = length + sub.size() + 1;
+
+//
+// Send command to main ZMQ thread
+//
+
+        zmq::message_t send_data(length);
+        ::memcpy(send_data.data(), buffer, length);
+
+        sender.send(send_data);
+
+        sender.recv(&reply);
+    }
+    catch (zmq::error_t &e)
+    {
+        stringstream o;
+
+        o << "Failed to create connection to event channel!\n";
+        o << "Error while communicating with the ZMQ main thread\n";
+        o << "ZMQ error code = " << e.num() << "\n";
+        o << "ZMQ message: " << e.what() << ends;
+
+        Except::throw_exception(API_ZmqFailed, o.str(), "ZmqEventConsumer::connect_event_channel");
+    }
+
+    check_zmq_reply(reply);
+}
+
+void ZmqEventConsumer::connect_heartbeat_1003(const std::string &channel_name,
+                                              tango::common::admin::commands::ZmqSubscriptionChangeResponse response)
+{
+    notify_zmq_thread(channel_name, response.heartbeat_endpoint);
 }
 
 //--------------------------------------------------------------------------------------------------------------------

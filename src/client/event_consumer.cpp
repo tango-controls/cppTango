@@ -5,6 +5,9 @@
 #include <tango.h>
 #include <tango/client/eventconsumer.h>
 #include <tango/client/event_consumer.tpp>
+#include <common/admin/commands/zmq_event_subscription_info.h>
+#include <common/admin/commands/zmq_event_subscription_change.h>
+#include <common/event/event_subscription.h>
 
 omni_mutex Tango::EventConsumer::ev_consumer_inst_mutex;
 
@@ -1689,9 +1692,16 @@ int EventConsumer::connect_event(DeviceProxy *device,
                                  string &event_name,
                                  int event_id)
 {
-    if (Util::get_tango_lib_release() >= 1003)
+    using ZmqEventSubscriptionInfo = tango::common::admin::commands::ZmqEventSubscriptionInfo;
+    using ZmqEventSubscriptionInfoResponse = tango::common::admin::commands::ZmqEventSubscriptionInfoResponse;
+
+    DeviceProxy *admin_device = device->get_adm_device();
+
+    ZmqEventSubscriptionInfoResponse info = ZmqEventSubscriptionInfo{admin_device}.execute();
+
+    if (info.tango_serve_lib_release >= 1003)
     {
-        return connect_event(device, event);
+        return connect_event_1003(device, obj_name, event, event_name, "subscribe");
     }
     else
     {
@@ -3428,11 +3438,31 @@ ChannelType EventConsumer::get_event_system_for_event_id(int event_id)
     return ret;
 }
 
-int EventConsumer::connect_event(DeviceProxy *device, EventType type)
+int EventConsumer::connect_event_1003(DeviceProxy *device,
+                                      const string &object_name,
+                                      EventType event_type,
+                                      const string &event_name,
+                                      const string &action)
 {
-    DeviceProxy *admin_device = device->get_adm_device();
+    cout3 << "Tango::EventConsumer::connect_event_1003(" << device->name() << "," << object_name << "," << event_name
+          << ")\n";
+
+    using ZmqEventSubscriptionChangeResponse = tango::common::admin::commands::ZmqSubscriptionChangeResponse;
+    using ZmqEventSubscriptionChangeRequest = tango::common::admin::commands::ZmqSubscriptionChangeRequest;
+    using ZmqEventSubscriptionChange = tango::common::admin::commands::ZmqEventSubscriptionChange;
+    using ZmqEventSubscription = tango::common::event::EventSubscription;
 
 
-    return 0;
+    ZmqEventSubscriptionChangeRequest request{device->name(), object_name, action, event_name};
+
+    ZmqEventSubscriptionChangeResponse response = ZmqEventSubscriptionChange{device->get_adm_device()}.execute(request);
+
+    connect_heartbeat_1003(device->adm_name(),
+                           response);
+
+    ZmqEventSubscription subscription{event_type, event_name, object_name};
+
+
+    return 0; //TODO
 }
 

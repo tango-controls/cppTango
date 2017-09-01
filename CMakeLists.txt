@@ -31,6 +31,7 @@ add_subdirectory(test)
 
 add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
         $<TARGET_OBJECTS:common_objects>
+        $<TARGET_OBJECTS:event_objects>
         $<TARGET_OBJECTS:admin_commands>
                             $<TARGET_OBJECTS:client_objects>
                             $<TARGET_OBJECTS:idl_objects>

@@ -42,6 +42,7 @@
 
 #include <utility>
 #include <zmq.hpp>
+#include <common/admin/commands/zmq_event_subscription_change_response.h>
 
 #ifdef ZMQ_VERSION
 #if ZMQ_VERSION > 30201
@@ -554,7 +555,13 @@ protected :
                              const vector<string> &filters,
                              string &event_name,
                              int event_id);
-    int connect_event(DeviceProxy *device, EventType type);
+    int connect_event_1003(DeviceProxy *device,
+                           const string &basicString,
+                           EventType event_type,
+                           const string &string1,
+                           const string &action);
+    virtual void connect_heartbeat_1003(const std::string &channel_name,
+                                        tango::common::admin::commands::ZmqSubscriptionChangeResponse response) = 0;
 };
 
 
@@ -615,6 +622,8 @@ protected :
     { ecs.channel_type = ZMQ; }
     virtual void zmq_specific(DeviceData &, string &, DeviceProxy *, const string &);
 
+    virtual void connect_heartbeat_1003(const std::string &channel_name,
+                                        tango::common::admin::commands::ZmqSubscriptionChangeResponse response) override;
 private :
     TANGO_IMP static ZmqEventConsumer *_instance;
     zmq::context_t zmq_context;            // ZMQ context
@@ -678,6 +687,14 @@ private :
                                const string &obj_name,
                                const string &event_name,
                                const DevVarLongStringArray *ev_svr_data) const;
+    /**
+     *
+     * Any error during ZMQ main thread socket operations?
+     *
+     * @param reply
+     */
+    void check_zmq_reply(const zmq::message_t &reply) const;
+    void notify_zmq_thread(const std::string &, const std::string &);
 };
 
 class DelayEvent

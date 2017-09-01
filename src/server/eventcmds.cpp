@@ -643,14 +643,26 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
                                 (const char *) "DServer::zmq_event_subscription_change");
     }
 
-    if (argin->length() == 1 && strcmp((*argin)[0], "info"))
+    Tango::Util *tg = Tango::Util::instance();
+    //
+    // If the EventSupplier object is not created, create it right now
+    //
+
+    ZmqEventSupplier *ev;
+    if ((ev = tg->get_zmq_event_supplier()) == NULL)
+    {
+        tg->create_zmq_event_supplier();
+        ev = tg->get_zmq_event_supplier();
+    }
+
+
+    if (argin->length() == 1 && strcmp((*argin)[0], "info") == 0)
     {
         return zmq_event_subscription_info();
     }
     else
     {
-        Tango::Util *tg = Tango::Util::instance();
-
+        //TODO inject Request
         string dev_name, obj_name, action, event_name, obj_name_lower;
         dev_name = (*argin)[0];
         obj_name = (*argin)[1];
@@ -689,16 +701,6 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
                                     (const char *) "DServer::zmq_event_subscription_change");
         }
 
-//
-// If the EventSupplier object is not created, create it right now
-//
-
-        ZmqEventSupplier *ev;
-        if ((ev = tg->get_zmq_event_supplier()) == NULL)
-        {
-            tg->create_zmq_event_supplier();
-            ev = tg->get_zmq_event_supplier();
-        }
 
 //
 // Get device pointer and check which IDL release it implements. If it is less than IDL 4, refuse to use ZMQ event.
@@ -848,7 +850,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 //
 // Init data returned by command
 //
-        using ZmqChangeSubscriptionResponse = tango::common::admin::commands::ZmqChangeSubscriptionResponse;
+        using ZmqChangeSubscriptionResponse = tango::common::admin::commands::ZmqSubscriptionChangeResponse;
 
 
         vector<pair<string, string>> alternative_endpoints;
@@ -882,6 +884,14 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 Tango::DevVarLongStringArray *DServer::zmq_event_subscription_info() const
 {
     Tango::Util *tg = Tango::Util::instance();
+
+    ZmqEventSupplier *ev;
+    if ((ev = tg->get_zmq_event_supplier()) == NULL)
+    {
+        tg->create_zmq_event_supplier();
+        ev = tg->get_zmq_event_supplier();
+    }
+
     auto ret_data = new Tango::DevVarLongStringArray();
 
     ret_data->svalue.length(2);
@@ -889,51 +899,43 @@ Tango::DevVarLongStringArray *DServer::zmq_event_subscription_info() const
     ret_data->lvalue.length(1);
     ret_data->lvalue[0] = (DevLong) tg->get_tango_lib_release();;
 
-    ZmqEventSupplier *ev;
-    if ((ev = tg->get_zmq_event_supplier()) != NULL)
-        {
-            string tmp_str("Heartbeat: ");
-            tmp_str = tmp_str + ev->get_heartbeat_endpoint();
-            ret_data->svalue[0] = string_dup(tmp_str.c_str());
+    string tmp_str("Heartbeat: ");
+    tmp_str = tmp_str + ev->get_heartbeat_endpoint();
+    ret_data->svalue[0] = string_dup(tmp_str.c_str());
 
-            tmp_str = "Event: ";
-            string ev_end = ev->get_event_endpoint();
-            if (ev_end.size() != 0)
-                tmp_str = "Event: " + ev_end;
-            size_t nb_mcast = ev->get_mcast_event_nb();
-            if (nb_mcast != 0)
-            {
-                if (ev_end.size() != 0)
-                    tmp_str = tmp_str + "\n";
-                tmp_str = tmp_str + "Some event(s) sent using multicast protocol";
-            }
-            ret_data->svalue[1] = string_dup(tmp_str.c_str());
-
-            size_t nb_alt = ev->get_alternate_heartbeat_endpoint().size();
-            if (nb_alt != 0)
-            {
-                ret_data->svalue.length((nb_alt + 1) << 1);
-
-                for (size_t loop = 0; loop < nb_alt; loop++)
-                {
-                    string tmp_str("Alternate heartbeat: ");
-                    tmp_str = tmp_str + ev->get_alternate_heartbeat_endpoint()[loop];
-                    ret_data->svalue[(loop + 1) << 1] = string_dup(tmp_str.c_str());
-
-                    tmp_str = "Alternate event: ";
-                    if (ev->get_alternate_event_endpoint().size() != 0)
-                    {
-                        string ev_end = ev->get_alternate_event_endpoint()[loop];
-                        if (ev_end.empty() == false)
-                            tmp_str = "Alternate event: " + ev_end;
-                    }
-                    ret_data->svalue[((loop + 1) << 1) + 1] = string_dup(tmp_str.c_str());
-                }
-            }
-        }
-    else
+    tmp_str = "Event: ";
+    string ev_end = ev->get_event_endpoint();
+    if (ev_end.size() != 0)
+        tmp_str = "Event: " + ev_end;
+    size_t nb_mcast = ev->get_mcast_event_nb();
+    if (nb_mcast != 0)
     {
-        ret_data->svalue[0] = string_dup("No ZMQ event yet!");
+        if (ev_end.size() != 0)
+            tmp_str = tmp_str + "\n";
+        tmp_str = tmp_str + "Some event(s) sent using multicast protocol";
+    }
+    ret_data->svalue[1] = string_dup(tmp_str.c_str());
+
+    size_t nb_alt = ev->get_alternate_heartbeat_endpoint().size();
+    if (nb_alt != 0)
+    {
+        ret_data->svalue.length((nb_alt + 1) << 1);
+
+        for (size_t loop = 0; loop < nb_alt; loop++)
+        {
+            string tmp_str("Alternate heartbeat: ");
+            tmp_str = tmp_str + ev->get_alternate_heartbeat_endpoint()[loop];
+            ret_data->svalue[(loop + 1) << 1] = string_dup(tmp_str.c_str());
+
+            tmp_str = "Alternate event: ";
+            if (ev->get_alternate_event_endpoint().size() != 0)
+            {
+                string ev_end = ev->get_alternate_event_endpoint()[loop];
+                if (ev_end.empty() == false)
+                    tmp_str = "Alternate event: " + ev_end;
+            }
+            ret_data->svalue[((loop + 1) << 1) + 1] = string_dup(tmp_str.c_str());
+        }
     }
 
     return ret_data;

@@ -1355,16 +1355,9 @@ CORBA::Any *ZmqEventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,con
 // returns : The command output data (packed in the Any object)
 //
 //-----------------------------------------------------------------------------
-CORBA::Any *ZmqEventSubscriptionInfoCmd::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *ZmqEventSubscriptionInfoCmd::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
     cout4 << "ZmqEventSubscriptionInfoCmd::execute(): arrived" << endl;
-
-//
-// Extract the input string array
-//
-
-    const Tango::DevVarStringArray *in_data;
-    extract(in_any, in_data);
 
 //
 // call DServer method which implements this command
