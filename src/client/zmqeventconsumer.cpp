@@ -3381,10 +3381,25 @@ void ZmqEventConsumer::notify_zmq_thread(const string &admin_device_name, const 
     check_zmq_reply(reply);
 }
 
-void ZmqEventConsumer::connect_heartbeat_1003(const std::string &channel_name,
-                                              tango::common::admin::commands::ZmqSubscriptionChangeResponse response)
+void ZmqEventConsumer::connect_event_system_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response)
 {
-    notify_zmq_thread(channel_name, response.heartbeat_endpoint);
+    notify_zmq_thread(response.zmq_heartbeat_topic, response.heartbeat_endpoint);
+}
+
+void
+ZmqEventConsumer::connect_event_channel_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response)
+{
+    notify_zmq_thread(response.zmq_event_topic, response.event_endpoint);
+}
+
+int ZmqEventConsumer::post_connect_event_1003(const tango::common::event::EventSubscription &subscription,
+                                              const tango::common::admin::commands::ZmqSubscriptionChangeResponse &response)
+{
+    device_name = subscription.device_name;
+
+    //TODO update channel_map
+
+    return ++subscribe_event_id;
 }
 
 //--------------------------------------------------------------------------------------------------------------------

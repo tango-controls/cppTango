@@ -43,6 +43,7 @@
 #include <utility>
 #include <zmq.hpp>
 #include <common/admin/commands/zmq_event_subscription_change_response.h>
+#include <common/event/event_subscription.h>
 
 #ifdef ZMQ_VERSION
 #if ZMQ_VERSION > 30201
@@ -560,8 +561,10 @@ protected :
                            EventType event_type,
                            const string &string1,
                            const string &action);
-    virtual void connect_heartbeat_1003(const std::string &channel_name,
-                                        tango::common::admin::commands::ZmqSubscriptionChangeResponse response) = 0;
+    virtual void connect_event_system_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response) = 0;
+    virtual void connect_event_channel_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response) = 0;
+    virtual int post_connect_event_1003(const tango::common::event::EventSubscription &subscription,
+                                        const tango::common::admin::commands::ZmqSubscriptionChangeResponse &response) = 0;
 };
 
 
@@ -622,8 +625,11 @@ protected :
     { ecs.channel_type = ZMQ; }
     virtual void zmq_specific(DeviceData &, string &, DeviceProxy *, const string &);
 
-    virtual void connect_heartbeat_1003(const std::string &channel_name,
-                                        tango::common::admin::commands::ZmqSubscriptionChangeResponse response) override;
+    virtual void
+    connect_event_system_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response) override;
+    void connect_event_channel_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response) override;
+    int post_connect_event_1003(const tango::common::event::EventSubscription &subscription,
+                                const tango::common::admin::commands::ZmqSubscriptionChangeResponse &response) override;
 private :
     TANGO_IMP static ZmqEventConsumer *_instance;
     zmq::context_t zmq_context;            // ZMQ context

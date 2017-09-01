@@ -61,7 +61,8 @@ struct ZmqSubscriptionChangeResponse
     std::string heartbeat_endpoint;
     std::string event_endpoint;
 
-    std::string zmq_topic;
+    std::string zmq_heartbeat_topic;
+    std::string zmq_event_topic;
 
     std::vector<std::pair<std::string, std::string>> alternative_endpoints;
 
@@ -73,13 +74,20 @@ struct ZmqSubscriptionChangeResponse
                                   int zmq_release_version,
                                   std::string heartbeat_endpoint,
                                   std::string event_endpoint,
+                                  string zmq_heartbeat_topic,
                                   std::string zmq_topic,
-                                  std::vector<std::pair<std::string, std::string>> alternative_endpoints)
-        : tango_lib_release(tango_lib_release), dev_idl_version(dev_idl_version), zmq_sub_event_hwm(zmq_sub_event_hwm),
-          rate(rate), ivl(ivl), zmq_release_version(zmq_release_version), heartbeat_endpoint(std::move(
-            heartbeat_endpoint)),
-          event_endpoint(std::move(event_endpoint)), zmq_topic(std::move(zmq_topic)), alternative_endpoints(std::move(
-            alternative_endpoints))
+                                  std::vector<std::pair<std::string,
+                                                        std::string>> alternative_endpoints)
+        : tango_lib_release(tango_lib_release),
+          dev_idl_version(dev_idl_version),
+          zmq_sub_event_hwm(zmq_sub_event_hwm),
+          rate(rate), ivl(ivl),
+          zmq_release_version(zmq_release_version),
+          heartbeat_endpoint(std::move(heartbeat_endpoint)),
+          event_endpoint(std::move(event_endpoint)),
+          zmq_heartbeat_topic(zmq_heartbeat_topic),
+          zmq_event_topic(std::move(zmq_topic)),
+          alternative_endpoints(std::move(alternative_endpoints))
     {}
 
     explicit ZmqSubscriptionChangeResponse(Tango::DeviceData &response)
@@ -103,19 +111,20 @@ struct ZmqSubscriptionChangeResponse
         ivl = value->lvalue[4];
         zmq_release_version = value->lvalue[5];
 
-
         heartbeat_endpoint = value->svalue[0];
         event_endpoint = value->svalue[1];
 
-        bool has_alternative_endpoints = (value->svalue.length() - 3) > 0;
+        auto length = value->svalue.length();
+        bool has_alternative_endpoints = (length - 4) > 0;
         if (has_alternative_endpoints)
         {
-            alternative_endpoints = vector<pair<string, string>>{value->svalue.length() - 3};
+            alternative_endpoints = vector<pair<string, string>>{length - 4};
 
             //TODO
         }
 
-        zmq_topic = value->svalue[value->svalue.length() - 1];
+        zmq_heartbeat_topic = value->svalue[length - 2];
+        zmq_event_topic = value->svalue[length - 1];
     }
 
     Tango::DevVarLongStringArray *to_DevVarLongStringArray()
@@ -131,7 +140,8 @@ struct ZmqSubscriptionChangeResponse
         value->lvalue[4] = ivl;
         value->lvalue[5] = zmq_release_version;
 
-        value->svalue.length(3 + alternative_endpoints.size() * 2);
+        auto svalue_length = 4 + alternative_endpoints.size() * 2;
+        value->svalue.length(svalue_length);
         value->svalue[0] = Tango::string_dup(heartbeat_endpoint.c_str());
         value->svalue[1] = Tango::string_dup(event_endpoint.c_str());
 
@@ -141,7 +151,8 @@ struct ZmqSubscriptionChangeResponse
             value->svalue[i + 1] = Tango::string_dup(alternative_endpoints[i].first.c_str());
         }
 
-        value->svalue[value->svalue.length() - 1] = Tango::string_dup(zmq_topic.c_str());
+        value->svalue[value->svalue.length() - 2] = Tango::string_dup(zmq_heartbeat_topic.c_str());
+        value->svalue[value->svalue.length() - 1] = Tango::string_dup(zmq_event_topic.c_str());
 
         return value;
     }

@@ -3444,7 +3444,8 @@ int EventConsumer::connect_event_1003(DeviceProxy *device,
                                       const string &event_name,
                                       const string &action)
 {
-    cout3 << "Tango::EventConsumer::connect_event_1003(" << device->name() << "," << object_name << "," << event_name
+    auto device_name = device->name();
+    cout3 << "Tango::EventConsumer::connect_event_1003(" << device_name << "," << object_name << "," << event_name
           << ")\n";
 
     using ZmqEventSubscriptionChangeResponse = tango::common::admin::commands::ZmqSubscriptionChangeResponse;
@@ -3453,16 +3454,17 @@ int EventConsumer::connect_event_1003(DeviceProxy *device,
     using ZmqEventSubscription = tango::common::event::EventSubscription;
 
 
-    ZmqEventSubscriptionChangeRequest request{device->name(), object_name, action, event_name};
+    ZmqEventSubscriptionChangeRequest request{device_name, object_name, action, event_name};
 
     ZmqEventSubscriptionChangeResponse response = ZmqEventSubscriptionChange{device->get_adm_device()}.execute(request);
 
-    connect_heartbeat_1003(device->adm_name(),
-                           response);
+    connect_event_system_1003(response);
+    connect_event_channel_1003(response);
 
-    ZmqEventSubscription subscription{event_type, event_name, object_name};
+    ZmqEventSubscription subscription{event_type, event_name, device_name, object_name};
 
+    auto event_id = post_connect_event_1003(subscription, response);
 
-    return 0; //TODO
+    return event_id;
 }
 

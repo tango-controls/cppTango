@@ -269,6 +269,7 @@ private:
     void update_user_event_subscription_time(int client_lib, Attribute &attribute) const;
     void check_polling(const string &obj_name, const string &event_name, Attribute &attribute) const;
     vector<pair<string, string>> get_alternative_endpoints(ZmqEventSupplier *ev) const;
+    string get_heartbeat_full_name(const string &fqdn_prefix, DeviceImpl *dev);
 };
 
 class KillThread: public omni_thread

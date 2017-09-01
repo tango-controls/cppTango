@@ -853,7 +853,9 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 //
         using ZmqChangeSubscriptionResponse = tango::common::admin::commands::ZmqSubscriptionChangeResponse;
 
-
+        string heartbeat_full_name =
+            get_heartbeat_full_name(ev->get_fqdn_prefix(), tg->get_device_by_name(dev->adm_name()));
+        
         vector<pair<string, string>> alternative_endpoints = get_alternative_endpoints(ev);
 
         return ZmqChangeSubscriptionResponse{
@@ -865,6 +867,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             ev->get_zmq_release(),
             ev->get_heartbeat_endpoint(),
             mcast.empty() ? ev->get_event_endpoint() : ev->get_mcast_event_endpoint(event_full_name),
+            heartbeat_full_name,
             event_full_name,
             alternative_endpoints
         }.to_DevVarLongStringArray();
@@ -1166,6 +1169,16 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
                            client_lib);
     }
 
+}
+
+string DServer::get_heartbeat_full_name(const string &fqdn_prefix, DeviceImpl *dev)
+{
+    string ev_name = fqdn_prefix;
+
+    ev_name += dev->get_name_lower();
+    ev_name += ".";
+    ev_name += HEARTBEAT_EVENT_NAME;
+    return ev_name;
 }
 
 }    // namespace

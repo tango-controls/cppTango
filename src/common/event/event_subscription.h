@@ -47,11 +47,16 @@ struct EventSubscription
     Tango::EventType event_type;
     std::string event_name;
 
+    std::string device_name;
     std::string object_name;
 
-    EventSubscription(Tango::EventType event_type, string event_name, string object_name) noexcept
+    EventSubscription(Tango::EventType event_type,
+                      string event_name,
+                      string device_name,
+                      string object_name) noexcept
         : event_type(event_type),
           event_name(StringUtils::to_lower_case(std::move(event_name))),
+          device_name(StringUtils::to_lower_case(std::move(device_name))),
           object_name(StringUtils::to_lower_case(std::move(object_name)))
     {}
 };
