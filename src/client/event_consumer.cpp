@@ -1689,6 +1689,26 @@ int EventConsumer::connect_event(DeviceProxy *device,
                                  string &event_name,
                                  int event_id)
 {
+    if (Util::get_tango_lib_release() >= 1003)
+    {
+        return connect_event(device, event);
+    }
+    else
+    {
+        return connect_event_legacy(device, obj_name, event, callback, ev_queue, filters, event_name, event_id);
+
+    }
+}
+
+int EventConsumer::connect_event_legacy(DeviceProxy *device,
+                                        const string &obj_name,
+                                        EventType &event,
+                                        CallBack *callback,
+                                        EventQueue *ev_queue,
+                                        const vector<string> &filters,
+                                        string &event_name,
+                                        int event_id)
+{
     int ret_event_id = event_id;
     //TODO transform to local
     device_name = device->dev_name();
@@ -1745,7 +1765,14 @@ int EventConsumer::connect_event(DeviceProxy *device,
     if (iter != event_callback_map.end())
     {
         int new_event_id = add_new_callback(iter, callback, ev_queue, event_id);
-        get_fire_sync_event(device, callback, ev_queue, event, event_name, obj_name, iter->second, local_callback_key);
+        get_fire_sync_event(device,
+                            callback,
+                            ev_queue,
+                            event,
+                            event_name,
+                            obj_name,
+                            iter->second,
+                            local_callback_key);
         return new_event_id;
     }
 
@@ -1966,7 +1993,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
     {
         TangoSys_OMemStream o;
         o << "Failed to connect to event channel for device " << device_name
-          << "\nCorrupted internal map: event callback already exists. Please report bug!" << ends;
+            << "\nCorrupted internal map: event callback already exists. Please report bug!" << ends;
         EventSystemExcept::throw_exception(API_NotificationServiceFailed,
                                            o.str(),
                                            "EventConsumer::connect_event()");
@@ -3399,5 +3426,13 @@ ChannelType EventConsumer::get_event_system_for_event_id(int event_id)
     }
 
     return ret;
+}
+
+int EventConsumer::connect_event(DeviceProxy *device, EventType type)
+{
+    DeviceProxy *admin_device = device->get_adm_device();
+
+
+    return 0;
 }
 

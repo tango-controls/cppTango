@@ -848,7 +848,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 //
 // Init data returned by command
 //
-        using ZmqChangeSubscriptionResponse = org::tango::common::admin::commands::ZmqChangeSubscriptionResponse;
+        using ZmqChangeSubscriptionResponse = tango::common::admin::commands::ZmqChangeSubscriptionResponse;
 
 
         vector<pair<string, string>> alternative_endpoints;

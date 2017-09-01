@@ -36,8 +36,6 @@
 #include <tango/server/except.h>
 #include <memory>
 
-namespace org
-{
 namespace tango
 {
 namespace common
@@ -153,7 +151,6 @@ struct ZmqChangeSubscriptionResponse
         return value;
     }
 };
-}
 }
 }
 }

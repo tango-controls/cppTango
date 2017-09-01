@@ -546,6 +546,15 @@ protected :
     get_local_callback_key(DeviceProxy *device, const string &obj_name, const string &event_name, bool inter_event);
     DeviceData
     execute_event_subscription_change(DeviceProxy *adm_dev, DeviceProxy *dev, const string &event_name) const;
+    int connect_event_legacy(DeviceProxy *device,
+                             const string &obj_name,
+                             EventType &event,
+                             CallBack *callback,
+                             EventQueue *ev_queue,
+                             const vector<string> &filters,
+                             string &event_name,
+                             int event_id);
+    int connect_event(DeviceProxy *device, EventType type);
 };
 
 
@@ -554,11 +563,12 @@ protected :
  * 						ZmqEventConsumer class  								*
  * 																				*
  *******************************************************************************/
-
+//TODO merge with EventConsumer
 class ZmqEventConsumer: public EventConsumer,
                         public omni_thread
 {
 public :
+    //TODO singleton is anti-pattern
     static ZmqEventConsumer *create();
     TANGO_IMP_EXP static void cleanup()
     {
