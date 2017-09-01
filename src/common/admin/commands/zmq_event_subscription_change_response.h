@@ -135,7 +135,7 @@ struct ZmqSubscriptionChangeResponse
         value->svalue[0] = Tango::string_dup(heartbeat_endpoint.c_str());
         value->svalue[1] = Tango::string_dup(event_endpoint.c_str());
 
-        for (size_t i = 0; i < alternative_endpoints.size(); ++i)
+        for (size_t i = 2; i < alternative_endpoints.size(); ++i)
         {
             value->svalue[i] = Tango::string_dup(alternative_endpoints[i].first.c_str());
             value->svalue[i + 1] = Tango::string_dup(alternative_endpoints[i].first.c_str());

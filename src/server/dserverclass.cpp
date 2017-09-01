@@ -1363,7 +1363,7 @@ CORBA::Any *ZmqEventSubscriptionInfoCmd::execute(Tango::DeviceImpl *device, TANG
 // call DServer method which implements this command
 //
 
-    Tango::DevVarLongStringArray *ret = (static_cast<DServer *>(device))->zmq_event_subscription_info();
+    Tango::DevVarLongStringArray *ret = (dynamic_cast<DServer *>(device))->zmq_event_subscription_info();
 
 //
 // return to the caller

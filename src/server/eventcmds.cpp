@@ -33,6 +33,7 @@
 #include <tango.h>
 #include <tango/server/eventsupplier.h>
 #include <common/admin/commands/zmq_event_subscription_change_response.h>
+#include <common/admin/commands/zmq_event_subscription_info_response.h>
 
 namespace Tango
 {
@@ -853,18 +854,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         using ZmqChangeSubscriptionResponse = tango::common::admin::commands::ZmqSubscriptionChangeResponse;
 
 
-        vector<pair<string, string>> alternative_endpoints;
-        size_t nb_alt = ev->get_alternate_heartbeat_endpoint().size();
-        bool has_alternative_endpoints = nb_alt > 0;
-        if (has_alternative_endpoints)
-        {
-            alternative_endpoints.reserve(nb_alt);
-            for (size_t i = 0; i < nb_alt; i++)
-            {
-                alternative_endpoints
-                    .emplace_back(ev->get_alternate_heartbeat_endpoint()[i], ev->get_alternate_event_endpoint()[i]);
-            }
-        }
+        vector<pair<string, string>> alternative_endpoints = get_alternative_endpoints(ev);
 
         return ZmqChangeSubscriptionResponse{
             tg->get_tango_lib_release(),
@@ -881,8 +871,28 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
     }
 }
 
+vector<pair<string, string>> DServer::get_alternative_endpoints(ZmqEventSupplier *ev) const
+{
+    vector<pair<string, string>> alternative_endpoints;
+    size_t nb_alt = ev->get_alternate_heartbeat_endpoint().size();
+    bool has_alternative_endpoints = nb_alt > 0;
+    if (has_alternative_endpoints)
+    {
+        alternative_endpoints.reserve(nb_alt);
+        for (size_t i = 0; i < nb_alt; i++)
+        {
+            alternative_endpoints
+                .emplace_back(ev->get_alternate_heartbeat_endpoint()[i],
+                              ev->get_alternate_event_endpoint().empty() ? "" : ev->get_alternate_event_endpoint()[i]);
+        }
+    }
+    return alternative_endpoints;
+}
+
 Tango::DevVarLongStringArray *DServer::zmq_event_subscription_info() const
 {
+    using ZmqEventSubscriptionInfoResponse = tango::common::admin::commands::ZmqEventSubscriptionInfoResponse;
+
     Tango::Util *tg = Tango::Util::instance();
 
     ZmqEventSupplier *ev;
@@ -892,53 +902,26 @@ Tango::DevVarLongStringArray *DServer::zmq_event_subscription_info() const
         ev = tg->get_zmq_event_supplier();
     }
 
-    auto ret_data = new Tango::DevVarLongStringArray();
+    string heartbeat_endpoint("Heartbeat: ");
+    heartbeat_endpoint += ev->get_heartbeat_endpoint();
 
-    ret_data->svalue.length(2);
+    string event_endpoint = "Event: ";
+    event_endpoint += ev->get_event_endpoint();
 
-    ret_data->lvalue.length(1);
-    ret_data->lvalue[0] = (DevLong) tg->get_tango_lib_release();;
-
-    string tmp_str("Heartbeat: ");
-    tmp_str = tmp_str + ev->get_heartbeat_endpoint();
-    ret_data->svalue[0] = string_dup(tmp_str.c_str());
-
-    tmp_str = "Event: ";
-    string ev_end = ev->get_event_endpoint();
-    if (ev_end.size() != 0)
-        tmp_str = "Event: " + ev_end;
-    size_t nb_mcast = ev->get_mcast_event_nb();
-    if (nb_mcast != 0)
+    bool has_mcast = ev->get_mcast_event_nb() > 0;
+    if (has_mcast)
     {
-        if (ev_end.size() != 0)
-            tmp_str = tmp_str + "\n";
-        tmp_str = tmp_str + "Some event(s) sent using multicast protocol";
-    }
-    ret_data->svalue[1] = string_dup(tmp_str.c_str());
-
-    size_t nb_alt = ev->get_alternate_heartbeat_endpoint().size();
-    if (nb_alt != 0)
-    {
-        ret_data->svalue.length((nb_alt + 1) << 1);
-
-        for (size_t loop = 0; loop < nb_alt; loop++)
-        {
-            string tmp_str("Alternate heartbeat: ");
-            tmp_str = tmp_str + ev->get_alternate_heartbeat_endpoint()[loop];
-            ret_data->svalue[(loop + 1) << 1] = string_dup(tmp_str.c_str());
-
-            tmp_str = "Alternate event: ";
-            if (ev->get_alternate_event_endpoint().size() != 0)
-            {
-                string ev_end = ev->get_alternate_event_endpoint()[loop];
-                if (ev_end.empty() == false)
-                    tmp_str = "Alternate event: " + ev_end;
-            }
-            ret_data->svalue[((loop + 1) << 1) + 1] = string_dup(tmp_str.c_str());
-        }
+        event_endpoint += "\nSome event(s) sent using multicast protocol";
     }
 
-    return ret_data;
+    auto alternative_endpoints = get_alternative_endpoints(ev);
+
+    return ZmqEventSubscriptionInfoResponse{
+        tg->get_tango_lib_release(),
+        heartbeat_endpoint,
+        event_endpoint,
+        alternative_endpoints
+    }.to_DevVarLongStringArray();
 }
 
 string DServer::get_event_full_name(const string &event,
