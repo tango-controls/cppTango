@@ -3403,17 +3403,20 @@ int ZmqEventConsumer::post_connect_event_1003(const tango::common::event::EventS
     event_subscribe_struct.ev_queue = subscription.event_queue;
     event_subscribe_struct.id = event_id;
 
-    auto callback = create_event_callback(subscription.proxy,
-                                          subscription.event_name,
-                                          response.event_endpoint,
-                                          response.event_endpoint,
-                                          response.event_endpoint,
-                                          response.event_endpoint,
-                                          response.dev_idl_version,
-                                          subscription.is_fwd,
-                                          event_subscribe_struct);
+    bool alias_used = is_alias_used(response.zmq_event_topic);
 
-    insert_new_event_callback(response.event_endpoint, callback);
+    auto callback = event_callback::create(subscription.proxy,
+                                           subscription.object_name,
+                                           subscription.event_name,
+                                           response.zmq_event_topic,
+                                           response.event_endpoint,
+                                           response.event_endpoint,
+                                           response.dev_idl_version,
+                                           subscription.is_fwd,
+                                           event_subscribe_struct,
+                                           alias_used);
+
+    insert_new_event_callback(response.zmq_event_topic, callback);
 
     return event_id;
 }

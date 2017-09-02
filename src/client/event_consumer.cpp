@@ -1941,20 +1941,23 @@ int EventConsumer::connect_event_legacy(DeviceProxy *device,
         ret_event_id = subscribe_event_id;
     }
 
+    bool alias_used = is_alias_used(local_callback_key);
+
     EventSubscribeStruct new_ess;
     new_ess.callback = callback;
     new_ess.ev_queue = ev_queue;
     new_ess.id = ret_event_id;
 
-    EventCallBackStruct new_event_callback = create_event_callback(device,
-                                                                   event_name,
-                                                                   event_full_name,
-                                                                   local_callback_key,
-                                                                   channel_name,
-                                                                   endpoint,
-                                                                   device_idl_version,
-                                                                   is_fwd_attr,
-                                                                   new_ess);
+    EventCallBackStruct new_event_callback = event_callback::create(device,
+                                                                    obj_name_lower,
+                                                                    event_name,
+                                                                    event_full_name,
+                                                                    channel_name,
+                                                                    endpoint,
+                                                                    device_idl_version,
+                                                                    is_fwd_attr,
+                                                                    new_ess,
+                                                                    alias_used);
 
 
     //
@@ -1985,6 +1988,14 @@ int EventConsumer::connect_event_legacy(DeviceProxy *device,
 
     return ret_event_id;
 }
+bool EventConsumer::is_alias_used(const string &topic) const
+{
+    auto pos = topic.find(':', 6);
+    string tg_host = topic.substr(8, pos - 8);
+    auto ite = alias_map.find(tg_host);
+
+    return ite != alias_map.end();
+}
 
 map<string, Tango::event_callback>::iterator
 EventConsumer::insert_new_event_callback(const string &local_callback_key,
@@ -2004,15 +2015,16 @@ EventConsumer::insert_new_event_callback(const string &local_callback_key,
     return ret.first;
 }
 
-EventCallBackStruct EventConsumer::create_event_callback(DeviceProxy *device,
-                                                         const string &event_name,
-                                                         const string &event_full_name,
-                                                         const string &local_callback_key,
-                                                         const string &channel_name,
-                                                         const string &endpoint,
-                                                         int device_idl_version,
-                                                         bool is_fwd_attr,
-                                                         const EventSubscribeStruct &new_ess) const
+EventCallBackStruct event_callback::create(DeviceProxy *device,
+                                           const string &obj_name_lower,
+                                           const string &event_name,
+                                           const string &event_full_name,
+                                           const string &channel_name,
+                                           const string &endpoint,
+                                           int device_idl_version,
+                                           bool is_fwd_attr,
+                                           const EventSubscribeStruct &ess,
+                                           bool is_alias_used)
 {
     EventCallBackStruct event_callback;
     event_callback.device = device;
@@ -2029,7 +2041,7 @@ EventCallBackStruct EventConsumer::create_event_callback(DeviceProxy *device,
     event_callback.discarded_event = false;
     event_callback.endpoint = endpoint;
     event_callback.fwd_att = is_fwd_attr;
-    event_callback.callback_list.push_back(new_ess);
+    event_callback.callback_list.push_back(ess);
 
 //
 // Create a callback monitor and set its timeout to 1000ms not to block the event consumer for too long.
@@ -2041,16 +2053,7 @@ EventCallBackStruct EventConsumer::create_event_callback(DeviceProxy *device,
 //
 // If we have a CS for which TANGO_HOST is one alias (host name in alias map), set flag in map
 //
-
-    auto pos = local_callback_key.find(':', 6);
-    string tg_host = local_callback_key.substr(8, pos - 8);
-    auto ite = alias_map.find(tg_host);
-
-    event_callback.alias_used = false;
-    if (ite != alias_map.end())
-    {
-        event_callback.alias_used = true;
-    }
+    event_callback.alias_used = is_alias_used;
 
     return event_callback;
 }

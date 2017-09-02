@@ -2103,6 +2103,12 @@ public :
 
     virtual Database *get_device_db();
 
+    /**
+     *
+     * @return admin device proxy pointer
+     */
+    //TODO replace with AdminDevice implementation
+    //TODO replace with shared_ptr
     DeviceProxy *get_adm_device()
     {
         check_connect_adm_device();

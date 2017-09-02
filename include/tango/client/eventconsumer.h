@@ -379,9 +379,20 @@ typedef struct event_callback_zmq
     bool fwd_att;
 } EventCallBackZmq;
 
+//TODO reduce number of fields
 typedef struct event_callback: public EventCallBackBase, public EventCallBackZmq
 {
     bool filter_ok;
+    static event_callback create(DeviceProxy *proxy,
+                                 const string &obj_name_lower,
+                                 const string &event_name,
+                                 const string &event_full_name,
+                                 const string &channel_name,
+                                 const string &endpoint,
+                                 int device_idl_version,
+                                 bool is_fwd_attr,
+                                 const EventSubscribeStruct &ess,
+                                 bool is_alias_used);
 } EventCallBackStruct;
 
 //------------------------ Event Channel related info --------------------------------------
@@ -560,17 +571,10 @@ protected :
     virtual void connect_event_channel_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response) = 0;
     virtual int post_connect_event_1003(const tango::common::event::EventSubscription &subscription,
                                         const tango::common::admin::commands::ZmqSubscriptionChangeResponse &response) = 0;
-    EventCallBackStruct create_event_callback(DeviceProxy *device,
-                                              const string &event_name,
-                                              const string &event_full_name,
-                                              const string &local_callback_key,
-                                              const string &channel_name,
-                                              const string &endpoint,
-                                              int device_idl_version,
-                                              bool is_fwd_attr,
-                                              const EventSubscribeStruct &new_ess) const;
+
     map<string, Tango::event_callback>::iterator
     insert_new_event_callback(const string &local_callback_key, const EventCallBackStruct &new_event_callback) const;
+    bool is_alias_used(const string &topic) const;
 };
 
 
