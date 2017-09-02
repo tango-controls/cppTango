@@ -534,7 +534,7 @@ void EventConsumer::get_cs_tango_host(Database *db)
                 if (alias_map.find(tg_host) == alias_map.end())
                 {
 #ifdef INIT_LIST
-                    alias_map.insert({lower_vs,tg_host});
+                    alias_map.insert({lower_vs, tg_host});
 #else
                     alias_map.insert(make_pair(lower_vs, tg_host));
 #endif
@@ -552,8 +552,8 @@ void EventConsumer::get_cs_tango_host(Database *db)
         {
             transform(vs[i].begin(), vs[i].end(), vs[i].begin(), ::tolower);
 #ifdef HAS_LAMBDA_FUNC
-            pos = find_if(env_var_fqdn_prefix.begin(),env_var_fqdn_prefix.end(),
-                          [&] (string str) -> bool
+            pos = find_if(env_var_fqdn_prefix.begin(), env_var_fqdn_prefix.end(),
+                          [&](string str) -> bool
                           {
                               if (str.find(vs[i]) != string::npos)
                                   return true;
@@ -563,7 +563,7 @@ void EventConsumer::get_cs_tango_host(Database *db)
 
             if (pos == env_var_fqdn_prefix.end())
             {
-                string prefix = "tango://" + vs[i] + '/' ;
+                string prefix = "tango://" + vs[i] + '/';
                 env_var_fqdn_prefix.push_back(prefix);
             }
 #else
@@ -757,7 +757,6 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
     const DevVarULong64Array *tmp_seq_u64;
 
     const DevVarStateArray *tmp_seq_state;
-
 
     DevULong max, len;
 
@@ -1701,7 +1700,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
     if (info.tango_serve_lib_release >= 1003)
     {
-        return connect_event_1003(device, obj_name, event, event_name, "subscribe");
+        return connect_event_1003(device, obj_name, event, event_name, "subscribe", callback, ev_queue);
     }
     else
     {
@@ -1737,7 +1736,6 @@ int EventConsumer::connect_event_legacy(DeviceProxy *device,
 //
 
     string local_device_name{device->dev_name()};
-    unsigned long pos;
     string local_callback_key = get_local_callback_key(device, obj_name, event_name, inter_event);
 
     //
@@ -1898,70 +1896,42 @@ int EventConsumer::connect_event_legacy(DeviceProxy *device,
 //
 // Now, connect to the event system
 //
-
-    EventCallBackStruct new_event_callback;
-    EventSubscribeStruct new_ess;
-
-    new_event_callback.device = device;
-    new_event_callback.obj_name = obj_name_lower;
-    new_event_callback.event_name = event_name;
-    new_event_callback.channel_name = evt_it->first;
-    new_event_callback.alias_used = false;
-
-    if (inter_event == true)
-        new_event_callback.fully_qualified_event_name = device_name + '.' + event_name;
-    else
-        new_event_callback.fully_qualified_event_name = device_name + '/' + obj_name_lower + '.' + event_name;
-
-    if (dd_extract_ok == false)
-        new_event_callback.device_idl = 0;
-    else
-    {
-        if (dvlsa->lvalue.length() >= 2)
-            new_event_callback.device_idl = dvlsa->lvalue[1];
-        else
-            new_event_callback.device_idl = 0;
-    }
-    new_event_callback.ctr = 0;
-    new_event_callback.discarded_event = false;
-    new_event_callback.endpoint = dvlsa->svalue[(valid_endpoint_nb << 1) + 1].in();
-
-    new_ess.callback = callback;
-    new_ess.ev_queue = ev_queue;
-
-    connect_event_system(device_name,
-                         obj_name_lower,
-                         event_name,
-                         filters,
-                         evt_it,
-                         new_event_callback,
-                         dd,
-                         valid_endpoint_nb);
+    connect_event_system(device_name, obj_name_lower, event_name, dd, valid_endpoint_nb);
 
 //
 // Check if this subscription is for a fwd attribute root attribute (when relevant)
-//
+    string channel_name = evt_it->first;
 
-    new_event_callback.fwd_att = false;
-    if (inter_event == false && pipe_event == false)
-    {
-        ApiUtil *au = ApiUtil::instance();
-        if (au->in_server() == true)
-        {
-            RootAttRegistry &rar = Util::instance()->get_root_att_reg();
-
-            string root_att_name = device_name;
-            root_att_name = root_att_name + '/' + obj_name_lower;
-            if (rar.is_root_attribute(root_att_name) == true)
-                new_event_callback.fwd_att = true;
-        }
-        else
-            new_event_callback.fwd_att = false;
-    }
+    string event_full_name;
+    if (inter_event == true)
+        event_full_name = device_name + '.' + event_name;
     else
-        new_event_callback.fwd_att = false;
+        event_full_name = device_name + '/' + obj_name_lower + '.' + event_name;
 
-//
+    int device_idl_version;
+    if (dd_extract_ok && dvlsa->lvalue.length() >= 2)
+        device_idl_version = dvlsa->lvalue[1];
+    else
+        device_idl_version = 0;
+
+    string endpoint;
+    if (dd_extract_ok)
+        endpoint = dvlsa->svalue[(valid_endpoint_nb << 1) + 1].in();
+    //TODO else???
+
+    bool is_fwd_attr = false;
+    ApiUtil *au = ApiUtil::instance();
+    if (au->in_server() == true && not(inter_event) && not(pipe_event))
+    {
+        RootAttRegistry &rar = Util::instance()->get_root_att_reg();
+
+        string root_att_name = device_name;
+        root_att_name = root_att_name + '/' + obj_name_lower;
+        if (rar.is_root_attribute(root_att_name) == true)
+            is_fwd_attr = true;
+    }
+
+    //
 // if an event ID was passed to the method, reuse it!
 //
 
@@ -1970,45 +1940,27 @@ int EventConsumer::connect_event_legacy(DeviceProxy *device,
         subscribe_event_id++;
         ret_event_id = subscribe_event_id;
     }
+
+    EventSubscribeStruct new_ess;
+    new_ess.callback = callback;
+    new_ess.ev_queue = ev_queue;
     new_ess.id = ret_event_id;
 
-    new_event_callback.callback_list.push_back(new_ess);
+    EventCallBackStruct new_event_callback = create_event_callback(device,
+                                                                   event_name,
+                                                                   event_full_name,
+                                                                   local_callback_key,
+                                                                   channel_name,
+                                                                   endpoint,
+                                                                   device_idl_version,
+                                                                   is_fwd_attr,
+                                                                   new_ess);
 
-//
-// Create a callback monitor and set its timeout to 1000ms not to block the event consumer for too long.
-//
 
-    new_event_callback.callback_monitor = new TangoMonitor();
-    new_event_callback.callback_monitor->timeout(1000);
-
-//
-// If we have a CS for which TANGO_HOST is one alias (host name in alias map), set flag in map
-//
-
-    pos = local_callback_key.find(':', 6);
-    string tg_host = local_callback_key.substr(8, pos - 8);
-    map<string, string>::iterator ite = alias_map.find(tg_host);
-    if (ite != alias_map.end())
-    {
-        new_event_callback.alias_used = true;
-    }
-
-//
-// Insert new entry in map
-//
-
-    pair<EvCbIte, bool>
-        ret = event_callback_map.insert(pair<string, EventCallBackStruct>(local_callback_key, new_event_callback));
-    if (!ret.second)
-    {
-        TangoSys_OMemStream o;
-        o << "Failed to connect to event channel for device " << device_name
-            << "\nCorrupted internal map: event callback already exists. Please report bug!" << ends;
-        EventSystemExcept::throw_exception(API_NotificationServiceFailed,
-                                           o.str(),
-                                           "EventConsumer::connect_event()");
-    }
-    iter = ret.first;
+    //
+    // Insert new entry in map
+    //
+    iter = insert_new_event_callback(local_callback_key, new_event_callback);
 
 //
 // Read the attribute/pipe by a simple synchronous call.This is necessary for the first point in "change" mode
@@ -2032,6 +1984,75 @@ int EventConsumer::connect_event_legacy(DeviceProxy *device,
 #endif
 
     return ret_event_id;
+}
+
+map<string, Tango::event_callback>::iterator
+EventConsumer::insert_new_event_callback(const string &local_callback_key,
+                                         const EventCallBackStruct &new_event_callback) const
+{
+    auto ret = event_callback_map.insert(
+        pair<string, EventCallBackStruct>(local_callback_key, new_event_callback));
+    if (!ret.second)
+    {
+        TangoSys_OMemStream o;
+        o << "Failed to connect to event channel for device " << device_name
+          << "\nCorrupted internal map: event callback already exists. Please report bug!" << ends;
+        EventSystemExcept::throw_exception(API_NotificationServiceFailed,
+                                           o.str(),
+                                           "EventConsumer::connect_event()");
+    }
+    return ret.first;
+}
+
+EventCallBackStruct EventConsumer::create_event_callback(DeviceProxy *device,
+                                                         const string &event_name,
+                                                         const string &event_full_name,
+                                                         const string &local_callback_key,
+                                                         const string &channel_name,
+                                                         const string &endpoint,
+                                                         int device_idl_version,
+                                                         bool is_fwd_attr,
+                                                         const EventSubscribeStruct &new_ess) const
+{
+    EventCallBackStruct event_callback;
+    event_callback.device = device;
+    event_callback.obj_name = obj_name_lower;
+    event_callback.event_name = event_name;
+    event_callback.channel_name = channel_name;
+
+
+    event_callback.fully_qualified_event_name = event_full_name;
+    event_callback.device_idl = device_idl_version;
+
+
+    event_callback.ctr = 0;
+    event_callback.discarded_event = false;
+    event_callback.endpoint = endpoint;
+    event_callback.fwd_att = is_fwd_attr;
+    event_callback.callback_list.push_back(new_ess);
+
+//
+// Create a callback monitor and set its timeout to 1000ms not to block the event consumer for too long.
+//
+
+    event_callback.callback_monitor = new TangoMonitor();
+    event_callback.callback_monitor->timeout(1000);
+
+//
+// If we have a CS for which TANGO_HOST is one alias (host name in alias map), set flag in map
+//
+
+    auto pos = local_callback_key.find(':', 6);
+    string tg_host = local_callback_key.substr(8, pos - 8);
+    auto ite = alias_map.find(tg_host);
+
+    event_callback.alias_used = false;
+    if (ite != alias_map.end())
+    {
+        event_callback.alias_used = true;
+    }
+
+    return event_callback;
 }
 
 DeviceData
@@ -3442,7 +3463,9 @@ int EventConsumer::connect_event_1003(DeviceProxy *device,
                                       const string &object_name,
                                       EventType event_type,
                                       const string &event_name,
-                                      const string &action)
+                                      const string &action,
+                                      CallBack *callback,
+                                      EventQueue *event_queue)
 {
     auto device_name = device->name();
     cout3 << "Tango::EventConsumer::connect_event_1003(" << device_name << "," << object_name << "," << event_name
@@ -3461,7 +3484,21 @@ int EventConsumer::connect_event_1003(DeviceProxy *device,
     connect_event_system_1003(response);
     connect_event_channel_1003(response);
 
-    ZmqEventSubscription subscription{event_type, event_name, device_name, object_name};
+    bool is_fwd_attr = false;
+    ApiUtil *au = ApiUtil::instance();
+    if (au->in_server() == true && event_name == EventName[INTERFACE_CHANGE_EVENT]
+        && event_name == EventName[PIPE_EVENT])
+    {
+        RootAttRegistry &rar = Util::instance()->get_root_att_reg();
+
+        string root_att_name = device_name;
+        root_att_name = root_att_name + '/' + request.object_name;
+        if (rar.is_root_attribute(root_att_name) == true)
+            is_fwd_attr = true;
+    }
+
+    ZmqEventSubscription
+        subscription{device, event_type, event_name, device_name, object_name, is_fwd_attr, callback, event_queue};
 
     auto event_id = post_connect_event_1003(subscription, response);
 

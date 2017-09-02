@@ -522,14 +522,7 @@ protected :
     virtual void disconnect_event_channel(TANGO_UNUSED(string &channel_name),
                                           TANGO_UNUSED(string &endpoint),
                                           TANGO_UNUSED(string &endpoint_event)) = 0;
-    virtual void connect_event_system(string &,
-                                      string &,
-                                      string &e,
-                                      const vector<string> &,
-                                      EvChanIte &,
-                                      EventCallBackStruct &,
-                                      DeviceData &,
-                                      size_t) = 0;
+    virtual void connect_event_system(string &, string &, string &e, DeviceData &, size_t) = 0;
     virtual void disconnect_event(string &, string &)
     {}
 
@@ -560,11 +553,24 @@ protected :
                            const string &basicString,
                            EventType event_type,
                            const string &string1,
-                           const string &action);
+                           const string &action,
+                           CallBack *callback,
+                           EventQueue *event_queue);
     virtual void connect_event_system_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response) = 0;
     virtual void connect_event_channel_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response) = 0;
     virtual int post_connect_event_1003(const tango::common::event::EventSubscription &subscription,
                                         const tango::common::admin::commands::ZmqSubscriptionChangeResponse &response) = 0;
+    EventCallBackStruct create_event_callback(DeviceProxy *device,
+                                              const string &event_name,
+                                              const string &event_full_name,
+                                              const string &local_callback_key,
+                                              const string &channel_name,
+                                              const string &endpoint,
+                                              int device_idl_version,
+                                              bool is_fwd_attr,
+                                              const EventSubscribeStruct &new_ess) const;
+    map<string, Tango::event_callback>::iterator
+    insert_new_event_callback(const string &local_callback_key, const EventCallBackStruct &new_event_callback) const;
 };
 
 
@@ -611,14 +617,7 @@ protected :
     ZmqEventConsumer(ApiUtil *ptr);
     virtual void connect_event_channel(string &, Database *, bool, DeviceData &);
     virtual void disconnect_event_channel(string &channel_name, string &endpoint, string &endpoint_event);
-    virtual void connect_event_system(string &,
-                                      string &,
-                                      string &e,
-                                      const vector<string> &,
-                                      EvChanIte &,
-                                      EventCallBackStruct &,
-                                      DeviceData &,
-                                      size_t);
+    virtual void connect_event_system(string &, string &, string &e, DeviceData &, size_t);
     virtual void disconnect_event(string &, string &);
 
     virtual void set_channel_type(EventChannelStruct &ecs)

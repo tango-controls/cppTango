@@ -1570,9 +1570,11 @@ void ZmqEventConsumer::disconnect_event(string &event_name,string &endpoint)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name,string &event_name,TANGO_UNUSED(const vector<string> &filters),
-                                            TANGO_UNUSED(EvChanIte &eve_it),TANGO_UNUSED(EventCallBackStruct &new_event_callback),
-                                            DeviceData &dd,size_t valid_end)
+void ZmqEventConsumer::connect_event_system(string &device_name,
+                                            string &obj_name,
+                                            string &event_name,
+                                            DeviceData &dd,
+                                            size_t valid_end)
 {
 
 
@@ -3394,9 +3396,26 @@ int ZmqEventConsumer::post_connect_event_1003(const tango::common::event::EventS
 {
     device_name = subscription.device_name;
 
-    //TODO update channel_map
+    auto event_id = ++subscribe_event_id;
 
-    return ++subscribe_event_id;
+    EventSubscribeStruct event_subscribe_struct;
+    event_subscribe_struct.callback = subscription.callback;
+    event_subscribe_struct.ev_queue = subscription.event_queue;
+    event_subscribe_struct.id = event_id;
+
+    auto callback = create_event_callback(subscription.proxy,
+                                          subscription.event_name,
+                                          response.event_endpoint,
+                                          response.event_endpoint,
+                                          response.event_endpoint,
+                                          response.event_endpoint,
+                                          response.dev_idl_version,
+                                          subscription.is_fwd,
+                                          event_subscribe_struct);
+
+    insert_new_event_callback(response.event_endpoint, callback);
+
+    return event_id;
 }
 
 //--------------------------------------------------------------------------------------------------------------------

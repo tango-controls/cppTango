@@ -44,20 +44,35 @@ namespace event
  */
 struct EventSubscription
 {
+    Tango::DeviceProxy *proxy;
+
     Tango::EventType event_type;
     std::string event_name;
 
     std::string device_name;
     std::string object_name;
 
-    EventSubscription(Tango::EventType event_type,
+    bool is_fwd;
+
+    Tango::CallBack *callback;
+    Tango::EventQueue *event_queue;
+
+    EventSubscription(Tango::DeviceProxy *proxy,
+                      Tango::EventType event_type,
                       string event_name,
                       string device_name,
-                      string object_name) noexcept
-        : event_type(event_type),
+                      string object_name,
+                      bool is_fwd,
+                      Tango::CallBack *callback,
+                      Tango::EventQueue *ev_queue) noexcept
+        : proxy(proxy),
+          event_type(event_type),
           event_name(StringUtils::to_lower_case(std::move(event_name))),
           device_name(StringUtils::to_lower_case(std::move(device_name))),
-          object_name(StringUtils::to_lower_case(std::move(object_name)))
+          object_name(StringUtils::to_lower_case(std::move(object_name))),
+          is_fwd(is_fwd),
+          callback(callback),
+          event_queue(ev_queue)
     {}
 };
 
