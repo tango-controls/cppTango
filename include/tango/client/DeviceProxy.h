@@ -30,6 +30,7 @@
 
 
 #include <tango/client/device/device_command_info.h>
+#include <cassert>
 
 /****************************************************************************************
  * 																						*
@@ -2105,6 +2106,7 @@ public :
     DeviceProxy *get_adm_device()
     {
         check_connect_adm_device();
+        assert(adm_device != nullptr);
         return adm_device;
     }
 
