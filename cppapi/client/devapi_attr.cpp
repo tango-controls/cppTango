@@ -563,6 +563,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, short datum):ext(new DeviceAt
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq->length(1);
 	ShortSeq[0] = datum;
+	data_type = DEV_SHORT;
 }
 
 DeviceAttribute::DeviceAttribute(const char *new_name, short datum):ext(new DeviceAttributeExt)
@@ -580,6 +581,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, short datum):ext(new Devi
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq->length(1);
 	ShortSeq[0] = datum;
+	data_type = DEV_SHORT;
 }
 
 //-----------------------------------------------------------------------------
@@ -2164,6 +2166,8 @@ void DeviceAttribute::operator << (short datum)
 	w_dim_y = 0;
 	quality = Tango::ATTR_VALID;
 	data_format = Tango::FMT_UNKNOWN;
+	if(data_type != DEV_ENUM)
+	{   data_type = DEV_SHORT;}
 
     DevVarShortArray *short_vararr = new(DevVarShortArray);
     short_vararr->length(1);

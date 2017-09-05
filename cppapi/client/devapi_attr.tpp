@@ -77,9 +77,12 @@ void DeviceAttribute::base_val(T _val)
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
+	// This constructor is supposed to be used only for enum types since all
+	// the constructors for the other standard Tango types have a specialization defined
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq->length(1);
 	ShortSeq[0] = static_cast<short>(_val);
+	data_type = DEV_ENUM;
 }
 
 //-----------------------------------------------------------------------------------------------------------------
@@ -354,6 +357,7 @@ void DeviceAttribute::operator << (T datum)
 	w_dim_y = 0;
 	quality = Tango::ATTR_VALID;
 	data_format = Tango::FMT_UNKNOWN;
+	data_type = DEV_ENUM;
 
     DevVarShortArray *short_vararr = new(DevVarShortArray);
     short_vararr->length(1);
@@ -397,7 +401,7 @@ void DeviceAttribute::insert(vector<T> &_datum,int _x,int _y)
 }
 
 template <typename T>
-bool DeviceAttribute::template_type_check(T &_datum)
+bool DeviceAttribute::template_type_check(T &TANGO_UNUSED(_datum))
 {
 #ifdef HAS_UNDERLYING
 	bool short_enum = is_same<short,typename underlying_type<T>::type>::value;
