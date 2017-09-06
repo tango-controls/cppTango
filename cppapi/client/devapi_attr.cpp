@@ -1118,6 +1118,7 @@ DeviceAttribute::DeviceAttribute(string& new_name, vector<short> &datum):ext(new
 	exceptions_flags.set(isempty_flag);
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq.inout() << datum;
+	data_type = DEV_SHORT;
 }
 
 DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum):ext(new DeviceAttributeExt)
@@ -1134,6 +1135,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum):ext
 	exceptions_flags.set(isempty_flag);
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq.inout() << datum;
+	data_type = DEV_SHORT;
 }
 
 DeviceAttribute::DeviceAttribute(string& new_name, vector<short> &datum,int x,int y):ext(new DeviceAttributeExt)
@@ -1150,6 +1152,7 @@ DeviceAttribute::DeviceAttribute(string& new_name, vector<short> &datum,int x,in
 	exceptions_flags.set(isempty_flag);
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq.inout() << datum;
+	data_type = DEV_SHORT;
 }
 
 DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum,int x,int y):ext(new DeviceAttributeExt)
@@ -1166,6 +1169,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum,int 
 	exceptions_flags.set(isempty_flag);
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq.inout() << datum;
+	data_type = DEV_SHORT;
 }
 
 //-----------------------------------------------------------------------------
@@ -3015,6 +3019,9 @@ void DeviceAttribute::operator << (vector<short> &datum)
 	w_dim_y = 0;
 	quality = Tango::ATTR_VALID;
 	data_format = Tango::FMT_UNKNOWN;
+
+	if(data_type != DEV_ENUM)
+	{   data_type = DEV_SHORT;}
 
 	if (ShortSeq.operator->() == NULL)
 	{

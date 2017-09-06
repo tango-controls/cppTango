@@ -114,6 +114,9 @@ void DeviceAttribute::base_vect(vector<T> &_val)
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
+	// This is supposed to be used only for enum types since all
+	// the constructors for the other standard Tango types have a specialization defined
+	data_type = DEV_ENUM;
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq->length(_val.size());
 	for (size_t loop = 0;loop < _val.size();loop++)
@@ -152,6 +155,9 @@ void DeviceAttribute::base_vect_size(vector<T> &_val)
 	exceptions_flags.set(isempty_flag);
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq->length(_val.size());
+	// This is supposed to be used only for enum types since all
+	// the constructors for the other standard Tango types have a specialization defined
+	data_type = DEV_ENUM;
 	for (size_t loop = 0;loop < _val.size();loop++)
 		ShortSeq[loop] = static_cast<short>(_val[loop]);
 }
@@ -379,6 +385,7 @@ void DeviceAttribute::operator << (vector<T> &_datum)
 	w_dim_y = 0;
 	quality = Tango::ATTR_VALID;
 	data_format = Tango::FMT_UNKNOWN;
+	data_type = DEV_ENUM;
 
 	if (ShortSeq.operator->() == NULL)
 	{
