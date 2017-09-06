@@ -1191,6 +1191,107 @@ public:
 #endif
 	}
 
+// Test DeviceAttribute get_type method after constructor call
+    void test_DeviceAttribute_get_type_after_constructor_call(void)
+    {
+        string attr_name = "MyAttrName";
+        short my_short = 42;
+        DeviceAttribute da_short("MyAttributeName", my_short);
+        TS_ASSERT(da_short.get_type() == DEV_SHORT);
+        DeviceAttribute da_short2(attr_name, my_short);
+        TS_ASSERT(da_short2.get_type() == DEV_SHORT);
+
+        enum Color
+        {
+            red, green, blue
+        };
+        Color color = red;
+        DeviceAttribute da_enum("MyColorEnumAttr", color);
+        TS_ASSERT(da_enum.get_type() == DEV_ENUM);
+        DeviceAttribute da_enum2(attr_name, color);
+        TS_ASSERT(da_enum2.get_type() == DEV_ENUM);
+
+        vector<short> my_short_vector;
+        for (size_t i = 0; i < 10; i++)
+        {
+            my_short_vector.push_back(i);
+            my_short_vector.push_back(-i);
+        }
+        DeviceAttribute da_short_vec("MyShortSpectrumAttr", my_short_vector);
+        TS_ASSERT(da_short_vec.get_type() == DEV_SHORT);
+        DeviceAttribute da_short_vec2(attr_name, my_short_vector);
+        TS_ASSERT(da_short_vec2.get_type() == DEV_SHORT);
+
+        DeviceAttribute da_short_vec3("MyShortSpectrumAttr", my_short_vector, 4, 5);
+        TS_ASSERT(da_short_vec3.get_type() == DEV_SHORT);
+        DeviceAttribute da_short_vec4(attr_name, my_short_vector, 10, 2);
+        TS_ASSERT(da_short_vec4.get_type() == DEV_SHORT);
+
+        vector <Color> my_enum_vector;
+        my_enum_vector.push_back(red);
+        my_enum_vector.push_back(blue);
+        my_enum_vector.push_back(red);
+        my_enum_vector.push_back(green);
+
+        DeviceAttribute da_enum_vec("MyEnumSpectrumAttr", my_enum_vector);
+        TS_ASSERT(da_enum_vec.get_type() == DEV_ENUM);
+        DeviceAttribute da_enum_vec2(attr_name, my_enum_vector);
+        TS_ASSERT(da_enum_vec2.get_type() == DEV_ENUM);
+
+        DeviceAttribute da_enum_vec3("MyEnumSpectrumAttr", my_enum_vector, 2, 2);
+        TS_ASSERT(da_enum_vec3.get_type() == DEV_ENUM);
+        DeviceAttribute da_enum_vec4(attr_name, my_enum_vector, 4, 1);
+        TS_ASSERT(da_enum_vec4.get_type() == DEV_ENUM);
+    }
+
+// Test DeviceAttribute get_type method after short or enum insertion
+    void test_DeviceAttribute_get_type_after_short_or_enum_insertion(void)
+    {
+        string attr_name = "MyAttrName";
+        enum Color
+        {
+            red, green, blue
+        };
+
+        DeviceAttribute da;
+        TS_ASSERT(da.get_type() == DATA_TYPE_UNKNOWN);
+        short my_short = 42;
+        da << my_short;
+        TS_ASSERT(da.get_type() == DEV_SHORT);
+
+        Color color = blue;
+        da << color;
+        TS_ASSERT(da.get_type() == DEV_ENUM);
+
+        da << my_short;
+        TS_ASSERT(da.get_type() == DEV_ENUM);
+
+        vector<short> my_short_vector;
+        for (size_t i = 0; i < 10; i++)
+        {
+            my_short_vector.push_back(i);
+            my_short_vector.push_back(-i);
+        }
+
+        da << my_short_vector;
+        // If the device attribute data type was previously set to DEV_ENUM
+        // and we insert a short, we can still consider it as an enum
+        TS_ASSERT(da.get_type() == DEV_ENUM);
+
+        DeviceAttribute da2;
+        da2 << my_short_vector;
+        TS_ASSERT(da2.get_type() == DEV_SHORT);
+
+        vector <Color> my_enum_vector;
+        my_enum_vector.push_back(red);
+        my_enum_vector.push_back(blue);
+        my_enum_vector.push_back(red);
+        my_enum_vector.push_back(green);
+
+        da2 << my_enum_vector;
+        TS_ASSERT(da2.get_type() == DEV_ENUM);
+    }
+
 };
 #undef cout
 #endif // CmdTypesTestSuite_h
