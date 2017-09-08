@@ -2069,9 +2069,18 @@ bool DeviceAttribute::is_empty()
 int DeviceAttribute::get_type()
 {
 	int da_type;
+	bool da_is_empty;
 
-	if (is_empty() == true)
-		return -1;
+	// reset is_empty exception flag to avoid throwing an exception
+	// during is_empty() call
+	bitset<DeviceAttribute::numFlags> bs = exceptions();
+	reset_exceptions(DeviceAttribute::isempty_flag);
+	da_is_empty = is_empty();
+	// restore is_empty exception flag
+	exceptions(bs);
+
+	if (da_is_empty)
+		return DATA_TYPE_UNKNOWN;
 	else
 	{
 		if (LongSeq.operator->() != NULL)
@@ -2103,7 +2112,7 @@ int DeviceAttribute::get_type()
 		else if ((StateSeq.operator->() != NULL) || (d_state_filled == true))
 			da_type = Tango::DEV_STATE;
         else
-            da_type = -1;
+            da_type = DATA_TYPE_UNKNOWN;
 	}
 
 	return da_type;
