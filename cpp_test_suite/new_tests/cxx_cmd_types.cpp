@@ -1247,7 +1247,6 @@ public:
 // Test DeviceAttribute get_type method after short or enum insertion
     void test_DeviceAttribute_get_type_after_short_or_enum_insertion(void)
     {
-        string attr_name = "MyAttrName";
         enum Color
         {
             red, green, blue
