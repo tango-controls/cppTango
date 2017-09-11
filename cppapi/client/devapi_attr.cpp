@@ -542,46 +542,44 @@ DeviceAttribute & DeviceAttribute::operator=(DeviceAttribute &&rval)
 }
 #endif
 
+void DeviceAttribute::init_common_class_members(const char * new_name, int x_dim = 1, int y_dim = 0)
+{
+    name = new_name;
+    dim_x = x_dim;
+    dim_y = y_dim;
+    w_dim_x = 0;
+    w_dim_y = 0;
+    quality = Tango::ATTR_VALID;
+    data_format = Tango::FMT_UNKNOWN;
+    d_state_filled = false;
+    exceptions_flags.set(failed_flag);
+    exceptions_flags.set(isempty_flag);
+}
+
 //-----------------------------------------------------------------------------
 //
 // DeviceAttribute::DeviceAttribute() - constructor for short
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, short datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, short datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ShortSeq = new(DevVarShortArray);
-	ShortSeq->length(1);
-	ShortSeq[0] = datum;
-	data_type = DEV_SHORT;
+    init_common_class_members(new_name.c_str());
+    ShortSeq = new(DevVarShortArray);
+    ShortSeq->length(1);
+    ShortSeq[0] = datum;
+    data_type = DEV_SHORT;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, short datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, short datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ShortSeq = new(DevVarShortArray);
-	ShortSeq->length(1);
-	ShortSeq[0] = datum;
-	data_type = DEV_SHORT;
+    init_common_class_members(new_name);
+    ShortSeq = new(DevVarShortArray);
+    ShortSeq->length(1);
+    ShortSeq[0] = datum;
+    data_type = DEV_SHORT;
 }
 
 //-----------------------------------------------------------------------------
@@ -590,38 +588,22 @@ DeviceAttribute::DeviceAttribute(const char *new_name, short datum):ext(new Devi
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, DevLong datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, DevLong datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	LongSeq  = new(DevVarLongArray);
-	LongSeq->length(1);
-	LongSeq[0] = datum;
+    init_common_class_members(new_name.c_str());
+    LongSeq = new(DevVarLongArray);
+    LongSeq->length(1);
+    LongSeq[0] = datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, DevLong datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, DevLong datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	LongSeq  = new(DevVarLongArray);
-	LongSeq->length(1);
-	LongSeq[0] = datum;
+    init_common_class_members(new_name);
+    LongSeq = new(DevVarLongArray);
+    LongSeq->length(1);
+    LongSeq[0] = datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -630,38 +612,22 @@ DeviceAttribute::DeviceAttribute(const char *new_name, DevLong datum):ext(new De
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, DevLong64 datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, DevLong64 datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	Long64Seq  = new(DevVarLong64Array);
-	Long64Seq->length(1);
-	Long64Seq[0] = datum;
+    init_common_class_members(new_name.c_str());
+    Long64Seq = new(DevVarLong64Array);
+    Long64Seq->length(1);
+    Long64Seq[0] = datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, DevLong64 datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, DevLong64 datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	Long64Seq  = new(DevVarLong64Array);
-	Long64Seq->length(1);
-	Long64Seq[0] = datum;
+    init_common_class_members(new_name);
+    Long64Seq = new(DevVarLong64Array);
+    Long64Seq->length(1);
+    Long64Seq[0] = datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -670,38 +636,22 @@ DeviceAttribute::DeviceAttribute(const char *new_name, DevLong64 datum):ext(new 
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, double datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, double datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	DoubleSeq  = new(DevVarDoubleArray);
-	DoubleSeq->length(1);
-	DoubleSeq[0] = datum;
+    init_common_class_members(new_name.c_str());
+    DoubleSeq = new(DevVarDoubleArray);
+    DoubleSeq->length(1);
+    DoubleSeq[0] = datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, double datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, double datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	DoubleSeq  = new(DevVarDoubleArray);
-	DoubleSeq->length(1);
-	DoubleSeq[0] = datum;
+    init_common_class_members(new_name);
+    DoubleSeq = new(DevVarDoubleArray);
+    DoubleSeq->length(1);
+    DoubleSeq[0] = datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -710,72 +660,40 @@ DeviceAttribute::DeviceAttribute(const char *new_name, double datum):ext(new Dev
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, string& datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, string &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StringSeq = new(DevVarStringArray);
-	StringSeq->length(1);
-	StringSeq[0] = string_dup(datum.c_str());
+    init_common_class_members(new_name.c_str());
+    StringSeq = new(DevVarStringArray);
+    StringSeq->length(1);
+    StringSeq[0] = string_dup(datum.c_str());
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, string& datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, string &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StringSeq = new(DevVarStringArray);
-	StringSeq->length(1);
-	StringSeq[0] = string_dup(datum.c_str());
+    init_common_class_members(new_name);
+    StringSeq = new(DevVarStringArray);
+    StringSeq->length(1);
+    StringSeq[0] = string_dup(datum.c_str());
 }
 
-DeviceAttribute::DeviceAttribute(string& new_name, const char *datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, const char *datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StringSeq = new(DevVarStringArray);
-	StringSeq->length(1);
-	StringSeq[0] = string_dup(datum);
+    init_common_class_members(new_name.c_str());
+    StringSeq = new(DevVarStringArray);
+    StringSeq->length(1);
+    StringSeq[0] = string_dup(datum);
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, const char *datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, const char *datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StringSeq = new(DevVarStringArray);
-	StringSeq->length(1);
-	StringSeq[0] = string_dup(datum);
+    init_common_class_members(new_name);
+    StringSeq = new(DevVarStringArray);
+    StringSeq->length(1);
+    StringSeq[0] = string_dup(datum);
 }
 
 //-----------------------------------------------------------------------------
@@ -784,38 +702,22 @@ DeviceAttribute::DeviceAttribute(const char *new_name, const char *datum):ext(ne
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, float datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, float datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	FloatSeq  = new(DevVarFloatArray);
-	FloatSeq->length(1);
-	FloatSeq[0] = datum;
+    init_common_class_members(new_name.c_str());
+    FloatSeq = new(DevVarFloatArray);
+    FloatSeq->length(1);
+    FloatSeq[0] = datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, float datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, float datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	FloatSeq  = new(DevVarFloatArray);
-	FloatSeq->length(1);
-	FloatSeq[0] = datum;
+    init_common_class_members(new_name);
+    FloatSeq = new(DevVarFloatArray);
+    FloatSeq->length(1);
+    FloatSeq[0] = datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -824,38 +726,22 @@ DeviceAttribute::DeviceAttribute(const char *new_name, float datum):ext(new Devi
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, bool datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, bool datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	BooleanSeq  = new(DevVarBooleanArray);
-	BooleanSeq->length(1);
-	BooleanSeq[0] = datum;
+    init_common_class_members(new_name.c_str());
+    BooleanSeq = new(DevVarBooleanArray);
+    BooleanSeq->length(1);
+    BooleanSeq[0] = datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, bool datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, bool datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	BooleanSeq  = new(DevVarBooleanArray);
-	BooleanSeq->length(1);
-	BooleanSeq[0] = datum;
+    init_common_class_members(new_name);
+    BooleanSeq = new(DevVarBooleanArray);
+    BooleanSeq->length(1);
+    BooleanSeq[0] = datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -864,38 +750,22 @@ DeviceAttribute::DeviceAttribute(const char *new_name, bool datum):ext(new Devic
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, unsigned short datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, unsigned short datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	UShortSeq = new(DevVarUShortArray);
-	UShortSeq->length(1);
-	UShortSeq[0] = datum;
+    init_common_class_members(new_name.c_str());
+    UShortSeq = new(DevVarUShortArray);
+    UShortSeq->length(1);
+    UShortSeq[0] = datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, unsigned short datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, unsigned short datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	UShortSeq = new(DevVarUShortArray);
-	UShortSeq->length(1);
-	UShortSeq[0] = datum;
+    init_common_class_members(new_name);
+    UShortSeq = new(DevVarUShortArray);
+    UShortSeq->length(1);
+    UShortSeq[0] = datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -904,38 +774,22 @@ DeviceAttribute::DeviceAttribute(const char *new_name, unsigned short datum):ext
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, unsigned char datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, unsigned char datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	UCharSeq  = new(DevVarCharArray);
-	UCharSeq->length(1);
-	UCharSeq[0] = datum;
+    init_common_class_members(new_name.c_str());
+    UCharSeq = new(DevVarCharArray);
+    UCharSeq->length(1);
+    UCharSeq[0] = datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, unsigned char datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, unsigned char datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	UCharSeq  = new(DevVarCharArray);
-	UCharSeq->length(1);
-	UCharSeq[0] = datum;
+    init_common_class_members(new_name);
+    UCharSeq = new(DevVarCharArray);
+    UCharSeq->length(1);
+    UCharSeq[0] = datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -944,38 +798,22 @@ DeviceAttribute::DeviceAttribute(const char *new_name, unsigned char datum):ext(
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, DevULong datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, DevULong datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ULongSeq  = new(DevVarULongArray);
-	ULongSeq->length(1);
-	ULongSeq[0] = datum;
+    init_common_class_members(new_name.c_str());
+    ULongSeq = new(DevVarULongArray);
+    ULongSeq->length(1);
+    ULongSeq[0] = datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, DevULong datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, DevULong datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ULongSeq  = new(DevVarULongArray);
-	ULongSeq->length(1);
-	ULongSeq[0] = datum;
+    init_common_class_members(new_name);
+    ULongSeq = new(DevVarULongArray);
+    ULongSeq->length(1);
+    ULongSeq[0] = datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -984,38 +822,22 @@ DeviceAttribute::DeviceAttribute(const char *new_name, DevULong datum):ext(new D
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, DevULong64 datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, DevULong64 datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ULong64Seq  = new(DevVarULong64Array);
-	ULong64Seq->length(1);
-	ULong64Seq[0] = datum;
+    init_common_class_members(new_name.c_str());
+    ULong64Seq = new(DevVarULong64Array);
+    ULong64Seq->length(1);
+    ULong64Seq[0] = datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, DevULong64 datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, DevULong64 datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ULong64Seq  = new(DevVarULong64Array);
-	ULong64Seq->length(1);
-	ULong64Seq[0] = datum;
+    init_common_class_members(new_name);
+    ULong64Seq = new(DevVarULong64Array);
+    ULong64Seq->length(1);
+    ULong64Seq[0] = datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -1024,38 +846,22 @@ DeviceAttribute::DeviceAttribute(const char *new_name, DevULong64 datum):ext(new
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, DevState datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, DevState datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StateSeq  = new(DevVarStateArray);
-	StateSeq->length(1);
-	StateSeq[0] = datum;
+    init_common_class_members(new_name.c_str());
+    StateSeq = new(DevVarStateArray);
+    StateSeq->length(1);
+    StateSeq[0] = datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, DevState datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, DevState datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StateSeq  = new(DevVarStateArray);
-	StateSeq->length(1);
-	StateSeq[0] = datum;
+    init_common_class_members(new_name);
+    StateSeq = new(DevVarStateArray);
+    StateSeq->length(1);
+    StateSeq[0] = datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -1064,112 +870,64 @@ DeviceAttribute::DeviceAttribute(const char *new_name, DevState datum):ext(new D
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, DevEncoded &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, DevEncoded &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	EncodedSeq  = new(DevVarEncodedArray);
-	EncodedSeq->length(1);
-	EncodedSeq[0] = datum;
-
+    init_common_class_members(new_name.c_str());
+    EncodedSeq = new(DevVarEncodedArray);
+    EncodedSeq->length(1);
+    EncodedSeq[0] = datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, DevEncoded &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, DevEncoded &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = 1;
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	EncodedSeq  = new(DevVarEncodedArray);
-	EncodedSeq->length(1);
-	EncodedSeq[0] = datum;
+    init_common_class_members(new_name);
+    EncodedSeq = new(DevVarEncodedArray);
+    EncodedSeq->length(1);
+    EncodedSeq[0] = datum;
 }
+
 //-----------------------------------------------------------------------------
 //
 // DeviceAttribute::DeviceAttribute() - constructor for vector of short
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<short> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<short> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ShortSeq = new(DevVarShortArray);
-	ShortSeq.inout() << datum;
-	data_type = DEV_SHORT;
+    init_common_class_members(new_name.c_str(), datum.size());
+    ShortSeq = new(DevVarShortArray);
+    ShortSeq.inout() << datum;
+    data_type = DEV_SHORT;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ShortSeq = new(DevVarShortArray);
-	ShortSeq.inout() << datum;
-	data_type = DEV_SHORT;
+    init_common_class_members(new_name, datum.size());
+    ShortSeq = new(DevVarShortArray);
+    ShortSeq.inout() << datum;
+    data_type = DEV_SHORT;
 }
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<short> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<short> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ShortSeq = new(DevVarShortArray);
-	ShortSeq.inout() << datum;
-	data_type = DEV_SHORT;
+    init_common_class_members(new_name.c_str(), x, y);
+    ShortSeq = new(DevVarShortArray);
+    ShortSeq.inout() << datum;
+    data_type = DEV_SHORT;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ShortSeq = new(DevVarShortArray);
-	ShortSeq.inout() << datum;
-	data_type = DEV_SHORT;
+    init_common_class_members(new_name, x, y);
+    ShortSeq = new(DevVarShortArray);
+    ShortSeq.inout() << datum;
+    data_type = DEV_SHORT;
 }
 
 //-----------------------------------------------------------------------------
@@ -1178,68 +936,36 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum,int 
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<DevLong> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<DevLong> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	LongSeq = new(DevVarLongArray);
-	LongSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), datum.size());
+    LongSeq = new(DevVarLongArray);
+    LongSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	LongSeq = new(DevVarLongArray);
-	LongSeq.inout() << datum;
+    init_common_class_members(new_name, datum.size());
+    LongSeq = new(DevVarLongArray);
+    LongSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<DevLong> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<DevLong> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	LongSeq = new(DevVarLongArray);
-	LongSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), x, y);
+    LongSeq = new(DevVarLongArray);
+    LongSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	LongSeq = new(DevVarLongArray);
-	LongSeq.inout() << datum;
+    init_common_class_members(new_name, x, y);
+    LongSeq = new(DevVarLongArray);
+    LongSeq.inout() << datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -1248,68 +974,36 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong> &datum,in
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<DevLong64> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<DevLong64> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	Long64Seq = new(DevVarLong64Array);
-	Long64Seq.inout() << datum;
+    init_common_class_members(new_name.c_str(), datum.size());
+    Long64Seq = new(DevVarLong64Array);
+    Long64Seq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong64> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong64> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	Long64Seq = new(DevVarLong64Array);
-	Long64Seq.inout() << datum;
+    init_common_class_members(new_name, datum.size());
+    Long64Seq = new(DevVarLong64Array);
+    Long64Seq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<DevLong64> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<DevLong64> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	Long64Seq = new(DevVarLong64Array);
-	Long64Seq.inout() << datum;
+    init_common_class_members(new_name.c_str(), x, y);
+    Long64Seq = new(DevVarLong64Array);
+    Long64Seq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong64> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong64> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	Long64Seq = new(DevVarLong64Array);
-	Long64Seq.inout() << datum;
+    init_common_class_members(new_name, x, y);
+    Long64Seq = new(DevVarLong64Array);
+    Long64Seq.inout() << datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -1318,70 +1012,37 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong64> &datum,
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<double> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<double> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	DoubleSeq = new(DevVarDoubleArray);
-	DoubleSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), datum.size());
+    DoubleSeq = new(DevVarDoubleArray);
+    DoubleSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	DoubleSeq = new(DevVarDoubleArray);
-	DoubleSeq.inout() << datum;
+    init_common_class_members(new_name, datum.size());
+    DoubleSeq = new(DevVarDoubleArray);
+    DoubleSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<double> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<double> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	DoubleSeq = new(DevVarDoubleArray);
-	DoubleSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), x, y);
+    DoubleSeq = new(DevVarDoubleArray);
+    DoubleSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	DoubleSeq = new(DevVarDoubleArray);
-	DoubleSeq.inout() << datum;
+    init_common_class_members(new_name, x, y);
+    DoubleSeq = new(DevVarDoubleArray);
+    DoubleSeq.inout() << datum;
 }
-
 
 //-----------------------------------------------------------------------------
 //
@@ -1389,68 +1050,36 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum,int
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<string> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<string> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StringSeq = new(DevVarStringArray);
-	StringSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), datum.size());
+    StringSeq = new(DevVarStringArray);
+    StringSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<string> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<string> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StringSeq = new(DevVarStringArray);
-	StringSeq.inout() << datum;
+    init_common_class_members(new_name, datum.size());
+    StringSeq = new(DevVarStringArray);
+    StringSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<string> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<string> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StringSeq = new(DevVarStringArray);
-	StringSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), x, y);
+    StringSeq = new(DevVarStringArray);
+    StringSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<string> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<string> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StringSeq = new(DevVarStringArray);
-	StringSeq.inout() << datum;
+    init_common_class_members(new_name, x, y);
+    StringSeq = new(DevVarStringArray);
+    StringSeq.inout() << datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -1459,68 +1088,36 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<string> &datum,int
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<float> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<float> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	FloatSeq = new(DevVarFloatArray);
-	FloatSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), datum.size());
+    FloatSeq = new(DevVarFloatArray);
+    FloatSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<float> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<float> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	FloatSeq = new(DevVarFloatArray);
-	FloatSeq.inout() << datum;
+    init_common_class_members(new_name, datum.size());
+    FloatSeq = new(DevVarFloatArray);
+    FloatSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<float> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<float> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	FloatSeq = new(DevVarFloatArray);
-	FloatSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), x, y);
+    FloatSeq = new(DevVarFloatArray);
+    FloatSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<float> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<float> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	FloatSeq = new(DevVarFloatArray);
-	FloatSeq.inout() << datum;
+    init_common_class_members(new_name, x, y);
+    FloatSeq = new(DevVarFloatArray);
+    FloatSeq.inout() << datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -1529,70 +1126,37 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<float> &datum,int 
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<bool> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<bool> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	BooleanSeq = new(DevVarBooleanArray);
-	BooleanSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), datum.size());
+    BooleanSeq = new(DevVarBooleanArray);
+    BooleanSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<bool> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<bool> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	BooleanSeq = new(DevVarBooleanArray);
- 	BooleanSeq.inout() << datum;
+    init_common_class_members(new_name, datum.size());
+    BooleanSeq = new(DevVarBooleanArray);
+    BooleanSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<bool> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<bool> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	BooleanSeq = new(DevVarBooleanArray);
-	BooleanSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), x, y);
+    BooleanSeq = new(DevVarBooleanArray);
+    BooleanSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<bool> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<bool> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	BooleanSeq = new(DevVarBooleanArray);
-	BooleanSeq.inout() << datum;
+    init_common_class_members(new_name, x, y);
+    BooleanSeq = new(DevVarBooleanArray);
+    BooleanSeq.inout() << datum;
 }
-
 
 //-----------------------------------------------------------------------------
 //
@@ -1600,68 +1164,36 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<bool> &datum,int x
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<unsigned short> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<unsigned short> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	UShortSeq = new(DevVarUShortArray);
-	UShortSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), datum.size());
+    UShortSeq = new(DevVarUShortArray);
+    UShortSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned short> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned short> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	UShortSeq = new(DevVarUShortArray);
-	UShortSeq.inout() << datum;
+    init_common_class_members(new_name, datum.size());
+    UShortSeq = new(DevVarUShortArray);
+    UShortSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<unsigned short> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<unsigned short> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	UShortSeq = new(DevVarUShortArray);
-	UShortSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), x, y);
+    UShortSeq = new(DevVarUShortArray);
+    UShortSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned short> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned short> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	UShortSeq = new(DevVarUShortArray);
-	UShortSeq.inout() << datum;
+    init_common_class_members(new_name, x, y);
+    UShortSeq = new(DevVarUShortArray);
+    UShortSeq.inout() << datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -1670,68 +1202,36 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned short> &d
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<unsigned char> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<unsigned char> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	UCharSeq = new(DevVarCharArray);
-	UCharSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), datum.size());
+    UCharSeq = new(DevVarCharArray);
+    UCharSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned char> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned char> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	UCharSeq = new(DevVarCharArray);
-	UCharSeq.inout() << datum;
+    init_common_class_members(new_name, datum.size());
+    UCharSeq = new(DevVarCharArray);
+    UCharSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<unsigned char> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<unsigned char> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	UCharSeq = new(DevVarCharArray);
-	UCharSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), x, y);
+    UCharSeq = new(DevVarCharArray);
+    UCharSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned char> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned char> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	UCharSeq = new(DevVarCharArray);
-	UCharSeq.inout() << datum;
+    init_common_class_members(new_name, x, y);
+    UCharSeq = new(DevVarCharArray);
+    UCharSeq.inout() << datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -1740,68 +1240,36 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned char> &da
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<DevULong> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<DevULong> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ULongSeq = new(DevVarULongArray);
-	ULongSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), datum.size());
+    ULongSeq = new(DevVarULongArray);
+    ULongSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ULongSeq = new(DevVarULongArray);
-	ULongSeq.inout() << datum;
+    init_common_class_members(new_name, datum.size());
+    ULongSeq = new(DevVarULongArray);
+    ULongSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<DevULong> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<DevULong> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ULongSeq = new(DevVarULongArray);
-	ULongSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), x, y);
+    ULongSeq = new(DevVarULongArray);
+    ULongSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ULongSeq = new(DevVarULongArray);
-	ULongSeq.inout() << datum;
+    init_common_class_members(new_name, x, y);
+    ULongSeq = new(DevVarULongArray);
+    ULongSeq.inout() << datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -1810,70 +1278,37 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong> &datum,i
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<DevULong64> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<DevULong64> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ULong64Seq = new(DevVarULong64Array);
-	ULong64Seq.inout() << datum;
+    init_common_class_members(new_name.c_str(), datum.size());
+    ULong64Seq = new(DevVarULong64Array);
+    ULong64Seq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong64> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong64> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ULong64Seq = new(DevVarULong64Array);
-	ULong64Seq.inout() << datum;
+    init_common_class_members(new_name, datum.size());
+    ULong64Seq = new(DevVarULong64Array);
+    ULong64Seq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<DevULong64> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<DevULong64> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ULong64Seq = new(DevVarULong64Array);
-	ULong64Seq.inout() << datum;
+    init_common_class_members(new_name.c_str(), x, y);
+    ULong64Seq = new(DevVarULong64Array);
+    ULong64Seq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong64> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong64> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	ULong64Seq = new(DevVarULong64Array);
-	ULong64Seq.inout() << datum;
+    init_common_class_members(new_name, x, y);
+    ULong64Seq = new(DevVarULong64Array);
+    ULong64Seq.inout() << datum;
 }
-
 
 //-----------------------------------------------------------------------------
 //
@@ -1881,68 +1316,36 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong64> &datum
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<DevState> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<DevState> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StateSeq = new(DevVarStateArray);
-	StateSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), datum.size());
+    StateSeq = new(DevVarStateArray);
+    StateSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevState> &datum):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevState> &datum)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = datum.size();
-	dim_y = 0;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StateSeq = new(DevVarStateArray);
-	StateSeq.inout() << datum;
+    init_common_class_members(new_name, datum.size());
+    StateSeq = new(DevVarStateArray);
+    StateSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string& new_name, vector<DevState> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(string &new_name, vector<DevState> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StateSeq = new(DevVarStateArray);
-	StateSeq.inout() << datum;
+    init_common_class_members(new_name.c_str(), x, y);
+    StateSeq = new(DevVarStateArray);
+    StateSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevState> &datum,int x,int y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevState> &datum, int x, int y)
+    : ext(new DeviceAttributeExt)
 {
-	name = new_name;
-	dim_x = x;
-	dim_y = y;
-	w_dim_x = 0;
-	w_dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-	d_state_filled = false;
-	exceptions_flags.set(failed_flag);
-	exceptions_flags.set(isempty_flag);
-	StateSeq = new(DevVarStateArray);
-	StateSeq.inout() << datum;
+    init_common_class_members(new_name, x, y);
+    StateSeq = new(DevVarStateArray);
+    StateSeq.inout() << datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -2068,54 +1471,76 @@ bool DeviceAttribute::is_empty()
 
 int DeviceAttribute::get_type()
 {
-	int da_type;
-	bool da_is_empty;
+    bool da_is_empty;
 
-	// reset is_empty exception flag to avoid throwing an exception
-	// during is_empty() call
-	bitset<DeviceAttribute::numFlags> bs = exceptions();
-	reset_exceptions(DeviceAttribute::isempty_flag);
-	da_is_empty = is_empty();
-	// restore is_empty exception flag
-	exceptions(bs);
+    // reset is_empty exception flag to avoid throwing an exception
+    // during is_empty() call
+    bitset<DeviceAttribute::numFlags> bs = exceptions();
+    reset_exceptions(DeviceAttribute::isempty_flag);
+    da_is_empty = is_empty();
+    // restore is_empty exception flag
+    exceptions(bs);
 
-	if (da_is_empty)
-		return DATA_TYPE_UNKNOWN;
-	else
-	{
-		if (LongSeq.operator->() != NULL)
-			da_type = Tango::DEV_LONG;
-		else if (ShortSeq.operator->() != NULL)
-		{
-			da_type = data_type;
-		}
-		else if (DoubleSeq.operator->() != NULL)
-			da_type = Tango::DEV_DOUBLE;
-		else if (FloatSeq.operator->() != NULL)
-			da_type = Tango::DEV_FLOAT;
-		else if (BooleanSeq.operator->() != NULL)
-			da_type = Tango::DEV_BOOLEAN;
-		else if (UShortSeq.operator->() != NULL)
-			da_type = Tango::DEV_USHORT;
-		else if (UCharSeq.operator->() != NULL)
-			da_type = Tango::DEV_UCHAR;
-		else if (StringSeq.operator->() != NULL)
-			da_type = Tango::DEV_STRING;
-		else if (Long64Seq.operator->() != NULL)
-			da_type = Tango::DEV_LONG64;
-		else if (ULongSeq.operator->() != NULL)
-			da_type = Tango::DEV_ULONG;
-		else if (ULong64Seq.operator->() != NULL)
-			da_type = Tango::DEV_ULONG64;
-		else if (EncodedSeq.operator->() != NULL)
-			da_type = Tango::DEV_ENCODED;
-		else if ((StateSeq.operator->() != NULL) || (d_state_filled == true))
-			da_type = Tango::DEV_STATE;
-        else
-            da_type = DATA_TYPE_UNKNOWN;
-	}
-
-	return da_type;
+    if (da_is_empty)
+    {
+        return DATA_TYPE_UNKNOWN;
+    }
+    else if (LongSeq.operator->() != NULL)
+    {
+        return Tango::DEV_LONG;
+    }
+    else if (ShortSeq.operator->() != NULL)
+    {
+        return data_type;
+    }
+    else if (DoubleSeq.operator->() != NULL)
+    {
+        return Tango::DEV_DOUBLE;
+    }
+    else if (FloatSeq.operator->() != NULL)
+    {
+        return Tango::DEV_FLOAT;
+    }
+    else if (BooleanSeq.operator->() != NULL)
+    {
+        return Tango::DEV_BOOLEAN;
+    }
+    else if (UShortSeq.operator->() != NULL)
+    {
+        return Tango::DEV_USHORT;
+    }
+    else if (UCharSeq.operator->() != NULL)
+    {
+        return Tango::DEV_UCHAR;
+    }
+    else if (StringSeq.operator->() != NULL)
+    {
+        return Tango::DEV_STRING;
+    }
+    else if (Long64Seq.operator->() != NULL)
+    {
+        return Tango::DEV_LONG64;
+    }
+    else if (ULongSeq.operator->() != NULL)
+    {
+        return Tango::DEV_ULONG;
+    }
+    else if (ULong64Seq.operator->() != NULL)
+    {
+        return Tango::DEV_ULONG64;
+    }
+    else if (EncodedSeq.operator->() != NULL)
+    {
+        return Tango::DEV_ENCODED;
+    }
+    else if ((StateSeq.operator->() != NULL) || (d_state_filled == true))
+    {
+        return Tango::DEV_STATE;
+    }
+    else
+    {
+        return DATA_TYPE_UNKNOWN;
+    }
 }
 
 //-----------------------------------------------------------------------------
