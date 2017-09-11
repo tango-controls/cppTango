@@ -1301,7 +1301,6 @@ protected :
 	bool check_for_data();
 	bool check_wrong_type_exception();
 	int  check_set_value_size(int seq_length);
-	void init_common_class_members(const char * name,int dim_x,int dim_y);
 
     class DeviceAttributeExt
     {
@@ -1319,6 +1318,9 @@ protected :
 #else
 	DeviceAttributeExt	            *ext;		// Class extension
 #endif
+
+private:
+    void init_common_class_members(const char * name,int dim_x,int dim_y);
 };
 
 #endif /* _DEVICEATTRIBUTE_H */
