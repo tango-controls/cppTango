@@ -378,8 +378,8 @@ public :
 	void operator << (DevULong64 datum) {any <<= datum;}
 	void operator << (float datum) {any <<= datum;}
 	void operator << (double datum) {any <<= datum;}
-	void operator << (char *&datum) {any <<= datum;}
-	void operator << (const char *&datum) {any <<= datum;}
+	void operator << (char *datum) {any <<= datum;}
+	void operator << (const char *datum) {any <<= datum;}
 	void operator << (string &datum) {any <<= datum.c_str();}
 	void operator << (vector<bool>&);
 	void operator << (vector<unsigned char>&);
