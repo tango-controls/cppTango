@@ -563,6 +563,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, short datum):ext(new DeviceAt
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq->length(1);
 	ShortSeq[0] = datum;
+	data_type = DEV_SHORT;
 }
 
 DeviceAttribute::DeviceAttribute(const char *new_name, short datum):ext(new DeviceAttributeExt)
@@ -580,6 +581,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, short datum):ext(new Devi
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq->length(1);
 	ShortSeq[0] = datum;
+	data_type = DEV_SHORT;
 }
 
 //-----------------------------------------------------------------------------
@@ -1116,6 +1118,7 @@ DeviceAttribute::DeviceAttribute(string& new_name, vector<short> &datum):ext(new
 	exceptions_flags.set(isempty_flag);
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq.inout() << datum;
+	data_type = DEV_SHORT;
 }
 
 DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum):ext(new DeviceAttributeExt)
@@ -1132,6 +1135,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum):ext
 	exceptions_flags.set(isempty_flag);
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq.inout() << datum;
+	data_type = DEV_SHORT;
 }
 
 DeviceAttribute::DeviceAttribute(string& new_name, vector<short> &datum,int x,int y):ext(new DeviceAttributeExt)
@@ -1148,6 +1152,7 @@ DeviceAttribute::DeviceAttribute(string& new_name, vector<short> &datum,int x,in
 	exceptions_flags.set(isempty_flag);
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq.inout() << datum;
+	data_type = DEV_SHORT;
 }
 
 DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum,int x,int y):ext(new DeviceAttributeExt)
@@ -1164,6 +1169,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum,int 
 	exceptions_flags.set(isempty_flag);
 	ShortSeq = new(DevVarShortArray);
 	ShortSeq.inout() << datum;
+	data_type = DEV_SHORT;
 }
 
 //-----------------------------------------------------------------------------
@@ -2063,9 +2069,18 @@ bool DeviceAttribute::is_empty()
 int DeviceAttribute::get_type()
 {
 	int da_type;
+	bool da_is_empty;
 
-	if (is_empty() == true)
-		return -1;
+	// reset is_empty exception flag to avoid throwing an exception
+	// during is_empty() call
+	bitset<DeviceAttribute::numFlags> bs = exceptions();
+	reset_exceptions(DeviceAttribute::isempty_flag);
+	da_is_empty = is_empty();
+	// restore is_empty exception flag
+	exceptions(bs);
+
+	if (da_is_empty)
+		return DATA_TYPE_UNKNOWN;
 	else
 	{
 		if (LongSeq.operator->() != NULL)
@@ -2097,7 +2112,7 @@ int DeviceAttribute::get_type()
 		else if ((StateSeq.operator->() != NULL) || (d_state_filled == true))
 			da_type = Tango::DEV_STATE;
         else
-            da_type = -1;
+            da_type = DATA_TYPE_UNKNOWN;
 	}
 
 	return da_type;
@@ -2164,6 +2179,8 @@ void DeviceAttribute::operator << (short datum)
 	w_dim_y = 0;
 	quality = Tango::ATTR_VALID;
 	data_format = Tango::FMT_UNKNOWN;
+	if(data_type != DEV_ENUM)
+	{   data_type = DEV_SHORT;}
 
     DevVarShortArray *short_vararr = new(DevVarShortArray);
     short_vararr->length(1);
@@ -3011,6 +3028,9 @@ void DeviceAttribute::operator << (vector<short> &datum)
 	w_dim_y = 0;
 	quality = Tango::ATTR_VALID;
 	data_format = Tango::FMT_UNKNOWN;
+
+	if(data_type != DEV_ENUM)
+	{   data_type = DEV_SHORT;}
 
 	if (ShortSeq.operator->() == NULL)
 	{
