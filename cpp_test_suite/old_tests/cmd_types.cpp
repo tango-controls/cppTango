@@ -216,9 +216,47 @@ int main(int argc, char **argv) {
         }
         const char *received;
         dout >> received;
-        assert(strcmp(str, "dcba"));
+        assert(strcmp(received, "dcba") == 0);
     }
-    cout << "   C string --> OK" << endl;
+    cout << "   const char * string --> OK" << endl;
+
+// test direct classical C string
+
+    for (i = 0; i < loop; i++) {
+        DeviceData din, dout;
+        din << "abcde";
+        try {
+            dout = device->command_inout("IOString", din);
+        }
+        catch (CORBA::Exception &e) {
+            Except::print_exception(e);
+            exit(-1);
+        }
+        const char *received;
+        dout >> received;
+        assert(strcmp(received, "edcba") == 0);
+    }
+    cout << "   direct const char * string --> OK" << endl;
+
+// test non-const C string
+
+    for (i = 0; i < loop; i++) {
+        char * in = strdup("abcdef");
+        DeviceData din, dout;
+        din << in;
+        free(in);
+        try {
+            dout = device->command_inout("IOString", din);
+        }
+        catch (CORBA::Exception &e) {
+            Except::print_exception(e);
+            exit(-1);
+        }
+        const char *received;
+        dout >> received;
+        assert(strcmp(received, "fedcba") == 0);
+    }
+    cout << "   char * string --> OK" << endl;
 
     // test DevVarBooleanArray
 
