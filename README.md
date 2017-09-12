@@ -28,11 +28,41 @@ On readthedocs: [tango-controls.readthedocs.io](http://tango-controls.readthedoc
 
 Manuals: [tango-controls.org/resources/documentation/kernel](http://www.tango-controls.org/resources/documentation/kernel/)
 
+
 # How to build and install using cmake
 
 `mkdir build; cd build; cmake .. [-DCMAKE_INSTALL_PREFIX=<desired installation path>] [-DOMNI_BASE=<omniORB4 home folder>] [-DZMQ_BASE=<zmq home folder>] [-DCMAKE_BUILD_TYPE=RELEASE|DEBUG] [-DCMAKE_VERBOSE_MAKEFILE=true]; make; make install`
 
-More information is in [INSTALL file](https://github.com/tango-controls/cppTango/blob/master/INSTALL.md) 
+More information is in [INSTALL file](https://github.com/tango-controls/cppTango/blob/tango-9-lts/INSTALL.md) 
+
+# Using pkg-config
+
+Once installed cppTango provides [pkg-config](https://en.wikipedia.org/wiki/Pkg-config) file `tango.pc`
+
+One can use it to resolve libtango dependencies in his project, for instance using cmake:
+ 
+```cmake
+include(FindPkgConfig)
+pkg_search_module(TANGO_PKG REQUIRED tango)
+
+#...
+
+link_directories(${TANGO_PKG_LIBRARY_DIRS})
+
+#note TANGO_PKG_XXX usage
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${TANGO_PKG_INCLUDE_DIRS})
+target_compile_options(${PROJECT_NAME} PUBLIC -std=c++11)
+target_compile_definitions(${PROJECT_NAME} PUBLIC ${TANGO_PKG_CFLAGS_OTHER})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${TANGO_PKG_LIBRARIES})
+``` 
+
+`tango.pc` provides default installation directory for all Tango devices linked against this libtango:
+
+```bash
+pkg-config --variable=tangodsdir tango
+/usr/bin
+```
 
 # How to test
 
