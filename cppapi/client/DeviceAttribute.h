@@ -1318,6 +1318,9 @@ protected :
 #else
 	DeviceAttributeExt	            *ext;		// Class extension
 #endif
+
+private:
+    void init_common_class_members(const char * name,int dim_x,int dim_y);
 };
 
 #endif /* _DEVICEATTRIBUTE_H */
