@@ -223,7 +223,7 @@ public:
     {
         DeviceData din, dout;
         din << "abcde";
-        TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOString", din));
+        TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IOString", din));
         const char *received;
         dout >> received;
         TS_ASSERT(strcmp(received, "edcba") == 0);
@@ -237,7 +237,7 @@ public:
         DeviceData din, dout;
         din << in;
         free(in);
-        TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOString", din));
+        TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IOString", din));
         const char *received;
         dout >> received;
         TS_ASSERT(strcmp(received, "fedcba") == 0);
