@@ -389,9 +389,9 @@ namespace Tango {
 
 		void operator<<(double datum) { any <<= datum; }
 
-		void operator<<(char *&datum) { any <<= datum; }
+		void operator<<(char *datum) { any <<= datum; }
 
-		void operator<<(const char *&datum) { any <<= datum; }
+		void operator<<(const char *datum) { any <<= datum; }
 
 		void operator<<(string &datum) { any <<= datum.c_str(); }
 
