@@ -1588,6 +1588,7 @@ void Attribute::AttrValUnion_fake_copy(const T *src, V *dst)
             break;
 
         case ATT_NO_DATA:
+            dst->value.union_no_data(true);
             break;
     }
 }
