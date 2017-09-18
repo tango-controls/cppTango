@@ -882,6 +882,53 @@ void MultiAttribute::add_fwd_attribute(string &dev_name,DeviceClass *dev_class_p
 	add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
 
 //
+// Validate and register the root attribute configuration
+//
+	if (new_attr->is_fwd() == true)
+	{
+		Tango::FwdAttr *fwd_attr = (Tango::FwdAttr *) new_attr;
+		// If forwarded attribute is dynamically created and was constructed without specifying
+		// the root_attribute parameter then we have to get its __root_att property from tango DB
+		// prior to calling validate_fwd_att()
+		vector<AttrProperty> dev_prop;
+		Tango::Util *tg = Tango::Util::instance();
+		if ((tg->_UseDb==true) && (fwd_attr->get_full_root_att()==RootAttNotDef))
+		{
+			Tango::DbData db_list;
+			db_list.push_back(DbDatum(fwd_attr->get_name()));
+			tg->get_database()->get_device_attribute_property(dev_name,db_list,tg->get_db_cache());
+			for (unsigned int ind=0 ; ind<db_list.size() ; ind++)
+			{
+				if (db_list[ind].name == RootAttrPropName)
+				{
+					dev_prop.push_back(AttrProperty(db_list[ind].name, db_list[ind].value_string[0]));
+					break;
+				}
+			}
+		}
+
+		// Validate the __root_att property of the attribute
+		fwd_attr->validate_fwd_att(dev_prop, dev_name);
+
+		// Register the root attribute configuration
+		Tango::DeviceImpl *device = tg->get_device_by_name(dev_name);
+		try
+		{
+			fwd_attr->get_root_conf(dev_name,device);
+		}
+		catch (...)
+		{
+			// If any error add this attribute to the device list of wrong configured attributes
+			DeviceImpl::FwdWrongConf fwc;
+			fwc.att_name = fwd_attr->get_name();
+			fwc.full_root_att_name = fwd_attr->get_full_root_att();
+			fwc.fae = fwd_attr->get_err_kind();
+			vector<DeviceImpl::FwdWrongConf> &fwd_att_wrong_conf = device->get_fwd_att_wrong_conf();
+			fwd_att_wrong_conf.push_back(fwc);
+		}
+	}
+
+//
 // Create an Attribute instance and insert it in the attribute list. If the device implement IDL 3
 // (with state and status as attributes), add it at the end of the list but before state and status.
 //
@@ -912,6 +959,12 @@ void MultiAttribute::add_fwd_attribute(string &dev_name,DeviceClass *dev_class_p
 		if (w_type != Tango::WRITE)
 			alarm_attr_list.push_back(index);
 	}
+
+//
+// Check if the writable_attr_name property is set and in this case, check if the associated attribute exists and is
+// writable
+//
+	check_associated(index,dev_name);
 
 	cout4 << "Leaving MultiAttribute::add_fwd_attribute" << endl;
 }
