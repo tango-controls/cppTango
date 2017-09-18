@@ -40,7 +40,10 @@
 
 #include <tango/server/readers_writers_lock.h>
 
+#include <utility>
 #include <zmq.hpp>
+#include <common/admin/commands/zmq_event_subscription_change_response.h>
+#include <common/event/event_subscription.h>
 
 #ifdef ZMQ_VERSION
 #if ZMQ_VERSION > 30201
@@ -376,9 +379,20 @@ typedef struct event_callback_zmq
     bool fwd_att;
 } EventCallBackZmq;
 
+//TODO reduce number of fields
 typedef struct event_callback: public EventCallBackBase, public EventCallBackZmq
 {
     bool filter_ok;
+    static event_callback create(DeviceProxy *proxy,
+                                 const string &obj_name_lower,
+                                 const string &event_name,
+                                 const string &event_full_name,
+                                 const string &channel_name,
+                                 const string &endpoint,
+                                 int device_idl_version,
+                                 bool is_fwd_attr,
+                                 const EventSubscribeStruct &ess,
+                                 bool is_alias_used);
 } EventCallBackStruct;
 
 //------------------------ Event Channel related info --------------------------------------
@@ -519,31 +533,62 @@ protected :
     virtual void disconnect_event_channel(TANGO_UNUSED(string &channel_name),
                                           TANGO_UNUSED(string &endpoint),
                                           TANGO_UNUSED(string &endpoint_event)) = 0;
-    virtual void connect_event_system(string &,
-                                      string &,
-                                      string &e,
-                                      const vector<string> &,
-                                      EvChanIte &,
-                                      EventCallBackStruct &,
-                                      DeviceData &,
-                                      size_t) = 0;
+    virtual void connect_event_system(string &, string &, string &e, DeviceData &, size_t) = 0;
     virtual void disconnect_event(string &, string &)
     {}
 
     virtual void set_channel_type(EventChannelStruct &) = 0;
     virtual void zmq_specific(DeviceData &, string &, DeviceProxy *, const string &) = 0;
+    DeviceProxy *get_admin_device(Tango::DeviceProxy *device,
+                                  bool &allocated,
+                                  map<std::basic_string<char,
+                                                        std::char_traits<char>,
+                                                        std::allocator<char>>,
+                                      std::basic_string<char,
+                                                        std::char_traits<char>,
+                                                        std::allocator<char>>>::iterator &ipos,
+                                  Tango::EvChanIte &evt_it) const;
+    string
+    get_local_callback_key(DeviceProxy *device, const string &obj_name, const string &event_name, bool inter_event);
+    DeviceData
+    execute_event_subscription_change(DeviceProxy *adm_dev, DeviceProxy *dev, const string &event_name) const;
+    int connect_event_legacy(DeviceProxy *device,
+                             const string &obj_name,
+                             EventType &event,
+                             CallBack *callback,
+                             EventQueue *ev_queue,
+                             const vector<string> &filters,
+                             string &event_name,
+                             int event_id);
+    int connect_event_1003(DeviceProxy *device,
+                           const string &basicString,
+                           EventType event_type,
+                           const string &string1,
+                           const string &action,
+                           CallBack *callback,
+                           EventQueue *event_queue);
+    virtual void connect_event_system_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response) = 0;
+    virtual void connect_event_channel_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response) = 0;
+    virtual int post_connect_event_1003(const tango::common::event::EventSubscription &subscription,
+                                        const tango::common::admin::commands::ZmqSubscriptionChangeResponse &response) = 0;
+
+    map<string, Tango::event_callback>::iterator
+    insert_new_event_callback(const string &local_callback_key, const EventCallBackStruct &new_event_callback) const;
+    bool is_alias_used(const string &topic) const;
 };
+
 
 /********************************************************************************
  * 																				*
  * 						ZmqEventConsumer class  								*
  * 																				*
  *******************************************************************************/
-
+//TODO merge with EventConsumer
 class ZmqEventConsumer: public EventConsumer,
                         public omni_thread
 {
 public :
+    //TODO singleton is anti-pattern
     static ZmqEventConsumer *create();
     TANGO_IMP_EXP static void cleanup()
     {
@@ -576,20 +621,18 @@ protected :
     ZmqEventConsumer(ApiUtil *ptr);
     virtual void connect_event_channel(string &, Database *, bool, DeviceData &);
     virtual void disconnect_event_channel(string &channel_name, string &endpoint, string &endpoint_event);
-    virtual void connect_event_system(string &,
-                                      string &,
-                                      string &e,
-                                      const vector<string> &,
-                                      EvChanIte &,
-                                      EventCallBackStruct &,
-                                      DeviceData &,
-                                      size_t);
+    virtual void connect_event_system(string &, string &, string &e, DeviceData &, size_t);
     virtual void disconnect_event(string &, string &);
 
     virtual void set_channel_type(EventChannelStruct &ecs)
     { ecs.channel_type = ZMQ; }
     virtual void zmq_specific(DeviceData &, string &, DeviceProxy *, const string &);
 
+    virtual void
+    connect_event_system_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response) override;
+    void connect_event_channel_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response) override;
+    int post_connect_event_1003(const tango::common::event::EventSubscription &subscription,
+                                const tango::common::admin::commands::ZmqSubscriptionChangeResponse &response) override;
 private :
     TANGO_IMP static ZmqEventConsumer *_instance;
     zmq::context_t zmq_context;            // ZMQ context
@@ -649,6 +692,18 @@ private :
     bool check_zmq_endpoint(const string &);
 
     friend class DelayEvent;
+    string get_full_event_name(const string &device_name,
+                               const string &obj_name,
+                               const string &event_name,
+                               const DevVarLongStringArray *ev_svr_data) const;
+    /**
+     *
+     * Any error during ZMQ main thread socket operations?
+     *
+     * @param reply
+     */
+    void check_zmq_reply(const zmq::message_t &reply) const;
+    void notify_zmq_thread(const std::string &, const std::string &);
 };
 
 class DelayEvent

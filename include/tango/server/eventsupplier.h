@@ -268,7 +268,6 @@ private :
 	ZmqCallInfo                 heartbeat_call;         // The heartbeat call info
     cdrMemoryStream             heartbeat_call_cdr;     //
     TangoCdrMemoryStream        data_call_cdr;
-    string                      event_name;
     vector<string>              alternate_h_endpoint;   // Alternate heartbeat endpoint (host with several NIC)
 
     zmq::message_t              endian_mess;            // Zmq messages

@@ -34,7 +34,7 @@
 #define _PIPE_H
 
 #include <tango.h>
-
+#include <tango/server/pollable.h>
 #include <stdarg.h>
 
 namespace Tango
@@ -74,7 +74,7 @@ struct WantedPipe : public binary_function<A1,A2,R>
  * @ingroup Server
  */
 
-class Pipe
+class Pipe: public Pollable
 {
 public:
 
@@ -446,17 +446,12 @@ protected:
 	DevicePipeBlob			the_blob;
 
 private:
-    class PipeExt
+	struct PipeExt
     {
-    public:
         PipeExt() {}
     };
 
-#ifdef HAS_UNIQUE_PTR
     unique_ptr<PipeExt>          ext;           	// Class extension
-#else
-	PipeExt		                *ext;
-#endif
 
 	bool						value_flag;			// Flag set when pipe value is set
 	Tango::TimeVal				when;				// Date associated to the pipe

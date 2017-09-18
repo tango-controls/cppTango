@@ -30,6 +30,7 @@
 
 
 #include <tango/client/device/device_command_info.h>
+#include <cassert>
 
 /****************************************************************************************
  * 																						*
@@ -53,111 +54,119 @@
  * @ingroup Client
  * @headerfile tango.h
  */
-namespace Tango {
-	class DeviceProxy : public Tango::Connection {
-	private :
-		void real_constructor(string &, bool ch_acc = true);
+namespace Tango
+{
+class DeviceProxy: public Tango::Connection
+{
+private :
+    void real_constructor(string &, bool ch_acc = true);
 
-		Tango::DbDevice *db_dev;
-		string device_name;
-		string alias_name;
-		DeviceInfo _info;
-		bool is_alias;
-		DeviceProxy *adm_device;
-		string adm_dev_name;
-		omni_mutex netcalls_mutex;
-		int lock_ctr;
-		int lock_valid;
+    Tango::DbDevice *db_dev;
+    string device_name;
+    string alias_name;
+    DeviceInfo _info;
+    bool is_alias;
+    DeviceProxy *adm_device;
+    string adm_dev_name;
+    omni_mutex netcalls_mutex;
+    int lock_ctr;
+    int lock_valid;
 
-		void connect_to_adm_device();
+    void connect_to_adm_device();
 
-		void retrieve_read_args(TgRequest &, vector <string> &);
+    void retrieve_read_args(TgRequest &, vector<string> &);
 
-		DeviceAttribute *redo_synch_read_call(TgRequest &);
+    DeviceAttribute *redo_synch_read_call(TgRequest &);
 
-		vector <DeviceAttribute> *redo_synch_reads_call(TgRequest &);
+    vector<DeviceAttribute> *redo_synch_reads_call(TgRequest &);
 
-		void redo_synch_write_call(TgRequest &);
+    void redo_synch_write_call(TgRequest &);
 
-		void write_attribute(const AttributeValueList &);
+    void write_attribute(const AttributeValueList &);
 
-		void write_attribute(const AttributeValueList_4 &);
+    void write_attribute(const AttributeValueList_4 &);
 
-		void create_locking_thread(ApiUtil *, DevLong);
+    void create_locking_thread(ApiUtil *, DevLong);
 
-		void local_import(string &);
+    void local_import(string &);
 
-		enum read_attr_type {
-			SIMPLE,
-			MULTIPLE
-		};
+    enum read_attr_type
+    {
+        SIMPLE,
+        MULTIPLE
+    };
 
-		void read_attr_except(CORBA::Request_ptr, long, read_attr_type);
+    void read_attr_except(CORBA::Request_ptr, long, read_attr_type);
 
-		void write_attr_except(CORBA::Request_ptr, long, TgRequest::ReqType);
+    void write_attr_except(CORBA::Request_ptr, long, TgRequest::ReqType);
 
-		void check_connect_adm_device();
+    void omni420_timeout_attr(int, char *, read_attr_type);
 
-		void omni420_timeout_attr(int, char *, read_attr_type);
+    void omni420_except_attr(int, char *, read_attr_type);
 
-		void omni420_except_attr(int, char *, read_attr_type);
+    void omni420_timeout_wattr(int, char *);
 
-		void omni420_timeout_wattr(int, char *);
+    void omni420_except_wattr(int, char *);
 
-		void omni420_except_wattr(int, char *);
+    void check_connect_adm_device();
 
-		friend class AttributeProxy;
+    friend class AttributeProxy;
 
-	protected :
+protected :
 /// @privatesection
-		virtual string get_corba_name(bool);
+    virtual string get_corba_name(bool);
 
-		virtual string build_corba_name();
+    virtual string build_corba_name();
 
-		virtual int get_lock_ctr() { return lock_ctr; }
+    virtual int get_lock_ctr()
+    { return lock_ctr; }
 
-		virtual void set_lock_ctr(int lo) { lock_ctr = lo; }
+    virtual void set_lock_ctr(int lo)
+    { lock_ctr = lo; }
 
-		enum polled_object {
-			Cmd,
-			Attr
-		};
+    enum polled_object
+    {
+        Cmd,
+        Attr
+    };
 
-		bool is_polled(polled_object, string &, string &);
+    bool is_polled(polled_object, string &, string &);
 
-		virtual void reconnect(bool);
+    virtual void reconnect(bool);
 
-		void get_remaining_param(AttributeInfoListEx *);
+    void get_remaining_param(AttributeInfoListEx *);
 
-		template<typename T>
-		void from_hist_2_AttHistory(T &, vector <DeviceAttributeHistory> *);
+    template<typename T>
+    void from_hist_2_AttHistory(T &, vector<DeviceAttributeHistory> *);
 
-		void from_hist4_2_DataHistory(DevCmdHistory_4_var &, vector <DeviceDataHistory> *);
+    void from_hist4_2_DataHistory(DevCmdHistory_4_var &, vector<DeviceDataHistory> *);
 
-		void ask_locking_status(vector <string> &, vector <DevLong> &);
+    void ask_locking_status(vector<string> &, vector<DevLong> &);
 
-		void get_locker_host(string &, string &);
+    void get_locker_host(string &, string &);
 
-		void same_att_name(vector <string> &, const char *);
+    void same_att_name(vector<string> &, const char *);
 
-	private:
-		class DeviceProxyExt {
-		public:
-			DeviceProxyExt() {};
+private:
+    class DeviceProxyExt
+    {
+    public:
+        DeviceProxyExt()
+        {};
 
-			bool nethost_alias;
-			string orig_tango_host;
-		};
+        bool nethost_alias;
+        string orig_tango_host;
+    };
 
 #ifdef HAS_UNIQUE_PTR
-		unique_ptr<DeviceProxyExt>  ext_proxy;
+    unique_ptr<DeviceProxyExt> ext_proxy;
 #else
-		DeviceProxyExt *ext_proxy;        // Class extension
+    DeviceProxyExt *ext_proxy;        // Class extension
 #endif
 
-		omni_mutex lock_mutex;
+    omni_mutex lock_mutex;
 
-	public :
+public :
 /**@name Constructors */
 //@{
 /**
@@ -184,7 +193,7 @@ namespace Tango {
  * @throws WrongNameSyntax, ConnectionFailed
  *
  */
-		DeviceProxy(string &name, CORBA::ORB *orb = NULL);
+    DeviceProxy(string &name, CORBA::ORB *orb = NULL);
 
 /**
  * Create a DeviceProxy instance.
@@ -210,22 +219,24 @@ namespace Tango {
  * @throws WrongNameSyntax, ConnectionFailed
  *
  */
-		DeviceProxy(const char *name, CORBA::ORB *orb = NULL);
+    DeviceProxy(const char *name, CORBA::ORB *orb = NULL);
 
 //@}
 /// @privatesection
-		DeviceProxy(string &name, bool ch_access, CORBA::ORB *orb = NULL);
+    DeviceProxy(string &name, bool ch_access, CORBA::ORB *orb = NULL);
 
-		DeviceProxy(const char *, bool ch_access, CORBA::ORB *orb = NULL);
+    DeviceProxy(const char *, bool ch_access, CORBA::ORB *orb = NULL);
 
-		DeviceProxy(const DeviceProxy &);
+    DeviceProxy(const DeviceProxy &);
 
-		DeviceProxy &operator=(const DeviceProxy &);
+    DeviceProxy &operator=(const DeviceProxy &);
 
-		virtual ~DeviceProxy();
+    virtual ~DeviceProxy();
 
-		DeviceProxy() : Connection((CORBA::ORB *) NULL), db_dev(NULL), adm_device(NULL), lock_ctr(0),
-						ext_proxy(Tango_nullptr) { dbase_used = false; }
+    DeviceProxy()
+        : Connection((CORBA::ORB *) NULL), db_dev(NULL), adm_device(NULL), lock_ctr(0),
+          ext_proxy(Tango_nullptr)
+    { dbase_used = false; }
 /// @publicsection
 
 //
@@ -255,7 +266,7 @@ namespace Tango {
  *
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual DeviceInfo const &info();
+    virtual DeviceInfo const &info();
 
 /**
  * Get device state.
@@ -269,7 +280,7 @@ namespace Tango {
  *
  * @throws ConnectionFailed, CommunicationFailed
  */
-		virtual DevState state();
+    virtual DevState state();
 
 /**
  * Get device status.
@@ -283,7 +294,7 @@ namespace Tango {
  *
  * @throws ConnectionFailed, CommunicationFailed
  */
-		virtual string status();
+    virtual string status();
 
 /**
  * Ping a device.
@@ -295,7 +306,7 @@ namespace Tango {
  *
  * @throws ConnectionFailed, CommunicationFailed
  */
-		virtual int ping();
+    virtual int ping();
 
 /**
  * Get device black box content
@@ -309,7 +320,7 @@ namespace Tango {
  * @return Black box content
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual vector <string> *black_box(int nb);
+    virtual vector<string> *black_box(int nb);
 
 /**
  * Return the device name (from the device itself)
@@ -319,7 +330,7 @@ namespace Tango {
  * @return The device name
  * @throws ConnectionFailed, CommunicationFailed
  */
-		virtual string name();
+    virtual string name();
 
 /**
  * Return the administrator device name
@@ -330,7 +341,7 @@ namespace Tango {
  * @return The administrator device name
  * @throws ConnectionFailed, CommunicationFailed
  */
-		virtual string adm_name();
+    virtual string adm_name();
 
 /**
  * Return the device name as it is stored locally
@@ -339,7 +350,8 @@ namespace Tango {
  *
  * @return The device name
  */
-		virtual inline string dev_name() { return device_name; }
+    virtual inline string dev_name()
+    { return device_name; }
 
 /**
  * Returns the device description as a string.
@@ -349,7 +361,7 @@ namespace Tango {
  * @return The device description
  * @throws ConnectionFailed, CommunicationFailed
  */
-		virtual string description();
+    virtual string description();
 
 /**
  * Returns device alias
@@ -360,7 +372,7 @@ namespace Tango {
  * @return The device alias
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual string alias();
+    virtual string alias();
 
 /**
  * Query the device for import info from the database.
@@ -370,7 +382,7 @@ namespace Tango {
  * @return The device import info
  * @throws ConnectionFailed, CommunicationFailed, NonDbDevice
  */
-		virtual DbDevImportInfo import_info();
+    virtual DbDevImportInfo import_info();
 
 /**
  * Get device Tango lib version
@@ -379,7 +391,7 @@ namespace Tango {
  *
  * @return The device Tango lib version
  */
-		virtual int get_tango_lib_version();
+    virtual int get_tango_lib_version();
 //@}
 
 /** @name Synchronous command related methods */
@@ -394,7 +406,7 @@ namespace Tango {
  * @return The command information structure
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual CommandInfo command_query(string cmd_name);
+    virtual CommandInfo command_query(string cmd_name);
 
 /**
  * Query the device for all commands information.
@@ -406,7 +418,7 @@ namespace Tango {
  * @return The command information list: One CommandInfo structure per command
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual CommandInfoList *command_list_query();
+    virtual CommandInfoList *command_list_query();
 
 /**
  * Query all commands name
@@ -417,7 +429,7 @@ namespace Tango {
  * @return A vector of string with one string per command
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual vector <string> *get_command_list();
+    virtual vector<string> *get_command_list();
 
 /**
  * Get command information for a single command
@@ -428,7 +440,8 @@ namespace Tango {
  * @return The command information
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual CommandInfo get_command_config(const string &cmd_name) { return command_query(cmd_name); }
+    virtual CommandInfo get_command_config(const string &cmd_name)
+    { return command_query(cmd_name); }
 
 /**
  * Get information for a set of commands
@@ -440,7 +453,7 @@ namespace Tango {
  * @return A vector of CommadnInfo srtuctures with one element per command
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual CommandInfoList *get_command_config(vector <string> &cmd_names);
+    virtual CommandInfoList *get_command_config(vector<string> &cmd_names);
 
 /**
  * Retrieve command history from polling buffer.
@@ -481,7 +494,7 @@ namespace Tango {
  * @return The command information list: One CommandInfo structure per command
  * @throws NonSupportedFeature, ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual vector <DeviceDataHistory> *command_history(string &cmd_name, int depth);
+    virtual vector<DeviceDataHistory> *command_history(string &cmd_name, int depth);
 
 /**
  * Retrieve command history from polling buffer.
@@ -522,10 +535,11 @@ namespace Tango {
  * @return The command information list: One CommandInfo structure per command
  * @throws NonSupportedFeature, ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual vector <DeviceDataHistory> *command_history(const char *cmd_name, int depth) {
-			string str(cmd_name);
-			return command_history(str, depth);
-		}
+    virtual vector<DeviceDataHistory> *command_history(const char *cmd_name, int depth)
+    {
+        string str(cmd_name);
+        return command_history(str, depth);
+    }
 //@}
 
 /** @name Synchronous attribute related methods */
@@ -551,7 +565,8 @@ namespace Tango {
  * @return The attribute information structure
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual AttributeInfoEx attribute_query(string att_name) { return get_attribute_config(att_name); }
+    virtual AttributeInfoEx attribute_query(string att_name)
+    { return get_attribute_config(att_name); }
 
 /**
  * Query the device for information on all attributes
@@ -564,7 +579,7 @@ namespace Tango {
  * @return A vector of AttributeInfo structures with one element per attribute
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual AttributeInfoList *attribute_list_query();
+    virtual AttributeInfoList *attribute_list_query();
 
 /**
  * Query the device for information on all attributes
@@ -577,7 +592,7 @@ namespace Tango {
  * @return A vector of AttributeInfoEx structures with one element per attribute
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual AttributeInfoListEx *attribute_list_query_ex();
+    virtual AttributeInfoListEx *attribute_list_query_ex();
 
 /**
  * Query all attributes name
@@ -588,7 +603,7 @@ namespace Tango {
  * @return A vector of string with one string per attribute
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual vector <string> *get_attribute_list();
+    virtual vector<string> *get_attribute_list();
 
 /**
  * Get attribute configuration for a list of attributes
@@ -602,7 +617,7 @@ namespace Tango {
  * @return A vector of AttributeInfo structures with one element per attribute
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual AttributeInfoList *get_attribute_config(vector <string> &att_names);
+    virtual AttributeInfoList *get_attribute_config(vector<string> &att_names);
 
 /**
  * Get attribute configuration (extended) for a list of attributes
@@ -616,7 +631,7 @@ namespace Tango {
  * @return A vector of AttributeInfoEx structures with one element per attribute
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual AttributeInfoListEx *get_attribute_config_ex(vector <string> &att_names);
+    virtual AttributeInfoListEx *get_attribute_config_ex(vector<string> &att_names);
 
 /**
  * Get attribute configuration (extended) for a single attribute
@@ -628,7 +643,7 @@ namespace Tango {
  * @return The extended attribute information
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual AttributeInfoEx get_attribute_config(const string &att_name);
+    virtual AttributeInfoEx get_attribute_config(const string &att_name);
 
 /**
  * Set attribute configuration
@@ -639,7 +654,7 @@ namespace Tango {
  * @param [in] atts New attributes configuration
  * @throws ConnectionFailed, CommunicationFailed, DevUnlocked, DevFailed from device
  */
-		virtual void set_attribute_config(AttributeInfoList &atts);
+    virtual void set_attribute_config(AttributeInfoList &atts);
 
 /**
  * Set extended attribute configuration
@@ -650,7 +665,7 @@ namespace Tango {
  * @param [in] atts New extended attributes configuration
  * @throws ConnectionFailed, CommunicationFailed, DevUnlocked, DevFailed from device
  */
-		virtual void set_attribute_config(AttributeInfoListEx &atts);
+    virtual void set_attribute_config(AttributeInfoListEx &atts);
 
 /**
  * Read the list of specified attributes
@@ -686,7 +701,7 @@ namespace Tango {
  * @return A vector of DeviceAttribute instances with one element for each read attribute
  * @throws ConnectionFailed, CommunicationFailed
  */
-		virtual vector <DeviceAttribute> *read_attributes(vector <string> &att_names);
+    virtual vector<DeviceAttribute> *read_attributes(vector<string> &att_names);
 
 /**
  * Read a single attribute
@@ -701,7 +716,7 @@ namespace Tango {
  * @return The attribute value in a DeviceAttribute instance
  * @throws ConnectionFailed, CommunicationFailed
  */
-		virtual DeviceAttribute read_attribute(string &att_name);
+    virtual DeviceAttribute read_attribute(string &att_name);
 
 /**
  * Read the list of specified attributes
@@ -716,10 +731,11 @@ namespace Tango {
  * @return The attribute value in a DeviceAttribute instance
  * @throws ConnectionFailed, CommunicationFailed
  */
-		virtual DeviceAttribute read_attribute(const char *att_name) {
-			string str(att_name);
-			return read_attribute(str);
-		}
+    virtual DeviceAttribute read_attribute(const char *att_name)
+    {
+        string str(att_name);
+        return read_attribute(str);
+    }
 
 /**
  * Write the specified attributes
@@ -748,7 +764,7 @@ namespace Tango {
  * @param [in] attr_in Attributes name and value
  * @throws ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed or NamedDevFailedList from device
  */
-		virtual void write_attributes(vector <DeviceAttribute> &attr_in);
+    virtual void write_attributes(vector<DeviceAttribute> &attr_in);
 
 /**
  * Write a single attribute
@@ -761,7 +777,7 @@ namespace Tango {
  * @param [in] attr_in Attribute name and value
  * @throws ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
  */
-		virtual void write_attribute(DeviceAttribute &attr_in);
+    virtual void write_attribute(DeviceAttribute &attr_in);
 
 /**
  * Write and read a single attribute
@@ -777,7 +793,7 @@ namespace Tango {
  * @return The read attribute data
  * @throws ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
  */
-		virtual DeviceAttribute write_read_attribute(DeviceAttribute &attr_in);
+    virtual DeviceAttribute write_read_attribute(DeviceAttribute &attr_in);
 
 /**
  * Write and read attribute(s)
@@ -796,8 +812,8 @@ namespace Tango {
  * @return The read attribute(s) data
  * @throws ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
  */
-		virtual vector <DeviceAttribute> *
-		write_read_attributes(vector <DeviceAttribute> &attr_in, vector <string> &r_names);
+    virtual vector<DeviceAttribute> *
+    write_read_attributes(vector<DeviceAttribute> &attr_in, vector<string> &r_names);
 
 /**
  * Retrieve attribute history from polling buffer
@@ -841,7 +857,7 @@ namespace Tango {
  * @return The read attribute history data
  * @throws NonSupportedFeature, ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual vector <DeviceAttributeHistory> *attribute_history(string &att_name, int depth);
+    virtual vector<DeviceAttributeHistory> *attribute_history(string &att_name, int depth);
 
 /**
  * Retrieve attribute history from polling buffer
@@ -885,10 +901,11 @@ namespace Tango {
  * @return The read attribute history data
  * @throws NonSupportedFeature, ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual vector <DeviceAttributeHistory> *attribute_history(const char *att_name, int depth) {
-			string str(att_name);
-			return attribute_history(str, depth);
-		}
+    virtual vector<DeviceAttributeHistory> *attribute_history(const char *att_name, int depth)
+    {
+        string str(att_name);
+        return attribute_history(str, depth);
+    }
 //@}
 
 /** @name Pipe related methods */
@@ -904,7 +921,7 @@ namespace Tango {
  * @return A vector of PipeInfo structures with one element per pipe
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual PipeInfoList *get_pipe_config(vector <string> &pipe_names);
+    virtual PipeInfoList *get_pipe_config(vector<string> &pipe_names);
 
 /**
  * Get pipe configuration for a single pipe
@@ -915,7 +932,7 @@ namespace Tango {
  * @return The pipe information
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual PipeInfo get_pipe_config(const string &pipe_name);
+    virtual PipeInfo get_pipe_config(const string &pipe_name);
 
 /**
  * Set pipe configuration
@@ -925,7 +942,7 @@ namespace Tango {
  * @param [in] pipes New pipes configuration
  * @throws ConnectionFailed, CommunicationFailed, DevUnlocked, DevFailed from device
  */
-		virtual void set_pipe_config(PipeInfoList &pipes);
+    virtual void set_pipe_config(PipeInfoList &pipes);
 
 /**
  * Query all pipes name
@@ -936,7 +953,7 @@ namespace Tango {
  * @return A vector of string with one string per pipe
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
-		virtual vector <string> *get_pipe_list();
+    virtual vector<string> *get_pipe_list();
 
 /**
  * Read a pipe
@@ -947,7 +964,7 @@ namespace Tango {
  * @return The pipe value in a DevicePipe instance
  * @throws ConnectionFailed, CommunicationFailed
  */
-		virtual DevicePipe read_pipe(const string &pipe_name);
+    virtual DevicePipe read_pipe(const string &pipe_name);
 
 /**
  * Write a pipe
@@ -957,7 +974,7 @@ namespace Tango {
  * @param [in] pipe_data Data to be sent to the device through the pipe
  * @throws ConnectionFailed, CommunicationFailed
  */
-		virtual void write_pipe(DevicePipe &pipe_data);
+    virtual void write_pipe(DevicePipe &pipe_data);
 
 /**
  * Write then read a pipe
@@ -969,7 +986,7 @@ namespace Tango {
  * @return The pipe value in a DevicePipe instance
  * @throws ConnectionFailed, CommunicationFailed
  */
-		virtual DevicePipe write_read_pipe(DevicePipe &pipe_data);
+    virtual DevicePipe write_read_pipe(DevicePipe &pipe_data);
 //@}
 
 /** @name Asynchronous attribute related methods */
@@ -984,7 +1001,7 @@ namespace Tango {
  * @return The call identifier
  * @throws ConnectionFailed
  */
-		virtual long read_attribute_asynch(string &att_name);
+    virtual long read_attribute_asynch(string &att_name);
 
 /**
  * Read a single attribute asynchronously
@@ -996,10 +1013,11 @@ namespace Tango {
  * @return The call identifier
  * @throws ConnectionFailed
  */
-		virtual long read_attribute_asynch(const char *att_name) {
-			string tmp(att_name);
-			return read_attribute_asynch(tmp);
-		}
+    virtual long read_attribute_asynch(const char *att_name)
+    {
+        string tmp(att_name);
+        return read_attribute_asynch(tmp);
+    }
 
 /**
  * Read asynchronously alist of attributes
@@ -1011,7 +1029,7 @@ namespace Tango {
  * @return The call identifier
  * @throws ConnectionFailed
  */
-		virtual long read_attributes_asynch(vector <string> &att_names);
+    virtual long read_attributes_asynch(vector<string> &att_names);
 
 /**
  * Check if an asynchronous read_attributes call is arrived
@@ -1029,7 +1047,7 @@ namespace Tango {
  * @return The attribute(s) data
  * @throws AsynCall, AsynReplyNotArrived, CommunicationFailed, DevFailed from device
  */
-		virtual vector <DeviceAttribute> *read_attributes_reply(long id);
+    virtual vector<DeviceAttribute> *read_attributes_reply(long id);
 
 /**
  * Check if an asynchronous read_attributes call is arrived (with timeout)
@@ -1050,7 +1068,7 @@ namespace Tango {
  * @return The attribute(s) data
  * @throws AsynCall, AsynReplyNotArrived, CommunicationFailed, DevFailed from device
  */
-		virtual vector <DeviceAttribute> *read_attributes_reply(long id, long timeout);
+    virtual vector<DeviceAttribute> *read_attributes_reply(long id, long timeout);
 
 /**
  * Check if an asynchronous read_attribute (single attribute) call is arrived
@@ -1068,7 +1086,7 @@ namespace Tango {
  * @return The attribute data
  * @throws AsynCall, AsynReplyNotArrived, CommunicationFailed, DevFailed from device
  */
-		virtual DeviceAttribute *read_attribute_reply(long id);
+    virtual DeviceAttribute *read_attribute_reply(long id);
 
 /**
  * Check if an asynchronous read_attribute (single attribute) call is arrived (with timeout)
@@ -1089,7 +1107,7 @@ namespace Tango {
  * @return The attribute data
  * @throws AsynCall, AsynReplyNotArrived, CommunicationFailed, DevFailed from device
  */
-		virtual DeviceAttribute *read_attribute_reply(long id, long timeout);
+    virtual DeviceAttribute *read_attribute_reply(long id, long timeout);
 
 /**
  * Write a single attribute asynchronously
@@ -1104,7 +1122,7 @@ namespace Tango {
  * @return The call identifier
  * @throws ConnectionFailed
  */
-		virtual long write_attribute_asynch(DeviceAttribute &argin);
+    virtual long write_attribute_asynch(DeviceAttribute &argin);
 
 /**
  * Write asynchronously alist of attributes
@@ -1119,7 +1137,7 @@ namespace Tango {
  * @return The call identifier
  * @throws ConnectionFailed
  */
-		virtual long write_attributes_asynch(vector <DeviceAttribute> &argin);
+    virtual long write_attributes_asynch(vector<DeviceAttribute> &argin);
 
 /**
  * Check if the answer of one asynchronous write_attribute (single attribute) call is arrived
@@ -1131,7 +1149,8 @@ namespace Tango {
  * @param [in] id The call identifier
  * @throws AsynCall, AsynReplyNotArrived, CommunicationFailed, DevFailed from device
  */
-		virtual void write_attribute_reply(long id) { write_attributes_reply(id); }
+    virtual void write_attribute_reply(long id)
+    { write_attributes_reply(id); }
 
 /**
  * Check if the answer of one asynchronous write_attribute call (single attribute) is arrived with timeout
@@ -1146,7 +1165,8 @@ namespace Tango {
  * @param [in] timeout The timeout value
  * @throws AsynCall, AsynReplyNotArrived, CommunicationFailed, DevFailed from device
  */
-		virtual void write_attribute_reply(long id, long timeout) { write_attributes_reply(id, timeout); }
+    virtual void write_attribute_reply(long id, long timeout)
+    { write_attributes_reply(id, timeout); }
 
 /**
  * Check if the answer of one asynchronous write_attributes call is arrived
@@ -1158,7 +1178,7 @@ namespace Tango {
  * @param [in] id The call identifier
  * @throws AsynCall, AsynReplyNotArrived, CommunicationFailed, DevFailed from device
  */
-		virtual void write_attributes_reply(long id);
+    virtual void write_attributes_reply(long id);
 
 /**
  * Check if the answer of one asynchronous write_attributes call is arrived with timeout
@@ -1173,7 +1193,7 @@ namespace Tango {
  * @param [in] timeout The timeout value
  * @throws AsynCall, AsynReplyNotArrived, CommunicationFailed, DevFailed from device
  */
-		virtual void write_attributes_reply(long id, long timeout);
+    virtual void write_attributes_reply(long id, long timeout);
 
 /**
  * Read a single attribute asynchronously in callback model
@@ -1186,10 +1206,11 @@ namespace Tango {
  * @param [in] cb The call-back object
  * @throws ConnectionFailed
  */
-		virtual void read_attribute_asynch(const char *att_name, CallBack &cb) {
-			string tmp(att_name);
-			read_attribute_asynch(tmp, cb);
-		}
+    virtual void read_attribute_asynch(const char *att_name, CallBack &cb)
+    {
+        string tmp(att_name);
+        read_attribute_asynch(tmp, cb);
+    }
 
 /**
  * Read a single attribute asynchronously in callback model
@@ -1202,7 +1223,7 @@ namespace Tango {
  * @param [in] cb The call-back object
  * @throws ConnectionFailed
  */
-		virtual void read_attribute_asynch(string &att_name, CallBack &cb);
+    virtual void read_attribute_asynch(string &att_name, CallBack &cb);
 
 /**
  * Read asynchronously in callback model a list of attributes
@@ -1215,7 +1236,7 @@ namespace Tango {
  * @param [in] cb The call-back object
  * @throws ConnectionFailed
  */
-		virtual void read_attributes_asynch(vector <string> &att_names, CallBack &cb);
+    virtual void read_attributes_asynch(vector<string> &att_names, CallBack &cb);
 
 /**
  * Write asynchronously in callback model a single attribute
@@ -1228,7 +1249,7 @@ namespace Tango {
  * @param [in] cb The call-back object
  * @throws ConnectionFailed
  */
-		virtual void write_attribute_asynch(DeviceAttribute &argin, CallBack &cb);
+    virtual void write_attribute_asynch(DeviceAttribute &argin, CallBack &cb);
 
 /**
  * Write asynchronously in callback model a list of attributes
@@ -1241,7 +1262,7 @@ namespace Tango {
  * @param [in] cb The call-back object
  * @throws ConnectionFailed
  */
-		virtual void write_attributes_asynch(vector <DeviceAttribute> &argin, CallBack &cb);
+    virtual void write_attributes_asynch(vector<DeviceAttribute> &argin, CallBack &cb);
 //@}
 
 /** @name Asynchronous related methods */
@@ -1258,11 +1279,12 @@ namespace Tango {
  * @param [in] req The asynchronous request type
  * @return Pending asynchronous request number
  */
-		virtual long pending_asynch_call(asyn_req_type req) {
-			if (req == POLLING)return pasyn_ctr;
-			else if (req == CALL_BACK) return pasyn_cb_ctr;
-			else return (pasyn_ctr + pasyn_cb_ctr);
-		}
+    virtual long pending_asynch_call(asyn_req_type req)
+    {
+        if (req == POLLING)return pasyn_ctr;
+        else if (req == CALL_BACK) return pasyn_cb_ctr;
+        else return (pasyn_ctr + pasyn_cb_ctr);
+    }
 //@}
 
 /** @name Polling related methods */
@@ -1275,7 +1297,7 @@ namespace Tango {
  * @param [in] cmd_name The command name
  * @return Flag set to true if the command is polled
  */
-		virtual bool is_command_polled(string &cmd_name);
+    virtual bool is_command_polled(string &cmd_name);
 
 /**
  * Check if a command is polled
@@ -1285,10 +1307,11 @@ namespace Tango {
  * @param [in] cmd_name The command name
  * @return Flag set to true if the command is polled
  */
-		virtual bool is_command_polled(const char *cmd_name) {
-			string tmp(cmd_name);
-			return is_command_polled(tmp);
-		}
+    virtual bool is_command_polled(const char *cmd_name)
+    {
+        string tmp(cmd_name);
+        return is_command_polled(tmp);
+    }
 
 /**
  * Check if one attribute is polled
@@ -1298,7 +1321,7 @@ namespace Tango {
  * @param [in] att_name The attribute name
  * @return Flag set to true if the attribute is polled
  */
-		virtual bool is_attribute_polled(string &att_name);
+    virtual bool is_attribute_polled(string &att_name);
 
 /**
  * Check if one attribute is polled
@@ -1308,10 +1331,11 @@ namespace Tango {
  * @param [in] att_name The attribute name
  * @return Flag set to true if the attribute is polled
  */
-		virtual bool is_attribute_polled(const char *att_name) {
-			string tmp(att_name);
-			return is_attribute_polled(tmp);
-		}
+    virtual bool is_attribute_polled(const char *att_name)
+    {
+        string tmp(att_name);
+        return is_attribute_polled(tmp);
+    }
 
 /**
  * Get command polling period
@@ -1321,7 +1345,7 @@ namespace Tango {
  * @param [in] cmd_name The command name
  * @return The command polling period
  */
-		virtual int get_command_poll_period(string &cmd_name);
+    virtual int get_command_poll_period(string &cmd_name);
 
 /**
  * Get command polling period
@@ -1331,10 +1355,11 @@ namespace Tango {
  * @param [in] cmd_name The command name
  * @return The command polling period
  */
-		virtual int get_command_poll_period(const char *cmd_name) {
-			string tmp(cmd_name);
-			return get_command_poll_period(tmp);
-		}
+    virtual int get_command_poll_period(const char *cmd_name)
+    {
+        string tmp(cmd_name);
+        return get_command_poll_period(tmp);
+    }
 
 /**
  * Get attribute polling period
@@ -1344,7 +1369,7 @@ namespace Tango {
  * @param [in] att_name The attribute name
  * @return The attribute polling period
  */
-		virtual int get_attribute_poll_period(string &att_name);
+    virtual int get_attribute_poll_period(string &att_name);
 
 /**
  * Get attribute polling period
@@ -1354,10 +1379,11 @@ namespace Tango {
  * @param [in] att_name The attribute name
  * @return The attribute polling period
  */
-		virtual int get_attribute_poll_period(const char *att_name) {
-			string tmp(att_name);
-			return get_attribute_poll_period(tmp);
-		}
+    virtual int get_attribute_poll_period(const char *att_name)
+    {
+        string tmp(att_name);
+        return get_attribute_poll_period(tmp);
+    }
 
 /**
  * Get polling status
@@ -1377,7 +1403,7 @@ namespace Tango {
  *
  * @return The polling status
  */
-		virtual vector <string> *polling_status();
+    virtual vector<string> *polling_status();
 
 /**
  * Poll a command
@@ -1388,7 +1414,7 @@ namespace Tango {
  * @param [in] cmd_name The command name
  * @param [in] polling_period The polling period
  */
-		virtual void poll_command(string &cmd_name, int polling_period);
+    virtual void poll_command(string &cmd_name, int polling_period);
 
 /**
  * Poll a command
@@ -1399,10 +1425,11 @@ namespace Tango {
  * @param [in] cmd_name The command name
  * @param [in] polling_period The polling period
  */
-		virtual void poll_command(const char *cmd_name, int polling_period) {
-			string tmp(cmd_name);
-			poll_command(tmp, polling_period);
-		}
+    virtual void poll_command(const char *cmd_name, int polling_period)
+    {
+        string tmp(cmd_name);
+        poll_command(tmp, polling_period);
+    }
 
 /**
  * Poll an attribute
@@ -1413,7 +1440,7 @@ namespace Tango {
  * @param [in] att_name The attribute name
  * @param [in] polling_period The polling period
  */
-		virtual void poll_attribute(string &att_name, int polling_period);
+    virtual void poll_attribute(string &att_name, int polling_period);
 
 /**
  * Poll an attribute
@@ -1424,10 +1451,11 @@ namespace Tango {
  * @param [in] att_name The attribute name
  * @param [in] polling_period The polling period
  */
-		virtual void poll_attribute(const char *att_name, int polling_period) {
-			string tmp(att_name);
-			poll_attribute(tmp, polling_period);
-		}
+    virtual void poll_attribute(const char *att_name, int polling_period)
+    {
+        string tmp(att_name);
+        poll_attribute(tmp, polling_period);
+    }
 
 /**
  * Stop polling a command
@@ -1436,7 +1464,7 @@ namespace Tango {
  *
  * @param [in] cmd_name The command name
  */
-		virtual void stop_poll_command(string &cmd_name);
+    virtual void stop_poll_command(string &cmd_name);
 
 /**
  * Stop polling a command
@@ -1445,10 +1473,11 @@ namespace Tango {
  *
  * @param [in] cmd_name The command name
  */
-		virtual void stop_poll_command(const char *cmd_name) {
-			string tmp(cmd_name);
-			stop_poll_command(tmp);
-		}
+    virtual void stop_poll_command(const char *cmd_name)
+    {
+        string tmp(cmd_name);
+        stop_poll_command(tmp);
+    }
 
 /**
  * Stop polling an attribute
@@ -1457,7 +1486,7 @@ namespace Tango {
  *
  * @param [in] att_name The attribute name
  */
-		virtual void stop_poll_attribute(string &att_name);
+    virtual void stop_poll_attribute(string &att_name);
 
 /**
  * Stop polling an attribute
@@ -1466,10 +1495,11 @@ namespace Tango {
  *
  * @param [in] att_name The attribute name
  */
-		virtual void stop_poll_attribute(const char *att_name) {
-			string tmp(att_name);
-			stop_poll_attribute(tmp);
-		}
+    virtual void stop_poll_attribute(const char *att_name)
+    {
+        string tmp(att_name);
+        stop_poll_attribute(tmp);
+    }
 //@}
 
 /** @name Event related methods */
@@ -1497,7 +1527,7 @@ namespace Tango {
  * @return The event identifier
  * @throws EventSystemFailed
  */
-		virtual int subscribe_event(const string &att_name, EventType event, CallBack *cb);
+    virtual int subscribe_event(const string &att_name, EventType event, CallBack *cb);
 
 /**
  * Subscribe for event reception with stateless support
@@ -1528,7 +1558,7 @@ namespace Tango {
  * @return The event identifier
  * @throws EventSystemFailed
  */
-		virtual int subscribe_event(const string &att_name, EventType event, CallBack *cb, bool stateless);
+    virtual int subscribe_event(const string &att_name, EventType event, CallBack *cb, bool stateless);
 
 /**
  * Subscribe for event reception with event queue
@@ -1553,8 +1583,8 @@ namespace Tango {
  * @return The event identifier
  * @throws EventSystemFailed
  */
-		virtual int
-		subscribe_event(const string &att_name, EventType event, int event_queue_size, bool stateless = false);
+    virtual int
+    subscribe_event(const string &att_name, EventType event, int event_queue_size, bool stateless = false);
 
 /**
  * Subscribe for device event reception with stateless support
@@ -1580,7 +1610,7 @@ namespace Tango {
  * @return The event identifier
  * @throws EventSystemFailed
  */
-		virtual int subscribe_event(EventType event, CallBack *cb, bool stateless = false);
+    virtual int subscribe_event(EventType event, CallBack *cb, bool stateless = false);
 
 /**
  * Subscribe for device event reception with stateless support and event queue
@@ -1608,7 +1638,7 @@ namespace Tango {
  * @return The event identifier
  * @throws EventSystemFailed
  */
-		virtual int subscribe_event(EventType event, int event_queue_size, bool stateless = false);
+    virtual int subscribe_event(EventType event, int event_queue_size, bool stateless = false);
 
 /**
  * Unsubscribe for event reception
@@ -1619,7 +1649,7 @@ namespace Tango {
  * @param [in] event_id The event identifier
  * @throws EventSystemFailed
  */
-		virtual void unsubscribe_event(int event_id);
+    virtual void unsubscribe_event(int event_id);
 
 /**
  * Fire event callback in event pull model
@@ -1632,7 +1662,7 @@ namespace Tango {
  * @param [in] cb The callback object
  * @throws EventSystemFailed
  */
-		virtual void get_events(int event_id, CallBack *cb);
+    virtual void get_events(int event_id, CallBack *cb);
 
 /**
  * Get arrived events from the event queue in event pull model
@@ -1646,7 +1676,7 @@ namespace Tango {
  * @param [out] event_list The event(s) list
  * @throws EventSystemFailed
  */
-		virtual void get_events(int event_id, EventDataList &event_list);
+    virtual void get_events(int event_id, EventDataList &event_list);
 
 /**
  * Get arrived events from event queue in event pull model
@@ -1661,7 +1691,7 @@ namespace Tango {
  * @param [out] event_list The event(s) list
  * @throws EventSystemFailed
  */
-		virtual void get_events(int event_id, AttrConfEventDataList &event_list);
+    virtual void get_events(int event_id, AttrConfEventDataList &event_list);
 
 /**
  * Get arrived events from event queue in event pull model
@@ -1676,7 +1706,7 @@ namespace Tango {
  * @param [out] event_list The event(s) list
  * @throws EventSystemFailed
  */
-		virtual void get_events(int event_id, DataReadyEventDataList &event_list);
+    virtual void get_events(int event_id, DataReadyEventDataList &event_list);
 
 /**
  * Get arrived events from event queue in event pull model
@@ -1691,7 +1721,7 @@ namespace Tango {
  * @param [out] event_list The event(s) list
  * @throws EventSystemFailed
  */
-		virtual void get_events(int event_id, DevIntrChangeEventDataList &event_list);
+    virtual void get_events(int event_id, DevIntrChangeEventDataList &event_list);
 
 /**
  * Get arrived events from event queue in event pull model
@@ -1706,7 +1736,7 @@ namespace Tango {
  * @param [out] event_list The event(s) list
  * @throws EventSystemFailed
  */
-		virtual void get_events(int event_id, PipeEventDataList &event_list);
+    virtual void get_events(int event_id, PipeEventDataList &event_list);
 
 /**
  * Get event number in event queue
@@ -1720,7 +1750,7 @@ namespace Tango {
  * @return The event number in queue
  * @throws EventSystemFailed
  */
-		virtual int event_queue_size(int event_id);
+    virtual int event_queue_size(int event_id);
 
 /**
  * Get date of the last event in queue
@@ -1734,7 +1764,7 @@ namespace Tango {
  * @return The last event date
  * @throws EventSystemFailed
  */
-		virtual TimeVal get_last_event_date(int event_id);
+    virtual TimeVal get_last_event_date(int event_id);
 
 /**
  * Check if the event queue is empty
@@ -1747,7 +1777,7 @@ namespace Tango {
  * @return true if the event queue is empty
  * @throws EventSystemFailed
  */
-		virtual bool is_event_queue_empty(int event_id);
+    virtual bool is_event_queue_empty(int event_id);
 //@}
 
 /** @name Property related methods */
@@ -1762,7 +1792,7 @@ namespace Tango {
  * @param [out] db The property value
  * @throws NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database device
  */
-		virtual void get_property(string &prop_name, DbData &db);
+    virtual void get_property(string &prop_name, DbData &db);
 
 /**
  * Get a list of device properties
@@ -1774,7 +1804,7 @@ namespace Tango {
  * @param [out] db The properties values
  * @throws NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database device
  */
-		virtual void get_property(vector <string> &prop_names, DbData &db);
+    virtual void get_property(vector<string> &prop_names, DbData &db);
 
 /**
  * Get property(ies) for a device
@@ -1785,7 +1815,7 @@ namespace Tango {
  * @param [in,out] db The property(ies) names and values
  * @throws NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database device
  */
-		virtual void get_property(DbData &db);
+    virtual void get_property(DbData &db);
 
 /**
  * Put property(ies) for a device
@@ -1796,7 +1826,7 @@ namespace Tango {
  * @param [in] db The property(ies) names and values
  * @throws NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database device
  */
-		virtual void put_property(DbData &db);
+    virtual void put_property(DbData &db);
 
 /**
  * Delete a single device property
@@ -1806,7 +1836,7 @@ namespace Tango {
  * @param [in] prop_name The property name
  * @throws NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database device
  */
-		virtual void delete_property(string &prop_name);
+    virtual void delete_property(string &prop_name);
 
 /**
  * Delete a list of device properties
@@ -1816,7 +1846,7 @@ namespace Tango {
  * @param [in] prop_names The property names list
  * @throws NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database device
  */
-		virtual void delete_property(vector <string> &prop_names);
+    virtual void delete_property(vector<string> &prop_names);
 
 /**
  * Delete property(ies) for a device
@@ -1827,7 +1857,7 @@ namespace Tango {
  * @param [in] db The property names
  * @throws NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database device
  */
-		virtual void delete_property(DbData &db);
+    virtual void delete_property(DbData &db);
 
 /**
  * Get list of property names for a device
@@ -1840,118 +1870,118 @@ namespace Tango {
  * @param [out] prop_list The device property list
  * @throws NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database device
  */
-		virtual void get_property_list(const string &filter, vector <string> &prop_list);
+    virtual void get_property_list(const string &filter, vector<string> &prop_list);
 //@}
 
 /** @name Logging related methods */
 //@{
 #ifdef TANGO_HAS_LOG4TANGO
-        /**
-         * Add a logging target to the device
-         *
-         * Adds a new logging target to the device. The target_type_name input parameter must follow the
-         * format: @b target_type::target_name. Supported target types are:
-         * @li console
-         * @li file
-         * @li device
-         *
-         * For a device target,
-         * the target_name part of the target_type_target_name parameter must contain the name of a log consumer
-         * device (as defined in A.8). For a file target, target_name is the full path to the file to log to. If omitted, the
-         * device’s name is used to build the file name (which is something like domain_family_member.log). Finally,
-         * the target_name part of the target_type_target_name input parameter is ignored in case of a console target
-         * and can be omitted.
-         *
-         * @param [in] target_type_name The target type and name
-         * @throws DevFailed from device
-         */
-            virtual void add_logging_target(const string &target_type_name);
-        /**
-         * Add a logging target to the device
-         *
-         * Adds a new logging target to the device. The target_type_name input parameter must follow the
-         * format: @b target_type::target_name. Supported target types are:
-         * @li console
-         * @li file
-         * @li device
-         *
-         * For a device target,
-         * the target_name part of the target_type_target_name parameter must contain the name of a log consumer
-         * device (as defined in A.8). For a file target, target_name is the full path to the file to log to. If omitted, the
-         * device’s name is used to build the file name (which is something like domain_family_member.log). Finally,
-         * the target_name part of the target_type_target_name input parameter is ignored in case of a console target
-         * and can be omitted.
-         *
-         * @param [in] target_type_name The target type and name
-         * @throws DevFailed from device
-         */
-            virtual void add_logging_target(const char *target_type_name)
-                    {add_logging_target(string(target_type_name));}
-        /**
-         * Remove a logging target from the device
-         *
-         * Removes a logging target from the device’s target list. The target_type_name input parameter must
-         * follow the format: target_type::target_name. Supported target types are:
-         * @li console
-         * @li file
-         * @li device
-         *
-         * For a
-         * device target, the target_name part of the target_type_target_name parameter must contain the name of a
-         * log consumer device (as defined in ). For a file target, target_name is the full path to the file to remove. If
-         * omitted, the default log file is removed. Finally, the target_name part of the target_type_target_name input
-         * parameter is ignored in case of a console target and can be omitted.
-         * If target_name is set to "*", all targets of the specified target_type are removed.
-         *
-         * @param [in] target_type_name The target type and name
-         */
-            virtual void remove_logging_target(const string &target_type_name);
-        /**
-         * Remove a logging target from the device
-         *
-         * Removes a logging target from the device’s target list. The target_type_name input parameter must
-         * follow the format: target_type::target_name. Supported target types are:
-         * @li console
-         * @li file
-         * @li device
-         *
-         * For a
-         * device target, the target_name part of the target_type_target_name parameter must contain the name of a
-         * log consumer device (as defined in ). For a file target, target_name is the full path to the file to remove. If
-         * omitted, the default log file is removed. Finally, the target_name part of the target_type_target_name input
-         * parameter is ignored in case of a console target and can be omitted.
-         * If target_name is set to "*", all targets of the specified target_type are removed.
-         *
-         * @param [in] target_type_name The target type and name
-         */
-            virtual void remove_logging_target(const char *target_type_name)
-                    {remove_logging_target(string(target_type_name));}
-        /**
-         * Get current device's logging targets
-         *
-         * Returns a vector of string containing the current device’s logging targets. Each vector element has the
-         * following format: target_type::target_name. An empty vector is returned is the device has no logging
-         * targets.
-         *
-         * @return List of loggin target
-         */
-            virtual vector<string> get_logging_target (void);
-        /**
-         * Get current device's logging level
-         *
-         * Returns the current device’s logging level (0=OFF, 1=FATAL, 2=ERROR, 3=WARNING, 4=INFO, 5=DEBUG).
-         *
-         * @return The device logging level
-         */
-            virtual int get_logging_level (void);
-        /**
-         * Set the  device logging level
-         *
-         * Changes the device’s logging level. (0=OFF, 1=FATAL, 2=ERROR, 3=WARNING, 4=INFO, 5=DEBUG).
-         *
-         * @param [in] level The new device logging level
-         */
-            virtual void set_logging_level (int level);
+    /**
+     * Add a logging target to the device
+     *
+     * Adds a new logging target to the device. The target_type_name input parameter must follow the
+     * format: @b target_type::target_name. Supported target types are:
+     * @li console
+     * @li file
+     * @li device
+     *
+     * For a device target,
+     * the target_name part of the target_type_target_name parameter must contain the name of a log consumer
+     * device (as defined in A.8). For a file target, target_name is the full path to the file to log to. If omitted, the
+     * device’s name is used to build the file name (which is something like domain_family_member.log). Finally,
+     * the target_name part of the target_type_target_name input parameter is ignored in case of a console target
+     * and can be omitted.
+     *
+     * @param [in] target_type_name The target type and name
+     * @throws DevFailed from device
+     */
+    virtual void add_logging_target(const string &target_type_name);
+    /**
+     * Add a logging target to the device
+     *
+     * Adds a new logging target to the device. The target_type_name input parameter must follow the
+     * format: @b target_type::target_name. Supported target types are:
+     * @li console
+     * @li file
+     * @li device
+     *
+     * For a device target,
+     * the target_name part of the target_type_target_name parameter must contain the name of a log consumer
+     * device (as defined in A.8). For a file target, target_name is the full path to the file to log to. If omitted, the
+     * device’s name is used to build the file name (which is something like domain_family_member.log). Finally,
+     * the target_name part of the target_type_target_name input parameter is ignored in case of a console target
+     * and can be omitted.
+     *
+     * @param [in] target_type_name The target type and name
+     * @throws DevFailed from device
+     */
+    virtual void add_logging_target(const char *target_type_name)
+    { add_logging_target(string(target_type_name)); }
+    /**
+     * Remove a logging target from the device
+     *
+     * Removes a logging target from the device’s target list. The target_type_name input parameter must
+     * follow the format: target_type::target_name. Supported target types are:
+     * @li console
+     * @li file
+     * @li device
+     *
+     * For a
+     * device target, the target_name part of the target_type_target_name parameter must contain the name of a
+     * log consumer device (as defined in ). For a file target, target_name is the full path to the file to remove. If
+     * omitted, the default log file is removed. Finally, the target_name part of the target_type_target_name input
+     * parameter is ignored in case of a console target and can be omitted.
+     * If target_name is set to "*", all targets of the specified target_type are removed.
+     *
+     * @param [in] target_type_name The target type and name
+     */
+    virtual void remove_logging_target(const string &target_type_name);
+    /**
+     * Remove a logging target from the device
+     *
+     * Removes a logging target from the device’s target list. The target_type_name input parameter must
+     * follow the format: target_type::target_name. Supported target types are:
+     * @li console
+     * @li file
+     * @li device
+     *
+     * For a
+     * device target, the target_name part of the target_type_target_name parameter must contain the name of a
+     * log consumer device (as defined in ). For a file target, target_name is the full path to the file to remove. If
+     * omitted, the default log file is removed. Finally, the target_name part of the target_type_target_name input
+     * parameter is ignored in case of a console target and can be omitted.
+     * If target_name is set to "*", all targets of the specified target_type are removed.
+     *
+     * @param [in] target_type_name The target type and name
+     */
+    virtual void remove_logging_target(const char *target_type_name)
+    { remove_logging_target(string(target_type_name)); }
+    /**
+     * Get current device's logging targets
+     *
+     * Returns a vector of string containing the current device’s logging targets. Each vector element has the
+     * following format: target_type::target_name. An empty vector is returned is the device has no logging
+     * targets.
+     *
+     * @return List of loggin target
+     */
+    virtual vector<string> get_logging_target(void);
+    /**
+     * Get current device's logging level
+     *
+     * Returns the current device’s logging level (0=OFF, 1=FATAL, 2=ERROR, 3=WARNING, 4=INFO, 5=DEBUG).
+     *
+     * @return The device logging level
+     */
+    virtual int get_logging_level(void);
+    /**
+     * Set the  device logging level
+     *
+     * Changes the device’s logging level. (0=OFF, 1=FATAL, 2=ERROR, 3=WARNING, 4=INFO, 5=DEBUG).
+     *
+     * @param [in] level The new device logging level
+     */
+    virtual void set_logging_level(int level);
 #endif // TANGO_HAS_LOG4TANGO
 //@}
 
@@ -1986,7 +2016,7 @@ namespace Tango {
  *
  * @param [in] lock_validity The lock validity (in seconds)
  */
-		virtual void lock(int lock_validity = DEFAULT_LOCK_VALIDITY);
+    virtual void lock(int lock_validity = DEFAULT_LOCK_VALIDITY);
 
 /**
  * Unlock a device
@@ -1998,7 +2028,7 @@ namespace Tango {
  *
  * @param [in] force The force unlock flag
  */
-		virtual void unlock(bool force = false);
+    virtual void unlock(bool force = false);
 
 /**
  * Get device locking status
@@ -2012,7 +2042,7 @@ namespace Tango {
  *
  * @return The device locking status
  */
-		virtual string locking_status();
+    virtual string locking_status();
 
 /**
  * Check if the device is locked
@@ -2021,7 +2051,7 @@ namespace Tango {
  *
  * @return The device locked flag
  */
-		virtual bool is_locked();
+    virtual bool is_locked();
 
 /**
  * Check if the device is locked by the caller
@@ -2031,7 +2061,7 @@ namespace Tango {
  *
  * @return The device locked flag
  */
-		virtual bool is_locked_by_me();
+    virtual bool is_locked_by_me();
 
 /**
  * Get device locking information
@@ -2064,40 +2094,52 @@ namespace Tango {
  * @param [out] li Device locking information
  * @return The device locked flag
  */
-		virtual bool get_locker(LockerInfo &li);
+    virtual bool get_locker(LockerInfo &li);
 //@}
 
 /// @privatesection
 
-		virtual void parse_name(string &);
+    virtual void parse_name(string &);
 
-		virtual Database *get_device_db();
+    virtual Database *get_device_db();
 
-		DeviceProxy *get_adm_device() { return adm_device; }
+    /**
+     *
+     * @return admin device proxy pointer
+     */
+    //TODO replace with AdminDevice implementation
+    //TODO replace with shared_ptr
+    DeviceProxy *get_adm_device()
+    {
+        check_connect_adm_device();
+        assert(adm_device != nullptr);
+        return adm_device;
+    }
 
 //
 // attribute methods
 //
 
-		void read_attribute(const string &, AttributeValue_4 *&);
+    void read_attribute(const string &, AttributeValue_4 *&);
 
-		void read_attribute(const string &, AttributeValue_5 *&);
+    void read_attribute(const string &, AttributeValue_5 *&);
 
-		void read_attribute(const char *, DeviceAttribute &);
+    void read_attribute(const char *, DeviceAttribute &);
 
-		void read_attribute(string &at, DeviceAttribute &da) { read_attribute(at.c_str(), da); }
+    void read_attribute(string &at, DeviceAttribute &da)
+    { read_attribute(at.c_str(), da); }
 
 //
 // Old event methods
 //
-		virtual int subscribe_event(const string &attr_name, EventType event, CallBack *,
-									const vector <string> &filters);  // For compatibility with Tango < 8
-		virtual int subscribe_event(const string &attr_name, EventType event, CallBack *,
-									const vector <string> &filters, bool stateless); // For compatibility with Tango < 8
-		virtual int subscribe_event(const string &attr_name, EventType event, int event_queue_size,
-									const vector <string> &filters,
-									bool stateless = false); // For compatibility with Tango < 8
+    virtual int subscribe_event(const string &attr_name, EventType event, CallBack *,
+                                const vector<string> &filters);  // For compatibility with Tango < 8
+    virtual int subscribe_event(const string &attr_name, EventType event, CallBack *,
+                                const vector<string> &filters, bool stateless); // For compatibility with Tango < 8
+    virtual int subscribe_event(const string &attr_name, EventType event, int event_queue_size,
+                                const vector<string> &filters,
+                                bool stateless = false); // For compatibility with Tango < 8
 
-	};
+};
 }//Tango
 #endif /* _DEVICEPROXY_H */

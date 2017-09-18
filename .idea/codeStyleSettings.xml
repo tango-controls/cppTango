@@ -17,6 +17,8 @@
           <option name="CLASS_CONSTRUCTOR_INIT_LIST_NEW_LINE_BEFORE_COLON" value="1" />
           <option name="ALIGN_INIT_LIST_IN_COLUMNS" value="false" />
           <option name="SPACE_BEFORE_SUPERCLASS_COLON" value="false" />
+          <option name="INTRODUCE_CONST_PARAMS" value="true" />
+          <option name="INTRODUCE_AUTO_VARS" value="true" />
         </Objective-C>
         <Objective-C-extensions>
           <file>

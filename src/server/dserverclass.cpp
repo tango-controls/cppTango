@@ -1345,6 +1345,56 @@ CORBA::Any *ZmqEventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,con
 
 //+----------------------------------------------------------------------------
 //
+// method : 		ZmqEventSubscriptionInfoCmd::execute()
+//
+// description : 	method to trigger the execution of the command.
+//
+// in : - device : The device on which the command must be excuted
+//		- in_any : The command input data
+//
+// returns : The command output data (packed in the Any object)
+//
+//-----------------------------------------------------------------------------
+CORBA::Any *ZmqEventSubscriptionInfoCmd::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
+{
+    cout4 << "ZmqEventSubscriptionInfoCmd::execute(): arrived" << endl;
+
+//
+// call DServer method which implements this command
+//
+
+    Tango::DevVarLongStringArray *ret = (dynamic_cast<DServer *>(device))->zmq_event_subscription_info();
+
+//
+// return to the caller
+//
+
+    CORBA::Any *out_any = NULL;
+    try
+    {
+        out_any = new CORBA::Any();
+    }
+    catch (bad_alloc &)
+    {
+        cout3 << "Bad allocation while in ZmqEventSubscriptionInfoCmd::execute()" << endl;
+        Except::throw_exception((const char *) API_MemoryAllocation,
+                                (const char *) "Can't allocate memory in server",
+                                (const char *) "ZmqEventSubscriptionInfoCmd::execute");
+    }
+    (*out_any) <<= ret;
+
+    cout4 << "Leaving ZmqEventSubscriptionInfoCmd::execute()" << endl;
+    return (out_any);
+}
+
+ZmqEventSubscriptionInfoCmd::ZmqEventSubscriptionInfoCmd()
+    : Command("ZmqEventSubscriptionInfo", DEV_VOID, DEVVAR_LONGSTRINGARRAY)
+{
+
+}
+
+//+----------------------------------------------------------------------------
+//
 // method : 		EventConfirmSubscriptionCmd::EventSubscriptionChangeCmd()
 //
 // description : 	constructor for the command of the .
@@ -1713,6 +1763,8 @@ void DServerClass::command_factory()
 	                        "Lg[0] = Tango lib release - Lg[1] = Device IDL release\n"
 	                        "Lg[2] = Subscriber HWM - Lg[3] = Multicast rate\n"
 	                        "Lg[4] = Multicast IVL - Lg[5] = ZMQ release"));
+
+    command_list.push_back(new ZmqEventSubscriptionInfoCmd{});
 
 	command_list.push_back(new EventConfirmSubscriptionCmd("EventConfirmSubscription",
 							Tango::DEVVAR_STRINGARRAY, Tango::DEV_VOID,

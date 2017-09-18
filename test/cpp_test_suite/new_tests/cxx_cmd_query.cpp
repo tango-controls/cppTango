@@ -87,7 +87,7 @@ public:
 	void test_command_list_query(void)
 	{
 		TS_ASSERT_THROWS_NOTHING(cmd_inf_list = *dserver->command_list_query());
-		TS_ASSERT(cmd_inf_list.size() == 32);
+        TS_ASSERT_EQUALS(33, cmd_inf_list.size());
 	}
 
 // Test Status command

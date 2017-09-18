@@ -42,6 +42,7 @@
 #include <tango/server/w_attribute.h>
 #include <tango/server/fwdattribute.h>
 #include <tango/server/multiattribute.h>
+#include <tango/server/pollable.h>
 #include <tango/server/pollobj.h>
 #include <tango/server/deviceclass.h>
 #include <tango/server/devintr.h>
@@ -87,7 +88,7 @@ class FwdWrongConf;
  * @ingroup Server
  */
 
-class DeviceImpl : public virtual POA_Tango::Device
+class DeviceImpl: public virtual POA_Tango::Device, public Pollable
 {
 public:
 	friend class Tango::AutoTangoMonitor;

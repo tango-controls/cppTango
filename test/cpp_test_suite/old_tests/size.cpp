@@ -31,15 +31,15 @@ int main(int argc, char **argv)
 	check_size("Attr",sizeof(Attr),128, &isOK);  // Was 52 in V4
 	check_size("SpectrumAttr",sizeof(SpectrumAttr),144, &isOK);	// Was 60 in V4
 	check_size("ImageAttr",sizeof(ImageAttr),160, &isOK);	// Was 68 in V4
-		
-	check_size("DeviceImpl",sizeof(DeviceImpl),1760, &isOK);
-	check_size("Device_2Impl",sizeof(Device_2Impl),1776, &isOK);
+
+    check_size("DeviceImpl", sizeof(DeviceImpl), 1768, &isOK);
+    check_size("Device_2Impl", sizeof(Device_2Impl), 1784, &isOK);
 	
 	check_size("DeviceClass",sizeof(DeviceClass),416, &isOK);  	// Was 48 in V4
 	check_size("Util",sizeof(Util),1608, &isOK);	// Was 68 in V4
 
-	check_size("Attribute",sizeof(Attribute),2536, &isOK);		// Was 208 in V4
-	check_size("WAttribute",sizeof(WAttribute),3200, &isOK);	// Was 252 in V4
+    check_size("Attribute", sizeof(Attribute), 2552, &isOK);        // Was 208 in V4
+    check_size("WAttribute", sizeof(WAttribute), 3216, &isOK);    // Was 252 in V4
 	check_size("MultiAttribute",sizeof(MultiAttribute),80, &isOK);
 	
 	check_size("Command",sizeof(Command),80, &isOK);

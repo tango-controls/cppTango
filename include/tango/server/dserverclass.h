@@ -514,6 +514,27 @@ public:
 
 //=============================================================================
 //
+//			The ZmqEventSubscriptionChangeCmd class
+//
+// description :	Class to implement the ZmqEventSubscriptionChange command.
+//			This command takes one arguments which are
+//			the event for which the user subscribe to
+//
+//=============================================================================
+
+class ZmqEventSubscriptionInfoCmd: public Tango::Command
+{
+public:
+    ZmqEventSubscriptionInfoCmd();
+    ~ZmqEventSubscriptionInfoCmd() = default;;
+
+    virtual bool is_allowed(Tango::DeviceImpl *, const CORBA::Any &)
+    { return true; }
+    virtual CORBA::Any *execute(Tango::DeviceImpl *, const CORBA::Any &);
+};
+
+//=============================================================================
+//
 //			The EventConfirmSubscriptionCmd class
 //
 // description :	Class to implement the EventConfirmSubscription command.

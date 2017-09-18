@@ -332,7 +332,7 @@ public:
  * @return The Tango library release number coded in 3 digits
  * (for instance 550,551,552,600,....)
  */
-	long get_tango_lib_release();
+    static long get_tango_lib_release();
 
 /**
  * Get the IDL TANGO version.

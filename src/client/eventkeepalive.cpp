@@ -269,8 +269,11 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 							disconnect_called = true;
 						}
 #endif
-						event_consumer->connect_event_system(d_name,epos->second.obj_name,epos->second.event_name,
-                                                             vs,ipos,ecbs,dd,ipos->second.valid_endpoint);
+                        event_consumer->connect_event_system(d_name,
+                                                             epos->second.obj_name,
+                                                             epos->second.event_name,
+                                                             dd,
+                                                             ipos->second.valid_endpoint);
 
 						const DevVarLongStringArray *dvlsa;
 						dd >> dvlsa;

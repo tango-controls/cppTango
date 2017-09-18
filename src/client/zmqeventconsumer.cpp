@@ -1302,113 +1302,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 // Create and connect the REQ socket used to send message to the ZMQ main thread
 //
 
-    zmq::message_t reply;
-    try
-    {
-        zmq::socket_t sender(zmq_context,ZMQ_REQ);
-
-//
-// In case this thread runs before the main ZMQ thread, it is possible to call connect before the main ZMQ thread has
-// binded its socket. In such a case, error code is set to ECONNREFUSED.
-// If this happens, give the main ZMQ thread a chance to run and retry the connect call
-// I have tried with a yield call but it still failed in some cases (when running the DS with a file as database  for
-// instance). Replace the yield with a 10 mS sleep !!!
-//
-
-        try
-        {
-            sender.connect(CTRL_SOCK_ENDPOINT);
-        }
-        catch (zmq::error_t &e)
-        {
-            if (e.num() == ECONNREFUSED)
-            {
-#ifndef _TG_WINDOWS_
-                struct timespec ts;
-                ts.tv_sec = 0;
-                ts.tv_nsec = 10000000;
-
-                nanosleep(&ts,NULL);
-#else
-                Sleep(10);
-#endif
-                sender.connect(CTRL_SOCK_ENDPOINT);
-            }
-            else
-                throw;
-        }
-
-//
-// Build message sent to ZMQ main thread
-// In this case, this is the command code, the publisher endpoint and the event name
-//
-
-        char buffer[1024];
-        int length = 0;
-
-        buffer[length] = ZMQ_CONNECT_HEARTBEAT;
-        length++;
-
-#ifdef ZMQ_HAS_DISCONNECT
-		buffer[length] = 0;
-#else
-        if (reconnect == true)
-            buffer[length] = 1;
-        else
-            buffer[length] = 0;
-#endif
-        length++;
-
-        ::strcpy(&(buffer[length]),ev_svr_data->svalue[valid_endpoint << 1].in());
-        length = length + ::strlen(ev_svr_data->svalue[valid_endpoint << 1].in()) + 1;
-
-        string sub(channel_name);
-        sub = sub + '.' + HEARTBEAT_EVENT_NAME;
-
-        ::strcpy(&(buffer[length]),sub.c_str());
-        length = length + sub.size() + 1;
-
-//
-// Send command to main ZMQ thread
-//
-
-        zmq::message_t send_data(length);
-        ::memcpy(send_data.data(),buffer,length);
-
-        sender.send(send_data);
-
-        sender.recv(&reply);
-    }
-    catch(zmq::error_t &e)
-    {
-        stringstream o;
-
-        o << "Failed to create connection to event channel!\n";
-        o << "Error while communicating with the ZMQ main thread\n";
-        o << "ZMQ error code = " << e.num() << "\n";
-        o << "ZMQ message: " << e.what() << ends;
-
-        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_channel");
-    }
-
-//
-// Any error during ZMQ main thread socket operations?
-//
-
-    if (reply.size() != 2)
-    {
-        char err_mess[512];
-        ::memcpy(err_mess,reply.data(),reply.size());
-        err_mess[reply.size()] = '\0';
-
-        stringstream o;
-
-        o << "Failed to create connection to event channel!\n";
-        o << "Error while trying to connect or subscribe the heartbeat ZMQ socket to the new publisher\n";
-        o << "ZMQ message: " << err_mess << ends;
-
-        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_channel");
-    }
+    notify_zmq_thread(channel_name + "." + HEARTBEAT_EVENT_NAME, ev_svr_data->svalue[valid_endpoint << 1].in());
 
 //
 // Init (or create) EventChannelStruct
@@ -1444,6 +1338,24 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 
 		channel_map[channel_name] = new_event_channel_struct;
 	}
+}
+
+void ZmqEventConsumer::check_zmq_reply(const zmq::message_t &reply) const
+{
+    if (reply.size() != 2)
+    {
+        char err_mess[512];
+        memcpy(err_mess, reply.data(), reply.size());
+        err_mess[reply.size()] = '\0';
+
+        stringstream o;
+
+        o << "Failed to create connection to event channel!\n";
+        o << "Error while trying to connect or subscribe the heartbeat ZMQ socket to the new publisher\n";
+        o << "ZMQ message: " << err_mess << ends;
+
+        Except::throw_exception(API_ZmqFailed, o.str(), "ZmqEventConsumer::connect_event_channel");
+    }
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -1658,39 +1570,12 @@ void ZmqEventConsumer::disconnect_event(string &event_name,string &endpoint)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name,string &event_name,TANGO_UNUSED(const vector<string> &filters),
-                                            TANGO_UNUSED(EvChanIte &eve_it),TANGO_UNUSED(EventCallBackStruct &new_event_callback),
-                                            DeviceData &dd,size_t valid_end)
+void ZmqEventConsumer::connect_event_system(string &device_name,
+                                            string &obj_name,
+                                            string &event_name,
+                                            DeviceData &dd,
+                                            size_t valid_end)
 {
-//
-// Build full event name
-// Don't forget case of device in a DS using file as database
-//
-
-    string full_event_name;
-    string::size_type pos;
-
-    bool inter_event = false;
-    if (event_name == EventName[INTERFACE_CHANGE_EVENT])
-		inter_event = true;
-
-    if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos)
-    {
-        full_event_name = device_name;
-        if (inter_event == false)
-		{
-			string tmp = '/' + obj_name;
-			full_event_name.insert(pos,tmp);
-		}
-        full_event_name = full_event_name + '.' + event_name;
-    }
-    else
-	{
-		if (inter_event == true)
-			full_event_name = device_name + '.' + event_name;
-		else
-			full_event_name = device_name + '/' + obj_name + '.' + event_name;
-	}
 
 
 //
@@ -1700,7 +1585,12 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
     const DevVarLongStringArray *ev_svr_data;
     dd >> ev_svr_data;
 
-//
+
+    string full_event_name = get_full_event_name(device_name, obj_name, event_name, ev_svr_data);
+
+
+
+    //
 // Create and connect the REQ socket used to send message to the ZMQ main thread
 //
 
@@ -1809,24 +1699,53 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
         Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_system");
     }
 
-//
-// Any error during ZMQ main thread socket operations?
-//
+    check_zmq_reply(reply);
+}
+string ZmqEventConsumer::get_full_event_name(const string &device_name,
+                                             const string &obj_name,
+                                             const string &event_name,
+                                             const DevVarLongStringArray *ev_svr_data) const
+{
+    string full_event_name;
+    string::size_type pos;
 
-    if (reply.size() != 2)
+//    auto size = ev_svr_data->svalue.length();
+//
+//    full_event_name = ev_svr_data->svalue[size - 1];
+//    if ((pos = full_event_name.find("TOPIC:")) != string::npos)
+//    {
+//        full_event_name.erase(0, 6);
+//        return full_event_name;
+//    }
+
+
+    //
+    // Build full event name
+    // Don't forget case of device in a DS using file as database
+    //
+    bool inter_event = false;
+    if (event_name == EventName[INTERFACE_CHANGE_EVENT])
+        inter_event = true;
+
+
+    if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos)
     {
-        char err_mess[512];
-        ::memcpy(err_mess,reply.data(),reply.size());
-        err_mess[reply.size()] = '\0';
-
-        stringstream o;
-
-        o << "Failed to create connection to event!\n";
-        o << "Error while trying to connect or subscribe the event ZMQ socket to the new publisher\n";
-        o << "ZMQ message: " << err_mess << ends;
-
-        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_system");
+        full_event_name = device_name;
+        if (inter_event == false)
+        {
+            string tmp = '/' + obj_name;
+            full_event_name.insert(pos, tmp);
+        }
+        full_event_name = full_event_name + '.' + event_name;
     }
+    else
+    {
+        if (inter_event == true)
+            full_event_name = device_name + '.' + event_name;
+        else
+            full_event_name = device_name + '/' + obj_name + '.' + event_name;
+    }
+    return full_event_name;
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -3368,6 +3287,138 @@ void ZmqEventConsumer::get_subscribed_event_ids(DeviceProxy *_dev,vector<int> &_
             _ids.push_back(ite->event_id);
         }
     }
+}
+
+void ZmqEventConsumer::notify_zmq_thread(const string &topic, const string &valid_endpoint)
+{
+    zmq::message_t reply;
+    try
+    {
+        zmq::socket_t sender(zmq_context, ZMQ_REQ);
+
+//
+// In case this thread runs before the main ZMQ thread, it is possible to call connect before the main ZMQ thread has
+// binded its socket. In such a case, error code is set to ECONNREFUSED.
+// If this happens, give the main ZMQ thread a chance to run and retry the connect call
+// I have tried with a yield call but it still failed in some cases (when running the DS with a file as database  for
+// instance). Replace the yield with a 10 mS sleep !!!
+//
+
+        try
+        {
+            sender.connect(CTRL_SOCK_ENDPOINT);
+        }
+        catch (zmq::error_t &e)
+        {
+            if (e.num() == ECONNREFUSED)
+            {
+#ifndef _TG_WINDOWS_
+                struct timespec ts;
+                ts.tv_sec = 0;
+                ts.tv_nsec = 10000000;
+
+                nanosleep(&ts, NULL);
+#else
+                Sleep(10);
+#endif
+                sender.connect(CTRL_SOCK_ENDPOINT);
+            }
+            else
+                throw;
+        }
+
+//
+// Build message sent to ZMQ main thread
+// In this case, this is the command code, the publisher endpoint and the event name
+//
+
+        char buffer[1024];
+        int length = 0;
+
+        buffer[length] = ZMQ_CONNECT_HEARTBEAT;
+        length++;
+
+#ifdef ZMQ_HAS_DISCONNECT
+        buffer[length] = 0;
+#else
+        if (reconnect == true)
+            buffer[length] = 1;
+        else
+            buffer[length] = 0;
+#endif
+        length++;
+
+        ::strcpy(&(buffer[length]), valid_endpoint.c_str());
+        length = length + ::strlen(valid_endpoint.c_str()) + 1;
+
+        ::strcpy(&(buffer[length]), topic.c_str());
+        length = length + topic.size() + 1;
+
+//
+// Send command to main ZMQ thread
+//
+
+        zmq::message_t send_data(length);
+        ::memcpy(send_data.data(), buffer, length);
+
+        sender.send(send_data);
+
+        sender.recv(&reply);
+    }
+    catch (zmq::error_t &e)
+    {
+        stringstream o;
+
+        o << "Failed to create connection to event channel!\n";
+        o << "Error while communicating with the ZMQ main thread\n";
+        o << "ZMQ error code = " << e.num() << "\n";
+        o << "ZMQ message: " << e.what() << ends;
+
+        Except::throw_exception(API_ZmqFailed, o.str(), "ZmqEventConsumer::connect_event_channel");
+    }
+
+    check_zmq_reply(reply);
+}
+
+void ZmqEventConsumer::connect_event_system_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response)
+{
+    notify_zmq_thread(response.zmq_heartbeat_topic, response.heartbeat_endpoint);
+}
+
+void
+ZmqEventConsumer::connect_event_channel_1003(tango::common::admin::commands::ZmqSubscriptionChangeResponse response)
+{
+    notify_zmq_thread(response.zmq_event_topic, response.event_endpoint);
+}
+
+int ZmqEventConsumer::post_connect_event_1003(const tango::common::event::EventSubscription &subscription,
+                                              const tango::common::admin::commands::ZmqSubscriptionChangeResponse &response)
+{
+    device_name = subscription.device_name;
+
+    auto event_id = ++subscribe_event_id;
+
+    EventSubscribeStruct event_subscribe_struct;
+    event_subscribe_struct.callback = subscription.callback;
+    event_subscribe_struct.ev_queue = subscription.event_queue;
+    event_subscribe_struct.id = event_id;
+
+    bool alias_used = is_alias_used(response.zmq_event_topic);
+
+    auto callback = event_callback::create(subscription.proxy,
+                                           subscription.object_name,
+                                           subscription.event_name,
+                                           response.zmq_event_topic,
+                                           response.event_endpoint,
+                                           response.event_endpoint,
+                                           response.dev_idl_version,
+                                           subscription.is_fwd,
+                                           event_subscribe_struct,
+                                           alias_used);
+
+    insert_new_event_callback(response.zmq_event_topic, callback);
+
+    return event_id;
 }
 
 //--------------------------------------------------------------------------------------------------------------------

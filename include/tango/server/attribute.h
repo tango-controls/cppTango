@@ -37,6 +37,7 @@
 #include <tango/server/attrdesc.h>
 #include <tango/server/fwdattrdesc.h>
 #include <tango/server/encoded_attribute.h>
+#include <tango/server/pollable.h>
 
 #include <functional>
 #include <time.h>
@@ -160,7 +161,7 @@ class EventSupplier;
  * @ingroup Server
  */
 
-class Attribute
+class Attribute: public Pollable
 {
 public:
 
@@ -2162,7 +2163,7 @@ public:
 	omni_mutex *get_attr_mutex() {return &(ext->attr_mutex);}
 	omni_mutex *get_user_attr_mutex() {return ext->user_attr_mutex;}
 
-	bool change_event_subscribed();
+    bool change_event_subscribed();
 	bool periodic_event_subscribed();
 	bool archive_event_subscribed();
 	bool quality_event_subscribed();
@@ -2304,16 +2305,15 @@ protected:
 // The extension class
 //
 
-    class AttributeExt
+    struct AttributeExt
     {
-    public:
         AttributeExt() : user_attr_mutex(NULL) {}
 
         omni_mutex			attr_mutex;						// Mutex to protect the attributes shared data buffer
         omni_mutex			*user_attr_mutex;				// Ptr for user mutex in case he manages exclusion
     };
 
-	AttributeExt		*ext;
+    std::shared_ptr<AttributeExt> ext;
 
 	virtual void init_opt_prop(vector<AttrProperty> &,string &);
 	virtual void init_event_prop(vector<AttrProperty> &,const string &,Attr &);
@@ -2450,6 +2450,7 @@ protected:
     bool 				startup_exceptions_clear;		// Flag set to true when the cause for the device startup exceptions has been fixed
 	bool				att_mem_exception;				// Flag set to true if the attribute is writable and
 														// memorized and if it failed at init
+                                                        //TODO replace with multimap string|event_type -> vector<int>
 	vector<int> 		client_lib[numEventType];		// Clients lib used (for event sending and compat)
 };
 
