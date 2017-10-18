@@ -59,33 +59,37 @@
  * @headerfile tango.h
  * @ingroup Client
  */
-namespace Tango {
-	class DeviceData {
+#include "DevicePipe.h"
+namespace Tango
+{
+class DeviceData
+{
 
-	public :
+public :
 ///@privatesection
 //
 // constructor methods
 //
-		enum except_flags {
-			isempty_flag,
-			wrongtype_flag,
-			numFlags
-		};
+    enum except_flags
+    {
+        isempty_flag,
+        wrongtype_flag,
+        numFlags
+    };
 
 //	DeviceData();
-		DeviceData(const DeviceData &);
+    DeviceData(const DeviceData &);
 
-		DeviceData &operator=(const DeviceData &);
+    DeviceData &operator=(const DeviceData &);
 
 #ifdef HAS_RVALUE
-        DeviceData(DeviceData &&);
-        DeviceData & operator=(DeviceData &&);
+    DeviceData(DeviceData &&);
+    DeviceData &operator=(DeviceData &&);
 #endif
 
-		virtual ~DeviceData();
+    virtual ~DeviceData();
 
-		CORBA::Any_var any;
+    CORBA::Any_var any;
 
 ///@publicsection
 /**@name Constructors */
@@ -96,7 +100,7 @@ namespace Tango {
  * Default constructor. The instance is empty
  *
  */
-		DeviceData();
+    DeviceData();
 //@}
 
 /**@name Inserters and Extractors */
@@ -226,7 +230,8 @@ namespace Tango {
  * @param [in] datum The data to be inserted
  * @exception WrongData if requested
  */
-		void operator<<(bool datum) { any <<= CORBA::Any::from_boolean(datum); }
+    void operator<<(bool datum)
+    { any <<= CORBA::Any::from_boolean(datum); }
 
 /**
  * Insert data into a DeviceData for the DevVarLongStringArray data type
@@ -237,7 +242,7 @@ namespace Tango {
  * @param [in] vs The string vector to be inserted
  * @exception WrongData if requested
  */
-		void insert(vector <DevLong> &vl, vector <string> &vs);
+    void insert(vector<DevLong> &vl, vector<string> &vs);
 
 /**
  * Insert data into a DeviceData for the DevVarDoubleStringArray data type
@@ -248,7 +253,7 @@ namespace Tango {
  * @param [in] vs The string vector to be inserted
  * @exception WrongData if requested
  */
-		void insert(vector<double> &vd, vector <string> &vs);
+    void insert(vector<double> &vd, vector<string> &vs);
 
 /**
  * Insert data into a DeviceData for the DevEncoded data type
@@ -265,8 +270,21 @@ namespace Tango {
  * @param [in] buffer The data part of the DevEncoded instance
  * @exception WrongData if requested
  */
-		void insert(const string &str, vector<unsigned char> &buffer);
+    void insert(const string &str, vector<unsigned char> &buffer);
 
+    /**
+     * Inserts a PipeBlob
+     *
+     * @param blob
+     */
+    void insert(DevicePipeBlob &blob);
+
+    /**
+     * Inserts a PipeBlob
+     *
+     * @param blob
+     */
+    void insert(DevicePipeBlob *blob);
 /**
  * The extract operators
  *
@@ -326,7 +344,7 @@ namespace Tango {
  * @return Boolean set to false if the extraction failed
  * @exception WrongData if requested
  */
-		bool operator>>(bool &datum);
+    bool operator>>(bool &datum);
 
 /**
  * Extract data from a DeviceData for the DevVarLongStringArray data type
@@ -338,7 +356,7 @@ namespace Tango {
  * @return Boolean set to false if the extraction failed
  * @exception WrongData if requested
  */
-		bool extract(vector <DevLong> &vl, vector <string> &vs);
+    bool extract(vector<DevLong> &vl, vector<string> &vs);
 
 /**
  * Extract data from a DeviceData for the DevVarDoubleStringArray data type
@@ -350,7 +368,7 @@ namespace Tango {
  * @return Boolean set to false if the extraction failed
  * @exception WrongData if requested
  */
-		bool extract(vector<double> &vd, vector <string> &vs);
+    bool extract(vector<double> &vd, vector<string> &vs);
 
 /**
  * Extract data from a DeviceData for the DevEncoded data type
@@ -365,7 +383,9 @@ namespace Tango {
  * @return Boolean set to false if the extraction failed
  * @exception WrongData if requested
  */
-		bool extract(const char *&str, const unsigned char *&data, unsigned int &length);
+    bool extract(const char *&str, const unsigned char *&data, unsigned int &length);
+
+    bool extract(DevicePipeBlob *blob);
 //@}
 
 ///@privatesection
@@ -373,195 +393,236 @@ namespace Tango {
 // insert methods for native C++ types
 //
 //	void operator << (bool datum) {any <<= CORBA::Any::from_boolean(datum);}
-		void operator<<(short datum) { any <<= datum; }
+    void operator<<(short datum)
+    { any <<= datum; }
 
-		void operator<<(unsigned short datum) { any <<= datum; }
+    void operator<<(unsigned short datum)
+    { any <<= datum; }
 
-		void operator<<(DevLong datum) { any <<= datum; }
+    void operator<<(DevLong datum)
+    { any <<= datum; }
 
-		void operator<<(DevULong datum) { any <<= datum; }
+    void operator<<(DevULong datum)
+    { any <<= datum; }
 
-		void operator<<(DevLong64 datum) { any <<= datum; }
+    void operator<<(DevLong64 datum)
+    { any <<= datum; }
 
-		void operator<<(DevULong64 datum) { any <<= datum; }
+    void operator<<(DevULong64 datum)
+    { any <<= datum; }
 
-		void operator<<(float datum) { any <<= datum; }
+    void operator<<(float datum)
+    { any <<= datum; }
 
-		void operator<<(double datum) { any <<= datum; }
+    void operator<<(double datum)
+    { any <<= datum; }
 
-		void operator<<(char *datum) { any <<= datum; }
+    void operator<<(char *datum)
+    { any <<= datum; }
 
-		void operator<<(const char *datum) { any <<= datum; }
+    void operator<<(const char *datum)
+    { any <<= datum; }
 
-		void operator<<(string &datum) { any <<= datum.c_str(); }
+    void operator<<(string &datum)
+    { any <<= datum.c_str(); }
 
-		void operator<<(vector<unsigned char> &);
+    void operator<<(vector<unsigned char> &);
 
-		void operator<<(vector <string> &);
+    void operator<<(vector<string> &);
 
-		void operator<<(vector<short> &);
+    void operator<<(vector<short> &);
 
-		void operator<<(vector<unsigned short> &);
+    void operator<<(vector<unsigned short> &);
 
-		void operator<<(vector <DevLong> &);
+    void operator<<(vector<DevLong> &);
 
-		void operator<<(vector <DevULong> &);
+    void operator<<(vector<DevULong> &);
 
-		void operator<<(vector <DevLong64> &);
+    void operator<<(vector<DevLong64> &);
 
-		void operator<<(vector <DevULong64> &);
+    void operator<<(vector<DevULong64> &);
 
-		void operator<<(vector<float> &);
+    void operator<<(vector<float> &);
 
-		void operator<<(vector<double> &);
+    void operator<<(vector<double> &);
 
-		void operator<<(DevState datum) { (any.inout()) <<= datum; }
+    void operator<<(DevState datum)
+    { (any.inout()) <<= datum; }
 
-		void operator<<(DevEncoded &datum) { (any.inout()) <<= datum; }
+    void operator<<(DevEncoded &datum)
+    { (any.inout()) <<= datum; }
+
+    void operator<<(DevicePipeBlob &data);
 
 //	void insert(vector<DevLong>&, vector<string>&);
 //	void insert(vector<double>&, vector<string>&);
 
 //	void insert(const string &,vector<unsigned char>&);
-		void insert(const char *, DevVarCharArray *);
+    void insert(const char *, DevVarCharArray *);
 
-		void insert(const char *, unsigned char *, unsigned int);
+    void insert(const char *, unsigned char *, unsigned int);
 
 //
 // insert methods for TANGO CORBA sequence types
 //
 
-		inline void operator<<(DevVarCharArray *datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarCharArray *datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarShortArray *datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarShortArray *datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarUShortArray *datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarUShortArray *datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarLongArray *datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarLongArray *datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarLong64Array *datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarLong64Array *datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarULongArray *datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarULongArray *datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarULong64Array *datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarULong64Array *datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarFloatArray *datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarFloatArray *datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarDoubleArray *datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarDoubleArray *datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarStringArray *datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarStringArray *datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarLongStringArray *datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarLongStringArray *datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarDoubleStringArray *datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarDoubleStringArray *datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarCharArray &datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarCharArray &datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarShortArray &datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarShortArray &datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarUShortArray datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarUShortArray datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarLongArray &datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarLongArray &datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarLong64Array &datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarLong64Array &datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarULongArray &datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarULongArray &datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarULong64Array &datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarULong64Array &datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarFloatArray &datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarFloatArray &datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarDoubleArray &datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarDoubleArray &datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarStringArray &datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarStringArray &datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarLongStringArray &datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarLongStringArray &datum)
+    { any.inout() <<= datum; }
 
-		inline void operator<<(DevVarDoubleStringArray &datum) { any.inout() <<= datum; }
+    inline void operator<<(DevVarDoubleStringArray &datum)
+    { any.inout() <<= datum; }
 
 //
 // extract methods for native C++ types
 //
 
 //	bool operator >> (bool&);
-		bool operator>>(short &);
+    bool operator>>(short &);
 
-		bool operator>>(unsigned short &);
+    bool operator>>(unsigned short &);
 
-		bool operator>>(DevLong &);
+    bool operator>>(DevLong &);
 
-		bool operator>>(DevULong &);
+    bool operator>>(DevULong &);
 
-		bool operator>>(DevLong64 &);
+    bool operator>>(DevLong64 &);
 
-		bool operator>>(DevULong64 &);
+    bool operator>>(DevULong64 &);
 
-		bool operator>>(float &);
+    bool operator>>(float &);
 
-		bool operator>>(double &);
+    bool operator>>(double &);
 
-		bool operator>>(const char *&);
+    bool operator>>(const char *&);
 
-		bool operator>>(string &);
+    bool operator>>(string &);
 
-		bool operator>>(vector<unsigned char> &);
+    bool operator>>(vector<unsigned char> &);
 
-		bool operator>>(vector <string> &);
+    bool operator>>(vector<string> &);
 
-		bool operator>>(vector<short> &);
+    bool operator>>(vector<short> &);
 
-		bool operator>>(vector<unsigned short> &);
+    bool operator>>(vector<unsigned short> &);
 
-		bool operator>>(vector <DevLong> &);
+    bool operator>>(vector<DevLong> &);
 
-		bool operator>>(vector <DevULong> &);
+    bool operator>>(vector<DevULong> &);
 
-		bool operator>>(vector <DevLong64> &);
+    bool operator>>(vector<DevLong64> &);
 
-		bool operator>>(vector <DevULong64> &);
+    bool operator>>(vector<DevULong64> &);
 
-		bool operator>>(vector<float> &);
+    bool operator>>(vector<float> &);
 
-		bool operator>>(vector<double> &);
+    bool operator>>(vector<double> &);
 
-		bool operator>>(DevState &);
+    bool operator>>(DevState &);
 //	bool extract(vector<DevLong>&, vector<string>&);
 //	bool extract(vector<double>&, vector<string>&);
 
 //  bool extract(const char *&,unsigned char *&,unsigned int &);
-		bool extract(string &, vector<unsigned char> &);
+    bool extract(string &, vector<unsigned char> &);
 
 //
 // extract methods for TANGO CORBA sequence types
 //
 
-		bool operator>>(const DevVarCharArray *&datum);
+    bool operator>>(const DevVarCharArray *&datum);
 
-		bool operator>>(const DevVarShortArray *&datum);
+    bool operator>>(const DevVarShortArray *&datum);
 
-		bool operator>>(const DevVarUShortArray *&datum);
+    bool operator>>(const DevVarUShortArray *&datum);
 
-		bool operator>>(const DevVarLongArray *&datum);
+    bool operator>>(const DevVarLongArray *&datum);
 
-		bool operator>>(const DevVarLong64Array *&datum);
+    bool operator>>(const DevVarLong64Array *&datum);
 
-		bool operator>>(const DevVarULongArray *&datum);
+    bool operator>>(const DevVarULongArray *&datum);
 
-		bool operator>>(const DevVarULong64Array *&datum);
+    bool operator>>(const DevVarULong64Array *&datum);
 
-		bool operator>>(const DevVarFloatArray *&datum);
+    bool operator>>(const DevVarFloatArray *&datum);
 
-		bool operator>>(const DevVarDoubleArray *&datum);
+    bool operator>>(const DevVarDoubleArray *&datum);
 
-		bool operator>>(const DevVarStringArray *&datum);
+    bool operator>>(const DevVarStringArray *&datum);
 
-		bool operator>>(const DevVarLongStringArray *&datum);
+    bool operator>>(const DevVarLongStringArray *&datum);
 
-		bool operator>>(const DevVarDoubleStringArray *&datum);
+    bool operator>>(const DevVarDoubleStringArray *&datum);
 
-		bool operator>>(const DevEncoded *&datum);
+    bool operator>>(const DevEncoded *&datum);
 
-		bool operator>>(DevEncoded &datum);
+    bool operator>>(DevEncoded &datum);
+
+    bool operator>>(DevicePipeBlob *&datum);
 
 ///@publicsection
 /**@name Exception and error related methods methods
@@ -580,7 +641,8 @@ namespace Tango {
  *
  * @param [in] fl The exception flag
  */
-		void exceptions(bitset <numFlags> fl) { exceptions_flags = fl; }
+    void exceptions(bitset<numFlags> fl)
+    { exceptions_flags = fl; }
 
 /**
  * Get exception flag
@@ -601,7 +663,8 @@ namespace Tango {
  *
  * @return The exception flag
  */
-		bitset <numFlags> exceptions() { return exceptions_flags; }
+    bitset<numFlags> exceptions()
+    { return exceptions_flags; }
 
 /**
  * Reset one exception flag
@@ -610,7 +673,8 @@ namespace Tango {
  *
  * @param [in] fl The exception flag
  */
-		void reset_exceptions(except_flags fl) { exceptions_flags.reset((size_t) fl); }
+    void reset_exceptions(except_flags fl)
+    { exceptions_flags.reset((size_t) fl); }
 
 /**
  * Set one exception flag
@@ -619,7 +683,8 @@ namespace Tango {
  *
  * @param [in] fl The exception flag
  */
-		void set_exceptions(except_flags fl) { exceptions_flags.set((size_t) fl); }
+    void set_exceptions(except_flags fl)
+    { exceptions_flags.set((size_t) fl); }
 
 /**
  * Get instance extraction state
@@ -644,7 +709,8 @@ namespace Tango {
  *
  * @return The error bit set.
  */
-		bitset <numFlags> state() { return ext->ext_state; }
+    bitset<numFlags> state()
+    { return ext->ext_state; }
 //@}
 
 /**@name miscellaneous methods */
@@ -673,7 +739,7 @@ namespace Tango {
  *
  * @return Boolean set to true is the instance is empty
  */
-		bool is_empty();
+    bool is_empty();
 
 /**
  * Get Tango data type of the included data
@@ -682,7 +748,7 @@ namespace Tango {
  *
  * @return The data type
  */
-		int get_type();
+    int get_type();
 //@}
 
 /**
@@ -702,28 +768,52 @@ namespace Tango {
  * @param [in] str The printing stream
  * @param [in] dd The instance to be printed
  */
-		friend ostream &operator<<(ostream &str, DeviceData &dd);
+    friend ostream &operator<<(ostream &str, DeviceData &dd);
 
-	protected :
+protected :
 ///@privatesection
-		bool any_is_null();
+    bool any_is_null();
 
-		bitset <numFlags> exceptions_flags;
+    bitset<numFlags> exceptions_flags;
 
-	private:
-		class DeviceDataExt {
-		public:
-			DeviceDataExt() {};
+private:
+    class DeviceDataExt
+    {
+    public:
+        DeviceDataExt()
+        {};
 
-			bitset <numFlags> ext_state;
-		};
+        bitset<numFlags> ext_state;
+    };
 
 #ifdef HAS_UNIQUE_PTR
-		unique_ptr<DeviceDataExt>   ext;
+    unique_ptr<DeviceDataExt> ext;
 #else
-		DeviceDataExt *ext;            // Class extension
+    DeviceDataExt *ext;            // Class extension
 #endif
-	};
+    template<typename T>
+    void checkResult(bool result, T *rv)
+    {
+        if (not(result))
+        {
+            ext->ext_state.set(wrongtype_flag);
+            if (exceptions_flags.test(wrongtype_flag))
+            {
+                ApiDataExcept::throw_exception((const char *) API_IncompatibleCmdArgumentType,
+                                               (const char *) "Cannot extract, data in DeviceData object is not a DevEncoded",
+                                               (const char *) "DeviceData::extract");
+            }
+        }
+
+        if (rv == nullptr)
+        {
+            ext->ext_state.set(wrongtype_flag);
+            ApiDataExcept::throw_exception((const char *) API_IncoherentDevData,
+                                           (const char *) "Incoherent data received from server",
+                                           (const char *) "DeviceData::extract");
+        }
+    }
+};
 
 }//Tango
 

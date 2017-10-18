@@ -1,3 +1,32 @@
+//===================================================================================================================
+//
+// file :		cxx_cmd_types.cpp
+//
+// project :		tango
+//
+// author(s) :		ingvord
+//
+// Copyright (C) :      2004-2017
+//						European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
+// This file is part of Tango.
+//
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
+//===================================================================================================================
+//
+// Created by ingvord on 3/13/17.
+//
 #ifndef CmdTypesTestSuite_h
 #define CmdTypesTestSuite_h
 
@@ -5,6 +34,7 @@
 #include <cxxtest/TangoPrinter.h>
 #include <tango.h>
 #include <iostream>
+#include <thread>
 
 using namespace Tango;
 using namespace std;
@@ -17,7 +47,8 @@ using namespace std;
 class CmdTypesTestSuite: public CxxTest::TestSuite
 {
 protected:
-    DeviceProxy *device1;
+    DeviceProxy *device;
+    size_t loop = 10;
 
 public:
     SUITE_NAME()
@@ -27,11 +58,9 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-        string device1_name;
+        string device_name;
 
-        device1_name = CxxTest::TangoPrinter::get_param("device1");
-
-        CxxTest::TangoPrinter::get_param_opt("loop");
+        device_name = CxxTest::TangoPrinter::get_param("device1");
 
         CxxTest::TangoPrinter::validate_args();
 
@@ -42,8 +71,8 @@ public:
 
         try
         {
-            device1 = new DeviceProxy(device1_name);
-            device1->ping();
+            device = new DeviceProxy(device_name);
+            device->ping();
         }
         catch (CORBA::Exception &e)
         {
@@ -55,7 +84,7 @@ public:
 
     virtual ~SUITE_NAME()
     {
-        delete device1;
+        delete device;
     }
 
     static SUITE_NAME *createSuite()
@@ -68,1256 +97,874 @@ public:
         delete suite;
     }
 
-    void setUp(void)
-    {
-    }
-
-    void tearDown(void)
-    {
-    }
-
 //
 // Tests -------------------------------------------------------
 //
 
-// Test Scalar Short
-
-    void test_Scalar_Short(void)
+    void test_void(void)
     {
-        DeviceAttribute da;
-#ifndef COMPAT
-        TS_ASSERT(da.get_data_format() == Tango::FMT_UNKNOWN);
-#endif
-
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("Short_attr");
-            TS_ASSERT(1 == 1);
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        short sh;
-        int data_type;
-        try
-        {
-            data_type = da.get_type();
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        da >> sh;
-        TS_ASSERT(sh == 12);
-        TS_ASSERT(data_type == Tango::DEV_SHORT);
-#ifndef COMPAT
-        AttrDataFormat data_format = da.get_data_format();
-        TS_ASSERT(data_format == Tango::SCALAR);
-#endif
-//		cout << "   Scalar short --> OK" << endl;
-    }
-
-// Test Scalar Short 2
-
-    void test_Scalar_Short_DevEncoded_2__loop(void)
-    {
-        DeviceAttribute da;
-#ifndef COMPAT
-        TS_ASSERT(da.get_data_format() == Tango::FMT_UNKNOWN);
-#endif
-
-        try
-        {
-            da = device1->read_attribute("Short_attr");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        short sh;
-        int data_type = da.get_type();
-        da >> sh;
-        TS_ASSERT(sh == 12);
-        TS_ASSERT(data_type == Tango::DEV_SHORT);
-#ifndef COMPAT
-        AttrDataFormat data_format = da.get_data_format();
-        TS_ASSERT(data_format == Tango::SCALAR);
-#endif
-//		cout << "   Scalar short --> OK" << endl;
-    }
-
-// Test SCALAR long
-
-    void test_Scalar_Long__loop(void)
-    {
-        DeviceAttribute da;
-#ifndef COMPAT
-        TS_ASSERT(da.get_data_format() == Tango::FMT_UNKNOWN);
-#endif
-        try
-        {
-            da = device1->read_attribute("Long_attr");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevLong lo;
-        da >> lo;
-        int data_type = da.get_type();
-        TS_ASSERT(lo == 1246);
-        TS_ASSERT(data_type == Tango::DEV_LONG);
-#ifndef COMPAT
-        AttrDataFormat data_format = da.get_data_format();
-        TS_ASSERT(data_format == Tango::SCALAR);
-#endif
-    }
-
-
-// Test SCALAR double
-
-    void test_Scalar_Double__loop(void)
-    {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("Double_attr");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        double db;
-        da >> db;
-        TS_ASSERT(db == 3.2);
-    }
-
-// Test SCALAR string
-
-    void test_Scalar_String__loop(void)
-    {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("String_attr");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        string str;
-        da >> str;
-        TS_ASSERT(str == "test_string");
-    }
-
-    // test direct classical C string
-
-    void test_Scalar_classical_C_string(void)
-    {
-        DeviceData din, dout;
-        din << "abcde";
-        TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IOString", din));
-        const char *received;
-        dout >> received;
-        TS_ASSERT(strcmp(received, "edcba") == 0);
-    }
-
-// test non-const C string
-
-    void test_Scalar_non_const_classical_C_string(void)
-    {
-        char *in = strdup("abcdef");
-        DeviceData din, dout;
-        din << in;
-        free(in);
-        TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IOString", din));
-        const char *received;
-        dout >> received;
-        TS_ASSERT(strcmp(received, "fedcba") == 0);
-    }
-
-
-// Test SCALAR float
-
-    void test_Scalar_Float__loop(void)
-    {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("Float_attr");
-            float db;
-            da >> db;
-            TS_ASSERT(db == 4.5);
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
+            TS_ASSERT_THROWS_NOTHING(device->command_inout("IOVoid"));
         }
     }
 
-// Test SCALAR boolean
-
-    void test_Scalar_Boolean__loop(void)
+    void test_boolean(void)
     {
-        DeviceAttribute da;
-        try
+
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("Boolean_attr");
+            DeviceData din, dout;
+            bool in = true;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOBool", din));
+            bool received;
+            int data_type = dout.get_type();
+            dout >> received;
+            TS_ASSERT_DIFFERS(in, received);
+            TS_ASSERT_EQUALS(data_type, Tango::DEV_BOOLEAN);
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        bool db;
-        da >> db;
-        TS_ASSERT(db == true);
     }
 
-// Test SCALAR unsigned short
-
-    void test_Scalar_Unsigned_Short__loop(void)
+    void test_short(void)
     {
-        DeviceAttribute da;
-        try
+
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("UShort_attr");
+            DeviceData din, dout;
+            short in = 2;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOShort", din));
+            short received;
+            dout >> received;
+            int data_type = dout.get_type();
+            TS_ASSERT_EQUALS(received, (in * 2));
+            TS_ASSERT_EQUALS(data_type, Tango::DEV_SHORT);
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        unsigned short db;
-        da >> db;
-        TS_ASSERT(db == 111);
     }
 
-// Test SCALAR unsigned char
-
-    void test_Scalar_Unsigned_Char__loop(void)
+    void test_long(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("UChar_attr");
+            DeviceData din, dout;
+            DevLong in = 3;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOLong", din));
+            DevLong received;
+            dout >> received;
+            TS_ASSERT_EQUALS(received, (in * 2));
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        unsigned char db;
-        da >> db;
-        TS_ASSERT(db == 88);
     }
 
-// Test SCALAR long 64 bits
-
-    void test_Scalar_Long64__loop(void)
+    void test_float()
     {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("Long64_attr_rw");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevLong64 lo;
-        da >> lo;
-        int data_type = da.get_type();
 
-        TS_ASSERT(lo == 0x800000000LL);
-        TS_ASSERT(data_type == Tango::DEV_LONG64);
-#ifndef COMPAT
-        AttrDataFormat data_format = da.get_data_format();
-        TS_ASSERT(data_format == Tango::SCALAR);
-#endif
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            float in = (float) 3.1;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOFloat", din));
+            float received;
+            dout >> received;
+            TS_ASSERT_EQUALS(received, (in * 2));
+        }
     }
 
-// Test SCALAR unsigned long
-
-    void test_Scalar_Unsigned_Long__loop(void)
+    void test_double(void)
     {
-        DeviceAttribute da;
-        try
+
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("ULong_attr_rw");
+            DeviceData din, dout;
+            double in = 3.1;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IODouble", din));
+            double received;
+            dout >> received;
+            TS_ASSERT_EQUALS(received, (in * 2));
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevULong lo;
-        da >> lo;
-        int data_type = da.get_type();
-        TS_ASSERT(lo == 0xC0000000L);
-        TS_ASSERT(data_type == Tango::DEV_ULONG);
     }
 
-// Test SCALAR unsigned long 64 bits
-
-    void test_Scalar_Unsigned_Long64__loop(void)
+    void test_unsigned_short(void)
     {
-        DeviceAttribute da;
-        try
+
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("ULong64_attr_rw");
+            DeviceData din, dout;
+            unsigned short in = 100;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOUShort", din));
+            unsigned short received;
+            dout >> received;
+            TS_ASSERT_EQUALS(received, (in * 2));
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevULong64 lo;
-        da >> lo;
-        int data_type = da.get_type();
-        TS_ASSERT(lo == 0xC000000000000000LL);
-        TS_ASSERT(data_type == Tango::DEV_ULONG64);
     }
 
-// Test SCALAR state
-
-    void test_Scalar_State__loop(void)
+    void test_unsigned_long(void)
     {
-        DeviceAttribute da;
-#ifndef COMPAT
-        TS_ASSERT(da.get_data_format() == Tango::FMT_UNKNOWN);
-#endif
-        try
-        {
-            da = device1->read_attribute("State_attr_rw");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevState lo;
-        da >> lo;
-        int data_type = da.get_type();
 
-        TS_ASSERT(lo == Tango::FAULT);
-        TS_ASSERT(data_type == Tango::DEV_STATE);
-#ifndef COMPAT
-        AttrDataFormat data_format = da.get_data_format();
-        TS_ASSERT(data_format == Tango::SCALAR);
-#endif
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevULong in = 1000;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOULong", din));
+            DevULong received;
+            dout >> received;
+            TS_ASSERT_EQUALS(received, (in * 2));
+        }
     }
 
-// Test SCALAR DevEncoded
-
-#ifndef COMPAT
-    void test_Scalar_DevEncoded__loop(void)
+    void test_CPP_string(void)
     {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("Encoded_attr");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevEncoded lo;
-        da >> lo;
-        int data_type = da.get_type();
 
-        TS_ASSERT(::strcmp(lo.encoded_format.in(), "Which format?") == 0);
-        TS_ASSERT(data_type == Tango::DEV_ENCODED);
-#ifndef COMPAT
-        AttrDataFormat data_format = da.get_data_format();
-        TS_ASSERT(data_format == Tango::SCALAR);
-#endif
-        TS_ASSERT(lo.encoded_data.length() == 4);
-        TS_ASSERT(lo.encoded_data[0] == 97);
-        TS_ASSERT(lo.encoded_data[1] == 98);
-        TS_ASSERT(lo.encoded_data[2] == 99);
-        TS_ASSERT(lo.encoded_data[3] == 100);
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            string str("abc");
+            din << str;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOString", din));
+            string received;
+            dout >> received;
+            TS_ASSERT_EQUALS(received, "cba");
+        }
     }
 
-// Test SCALAR DevEncoded (JPEG)
-
-    void test_Scalar_DevEncoded_JPEG__loop(void)
+    void test_classical_C_string(void)
     {
-        DeviceAttribute da;
-        EncodedAttribute att;
-        int width, height;
-        unsigned char *gray8;
-
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("Encoded_image");
-            att.decode_gray8(&da, &width, &height, &gray8);
+            DeviceData din, dout;
+            const char *str = "abcd";
+            din << str;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOString", din));
+            const char *received;
+            dout >> received;
+            TS_ASSERT(strcmp(str, "dcba"));
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-
-        TS_ASSERT(width == 256);
-        TS_ASSERT(height == 256);
-        // Check a pixel (margin of 4 levels for jpeg loss)
-        TS_ASSERT(gray8[128 + 128 * 256] >= 124);
-        TS_ASSERT(gray8[128 + 128 * 256] <= 132);
-        delete[] gray8;
-
-    }
-#endif
-
-// Thirteen in one go
-
-    void test_Thirteen_in_one_call__loop(void)
-    {
-        vector <string> names;
-        names.push_back("Short_attr");
-        names.push_back("Long_attr");
-        names.push_back("Double_attr");
-        names.push_back("String_attr");
-        names.push_back("Float_attr");
-        names.push_back("Boolean_attr");
-        names.push_back("UShort_attr");
-        names.push_back("UChar_attr");
-        names.push_back("Long64_attr_rw");
-        names.push_back("ULong_attr_rw");
-        names.push_back("ULong64_attr_rw");
-        names.push_back("State_attr_rw");
-#ifndef COMPAT
-        names.push_back("Encoded_attr");
-
-        DevEncoded enc;
-#endif
-
-        vector <DeviceAttribute> *received;
-
-        try
-        {
-            received = device1->read_attributes(names);
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        string str;
-        DevLong lo;
-        short sh;
-        double db;
-        float fl;
-        bool bo;
-        unsigned short ush;
-        unsigned char uch;
-        DevLong64 lo64;
-        DevULong ulo;
-        DevULong64 ulo64;
-        DevState sta;
-
-        (*received)[0] >> sh;
-        TS_ASSERT(sh == 12);
-        (*received)[1] >> lo;
-        TS_ASSERT(lo == 1246);
-        (*received)[2] >> db;
-        TS_ASSERT(db == 3.2);
-        (*received)[3] >> str;
-        TS_ASSERT(str == "test_string");
-        (*received)[4] >> fl;
-        TS_ASSERT(fl == 4.5);
-        (*received)[5] >> bo;
-        TS_ASSERT(bo == true);
-        (*received)[6] >> ush;
-        TS_ASSERT(ush == 111);
-        (*received)[7] >> uch;
-        TS_ASSERT(uch == 88);
-        (*received)[8] >> lo64;
-        TS_ASSERT(lo64 == 0x800000000LL);
-        (*received)[9] >> ulo;
-        TS_ASSERT(ulo == 0xC0000000L);
-        (*received)[10] >> ulo64;
-        TS_ASSERT(ulo64 == 0xC000000000000000LL);
-        (*received)[11] >> sta;
-        TS_ASSERT(sta == Tango::FAULT);
-#ifndef COMPAT
-        (*received)[12] >> enc;
-        TS_ASSERT(enc.encoded_data.length() == 4);
-        TS_ASSERT(::strcmp(enc.encoded_format.in(), "Which format?") == 0);
-#endif
-
-        delete received;
     }
 
-
-//
-//---------------------------------------------------------------------------------------------
-//
-
-
-// Test SPECTRUM short
-
-    void test_Spectrum_Short__loop(void)
+    void test_char_array(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("Short_spec_attr");
+            DeviceData din, dout;
+            vector<unsigned char> in;
+            in.push_back(1);
+            in.push_back(2);
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOCharArray", din));
+            vector<unsigned char> received;
+            dout >> received;
+            int data_type = dout.get_type();
+            TS_ASSERT_EQUALS(in[0], received[1]);
+            TS_ASSERT_EQUALS(in[1], received[0]);
+            TS_ASSERT_EQUALS(data_type, Tango::DEVVAR_CHARARRAY);
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        vector<short> sh;
-        bool ret = (da >> sh);
-
-        TS_ASSERT(ret == true);
-#ifndef COMPAT
-        AttrDataFormat data_format = da.get_data_format();
-        TS_ASSERT(data_format == Tango::SPECTRUM);
-#endif
-        TS_ASSERT(sh[0] == 10);
-        TS_ASSERT(sh[1] == 20);
-        TS_ASSERT(sh[2] == 30);
-        TS_ASSERT(sh[3] == 40);
     }
 
-// Test SPECTRUM long
-
-    void test_Spectrum_Long__loop(void)
+    void test_DevVarCharArray(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("Long_spec_attr");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        vector <DevLong> lo;
-        bool ret = (da >> lo);
+            const DevVarCharArray *received;
+            DeviceData din, dout;
 
-        TS_ASSERT(ret == true);
-#ifndef COMPAT
-        AttrDataFormat data_format = da.get_data_format();
-        TS_ASSERT(data_format == Tango::SPECTRUM);
-#endif
-        TS_ASSERT(lo[0] == 0);
-        TS_ASSERT(lo[1] == 1);
-        TS_ASSERT(lo[2] == 2);
-        TS_ASSERT(lo[3] == 3);
-        TS_ASSERT(lo[9] == 9);
+            DevVarCharArray *in = new DevVarCharArray(2);
+            in->length(2);
+            (*in)[0] = 10;
+            (*in)[1] = 20;
+            din << in;
+
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOCharArray", din));
+            dout >> received;
+
+            TS_ASSERT_EQUALS(10, (*received)[1]);
+            TS_ASSERT_EQUALS(20, (*received)[0]);
+        }
+
+        for (size_t i = 0; i < loop; i++)
+        {
+            const DevVarCharArray *received;
+            DeviceData din, dout;
+
+            DevVarCharArray in(2);
+            in.length(2);
+            in[0] = 10;
+            in[1] = 20;
+            din << in;
+
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOCharArray", din));
+            dout >> received;
+
+            TS_ASSERT_EQUALS(in[0], (*received)[1]);
+            TS_ASSERT_EQUALS(in[1], (*received)[0]);
+        }
     }
 
-// Test SPECTRUM double
-
-    void test_Spectrum_Double__loop(void)
+    void test_short_array(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("Double_spec_attr");
+            DeviceData din, dout;
+            vector<short> in;
+            in.push_back(10);
+            in.push_back(20);
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOShortArray", din));
+            vector<short> received;
+            dout >> received;
+            TS_ASSERT_EQUALS(received[0], (in[0] * 2));
+            TS_ASSERT_EQUALS(received[1], (in[1] * 2));
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        vector<double> db;
-        bool ret = (da >> db);
-        int data_type = da.get_type();
-
-        TS_ASSERT(ret == true);
-        TS_ASSERT(db[0] == 1.11);
-        TS_ASSERT(db[1] == 2.22);
-        TS_ASSERT(data_type == Tango::DEV_DOUBLE);
     }
 
-// Test SPECTRUM string
-
-    void test_Spectrum_String__loop(void)
+    void test_DevVarShortArray(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("String_spec_attr");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        vector <string> str;
-        bool ret = (da >> str);
+            DeviceData din, dout;
+            DevVarShortArray *in = new DevVarShortArray(2);
+            in->length(2);
+            (*in)[0] = 1;
+            (*in)[1] = 2;
 
-        TS_ASSERT(ret == true);
-        TS_ASSERT(str[0] == "Hello world");
-        TS_ASSERT(str[1] == "Hello universe");
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOShortArray", din));
+            const DevVarShortArray *received;
+            dout >> received;
+            TS_ASSERT_EQUALS((*received)[0], (1 * 2));
+            TS_ASSERT_EQUALS((*received)[1], (2 * 2));
+        }
+
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevVarShortArray in(2);
+            in.length(2);
+            in[0] = 1;
+            in[1] = 2;
+
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOShortArray", din));
+            const DevVarShortArray *received;
+            dout >> received;
+            TS_ASSERT_EQUALS((*received)[0], (in[0] * 2));
+            TS_ASSERT_EQUALS((*received)[1], (in[1] * 2));
+        }
     }
 
-// Test SPECTRUM float
-
-    void test_Spectrum_Float__loop(void)
+    void test_long_array(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("Float_spec_attr");
+            DeviceData din, dout;
+            vector<DevLong> in;
+            in.push_back(100);
+            in.push_back(200);
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOLongArray", din));
+            vector<DevLong> received;
+            dout >> received;
+            TS_ASSERT_EQUALS(received[0], (in[0] * 2));
+            TS_ASSERT_EQUALS(received[1], (in[1] * 2));
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        vector<float> sh;
-        bool ret = (da >> sh);
-
-        TS_ASSERT(ret == true);
-        TS_ASSERT(sh[0] == 4.5);
-        TS_ASSERT(sh[1] == 8.5);
-        TS_ASSERT(sh[2] == 16.5);
     }
 
-// Test SPECTRUM boolean
-
-    void test_Spectrum_Boolean__loop(void)
+    void test_DevVarLongArray(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("Boolean_spec_attr");
+            DeviceData din, dout;
+            DevVarLongArray *in = new DevVarLongArray(2);
+            in->length(2);
+            (*in)[0] = 11;
+            (*in)[1] = 22;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOLongArray", din));
+            const DevVarLongArray *received;
+            dout >> received;
+            TS_ASSERT_EQUALS((*received)[0], (11 * 2));
+            TS_ASSERT_EQUALS((*received)[1], (22 * 2));
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        vector<bool> sh;
-        bool ret = (da >> sh);
 
-        TS_ASSERT(ret == true);
-#ifndef COMPAT
-        AttrDataFormat data_format = da.get_data_format();
-        TS_ASSERT(data_format == Tango::SPECTRUM);
-#endif
-        TS_ASSERT(sh[0] == true);
-        TS_ASSERT(sh[1] == true);
-        TS_ASSERT(sh[2] == false);
-        TS_ASSERT(sh[3] == true);
-        TS_ASSERT(sh[4] == true);
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevVarLongArray in(2);
+            in.length(2);
+            in[0] = 11;
+            in[1] = 22;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOLongArray", din));
+            const DevVarLongArray *received;
+            dout >> received;
+            TS_ASSERT_EQUALS((*received)[0], (in[0] * 2));
+            TS_ASSERT_EQUALS((*received)[1], (in[1] * 2));
+        }
     }
 
-// Test SPECTRUM unsigned short
-
-    void test_Spectrum_Unsigned_Short__loop(void)
+    void test_float_array(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("UShort_spec_attr");
+            DeviceData din, dout;
+            vector<float> in;
+            in.push_back((float) 100.1);
+            in.push_back((float) 200.2);
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOFloatArray", din));
+            vector<float> received;
+            dout >> received;
+            TS_ASSERT_EQUALS(received[0], (in[0] * 2));
+            TS_ASSERT_EQUALS(received[1], (in[1] * 2));
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        vector<unsigned short> sh;
-        bool ret = (da >> sh);
-
-        TS_ASSERT(ret == true);
-        TS_ASSERT(sh[0] == 333);
-        TS_ASSERT(sh[1] == 444);
     }
 
-// Test SPECTRUM unsigned char
-
-    void test_Spectrum_Unsigned_Char__loop(void)
+    void test_DevVarFloatArray(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("UChar_spec_attr");
+            DeviceData din, dout;
+            DevVarFloatArray *in = new DevVarFloatArray(2);
+            in->length(2);
+            (*in)[0] = (float) 1.11;
+            (*in)[1] = (float) 2.22;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOFloatArray", din));
+            const DevVarFloatArray *received;
+            dout >> received;
+            TS_ASSERT_EQUALS((*received)[0], ((float) 1.11 * 2));
+            TS_ASSERT_EQUALS((*received)[1], ((float) 2.22 * 2));
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        vector<unsigned char> sh;
-        bool ret = (da >> sh);
 
-        TS_ASSERT(ret == true);
-        TS_ASSERT(sh[0] == 28);
-        TS_ASSERT(sh[1] == 45);
-        TS_ASSERT(sh[2] == 156);
-        TS_ASSERT(sh[3] == 34);
-        TS_ASSERT(sh[4] == 200);
-        TS_ASSERT(sh[5] == 12);
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevVarFloatArray in(2);
+            in.length(2);
+            in[0] = (float) 1.11;
+            in[1] = (float) 2.22;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOFloatArray", din));
+            const DevVarFloatArray *received;
+            dout >> received;
+            TS_ASSERT_EQUALS((*received)[0], (in[0] * 2));
+            TS_ASSERT_EQUALS((*received)[1], (in[1] * 2));
+        }
     }
 
-// Test SPECTRUM long 64 bits
-
-    void test_Spectrum_Long64__loop(void)
+    void test_double_array(void)
     {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("Long64_spec_attr_rw");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        vector <DevLong64> lo;
-        bool ret = (da >> lo);
 
-        TS_ASSERT(ret == true);
-        TS_ASSERT(lo[0] == 1000);
-        TS_ASSERT(lo[1] == 10000);
-        TS_ASSERT(lo[2] == 100000);
-        TS_ASSERT(lo[3] == 0);
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            vector<double> in;
+            in.push_back(1.234);
+            in.push_back(2.111);
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IODoubleArray", din));
+            vector<double> received;
+            dout >> received;
+            TS_ASSERT_EQUALS(received[0], (in[0] * 2));
+            TS_ASSERT_EQUALS(received[1], (in[1] * 2));
+        }
     }
 
-// Test SPECTRUM unsigned long
-
-    void test_Spectrum_Unsigned_Long__loop(void)
+    void test_DevVarDoubleArray(void)
     {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("ULong_spec_attr_rw");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        vector <DevULong> lo;
-        bool ret = (da >> lo);
 
-        TS_ASSERT(ret == true);
-        TS_ASSERT(lo[0] == 2222);
-        TS_ASSERT(lo[1] == 22222);
-        TS_ASSERT(lo[2] == 222222);
-        TS_ASSERT(lo[3] == 0);
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevVarDoubleArray *in = new DevVarDoubleArray(2);
+            in->length(2);
+            (*in)[0] = 1.12;
+            (*in)[1] = 3.45;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IODoubleArray", din));
+            const DevVarDoubleArray *received;
+            dout >> received;
+            TS_ASSERT_EQUALS((*received)[0], (1.12 * 2));
+            TS_ASSERT_EQUALS((*received)[1], (3.45 * 2));
+        }
+
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevVarDoubleArray in(2);
+            in.length(2);
+            in[0] = 1.12;
+            in[1] = 3.45;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IODoubleArray", din));
+            const DevVarDoubleArray *received;
+            dout >> received;
+            TS_ASSERT_EQUALS((*received)[0], (in[0] * 2));
+            TS_ASSERT_EQUALS((*received)[1], (in[1] * 2));
+        }
     }
 
-// Test SPECTRUM unsigned long 64 bits
-
-    void test_Spectrum_Unsigned_Long64__loop(void)
+    void test_unsigned_short_array(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("ULong64_spec_attr_rw");
+            DeviceData din, dout;
+            vector<unsigned short> in;
+            in.push_back(100);
+            in.push_back(200);
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOUShortArray", din));
+            vector<unsigned short> received;
+            dout >> received;
+            TS_ASSERT_EQUALS(received[0], (in[0] * 2));
+            TS_ASSERT_EQUALS(received[1], (in[1] * 2));
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        vector <DevULong64> lo;
-        bool ret = (da >> lo);
-
-        TS_ASSERT(ret == true);
-        TS_ASSERT(lo[0] == 8888);
-        TS_ASSERT(lo[1] == 88888);
-        TS_ASSERT(lo[2] == 888888);
-        TS_ASSERT(lo[3] == 0);
     }
 
-// Test SPECTRUM state
-
-    void test_Spectrum_State__loop(void)
+    void test_DevVarUShortArray(void)
     {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("State_spec_attr_rw");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        vector <DevState> lo;
-        bool ret = (da >> lo);
 
-        TS_ASSERT(ret == true);
-        TS_ASSERT(lo[0] == Tango::ON);
-        TS_ASSERT(lo[1] == Tango::OFF);
-        TS_ASSERT(lo[2] == Tango::UNKNOWN);
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevVarUShortArray *in = new DevVarUShortArray(2);
+            in->length(2);
+            (*in)[0] = 11;
+            (*in)[1] = 22;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOUShortArray", din));
+            const DevVarUShortArray *received;
+            dout >> received;
+            TS_ASSERT_EQUALS((*received)[0], (11 * 2));
+            TS_ASSERT_EQUALS((*received)[1], (22 * 2));
+        }
+
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevVarUShortArray in(2);
+            in.length(2);
+            in[0] = 11;
+            in[1] = 22;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOUShortArray", din));
+            const DevVarUShortArray *received;
+            dout >> received;
+            TS_ASSERT_EQUALS((*received)[0], (in[0] * 2));
+            TS_ASSERT_EQUALS((*received)[1], (in[1] * 2));
+        }
     }
 
-//
-//-----------------------------------------------------------------------------------------
-//
-
-
-// Test SPECTRUM short (DevVarShortArray)
-
-    void test_Spectrum_Short_DevVarShortArray__loop(void)
+    void test_unsigned_long_array(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("Short_spec_attr");
+            DeviceData din, dout;
+            vector<DevULong> in;
+            in.push_back(1000);
+            in.push_back(2001);
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOULongArray", din));
+            vector<DevULong> received;
+            dout >> received;
+            TS_ASSERT_EQUALS(received[0], (in[0] * 2));
+            TS_ASSERT_EQUALS(received[1], (in[1] * 2));
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevVarShortArray *sh;
-        da >> sh;
-        TS_ASSERT((*sh)[0] == 10);
-        TS_ASSERT((*sh)[1] == 20);
-        TS_ASSERT((*sh)[2] == 30);
-        TS_ASSERT((*sh)[3] == 40);
-
-        delete sh;
     }
 
-// Test SPECTRUM long
-
-    void test_Spectrum_Long_DevVarLongArray__loop(void)
+    void test_DevVarULongArray(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("Long_spec_attr");
+            DeviceData din, dout;
+            DevVarULongArray *in = new DevVarULongArray(2);
+            in->length(2);
+            (*in)[0] = 111;
+            (*in)[1] = 222;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOULongArray", din));
+            const DevVarULongArray *received;
+            dout >> received;
+            TS_ASSERT_EQUALS((*received)[0], (DevULong) (111 * 2));
+            TS_ASSERT_EQUALS((*received)[1], (DevULong) (222 * 2));
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevVarLongArray *lo;
-        da >> lo;
-        TS_ASSERT((*lo)[0] == 0);
-        TS_ASSERT((*lo)[3] == 3);
-        TS_ASSERT((*lo)[6] == 6);
-        TS_ASSERT((*lo)[9] == 9);
 
-        delete lo;
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevVarULongArray in(2);
+            in.length(2);
+            in[0] = 111;
+            in[1] = 222;
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOULongArray", din));
+            const DevVarULongArray *received;
+            dout >> received;
+            TS_ASSERT_EQUALS((*received)[0], (in[0] * 2));
+            TS_ASSERT_EQUALS((*received)[1], (in[1] * 2));
+        }
     }
 
-// Test SPECTRUM double
-
-    void test_Spectrum_Double_DevVarDoubleArray__loop(void)
+    void test_string_array(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("Double_spec_attr");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevVarDoubleArray *db;
-        da >> db;
-        TS_ASSERT((*db)[0] == 1.11);
-        TS_ASSERT((*db)[1] == 2.22);
+            DeviceData din, dout;
+            vector<string> in;
+            in.push_back("abc");
+            in.push_back("wxyz");
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOStringArray", din));
+            vector<string> received;
+            int data_type = dout.get_type();
+            dout >> received;
 
-        delete db;
+            TS_ASSERT_EQUALS(received[0], in[1]);
+            TS_ASSERT_EQUALS(received[1], in[0]);
+            TS_ASSERT_EQUALS(data_type, Tango::DEVVAR_STRINGARRAY);
+        }
     }
 
-// Test SPECTRUM string
-
-    void test_Spectrum_String_DevVarStringArray__loop(void)
+    void test_DevVarStringArray(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("String_spec_attr");
+            DeviceData din, dout;
+            DevVarStringArray *in = new DevVarStringArray(2);
+            in->length(2);
+            (*in)[0] = Tango::string_dup("abc");
+            (*in)[1] = Tango::string_dup("def");
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOStringArray", din));
+            const DevVarStringArray *received;
+            dout >> received;
+            TS_ASSERT(not(strcmp((*received)[0], "def")));
+            TS_ASSERT(not(strcmp((*received)[1], "abc")));
         }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevVarStringArray *str;
-        da >> str;
-        TS_ASSERT(!strcmp((*str)[0], "Hello world"));
-        TS_ASSERT(!strcmp((*str)[1], "Hello universe"));
-
-        delete str;
     }
 
-// Test SPECTRUM float
-
-    void test_Spectrum_Float_DevVarFloatArray__loop(void)
+    void test_vector_of_long_and_vector_of_string(void)
     {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("Float_spec_attr");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevVarFloatArray *lo;
-        da >> lo;
-        TS_ASSERT((*lo)[0] == 4.5);
-        TS_ASSERT((*lo)[1] == 8.5);
-        TS_ASSERT((*lo)[2] == 16.5);
 
-        delete lo;
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            vector<DevLong> in1;
+            in1.push_back(1000);
+            in1.push_back(2001);
+            in1.push_back(2002);
+            vector<string> in2;
+            in2.push_back("abc");
+            in2.push_back("def");
+            din.insert(in1, in2);
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOLongString", din));
+            vector<DevLong> received1;
+            vector<string> received2;
+            dout.extract(received1, received2);
+
+            TS_ASSERT_EQUALS(received2[0], in2[0]);
+            TS_ASSERT_EQUALS(received2[1], in2[1]);
+            TS_ASSERT_EQUALS(received1[0], (in1[0] * 2));
+            TS_ASSERT_EQUALS(received1[1], (in1[1] * 2));
+            TS_ASSERT_EQUALS(received1[2], (in1[2] * 2));
+        }
     }
 
-// Test SPECTRUM boolean
-
-    void test_Spectrum_Boolean_DevVarBooleanArray__loop(void)
+    void test_DevVarLongStringArray(void)
     {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("Boolean_spec_attr");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevVarBooleanArray *lo;
-        int data_type = da.get_type();
-        da >> lo;
 
-        TS_ASSERT((*lo)[0] == true);
-        TS_ASSERT((*lo)[1] == true);
-        TS_ASSERT((*lo)[2] == false);
-        TS_ASSERT((*lo)[3] == true);
-        TS_ASSERT((*lo)[4] == true);
-        TS_ASSERT(data_type == Tango::DEV_BOOLEAN);
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevVarLongStringArray *in = new DevVarLongStringArray();
+            in->lvalue.length(2);
+            in->lvalue[0] = 111;
+            in->lvalue[1] = 222;
+            in->svalue.length(2);
+            in->svalue[0] = Tango::string_dup("zxc");
+            in->svalue[1] = Tango::string_dup("qwe");
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOLongString", din));
+            const DevVarLongStringArray *received;
+            dout >> received;
 
-        delete lo;
+            TS_ASSERT_EQUALS(received->lvalue[0], (111 * 2));
+            TS_ASSERT_EQUALS(received->lvalue[1], (222 * 2));
+            TS_ASSERT(not(strcmp(received->svalue[0], "zxc")));
+            TS_ASSERT(not(strcmp(received->svalue[1], "qwe")));
+        }
+
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevVarLongStringArray in;
+            in.lvalue.length(2);
+            in.lvalue[0] = 111;
+            in.lvalue[1] = 222;
+            in.svalue.length(2);
+            in.svalue[0] = Tango::string_dup("zxc");
+            in.svalue[1] = Tango::string_dup("qwe");
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOLongString", din));
+            const DevVarLongStringArray *received;
+            dout >> received;
+            int data_type = dout.get_type();
+
+            TS_ASSERT_EQUALS(received->lvalue[0], (in.lvalue[0] * 2));
+            TS_ASSERT_EQUALS(received->lvalue[1], (in.lvalue[1] * 2));
+            TS_ASSERT(not(strcmp(received->svalue[0], in.svalue[0])));
+            TS_ASSERT(not(strcmp(received->svalue[1], in.svalue[1])));
+            TS_ASSERT_EQUALS(data_type, Tango::DEVVAR_LONGSTRINGARRAY);
+        }
     }
 
-// Test SPECTRUM unsigned short
-
-    void test_Spectrum_Unsigned_Short_DevVarUShortArray__loop(void)
+    void test_vector_of_double_and_vector_of_string(void)
     {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("UShort_spec_attr");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevVarUShortArray *lo;
-        da >> lo;
-        TS_ASSERT((*lo)[0] == 333);
-        TS_ASSERT((*lo)[1] == 444);
 
-        delete lo;
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            vector<double> in1;
+            in1.push_back(10.0);
+            in1.push_back(20.1);
+            in1.push_back(20.2);
+            vector<string> in2;
+            in2.push_back("abc");
+            in2.push_back("def");
+            din.insert(in1, in2);
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IODoubleString", din));
+            vector<double> received1;
+            vector<string> received2;
+            dout.extract(received1, received2);
+            int data_type = dout.get_type();
+
+            TS_ASSERT_EQUALS(received2[0], in2[0]);
+            TS_ASSERT_EQUALS(received2[1], in2[1]);
+            TS_ASSERT_EQUALS(received1[0], (in1[0] * 2));
+            TS_ASSERT_EQUALS(received1[1], (in1[1] * 2));
+            TS_ASSERT_EQUALS(received1[2], (in1[2] * 2));
+            TS_ASSERT_EQUALS(data_type, Tango::DEVVAR_DOUBLESTRINGARRAY);
+        }
     }
 
-// Test SPECTRUM unsigned char
-
-    void test_Spectrum_Unsigned_Char_DevVarUCharArray__loop(void)
+    void test_DevVarDoubleStringArray(void)
     {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("UChar_spec_attr");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevVarCharArray *lo;
-        da >> lo;
-        TS_ASSERT((*lo)[0] == 28);
-        TS_ASSERT((*lo)[1] == 45);
-        TS_ASSERT((*lo)[2] == 156);
-        TS_ASSERT((*lo)[3] == 34);
-        TS_ASSERT((*lo)[4] == 200);
-        TS_ASSERT((*lo)[5] == 12);
 
-        delete lo;
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevVarDoubleStringArray *in = new DevVarDoubleStringArray();
+            in->dvalue.length(2);
+            in->dvalue[0] = 1.11;
+            in->dvalue[1] = 22.2;
+            in->svalue.length(3);
+            in->svalue[0] = Tango::string_dup("iop");
+            in->svalue[1] = Tango::string_dup("jkl");
+            in->svalue[2] = Tango::string_dup("bnm");
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IODoubleString", din));
+            const DevVarDoubleStringArray *received;
+            dout >> received;
+
+            TS_ASSERT_EQUALS(received->dvalue[0], (1.11 * 2));
+            TS_ASSERT_EQUALS(received->dvalue[1], (22.2 * 2));
+            TS_ASSERT(not(strcmp(received->svalue[0], "iop")));
+            TS_ASSERT(not(strcmp(received->svalue[1], "jkl")));
+            TS_ASSERT(not(strcmp(received->svalue[2], "bnm")));
+        }
+
+
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevVarDoubleStringArray in;
+            in.dvalue.length(2);
+            in.dvalue[0] = 1.11;
+            in.dvalue[1] = 22.2;
+            in.svalue.length(3);
+            in.svalue[0] = Tango::string_dup("iop");
+            in.svalue[1] = Tango::string_dup("jkl");
+            in.svalue[2] = Tango::string_dup("bnm");
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IODoubleString", din));
+            const DevVarDoubleStringArray *received;
+            dout >> received;
+
+            TS_ASSERT_EQUALS(received->dvalue[0], (in.dvalue[0] * 2));
+            TS_ASSERT_EQUALS(received->dvalue[1], (in.dvalue[1] * 2));
+            TS_ASSERT(not(strcmp(received->svalue[0], in.svalue[0])));
+            TS_ASSERT(not(strcmp(received->svalue[1], in.svalue[1])));
+            TS_ASSERT(not(strcmp(received->svalue[2], in.svalue[2])));
+        }
     }
 
-// Test SPECTRUM long 64 bits
-
-    void test_Spectrum_Long64_DevVarLong64Array__loop(void)
+    void test_DevEncoded(void)
     {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("Long64_spec_attr_rw");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevVarLong64Array *lo;
-        bool ret = (da >> lo);
 
-        TS_ASSERT(ret == true);
-        TS_ASSERT((*lo)[0] == 1000);
-        TS_ASSERT((*lo)[1] == 10000);
-        TS_ASSERT((*lo)[2] == 100000);
-        TS_ASSERT((*lo)[3] == 0);
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevEncoded in;
+            in.encoded_data.length(2);
+            in.encoded_data[0] = 11;
+            in.encoded_data[1] = 22;
+            in.encoded_format = Tango::string_dup("Sent");
+            din << in;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOEncoded", din));
+            const DevEncoded *received;
+            dout >> received;
+            int data_type = dout.get_type();
 
-        delete lo;
+            TS_ASSERT_EQUALS(received->encoded_data.length(), 2u);
+            TS_ASSERT_EQUALS(received->encoded_data[0], (11 * 2));
+            TS_ASSERT_EQUALS(received->encoded_data[1], (22 * 2));
+            TS_ASSERT(not(strcmp(received->encoded_format, "Returned string")));
+            TS_ASSERT_EQUALS(data_type, Tango::DEV_ENCODED);
+        }
+
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            string in_str("Sent");
+            vector<unsigned char> in_data;
+
+            in_data.push_back((unsigned char) 15);
+            in_data.push_back((unsigned char) 25);
+
+            din.insert(in_str, in_data);
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOEncoded", din));
+            DevEncoded received;
+            dout >> received;
+            int data_type = dout.get_type();
+
+            TS_ASSERT_EQUALS(received.encoded_data.length(), 2u);
+            TS_ASSERT_EQUALS(received.encoded_data[0], (15 * 2));
+            TS_ASSERT_EQUALS(received.encoded_data[1], (25 * 2));
+            TS_ASSERT(not(strcmp(received.encoded_format, "Returned string")));
+            TS_ASSERT_EQUALS(data_type, Tango::DEV_ENCODED);
+        }
+
+        for (size_t i = 0; i < loop; i++)
+        {
+            DeviceData din, dout;
+            DevVarCharArray in_data;
+
+            in_data.length(4);
+            in_data[0] = ((unsigned char) 15);
+            in_data[1] = ((unsigned char) 25);
+            in_data[2] = ((unsigned char) 35);
+            in_data[3] = ((unsigned char) 45);
+
+            din.insert("Sent", &in_data);
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOEncoded", din));
+            DevEncoded received;
+            dout >> received;
+            int data_type = dout.get_type();
+
+            TS_ASSERT_EQUALS(received.encoded_data.length(), 4u);
+            TS_ASSERT_EQUALS(received.encoded_data[0], (15 * 2));
+            TS_ASSERT_EQUALS(received.encoded_data[1], (25 * 2));
+            TS_ASSERT_EQUALS(received.encoded_data[2], (35 * 2));
+            TS_ASSERT_EQUALS(received.encoded_data[3], (45 * 2));
+            TS_ASSERT(not(strcmp(received.encoded_format, "Returned string")));
+            TS_ASSERT_EQUALS(data_type, Tango::DEV_ENCODED);
+        }
     }
 
-// Test SPECTRUM unsigned long
-
-    void test_Spectrum_Unsigned_Long_DevVarULongArray__loop(void)
+    void test_DevicePipeBlob(void)
     {
-        DeviceAttribute da;
-        try
+        for (size_t i = 0; i < loop; i++)
         {
-            da = device1->read_attribute("ULong_spec_attr_rw");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevVarULongArray *lo;
-        bool ret = (da >> lo);
+            DevicePipeBlob in{"TestPipeCmd"};
+            DeviceData din, dout;
+            DeviceData din2, dout2;
 
-        TS_ASSERT(ret == true);
-        TS_ASSERT((*lo)[0] == 2222);
-        TS_ASSERT((*lo)[1] == 22222);
-        TS_ASSERT((*lo)[2] == 222222);
-        TS_ASSERT((*lo)[3] == 0);
+            vector <string> names{"long", "double", "string", "double array"};
+            in.set_data_elt_names(names);
+            DevLong long_data = 123;
+            TS_ASSERT_THROWS_NOTHING(in["long"] << long_data);
+            DevDouble double_data = 3.14;
+            TS_ASSERT_THROWS_NOTHING(in["double"] << double_data);
+            string data_str = "String value";
+            TS_ASSERT_THROWS_NOTHING(in["string"] << data_str);
+            vector<double> double_array = {0.1, -0.02, 0.003, -0.0004};
+            TS_ASSERT_THROWS_NOTHING(in["double array"] << double_array);
+            TS_ASSERT_THROWS_NOTHING(din << in);
 
-        delete lo;
+            TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOPipeBlob", din));
+            int data_type = dout.get_type();
+            TS_ASSERT_EQUALS(data_type, Tango::DEV_PIPE_BLOB);
+            DevicePipeBlob received{};
+            TS_ASSERT_THROWS_NOTHING(dout.extract(&received));
+
+            TS_ASSERT_EQUALS(received.get_data_elt_nb(), 4u);
+            TS_ASSERT_EQUALS(received.get_data_elt_name(0), "long");
+            TS_ASSERT_EQUALS(received.get_data_elt_name(1), "double");
+            TS_ASSERT_EQUALS(received.get_data_elt_name(2), "string");
+            TS_ASSERT_EQUALS(received.get_data_elt_name(3), "double array");
+            Tango::DevLong received_long_data;
+            TS_ASSERT_THROWS_NOTHING(received >> received_long_data);
+            TS_ASSERT_EQUALS(received_long_data, 123);
+            Tango::DevDouble received_double_data;
+            TS_ASSERT_THROWS_NOTHING(received >> received_double_data);
+            TS_ASSERT_EQUALS(received_double_data, 3.14);
+            string received_string_data;
+            TS_ASSERT_THROWS_NOTHING(received >> received_string_data);
+            TS_ASSERT_EQUALS(received_string_data, "String value");
+            vector<double> received_double_array;
+            TS_ASSERT_THROWS_NOTHING(received >> received_double_array);
+            TS_ASSERT_EQUALS(received_double_array.size(),4u);
+            TS_ASSERT_EQUALS(received_double_array[0],0.1);
+            TS_ASSERT_EQUALS(received_double_array[1],-0.02);
+            TS_ASSERT_EQUALS(received_double_array[2],0.003);
+            TS_ASSERT_EQUALS(received_double_array[3],-0.0004);
+
+            TS_ASSERT_EQUALS(in.get_data_elt_nb(),4u);
+            DevLong long_data2 = -456;
+            TS_ASSERT_THROWS_NOTHING(in["long"] << long_data2);
+            DevDouble double_data2 = 1407.1789;
+            TS_ASSERT_THROWS_NOTHING(in["double"] << double_data2);
+            string data_str2 = "Another string value";
+            TS_ASSERT_THROWS_NOTHING(in["string"] << data_str2);
+            vector<double> double_array2 = {-1.1, -2.2, 3.3, 4.4,5.5};
+            TS_ASSERT_THROWS_NOTHING(in["double array"] << double_array2);
+            TS_ASSERT_THROWS_NOTHING(din2 << in);
+            TS_ASSERT_THROWS_NOTHING(dout2 = device->command_inout("IOPipeBlob", din2));
+            int data_type2 = dout2.get_type();
+            TS_ASSERT_EQUALS(data_type2, Tango::DEV_PIPE_BLOB);
+            DevicePipeBlob received2{};
+            TS_ASSERT_THROWS_NOTHING(dout2.extract(&received2));
+
+            TS_ASSERT_EQUALS(received2.get_data_elt_nb(), 4u);
+            TS_ASSERT_EQUALS(received2.get_data_elt_name(0), "long");
+            TS_ASSERT_EQUALS(received2.get_data_elt_name(1), "double");
+            TS_ASSERT_EQUALS(received2.get_data_elt_name(2), "string");
+            TS_ASSERT_EQUALS(received2.get_data_elt_name(3), "double array");
+            Tango::DevLong received2_long_data;
+            TS_ASSERT_THROWS_NOTHING(received2 >> received2_long_data);
+            TS_ASSERT_EQUALS(received2_long_data, -456);
+            Tango::DevDouble received2_double_data;
+            TS_ASSERT_THROWS_NOTHING(received2 >> received2_double_data);
+            TS_ASSERT_EQUALS(received2_double_data, 1407.1789);
+            string received2_string_data;
+            TS_ASSERT_THROWS_NOTHING(received2 >> received2_string_data);
+            TS_ASSERT_EQUALS(received2_string_data, "Another string value");
+            vector<double> received_double_array2;
+            TS_ASSERT_THROWS_NOTHING(received2 >> received_double_array2);
+            TS_ASSERT_EQUALS(received_double_array2.size(),5u);
+            TS_ASSERT_EQUALS(received_double_array2[0],-1.1);
+            TS_ASSERT_EQUALS(received_double_array2[1],-2.2);
+            TS_ASSERT_EQUALS(received_double_array2[2],3.3);
+            TS_ASSERT_EQUALS(received_double_array2[3],4.4);
+            TS_ASSERT_EQUALS(received_double_array2[4],5.5);
+        }
     }
-
-// Test SPECTRUM unsigned long 64 bits
-
-    void test_Spectrum_Unsigned_Long64_DevVarULong64Array__loop(void)
-    {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("ULong64_spec_attr_rw");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevVarULong64Array *lo;
-        bool ret = (da >> lo);
-
-        TS_ASSERT(ret == true);
-        TS_ASSERT((*lo)[0] == 8888);
-        TS_ASSERT((*lo)[1] == 88888);
-        TS_ASSERT((*lo)[2] == 888888);
-        TS_ASSERT((*lo)[3] == 0);
-
-        delete lo;
-    }
-
-// Test SPECTRUM state
-
-    void test_Spectrum_State_DevVarStateArray__loop(void)
-    {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("State_spec_attr_rw");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevVarStateArray *lo;
-        bool ret = (da >> lo);
-        TS_ASSERT(ret == true);
-#ifndef COMPAT
-        AttrDataFormat data_format = da.get_data_format();
-        TS_ASSERT(data_format == Tango::SPECTRUM);
-#endif
-        TS_ASSERT((*lo)[0] == Tango::ON);
-        TS_ASSERT((*lo)[1] == Tango::OFF);
-        TS_ASSERT((*lo)[2] == Tango::UNKNOWN);
-
-        delete lo;
-    }
-
-// Test IMAGE short
-
-    void test_Image_Short_DevVarShortArray__loop(void)
-    {
-        DeviceAttribute da;
-        try
-        {
-            da = device1->read_attribute("Short_ima_attr_rw");
-        }
-        catch (CORBA::Exception &e)
-        {
-            Except::print_exception(e);
-            exit(-1);
-        }
-        DevVarShortArray *lo;
-        bool ret = (da >> lo);
-
-        TS_ASSERT(ret == true);
-#ifndef COMPAT
-        AttrDataFormat data_format = da.get_data_format();
-        TS_ASSERT(data_format == Tango::IMAGE);
-#endif
-
-        delete lo;
-    }
-
-// Test exception on attribute data format unknown
-
-    void test_Exception_Error_for_unknown_attribute_data_format(void)
-    {
-        bool except = false;
-        DeviceAttribute db;
-#ifndef COMPAT
-        db.set_exceptions(DeviceAttribute::unknown_format_flag);
-
-        try
-        {
-            db.get_data_format();
-        }
-        catch (Tango::DevFailed &e)
-        {
-            except = true;
-        }
-        TS_ASSERT(except == true);
-
-        db.reset_exceptions(DeviceAttribute::unknown_format_flag);
-
-        AttrDataFormat df = db.get_data_format();
-        TS_ASSERT(df == Tango::FMT_UNKNOWN);
-
-#endif
-    }
-
-// Test DeviceAttribute get_type method after constructor call
-    void test_DeviceAttribute_get_type_after_constructor_call(void)
-    {
-        string attr_name = "MyAttrName";
-        short my_short = 42;
-        DeviceAttribute da_short("MyAttributeName", my_short);
-        TS_ASSERT(da_short.get_type() == DEV_SHORT);
-        DeviceAttribute da_short2(attr_name, my_short);
-        TS_ASSERT(da_short2.get_type() == DEV_SHORT);
-
-        enum Color
-        {
-            red, green, blue
-        };
-        Color color = red;
-        DeviceAttribute da_enum("MyColorEnumAttr", color);
-        TS_ASSERT(da_enum.get_type() == DEV_ENUM);
-        DeviceAttribute da_enum2(attr_name, color);
-        TS_ASSERT(da_enum2.get_type() == DEV_ENUM);
-
-        vector<short> my_short_vector;
-        for (size_t i = 0; i < 10; i++)
-        {
-            my_short_vector.push_back(i);
-            my_short_vector.push_back(-i);
-        }
-        DeviceAttribute da_short_vec("MyShortSpectrumAttr", my_short_vector);
-        TS_ASSERT(da_short_vec.get_type() == DEV_SHORT);
-        DeviceAttribute da_short_vec2(attr_name, my_short_vector);
-        TS_ASSERT(da_short_vec2.get_type() == DEV_SHORT);
-
-        DeviceAttribute da_short_vec3("MyShortSpectrumAttr", my_short_vector, 4, 5);
-        TS_ASSERT(da_short_vec3.get_type() == DEV_SHORT);
-        DeviceAttribute da_short_vec4(attr_name, my_short_vector, 10, 2);
-        TS_ASSERT(da_short_vec4.get_type() == DEV_SHORT);
-
-        vector <Color> my_enum_vector;
-        my_enum_vector.push_back(red);
-        my_enum_vector.push_back(blue);
-        my_enum_vector.push_back(red);
-        my_enum_vector.push_back(green);
-
-        DeviceAttribute da_enum_vec("MyEnumSpectrumAttr", my_enum_vector);
-        TS_ASSERT(da_enum_vec.get_type() == DEV_ENUM);
-        DeviceAttribute da_enum_vec2(attr_name, my_enum_vector);
-        TS_ASSERT(da_enum_vec2.get_type() == DEV_ENUM);
-
-        DeviceAttribute da_enum_vec3("MyEnumSpectrumAttr", my_enum_vector, 2, 2);
-        TS_ASSERT(da_enum_vec3.get_type() == DEV_ENUM);
-        DeviceAttribute da_enum_vec4(attr_name, my_enum_vector, 4, 1);
-        TS_ASSERT(da_enum_vec4.get_type() == DEV_ENUM);
-    }
-
-// Test DeviceAttribute get_type method after short or enum insertion
-    void test_DeviceAttribute_get_type_after_short_or_enum_insertion(void)
-    {
-        enum Color
-        {
-            red, green, blue
-        };
-
-        DeviceAttribute da;
-        TS_ASSERT(da.get_type() == DATA_TYPE_UNKNOWN);
-        short my_short = 42;
-        da << my_short;
-        TS_ASSERT(da.get_type() == DEV_SHORT);
-
-        Color color = blue;
-        da << color;
-        TS_ASSERT(da.get_type() == DEV_ENUM);
-
-        da << my_short;
-        TS_ASSERT(da.get_type() == DEV_ENUM);
-
-        vector<short> my_short_vector;
-        for (size_t i = 0; i < 10; i++)
-        {
-            my_short_vector.push_back(i);
-            my_short_vector.push_back(-i);
-        }
-
-        da << my_short_vector;
-        // If the device attribute data type was previously set to DEV_ENUM
-        // and we insert a short, we can still consider it as an enum
-        TS_ASSERT(da.get_type() == DEV_ENUM);
-
-        DeviceAttribute da2;
-        da2 << my_short_vector;
-        TS_ASSERT(da2.get_type() == DEV_SHORT);
-
-        vector <Color> my_enum_vector;
-        my_enum_vector.push_back(red);
-        my_enum_vector.push_back(blue);
-        my_enum_vector.push_back(red);
-        my_enum_vector.push_back(green);
-
-        da2 << my_enum_vector;
-        TS_ASSERT(da2.get_type() == DEV_ENUM);
-    }
-
 };
 #undef cout
 #endif // CmdTypesTestSuite_h
+
+

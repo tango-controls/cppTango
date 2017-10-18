@@ -741,6 +741,16 @@ virtual ~Command() {}
  * <b>DevFailed</b> exception specification
  */
     void extract(const CORBA::Any &in, const Tango::DevEncoded *&data);
+
+    /**
+     * Extracts DevPipeBlob from a CORBA Any object
+     *
+     * @param in the CORBA Any object
+     * @param data Reference to the extracted DevPipeBlob object
+     * @exception DevFailed If the Any object does not contains a data of the
+     * waited type.
+     */
+    void extract(const CORBA::Any &in, DevPipeBlob *&data);
 //@}
 
 /**@name Insert methods.
@@ -1219,6 +1229,14 @@ virtual ~Command() {}
  * <b>DevFailed</b> exception specification
  */
     CORBA::Any *insert(Tango::DevEncoded *data);
+
+    /**
+     * Inserts data into a new CORBA::Any. data is being deleted
+     *
+     * @param data data to wrap up in CORBA::Any
+     * @return data wrapped up in a new CORBA::Any
+     */
+    CORBA::Any *insert(DevPipeBlob *data);
 //@}
 
 protected:
@@ -1280,6 +1298,7 @@ public:
     {
         return ext;
     }
+
 };
 
 //=============================================================================
