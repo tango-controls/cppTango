@@ -3515,10 +3515,7 @@ void Attribute::AttributeValue_5_2_AttributeValue_4(const Tango::AttributeValue_
 // First pass the data from one union to another WITHOUT copying them
 //
 
-	if (att_5->quality != Tango::ATTR_INVALID)
-	{
-		AttrValUnion_fake_copy(att_5,att_4);
-	}
+	AttrValUnion_fake_copy(att_5,att_4);
 
 //
 // The remaining fields
@@ -3561,10 +3558,7 @@ void Attribute::AttributeValue_4_2_AttributeValue_5(const Tango::AttributeValue_
 // First pass the data from one union to another WITHOUT copying them
 //
 
-	if (att_4->quality != Tango::ATTR_INVALID)
-	{
-		AttrValUnion_fake_copy(att_4,att_5);
-	}
+	AttrValUnion_fake_copy(att_4,att_5);
 
 //
 // The remaining fields
