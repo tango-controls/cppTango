@@ -3519,10 +3519,7 @@ Attribute::AttributeValue_5_2_AttributeValue_3(const Tango::AttributeValue_5 *at
 // First copy the data
 //
 
-    if (att_5->quality != Tango::ATTR_INVALID)
-    {
-        AttrValUnion_2_Any(att_5, att_3->value);
-    }
+    AttrValUnion_2_Any(att_5, att_3->value);
 
 //
 // The remaining fields
