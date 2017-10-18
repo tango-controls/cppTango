@@ -20,7 +20,7 @@ before_install:
   - docker pull tangocs/mysql:9.2.2
   - docker pull tangocs/tango-cs:latest
   - git clone https://github.com/JoakimSoderberg/coveralls-cmake.git
-  - git clone -b cppTango-378 https://${CI_USER_TOKEN}@github.com/tango-controls/tango-idl.git idl
+  - git clone https://${CI_USER_TOKEN}@github.com/tango-controls/tango-idl.git idl
   - chmod +x .travis/run.sh
 
 before_script:
