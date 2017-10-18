@@ -5297,7 +5297,8 @@ DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
 // Prepare data sent to device
 //
 
-        //TODO replace with createDevPipeDatapipe_value_5.name = pipe_data.get_name().c_str();
+    //TODO replace with createDevPipeData
+    pipe_value_5.name = pipe_data.get_name().c_str();
         const string &bl_name = pipe_data.get_root_blob().get_name();
         if (bl_name.size() != 0)
             pipe_value_5.data_blob.name = bl_name.c_str();
