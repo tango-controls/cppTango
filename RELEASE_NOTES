@@ -2,6 +2,12 @@
 ======
 
 Support for PipeBlob in commands
+Inserting const C string in DeviceData
+Fix DeviceAttribute constructor for short and enum data types
+NotifD is no longer supported
+Fix shift-negative-value compilation warnings reported by g++ 6.3
+Fix tango_const.h not installed
+Fix "unused parameter" warnings
 
 10.0.1
 ======
