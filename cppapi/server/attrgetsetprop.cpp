@@ -195,13 +195,15 @@ void Attribute::get_properties(Tango::AttributeConfig_3 &conf)
 	str.precision(TANGO_FLOAT_PRECISION);
 
 	if (event_period == INT_MAX)
-		conf.event_prop.per_event.period = CORBA::string_dup((const char *)(DEFAULT_EVENT_PERIOD));
+	{
+		str << DEFAULT_EVENT_PERIOD;
+	}
 	else
 	{
-		int per = (int)((double)event_period);
-		str << per;
-		MEM_STREAM_2_CORBA(conf.event_prop.per_event.period,str);
+		str << event_period;
 	}
+
+	MEM_STREAM_2_CORBA(conf.event_prop.per_event.period,str);
 
 //
 // Copy change event properties
