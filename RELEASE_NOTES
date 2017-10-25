@@ -1,3 +1,10 @@
+10.2.2
+======
+
+Attribute: Don't treat an integer as an char* (#403)
+Fix bug in event name when pushing an error event to >IDL5 clients
+Fix bug leading occasionally to segmentation faults
+
 10.2.1
 ======
 
