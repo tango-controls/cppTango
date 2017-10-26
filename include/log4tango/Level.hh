@@ -116,8 +116,7 @@ public:
 	 * @throw std::invalid_argument if the level_name does not 
 	 * correspond with a known Level name or a number
 	 **/
-   static Value get_value (const std::string& level_name)
-	    throw(std::invalid_argument);
+   static Value get_value (const std::string& level_name);
 };
 
 } // namespace log4tango
