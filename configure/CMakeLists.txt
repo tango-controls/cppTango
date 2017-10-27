@@ -30,6 +30,11 @@ else(OMNI_BASE)
     endif()
 endif(OMNI_BASE)
 
+if(CPPZMQ_BASE)
+    message("Using CPPZMQ_BASE=${CPPZMQ_BASE}")
+    include_directories(${CPPZMQ_BASE}/include)
+endif(CPPZMQ_BASE)
+
 if(ZMQ_BASE)
     message("Using ZMQ_BASE=${ZMQ_BASE}")
     set(ZMQ_PKG_INCLUDE_DIRS ${ZMQ_BASE}/include)
