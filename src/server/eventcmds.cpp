@@ -932,7 +932,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
 		ret_data = new Tango::DevVarLongStringArray();
         ret_data->lvalue.length(6);
-        ret_data->svalue.length(3);
+        ret_data->svalue.length(2);
 
         ret_data->lvalue[0] = (Tango::DevLong)tg->get_tango_lib_release();
         ret_data->lvalue[1] = dev->get_dev_idl_version();
