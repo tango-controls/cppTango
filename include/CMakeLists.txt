@@ -47,7 +47,7 @@ set(CLIENT_HEADERS
         tango/client/DevicePipe.h
         tango/client/Connection.h
         tango/client/DeviceProxy.h
-        tango/client/AttributeProxy.h)
+        tango/client/AttributeProxy.h tango/client/device/device_command_info.h)
 
 set(CLIENT_HELPERS
         tango/client/helpers/DeviceProxyHelper.h
@@ -56,11 +56,11 @@ set(CLIENT_HELPERS
         tango/client/helpers/Xstring.h)
 
 set(CLIENT_TEMPLATES
-        tango/client/event.tpp
         tango/client/devapi_attr.tpp
         tango/client/devapi_utils.tpp
         tango/client/api_util.tpp
-        tango/client/devapi_pipe.tpp)
+        tango/client/devapi_pipe.tpp
+        tango/client/event_consumer.tpp)
 
 set(SERVER_HEADERS 
         tango/server/attrdesc.h
@@ -109,7 +109,6 @@ set(SERVER_HEADERS
         tango/server/rootattreg.h
         tango/server/seqvec.h
         tango/server/tango_config.h
-        tango/server/tango_const.h
         tango/server/tango_monitor.h
         tango/server/tangoappender.h
         tango/server/tangorollingfileappender.h
@@ -117,8 +116,8 @@ set(SERVER_HEADERS
         tango/server/w32win.h
         tango/server/w_attribute.h
         tango/server/w_pipe.h
-        tango/server/subdev_diag.h)
-
+        tango/server/subdev_diag.h
+        tango/server/device_6.h)
 
 set(SERVER_TEMPLATES
         tango/server/attribute.tpp
@@ -162,15 +161,19 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/log4tango/config.h DESTINATION include
 install(FILES ${LOG4TANGO_THREADING}
         DESTINATION include/log4tango/threading)
 else(WIN32)
+configure_file(tango/server/tango_const.h.in ${PROJECT_BINARY_DIR}/include/tango/server/tango_const.h)
 add_library(include_objects OBJECT tango.h ${SERVER_HEADERS} ${CLIENT_HEADERS} ${CLIENT_HELPERS} ${LOG4TANGO_HEADERS} ${LOG4TANGO_THREADING})
 
 install(FILES tango.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
-install(FILES ${SERVER_HEADERS} ${SERVER_TEMPLATES} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/server")
-install(FILES ${CLIENT_HEADERS} ${CLIENT_TEMPLATES} ${CLIENT_HELPERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/client")
 
-install(FILES ${LOG4TANGO_HEADERS}
-        DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/log4tango)
+#install current dir
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/ DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}"
+        PATTERN "CMakeLists.txt" EXCLUDE
+        PATTERN "*.in" EXCLUDE)
+
+#install configured files
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/log4tango/config.h DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/log4tango)
 install(FILES ${LOG4TANGO_THREADING}
         DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/log4tango/threading)
 endif(WIN32)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tango/server/tango_const.h DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/server)

@@ -1,5 +1,3 @@
-[DRAFT]
-
 # Prerequisites
 
 * [tango-idl](https://github.com/tango-controls/tango-idl)
@@ -16,6 +14,10 @@
 - sudo make install
 
 cmake options are: `[-DCMAKE_INSTALL_PREFIX=<desired installation path>] [-DOMNI_BASE=<omniORB4 home folder>] [-DZMQ_BASE=<zmq home folder>] [-DIDL_BASE=<tango-idl installation folder>] [-DCMAKE_BUILD_TYPE=RELEASE|DEBUG] [-DCMAKE_VERBOSE_MAKEFILE=true]`
+
+Options:
+- -DOMNI_BASE = required if omniORB not installed with system package manager. OMNI_BASE points to the directory where you have installed omniORB which must include the libraries and binaries so cmake can find omniidl
+- -DZMQ_BASE = required in zmq not installed with system package manager. ZMQ_BASE points to the directory where the zmq libraries and include files have been installed
 
 Typical output:
 

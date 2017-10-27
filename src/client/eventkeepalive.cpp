@@ -79,56 +79,6 @@ namespace Tango {
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool EventConsumerKeepAliveThread::reconnect_to_channel(EvChanIte &ipos,EventConsumer *event_consumer)
-{
-	bool ret = true;
-	EvCbIte epos;
-
-	cout3 << "Entering KeepAliveThread::reconnect()" << endl;
-
-	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
-	{
-		if (epos->second.channel_name == ipos->first)
-		{
-			bool need_reconnect = false;
-			vector<EventSubscribeStruct>:: iterator esspos;
-			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
-			{
-				if (esspos->callback != NULL || esspos->ev_queue != NULL)
-				{
-					need_reconnect = true;
-					break;
-				}
-			}
-
-			if (need_reconnect == true)
-			{
-				try
-				{
-				    DeviceData dummy;
-					string adm_name = ipos->second.full_adm_name;
-					event_consumer->connect_event_channel(adm_name,
-									      epos->second.device->get_device_db(),
-									      true,dummy);
-
-					if (ipos->second.adm_device_proxy != NULL)
-						delete ipos->second.adm_device_proxy;
-					ipos->second.adm_device_proxy = new DeviceProxy(ipos->second.full_adm_name);
-					cout3 << "Reconnected to event channel" << endl;
-				}
-				catch(...)
-				{
-					ret = false;
-				}
-
-				break;
-			}
-		}
-	}
-
-	return ret;
-}
-
 
 //---------------------------------------------------------------------------------------------------------------------
 //
@@ -236,59 +186,6 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void EventConsumerKeepAliveThread::reconnect_to_event(EvChanIte &ipos,EventConsumer *event_consumer)
-{
-	EvCbIte epos;
-
-	cout3 << "Entering KeepAliveThread::reconnect_to_event()" << endl;
-
-	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
-	{
-		if (epos->second.channel_name == ipos->first)
-		{
-			bool need_reconnect = false;
-			vector<EventSubscribeStruct>:: iterator esspos;
-			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
-			{
-				if (esspos->callback != NULL || esspos->ev_queue != NULL)
-				{
-					need_reconnect = true;
-					break;
-				}
-			}
-
-			if (need_reconnect == true)
-			{
-				try
-				{
-					epos->second.callback_monitor->get_monitor();
-
-					try
-					{
-						re_subscribe_event(epos,ipos);
-						epos->second.filter_ok = true;
-						cout3 << "Reconnected to event" << endl;
-					}
-					catch(...)
-					{
-						epos->second.filter_ok = false;
-					}
-
-					epos->second.callback_monitor->rel_monitor();
-				}
-				catch (...)
-				{
-					ApiUtil *au = ApiUtil::instance();
-					stringstream ss;
-
-					ss << "EventConsumerKeepAliveThread::reconnect_to_event() cannot get callback monitor for " << epos->first;
-					au->print_error_message(ss.str().c_str());
-				}
-			}
-		}
-	}
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -303,89 +200,6 @@ void EventConsumerKeepAliveThread::reconnect_to_event(EvChanIte &ipos,EventConsu
 //			- ipos : Pointer to the EventChannel structure in the Event Channel map
 //
 //--------------------------------------------------------------------------------------------------------------------
-
-void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &ipos)
-{
-
-//
-// Build a filter using the CORBA Notify constraint Language (use attribute name in lowercase letters)
-//
-
-	CosNotifyFilter::FilterFactory_var ffp;
-	CosNotifyFilter::Filter_var filter = CosNotifyFilter::Filter::_nil();
-	CosNotifyFilter::FilterID filter_id;
-
-	string channel_name = epos->second.channel_name;
-
-	try
-	{
-		ffp    = ipos->second.eventChannel->default_filter_factory();
-		filter = ffp->create_filter("EXTENDED_TCL");
-  	}
-	catch (CORBA::COMM_FAILURE &)
-	{
-		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
-                       	(const char*)"Caught CORBA::COMM_FAILURE exception while creating event filter (check filter)",
-                       	(const char*)"EventConsumerKeepAliveThread::re_subscribe_event()");
-	}
-	catch (...)
-	{
-		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
-                       	(const char*)"Caught exception while creating event filter (check filter)",
-                       	(const char*)"EventConsumerKeepAliveThread::re_subscribe_event()");
-	}
-
-//
-// Construct a simple constraint expression; add it to fadmin
-//
-
-	string constraint_expr = epos->second.filter_constraint;
-
-	CosNotification::EventTypeSeq evs;
-	CosNotifyFilter::ConstraintExpSeq exp;
-	exp.length(1);
-	exp[0].event_types = evs;
-	exp[0].constraint_expr = Tango::string_dup(constraint_expr.c_str());
-	DevBoolean res = 0; // OK
-	try
-	{
-		CosNotifyFilter::ConstraintInfoSeq_var dummy = filter->add_constraints(exp);
-
-		filter_id = ipos->second.structuredProxyPushSupplier->add_filter(filter);
-
-		epos->second.filter_id = filter_id;
-	}
-	catch(CosNotifyFilter::InvalidConstraint &)
-	{
-		//cerr << "Exception thrown : Invalid constraint given "
-		//     << (const char *)constraint_expr << endl;
-		res = 1;
-	}
-	catch (...)
-	{
-		//cerr << "Exception thrown while adding constraint "
-	 	//     << (const char *)constraint_expr << endl;
-		res = 1;
-	}
-
-//
-// If error, destroy filter
-//
-
-	if (res == 1)
-	{
-		try
-		{
-			filter->destroy();
-		}
-		catch (...) { }
-
-    	filter = CosNotifyFilter::Filter::_nil();
-		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
-                       	(const char*)"Caught exception while creating event filter (check filter)",
-                       	(const char*)"EventConsumerKeepAliveThread::re_subscribe_event()");
-	}
-}
 
 //--------------------------------------------------------------------------------------------------------------------
 //
@@ -499,7 +313,6 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 	int time_to_sleep;
 	time_t now;
 	ZmqEventConsumer *event_consumer;
-	NotifdEventConsumer *notifd_event_consumer;
 
 //
 // first sleep 2 seconds to give the event system time to startup
@@ -517,7 +330,6 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 	bool exit_th = false;
 
 	event_consumer = ApiUtil::instance()->get_zmq_event_consumer();
-	notifd_event_consumer = ApiUtil::instance()->get_notifd_event_consumer();
 
 	while (exit_th == false)
 	{
@@ -562,8 +374,6 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 
         if (event_consumer)
             event_consumer = ApiUtil::instance()->get_zmq_event_consumer();
-        if (notifd_event_consumer == NULL)
-            notifd_event_consumer = ApiUtil::instance()->get_notifd_event_consumer();
 
 		now = time(NULL);
 		if ( event_consumer->event_not_connected.empty() == false)
@@ -576,7 +386,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 // Check the list of not yet connected events and try to subscribe
 //
 
-            not_conected_event(event_consumer,now,notifd_event_consumer);
+            not_conected_event(event_consumer,now);
 
             event_consumer->map_modification_lock.writerOut();
         }
@@ -623,13 +433,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 					if (heartbeat_skipped || ipos->second.heartbeat_skipped || ipos->second.event_system_failed == true)
 					{
 						ipos->second.heartbeat_skipped = true;
-						main_reconnect(event_consumer,notifd_event_consumer,epos,ipos);
-					}
-					else
-					{
-						// When the heartbeat has worked, mark the connection to the notifd as OK
-						if (ipos->second.channel_type == NOTIFD)
-							ipos->second.has_notifd_closed_the_connection = 0;
+						main_reconnect(event_consumer,epos,ipos);
 					}
 
 					// release channel monitor
@@ -672,8 +476,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void EventConsumerKeepAliveThread::not_conected_event(ZmqEventConsumer *event_consumer,time_t now,
-													NotifdEventConsumer *notifd_event_consumer)
+void EventConsumerKeepAliveThread::not_conected_event(ZmqEventConsumer *event_consumer,time_t now)
 {
 	if ( !event_consumer->event_not_connected.empty() )
 	{
@@ -710,36 +513,6 @@ void EventConsumerKeepAliveThread::not_conected_event(ZmqEventConsumer *event_co
 
 				catch (Tango::DevFailed &e)
 				{
-					string reason(e.errors[0].reason.in());
-					if (reason == API_CommandNotFound)
-					{
-						try
-						{
-							if (notifd_event_consumer == NULL)
-							{
-								ApiUtil::instance()->create_notifd_event_consumer();
-								notifd_event_consumer = ApiUtil::instance()->get_notifd_event_consumer();
-							}
-							notifd_event_consumer->connect_event(vpos->device,vpos->attribute,vpos->event_type,
-																				vpos->callback,
-																				vpos->ev_queue,
-																				vpos->filters,
-																				vpos->event_name,
-																				vpos->event_id);
-
-//
-// delete element from vector when subscribe worked
-//
-
-							vpos = event_consumer->event_not_connected.erase(vpos);
-							inc_vpos = false;
-						}
-						catch (Tango::DevFailed &e)
-						{
-							stateless_subscription_failed(vpos,e,now);
-						}
-					}
-					else
 						stateless_subscription_failed(vpos,e,now);
 				}
 				catch (...)
@@ -996,7 +769,6 @@ void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_
 //--------------------------------------------------------------------------------------------------------------------
 
 void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consumer,
-												  NotifdEventConsumer *notifd_event_consumer,
 													map<string,EventCallBackStruct>::iterator &epos,
 													map<string,EventChannelStruct>::iterator &ipos)
 {
@@ -1004,81 +776,6 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 //
 // First, try to reconnect
 //
-
-	if (ipos->second.channel_type == NOTIFD)
-	{
-
-//
-// Check notifd by trying to read an attribute of the event channel
-//
-
-		try
-		{
-//
-// Check if the device server is now running on a different host. In this case we have to reconnect to another
-// notification daemon.
-//
-			DeviceInfo info;
-			try
-			{
-				info = ipos->second.adm_device_proxy->info();
-			}
-			catch (Tango::DevFailed &)
-			{
-				// in case of failure, just stay connected to the actual notifd
-				info.server_host = ipos->second.notifyd_host;
-			}
-
-			if ( ipos->second.notifyd_host != info.server_host )
-			{
-				ipos->second.event_system_failed = true;
-			}
-			else
-			{
-				CosNotifyChannelAdmin::EventChannelFactory_var ecf = ipos->second.eventChannel->MyFactory();
-				if (ipos->second.full_adm_name.find(MODIFIER_DBASE_NO) != string::npos)
-					ipos->second.event_system_failed = true;
-			}
-		}
-		catch (...)
-		{
-			ipos->second.event_system_failed = true;
-			cout3 << "Notifd is dead !!!" << endl;
-		}
-
-//
-// if the connection to the notify daemon is marked as ok, the device server is working fine but
-// the heartbeat is still not coming back since three periods:
-// The notify deamon might have closed the connection, try to reconnect!
-//
-
-		if ( ipos->second.event_system_failed == false &&
-			 ipos->second.has_notifd_closed_the_connection >= 3 )
-		{
-			ipos->second.event_system_failed = true;
-		}
-
-//
-// Re-build connection to the event channel. This is a two steps process. First, reconnect to the new event channel,
-// then reconnect callbacks to this new event channel
-//
-
-		if ( ipos->second.event_system_failed == true )
-		{
-			bool notifd_reco = reconnect_to_channel(ipos,notifd_event_consumer);
-			if ( notifd_reco )
-				ipos->second.event_system_failed = false;
-			else
-				ipos->second.event_system_failed = true;
-
-			if ( ipos->second.event_system_failed == false )
-			{
-				reconnect_to_event(ipos,notifd_event_consumer);
-			}
-		}
-	}
-	else
-	{
 		DeviceData dd;
 		bool zmq_reco = reconnect_to_zmq_channel(ipos,event_consumer,dd);
 		if ( zmq_reco )
@@ -1090,7 +787,6 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 		{
 			reconnect_to_zmq_event(ipos,event_consumer,dd);
 		}
-	}
 
 	Tango::DevErrorList errors(1);
 
@@ -1126,12 +822,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 				{
 					if ((ipos->second.channel_type == NOTIFD) && (epos->second.filter_ok == false))
 					{
-						try
-						{
-							re_subscribe_event(epos,ipos);
-							epos->second.filter_ok = true;
-						}
-						catch(...) {}
+                        assert(false);
 					}
 				}
 
@@ -1333,7 +1024,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 
 				if ( ipos->second.event_system_failed == false )
 				{
-					re_subscribe_after_reconnect(event_consumer,notifd_event_consumer,epos,ipos,domain_name);
+					re_subscribe_after_reconnect(event_consumer,epos,ipos,domain_name);
 				}
 				// release callback monitor
 				epos->second.callback_monitor->rel_monitor();
@@ -1369,7 +1060,6 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 //--------------------------------------------------------------------------------------------------------------------
 
 void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer *event_consumer,
-												  				NotifdEventConsumer *notifd_event_consumer,
 												  				map<string,EventCallBackStruct>::iterator &epos,
 																map<string,EventChannelStruct>::iterator &ipos,
 																string &domain_name)
@@ -1442,7 +1132,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 //
 
 				if (ipos->second.channel_type == NOTIFD)
-					ipos->second.has_notifd_closed_the_connection++;
+                    assert(false);
 			}
 			catch (DevFailed &e)
 			{
@@ -1522,11 +1212,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			DevErrorList err;
 			err.length(0);
 			string prefix;
-			if (ipos->second.channel_type == NOTIFD)
-				prefix = notifd_event_consumer->env_var_fqdn_prefix[0];
-			else
-            {
-                if (epos->second.device->get_from_env_var() == false)
+			if (epos->second.device->get_from_env_var() == false)
                 {
                     prefix = "tango://";
                     if (epos->second.device->is_dbase_used() == false)
@@ -1538,7 +1224,6 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
                 {
                     prefix = event_consumer->env_var_fqdn_prefix[0];
                 }
-            }
 
 			string dom_name = prefix + epos->second.device->dev_name();
             if (epos->second.device->is_dbase_used() == false)
@@ -1559,7 +1244,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 //
 
 				if (ipos->second.channel_type == NOTIFD)
-					ipos->second.has_notifd_closed_the_connection++;
+                    assert(false);
 			}
 			catch (DevFailed &e)
 			{

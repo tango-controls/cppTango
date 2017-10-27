@@ -1056,8 +1056,9 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 
         switch (version)
         {
+            case 6:
             case 5:
-			dii_any >>= received_5;
+                dii_any >>= received_5;
 			nb_received = received_5->length();
             break;
 
@@ -1083,7 +1084,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 		{
 			if (version >= 3)
 			{
-			    if (version == 5)
+				if (version >= 5)
                     ApiUtil::attr_to_device(&((*received_5)[i]),version,&((*dev_attr)[i]));
 				else if (version == 4)
 					ApiUtil::attr_to_device(&((*received_4)[i]),version,&((*dev_attr)[i]));
@@ -1260,8 +1261,9 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 
         switch (version)
         {
+            case 6:
             case 5:
-            dii_any >>= received_5;
+                dii_any >>= received_5;
             break;
 
             case 4:
@@ -1279,7 +1281,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 
 		if (version >= 3)
 		{
-		    if (version == 5)
+			if (version >= 5)
                 ApiUtil::attr_to_device(&((*received_5)[0]),version,dev_attr);
 			else if (version == 4)
 				ApiUtil::attr_to_device(&((*received_4)[0]),version,dev_attr);
@@ -1497,8 +1499,9 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 
     switch (version)
     {
+        case 6:
         case 5:
-        dii_any >>= received_5;
+            dii_any >>= received_5;
         nb_received = received_5->length();
         break;
 
@@ -1524,7 +1527,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 	{
 		if (version >= 3)
 		{
-			if (version == 5)
+			if (version >= 5)
                 ApiUtil::attr_to_device(&((*received_5)[i]),version,&((*dev_attr)[i]));
 			else if (version == 4)
 				ApiUtil::attr_to_device(&((*received_4)[i]),version,&((*dev_attr)[i]));
@@ -1738,8 +1741,9 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 
     switch (version)
     {
+        case 6:
         case 5:
-		dii_any >>= received_5;
+            dii_any >>= received_5;
         break;
 
         case 4:
@@ -1757,7 +1761,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 
 	if (version >= 3)
 	{
-	    if (version == 5)
+		if (version >= 5)
             ApiUtil::attr_to_device(&((*received_5)[0]),version,dev_attr);
 		else if (version == 4)
 			ApiUtil::attr_to_device(&((*received_4)[0]),version,dev_attr);

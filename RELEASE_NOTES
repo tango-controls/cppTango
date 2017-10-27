@@ -1,0 +1,22 @@
+10.2.2
+======
+
+Attribute: Don't treat an integer as an char* (#403)
+Fix bug in event name when pushing an error event to >IDL5 clients
+Fix bug leading occasionally to segmentation faults
+
+10.2.1
+======
+
+Support for PipeBlob in commands
+Inserting const C string in DeviceData
+Fix DeviceAttribute constructor for short and enum data types
+NotifD is no longer supported
+Fix shift-negative-value compilation warnings reported by g++ 6.3
+Fix tango_const.h not installed
+Fix "unused parameter" warnings
+
+10.0.1
+======
+
+Support DevEnum labels for commands

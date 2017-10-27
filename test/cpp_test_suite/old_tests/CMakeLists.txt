@@ -9,7 +9,6 @@ set(TESTS   acc_right
             attr_proxy
             attr_types
             cmd_inout
-            cmd_types
             ConfEventBugClient
             copy_devproxy
             ds_cache
@@ -19,7 +18,6 @@ set(TESTS   acc_right
             mem_att
             misc_devattr
             misc_devdata
-            misc_devproxy
             multiple_new
             new_devproxy
             obj_prop
@@ -50,10 +48,6 @@ endforeach(TEST)
 
 configure_file(locked_device_cmd.h.cmake locked_device_cmd.h @ONLY)
 target_include_directories(lock PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-
-add_test(NAME "old_tests::misc_devproxy"  COMMAND $<TARGET_FILE:misc_devproxy> ${DEV1} ${SERV_NAME}/${INST_NAME})
-
-add_test(NAME "old_tests::cmd_types"  COMMAND $<TARGET_FILE:cmd_types> ${DEV1} 10)
 
 add_test(NAME "old_tests::attr_types"  COMMAND $<TARGET_FILE:attr_types> ${DEV1} 10)
 add_test(NAME "old_tests::att_conf"  COMMAND $<TARGET_FILE:att_conf> ${DEV1})

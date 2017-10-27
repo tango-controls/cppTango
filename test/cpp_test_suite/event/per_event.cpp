@@ -321,34 +321,7 @@ int main(int argc, char **argv)
 //
 
 #ifdef NOTIFD
-		cb.cb_executed = 0;
-		cb.cb_err = 0;
-		cb.old_sec = cb.old_usec = 0;
-		filters.push_back("$counter % 2 == 0");
-		
-		eve_id = device->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb,filters);
-		cout << "   subscribe_event (with modulo filter) --> OK" << endl;
-
-//
-// Check that callback was called
-//
-		
-		Tango_sleep(6);
-		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed > 2);
-		assert (cb.cb_executed < 5);
-		assert (cb.delta_msec > 1900);
-		assert (cb.delta_msec < 2100);
-				
-		cout << "   CallBack executed every 2000 mS --> OK" << endl;
-		
-//
-// unsubscribe to the event
-//
-
-		device->unsubscribe_event(eve_id);
-		
-		cout << "   unsubscribe_event (with filter) --> OK" << endl;
+        assert(false);
 #endif
 
 //

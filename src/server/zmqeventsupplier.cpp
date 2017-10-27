@@ -1031,7 +1031,6 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 
 //
 // Create full event name
-// Don't forget case where we have notifd client (thus with a fqdn_prefix modified)
 //
 
 	string loc_obj_name(obj_name);
@@ -1703,15 +1702,20 @@ void ZmqEventSupplier::push_event_loop(DeviceImpl *device_impl,EventType event_t
 		struct SuppliedEventData sent_value;
 		::memset(&sent_value,0,sizeof(sent_value));
 
+        if (*ite >= 5)
+        {
+            ev_name = EVENT_COMPAT_IDL5 + ev_name;
+            name_changed = true;
+        }
+
         if (except == NULL)
         {
             switch (*ite)
             {
-                case 5:
-                {
-                    convert_att_event_to_5(attr_value,sent_value,need_free,att);
-                    ev_name = EVENT_COMPAT_IDL5 + ev_name;
-                    name_changed = true;
+                //TODO extract class hierarchy based on version
+                case 6:
+                case 5: {
+                    convert_att_event_to_5(attr_value, sent_value, need_free, att);
                 }
                 break;
 

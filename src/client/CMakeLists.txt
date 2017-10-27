@@ -27,8 +27,10 @@ set(SOURCES dbapi_class.cpp
         event.cpp
         eventkeepalive.cpp
         eventqueue.cpp
-        notifdeventconsumer.cpp
-        zmqeventconsumer.cpp)
+        event_consumer.cpp
+        zmqeventconsumer.cpp
+        device/device_command_info.cpp)
 
 add_library(client_objects OBJECT ${SOURCES})
+target_include_directories(client_objects PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_compile_options(client_objects PRIVATE -fPIC)

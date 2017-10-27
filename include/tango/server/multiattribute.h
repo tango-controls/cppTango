@@ -57,7 +57,6 @@ struct EventPar
 	vector<int>		att_conf;
 	bool			data_ready;
 	bool			dev_intr_change;
-	bool        	notifd;
 	bool        	zmq;
 };
 

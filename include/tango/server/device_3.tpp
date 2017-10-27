@@ -75,7 +75,6 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 // Get some event related data
 //
 
-	EventSupplier *event_supplier_nd = NULL;
 	EventSupplier *event_supplier_zmq = NULL;
 
 	Tango::Util *tg = Tango::Util::instance();
@@ -130,17 +129,12 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 // Send the event
 //
 
-			if (attr.use_notifd_event() == true)
-				event_supplier_nd = tg->get_notifd_event_supplier();
-			else
-				event_supplier_nd = NULL;
-
 			if (attr.use_zmq_event() == true)
 				event_supplier_zmq = tg->get_zmq_event_supplier();
 			else
 				event_supplier_zmq = NULL;
 
-			if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
+			if ((event_supplier_zmq != NULL))
 			{
 				string tmp_name(new_conf[i].name);
 
@@ -186,8 +180,6 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 								::memcpy(&(ad.attr_conf_3),&(tmp_ptr),sizeof(V *));
 							}
 
-							if (event_supplier_nd != NULL)
-								event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 							if (event_supplier_zmq != NULL)
 								event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 
@@ -213,8 +205,6 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 								::memcpy(&(ad.attr_conf_5),&(tmp_ptr),sizeof(V *));
 							}
 
-							if (event_supplier_nd != NULL)
-								event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 							if (event_supplier_zmq != NULL)
 								event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 
@@ -229,8 +219,6 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 				{
 					::memcpy(&(ad.attr_conf_3),&(tmp_ptr),sizeof(V *));
 
-					if (event_supplier_nd != NULL)
-						event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 					if (event_supplier_zmq != NULL)
 						event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 				}

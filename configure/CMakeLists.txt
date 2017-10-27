@@ -41,8 +41,6 @@ if(NOT ENV{OMNI_BASE})
 else()
     #CORBA
     pkg_search_module(OMNIORB_PKG REQUIRED omniORB4)
-    #COS
-    pkg_search_module(OMNICOS_PKG REQUIRED omniCOS4)
     #dynamic CORBA
     pkg_search_module(OMNIDYN_PKG REQUIRED omniDynamic4)
     if(NOT OMNIORB_PKG_FOUND)
@@ -137,3 +135,4 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 ENDIF()
 include(configure/config.cmake)
+include(configure/coveralls.cmake)

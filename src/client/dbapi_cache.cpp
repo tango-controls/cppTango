@@ -334,21 +334,10 @@ const DevVarLongStringArray *DbServerCache::import_adm_dev()
 
 const DevVarLongStringArray *DbServerCache::import_notifd_event()
 {
-	if (imp_notifd_event.last_idx == imp_notifd_event.first_idx + 1)
-	{
-		Tango::Except::throw_exception("aaa","bbb","ccc");
-	}
 
-	imp_notifd_event_data.lvalue.length(2);
-	imp_notifd_event_data.svalue.length(5);
-
-	imp_notifd_event_data.lvalue[0] = ::atoi((*data_list)[imp_notifd_event.first_idx + 4]);
-	imp_notifd_event_data.lvalue[1] = ::atoi((*data_list)[imp_notifd_event.last_idx]);
-
-	for (int loop = 0;loop < 4;loop++)
-		imp_notifd_event_data.svalue[loop] = Tango::string_dup((*data_list)[imp_notifd_event.first_idx + loop]);
-
-	return &imp_notifd_event_data;
+	Tango::Except::throw_exception(API_UnsupportedFeature,
+								   "Notifd is no longer supported. Please update!!!",
+								   "DbServerCache::import_notifd_event()");
 }
 
 //-------------------------------------------------------------------------------------------------------------------

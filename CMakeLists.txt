@@ -3,9 +3,9 @@ include(CTest)
 
 enable_testing()
 #need to define the version of the library
-set(MAJOR_VERSION "9")
+set(MAJOR_VERSION "10")
 set(MINOR_VERSION "2")
-set(PATCH_VERSION "5")
+set(PATCH_VERSION "2")
 IF(WIN32)
 include(configure/cmake_win_defs.cmake)
 ENDIF(WIN32)

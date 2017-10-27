@@ -885,42 +885,9 @@ CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TA
 // Get DS event channel IOR which is stored in the EventSupplier object
 //
 
-	CORBA::Any *out_any = NULL;
-	NotifdEventSupplier *nd_event_supplier;
-	nd_event_supplier = Util::instance()->get_notifd_event_supplier();
-	if (nd_event_supplier == NULL)
-	{
-		cout3 << "Try to retrieve DS event channel while NotifdEventSupplier object is not yet created" << endl;
-
-		Except::throw_exception((const char *)API_EventSupplierNotConstructed,
-				      	(const char *)"Try to retrieve DS event channel while EventSupplier object is not created",
-				      	(const char *)"QueryEventChannelIORCmd::execute");
-	}
-	else
-	{
-
-		string &ior = nd_event_supplier->get_event_channel_ior();
-
-//
-// return data to the caller
-//
-
-		try
-		{
-			out_any = new CORBA::Any();
-		}
-		catch (bad_alloc &)
-		{
-			cout3 << "Bad allocation while in QueryEventChannelIORCmd::execute()" << endl;
-			Except::throw_exception((const char *)API_MemoryAllocation,
-				      		(const char *)"Can't allocate memory in server",
+	Except::throw_exception((const char *)API_NotSupported,
+				      		(const char *)"Can't query notifd channel ior",
 				      		(const char *)"QueryEventChannelIORCmd::execute");
-		}
-		(*out_any) <<= ior.c_str();
-	}
-
-	cout4 << "Leaving QueryEventChannelIORCmd::execute()" << endl;
-	return(out_any);
 }
 
 

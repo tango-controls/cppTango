@@ -40,11 +40,11 @@ namespace Tango
 // Some general interest define
 //
 
-#define   TANGO_VERSION_MAJOR        9
-#define   TANGO_VERSION_MINOR        2
-#define   TANGO_VERSION_PATCH        5
+#define   TANGO_VERSION_MAJOR        @MAJOR_VERSION@
+#define   TANGO_VERSION_MINOR        @MINOR_VERSION@
+#define   TANGO_VERSION_PATCH        @PATCH_VERSION@
 
-#define   TANGO_BASE_CLASS           Tango::Device_5Impl
+#define   TANGO_BASE_CLASS           Tango::Device_6Impl
 
 #define   TBS(s)  	#s
 #define   XTBS(s)	TBS(s)
@@ -54,7 +54,7 @@ const char * const TgLibMajorVers		   = XTBS(TANGO_VERSION_MAJOR);
 
 const int   TgLibVersNb                    = TANGO_VERSION_MAJOR*10000 + TANGO_VERSION_MINOR*100 + TANGO_VERSION_PATCH;
 
-const int   DevVersion                     = 5;           // IDL version number
+    const int DevVersion = 6;           // IDL version number
 const int   DefaultMaxSeq                  = 20;
 const int   DefaultBlackBoxDepth           = 50;
 const int   DefaultPollRingDepth           = 10;
@@ -145,12 +145,6 @@ const int   MAX_SOCKET_SUB                 = 10;
 const int   PUB_HWM                        = 1000;
 const int   SUB_HWM                        = 1000;
 const int   SUB_SEND_HWM                   = 10000;
-
-//
-// Event when using a file as database stuff
-//
-
-const char* const NOTIFD_CHANNEL           = "notifd_channel";
 
 //
 // Locking feature related defines

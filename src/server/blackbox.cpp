@@ -597,7 +597,7 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
 	box[insert_elt].req_type = Req_Operation;
 	box[insert_elt].attr_type = Attr_Unknown;
 
-	if (vers == 5)
+    if (vers >= 5)
 		box[insert_elt].op_type = Op_Read_Attr_5;
 	else
 		box[insert_elt].op_type = Op_Read_Attr_4;
@@ -1017,7 +1017,7 @@ void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list,con
 
 	box[insert_elt].req_type = Req_Operation;
 	box[insert_elt].attr_type = Attr_Unknown;
-	if (vers == 5)
+    if (vers >= 5)
 		box[insert_elt].op_type = Op_Write_Read_Attributes_5;
 	else
 		box[insert_elt].op_type = Op_Write_Read_Attributes_4;
