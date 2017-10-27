@@ -962,8 +962,6 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             }
         }
 
-        ret_data->svalue[2] = Tango::string_dup(ev->get_event_name().c_str());
-
         size_t nb_alt = ev->get_alternate_heartbeat_endpoint().size();
         if (nb_alt != 0)
         {
@@ -979,6 +977,11 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             }
         }
 
+        //add one more
+        auto size = ret_data->svalue.length();
+        ret_data->svalue.length(size + 1);
+
+        ret_data->svalue[size] = Tango::string_dup(ev->get_event_name().c_str());
     }
 
 	return ret_data;

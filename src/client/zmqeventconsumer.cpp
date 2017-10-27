@@ -1706,6 +1706,13 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
 // Create and connect the REQ socket used to send message to the ZMQ main thread
 //
 
+    auto tango_lib_ver = ev_svr_data->lvalue[0];
+    string event_name_recieved_from_admin;
+    if (tango_lib_ver >= 1032)
+        event_name_recieved_from_admin = (ev_svr_data->svalue[ev_svr_data->svalue.length() - 1]);
+    else
+        event_name_recieved_from_admin = full_event_name;
+
     zmq::message_t reply;
     try
     {
@@ -1766,8 +1773,8 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
         ::strcpy(&(buffer[length]),endpoint.c_str());
         length = length + endpoint.size() + 1;
 
-        ::strcpy(&(buffer[length]),full_event_name.c_str());
-        length = length + full_event_name.size() + 1;
+        ::strcpy(&(buffer[length]), event_name_recieved_from_admin.c_str());
+        length = length + event_name_recieved_from_admin.size() + 1;
 
         DevLong user_hwm = au->get_user_sub_hwm();
         if (user_hwm != -1)
