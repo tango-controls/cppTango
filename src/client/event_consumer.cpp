@@ -2102,8 +2102,18 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 // Insert new entry in map
 //
 
+    auto tango_lib_ver = dvlsa->lvalue[0];
+    string event_name_recieved_from_admin;
+    if (tango_lib_ver >= 1032)
+        event_name_recieved_from_admin = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
+    else
+        event_name_recieved_from_admin = local_callback_key;
+
+    assert(not(event_name_recieved_from_admin.empty()));
+
     pair<EvCbIte, bool>
-        ret = event_callback_map.insert(pair<string, EventCallBackStruct>(local_callback_key, new_event_callback));
+        ret = event_callback_map
+        .insert(pair<string, EventCallBackStruct>(event_name_recieved_from_admin, new_event_callback));
     if (!ret.second)
     {
         TangoSys_OMemStream o;

@@ -1033,34 +1033,20 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 // Create full event name
 //
 
-	string loc_obj_name(obj_name);
-	transform(loc_obj_name.begin(),loc_obj_name.end(),loc_obj_name.begin(),::tolower);
+    bool intr_change;
+    if (event_type == EventName[INTERFACE_CHANGE_EVENT])
+        intr_change = true;
 
-	bool intr_change = false;
-	if (event_type == EventName[INTERFACE_CHANGE_EVENT])
-		intr_change = true;
+    bool pipe_event;
+    if (event_type == EventName[PIPE_EVENT])
+        pipe_event = true;
 
-	bool pipe_event = false;
-	if (event_type == EventName[PIPE_EVENT])
-		pipe_event = true;
+    string loc_obj_name(obj_name);
+    transform(loc_obj_name.begin(), loc_obj_name.end(), loc_obj_name.begin(), ::tolower);
 
-	event_name = fqdn_prefix;
+    create_full_event_name(device_impl, event_type, loc_obj_name, intr_change);
 
-	int size = event_name.size();
-	if (event_name[size - 1] == '#')
-        event_name.erase(size - 1);
-
-	event_name = event_name + device_impl->get_name_lower();
-	if (intr_change == false)
-		event_name = event_name + '/' + loc_obj_name;
-	if (Util::_FileDb == true || Util::_UseDb == false)
-        event_name = event_name + MODIFIER_DBASE_NO;
-    event_name = event_name + '.';
-
-	string ctr_event_name = event_name;
-	string local_event_type = event_type;
-
-    event_name = event_name + event_type;
+    string local_event_type = event_type;
 
 	string::size_type pos = local_event_type.find(EVENT_COMPAT);
 	if (pos != string::npos)
@@ -1573,6 +1559,33 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 									(const char *)"ZmqEventSupplier::push_event");
 	}
 
+}
+string
+ZmqEventSupplier::create_full_event_name(DeviceImpl *device_impl,
+                                         const string &event_type,
+                                         const string &obj_name_lower,
+                                         bool intr_change)
+{
+    event_name = fqdn_prefix;
+
+    int size = event_name.size();
+    if (event_name[size - 1] == '#')
+        event_name.erase(size - 1);
+
+    event_name = event_name + device_impl->get_name_lower();
+    if (intr_change == false)
+        event_name = event_name + '/' + obj_name_lower;
+    if (Util::_FileDb == true || Util::_UseDb == false)
+        event_name = event_name + MODIFIER_DBASE_NO;
+    event_name = event_name + '.';
+
+    //this field is in push_event
+    //TODO remove this field and replace with full_event_name
+    ctr_event_name = event_name;
+
+    event_name = event_name + event_type;
+
+    return event_name;
 }
 
 //+------------------------------------------------------------------------------------------------------------------
