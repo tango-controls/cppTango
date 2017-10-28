@@ -897,7 +897,6 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 // Subscribe to the new event
 //
 
-            cout4 << "ZMQ_SUBSCRIBE: event_name = " << event_name << endl;
             event_sub_sock->setsockopt(ZMQ_SUBSCRIBE,event_name,::strlen(event_name));
 
 //
@@ -1279,12 +1278,11 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
     nb_endpoint = nb_endpoint >> 1;
     size_t valid_endpoint = 0;
 
-    string endpoint;
     if (nb_endpoint != 1)
     {
         for (valid_endpoint = 0;valid_endpoint < nb_endpoint;valid_endpoint++)
         {
-            endpoint = ev_svr_data->svalue[valid_endpoint << 1];
+            string endpoint(ev_svr_data->svalue[valid_endpoint << 1]);
             if (check_zmq_endpoint(endpoint) == true)
                 break;
         }
@@ -1361,8 +1359,8 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 #endif
         length++;
 
-        ::strcpy(&(buffer[length]), endpoint.c_str());
-        length = length + ::strlen(endpoint.c_str()) + 1;
+        ::strcpy(&(buffer[length]), ev_svr_data->svalue[valid_endpoint << 1].in());
+        length = length + ::strlen(ev_svr_data->svalue[valid_endpoint << 1].in()) + 1;
 
         string sub(channel_name);
         sub = sub + '.' + HEARTBEAT_EVENT_NAME;
@@ -1397,7 +1395,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 // Any error during ZMQ main thread socket operations?
 //
 
-    if (reply.size() != 2)//OK
+    if (reply.size() != 2)
     {
         char err_mess[512];
         ::memcpy(err_mess,reply.data(),reply.size());
@@ -1424,7 +1422,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 		evt_ch.last_heartbeat = time(NULL);
 		evt_ch.heartbeat_skipped = false;
 		evt_ch.event_system_failed = false;
-        evt_ch.endpoint = endpoint;
+        evt_ch.endpoint = ev_svr_data->svalue[valid_endpoint << 1].in();
 		evt_ch.valid_endpoint = valid_endpoint;
 	}
 	else
@@ -1441,7 +1439,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 
 		new_event_channel_struct.event_system_failed = false;
 		set_channel_type(new_event_channel_struct);
-        new_event_channel_struct.endpoint = endpoint;
+        new_event_channel_struct.endpoint = ev_svr_data->svalue[valid_endpoint << 1].in();
 		new_event_channel_struct.valid_endpoint = valid_endpoint;
 
 		channel_map[channel_name] = new_event_channel_struct;
