@@ -1033,12 +1033,18 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 // Create full event name
 //
 
+    string local_event_type = event_type;
+
+    string::size_type pos = local_event_type.find(EVENT_COMPAT);
+    if (pos != string::npos)
+        local_event_type.erase(0, EVENT_COMPAT_IDL5_SIZE);
+
     bool intr_change;
-    if (event_type == EventName[INTERFACE_CHANGE_EVENT])
+    if (local_event_type == EventName[INTERFACE_CHANGE_EVENT])
         intr_change = true;
 
     bool pipe_event;
-    if (event_type == EventName[PIPE_EVENT])
+    if (local_event_type == EventName[PIPE_EVENT])
         pipe_event = true;
 
     string loc_obj_name(obj_name);
@@ -1046,11 +1052,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 
     create_full_event_name(device_impl, event_type, loc_obj_name, intr_change);
 
-    string local_event_type = event_type;
 
-	string::size_type pos = local_event_type.find(EVENT_COMPAT);
-	if (pos != string::npos)
-		local_event_type.erase(0,EVENT_COMPAT_IDL5_SIZE);
 	ctr_event_name = ctr_event_name + local_event_type;
 
 //

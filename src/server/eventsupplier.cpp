@@ -2296,6 +2296,7 @@ void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,bool dev_
 	vector<long> filterable_data_lg;
 
 	string ev_type(EventName[INTERFACE_CHANGE_EVENT]);
+	ev_type = EVENT_COMPAT_IDL5 + ev_type;
     time_t now, dev_intr_subscription;
 
 //
