@@ -2155,6 +2155,7 @@ void EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl,const stri
 	vector<long> filterable_data_lg;
 
 	string ev_type(DATA_READY_TYPE_EVENT);
+    ev_type = EVENT_COMPAT_IDL5 + ev_type;
 
 	AttDataReady dat_ready;
 	dat_ready.name = attr_name.c_str();

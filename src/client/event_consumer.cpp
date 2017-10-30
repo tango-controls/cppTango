@@ -1702,7 +1702,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 //
 // Build callback map key and local device name from fqdn
 //
-
+    //TODO extract method set_device_name
     string local_device_name(device_name);
     if (device->get_from_env_var() == false)
     {
@@ -1759,33 +1759,6 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
         event == ARCHIVE_EVENT ||
         event == USER_EVENT)
         add_compat_info = true;
-
-//
-// Do we already have this event in the callback map? If yes, simply add this new callback to the event callback list
-// If it's a ATTR_CONF_EVENT, don't forget to look for the two different event kinds
-//
-
-    EvCbIte iter = event_callback_map.find(local_callback_key);
-
-    if (iter == event_callback_map.end() && add_compat_info == true)
-    {
-        for (int i = 0; i < ATT_CONF_REL_NB; i++)
-        {
-            string mod_local_callback_key(local_callback_key);
-            string::size_type pos = mod_local_callback_key.rfind('.');
-            mod_local_callback_key.insert(pos + 1, EVENT_COMPAT_IDL5);
-            iter = event_callback_map.find(mod_local_callback_key);
-            if (iter != event_callback_map.end())
-                break;
-        }
-    }
-
-    if (iter != event_callback_map.end())
-    {
-        int new_event_id = add_new_callback(iter, callback, ev_queue, event_id);
-        get_fire_sync_event(device, callback, ev_queue, event, event_name, obj_name, iter->second, local_callback_key);
-        return new_event_id;
-    }
 
 //
 // Inform server that we want to subscribe (we cannot use the asynchronous fire-and-forget
@@ -1906,15 +1879,6 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
     }
 
 //
-// Some Zmq specific code (Check release compatibility,....)
-//
-
-    zmq_specific(dd, adm_name, device, obj_name);
-
-//	if (allocated == true)
-//		delete adm_dev;
-
-//
 // Change event name if it is IDL 5 compatible:
 // This code is Tango 9 or more. If the remote device is IDL 5 (or more), insert tango IDL release number
 // at the beginning of event name.
@@ -1932,6 +1896,54 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
         string::size_type pos = local_callback_key.rfind('.');
         local_callback_key.insert(pos + 1, EVENT_COMPAT_IDL5);
     }
+
+    auto tango_lib_ver = dvlsa->lvalue[0];
+    string event_name_recieved_from_admin;
+    if (tango_lib_ver >= 1032)
+        event_name_recieved_from_admin = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
+    else
+        event_name_recieved_from_admin = local_callback_key;
+
+    assert(not(event_name_recieved_from_admin.empty()));
+
+//
+// Do we already have this event in the callback map? If yes, simply add this new callback to the event callback list
+// If it's a ATTR_CONF_EVENT, don't forget to look for the two different event kinds
+//
+
+    EvCbIte iter = event_callback_map.find(event_name_recieved_from_admin);
+
+    if (iter == event_callback_map.end() && add_compat_info == true)
+    {
+        for (int i = 0; i < ATT_CONF_REL_NB; i++)
+        {
+            string mod_local_callback_key(local_callback_key);
+            string::size_type pos = mod_local_callback_key.rfind('.');
+            mod_local_callback_key.insert(pos + 1, EVENT_COMPAT_IDL5);
+            iter = event_callback_map.find(mod_local_callback_key);
+            if (iter != event_callback_map.end())
+                break;
+        }
+    }
+
+    if (iter != event_callback_map.end())
+    {
+        int new_event_id = add_new_callback(iter, callback, ev_queue, event_id);
+        get_fire_sync_event(device, callback, ev_queue, event, event_name, obj_name, iter->second, local_callback_key);
+        return new_event_id;
+    }
+
+
+//
+// Some Zmq specific code (Check release compatibility,....)
+//
+
+    zmq_specific(dd, adm_name, device, obj_name);
+
+//	if (allocated == true)
+//		delete adm_dev;
+
+
 
 //
 // Search (or create) entry for channel map
@@ -2102,8 +2114,8 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 // Insert new entry in map
 //
 
-    auto tango_lib_ver = dvlsa->lvalue[0];
-    string event_name_recieved_from_admin;
+    tango_lib_ver = dvlsa->lvalue[0];
+    event_name_recieved_from_admin;
     if (tango_lib_ver >= 1032)
         event_name_recieved_from_admin = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
     else
