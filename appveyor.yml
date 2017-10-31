@@ -109,13 +109,13 @@ init:
   - cmd: cd "C:\projects\"
   - cmd: md zeromq
   - cmd: cd "C:\projects\"
-  - if %ARCH%==win32-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/j39gkgh8hlcqjfj3/artifacts/zmq-4.1.7_%ARCH%.zip
-  - if %ARCH%==x64-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/qjqhwxpc8t3cyhse/artifacts/zmq-4.1.7_%ARCH%.zip
-  - if %ARCH%==win32-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/xxseippohdvpgnvi/artifacts/zmq-4.1.7_%ARCH%.zip
-  - if %ARCH%==x64-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/3upiqaab3fca33l3/artifacts/zmq-4.1.7_%ARCH%.zip
-  - if %ARCH%==x64-msvc12 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/kov051mpkq384vbh/artifacts/zmq-4.1.7_%ARCH%.zip
-  - if %ARCH%==x64-msvc14 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/7bxs24xd4rr5a4lt/artifacts/zmq-4.1.7_%ARCH%.zip
-  - cmd: 7z -y x zmq-4.1.7_%ARCH%.zip -oC:\projects\zeromq\
+  - if %ARCH%==win32-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/rk42p529farp1yu6/artifacts/zmq-4.0.5_%ARCH%.zip
+  - if %ARCH%==x64-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/55yuto2epi228q3t/artifacts/zmq-4.0.5_%ARCH%.zip
+  - if %ARCH%==win32-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/o2aby4sd8ya390fm/artifacts/zmq-4.0.5_%ARCH%.zip
+  - if %ARCH%==x64-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/dlf6f262niwu7a5p/artifacts/zmq-4.0.5_%ARCH%.zip
+  - if %ARCH%==x64-msvc12 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/6b8b45sd1x1lpk0j/artifacts/zmq-4.0.5_%ARCH%.zip
+  - if %ARCH%==x64-msvc14 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/grjkfwsosie7lbx7/artifacts/zmq-4.0.5_%ARCH%.zip
+  - cmd: 7z -y x zmq-4.0.5_%ARCH%.zip -oC:\projects\zeromq\
   #- cmd: move C:\projects\zeromq\lib\Release\libzmq*mt-4*.lib C:\projects\zeromq\lib\Release\libzmq.lib
   # OmniOrb
   - cmd: cd "C:\projects\"
