@@ -61,7 +61,9 @@
 
 #ifdef _WIN32
 	#define		__WIN32__
-	#define		__x86__
+	#ifndef __x86__
+		#define		__x86__
+	#endif
 	#ifndef _WIN32_WINNT
 		#define		_WIN32_WINNT 0x0500
 	#endif
@@ -228,8 +230,11 @@
 
 #ifdef _TG_WINDOWS_
 	#pragma warning(disable : 4355)
+	#pragma warning(disable : 4800)
+	#pragma warning(disable : 4244)
 	#pragma warning(disable : 4715)
-    	#pragma warning(disable : 4786)
+    #pragma warning(disable : 4786)
+    #pragma warning(disable : 4267)
 	#if (_MSC_VER >= 1400)       // VC8+
 		#pragma warning(disable : 4996)    // disable all deprecation warnings
 	#endif   // VC8+
