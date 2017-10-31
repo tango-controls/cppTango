@@ -1,7 +1,7 @@
 version: 1.0.{build}
 branches:
   only:
-    - continuous-integration
+    - tango-9-lts
 
 image: Visual Studio 2015
 
