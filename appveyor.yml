@@ -106,7 +106,6 @@ init:
   - cmd: set TANGOIDLDIR=C:\projects\tangoidl
   - cmd: git clone --depth 1 --quiet https://github.com/tango-controls/tango-idl %TANGOIDLDIR%
   - cmd: cd "C:\projects\"
-  
   # Zmq
   - cmd: cd "C:\projects\"
   - cmd: md zeromq
