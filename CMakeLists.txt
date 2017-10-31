@@ -24,14 +24,18 @@ include_directories(cppapi/client)
 include_directories(cppapi/client/helpers)
 include_directories(cppapi/server)
 include_directories(log4tango/include)
-#required for generated config.h
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
 
+#required for generated config.h
+include_directories(${PROJECT_BINARY_DIR}/include)
+
+add_subdirectory(include)
+add_subdirectory(doxygen)
 
 #source code
 add_subdirectory("log4tango")
 add_subdirectory("cppapi")
 add_subdirectory("cpp_test_suite")
+
 if(WIN32)
 include(configure/cmake_win.cmake)
 else(WIN32)
