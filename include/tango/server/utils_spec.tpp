@@ -33,6 +33,10 @@
 #ifndef _UTILS_SPEC_TPP
 #define _UTILS_SPEC_TPP
 
+#ifdef _TG_WINDOWS_
+#include <algorithm>
+#endif
+using namespace std;
 namespace Tango
 {
 

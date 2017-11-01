@@ -32,6 +32,10 @@
 
 #include <tango.h>
 
+#ifdef _WIN32
+#include <limits>
+#endif
+
 #include <iomanip>
 
 using namespace CORBA;
