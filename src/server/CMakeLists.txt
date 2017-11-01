@@ -58,20 +58,19 @@ set(SOURCES attrdesc.cpp
         zmqeventsupplier.cpp
         device_6.cpp)
 
-if(WIN32)
-set(SOURCES_WIN
-        coutbuf.cpp
-        ntservice.cpp
-        w32win.cpp)
-add_library(server_objects OBJECT ${SOURCES} ${SOURCES_WIN})
-else(WIN32)
-
-target_compile_options(server_objects PRIVATE -fPIC)
-add_library(server_objects OBJECT ${SOURCES})
-endif(WIN32)
-
 add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)
+
+if (WIN32)
+    set(SOURCES_WIN
+            coutbuf.cpp
+            ntservice.cpp
+            w32win.cpp)
+    add_library(server_objects OBJECT ${SOURCES} ${SOURCES_WIN})
+else (WIN32)
+    add_library(server_objects OBJECT ${SOURCES})
+    target_compile_options(server_objects PRIVATE -fPIC)
+endif (WIN32)
 
 target_include_directories(server_objects PRIVATE .)
 

@@ -27,7 +27,7 @@ add_subdirectory(doxygen)
 #source code
 add_subdirectory(generated/idl)
 add_subdirectory(src)
-#add_subdirectory(test)
+add_subdirectory(test)
 if(WIN32)
 include(configure/cmake_win.cmake)
 else(WIN32)
