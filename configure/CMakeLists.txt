@@ -13,7 +13,7 @@ if(NOT TANGO_DEVICE_SERVER_PATH)
 endif()
 
 if (ENV{IDL_BASE})
-    message("Using IDL_BASEIDL_BASE=$ENV{IDL_BASE}")
+    message("Using IDL_BASE=$ENV{IDL_BASE}")
     set(IDL_PKG_INCLUDE_DIRS $ENV{IDL_BASE}/include)
 else()
     pkg_search_module(IDL_PKG REQUIRED tangoidl)
