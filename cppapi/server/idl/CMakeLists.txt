@@ -8,6 +8,8 @@ message("Generate tango.h, tangoSK.cpp and tangoDynSK.cpp from idl")
 message("Using OMNIIDL_PATH=${OMNIIDL_PATH}")
 message("Using IDL=${IDL_PKG_INCLUDE_DIRS}")
 
+MESSAGE( STATUS "OMNIIDL_PATH: " ${OMNIIDL_PATH} )
+
  if(WIN32)
  set_source_files_properties(tangoDynSK.cpp PROPERTIES COMPILE_DEFINITIONS _OMNIORB_STUB_DLL)
  set_source_files_properties(tangoDynSK.cpp PROPERTIES COMPILE_DEFINITIONS __NT__)
