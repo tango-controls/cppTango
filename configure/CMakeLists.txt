@@ -127,5 +127,5 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     endif()
     add_definitions(-DGNU_CXX)
 endif()
-
+ENDIF()
 include(GNUInstallDirs)
