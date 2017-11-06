@@ -17,10 +17,10 @@ message("System TANGO_HOST=$ENV{TANGO_HOST}")
 set(TANGO_HOST $ENV{TANGO_HOST})
 
 include(configure/CMakeLists.txt)
+include_directories(cppapi/server/idl)
 include_directories(cppapi/client)
 include_directories(cppapi/client/helpers)
 include_directories(cppapi/server)
-include_directories(cppapi/server/idl)
 include_directories(log4tango/include)
 #required for generated config.h
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
