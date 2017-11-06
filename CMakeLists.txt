@@ -32,7 +32,6 @@ add_subdirectory(include)
 add_subdirectory(doxygen)
 
 #source code
-add_subdirectory(cppapi/server/idl)
 add_subdirectory("log4tango")
 add_subdirectory("cppapi")
 add_subdirectory("cpp_test_suite")
