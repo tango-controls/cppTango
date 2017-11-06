@@ -29,6 +29,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
 
 
 #source code
+add_subdirectory(cppapi/server/idl)
 add_subdirectory("log4tango")
 add_subdirectory("cppapi")
 add_subdirectory("cpp_test_suite")
