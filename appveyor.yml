@@ -168,7 +168,6 @@ install:
   - cmd: cmake --build ./ --target install --config Debug
   - cmd: if %ARCH%==x64-msvc10 call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64 /Release
   - cmd: cmake --build ./ --target install --config Release  
-
   # Tango API
   - cmd: cd "C:\projects\cppTango"
   - cmd: set BOOST_ROOT=%BOOST_ROOT%
