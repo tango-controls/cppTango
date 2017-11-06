@@ -19,7 +19,7 @@ message("System TANGO_HOST=$ENV{TANGO_HOST}")
 set(TANGO_HOST $ENV{TANGO_HOST})
 include(configure/CMakeLists.txt)
 
-include_directories(generated)
+include_directories(cppapi\server\idl)
 #required for generated config.h
 include_directories(${PROJECT_BINARY_DIR}/include)
 
@@ -29,7 +29,6 @@ add_subdirectory(doxygen)
 #source code
 add_subdirectory(log4tango)
 add_subdirectory(cppapi)
-add_subdirectory(cppapi/server/idl)
 #add_subdirectory(test)
 if(WIN32)
 include(configure/cmake_win.cmake)
