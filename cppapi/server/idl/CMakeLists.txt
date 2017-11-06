@@ -34,6 +34,10 @@ endif()
 
 FILE(GLOB ENHANCEMENTS Enhance*)
 
+MESSAGE( STATUS "CMAKE_CURRENT_BINARY_DIR: " ${CMAKE_CURRENT_BINARY_DIR} )
+MESSAGE( STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR} )
+MESSAGE( STATUS "CMAKE_INCLUDE_PATH: " ${CMAKE_INCLUDE_PATH} )
+
 foreach(ENHANCEMENT ${ENHANCEMENTS})
     message("Applying enhancement ${ENHANCEMENT}")
     execute_process(COMMAND sed -i -f ${ENHANCEMENT} tango.h
@@ -50,6 +54,10 @@ set(SOURCES tangoSK.cpp
             tangoDynSK.cpp)
 
 add_library(idl_objects OBJECT ${SOURCES} tango.h)
-target_compile_options(idl_objects PRIVATE -fPIC)
 
+IF(WIN32)
+install(FILES tango.h DESTINATION include/idl)
+ELSE()
+target_compile_options(idl_objects PRIVATE -fPIC)
 install(FILES tango.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/idl")
+ENDIF()
