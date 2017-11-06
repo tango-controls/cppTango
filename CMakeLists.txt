@@ -27,9 +27,9 @@ add_subdirectory(include)
 add_subdirectory(doxygen)
 
 #source code
-add_subdirectory(generated/idl)
-include_directories(include)
-add_subdirectory(src)
+add_subdirectory(log4tango)
+add_subdirectory(cppapi)
+add_subdirectory(cppapi/server/idl)
 #add_subdirectory(test)
 if(WIN32)
 include(configure/cmake_win.cmake)
