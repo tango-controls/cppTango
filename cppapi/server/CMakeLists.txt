@@ -135,7 +135,15 @@ add_subdirectory(idl)
 add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)
 
-add_library(server_objects OBJECT ${SOURCES})
-target_compile_options(server_objects PRIVATE -fPIC)
+if(WIN32)
+  set(SOURCES_WIN 
+          coutbuf.cpp
+          ntservice.cpp
+          w32win.cpp)
+  add_library(server_objects OBJECT ${SOURCES} ${SOURCES_WIN})
+else(WIN32)
+  target_compile_options(server_objects PRIVATE -fPIC)
+  add_library(server_objects OBJECT ${SOURCES})
+endif(WIN32)
 
 install(FILES ${HEADERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
