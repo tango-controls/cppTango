@@ -225,7 +225,6 @@ namespace Tango
 		//  client_device : Reference to the client device (for logging purpose).
 		//---------------------------------------------------------------------------
 		HelperBase (const std::string& device_name, Tango::DeviceImpl *client_device = 0)
-			throw (Tango::DevFailed)
 			: Tango::LogAdapter(client_device), device_proxy_(0)
 		{
 			_DEV_TRY_REACTION
@@ -292,7 +291,6 @@ namespace Tango
 		void internal_command (const std::string& cmd_name,
 			std::string file,
 			int line)
-			throw (Tango::DevFailed)
 		{
 			if (device_proxy_)
 			{
@@ -332,7 +330,6 @@ namespace Tango
 
 		template <class _IN, class _OUT>
 			void internal_command_inout (const std::string& cmd_name, const _IN& argin, _OUT& argout, std::string file= __FILE__, int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 			if (device_proxy_)
 			{
@@ -388,7 +385,6 @@ namespace Tango
 			std::vector<std::string>& _sv_out,
 			std::string file= __FILE__,
 			int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 
 			if (device_proxy_)
@@ -429,7 +425,6 @@ namespace Tango
 		//---------------------------------------------------------------------------
 		template <class _IN>
 			void internal_command_inout (const std::string& cmd_name, const _IN& argin, DevVarDoubleStringArray* argout,std::string file= __FILE__, int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_inout:Use only STL vector instead of DevVarDoubleStringArray *****")
@@ -447,7 +442,6 @@ namespace Tango
 		//---------------------------------------------------------------------------
 		template <class _IN>
 			void internal_command_inout (const std::string& cmd_name, const _IN& argin, DevVarLongStringArray* argout,std::string file= __FILE__, int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_inout:Use only STL vector instead of DevVarLongStringArray *****")
@@ -464,7 +458,6 @@ namespace Tango
 		//---------------------------------------------------------------------------
 		template <class _IN>
 			void internal_command_inout (const std::string& cmd_name, const _IN& argin, DevVarDoubleStringArray& argout,std::string file= __FILE__, int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_inout:Use only STL vector instead of DevVarDoubleStringArray *****")
@@ -482,7 +475,6 @@ namespace Tango
 		//---------------------------------------------------------------------------
 		template <class _IN>
 			void internal_command_inout (const std::string& cmd_name, const _IN& argin, DevVarLongStringArray& argout,std::string file= __FILE__, int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_inout:Use only STL vector instead of DevVarLongStringArray *****")
@@ -510,7 +502,6 @@ namespace Tango
 #endif
 		template <class _IN>
 			void internal_command_in (const std::string& cmd_name, const _IN& argin,  std::string file= __FILE__, int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 			if (device_proxy_)
 			{
@@ -548,7 +539,6 @@ namespace Tango
 			void internal_command_in (const std::string& cmd_name,
 			const std::vector<_IN>& _nv_in,
 			const std::vector<std::string>& _sv_in, std::string file= __FILE__, int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 			if (device_proxy_)
 			{
@@ -585,7 +575,6 @@ namespace Tango
 #endif
 		template <class _OUT>
 			void internal_command_out (const std::string& cmd_name, _OUT& argout,  std::string file= __FILE__, int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 
 			if (device_proxy_)
@@ -624,7 +613,6 @@ namespace Tango
 		//---------------------------------------------------------------------------
 		template <class _OUT>
 			void internal_command_out(_OUT dummy, DevVarDoubleStringArray* argout,  std::string file= __FILE__, int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_out:Use only STL vector instead of DevVarDoubleStringArray *****")
@@ -643,7 +631,6 @@ namespace Tango
 		//---------------------------------------------------------------------------
 		template <class _OUT>
 			void internal_command_out (_OUT dummy, DevVarLongStringArray* argout,  std::string file= __FILE__, int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_out:Use only STL vector instead of DevVarLongStringArray *****")
@@ -660,7 +647,6 @@ namespace Tango
 		//---------------------------------------------------------------------------
 		template <class _OUT>
 			void internal_command_out(_OUT dummy, DevVarDoubleStringArray& argout,  std::string file= __FILE__, int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_out:Use only STL vector instead of DevVarDoubleStringArray *****")
@@ -677,7 +663,6 @@ namespace Tango
 		//---------------------------------------------------------------------------
 		template <class _OUT>
 			void internal_command_out (_OUT dummy, DevVarLongStringArray& argout,  std::string file= __FILE__, int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_out:Use only STL vector instead of DevVarLongStringArray *****")
@@ -707,7 +692,6 @@ namespace Tango
 			std::vector<std::string>& _sv_out,
 			std::string file= __FILE__,
 			int line= __LINE__)
-			throw (Tango::DevFailed)
 		{
 			if (device_proxy_)
 			{
@@ -787,7 +771,6 @@ public:
 	//---------------------------------------------------------------------------
 	template <class _VAL>
 		void internal_write_attribute (const std::string& attr_name, const _VAL& attr_value, std::string file, int line)
-		throw (Tango::DevFailed)
 	{
 		if (device_proxy_)
 		{
@@ -817,7 +800,6 @@ public:
 	//---------------------------------------------------------------------------
 	template <class _VAL>
 		void internal_read_attribute (const std::string& attr_name, _VAL& attr_value, std::string file, int line )
-		throw (Tango::DevFailed)
 	{
 
 		if (device_proxy_)
@@ -860,7 +842,6 @@ public:
 	//---------------------------------------------------------------------------
 	template <class _VAL>
 		void internal_read_attribute_w (const std::string& attr_name, _VAL& w_attr_value, std::string file, int line )
-		throw (Tango::DevFailed)
 	{
 
 		if (device_proxy_)
