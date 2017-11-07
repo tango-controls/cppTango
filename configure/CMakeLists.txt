@@ -5,6 +5,11 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE DEBUG)
 endif()
 
+if(CPPZMQ_BASE)
+    message("Using CPPZMQ_BASE=${CPPZMQ_BASE}")
+    include_directories(${CPPZMQ_BASE}/include)
+endif(CPPZMQ_BASE)
+
 if(IDL_BASE)
     set(IDL_PKG_INCLUDE_DIRS ${IDL_BASE}/include)
 else(IDL_BASE)
@@ -26,14 +31,9 @@ else(OMNI_BASE)
     #dynamic CORBA
     pkg_search_module(OMNIDYN_PKG REQUIRED omniDynamic4)
     if(NOT OMNIORB_PKG_FOUND)
-        message(FATAL "omniORB4 library is required for Tango")
+        message(FATAL_ERROR "omniORB4 library is required for Tango")
     endif()
 endif(OMNI_BASE)
-
-if(CPPZMQ_BASE)
-    message("Using CPPZMQ_BASE=${CPPZMQ_BASE}")
-    include_directories(${CPPZMQ_BASE}/include)
-endif(CPPZMQ_BASE)
 
 if(ZMQ_BASE)
     message("Using ZMQ_BASE=${ZMQ_BASE}")
@@ -44,9 +44,25 @@ if(ZMQ_BASE)
 else(ZMQ_BASE)
     pkg_search_module(ZMQ_PKG REQUIRED libzmq)
     if(NOT ZMQ_PKG_FOUND)
-        message(FATAL "ZMQ library is required for Tango")
+        message(FATAL_ERROR "ZMQ library is required for Tango")
     endif()
 endif(ZMQ_BASE)
+
+#####  Ensure zmq.hpp file is present #####
+include(CheckIncludeFileCXX)
+# set CMAKE_REQUIRED_INCLUDES to take the currently defined include directories into account when looking for zmq.hpp
+get_property(CMAKE_REQUIRED_INCLUDES DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
+# Clear HAVE_ZMQ_HPP variable from the cache to force the check every time
+# Thanks to this, the user do not have to clear the CMake cache himself when using different -DCPPZMQ_BASE options
+unset(HAVE_ZMQ_HPP CACHE)
+CHECK_INCLUDE_FILE_CXX(zmq.hpp HAVE_ZMQ_HPP)
+if(NOT HAVE_ZMQ_HPP)
+    message(FATAL_ERROR "zmq.hpp include file not found. \n
+Please install cppzmq (https://github.com/zeromq/cppzmq) on your system and/or use \
+-DCPPZMQ_BASE=<cppzmq home folder> option to specify where zmq.hpp file is installed \
+(CMake will look for it under <CPPZMQ_BASE>/include, <ZMQ_BASE>/include, \
+<OMNI_BASE>/include and system include directories).")
+endif()
 
 message("Verifying ${OMNIIDL_PATH}omniidl")
 execute_process(COMMAND ${OMNIIDL_PATH}omniidl -V RESULT_VARIABLE FAILED)
