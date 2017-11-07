@@ -5,6 +5,15 @@
 #include <cxxtest/TangoPrinter.h>
 #include <tango.h>
 #include <iostream>
+#ifdef _WIN32
+#include <limits>
+#ifndef isinf
+#define isinf(x) ((x)!=(x))
+#endif
+#ifndef isnan 
+#define isnan(x) ((x)!=(x)) 
+#endif
+#endif
 
 using namespace Tango;
 using namespace std;
@@ -155,20 +164,20 @@ public:
         index++;
         if(std::numeric_limits<T>::has_quiet_NaN)
         {
-            TS_ASSERT(std::isnan(read_array_val[index]));
+            TS_ASSERT(isnan(read_array_val[index]));
 	        index++;
 	        // -NaN is extracted as NaN
-	        TS_ASSERT(std::isnan(read_array_val[index]));
+	        TS_ASSERT(isnan(read_array_val[index]));
             index++;
         }
         TS_ASSERT_EQUALS(read_array_val[index],T(3.4));
         index++;
         if(std::numeric_limits<T>::has_infinity)
         {
-            TS_ASSERT(std::isinf(read_array_val[index]));
+            TS_ASSERT(isinf(read_array_val[index]));
             TS_ASSERT_LESS_THAN(0,read_array_val[index]);
             index++;
-            TS_ASSERT(std::isinf(read_array_val[index]));
+            TS_ASSERT(isinf(read_array_val[index]));
             TS_ASSERT_LESS_THAN(read_array_val[index],0);
             index++;
         }
@@ -205,12 +214,12 @@ public:
 		// Extract as float:
 		Tango::DevFloat float_val;
 		TS_ASSERT(db_data_r[0] >> float_val);
-		TS_ASSERT(std::isnan(float_val));
+		TS_ASSERT(isnan(float_val));
 
 		// Extract as double:
 		Tango::DevDouble double_val;
 		TS_ASSERT(db_data_r[0] >> double_val);
-		TS_ASSERT(std::isnan(double_val));
+		TS_ASSERT(isnan(double_val));
 
 		// Extract as short
 		Tango::DevShort short_val;
@@ -276,14 +285,14 @@ public:
 		TS_ASSERT(db_data_r[0] >> float_array_val);
 		TS_ASSERT_EQUALS(float_array_val.size(),(size_t) 9);
 		TS_ASSERT_EQUALS(float_array_val[0],Tango::DevFloat(1.2));
-		TS_ASSERT(std::isnan(float_array_val[1]));
+		TS_ASSERT(isnan(float_array_val[1]));
 		TS_ASSERT_EQUALS(float_array_val[2],Tango::DevFloat(3.4));
-		TS_ASSERT(std::isinf(float_array_val[3]));
-		TS_ASSERT(std::isnan(float_array_val[4]));
-		TS_ASSERT(std::isinf(float_array_val[5]));
+		TS_ASSERT(isinf(float_array_val[3]));
+		TS_ASSERT(isnan(float_array_val[4]));
+		TS_ASSERT(isinf(float_array_val[5]));
 		TS_ASSERT_LESS_THAN(float_array_val[5],0);
 		TS_ASSERT_EQUALS(float_array_val[6],Tango::DevFloat(-9.78));
-		TS_ASSERT(std::isnan(float_array_val[7]));
+		TS_ASSERT(isnan(float_array_val[7]));
 		TS_ASSERT_EQUALS(float_array_val[8],Tango::DevFloat(-89101112.1314));
 
 
@@ -292,19 +301,19 @@ public:
 		TS_ASSERT(db_data_r[0] >> double_array_val);
 		TS_ASSERT_EQUALS(double_array_val.size(),(size_t) 9);
 		TS_ASSERT_EQUALS(double_array_val[0],Tango::DevDouble(1.2));
-		TS_ASSERT(std::isnan(double_array_val[1]));
+		TS_ASSERT(isnan(double_array_val[1]));
 		TS_ASSERT_EQUALS(double_array_val[2],Tango::DevDouble(3.4));
-		TS_ASSERT(std::isinf(double_array_val[3]));
-		TS_ASSERT(std::isnan(double_array_val[4]));
-		TS_ASSERT(std::isinf(double_array_val[5]));
+		TS_ASSERT(isinf(double_array_val[3]));
+		TS_ASSERT(isnan(double_array_val[4]));
+		TS_ASSERT(isinf(double_array_val[5]));
 		TS_ASSERT_LESS_THAN(double_array_val[5],0);
 		TS_ASSERT_EQUALS(double_array_val[6],Tango::DevDouble(-9.78));
-		TS_ASSERT(std::isnan(double_array_val[7]));
+		TS_ASSERT(isnan(double_array_val[7]));
 		TS_ASSERT_EQUALS(double_array_val[8],Tango::DevDouble(-89101112.1314));
 
 		// Extract as long array:
 		vector<Tango::DevLong> long_array_val;
-		TS_ASSERT(not (db_data_r[0] >> long_array_val));
+		TS_ASSERT(! (db_data_r[0] >> long_array_val));
 
 		// Restore the default configuration
 		TS_ASSERT_THROWS_NOTHING(device1->delete_property(prop_name));
@@ -387,12 +396,12 @@ public:
         // Extract as float:
         Tango::DevFloat float_val;
         TS_ASSERT(db_data_r[0] >> float_val);
-        TS_ASSERT(std::isinf(float_val));
+        TS_ASSERT(isinf(float_val));
 
         // Extract as double:
         Tango::DevDouble double_val;
         TS_ASSERT(db_data_r[0] >> double_val);
-        TS_ASSERT(std::isinf(double_val));
+        TS_ASSERT(isinf(double_val));
 
         // Extract as short
         Tango::DevShort short_val;
@@ -429,13 +438,13 @@ public:
         // Extract as float:
         Tango::DevFloat float_val;
         TS_ASSERT(db_data_r[0] >> float_val);
-        TS_ASSERT(std::isinf(float_val));
+        TS_ASSERT(isinf(float_val));
         TS_ASSERT_LESS_THAN(float_val,0);
 
         // Extract as double:
         Tango::DevDouble double_val;
         TS_ASSERT(db_data_r[0] >> double_val);
-        TS_ASSERT(std::isinf(double_val));
+        TS_ASSERT(isinf(double_val));
 		TS_ASSERT_LESS_THAN(double_val,0);
 
         // Extract as short
