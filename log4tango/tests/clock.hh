@@ -26,6 +26,10 @@
 #ifndef __CLOCK_H
 #define __CLOCK_H
 
+#ifdef _TG_WINDOWS_
+    typedef uint64_t usec_t;
+#endif
+
 #ifdef LOG4TANGO_HAVE_STDINT_H
 #include <stdint.h>
 #endif // LOG4TANGO_HAVE_STDINT_H
