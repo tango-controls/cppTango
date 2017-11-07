@@ -26,10 +26,6 @@
 #ifndef __CLOCK_H
 #define __CLOCK_H
 
-#ifdef _TG_WINDOWS_
-    typedef uint64_t usec_t;
-#endif
-
 #ifdef LOG4TANGO_HAVE_STDINT_H
 #include <stdint.h>
 #endif // LOG4TANGO_HAVE_STDINT_H
@@ -38,7 +34,11 @@
     typedef long usec_t;    /* number of microseconds since 1970/01/01 */
 #   define INT64_CONSTANT(val)  (val##L)
 #else
-    typedef int64_t usec_t;
+    #ifdef _TG_WINDOWS_
+        typedef uint64_t usec_t;
+    #else
+        typedef __int64 usec_t;
+    #endif
 #   define INT64_CONSTANT(val)  (val##LL)
 #endif
 
