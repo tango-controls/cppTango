@@ -1918,7 +1918,7 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 //------------------------------------------------------------------------------------------------------------------
 void Util::server_perform_work()
 {
-	/
+//
 // For Windows in a non-MSDOS window, start the ORB in its own thread. The main
 // thread is used for windows management.
 //
