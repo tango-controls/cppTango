@@ -1918,6 +1918,61 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 //------------------------------------------------------------------------------------------------------------------
 void Util::server_perform_work()
 {
+	/
+// For Windows in a non-MSDOS window, start the ORB in its own thread. The main
+// thread is used for windows management.
+//
+
+#ifdef _TG_WINDOWS_
+	if (_win == true)
+	{
+
+		omni_mutex_lock syc(mon);
+
+//
+// Start the ORB thread (and loop)
+//
+
+		go = true;
+		mon.signal();
+	}
+	else
+	{
+		if (_service == true)
+		{
+			NTService *serv = NTService::instance();
+			serv->statusUpdate(SERVICE_RUNNING);
+			if (serv->stopped_ == false)
+			{
+				//JM : 9.8.2005 : destroy() should be called at the exit of run()!
+				try
+				{
+					orb->run();
+					server_cleanup();
+				}
+				catch (CORBA::Exception &)
+				{
+					server_cleanup();
+					throw;
+				}
+			}
+		}
+		else
+		{
+			cout << "Ready to accept request" << endl;
+			try
+			{
+				orb->run();
+				server_cleanup();
+			}
+			catch (CORBA::Exception &)
+			{
+				server_cleanup();
+				throw;
+			}
+		}
+	}
+#else
 	if (ev_loop_func != NULL)
 	{
 
@@ -1946,11 +2001,7 @@ void Util::server_perform_work()
 			}
 			else
 			{
-#ifdef _TG_WINDOWS_
-				Sleep(sleep_time.tv_nsec / 1000000);
-#else
 				nanosleep(&sleep_time, NULL);
-#endif
 			}
 		}
 	}
@@ -1958,6 +2009,7 @@ void Util::server_perform_work()
 	{
 		orb->run();
 	}
+#endif
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
