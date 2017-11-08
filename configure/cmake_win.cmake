@@ -141,7 +141,6 @@ install(DIRECTORY log4tango/include DESTINATION include/tango/log4tango COMPONEN
 install(DIRECTORY cppapi/server DESTINATION include/tango/server COMPONENT headers PATTERN "*.h" PATTERN "*.txt" EXCLUDE PATTERN "*.vcproj" EXCLUDE PATTERN "*.cmake" EXCLUDE)
 install(DIRECTORY cppapi/client DESTINATION include/tango/client COMPONENT headers PATTERN "*.h" PATTERN "*.txt" EXCLUDE PATTERN "*.vcproj" EXCLUDE PATTERN "*.cmake" EXCLUDE)
 install(FILES cppapi/server/resource.h DESTINATION include COMPONENT headers)
-install(FILES include/tango.h DESTINATION include/tango COMPONENT headers)
 install(FILES cppapi/server/idl/tango.h DESTINATION include COMPONENT headers)
 install(DIRECTORY $ENV{OMNI_BASE}/include/COS DESTINATION include COMPONENT)
 install(DIRECTORY $ENV{OMNI_BASE}/include/omniORB4 DESTINATION include COMPONENT headers)
