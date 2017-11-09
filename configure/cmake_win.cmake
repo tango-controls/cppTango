@@ -7,6 +7,8 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 if(CMAKE_CL_64)
 add_definitions(-D_64BITS)
+endif(CMAKE_CL_64)
+
 if(MSVC14)
 add_definitions(-D_TIMERS_T_)
 add_definitions(-DHAVE_STRUCT_TIMESPEC)
@@ -14,7 +16,6 @@ add_definitions(-D_TIMESPEC_DEFINED)
 add_definitions(-DSTRUCT_TIMESPEC_HAS_TV_SEC)
 add_definitions(-DSTRUCT_TIMESPEC_HAS_TV_NSEC)
 endif(MSVC14)
-endif(CMAKE_CL_64)
 
 #include and link directories
 
