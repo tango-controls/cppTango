@@ -225,7 +225,7 @@ after_build:
   - cmd: if %ARCH%==x64-msvc10 move libtango_9.2.6_v100_x64_debug.zip C:/projects/cppTango
   - cmd: if %ARCH%==x64-msvc12 move libtango_9.2.6_v120_x64_debug.exe C:/projects/cppTango
   - cmd: if %ARCH%==x64-msvc12 move libtango_9.2.6_v120_x64_debug.zip C:/projects/cppTango
-  - cmd: if %ARCH%==x64-msvc14 move libtango_9.2.5_v140_x64_debug.exe C:/projects/cppTango
+  - cmd: if %ARCH%==x64-msvc14 move libtango_9.2.6_v140_x64_debug.exe C:/projects/cppTango
   - cmd: if %ARCH%==x64-msvc14 move libtango_9.2.6_v140_x64_debug.zip C:/projects/cppTango
 
 
