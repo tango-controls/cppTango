@@ -41,8 +41,7 @@ add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:idl_objects>
                             $<TARGET_OBJECTS:jpeg_objects>
                             $<TARGET_OBJECTS:jpeg_mmx_objects>
-                            $<TARGET_OBJECTS:server_objects>
-                            $<TARGET_OBJECTS:include_objects>)
+                            $<TARGET_OBJECTS:server_objects>)
 target_link_libraries(tango PUBLIC ${ZMQ_PKG_LIBRARIES} ${OMNIORB_PKG_LIBRARIES} ${OMNICOS_PKG_LIBRARIES} ${OMNIDYN_PKG_LIBRARIES} ${CMAKE_DL_LIBS})
 target_compile_options(tango PRIVATE -fPIC)
 target_include_directories(tango PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS} ${OMNIDYN_PKG_INCLUDE_DIRS})
