@@ -114,7 +114,7 @@ init:
   - if %ARCH%==x64-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/ekubpck881omy1he/artifacts/zmq-4.0.5_%ARCH%.zip
   - if %ARCH%==win32-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/jfavtto4uvsps60m/artifacts/zmq-4.0.5_%ARCH%.zip
   - if %ARCH%==x64-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/7jbsbvytjfqp0trd/artifacts/zmq-4.0.5_%ARCH%.zip
-  - if %ARCH%==x64-msvc12 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/cho6a2w444waovt1/artifacts/zmq-4.0.5_%ARCH%.zip
+  - if %ARCH%==x64-msvc12 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/wpuj0q3batur7er9/artifacts/zmq-4.0.5_%ARCH%.zip
   - if %ARCH%==x64-msvc14 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/87efyoia8kqv1y86/artifacts/zmq-4.0.5_%ARCH%.zip
   - cmd: 7z -y x zmq-4.0.5_%ARCH%.zip -oC:\projects\zeromq\
   #- cmd: move C:\projects\zeromq\lib\Release\libzmq*mt-4*.lib C:\projects\zeromq\lib\Release\libzmq.lib
