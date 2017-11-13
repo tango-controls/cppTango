@@ -36,12 +36,12 @@ add_library(tangod SHARED    $<TARGET_OBJECTS:log4tango_objects_dyn>
 
 message("static_defs: ${static_defs}")
 
-set_target_properties(tangod-static PROPERTIES COMPILE_FLAGS
+set_target_properties(tangod-static PROPERTIES COMPILE_DEFINITIONS
 "${static_defs}")
 
 message("dyn_defs: ${dyn_defs}")
 
-set_target_properties(tangod PROPERTIES COMPILE_FLAGS
+set_target_properties(tangod PROPERTIES COMPILE_DEFINITIONS
 "${dyn_defs}")
 
 target_compile_options(tangod PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
@@ -90,12 +90,12 @@ add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects_dyn>
 
 message("static_defs: ${static_defs}")
 
-set_target_properties(tango-static PROPERTIES COMPILE_FLAGS
+set_target_properties(tango-static PROPERTIES COMPILE_DEFINITIONS
 "${static_defs}")
 
 message("dyn_defs: ${dyn_defs}")
 
-set_target_properties(tango PROPERTIES COMPILE_FLAGS
+set_target_properties(tango PROPERTIES COMPILE_DEFINITIONS
 "${dyn_defs}")
                  
 SET_TARGET_PROPERTIES(tango-static PROPERTIES OUTPUT_NAME "tango")
