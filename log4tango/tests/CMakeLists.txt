@@ -1,9 +1,6 @@
 set(LOG4TANGO_TEST_SOURCES test_log4tango.cpp)
 set(BENCH_TEST_SOURCES clock.cpp clock.hh test_bench.cpp)
 
-add_executable(test_log4tango ${LOG4TANGO_TEST_SOURCES} $<TARGET_OBJECTS:log4tango_objects>)
-add_executable(test_bench ${BENCH_TEST_SOURCES} $<TARGET_OBJECTS:log4tango_objects>)
-
 IF(WIN32)
 add_executable(test_log4tango_dyn ${LOG4TANGO_TEST_SOURCES} $<TARGET_OBJECTS:log4tango_objects_dyn>)
 add_executable(test_bench_dyn ${BENCH_TEST_SOURCES} $<TARGET_OBJECTS:log4tango_objects_dyn>)
