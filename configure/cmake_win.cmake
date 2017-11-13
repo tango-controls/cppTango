@@ -21,45 +21,23 @@ link_directories($ENV{PTHREAD_WIN}/Pre-built.2/lib/x86/)
 endif(CMAKE_CL_64)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-add_library(tangod-static STATIC    $<TARGET_OBJECTS:log4tango_objects>
-                            $<TARGET_OBJECTS:idl_objects>
-                            $<TARGET_OBJECTS:client_objects>
-                            $<TARGET_OBJECTS:jpeg_objects>
-                            $<TARGET_OBJECTS:jpeg_mmx_objects>
-                            $<TARGET_OBJECTS:server_objects>)
-add_library(tangod SHARED    $<TARGET_OBJECTS:log4tango_objects>
-                            $<TARGET_OBJECTS:idl_objects>
-                            $<TARGET_OBJECTS:client_objects>
-                            $<TARGET_OBJECTS:jpeg_objects>
-                            $<TARGET_OBJECTS:jpeg_mmx_objects>
-                            $<TARGET_OBJECTS:server_objects>)
-
-list(APPEND static_defs "_DEBUG")
-list(APPEND static_defs "_LIB")
-list(APPEND static_defs "_WINDOWS")
-list(APPEND static_defs "_WINSTATIC")
-list(APPEND static_defs "_TANGO_LIB")
-list(APPEND static_defs "_MBCS")
-list(APPEND static_defs "_CRT_SECURE_NO_DEPRECATE")
-list(APPEND static_defs "JPG_USE_ASM")
-list(APPEND static_defs "STATIC_EXPORT")
-list(APPEND static_defs "OMNI_UNLOADABLE_STUBS")
-list(APPEND static_defs "ZMQ_STATIC")
+add_library(tangod-static STATIC    $<TARGET_OBJECTS:log4tango_objects_sta>
+                            $<TARGET_OBJECTS:idl_objects_sta>
+                            $<TARGET_OBJECTS:client_objects_sta>
+                            $<TARGET_OBJECTS:jpeg_objects_sta>
+                            $<TARGET_OBJECTS:jpeg_mmx_objects_sta>
+                            $<TARGET_OBJECTS:server_objects_sta>)
+add_library(tangod SHARED    $<TARGET_OBJECTS:log4tango_objects_dyn>
+                            $<TARGET_OBJECTS:idl_objects_dyn>
+                            $<TARGET_OBJECTS:client_objects_dyn>
+                            $<TARGET_OBJECTS:jpeg_objects_dyn>
+                            $<TARGET_OBJECTS:jpeg_mmx_objects_dyn>
+                            $<TARGET_OBJECTS:server_objects_dyn>)
 
 message("static_defs: ${static_defs}")
 
 set_target_properties(tangod-static PROPERTIES COMPILE_FLAGS
 "${static_defs}")
-
-list(APPEND dyn_defs "_DEBUG")
-list(APPEND dyn_defs "_LIB")
-list(APPEND dyn_defs "_WINDOWS")
-list(APPEND dyn_defs "_USRDLL")
-list(APPEND dyn_defs "_TANGO_LIB")
-list(APPEND dyn_defs "LOG4TANGO_HAS_DLL")
-list(APPEND dyn_defs "_CRT_SECURE_NO_DEPRECATE")
-list(APPEND dyn_defs "JPG_USE_ASM")
-list(APPEND dyn_defs "OMNI_UNLOADABLE_STUBS")
 
 message("dyn_defs: ${dyn_defs}")
 
@@ -97,43 +75,23 @@ SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Debug)
 SET(CMAKE_INSTALL_CONFIG_NAME Debug)
 else(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-add_library(tango-static STATIC    $<TARGET_OBJECTS:log4tango_objects>
-                            $<TARGET_OBJECTS:idl_objects>
-                            $<TARGET_OBJECTS:client_objects>
-                            $<TARGET_OBJECTS:jpeg_objects>
-                            $<TARGET_OBJECTS:jpeg_mmx_objects>
-                            $<TARGET_OBJECTS:server_objects>)
-add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
-                            $<TARGET_OBJECTS:idl_objects>
-                            $<TARGET_OBJECTS:client_objects>
-                            $<TARGET_OBJECTS:jpeg_objects>
-                            $<TARGET_OBJECTS:jpeg_mmx_objects>
-                            $<TARGET_OBJECTS:server_objects>)
-
-list(APPEND static_defs "_LIB")
-list(APPEND static_defs "_WINDOWS")
-list(APPEND static_defs "_WINSTATIC")
-list(APPEND static_defs "_TANGO_LIB")
-list(APPEND static_defs "_MBCS")
-list(APPEND static_defs "_CRT_SECURE_NO_DEPRECATE")
-list(APPEND static_defs "JPG_USE_ASM")
-list(APPEND static_defs "STATIC_EXPORT")
-list(APPEND static_defs "OMNI_UNLOADABLE_STUBS")
-list(APPEND static_defs "ZMQ_STATIC")
+add_library(tango-static STATIC    $<TARGET_OBJECTS:log4tango_objects_sta>
+                            $<TARGET_OBJECTS:idl_objects_sta>
+                            $<TARGET_OBJECTS:client_objects_sta>
+                            $<TARGET_OBJECTS:jpeg_objects_sta>
+                            $<TARGET_OBJECTS:jpeg_mmx_objects_sta>
+                            $<TARGET_OBJECTS:server_objects_sta>)
+add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects_dyn>
+                            $<TARGET_OBJECTS:idl_objects_dyn>
+                            $<TARGET_OBJECTS:client_objects_dyn>
+                            $<TARGET_OBJECTS:jpeg_objects_dyn>
+                            $<TARGET_OBJECTS:jpeg_mmx_objects_dyn>
+                            $<TARGET_OBJECTS:server_objects_dyn>)
 
 message("static_defs: ${static_defs}")
 
 set_target_properties(tango-static PROPERTIES COMPILE_FLAGS
 "${static_defs}")
-
-list(APPEND dyn_defs "_LIB")
-list(APPEND dyn_defs "_WINDOWS")
-list(APPEND dyn_defs "_USRDLL")
-list(APPEND dyn_defs "_TANGO_LIB")
-list(APPEND dyn_defs "LOG4TANGO_HAS_DLL")
-list(APPEND dyn_defs "_CRT_SECURE_NO_DEPRECATE")
-list(APPEND dyn_defs "JPG_USE_ASM")
-list(APPEND dyn_defs "OMNI_UNLOADABLE_STUBS")
 
 message("dyn_defs: ${dyn_defs}")
 
