@@ -24,6 +24,12 @@ set(SOURCES
                 PThreads.cpp
                 PortabilityImpl.hh
                 PortabilityImpl.cpp)
-
+IF(WIN32)
+add_library(log4tango_objects_dyn OBJECT ${SOURCES})
+add_library(log4tango_objects_sta OBJECT ${SOURCES})
+target_compile_options(log4tango_objects_dyn PRIVATE "${dyn_defs}")
+target_compile_options(log4tango_objects_sta PRIVATE "${static_defs}")
+ELSE(WIN32)
 add_library(log4tango_objects OBJECT ${SOURCES})
 target_compile_options(log4tango_objects PRIVATE -fPIC)
+ENDIF(WIN32)
