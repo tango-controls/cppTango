@@ -33,12 +33,38 @@ add_library(tangod SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:jpeg_objects>
                             $<TARGET_OBJECTS:jpeg_mmx_objects>
                             $<TARGET_OBJECTS:server_objects>)
-                            
-set_target_properties(tangod-static PROPERTIES
-    COMPILE_DEFINITIONS  WIN32=1 _LIB=1 _DEBUG=1 _WINDOWS=1 _WINSTATIC=1 _TANGO_LIB=1 _MBCS=1 _CRT_SECURE_NO_DEPRECATE=1 JPG_USE_ASM=1 STATIC_EXPORT=1 OMNI_UNLOADABLE_STUBS=1 ZMQ_STATIC=1)
- 
-set_target_properties(tangod PROPERTIES
-    COMPILE_DEFINITIONS  WIN32=1 DEBUG=1 _WINDOWS=1 _USRDLL=1 LOG4TANGO_HAS_DLL=1 _TANGO_LIB=1 _CRT_SECURE_NO_DEPRECATE=1 JPG_USE_ASM=1 OMNI_UNLOADABLE_STUBS=1)
+
+list(APPEND static_defs "_DEBUG")
+list(APPEND static_defs "_LIB")
+list(APPEND static_defs "_WINDOWS")
+list(APPEND static_defs "_WINSTATIC")
+list(APPEND static_defs "_TANGO_LIB")
+list(APPEND static_defs "_MBCS")
+list(APPEND static_defs "_CRT_SECURE_NO_DEPRECATE")
+list(APPEND static_defs "JPG_USE_ASM")
+list(APPEND static_defs "STATIC_EXPORT")
+list(APPEND static_defs "OMNI_UNLOADABLE_STUBS")
+list(APPEND static_defs "ZMQ_STATIC")
+
+message("static_defs: ${static_defs}")
+
+set_target_properties(tangod-static PROPERTIES COMPILE_DEFINITIONS
+"${static_defs}")
+
+list(APPEND dyn_defs "_DEBUG")
+list(APPEND dyn_defs "_LIB")
+list(APPEND dyn_defs "_WINDOWS")
+list(APPEND dyn_defs "_USRDLL")
+list(APPEND dyn_defs "_TANGO_LIB")
+list(APPEND dyn_defs "LOG4TANGO_HAS_DLL")
+list(APPEND dyn_defs "_CRT_SECURE_NO_DEPRECATE")
+list(APPEND dyn_defs "JPG_USE_ASM")
+list(APPEND dyn_defs "OMNI_UNLOADABLE_STUBS")
+
+message("dyn_defs: ${dyn_defs}")
+
+set_target_properties(tangod PROPERTIES COMPILE_DEFINITIONS
+"${dyn_defs}")
 
 target_compile_options(tangod PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
 target_compile_options(tangod-static PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
@@ -83,12 +109,37 @@ add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:jpeg_objects>
                             $<TARGET_OBJECTS:jpeg_mmx_objects>
                             $<TARGET_OBJECTS:server_objects>)
-                            
-set_target_properties(tango-static PROPERTIES
-    COMPILE_DEFINITIONS  WIN32=1 _LIB=1 _DEBUG=1 _WINDOWS=1 _WINSTATIC=1 _TANGO_LIB=1 _MBCS=1 _CRT_SECURE_NO_DEPRECATE=1 JPG_USE_ASM=1 STATIC_EXPORT=1 OMNI_UNLOADABLE_STUBS=1 ZMQ_STATIC=1)
- 
-set_target_properties(tango PROPERTIES
-    COMPILE_DEFINITIONS  WIN32=1 DEBUG=1 _WINDOWS=1 _USRDLL=1 LOG4TANGO_HAS_DLL=1 _TANGO_LIB=1 _CRT_SECURE_NO_DEPRECATE=1 JPG_USE_ASM=1 OMNI_UNLOADABLE_STUBS=1)                           
+
+list(APPEND static_defs "_LIB")
+list(APPEND static_defs "_WINDOWS")
+list(APPEND static_defs "_WINSTATIC")
+list(APPEND static_defs "_TANGO_LIB")
+list(APPEND static_defs "_MBCS")
+list(APPEND static_defs "_CRT_SECURE_NO_DEPRECATE")
+list(APPEND static_defs "JPG_USE_ASM")
+list(APPEND static_defs "STATIC_EXPORT")
+list(APPEND static_defs "OMNI_UNLOADABLE_STUBS")
+list(APPEND static_defs "ZMQ_STATIC")
+
+message("static_defs: ${static_defs}")
+
+set_target_properties(tango-static PROPERTIES COMPILE_DEFINITIONS
+"${static_defs}")
+
+list(APPEND dyn_defs "_LIB")
+list(APPEND dyn_defs "_WINDOWS")
+list(APPEND dyn_defs "_USRDLL")
+list(APPEND dyn_defs "_TANGO_LIB")
+list(APPEND dyn_defs "LOG4TANGO_HAS_DLL")
+list(APPEND dyn_defs "_CRT_SECURE_NO_DEPRECATE")
+list(APPEND dyn_defs "JPG_USE_ASM")
+list(APPEND dyn_defs "OMNI_UNLOADABLE_STUBS")
+
+message("dyn_defs: ${dyn_defs}")
+
+set_target_properties(tango PROPERTIES COMPILE_DEFINITIONS
+"${dyn_defs}")
+                 
 SET_TARGET_PROPERTIES(tango-static PROPERTIES OUTPUT_NAME "tango")
 SET_TARGET_PROPERTIES(tango-static PROPERTIES PREFIX "lib")
  
