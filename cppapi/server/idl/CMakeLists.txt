@@ -55,11 +55,15 @@ endforeach(ENHANCEMENT)
 set(SOURCES tangoSK.cpp
             tangoDynSK.cpp)
 
-add_library(idl_objects OBJECT ${SOURCES} tango.h)
 
 IF(WIN32)
+add_library(idl_objects_dyn OBJECT ${SOURCES})
+add_library(idl_objects_sta OBJECT ${SOURCES})
+target_compile_options(idl_objects_dyn PRIVATE "${dyn_defs}")
+target_compile_options(idl_objects_sta PRIVATE "${static_defs}")
 install(FILES tango.h DESTINATION include/idl)
 ELSE()
+add_library(idl_objects OBJECT ${SOURCES} tango.h)
 target_compile_options(idl_objects PRIVATE -fPIC)
 install(FILES tango.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/idl")
 ENDIF()
