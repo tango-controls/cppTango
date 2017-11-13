@@ -48,7 +48,7 @@ list(APPEND static_defs "ZMQ_STATIC")
 
 message("static_defs: ${static_defs}")
 
-set_target_properties(tangod-static PROPERTIES COMPILE_DEFINITIONS
+set_target_properties(tangod-static PROPERTIES COMPILE_FLAGS
 "${static_defs}")
 
 list(APPEND dyn_defs "_DEBUG")
@@ -63,7 +63,7 @@ list(APPEND dyn_defs "OMNI_UNLOADABLE_STUBS")
 
 message("dyn_defs: ${dyn_defs}")
 
-set_target_properties(tangod PROPERTIES COMPILE_DEFINITIONS
+set_target_properties(tangod PROPERTIES COMPILE_FLAGS
 "${dyn_defs}")
 
 target_compile_options(tangod PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
@@ -123,7 +123,7 @@ list(APPEND static_defs "ZMQ_STATIC")
 
 message("static_defs: ${static_defs}")
 
-set_target_properties(tango-static PROPERTIES COMPILE_DEFINITIONS
+set_target_properties(tango-static PROPERTIES COMPILE_FLAGS
 "${static_defs}")
 
 list(APPEND dyn_defs "_LIB")
@@ -137,7 +137,7 @@ list(APPEND dyn_defs "OMNI_UNLOADABLE_STUBS")
 
 message("dyn_defs: ${dyn_defs}")
 
-set_target_properties(tango PROPERTIES COMPILE_DEFINITIONS
+set_target_properties(tango PROPERTIES COMPILE_FLAGS
 "${dyn_defs}")
                  
 SET_TARGET_PROPERTIES(tango-static PROPERTIES OUTPUT_NAME "tango")
