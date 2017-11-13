@@ -7,8 +7,8 @@ set(SOURCES
 IF(WIN32)
 add_library(jpeg_mmx_objects_dyn OBJECT ${SOURCES})
 add_library(jpeg_mmx_objects_sta OBJECT ${SOURCES})
-target_compile_options(jpeg_mmx_objects_dyn PRIVATE "${dyn_defs}")
-target_compile_options(jpeg_mmx_objects_sta PRIVATE "${static_defs}")
+target_compile_definitions(jpeg_mmx_objects_dyn PRIVATE "${dyn_defs}")
+target_compile_definitions(jpeg_mmx_objects_sta PRIVATE "${static_defs}")
 
 if(${PLATFORM} EQUAL 64)
     target_compile_definitions(jpeg_mmx_objects_dyn PRIVATE _64BITS)
