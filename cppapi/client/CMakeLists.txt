@@ -57,8 +57,13 @@ set(HEADERS accessproxy.h
             devapi_pipe.tpp)
 
 add_subdirectory(helpers)
-
+IF(WIN32)
+add_library(client_objects_dyn OBJECT ${SOURCES})
+add_library(client_objects_sta OBJECT ${SOURCES})
+target_compile_options(client_objects_dyn PRIVATE "${dyn_defs}")
+target_compile_options(client_objects_sta PRIVATE "${static_defs}")
+ELSE(WIN32)
 add_library(client_objects OBJECT ${SOURCES})
 target_compile_options(client_objects PRIVATE -fPIC)
-
+ENDIF(WIN32)
 install(FILES ${HEADERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
