@@ -140,7 +140,11 @@ if(WIN32)
           coutbuf.cpp
           ntservice.cpp
           w32win.cpp)
-  add_library(server_objects OBJECT ${SOURCES} ${SOURCES_WIN})
+          
+add_library(server_objects_dyn OBJECT ${SOURCES} ${SOURCES_WIN})
+add_library(server_objects_sta OBJECT ${SOURCES} ${SOURCES_WIN})
+target_compile_options(server_objects_dyn PRIVATE "${dyn_defs}")
+target_compile_options(server_objects_sta PRIVATE "${static_defs}")
 else(WIN32)
   add_library(server_objects OBJECT ${SOURCES})
   target_compile_options(server_objects PRIVATE -fPIC)
