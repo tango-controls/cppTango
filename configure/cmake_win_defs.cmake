@@ -16,7 +16,6 @@ add_definitions(-DSTRUCT_TIMESPEC_HAS_TV_SEC)
 add_definitions(-DSTRUCT_TIMESPEC_HAS_TV_NSEC)
 ENDIF(MSVC14)
 
-list(APPEND static_defs "_DEBUG")
 list(APPEND static_defs "_LIB")
 list(APPEND static_defs "_WINDOWS")
 list(APPEND static_defs "_WINSTATIC")
@@ -30,7 +29,6 @@ list(APPEND static_defs "ZMQ_STATIC")
 
 message("static_defs: ${static_defs}")
 
-list(APPEND dyn_defs "_DEBUG")
 list(APPEND dyn_defs "_LIB")
 list(APPEND dyn_defs "_WINDOWS")
 list(APPEND dyn_defs "LOG4TANGO_BUILD_DLL")
