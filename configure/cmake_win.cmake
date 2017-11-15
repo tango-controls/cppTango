@@ -12,13 +12,9 @@ endif(CMAKE_CL_64)
 #include and link directories
 
 include_directories(${INCLUDE_OBJECT_MS})
+include_directories(${PTHREAD_WIN_PKG_INCLUDE_DIRS})
 set(WIN32_LIBS "ws2_32.lib;mswsock.lib;advapi32.lib;comctl32.lib;odbc32.lib;")
-set(PTHREAD_WIN32_LIBS "pthreadVC2.lib;")
-if(CMAKE_CL_64)
-link_directories($ENV{PTHREAD_WIN}/Pre-built.2/lib/x64/)
-else(CMAKE_CL_64)
-link_directories($ENV{PTHREAD_WIN}/Pre-built.2/lib/x86/)
-endif(CMAKE_CL_64)
+link_directories($ENV{PTHREAD_WIN}/lib)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 add_library(tangod-static STATIC    $<TARGET_OBJECTS:log4tango_objects_sta>
@@ -47,8 +43,8 @@ set_target_properties(tangod PROPERTIES COMPILE_DEFINITIONS
 target_compile_options(tangod PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
 target_compile_options(tangod-static PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
 
-target_link_libraries(tangod PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES_DYN} ${ZMQ_PKG_LIBRARIES_DYN} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
-target_link_libraries(tangod-static PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES_STA} ${ZMQ_PKG_LIBRARIES_STA} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(tangod PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES_DYN} ${ZMQ_PKG_LIBRARIES_DYN} ${PTHREAD_WIN_PKG_LIBRARIES_DYN} ${CMAKE_DL_LIBS})
+target_link_libraries(tangod-static PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES_STA} ${ZMQ_PKG_LIBRARIES_STA} ${PTHREAD_WIN_PKG_LIBRARIES_STA} ${CMAKE_DL_LIBS})
 
 set_property(TARGET tangod PROPERTY LINK_FLAGS "/force:multiple")
 set_property(TARGET tangod PROPERTY PUBLIC_HEADER ${INCLUDE_OBJECT_MS})
@@ -104,8 +100,8 @@ SET_TARGET_PROPERTIES(tango-static PROPERTIES PREFIX "lib")
 target_compile_options(tango PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
 target_compile_options(tango-static PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
 
-target_link_libraries(tango PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES_DYN} ${ZMQ_PKG_LIBRARIES_DYN} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
-target_link_libraries(tango-static PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES_STA} ${ZMQ_PKG_LIBRARIES_STA} ${PTHREAD_WIN32_LIBS} ${CMAKE_DL_LIBS})
+target_link_libraries(tango PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES_DYN} ${ZMQ_PKG_LIBRARIES_DYN} ${PTHREAD_WIN_PKG_LIBRARIES_DYN} ${CMAKE_DL_LIBS})
+target_link_libraries(tango-static PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES_STA} ${ZMQ_PKG_LIBRARIES_STA} ${PTHREAD_WIN_PKG_LIBRARIES_STA} ${CMAKE_DL_LIBS})
 
 set_property(TARGET tango PROPERTY LINK_FLAGS "/force:multiple")
 set_property(TARGET tango PROPERTY PUBLIC_HEADER ${INCLUDE_OBJECT_MS})
@@ -289,13 +285,18 @@ install(FILES $ENV{ZMQ_BASE}/bin/Release/libzmq-v140-mt-4_0_5.dll DESTINATION bi
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif(MSVC14)
 #pthreads
-if(CMAKE_CL_64)
-install(FILES $ENV{PTHREAD_WIN}/Pre-built.2/lib/x64/pthreadVC2.lib DESTINATION lib COMPONENT static)
-install(FILES $ENV{PTHREAD_WIN}/Pre-built.2/dll/x64/pthreadVC2.dll DESTINATION bin COMPONENT dynamic)
-else(CMAKE_CL_64)
-install(FILES $ENV{PTHREAD_WIN}/Pre-built.2/lib/x86/pthreadVC2.lib DESTINATION lib COMPONENT static)
-install(FILES $ENV{PTHREAD_WIN}/Pre-built.2/dll/x86/pthreadVC2.dll DESTINATION bin COMPONENT dynamic)
-endif(CMAKE_CL_64)
+install(FILES $ENV{PTHREAD_WIN}/lib/pthreadVC2.lib DESTINATION lib COMPONENT static)
+install(FILES $ENV{PTHREAD_WIN}/lib/pthreadVC2-s.lib DESTINATION lib COMPONENT static)
+install(FILES $ENV{PTHREAD_WIN}/dll/pthreadVC2.dll DESTINATION bin COMPONENT dynamic)
+install(FILES $ENV{PTHREAD_WIN}/dll/pthreadVC2.pdb DESTINATION bin COMPONENT dynamic)
+install(FILES $ENV{PTHREAD_WIN}/dll/pthreadVC2.exp DESTINATION bin COMPONENT dynamic)
+install(FILES $ENV{PTHREAD_WIN}/dll/pthreadVC2.ilk DESTINATION bin COMPONENT dynamic)
+install(FILES $ENV{PTHREAD_WIN}/lib/pthreadVC2d.lib DESTINATION lib COMPONENT static)
+install(FILES $ENV{PTHREAD_WIN}/lib/pthreadVC2-sd.lib DESTINATION lib COMPONENT static)
+install(FILES $ENV{PTHREAD_WIN}/dll/pthreadVC2d.dll DESTINATION bin COMPONENT dynamic)
+install(FILES $ENV{PTHREAD_WIN}/dll/pthreadVC2d.pdb DESTINATION bin COMPONENT dynamic)
+install(FILES $ENV{PTHREAD_WIN}/dll/pthreadVC2d.exp DESTINATION bin COMPONENT dynamic)
+install(FILES $ENV{PTHREAD_WIN}/dll/pthreadVC2d.ilk DESTINATION bin COMPONENT dynamic)
 
 
 configure_file(tango.pc.cmake tango.pc @ONLY)
