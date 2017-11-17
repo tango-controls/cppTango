@@ -122,12 +122,12 @@ init:
   - cmd: cd "C:\projects\"
   - cmd: md omniorb
   - cmd: cd "C:\projects\"
-  - if %ARCH%==win32-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/q4q7ai5h4sx0ey4n/artifacts/omniorb-4.2.1_%ARCH%.zip
-  - if %ARCH%==x64-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/lx97jsanp9gcdewv/artifacts/omniorb-4.2.1_%ARCH%.zip
-  - if %ARCH%==win32-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/rrmrblr2p3x62cp2/artifacts/omniorb-4.2.1_%ARCH%.zip
-  - if %ARCH%==x64-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/negb5jiua4dloou4/artifacts/omniorb-4.2.1_%ARCH%.zip
-  - if %ARCH%==x64-msvc12 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/m0hlnoyx0ctdur86/artifacts/omniorb-4.2.1_%ARCH%.zip
-  - if %ARCH%==x64-msvc14 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/cfnmhdpyulhfdtg3/artifacts/omniorb-4.2.1_%ARCH%.zip
+  - if %ARCH%==win32-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/b3j87c59nps33ga8/artifacts/omniorb-4.2.1_%ARCH%.zip
+  - if %ARCH%==x64-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/t0c9a59fr0ixb6to/artifacts/omniorb-4.2.1_%ARCH%.zip
+  - if %ARCH%==win32-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/0ywhsy2wnmfw99ia/artifacts/omniorb-4.2.1_%ARCH%.zip
+  - if %ARCH%==x64-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/x2sr2c1i0f7hy1cg/artifacts/omniorb-4.2.1_%ARCH%.zip
+  - if %ARCH%==x64-msvc12 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/2e8wjs2aalg6cryl/artifacts/omniorb-4.2.1_%ARCH%.zip
+  - if %ARCH%==x64-msvc14 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/ry9yevfyjddf6j2e/artifacts/omniorb-4.2.1_%ARCH%.zip
   - cmd: 7z -y x omniorb-4.2.1_%ARCH%.zip -oC:\projects\omniorb\
   #Pthread-Win32
   - cmd: cd "C:\projects\"
