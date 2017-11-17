@@ -55,6 +55,11 @@
 #include <coutbuf.h>
 #include <ntservice.h>
 #include <ws2tcpip.h>
+#ifdef _MSC_VER
+#if _MSC_VER < 1900
+#include <omnithread/pthread_nt.h>
+#endif
+#endif
 #endif /* _TG_WINDOWS_ */
 
 #include <omniORB4/omniInterceptors.h>
