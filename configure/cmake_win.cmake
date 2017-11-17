@@ -168,6 +168,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 #adding tango since tere seems to be a bug
 install(FILES Debug/tangod.dll DESTINATION bin COMPONENT dynamic)
 install(FILES Debug/tangod.lib DESTINATION lib COMPONENT static)
+install(FILES Debug/tangod.pdb DESTINATION bin COMPONENT dynamic)
 install(FILES Debug/libtangod.lib DESTINATION lib COMPONENT static)
 install(FILES $ENV{OMNI_BASE}/lib/x86_win32/omniDynamic4d.lib DESTINATION lib COMPONENT static)
 #omniorb static lib
