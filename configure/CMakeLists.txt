@@ -102,7 +102,9 @@ endif(ZMQ_BASE)
 
 if(PTHREAD_WIN)
     message("Using PTHREAD_WIN=$ENV{PTHREAD_WIN}")
+    add_definitions(-DHAVE_PTHREAD_NP_H)
     set(PTHREAD_WIN_PKG_INCLUDE_DIRS $ENV{PTHREAD_WIN}/include)
+    
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         set(PTHREAD_WIN_PKG_LIBRARIES_DYN "pthreadVC2d.lib")
         set(PTHREAD_WIN_PKG_LIBRARIES_STA "pthreadVC2-sd.lib")
