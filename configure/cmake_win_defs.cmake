@@ -1,12 +1,9 @@
 #definitions and preprocessor
 add_definitions(-D_WIN32)
-add_definitions(-D__OSVERSION__=4)
-add_definitions(-D__POSIX_NT__)
-add_definitions(-D__x86__)
-add_definitions(-D__POSIX_NT__)
-add_definitions(-D__OSVERSION__=4)
-add_definitions(-DOMNI_UNLOADABLE_STUBS)
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+if(CMAKE_CL_64)
+add_definitions(-D_WIN64)
+endif(CMAKE_CL_64)
 
 IF(MSVC14)
 add_definitions(-D_TIMERS_T_)
@@ -15,6 +12,7 @@ add_definitions(-D_TIMESPEC_DEFINED)
 add_definitions(-DSTRUCT_TIMESPEC_HAS_TV_SEC)
 add_definitions(-DSTRUCT_TIMESPEC_HAS_TV_NSEC)
 ENDIF(MSVC14)
+
 
 list(APPEND static_defs "_LIB")
 list(APPEND static_defs "_WINDOWS")
