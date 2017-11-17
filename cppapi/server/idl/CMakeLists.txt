@@ -11,10 +11,6 @@ message("Using IDL=${IDL_PKG_INCLUDE_DIRS}")
 MESSAGE( STATUS "OMNIIDL_PATH: " ${OMNIIDL_PATH} )
 
  if(WIN32)
- set_source_files_properties(tangoDynSK.cpp PROPERTIES COMPILE_DEFINITIONS _OMNIORB_STUB_DLL)
- set_source_files_properties(tangoDynSK.cpp PROPERTIES COMPILE_DEFINITIONS __NT__)
- set_source_files_properties(tangoSK.cpp PROPERTIES COMPILE_DEFINITIONS _OMNIORB_STUB_DLL)
- set_source_files_properties(tangoSK.cpp PROPERTIES COMPILE_DEFINITIONS __NT__)
         if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 execute_process(COMMAND ${OMNIIDL_PATH}/omniidl.exe -I${IDL_PKG_INCLUDE_DIRS} -bcxx -Wbh=.h -Wbs=SK.cpp -Wbd=DynSK.cpp -Wba ${IDL_PKG_INCLUDE_DIRS}/tango.idl
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -59,8 +55,8 @@ set(SOURCES tangoSK.cpp
 IF(WIN32)
 add_library(idl_objects_dyn OBJECT ${SOURCES})
 add_library(idl_objects_sta OBJECT ${SOURCES})
-target_compile_definitions(idl_objects_dyn PRIVATE "${dyn_defs}")
-target_compile_definitions(idl_objects_sta PRIVATE "${static_defs}")
+target_compile_definitions(idl_objects_dyn PRIVATE "${dyn_defs};__x86__;__NT__;__OSVERSION__=4;__WIN32__;_WIN32_WINNT=0x0400;")
+target_compile_definitions(idl_objects_sta PRIVATE "${static_defs};__x86__;__NT__;__OSVERSION__=4;__WIN32__;_WIN32_WINNT=0x0400;")
 install(FILES tango.h DESTINATION include/idl)
 ELSE()
 add_library(idl_objects OBJECT ${SOURCES} tango.h)
