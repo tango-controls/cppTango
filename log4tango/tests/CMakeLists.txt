@@ -10,6 +10,8 @@ target_compile_definitions(test_log4tango_dyn PRIVATE "${dyn_defs}")
 target_compile_definitions(test_log4tango_sta PRIVATE "${static_defs}")
 target_compile_definitions(test_bench_dyn PRIVATE "${dyn_defs}")
 target_compile_definitions(test_bench_sta PRIVATE "${static_defs}")
+target_compile_options(test_log4tango_sta PRIVATE "/MT")
+target_compile_options(test_bench_sta PRIVATE "/MT")
 
 add_test("log4tango_test_dyn"       test_log4tango_dyn)
 add_test("log4tango_benchmark_dyn"  test_bench_dyn)
