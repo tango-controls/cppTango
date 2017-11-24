@@ -33,7 +33,7 @@ add_subdirectory("log4tango")
 add_subdirectory("cppapi")
 if(NOT WIN32)
 add_subdirectory("cpp_test_suite")
-endif(WIN32)
+endif(NOT WIN32)
 
 if(WIN32)
 include(configure/cmake_win.cmake)
