@@ -31,7 +31,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
 #source code
 add_subdirectory("log4tango")
 add_subdirectory("cppapi")
-#add_subdirectory("cpp_test_suite")
+if(NOT WIN32)
+add_subdirectory("cpp_test_suite")
+endif(WIN32)
 
 if(WIN32)
 include(configure/cmake_win.cmake)
@@ -61,14 +63,14 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/tango.pc"
 endif(WIN32)
 
 
-IF (WIN32)
+if (WIN32)
 include(configure/cpack_win.cmake)
-ELSE()
+else(WIN32)
   SET(CPACK_GENERATOR "DEB")
   set(CPACK_DEBIAN_PACKAGE_NAME libtango-dev)
   set(CPACK_DEBIAN_PACKAGE_VERSION ${LIBRARY_VERSION})
   set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcos4-dev, libzmq5-dev | libzmq3-dev")
   set(CPACK_DEBIAN_PACKAGE_CONFLICTS "libtango7-dev, libtango8-dev, libtango9-dev")
   SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "TANGO team <tango@esrf.fr>") #required
-ENDIF(WIN32)
+endif(WIN32)
 include(CPack)
