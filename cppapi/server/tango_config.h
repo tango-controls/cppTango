@@ -230,8 +230,8 @@
 	#pragma warning(disable : 4355)
 	#pragma warning(disable : 4715)
     	#pragma warning(disable : 4786)
-    	#pragma warning(disable : 4267)
-    	#pragma warning(disable : 4244)
+    	#pragma warning(disable : 4267) // var : conversion from size_t to type, possible loss of data
+    	#pragma warning(disable : 4244) // conversion conversion from type1 to type2, possible loss of data
 	#if (_MSC_VER >= 1400)       // VC8+
 		#pragma warning(disable : 4996)    // disable all deprecation warnings
 	#endif   // VC8+
