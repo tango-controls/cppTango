@@ -143,7 +143,7 @@ add_compile_options(-std=c++11)
 #setup for GNU CXX compiler
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("found GNU compiler ...")
-    if(CMAKE_BUILD_TYPE MATCHES RELEASE)
+    if(CMAKE_BUILD_TYPE MATCHES Release)
         message("setup for release build ...")
         add_definitions(-D_FORTIFY_SOURCE=3)
     else()
