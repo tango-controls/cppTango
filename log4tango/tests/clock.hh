@@ -34,11 +34,7 @@
     typedef long usec_t;    /* number of microseconds since 1970/01/01 */
 #   define INT64_CONSTANT(val)  (val##L)
 #else
-    #ifdef _TG_WINDOWS_
-        typedef uint64_t usec_t;
-    #else
-        typedef __int64 usec_t;
-    #endif
+        typedef int64_t usec_t;
 #   define INT64_CONSTANT(val)  (val##LL)
 #endif
 
