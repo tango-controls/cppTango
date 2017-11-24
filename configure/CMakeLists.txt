@@ -1,8 +1,8 @@
 include(FindPkgConfig)
 
 if(NOT CMAKE_BUILD_TYPE)
-    message("No build type specified - default is RELEASE")
-    set(CMAKE_BUILD_TYPE RELEASE)
+    message("No build type specified - default is Release")
+    set(CMAKE_BUILD_TYPE Release)
 endif()
 
 if(IDL_BASE)
@@ -112,8 +112,6 @@ if(PTHREAD_WIN)
         set(PTHREAD_WIN_PKG_LIBRARIES_DYN "pthreadVC2.lib")
         set(PTHREAD_WIN_PKG_LIBRARIES_STA "pthreadVC2-s.lib")
     endif()
-else(IDL_BASE)
-    pkg_search_module(IDL_PKG REQUIRED tangoidl)
 endif(PTHREAD_WIN)
 
 message("Verifying ${OMNIIDL_PATH}omniidl")
