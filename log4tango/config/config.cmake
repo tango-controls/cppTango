@@ -58,15 +58,15 @@ LOG4TANGO_CHECK_COMPILER_FEATURE("config/check_snprintf.cpp" SNPRINTF)
 
 #check types
 check_type_size(int64_t INT64_SIZE)
-IF(WIN32)
-    IF(CMAKE_CL_64)
+if(WIN32)
+    if(CMAKE_CL_64)
         set(LOG4TANGO_HAVE_INT64_T "/**/")
-    ENDIF()
-ELSE()
-if(${INT64_SIZE} EQUAL 8)
-    set(LOG4TANGO_HAVE_INT64_T "/**/")
-endif()
-ENDIF()
+    endif(CMAKE_CL_64)
+else(WIN32)
+    if(${INT64_SIZE} EQUAL 8)
+        set(LOG4TANGO_HAVE_INT64_T "/**/")
+    endif()
+endif(WIN32)
 
 
 configure_file(config/config.h.in ${PROJECT_BINARY_DIR}/log4tango/include/log4tango/config.h)
