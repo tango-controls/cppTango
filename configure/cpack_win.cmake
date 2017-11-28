@@ -49,11 +49,11 @@ set (CPACK_COMPONENT_DYNAMIC_DISPLAY_NAME
   "Tango.dll")
 set (CPACK_COMPONENT_HEADERS_DISPLAY_NAME
   "c++ Headers")
-  set(CPACK_COMPONENT_STATIC_DESCRIPTION 
+set(CPACK_COMPONENT_STATIC_DESCRIPTION
    "Tango.lib - for building projects")
- set(CPACK_COMPONENT_DYNAMIC_DESCRIPTION
+set(CPACK_COMPONENT_DYNAMIC_DESCRIPTION
    "Tango.dll - for running Tango executables")
- set(CPACK_COMPONENT_HEADERS_DESCRIPTION
+set(CPACK_COMPONENT_HEADERS_DESCRIPTION
    "C/C++ header files for use with Tango")
 
 # Define NSIS installation types
