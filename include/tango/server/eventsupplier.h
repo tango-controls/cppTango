@@ -284,7 +284,6 @@ private :
     zmq::message_t              heartbeat_call_mess_2;  //
 
 	unsigned char               host_endian;            // the host endianess
-	bool                        heartbeat_name_init;
 
 	bool                        ip_specified;           // The user has specified an IP address
 	bool                        name_specified;         // The user has specified a name as IP address

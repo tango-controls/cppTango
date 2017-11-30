@@ -273,12 +273,34 @@ name_specified(false),double_send(0),double_send_heartbeat(false)
     heartbeat_call_mess_2.copy(&heartbeat_call_mess);
 
 //
-// Start to init the event name used for the DS heartbeat event
+// Build heartbeat name
+// This is something like
+//   tango://host:port/dserver/exec_name/inst_name.heartbeat when using DB
+//   tango://host:port/dserver/exec_name/inst_name#dbase=no.heartbeat when using file as database
 //
 
     heartbeat_event_name = fqdn_prefix;
     heartbeat_event_name = heartbeat_event_name + "dserver/";
-    heartbeat_name_init = false;
+    heartbeat_event_name += tg->get_ds_name();
+    if (Util::_FileDb == true || Util::_UseDb == false)
+    {
+        bool db_ds = false;
+        const vector<DeviceClass *> *cl_ptr = tg->get_class_list();
+        for (size_t loop = 0; loop < cl_ptr->size(); loop++)
+        {
+            if ((*cl_ptr)[loop]->get_name() == DATABASE_CLASS)
+            {
+                db_ds = true;
+                break;
+            }
+        }
+
+        if (db_ds == false)
+            heartbeat_event_name = heartbeat_event_name + MODIFIER_DBASE_NO;
+    }
+
+    heartbeat_event_name = heartbeat_event_name + ".heartbeat";
+    transform(heartbeat_event_name.begin(), heartbeat_event_name.end(), heartbeat_event_name.begin(), ::tolower);
 
 //
 // Init data used in no-copy Zmq API
@@ -790,39 +812,6 @@ void ZmqEventSupplier::push_heartbeat_event()
 	now_time = time(NULL);
 	delta_time = now_time - adm_dev->last_heartbeat_zmq;
 	cout3 << "ZmqEventSupplier::push_heartbeat_event(): delta time since last heartbeat " << delta_time << endl;
-
-	if (heartbeat_name_init == false)
-	{
-
-//
-// Build heartbeat name
-// This is something like
-//   tango://host:port/dserver/exec_name/inst_name.heartbeat when using DB
-//   tango://host:port/dserver/exec_name/inst_name#dbase=no.heartbeat when using file as database
-//
-
-        heartbeat_event_name = heartbeat_event_name + adm_dev->get_full_name();
-        if (Util::_FileDb == true || Util::_UseDb == false)
-        {
-            bool db_ds = false;
-            const vector<DeviceClass *> *cl_ptr = tg->get_class_list();
-            for (size_t loop = 0;loop < cl_ptr->size();loop++)
-            {
-                if ((*cl_ptr)[loop]->get_name() == DATABASE_CLASS)
-                {
-                    db_ds = true;
-                    break;
-                }
-            }
-
-            if (db_ds == false)
-                heartbeat_event_name = heartbeat_event_name + MODIFIER_DBASE_NO;
-        }
-
-        heartbeat_event_name = heartbeat_event_name + ".heartbeat";
-		transform(heartbeat_event_name.begin(),heartbeat_event_name.end(),heartbeat_event_name.begin(),::tolower);
-	    heartbeat_name_init = true;
-	}
 
 //
 // We here compare delta_time to 8 and not to 10.
