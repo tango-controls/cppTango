@@ -103,7 +103,7 @@ init:
   #RDP from start
   #- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   # Update NSIS to support long path
-  - cmd: appveyor DownloadFile https://downloads.sourceforge.net/project/nsis/NSIS%203/3.02.1/nsis-3.02.1-strlen_8192.zip?r=&ts=1512138514&use_mirror=10gbps-io
+  - ps: (new-object System.Net.WebClient).DownloadFile("https://downloads.sourceforge.net/project/nsis/NSIS%203/3.02.1/nsis-3.02.1-strlen_8192.zip?r=&ts=1512138514&use_mirror=10gbps-io", "C:\projects\nsis-3.02.1-strlen_8192.zip")
   - cmd: 7z -y x nsis-3.02.1-strlen_8192.zip -oC:\Program Files (x86)\NSIS
   # Tango IDL
   - cmd: set TANGOIDLDIR=C:\projects\tangoidl
