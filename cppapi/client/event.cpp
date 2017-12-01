@@ -1812,10 +1812,11 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 #ifndef _TG_WINDOWS_
 // This sleep seems no longer needed on Debian 9
-//     struct timespec ts;
-//     ts.tv_nsec = 20000000;
-//     ts.tv_sec = 0;
-//     nanosleep(&ts,NULL);
+	struct timespec ts;
+	//ts.tv_nsec = 20000000;
+	ts.tv_nsec = 5000000;
+	ts.tv_sec = 0;
+	nanosleep(&ts,NULL);
 #else
 	Sleep(20);
 #endif
@@ -3116,11 +3117,12 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 
 #ifndef _TG_WINDOWS_
 // This sleep seems no longer needed on Debian 9
-//	struct timespec to_wait,inter;
-//	to_wait.tv_sec = 0;
-//	to_wait.tv_nsec = 10000000;
+	struct timespec to_wait,inter;
+	to_wait.tv_sec = 0;
+	//to_wait.tv_nsec = 10000000;
+	to_wait.tv_nsec = 1000000;
 
-//	nanosleep(&to_wait,&inter);
+	nanosleep(&to_wait,&inter);
 #else
 	Sleep(25);
 #endif
