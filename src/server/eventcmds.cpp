@@ -977,14 +977,22 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             }
         }
 
-        //add one more
+        //add two more
         auto size = ret_data->svalue.length();
-        ret_data->svalue.length(size + 1);
+        ret_data->svalue.length(size + 2);
 
 		string event_topic =
 			ev->create_full_event_name(dev, EVENT_COMPAT_IDL5 + event, obj_name_lower, intr_change);
 		assert(not(event_topic.empty()));
+        cout4 << "Sending event_topic = " << event_topic << endl;
 		ret_data->svalue[size] = Tango::string_dup(event_topic.c_str());
+
+        string channel_name = ev->get_fqdn_prefix();
+        channel_name += dev->adm_name();
+        transform(channel_name.begin(), channel_name.end(), channel_name.begin(), ::tolower);
+        assert(not(channel_name.empty()));
+        cout4 << "Sending channel_name = " << channel_name << endl;
+        ret_data->svalue[size + 1] = Tango::string_dup(channel_name.c_str());
     }
 
 	return ret_data;
