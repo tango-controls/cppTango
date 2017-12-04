@@ -1900,7 +1900,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
     auto tango_lib_ver = dvlsa->lvalue[0];
     string event_name_recieved_from_admin;
     if (tango_lib_ver >= 1032)
-        event_name_recieved_from_admin = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
+        event_name_recieved_from_admin = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
     else
         event_name_recieved_from_admin = local_callback_key;
 
@@ -2117,7 +2117,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
     tango_lib_ver = dvlsa->lvalue[0];
     event_name_recieved_from_admin;
     if (tango_lib_ver >= 1032)
-        event_name_recieved_from_admin = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
+        event_name_recieved_from_admin = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
     else
         event_name_recieved_from_admin = local_callback_key;
 

@@ -1707,7 +1707,7 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
     auto tango_lib_ver = ev_svr_data->lvalue[0];
     string event_name_recieved_from_admin;
     if (tango_lib_ver >= 1032)
-        event_name_recieved_from_admin = (ev_svr_data->svalue[ev_svr_data->svalue.length() - 1]);
+        event_name_recieved_from_admin = (ev_svr_data->svalue[ev_svr_data->svalue.length() - 2]);
     else
         event_name_recieved_from_admin = full_event_name;
 
