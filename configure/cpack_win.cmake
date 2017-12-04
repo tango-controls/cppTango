@@ -72,6 +72,8 @@ set(CPACK_COMPONENT_GROUP_RUNTIME_DESCRIPTION
    "All of the required libraries to launch Tango software")
 
 set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_BINARY_DIR}/LICENSE)
+
+#NSIS
 set(CPACK_NSIS_HELP_LINK "http://www.tango-controls.org")
 set(CPACK_NSIS_URL_INFO_ABOUT "http://www.tango-controls.org")
 set(CPACK_NSIS_MODIFY_PATH ON)
@@ -80,3 +82,9 @@ set(CPACK_NSIS_MENU_LINKS
     "http://tango-controls.readthedocs.io/en/latest/" "Tango Doc")
 set(CPACK_NSIS_MUI_ICON ${PROJECT_BINARY_DIR}/appveyor/tango.ico)
 set(CPACK_NSIS_MUI_UNIICON ${PROJECT_BINARY_DIR}/appveyor/tango.ico)
+
+#WIX
+set(CPACK_WIX_PRODUCT_ICON ${PROJECT_BINARY_DIR}/appveyor/tango.ico)
+set(CPACK_WIX_PROPERTY_ARPHELPLINK "http://tango-controls.readthedocs.io/en/latest/")
+set(CPACK_WIX_PROPERTY_ARPURLINFOABOUT "http://www.tango-controls.org")
+set(CPACK_WIX_PROPERTY_ARPURLUPDATEINFO "http://www.tango-controls.org")
