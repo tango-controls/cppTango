@@ -1814,7 +1814,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 // This sleep seems no longer needed on Debian 9
 	struct timespec ts;
 	//ts.tv_nsec = 20000000;
-	ts.tv_nsec = 1000000;
+	ts.tv_nsec = 500000;
 	ts.tv_sec = 0;
 	nanosleep(&ts,NULL);
 #else
@@ -3120,7 +3120,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 	struct timespec to_wait,inter;
 	to_wait.tv_sec = 0;
 	//to_wait.tv_nsec = 10000000;
-	to_wait.tv_nsec = 500000;
+	to_wait.tv_nsec = 100000;
 
 	nanosleep(&to_wait,&inter);
 #else
