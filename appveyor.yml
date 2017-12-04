@@ -210,11 +210,11 @@ build_script:
 after_build:
   - cmd: cd C:/projects/cppTango 
   # Generating installer
-  - cmd: cpack -G NSIS
+  - cmd: cpack -G WIX
   - cmd: cpack -G ZIP
   - cmd: cd c:/projects/debug_build
   # Generating installer
-  - cmd: cpack -C Debug -G NSIS
+  - cmd: cpack -C Debug -G WIX
   - cmd: cpack -C Debug -G ZIP
   #rename x64-msvc10
   - cmd: if %ARCH%==x64-msvc10 move libtango_9.2.6_Windows7.1SDK_x64_debug.exe libtango_9.2.6_v100_x64_debug.exe
