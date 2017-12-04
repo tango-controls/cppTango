@@ -666,10 +666,11 @@ void
 Tango::EventConsumer::connect(DeviceProxy *device_proxy, string &d_name, DeviceData &dd, string &adm_name, bool &necm)
 {
     string channel_name = adm_name;
-    if (device_proxy->get_from_env_var() == true)
-    {
-        channel_name.insert(0, env_var_fqdn_prefix[0]);
-    }
+    //TODO handle this if
+//    if (device_proxy->get_from_env_var() == true)
+//    {
+//        channel_name.insert(0, env_var_fqdn_prefix[0]);
+//    }
 
 //
 // If no connection exists to this channel then connect to it. Sometimes, this method is called in order to reconnect
@@ -683,10 +684,11 @@ Tango::EventConsumer::connect(DeviceProxy *device_proxy, string &d_name, DeviceD
     }
 
 
-    if (device_proxy->get_from_env_var() == true)
-    {
-        adm_name.insert(0, env_var_fqdn_prefix[0]);
-    }
+    //TODO handle this if
+//    if (device_proxy->get_from_env_var() == true)
+//    {
+//        adm_name.insert(0, env_var_fqdn_prefix[0]);
+//    }
 
 //
 // Init adm device name in channel map entry
@@ -1777,12 +1779,12 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
     DeviceProxy *adm_dev = NULL;
     bool allocated = false;
 
-    map<std::string, std::string>::iterator ipos = device_channel_map.find(device_name);
+    auto iterator_device_channel_map = device_channel_map.find(device_name);
     EvChanIte evt_it = channel_map.end();
 
     string adm_name;
 
-    if (ipos == device_channel_map.end())
+    if (iterator_device_channel_map == device_channel_map.end())
     {
         try
         {
@@ -1800,7 +1802,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
     }
     else
     {
-        evt_it = channel_map.find(ipos->second);
+        evt_it = channel_map.find(iterator_device_channel_map->second);
         if (evt_it == channel_map.end())
         {
             TangoSys_OMemStream o;
@@ -1897,27 +1899,21 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
         local_callback_key.insert(pos + 1, EVENT_COMPAT_IDL5);
     }
 
-    auto tango_lib_ver = dvlsa->lvalue[0];
-    string event_name_recieved_from_admin;
-    if (tango_lib_ver >= 1032)
-        event_name_recieved_from_admin = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
-    else
-        event_name_recieved_from_admin = local_callback_key;
+    initialize_recieved_from_admin(dvlsa, std::move(local_callback_key), std::move(adm_name));
 
-    assert(not(event_name_recieved_from_admin.empty()));
 
 //
 // Do we already have this event in the callback map? If yes, simply add this new callback to the event callback list
 // If it's a ATTR_CONF_EVENT, don't forget to look for the two different event kinds
 //
 
-    EvCbIte iter = event_callback_map.find(event_name_recieved_from_admin);
+    EvCbIte iter = event_callback_map.find(recieved_from_admin.event_name);
 
     if (iter == event_callback_map.end() && add_compat_info == true)
     {
         for (int i = 0; i < ATT_CONF_REL_NB; i++)
         {
-            string mod_local_callback_key(local_callback_key);
+            string mod_local_callback_key(recieved_from_admin.event_name);
             string::size_type pos = mod_local_callback_key.rfind('.');
             mod_local_callback_key.insert(pos + 1, EVENT_COMPAT_IDL5);
             iter = event_callback_map.find(mod_local_callback_key);
@@ -1929,7 +1925,14 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
     if (iter != event_callback_map.end())
     {
         int new_event_id = add_new_callback(iter, callback, ev_queue, event_id);
-        get_fire_sync_event(device, callback, ev_queue, event, event_name, obj_name, iter->second, local_callback_key);
+        get_fire_sync_event(device,
+                            callback,
+                            ev_queue,
+                            event,
+                            event_name,
+                            obj_name,
+                            iter->second,
+                            recieved_from_admin.event_name);
         return new_event_id;
     }
 
@@ -1951,14 +1954,14 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 
     int valid_endpoint_nb = 0;
 
-    if (ipos == device_channel_map.end())
+    if (iterator_device_channel_map == device_channel_map.end())
     {
         cout3 << "device " << device_name << " is not connected, going to connect to the event channel !\n";
         bool new_entry_in_channel_map = false;
 
         try
         {
-            connect(device, device_name, dd, adm_name, new_entry_in_channel_map);
+            connect(device, device_name, dd, recieved_from_admin.channel_name, new_entry_in_channel_map);
         }
         catch (Tango::DevFailed &e)
         {
@@ -1967,8 +1970,8 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
             throw;
         }
 
-        ipos = device_channel_map.find(device_name);
-        if (ipos == device_channel_map.end())
+        iterator_device_channel_map = device_channel_map.find(device_name);
+        if (iterator_device_channel_map == device_channel_map.end())
         {
             if (allocated == true)
                 delete adm_dev;
@@ -1983,7 +1986,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 
         if (evt_it == channel_map.end())
         {
-            evt_it = channel_map.find(ipos->second);
+            evt_it = channel_map.find(iterator_device_channel_map->second);
             evt_it->second.last_subscribed = time(NULL);
             valid_endpoint_nb = evt_it->second.valid_endpoint;
 
@@ -1998,7 +2001,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
     }
     else
     {
-        evt_it = channel_map.find(ipos->second);
+        evt_it = channel_map.find(iterator_device_channel_map->second);
         valid_endpoint_nb = evt_it->second.valid_endpoint;
     }
 
@@ -2114,18 +2117,9 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 // Insert new entry in map
 //
 
-    tango_lib_ver = dvlsa->lvalue[0];
-    event_name_recieved_from_admin;
-    if (tango_lib_ver >= 1032)
-        event_name_recieved_from_admin = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
-    else
-        event_name_recieved_from_admin = local_callback_key;
-
-    assert(not(event_name_recieved_from_admin.empty()));
-
     pair<EvCbIte, bool>
         ret = event_callback_map
-        .insert(pair<string, EventCallBackStruct>(event_name_recieved_from_admin, new_event_callback));
+        .insert(pair<string, EventCallBackStruct>(recieved_from_admin.event_name, new_event_callback));
     if (!ret.second)
     {
         TangoSys_OMemStream o;
@@ -3391,5 +3385,27 @@ Tango::ChannelType Tango::EventConsumer::get_event_system_for_event_id(int event
     }
 
     return ret;
+}
+
+void Tango::EventConsumer::initialize_recieved_from_admin(const Tango::DevVarLongStringArray *dvlsa,
+                                                          string &&local_callback_key,
+                                                          string &&adm_name)
+{
+    auto tango_lib_ver = dvlsa->lvalue[0];
+
+    if (tango_lib_ver >= 1032)
+        recieved_from_admin.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
+    else
+        recieved_from_admin.event_name = std::move(local_callback_key);
+
+    if (tango_lib_ver >= 1032)
+        recieved_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
+    else
+        recieved_from_admin.channel_name = std::move(adm_name);
+
+    assert(not(recieved_from_admin.event_name.empty()));
+    cout4 << "recieved_from_admin.event_name = " << recieved_from_admin.event_name << endl;
+    assert(not(recieved_from_admin.channel_name.empty()));
+    cout4 << "rrecieved_from_admin.channel_name = " << recieved_from_admin.channel_name << endl;
 }
 

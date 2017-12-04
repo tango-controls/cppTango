@@ -1359,8 +1359,9 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 #endif
         length++;
 
-        ::strcpy(&(buffer[length]), ev_svr_data->svalue[valid_endpoint << 1].in());
-        length = length + ::strlen(ev_svr_data->svalue[valid_endpoint << 1].in()) + 1;
+        string heartbeat_endpoint(ev_svr_data->svalue[valid_endpoint << 1].in());
+        ::strcpy(&(buffer[length]), heartbeat_endpoint.c_str());
+        length = length + heartbeat_endpoint.size() + 1;
 
         string sub(channel_name);
         sub = sub + '.' + HEARTBEAT_EVENT_NAME;
@@ -1704,13 +1705,6 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
 // Create and connect the REQ socket used to send message to the ZMQ main thread
 //
 
-    auto tango_lib_ver = ev_svr_data->lvalue[0];
-    string event_name_recieved_from_admin;
-    if (tango_lib_ver >= 1032)
-        event_name_recieved_from_admin = (ev_svr_data->svalue[ev_svr_data->svalue.length() - 2]);
-    else
-        event_name_recieved_from_admin = full_event_name;
-
     zmq::message_t reply;
     try
     {
@@ -1771,8 +1765,8 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
         ::strcpy(&(buffer[length]),endpoint.c_str());
         length = length + endpoint.size() + 1;
 
-        ::strcpy(&(buffer[length]), event_name_recieved_from_admin.c_str());
-        length = length + event_name_recieved_from_admin.size() + 1;
+        ::strcpy(&(buffer[length]), recieved_from_admin.event_name.c_str());
+        length = length + recieved_from_admin.event_name.size() + 1;
 
         DevLong user_hwm = au->get_user_sub_hwm();
         if (user_hwm != -1)

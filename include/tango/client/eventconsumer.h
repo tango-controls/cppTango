@@ -532,6 +532,14 @@ protected :
 
     virtual void set_channel_type(EventChannelStruct &) = 0;
     virtual void zmq_specific(DeviceData &, string &, DeviceProxy *, const string &) = 0;
+    void initialize_recieved_from_admin(const Tango::DevVarLongStringArray *pArray,
+                                        string &&local_callback_key,
+                                        string &&adm_name);
+    struct
+    {
+        string event_name;
+        string channel_name;
+    } recieved_from_admin;
 };
 
 /********************************************************************************
