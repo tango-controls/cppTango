@@ -1338,7 +1338,7 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
 
     TangoMonitor &mon1 = dev->get_att_conf_monitor();
     mon1.get_monitor();
-    if (not archive)
+    if (! archive)
     {
         rel_change[0] = attr.rel_change[0];
         rel_change[1] = attr.rel_change[1];

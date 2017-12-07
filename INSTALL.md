@@ -15,12 +15,12 @@
 - make [-j NUMBER_OF_CPUS]
 - sudo make install
 
-cmake options are: `[-DCMAKE_INSTALL_PREFIX=<desired installation path>] [-DOMNI_BASE=<omniORB4 home folder>] [-DZMQ_BASE=<zmq home folder>] [-DIDL_BASE=<tango-idl installation folder>] [-DCMAKE_BUILD_TYPE=RELEASE|DEBUG] [-DCMAKE_VERBOSE_MAKEFILE=true]`
+cmake options are: `[-DCMAKE_INSTALL_PREFIX=<desired installation path>] [-DOMNI_BASE=<omniORB4 home folder>] [-DZMQ_BASE=<zmq home folder>] [-DIDL_BASE=<tango-idl installation folder>] [-DCMAKE_BUILD_TYPE=Release|Debug] [-DCMAKE_VERBOSE_MAKEFILE=true]`
 
 Typical output:
 
 ```
--- Install configuration: "DEBUG"
+-- Install configuration: "Debug"
 -- Installing: /storage/Projects/org.tango/git/cppTango/build/install/lib/libtango.so.9.2.5
 -- Installing: /storage/Projects/org.tango/git/cppTango/build/install/lib/libtango.so.9
 -- Installing: /storage/Projects/org.tango/git/cppTango/build/install/lib/libtango.so
