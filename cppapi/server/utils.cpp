@@ -55,6 +55,11 @@
 #include <coutbuf.h>
 #include <ntservice.h>
 #include <ws2tcpip.h>
+#ifdef _MSC_VER
+#if _MSC_VER < 1900
+#include <omnithread/pthread_nt.h>
+#endif
+#endif
 #endif /* _TG_WINDOWS_ */
 
 #include <omniORB4/omniInterceptors.h>
@@ -1920,7 +1925,6 @@ void Util::server_perform_work()
 {
 	if (ev_loop_func != NULL)
 	{
-
 		//
 		// If the user has installed its own event management function, call it in a loop
 		//

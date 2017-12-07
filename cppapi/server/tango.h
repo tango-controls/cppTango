@@ -53,6 +53,8 @@
 	#if (_WIN32_WINNT >= 0x0400)
 		#include <winsock2.h>
 		#include <mswsock.h>
+		#include <algorithm>
+		#include <limits>
 	#else
 		#include <winsock.h>
 	#endif

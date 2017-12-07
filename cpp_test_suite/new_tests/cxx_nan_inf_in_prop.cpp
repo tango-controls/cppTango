@@ -304,7 +304,7 @@ public:
 
 		// Extract as long array:
 		vector<Tango::DevLong> long_array_val;
-		TS_ASSERT(not (db_data_r[0] >> long_array_val));
+		TS_ASSERT(! (db_data_r[0] >> long_array_val));
 
 		// Restore the default configuration
 		TS_ASSERT_THROWS_NOTHING(device1->delete_property(prop_name));

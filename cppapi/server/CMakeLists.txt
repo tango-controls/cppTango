@@ -135,7 +135,25 @@ add_subdirectory(idl)
 add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)
 
-add_library(server_objects OBJECT ${SOURCES})
-target_compile_options(server_objects PRIVATE -fPIC)
+if(WIN32)
+    set(SOURCES_WIN
+        coutbuf.cpp
+        ntservice.cpp
+        w32win.cpp)
+          
+    add_library(server_objects_dyn OBJECT ${SOURCES} ${SOURCES_WIN})
+    add_library(server_objects_sta OBJECT ${SOURCES} ${SOURCES_WIN})
+    target_compile_definitions(server_objects_dyn PRIVATE "${dyn_defs}")
+    target_compile_definitions(server_objects_sta PRIVATE "${static_defs}")
+
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        target_compile_options(server_objects_sta PRIVATE "/MTd")
+    else()
+        target_compile_options(server_objects_sta PRIVATE "/MT")
+    endif()
+else(WIN32)
+    add_library(server_objects OBJECT ${SOURCES})
+    target_compile_options(server_objects PRIVATE -fPIC)
+endif(WIN32)
 
 install(FILES ${HEADERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")

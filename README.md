@@ -31,7 +31,7 @@ Manuals: [tango-controls.org/resources/documentation/kernel](http://www.tango-co
 
 # How to build and install using cmake
 
-`mkdir build; cd build; cmake .. [-DCMAKE_INSTALL_PREFIX=<desired installation path>] [-DOMNI_BASE=<omniORB4 home folder>] [-DCPPZMQ_BASE=<cppzmq home folder][-DZMQ_BASE=<zmq home folder>] [-DCMAKE_BUILD_TYPE=RELEASE|DEBUG] [-DCMAKE_VERBOSE_MAKEFILE=true]; make; make install`
+`mkdir build; cd build; cmake .. [-DCMAKE_INSTALL_PREFIX=<desired installation path>] [-DOMNI_BASE=<omniORB4 home folder>] [-DCPPZMQ_BASE=<cppzmq home folder][-DZMQ_BASE=<zmq home folder>] [-DCMAKE_BUILD_TYPE=Release|Debug] [-DCMAKE_VERBOSE_MAKEFILE=true]; make; make install`
 
 More information is in [INSTALL file](https://github.com/tango-controls/cppTango/blob/tango-9-lts/INSTALL.md) 
 

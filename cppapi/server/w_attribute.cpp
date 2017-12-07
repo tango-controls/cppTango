@@ -2969,7 +2969,7 @@ bool WAttribute::check_rds_alarm()
                         if (Tango_isnan(double_array_val[0]) || Tango_isnan(tmp_db[0]))
                         {
                             // send an alarm if only read or set value are NAN
-                            if (not(Tango_isnan(double_array_val[0]) && Tango_isnan(tmp_db[0])))
+                            if (!(Tango_isnan(double_array_val[0]) && Tango_isnan(tmp_db[0])))
                             {
                                 quality = Tango::ATTR_ALARM;
                                 alarm.set(rds);
@@ -2983,7 +2983,7 @@ bool WAttribute::check_rds_alarm()
                         if (Tango_isnan(double_array_val[i]) || Tango_isnan((*value.db_seq)[i]))
                         {
                             // send an alarm if only read or set value are NAN
-                            if (not(Tango_isnan(double_array_val[i]) && Tango_isnan((*value.db_seq)[i])))
+                            if (!(Tango_isnan(double_array_val[i]) && Tango_isnan((*value.db_seq)[i])))
                             {
                                 quality = Tango::ATTR_ALARM;
                                 alarm.set(rds);
@@ -3019,7 +3019,7 @@ bool WAttribute::check_rds_alarm()
                         if (Tango_isnan(float_array_val[0]) || Tango_isnan(tmp_fl[0]))
                         {
                             // send an alarm if only read or set value are NAN
-                            if (not(Tango_isnan(float_array_val[0]) && Tango_isnan(tmp_fl[0])))
+                            if (!(Tango_isnan(float_array_val[0]) && Tango_isnan(tmp_fl[0])))
                             {
                                 quality = Tango::ATTR_ALARM;
                                 alarm.set(rds);
@@ -3033,7 +3033,7 @@ bool WAttribute::check_rds_alarm()
                         if (Tango_isnan(float_array_val[i]) || Tango_isnan((*value.fl_seq)[i]))
                         {
                             // send an alarm if only read or set value are NAN
-                            if (not(Tango_isnan(float_array_val[i]) && Tango_isnan((*value.fl_seq)[i])))
+                            if (!(Tango_isnan(float_array_val[i]) && Tango_isnan((*value.fl_seq)[i])))
                             {
                                 quality = Tango::ATTR_ALARM;
                                 alarm.set(rds);

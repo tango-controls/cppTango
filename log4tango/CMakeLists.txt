@@ -12,4 +12,6 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/config/config.cmake)
 
 add_subdirectory(include)
 add_subdirectory(src)
-add_subdirectory(tests)
+if (NOT WIN32)
+    add_subdirectory(tests)
+endif(NOT WIN32)

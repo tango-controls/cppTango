@@ -1,5 +1,6 @@
 #include "compare_test.h"
 #include <stdio.h>
+#include <algorithm>
 
 using namespace std;
 using namespace CmpTst;
