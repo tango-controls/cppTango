@@ -35,7 +35,7 @@ Typical output:
 
 ## Ubuntu 16.04 compilation problem
 
-When compiling on Ubuntu 16.04 the following error occurs:
+When compiling on Ubuntu 16.04 or on Debian stretch, the following error can occur:
 
 ```
 [ 17%] Building CXX object cppapi/client/CMakeFiles/client_objects.dir/zmqeventconsumer.cpp.o
@@ -54,17 +54,17 @@ When compiling on Ubuntu 16.04 the following error occurs:
                  poll_list[old_poll_nb].socket = *tmp_sock;
 ```
 
-This is due to incompatibility between libzmq3-dev:4.0.5 (debian jessie) and libzmq3-dev:4.1.7 (ubuntu 16.04), i.e. it is not possible to compile cppTango using libzmq provided in Ubuntu.
+This is due to incompatibility of zmq.hpp file provided in libzmq3-dev:4.1.7 (ubuntu 16.04), i.e. it is not possible to compile cppTango using zmq.hpp file provided by libzmq3-dev:4.1.7 (ubuntu 16.04).
 
 The following workaround can be applied:
 
-Download and compile [zmq-4.0.5](https://github.com/zeromq/zeromq4-x/releases/tag/v4.0.5). Install it in some folder, e.g. cppTango/lib/zeromq-4.0.5.
+Download and install [cppzmq](https://github.com/zeromq/cppzmq) (version 4.2.2 for instance). Install it in some folder.
 
-Download and copy into zmq-4.0.5 installation folder, e.g. cppTango/lib/zmq-4.0.5/include, all *.hpp files from [cppzmq](https://github.com/zeromq/cppzmq)
+Build cppTango using installed cppzmq, using the following cmake command during the build process:
 
-Build cppTango using installed zmq-4.0.5: `cmake .. -DZMQ_BASE=../lib/zmq-4.0.5`
+`cmake .. -DCPPZMQ_BASE=<cppzmq_install_folder>`
 
-This problem is addressed in issue #273
+This problem is addressed in issue #273 and Pull Request #421.
 
 # How to setup tests
 
