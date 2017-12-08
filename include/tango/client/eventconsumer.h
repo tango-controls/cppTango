@@ -379,6 +379,7 @@ typedef struct event_callback_zmq
 typedef struct event_callback: public EventCallBackBase, public EventCallBackZmq
 {
     bool filter_ok;
+    string client_attribute_name;
 } EventCallBackStruct;
 
 //------------------------ Event Channel related info --------------------------------------
@@ -504,6 +505,7 @@ protected :
     string device_name;
     string obj_name_lower;
     int thread_id;
+    map<string, string> event_name_map;
 
     int add_new_callback(EvCbIte &, CallBack *, EventQueue *, int);
     void get_fire_sync_event(DeviceProxy *,
@@ -532,6 +534,7 @@ protected :
 
     virtual void set_channel_type(EventChannelStruct &) = 0;
     virtual void zmq_specific(DeviceData &, string &, DeviceProxy *, const string &) = 0;
+    string get_client_attribute_name(const string &);
     void initialize_recieved_from_admin(const Tango::DevVarLongStringArray *pArray,
                                         string &&local_callback_key,
                                         string &&adm_name);
@@ -657,6 +660,21 @@ private :
     bool check_zmq_endpoint(const string &);
 
     friend class DelayEvent;
+    FwdEventData *newFwdEventData(zmq::message_t &event_data,
+                                  const string &new_tango_host,
+                                  DevErrorList &errors,
+                                  string &event_name,
+                                  string &full_att_name,
+                                  long vers,
+                                  const DeviceAttribute *dev_attr,
+                                  bool no_unmarshalling,
+                                  unsigned int cb_nb,
+                                  unsigned int cb_ctr,
+                                  const CallBack *callback) const;
+    string getFullAttributeName(const string &ev_name,
+                                bool first_search_succeed,
+                                const EventCallBackStruct &evt_cb,
+                                unsigned long pos) const;
 };
 
 class DelayEvent

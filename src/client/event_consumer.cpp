@@ -2026,6 +2026,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
     new_event_callback.event_name = event_name;
     new_event_callback.channel_name = evt_it->first;
     new_event_callback.alias_used = false;
+    new_event_callback.client_attribute_name = get_client_attribute_name(local_callback_key);
 
     if (inter_event == true)
         new_event_callback.fully_qualified_event_name = device_name + '.' + event_name;
@@ -2153,6 +2154,12 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 #endif
 
     return ret_event_id;
+}
+
+string Tango::EventConsumer::get_client_attribute_name(const string &local_callback_key)
+{
+    auto pos = local_callback_key.rfind('.');
+    return local_callback_key.substr(0, pos);
 }
 
 
