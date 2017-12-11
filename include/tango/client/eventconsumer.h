@@ -380,6 +380,10 @@ typedef struct event_callback: public EventCallBackBase, public EventCallBackZmq
 {
     bool filter_ok;
     string client_attribute_name;
+    string get_client_attribute_name()
+    {
+        return client_attribute_name;
+    }
 } EventCallBackStruct;
 
 //------------------------ Event Channel related info --------------------------------------
@@ -670,10 +674,6 @@ private :
                                   unsigned int cb_nb,
                                   unsigned int cb_ctr,
                                   const CallBack *callback) const;
-    string getFullAttributeName(const string &ev_name,
-                                bool first_search_succeed,
-                                const EventCallBackStruct &evt_cb,
-                                unsigned long pos) const;
 };
 
 class DelayEvent

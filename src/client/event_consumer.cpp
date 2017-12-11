@@ -160,10 +160,7 @@ void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *ca
             err = e.errors;
         }
 
-        string local_event_name = event_name;
-        pos = local_event_name.find(EVENT_COMPAT);
-        if (pos != string::npos)
-            local_event_name.erase(0, EVENT_COMPAT_IDL5_SIZE);
+        string local_event_name = cb.get_client_attribute_name();
 
         if (cb.fwd_att == true)
         {
@@ -2158,7 +2155,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
 
 string Tango::EventConsumer::get_client_attribute_name(const string &local_callback_key)
 {
-    auto pos = local_callback_key.rfind('.');
+    auto pos = local_callback_key.rfind('.');//remove event_type e.g. .idl5_change
     return local_callback_key.substr(0, pos);
 }
 
