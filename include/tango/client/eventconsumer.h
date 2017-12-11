@@ -505,7 +505,6 @@ protected :
     string device_name;
     string obj_name_lower;
     int thread_id;
-    map<string, string> event_name_map;
 
     int add_new_callback(EvCbIte &, CallBack *, EventQueue *, int);
     void get_fire_sync_event(DeviceProxy *,

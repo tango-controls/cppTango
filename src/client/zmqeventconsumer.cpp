@@ -2952,15 +2952,7 @@ FwdEventData *ZmqEventConsumer::newFwdEventData(zmq::message_t &event_data,
 //
 
     string actual_full_att_name;
-    auto it = event_name_map.find(full_att_name);
-    if (it != event_name_map.end())
-    {
-        actual_full_att_name = it->second;
-    }
-    else
-    {
-        actual_full_att_name = full_att_name;
-    }
+    actual_full_att_name = full_att_name;
 
     if (cb_ctr != cb_nb)
     {
