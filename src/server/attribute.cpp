@@ -5944,6 +5944,7 @@ bool Attribute::data_ready_event_subscribed()
 
 void Attribute::set_client_lib(int _l, string &ev_name)
 {
+    cout3 << "Attribute::set_client_lib(" << _l << "," << ev_name << ")" << endl;
     int i;
     for (i = 0; i < numEventType; i++)
     {

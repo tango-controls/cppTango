@@ -589,7 +589,7 @@ void ZmqEventConsumer::process_event(zmq::message_t &received_event_name,zmq::me
 // Call the event method
 //
 
-    cout4 << "push_zmq_event" << endl;
+    cout << "push_zmq_event from zmq::message_t" << endl;
     push_zmq_event(event_name,endian,event_data,receiv_call->call_is_except,receiv_call->ctr);
 
 }
@@ -671,6 +671,7 @@ void ZmqEventConsumer::process_event(zmq_msg_t &received_event_name,zmq_msg_t &r
     zmq::message_t cpp_ev_data;
     cpp_ev_data.rebuild(zmq_msg_data(&event_data),zmq_msg_size(&event_data),NULL);
 
+    cout << "push_zmq_event zmq_msg_t" << endl;
     push_zmq_event(event_name,endian,cpp_ev_data,receiv_call->call_is_except,receiv_call->ctr);
 
 }
@@ -1954,14 +1955,14 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 {
     map_modification_lock.readerIn();
     bool map_lock = true;
-    cout4 << "Lib: Received event for " << ev_name << endl;
+    cout << "Lib: Received event for " << ev_name << endl;
 
     for (const auto &elem : event_callback_map)
-        cout4 << "Key in event_callback_map = " << elem.first << endl;
+        cout << "Key in event_callback_map = " << elem.first << endl;
     for (const auto &elem : channel_map)
-        cout4 << "Key in channel_map = " << elem.first << endl;
+        cout << "Key in channel_map = " << elem.first << endl;
 
-    cout4 << "ds_ctr" << ds_ctr << endl;
+    cout << "ds_ctr" << ds_ctr << endl;
 //
 // Search for entry within the event_callback map using the event name received in the event
 //
@@ -2018,7 +2019,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             bool pipe_event = false;
 
             EventCallBackStruct &evt_cb = ipos->second;
-            cout4 << "evt_cb.ctr" << evt_cb.ctr << endl;
+            cout << "evt_cb.ctr" << evt_cb.ctr << endl;
 
 //
 // Miss some events?
@@ -2029,10 +2030,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             bool err_missed_event = false;
 			if (ds_ctr != 1 && evt_cb.ctr == 0)
             {
-                //this prevents client from receiving same event twice after restart
-                evt_cb.ctr = ds_ctr;
-                map_modification_lock.readerOut();
-                return;
+                evt_cb.ctr = ds_ctr - 1;
             }
 
 			DevLong missed_event = ds_ctr - evt_cb.ctr;
