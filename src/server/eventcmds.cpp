@@ -715,6 +715,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 			ss << (*argin)[4];
 			ss >> client_release;
 
+            cout3 << "DServer::zmq_event_subscription_change client_release=" << client_release << endl;
 			if (client_release == 0)
 			{
 				string::size_type pos = event.find(EVENT_COMPAT);
