@@ -1896,7 +1896,7 @@ int Tango::EventConsumer::connect_event(DeviceProxy *device,
         local_callback_key.insert(pos + 1, EVENT_COMPAT_IDL5);
     }
 
-    initialize_recieved_from_admin(dvlsa, std::move(local_callback_key), std::move(adm_name));
+    initialize_recieved_from_admin(dvlsa, local_callback_key, adm_name);
 
 
 //
@@ -3392,8 +3392,8 @@ Tango::ChannelType Tango::EventConsumer::get_event_system_for_event_id(int event
 }
 
 void Tango::EventConsumer::initialize_recieved_from_admin(const Tango::DevVarLongStringArray *dvlsa,
-                                                          string &&local_callback_key,
-                                                          string &&adm_name)
+                                                          const string &local_callback_key,
+                                                          const string &adm_name)
 {
     auto tango_lib_ver = dvlsa->lvalue[0];
 

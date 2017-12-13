@@ -539,8 +539,8 @@ protected :
     virtual void zmq_specific(DeviceData &, string &, DeviceProxy *, const string &) = 0;
     string get_client_attribute_name(const string &);
     void initialize_recieved_from_admin(const Tango::DevVarLongStringArray *pArray,
-                                        string &&local_callback_key,
-                                        string &&adm_name);
+                                        const string &local_callback_key,
+                                        const string &adm_name);
     struct
     {
         string event_name;
