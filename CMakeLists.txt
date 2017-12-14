@@ -4,7 +4,7 @@ include(CTest)
 enable_testing()
 #need to define the version of the library
 set(MAJOR_VERSION "9")
-set(MINOR_VERSION "2")
+set(MINOR_VERSION "3")
 set(PATCH_VERSION "6")
 
 if(WIN32)

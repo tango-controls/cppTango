@@ -1146,7 +1146,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 				}
 				else
 				{
-					domain_name = epos->first.substr(0,pos);
+                    domain_name = epos->second.get_client_attribute_name();
 					event_name = epos->first.substr(pos + 1);
 
 					string::size_type pos = event_name.find(EVENT_COMPAT);

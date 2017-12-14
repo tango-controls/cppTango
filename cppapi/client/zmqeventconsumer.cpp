@@ -1764,8 +1764,8 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
         ::strcpy(&(buffer[length]),endpoint.c_str());
         length = length + endpoint.size() + 1;
 
-        ::strcpy(&(buffer[length]),full_event_name.c_str());
-        length = length + full_event_name.size() + 1;
+        ::strcpy(&(buffer[length]), received_from_admin.event_name.c_str());
+        length = length + received_from_admin.event_name.size() + 1;
 
         DevLong user_hwm = au->get_user_sub_hwm();
         if (user_hwm != -1)
@@ -2069,28 +2069,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // If the client TANGO_HOST is one alias, replace in the event name the host name by the alias
 //
 
-			string full_att_name;
-			if (evt_cb.alias_used == true)
-			{
-				pos = evt_cb.fully_qualified_event_name.rfind('.');
-				full_att_name = evt_cb.fully_qualified_event_name.substr(0,pos);
-
-				string::size_type pos = full_att_name.find(':',8);
-				string host = full_att_name.substr(8,pos - 8);
-				map<string,string>::iterator ite = alias_map.find(host);
-				if (ite != alias_map.end())
-                    full_att_name.replace(8,pos - 8,ite->second);
-			}
-			else
-			{
-				if (first_search_succeed == true)
-					full_att_name = ev_name.substr(0,pos);
-				else
-				{
-					pos = evt_cb.fully_qualified_event_name.rfind('.');
-					full_att_name = evt_cb.fully_qualified_event_name.substr(0,pos);
-				}
-			}
+            string full_att_name = evt_cb.get_client_attribute_name();
 			pos = full_att_name.rfind('/');
 			string att_name = full_att_name.substr(pos + 1);
 
@@ -2634,78 +2613,17 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
                         if ((ev_attr_conf == false) && (ev_attr_ready == false) && (ev_dev_intr == false) && (pipe_event == false))
                         {
-                            FwdEventData *event_dat;
-
-//
-// In case we have several callbacks on the same event or if the event has to be stored in a queue, copy
-// the event data (Event data are in the ZMQ message)
-//
-
-                            if (cb_ctr != cb_nb)
-                            {
-                                DeviceAttribute *dev_attr_copy = NULL;
-                                if (dev_attr != NULL || (callback == NULL && vers >= 4))
-                                {
-                                    dev_attr_copy = new DeviceAttribute();
-                                    if (no_unmarshalling == false)
-										dev_attr_copy->deep_copy(*dev_attr);
-                                }
-
-								if (no_unmarshalling == false)
-									event_dat = new FwdEventData(event_callback_map[new_tango_host].device,
-                                                                    full_att_name,
-                                                                    event_name,
-                                                                    dev_attr_copy,
-                                                                    errors);
-								else
-									event_dat = new FwdEventData(event_callback_map[new_tango_host].device,
-                                                                    full_att_name,
-                                                                    event_name,
-                                                                    dev_attr_copy,
-                                                                    errors,
-																    &event_data);
-                            }
-                            else
-                            {
-                            	if (no_unmarshalling == true)
-								{
-									DeviceAttribute *dummy = new DeviceAttribute();
-									event_dat = new FwdEventData(event_callback_map[new_tango_host].device,
-																		full_att_name,
-																		event_name,
-																		dummy,
-																		errors,
-																		&event_data);
-								}
-								else
-								{
-									if (callback == NULL && vers >= 4)
-									{
-										DeviceAttribute *dev_attr_copy = NULL;
-										if (dev_attr != NULL)
-										{
-											dev_attr_copy = new DeviceAttribute();
-											dev_attr_copy->deep_copy(*dev_attr);
-										}
-
-										event_dat = new FwdEventData(event_callback_map[new_tango_host].device,
-																		full_att_name,
-																		event_name,
-																		dev_attr_copy,
-																		errors);
-
-									}
-									else
-									{
-										event_dat = new FwdEventData(event_callback_map[new_tango_host].device,
-																	  full_att_name,
-																	  event_name,
-																	  dev_attr,
-																	  errors);
-									}
-								}
-                            }
-
+                            FwdEventData *event_dat = newFwdEventData(event_data,
+                                                                      new_tango_host,
+                                                                      errors,
+                                                                      event_name,
+                                                                      full_att_name,
+                                                                      vers,
+                                                                      dev_attr,
+                                                                      no_unmarshalling,
+                                                                      cb_nb,
+                                                                      cb_ctr,
+                                                                      callback);
 //
 // If a callback method was specified, call it!
 //
@@ -3003,6 +2921,98 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 		print_error_message(st.c_str());
 		// even if nothing was found in the map, free the lock
         map_modification_lock.readerOut();
+    }
+}
+
+FwdEventData *ZmqEventConsumer::newFwdEventData(zmq::message_t &event_data,
+                                                const string &new_tango_host,
+                                                DevErrorList &errors,
+                                                string &event_name,
+                                                string &full_att_name,
+                                                long vers,
+                                                const DeviceAttribute *dev_attr,
+                                                bool no_unmarshalling,
+                                                unsigned int cb_nb,
+                                                unsigned int cb_ctr,
+                                                const CallBack *callback) const
+{
+//
+// In case we have several callbacks on the same event or if the event has to be stored in a queue, copy
+// the event data (Event data are in the ZMQ message)
+//
+
+    string actual_full_att_name;
+    actual_full_att_name = full_att_name;
+
+    if (cb_ctr != cb_nb)
+    {
+        DeviceAttribute *dev_attr_copy = NULL;
+        if (dev_attr != NULL || (callback == NULL && vers >= 4))
+        {
+            dev_attr_copy = new DeviceAttribute();
+            if (no_unmarshalling == false)
+            {
+                dev_attr_copy->deep_copy(*dev_attr);
+            }
+        }
+
+        if (no_unmarshalling == false)
+        {
+            return new FwdEventData(event_callback_map[new_tango_host].device,
+                                    actual_full_att_name,
+                                    event_name,
+                                    dev_attr_copy,
+                                    errors);
+        }
+        else
+        {
+            return new FwdEventData(event_callback_map[new_tango_host].device,
+                                    actual_full_att_name,
+                                    event_name,
+                                    dev_attr_copy,
+                                    errors,
+                                    &event_data);
+        }
+    }
+    else
+    {
+        if (no_unmarshalling == true)
+        {
+            DeviceAttribute *dummy = new DeviceAttribute();
+            return new FwdEventData(event_callback_map[new_tango_host].device,
+                                    actual_full_att_name,
+                                    event_name,
+                                    dummy,
+                                    errors,
+                                    &event_data);
+        }
+        else
+        {
+            if (callback == NULL && vers >= 4)
+            {
+                DeviceAttribute *dev_attr_copy = NULL;
+                if (dev_attr != NULL)
+                {
+                    dev_attr_copy = new DeviceAttribute();
+                    dev_attr_copy->deep_copy(*dev_attr);
+                }
+
+                return new FwdEventData(event_callback_map[new_tango_host].device,
+                                        actual_full_att_name,
+                                        event_name,
+                                        dev_attr_copy,
+                                        errors);
+
+            }
+            else
+            {
+                return new FwdEventData(event_callback_map[new_tango_host].device,
+                                        actual_full_att_name,
+                                        event_name,
+                                        const_cast<DeviceAttribute *>(dev_attr),
+                                        errors);
+            }
+        }
     }
 }
 

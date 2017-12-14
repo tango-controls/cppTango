@@ -9,6 +9,7 @@ docker run --name mysql_db \
 
 #run tango-cs docker
 CONTAINER=$(docker run --name tango_cs \
+    -p 10000:10000 \
     -e TANGO_HOST=127.0.0.1:10000 \
     -e MYSQL_HOST=mysql_db:3306 \
     -e MYSQL_USER=tango \
