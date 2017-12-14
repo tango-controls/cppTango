@@ -25,6 +25,7 @@ include_directories(cppapi/server)
 include_directories(cppapi/server/idl)
 include_directories(log4tango/include)
 #required for generated config.h
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/cppapi/server)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
 
 

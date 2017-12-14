@@ -113,7 +113,6 @@ set(HEADERS attrdesc.h
             seqvec.h
             tango.h
             tango_config.h
-            tango_const.h
             tango_monitor.h
             tangoappender.h
             tangorollingfileappender.h
@@ -156,4 +155,7 @@ else(WIN32)
     target_compile_options(server_objects PRIVATE -fPIC)
 endif(WIN32)
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tango_const.h.in ${CMAKE_CURRENT_BINARY_DIR}/tango_const.h)
+
 install(FILES ${HEADERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tango_const.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
