@@ -1844,7 +1844,7 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 {
 	auto tango_lib_ver = dvlsa->lvalue[0];
 
-	if (tango_lib_ver >= 936)
+    if (tango_lib_ver >= 930)
 	{
 		received_from_admin.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
 	}
@@ -1853,7 +1853,7 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 		received_from_admin.event_name = std::move(local_callback_key);
 	}
 
-	if (tango_lib_ver >= 936)
+    if (tango_lib_ver >= 930)
 	{
 		received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
 	}
