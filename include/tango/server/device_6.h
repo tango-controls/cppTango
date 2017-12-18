@@ -50,8 +50,9 @@ namespace Tango {
             idl_version = 6;
         }
 
-        Device_6Impl(DeviceClass *device_class, const char *dev_name, const char *desc, DevState dev_state,
-                     const char *dev_status) : Device_5Impl(device_class, dev_name, desc, dev_state, dev_status) {
+        Device_6Impl(DeviceClass *device_class, const char *dev_name, const char *desc = "A TANGO device",
+                     DevState dev_state = Tango::UNKNOWN, const char *dev_status = StatusNotSet)
+            : Device_5Impl(device_class, dev_name, desc, dev_state, dev_status) {
             idl_version = 6;
         }
 
