@@ -56,6 +56,9 @@ LOG4TANGO_CHECK_COMPILER_FEATURE("configure/check_namespace.cpp" NAMESPACES)
 #snprintf
 LOG4TANGO_CHECK_COMPILER_FEATURE("configure/check_snprintf.cpp" SNPRINTF)
 
+#make_unique
+LOG4TANGO_CHECK_COMPILER_FEATURE("configure/check_make_unique.cpp" MAKE_UNIQUE)
+
 #check types
 check_type_size(int64_t INT64_SIZE)
 IF(WIN32)
