@@ -287,7 +287,7 @@ public:
 	void set_event_param(vector<EventPar> &);
 	void add_alarmed_quality_factor(string &);
 	void add_default(vector<AttrProperty> &,string &,string &,long);
-	void add_attr(Attribute *att) {attr_list.push_back(att);}
+	void add_attr(Attribute *att);
 	void update(Attribute &,string &);
 	void check_idl_release(DeviceImpl *);
     bool is_opt_prop(const string &);
@@ -295,6 +295,14 @@ public:
 private:
     class MultiAttributeExt
     {
+	public:
+		struct AttributePtrAndIndex
+		{
+			Attribute * att_ptr;
+			long att_index_in_vector;
+		};
+		MultiAttributeExt() {}
+		map<string, AttributePtrAndIndex> attr_map;
     };
 
 	void concat(vector<AttrProperty> &,vector<AttrProperty> &,vector<AttrProperty> &);
