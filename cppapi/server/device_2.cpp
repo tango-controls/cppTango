@@ -1218,7 +1218,6 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 //--------------------------------------------------------------------------
 
 Tango::AttributeConfigList_2 *Device_2Impl::get_attribute_config_2(const Tango::DevVarStringArray& names)
-throw(Tango::DevFailed, CORBA::SystemException)
 {
 	TangoMonitor &mon = get_att_conf_monitor();
 	AutoTangoMonitor sync(&mon);
@@ -1335,7 +1334,6 @@ throw(Tango::DevFailed, CORBA::SystemException)
 
 Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* command,
 								CORBA::Long n)
-throw(Tango::DevFailed, CORBA::SystemException)
 {
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
@@ -1532,7 +1530,6 @@ throw(Tango::DevFailed, CORBA::SystemException)
 
 Tango::DevAttrHistoryList *Device_2Impl::read_attribute_history_2(const char* name,
 								  CORBA::Long n)
-throw(Tango::DevFailed, CORBA::SystemException)
 {
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);

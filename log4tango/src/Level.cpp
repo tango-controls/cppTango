@@ -77,7 +77,6 @@ static const std::string names[NUM_LEVELS] = {
 }
 
 Level::Value Level::get_value(const std::string& level_name) 
-    throw(std::invalid_argument) 
 {
 static const std::string names[NUM_LEVELS] = {
     std::string("OFF"),
