@@ -27,7 +27,7 @@ cppTango tango-9-lts branch is the branch dedicated to Tango 9 Long Term Support
 
 On readthedocs: [tango-controls.readthedocs.io](http://tango-controls.readthedocs.io)
 
-Manuals: [tango-controls.org/resources/documentation/kernel](http://www.tango-controls.org/resources/documentation/kernel/)
+Old Manuals: [tango-controls.org/documentation/kernel](http://www.tango-controls.org/documentation/kernel/)
 
 
 # How to build and install using cmake
