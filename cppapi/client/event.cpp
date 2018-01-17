@@ -1807,15 +1807,14 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	get_fire_sync_event(device,callback,ev_queue,event,event_name,obj_name,iter->second,local_callback_key);
 
 //
-// Sleep for some mS (20) in order to give to ZMQ some times to propagate the subscription to the publisher
+// Sleep for some mS in order to give to ZMQ some times to propagate the subscription to the publisher
 //
 
 #ifndef _TG_WINDOWS_
-    struct timespec ts;
-    ts.tv_nsec = 20000000;
-    ts.tv_sec = 0;
-
-    nanosleep(&ts,NULL);
+	struct timespec ts;
+	ts.tv_nsec = 1000000; //20000000;
+	ts.tv_sec = 0;
+	nanosleep(&ts,NULL);
 #else
 	Sleep(20);
 #endif
@@ -3110,15 +3109,14 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 {
 
 //
-// A small 10 mS sleep here! This is required in case there is a push_event in the read_attribute (or pipe)
+// A small mS sleep here! This is required in case there is a push_event in the read_attribute (or pipe)
 // method on the device side. This sleep gives time to ZMQ to send its subscription message
 //
 
 #ifndef _TG_WINDOWS_
 	struct timespec to_wait,inter;
 	to_wait.tv_sec = 0;
-	to_wait.tv_nsec = 10000000;
-
+	to_wait.tv_nsec = 500000; //10000000;
 	nanosleep(&to_wait,&inter);
 #else
 	Sleep(25);
