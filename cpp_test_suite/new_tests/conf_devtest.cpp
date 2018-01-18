@@ -599,9 +599,9 @@ int main(int argc, char **argv) {
     DbDatum eventProperties("event_change_tst");
     eventProperties << (short) 2;
     DbDatum eventPropertiesAbsCh("abs_change");
-    eventPropertiesAbsCh << (double) 1;
+    eventPropertiesAbsCh << 1.0;
     DbDatum eventPropertiesRelCh("rel_change");
-    eventPropertiesRelCh << (double) 1;
+    eventPropertiesRelCh << 1.0;
 
     db_data.push_back(eventProperties);
     db_data.push_back(eventPropertiesAbsCh);
