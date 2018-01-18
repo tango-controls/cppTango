@@ -57,15 +57,23 @@ int main(int argc, char **argv) {
     db_dev_info_2._class = CLASS_NAME;
     db_dev_info_3.name = device3_name;
     db_dev_info_3._class = CLASS_NAME;
-
-    db_dev_infos = {db_dev_info_1, db_dev_info_2, db_dev_info_3};
+    db_dev_infos.push_back(db_dev_info_1);
+    db_dev_infos.push_back(db_dev_info_2);
+    db_dev_infos.push_back(db_dev_info_3);
 
     try {
         db->add_server(str, db_dev_infos);
+#ifdef HAS_RANGE_BASE_FOR
         for(auto info : db_dev_infos){
             cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
                  info._class << endl;
         }
+#else
+        for(size_t i = 0; i < db_dev_infos.size(); i++){
+			cout << "Added test server : " << str << " -> " << db_dev_infos[i].name
+			     << ", class : " << db_dev_infos[i]._class << endl;
+        }
+#endif
         cout << endl;
     }
     catch (...) {
@@ -80,15 +88,21 @@ int main(int argc, char **argv) {
     device20Info.name = device20_name;
     device20Info._class = CLASS_NAME;
 
-    db_dev_infos = {device20Info};
+    db_dev_infos.push_back(device20Info);
 
     try {
         db->add_server(str, db_dev_infos);
+#ifdef HAS_RANGE_BASE_FOR
         for(auto info : db_dev_infos){
             cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
                  info._class << endl;
         }
-
+#else
+        for(size_t i = 0; i < db_dev_infos.size(); i++){
+			cout << "Added test server : " << str << " -> " << db_dev_infos[i].name
+			     << ", class : " << db_dev_infos[i]._class << endl;
+        }
+#endif
         cout << endl;
     }
     catch (...) {
@@ -101,13 +115,20 @@ int main(int argc, char **argv) {
     DbDevInfo fwdTestInfo;
     fwdTestInfo.name = fwd_dev_name;
     fwdTestInfo._class = "FwdTest";
-    db_dev_infos= {fwdTestInfo};
+    db_dev_infos.push_back(fwdTestInfo);
     try {
         db->add_server(str, db_dev_infos);
+#ifdef HAS_RANGE_BASE_FOR
         for(auto info : db_dev_infos){
             cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
                  info._class << endl;
         }
+#else
+        for(size_t i = 0; i < db_dev_infos.size(); i++){
+			cout << "Added test server : " << str << " -> " << db_dev_infos[i].name
+			     << ", class : " << db_dev_infos[i]._class << endl;
+        }
+#endif
         cout << endl;
     }
     catch (...) {
@@ -495,11 +516,15 @@ int main(int argc, char **argv) {
     DbDatum pipeConf7DbClassDesc("description");
     pipeConf7DbClassDesc << "AnotherClassDefinedDesc";
 
-
-    db_data = {pipeConf4, pipeConf4DbClassLabel, pipeConf4DbClassDescription,
-               pipeConf5, pipeConf5DbClassLabel,
-               pipeConf6, pipeConf6DbClassDesc,
-               pipeConf7, pipeConf7DbClassDesc};
+    db_data.push_back(pipeConf4);
+    db_data.push_back(pipeConf4DbClassLabel);
+    db_data.push_back(pipeConf4DbClassDescription);
+    db_data.push_back(pipeConf5);
+    db_data.push_back(pipeConf5DbClassLabel);
+    db_data.push_back(pipeConf6);
+    db_data.push_back(pipeConf6DbClassDesc);
+    db_data.push_back(pipeConf7);
+    db_data.push_back(pipeConf7DbClassDesc);
 
     try{
         db->put_class_pipe_property(CLASS_NAME, db_data);
@@ -520,7 +545,10 @@ int main(int argc, char **argv) {
     DbDatum pipeConf4_devDbClassDesc("description");
     pipeConf4_devDbClassDesc << "DB_device_def_desc";
 
-    db_data = {pipeConf3, pipeConf3DbClassLabel, pipeConf4_dev, pipeConf4_devDbClassDesc};
+    db_data.push_back(pipeConf3);
+    db_data.push_back(pipeConf3DbClassLabel);
+    db_data.push_back(pipeConf4_dev);
+    db_data.push_back(pipeConf4_devDbClassDesc);
 
     try{
         db->put_device_pipe_property(device1_name, db_data);
@@ -539,7 +567,9 @@ int main(int argc, char **argv) {
     str = "1.0";
     short_attr_rw_std_unit << str;
 
-    db_data = {short_attr_rw,short_attr_rw_unit,short_attr_rw_std_unit};
+    db_data.push_back(short_attr_rw);
+    db_data.push_back(short_attr_rw_unit);
+    db_data.push_back(short_attr_rw_std_unit);
 
     try {
         db->put_device_attribute_property(device1_name, db_data);
@@ -552,10 +582,12 @@ int main(int argc, char **argv) {
 
     //Define polling for DevTest/test2
     DbDatum polled_attr("polled_attr");
-    vector<string> attrs{"event_change_tst","3000"};
+    vector<string> attrs;
+    attrs.push_back("event_change_tst");
+    attrs.push_back("3000");
     polled_attr << attrs;
 
-    db_data = {polled_attr};
+    db_data.push_back(polled_attr);
     try {
         db->put_device_property(device20_name, db_data);
         print_changes("Device specific attribute properties", device20_name.c_str(), db_data);
@@ -567,11 +599,14 @@ int main(int argc, char **argv) {
     DbDatum eventProperties("event_change_tst");
     eventProperties << (short) 2;
     DbDatum eventPropertiesAbsCh("abs_change");
-    eventPropertiesAbsCh << 1;
+    eventPropertiesAbsCh << (double) 1;
     DbDatum eventPropertiesRelCh("rel_change");
-    eventPropertiesRelCh << 1;
+    eventPropertiesRelCh << (double) 1;
 
-    db_data = {eventProperties, eventPropertiesAbsCh, eventPropertiesRelCh};
+    db_data.push_back(eventProperties);
+    db_data.push_back(eventPropertiesAbsCh);
+    db_data.push_back(eventPropertiesRelCh);
+
     try {
         db->put_device_attribute_property(device20_name, db_data);
         print_changes("Device specific attribute properties", device20_name.c_str(), db_data);

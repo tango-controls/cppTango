@@ -33,6 +33,7 @@
 #include <tango.h>
 
 #include <iomanip>
+#include <limits>
 
 using namespace CORBA;
 
