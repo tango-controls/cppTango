@@ -715,6 +715,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 			ss << (*argin)[4];
 			ss >> client_release;
 
+            cout3 << "DServer::zmq_event_subscription_change client_release=" << client_release << endl;
 			if (client_release == 0)
 			{
 				string::size_type pos = event.find(EVENT_COMPAT);
@@ -977,6 +978,22 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             }
         }
 
+        //add two more
+        auto size = ret_data->svalue.length();
+        ret_data->svalue.length(size + 2);
+
+		string event_topic =
+			ev->create_full_event_name(dev, EVENT_COMPAT_IDL5 + event, obj_name_lower, intr_change);
+		assert(not(event_topic.empty()));
+        cout4 << "Sending event_topic = " << event_topic << endl;
+		ret_data->svalue[size] = Tango::string_dup(event_topic.c_str());
+
+        string channel_name = ev->get_fqdn_prefix();
+        channel_name += dev->adm_name();
+        transform(channel_name.begin(), channel_name.end(), channel_name.begin(), ::tolower);
+        assert(not(channel_name.empty()));
+        cout4 << "Sending channel_name = " << channel_name << endl;
+        ret_data->svalue[size + 1] = Tango::string_dup(channel_name.c_str());
     }
 
 	return ret_data;
@@ -997,34 +1014,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 //------------------------------------------------------------------------------------------------------------------
 void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 {
-
-//
-// Some check on argument
-//
-
-    if ((argin->length() == 0) || (argin->length()  % 3) != 0)
-    {
-		TangoSys_OMemStream o;
-		o << "Wrong number of input arguments: 3 needed per event: device name, attribute/pipe name and event name" << endl;
-
-		Except::throw_exception((const char *)API_WrongNumberOfArgs,o.str(),
-								(const char *)"DServer::event_confirm_subscription");
-	}
-
-//
-// If we receive this command while the DS is in its shuting down sequence, do nothing
-//
-
 	Tango::Util *tg = Tango::Util::instance();
-	if (tg->get_heartbeat_thread_object() == NULL)
-	{
-		TangoSys_OMemStream o;
-		o << "The device server is shutting down! You can no longer subscribe for events" << ends;
-
-		Except::throw_exception((const char *)API_ShutdownInProgress, o.str(),
-								(const char *)"DServer::event_confirm_subscription");
-	}
-
 //
 // A loop for each event
 //
@@ -1034,10 +1024,10 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 	string old_dev;
 	DeviceImpl *dev = NULL;
 
-	for (unsigned int loop = 0;loop < nb_event;loop++)
+	for (size_t i = 0; i < nb_event; i++)
 	{
 		string dev_name, obj_name, event, obj_name_lower;
-		int base = loop * 3;
+		int base = i * 3;
 		dev_name = (*argin)[base];
 		obj_name = (*argin)[base + 1];
 		event = (*argin)[base + 2];

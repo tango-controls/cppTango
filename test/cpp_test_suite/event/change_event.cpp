@@ -155,16 +155,16 @@ int main(int argc, char **argv)
 			device->stop_poll_attribute(att_name);
 		DbAttribute dba(att_name,device_name);
 		DbData dbd;
-		DbDatum a(att_name);
-		a << (short)2;
-		dbd.push_back(a);
+        DbDatum abs_change(att_name);
+        abs_change << (short) 2;
+        dbd.push_back(abs_change);
 		dbd.push_back(DbDatum("abs_change"));
 		dbd.push_back(DbDatum("rel_change"));
 		dba.delete_property(dbd);
 		
 		dbd.clear();
-		a << (short)1;
-		dbd.push_back(a);
+        abs_change << (short) 1;
+        dbd.push_back(abs_change);
 		DbDatum ch("abs_change");
 		ch << (short)1;
 		dbd.push_back(ch);
@@ -442,15 +442,15 @@ device = new DeviceProxy(device_name);
 		if (device->is_attribute_polled(att_name))
 			device->stop_poll_attribute(att_name);
 		dbd.clear();
-		a << (short)2;
-		dbd.push_back(a);
+        abs_change << (short) 2;
+        dbd.push_back(abs_change);
 		dbd.push_back(DbDatum("abs_change"));
 		dbd.push_back(DbDatum("rel_change"));
 		dba.delete_property(dbd);
 		
 		dbd.clear();
-		a << (short)1;
-		dbd.push_back(a);
+        abs_change << (short) 1;
+        dbd.push_back(abs_change);
 		DbDatum drel("rel_change");
 		drel << (short)10;
 		dbd.push_back(drel);
@@ -622,15 +622,15 @@ device = new DeviceProxy(device_name);
 		if (device->is_attribute_polled(att_name))
 			device->stop_poll_attribute(att_name);
 		dbd.clear();
-		a << (short)2;
-		dbd.push_back(a);
+        abs_change << (short) 2;
+        dbd.push_back(abs_change);
 		dbd.push_back(DbDatum("abs_change"));
 		dbd.push_back(DbDatum("rel_change"));
 		dba.delete_property(dbd);
 		
 		dbd.clear();
-		a << (short)1;
-		dbd.push_back(a);
+        abs_change << (short) 1;
+        dbd.push_back(abs_change);
 		dbd.push_back(ch);
 		dba.put_property(dbd);
 		

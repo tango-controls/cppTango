@@ -131,7 +131,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
                     subscriber_info.push_back(epos->second.obj_name);
                     subscriber_info.push_back("subscribe");
                     subscriber_info.push_back(epos->second.event_name);
-					subscriber_info.push_back("0");
+					subscriber_info.push_back(to_string(DevVersion));
                     subscriber_in << subscriber_info;
 
                     subscriber_out = ipos->second.adm_device_proxy->command_inout("ZmqEventSubscriptionChange",subscriber_in);
@@ -727,7 +727,7 @@ void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_
 					subscriber_info.push_back(cmd_params[(loop * 3) + 1]);
 					subscriber_info.push_back("subscribe");
 					subscriber_info.push_back(cmd_params[(loop * 3) + 2]);
-					subscriber_info.push_back("0");
+					subscriber_info.push_back(to_string(DevVersion));
 					subscriber_in << subscriber_info;
 
 					try
@@ -837,7 +837,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 				}
 				else
 				{
-					domain_name = epos->first.substr(0,pos);
+					domain_name = epos->second.get_client_attribute_name();
 					event_name = epos->first.substr(pos + 1);
 
 					string::size_type pos = event_name.find(EVENT_COMPAT);
@@ -1071,7 +1071,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 	subscriber_info.push_back("subscribe");
 	subscriber_info.push_back(epos->second.event_name);
 	if (ipos->second.channel_type == ZMQ)
-		subscriber_info.push_back("0");
+		subscriber_info.push_back(to_string(DevVersion));
 	subscriber_in << subscriber_info;
 
 	bool ds_failed = false;

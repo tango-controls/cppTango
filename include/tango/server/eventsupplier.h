@@ -216,6 +216,8 @@ public :
 
 	string &get_heartbeat_endpoint() {return heartbeat_endpoint;}
 	string &get_event_endpoint() {return event_endpoint;}
+	string get_event_name()
+	{ return event_name; }
 
 	vector<string> &get_alternate_heartbeat_endpoint() {return alternate_h_endpoint;}
 	vector<string> &get_alternate_event_endpoint() {return alternate_e_endpoint;}
@@ -233,7 +235,10 @@ public :
     int get_zmq_release() {return zmq_release;}
     int get_calling_th() {return calling_th;}
     void set_require_wait(bool bo) {require_wait=bo;}
-
+    string create_full_event_name(DeviceImpl *device_impl,
+                                  const string &event_type,
+                                  const string &obj_name_lower,
+                                  bool intr_change);
 protected :
 	ZmqEventSupplier(Util *);
 
@@ -279,7 +284,6 @@ private :
     zmq::message_t              heartbeat_call_mess_2;  //
 
 	unsigned char               host_endian;            // the host endianess
-	bool                        heartbeat_name_init;
 
 	bool                        ip_specified;           // The user has specified an IP address
 	bool                        name_specified;         // The user has specified a name as IP address
@@ -304,6 +308,7 @@ private :
     void create_mcast_socket(string &,int,McastSocketPub &);
     size_t get_blob_data_nb(DevVarPipeDataEltArray &);
 	size_t get_data_elt_data_nb(DevPipeDataElt &);
+    string ctr_event_name;
 };
 
 //

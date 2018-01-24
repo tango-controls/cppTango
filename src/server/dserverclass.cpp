@@ -1413,11 +1413,39 @@ CORBA::Any *EventConfirmSubscriptionCmd::execute(Tango::DeviceImpl *device,const
     cout4 << "EventConfirmSubscriptionCmd::execute(): arrived" << endl;
 
 //
+// If we receive this command while the DS is in its shuting down sequence, do nothing
+//
+
+	Tango::Util *tg = Tango::Util::instance();
+	if (tg->get_heartbeat_thread_object() == NULL)
+	{
+		TangoSys_OMemStream o;
+		o << "The device server is shutting down! You can no longer subscribe for events" << ends;
+
+		Except::throw_exception((const char *) API_ShutdownInProgress, o.str(),
+								(const char *) "DServer::event_confirm_subscription");
+	}
+
+//
 // Extract the input string array
 //
 
 	const Tango::DevVarStringArray *in_data;
 	extract(in_any,in_data);
+
+//
+// Some check on argument
+//
+
+	if ((in_data->length() == 0) || (in_data->length() % 3) != 0)
+	{
+		TangoSys_OMemStream o;
+		o << "Wrong number of input arguments: 3 needed per event: device name, attribute/pipe name and event name"
+		  << endl;
+
+		Except::throw_exception((const char *) API_WrongNumberOfArgs, o.str(),
+								(const char *) "DServer::event_confirm_subscription");
+	}
 
 //
 // call DServer method which implements this command

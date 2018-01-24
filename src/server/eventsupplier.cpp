@@ -398,8 +398,10 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
 		string ev_name = EventName[CHANGE_EVENT];
 		bool inc_ctr = true;
 
+        cout3 << "EventSupplier::detect_and_push_change_event(): iterating over client libs" << endl;
 		for (ite = client_libs.begin();ite != client_libs.end();++ite)
 		{
+            cout3 << "EventSupplier::detect_and_push_change_event(): client_lib=" << *ite << endl;
 			bool need_free = false;
 			bool name_changed = false;
 
@@ -430,6 +432,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
 				break;
 			}
 
+            cout3 << "push_event" << endl;
 			push_event(device_impl,
 				   ev_name,
 				   filterable_names,
@@ -2155,6 +2158,7 @@ void EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl,const stri
 	vector<long> filterable_data_lg;
 
 	string ev_type(DATA_READY_TYPE_EVENT);
+    ev_type = EVENT_COMPAT_IDL5 + ev_type;
 
 	AttDataReady dat_ready;
 	dat_ready.name = attr_name.c_str();
@@ -2295,6 +2299,7 @@ void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,bool dev_
 	vector<long> filterable_data_lg;
 
 	string ev_type(EventName[INTERFACE_CHANGE_EVENT]);
+	ev_type = EVENT_COMPAT_IDL5 + ev_type;
     time_t now, dev_intr_subscription;
 
 //

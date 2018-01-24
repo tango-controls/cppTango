@@ -379,6 +379,11 @@ typedef struct event_callback_zmq
 typedef struct event_callback: public EventCallBackBase, public EventCallBackZmq
 {
     bool filter_ok;
+    string client_attribute_name;
+    string get_client_attribute_name()
+    {
+        return client_attribute_name;
+    }
 } EventCallBackStruct;
 
 //------------------------ Event Channel related info --------------------------------------
@@ -532,6 +537,15 @@ protected :
 
     virtual void set_channel_type(EventChannelStruct &) = 0;
     virtual void zmq_specific(DeviceData &, string &, DeviceProxy *, const string &) = 0;
+    string get_client_attribute_name(const string &);
+    void initialize_recieved_from_admin(const Tango::DevVarLongStringArray *pArray,
+                                        const string &local_callback_key,
+                                        const string &adm_name);
+    struct
+    {
+        string event_name;
+        string channel_name;
+    } recieved_from_admin;
 };
 
 /********************************************************************************
@@ -649,6 +663,17 @@ private :
     bool check_zmq_endpoint(const string &);
 
     friend class DelayEvent;
+    FwdEventData *newFwdEventData(zmq::message_t &event_data,
+                                  const string &new_tango_host,
+                                  DevErrorList &errors,
+                                  string &event_name,
+                                  string &full_att_name,
+                                  long vers,
+                                  const DeviceAttribute *dev_attr,
+                                  bool no_unmarshalling,
+                                  unsigned int cb_nb,
+                                  unsigned int cb_ctr,
+                                  const CallBack *callback) const;
 };
 
 class DelayEvent
