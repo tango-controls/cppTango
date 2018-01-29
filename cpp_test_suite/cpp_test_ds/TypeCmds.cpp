@@ -1262,7 +1262,7 @@ CORBA::Any *IOBooleanArray::execute(TANGO_UNUSED(Tango::DeviceImpl *device),cons
     try {
         const Tango::DevVarBooleanArray *booleanArray;
         extract(in_any,booleanArray);
-        auto *theReturnedArray = new Tango::DevVarBooleanArray();
+        Tango::DevVarBooleanArray *theReturnedArray = new Tango::DevVarBooleanArray();
         theReturnedArray->length(booleanArray->length());
         for (unsigned int i=0; i<booleanArray->length(); i++) {
             cout << "[IOBoolArray::execute] received bool " << (*booleanArray)[i] << endl;

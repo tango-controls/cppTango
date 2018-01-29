@@ -20,6 +20,11 @@ protected:
 	DeviceProxy *device1;
 
 public:
+
+	enum Color
+	{
+		red, green, blue
+	};
 	SUITE_NAME()
 	{
 
@@ -1201,10 +1206,6 @@ public:
         DeviceAttribute da_short2(attr_name, my_short);
         TS_ASSERT(da_short2.get_type() == DEV_SHORT);
 
-        enum Color
-        {
-            red, green, blue
-        };
         Color color = red;
         DeviceAttribute da_enum("MyColorEnumAttr", color);
         TS_ASSERT(da_enum.get_type() == DEV_ENUM);
@@ -1247,10 +1248,6 @@ public:
 // Test DeviceAttribute get_type method after short or enum insertion
     void test_DeviceAttribute_get_type_after_short_or_enum_insertion(void)
     {
-        enum Color
-        {
-            red, green, blue
-        };
 
         DeviceAttribute da;
         TS_ASSERT(da.get_type() == DATA_TYPE_UNKNOWN);

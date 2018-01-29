@@ -5,7 +5,7 @@
 #include <tango.h>
 #include <assert.h>
 
-const int8_t	kBase	{74};//TODO was 75 on jenkis@esrf.fr
+const int8_t	kBase = 74;//TODO was 75 on jenkis@esrf.fr
 #define	coutv	if (verbose == true) cout
 bool verbose = false;
 
