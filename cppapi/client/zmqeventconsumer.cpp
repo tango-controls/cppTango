@@ -2718,11 +2718,13 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                         callback->push_event(missed_event_data);
                                     callback->push_event(event_dat);
                                 }
-                                catch (...)
+                                catch(...)
                                 {
-                                    string st("Tango::ZmqEventConsumer::push_zmq_event() exception in callback method of ");
-									st = st + ipos->first;
-									print_error_message(st.c_str());
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "unknown exception in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
                                 }
 
                                 delete event_dat;
@@ -2783,11 +2785,13 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                         callback->push_event(missed_conf_event_data);
                                     callback->push_event(event_data_);
                                 }
-                                catch (...)
+                                catch(...)
                                 {
-                                    string st("Tango::ZmqEventConsumer::push_zmq_event() exception in callback method of ");
-									st = st + ipos->first;
-									print_error_message(st.c_str());
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "unknown exception in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
                                 }
 
                                 delete event_data_;
@@ -2821,11 +2825,13 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                         callback->push_event(missed_dev_intr_event_data);
                                     callback->push_event(event_data_);
                                 }
-                                catch (...)
+                                catch(...)
                                 {
-                                    string st("Tango::ZmqEventConsumer::push_zmq_event() exception in callback method of ");
-									st = st + ipos->first;
-									print_error_message(st.c_str());
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "unknown exception in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
                                 }
                                 delete event_data_;
                             }
@@ -2870,11 +2876,13 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                         callback->push_event(missed_dev_pipe_data);
                                     callback->push_event(event_data_);
                                 }
-                                catch (...)
+                                catch(...)
                                 {
-                                    string st("Tango::ZmqEventConsumer::push_zmq_event() exception in callback method of ");
-									st = st + ipos->first;
-									print_error_message(st.c_str());
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "unknown exception in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
                                 }
                                 delete event_data_;
                             }
@@ -2906,11 +2914,13 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                         callback->push_event(missed_ready_event_data);
                                     callback->push_event(event_data_);
                                 }
-                                catch (...)
+                                catch(...)
                                 {
-                                    string st("Tango::ZmqEventConsumer::push_zmq_event() exception in callback method of ");
-									st = st + ipos->first;
-									print_error_message(st.c_str());
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "unknown exception in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
                                 }
                                 delete event_data_;
                             }
