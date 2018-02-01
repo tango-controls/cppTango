@@ -2720,7 +2720,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 }
                                 catch (...)
                                 {
-                                    string st("Tango::ZmqEventConsumer::push_structured_event() exception in callback method of ");
+                                    string st("Tango::ZmqEventConsumer::push_zmq_event() exception in callback method of ");
 									st = st + ipos->first;
 									print_error_message(st.c_str());
                                 }
@@ -2785,7 +2785,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 }
                                 catch (...)
                                 {
-                                    string st("Tango::ZmqEventConsumer::push_structured_event() exception in callback method of ");
+                                    string st("Tango::ZmqEventConsumer::push_zmq_event() exception in callback method of ");
 									st = st + ipos->first;
 									print_error_message(st.c_str());
                                 }
@@ -2823,7 +2823,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 }
                                 catch (...)
                                 {
-                                    string st("Tango::ZmqEventConsumer::push_structured_event() exception in callback method of ");
+                                    string st("Tango::ZmqEventConsumer::push_zmq_event() exception in callback method of ");
 									st = st + ipos->first;
 									print_error_message(st.c_str());
                                 }
@@ -2872,7 +2872,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 }
                                 catch (...)
                                 {
-                                    string st("Tango::ZmqEventConsumer::push_structured_event() exception in callback method of ");
+                                    string st("Tango::ZmqEventConsumer::push_zmq_event() exception in callback method of ");
 									st = st + ipos->first;
 									print_error_message(st.c_str());
                                 }
@@ -2908,7 +2908,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 }
                                 catch (...)
                                 {
-                                    string st("Tango::ZmqEventConsumer::push_structured_event() exception in callback method of ");
+                                    string st("Tango::ZmqEventConsumer::push_zmq_event() exception in callback method of ");
 									st = st + ipos->first;
 									print_error_message(st.c_str());
                                 }
@@ -2961,7 +2961,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                 string reason = e.errors[0].reason.in();
                 if (reason == API_CommandTimedOut)
 				{
-                    string st("Tango::ZmqEventConsumer::push_structured_event() timeout on callback monitor of ");
+                    string st("Tango::ZmqEventConsumer::push_zmq_event() timeout on callback monitor of ");
 					st = st + ipos->first;
 					print_error_message(st.c_str());
 				}
@@ -2981,7 +2981,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                     map_modification_lock.readerOut();
                 }
 
-                string st("Tango::ZmqEventConsumer::push_structured_event(): - ");
+                string st("Tango::ZmqEventConsumer::push_zmq_event(): - ");
 				st = st + ipos->first;
 				st = st + " - Unknown exception (Not a DevFailed) while calling Callback ";
 				print_error_message(st.c_str());
