@@ -2718,6 +2718,26 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                         callback->push_event(missed_event_data);
                                     callback->push_event(event_dat);
                                 }
+                                catch(const DevFailed &e)
+                                {
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "DevFailed exception (";
+                                    o << e.errors[0].desc;
+                                    o << ") in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
+                                }
+                                catch(const std::exception &e)
+                                {
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "DevFailed exception (";
+                                    o << e.what();
+                                    o << ") in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
+                                }
                                 catch(...)
                                 {
                                     TangoSys_OMemStream o;
@@ -2785,6 +2805,26 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                         callback->push_event(missed_conf_event_data);
                                     callback->push_event(event_data_);
                                 }
+                                catch(const DevFailed &e)
+                                {
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "DevFailed exception (";
+                                    o << e.errors[0].desc;
+                                    o << ") in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
+                                }
+                                catch(const std::exception &e)
+                                {
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "DevFailed exception (";
+                                    o << e.what();
+                                    o << ") in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
+                                }
                                 catch(...)
                                 {
                                     TangoSys_OMemStream o;
@@ -2824,6 +2864,26 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                     if (err_missed_event == true)
                                         callback->push_event(missed_dev_intr_event_data);
                                     callback->push_event(event_data_);
+                                }
+                                catch(const DevFailed &e)
+                                {
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "DevFailed exception (";
+                                    o << e.errors[0].desc;
+                                    o << ") in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
+                                }
+                                catch(const std::exception &e)
+                                {
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "DevFailed exception (";
+                                    o << e.what();
+                                    o << ") in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
                                 }
                                 catch(...)
                                 {
@@ -2876,6 +2936,26 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                         callback->push_event(missed_dev_pipe_data);
                                     callback->push_event(event_data_);
                                 }
+                                catch(const DevFailed &e)
+                                {
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "DevFailed exception (";
+                                    o << e.errors[0].desc;
+                                    o << ") in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
+                                }
+                                catch(const std::exception &e)
+                                {
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "DevFailed exception (";
+                                    o << e.what();
+                                    o << ") in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
+                                }
                                 catch(...)
                                 {
                                     TangoSys_OMemStream o;
@@ -2913,6 +2993,26 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                     if (err_missed_event == true)
                                         callback->push_event(missed_ready_event_data);
                                     callback->push_event(event_data_);
+                                }
+                                catch(const DevFailed &e)
+                                {
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "DevFailed exception (";
+                                    o << e.errors[0].desc;
+                                    o << ") in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
+                                }
+                                catch(const std::exception &e)
+                                {
+                                    TangoSys_OMemStream o;
+                                    o << "Tango::ZmqEventConsumer::push_zmq_event() ";
+                                    o << "DevFailed exception (";
+                                    o << e.what();
+                                    o << ") in callback method of: ";
+                                    o << ipos->first;
+                                    print_error_message(o.str().c_str());
                                 }
                                 catch(...)
                                 {
