@@ -811,10 +811,7 @@ void MultiAttribute::add_attribute(string &dev_name,DeviceClass *dev_class_ptr,l
 			Attribute * new_attr = new WAttribute(prop_list,attr,dev_name,index);
 			attr_list.insert(ite,new_attr);
 			index = attr_list.size() - 3;
-			MultiAttributeExt::AttributePtrAndIndex mapElement;
-			mapElement.att_ptr = new_attr;
-			mapElement.att_index_in_vector = index;
-			ext->attr_map[new_attr->get_name_lower()] = mapElement;
+			ext->put_attribute_in_map(new_attr,index);
 		}
 	}
 	else
@@ -830,10 +827,7 @@ void MultiAttribute::add_attribute(string &dev_name,DeviceClass *dev_class_ptr,l
 			Attribute * new_attr = new Attribute(prop_list,attr,dev_name,index);
 			attr_list.insert(ite,new_attr);
 			index = attr_list.size() - 3;
-			MultiAttributeExt::AttributePtrAndIndex mapElement;
-			mapElement.att_ptr = new_attr;
-			mapElement.att_index_in_vector = index;
-			ext->attr_map[new_attr->get_name_lower()] = mapElement;
+			ext->put_attribute_in_map(new_attr,index);
 		}
 	}
 
@@ -967,10 +961,7 @@ void MultiAttribute::add_fwd_attribute(string &dev_name,DeviceClass *dev_class_p
 	Attribute * new_fwd_attr = new FwdAttribute(prop_list,*new_attr,dev_name,index);
 	attr_list.insert(ite,new_fwd_attr);
 	index = attr_list.size() - 3;
-	MultiAttributeExt::AttributePtrAndIndex mapElement;
-	mapElement.att_ptr = new_fwd_attr;
-	mapElement.att_index_in_vector = index;
-	ext->attr_map[new_fwd_attr->get_name_lower()] = mapElement;
+	ext->put_attribute_in_map(new_fwd_attr,index);
 
 //
 // If it is writable, add it to the writable attribute list
@@ -1858,10 +1849,7 @@ void MultiAttribute::add_alarmed_quality_factor(string &status)
 void MultiAttribute::add_attr(Attribute *att)
 {
     attr_list.push_back(att);
-    MultiAttributeExt::AttributePtrAndIndex mapElement;
-    mapElement.att_ptr = att;
-    mapElement.att_index_in_vector = attr_list.size() - 1;
-    ext->attr_map[att->get_name_lower()] = mapElement;
+    ext->put_attribute_in_map(att,attr_list.size() - 1);
 }
 
 //+------------------------------------------------------------------------------------------------------------------

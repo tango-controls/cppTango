@@ -290,7 +290,7 @@ public:
 	void add_attr(Attribute *att);
 	void update(Attribute &,string &);
 	void check_idl_release(DeviceImpl *);
-    bool is_opt_prop(const string &);
+	bool is_opt_prop(const string &);
 
 private:
     class MultiAttributeExt
@@ -303,6 +303,13 @@ private:
 		};
 		MultiAttributeExt() {}
 		map<string, AttributePtrAndIndex> attr_map;
+		void put_attribute_in_map(Attribute * att, long index)
+		{
+			AttributePtrAndIndex mapElement;
+			mapElement.att_ptr = att;
+			mapElement.att_index_in_vector = index;
+			attr_map[att->get_name_lower()] = mapElement;
+		}
     };
 
 	void concat(vector<AttrProperty> &,vector<AttrProperty> &,vector<AttrProperty> &);
