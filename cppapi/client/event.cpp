@@ -1710,7 +1710,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
     new_event_callback.event_name = event_name;
     new_event_callback.channel_name = evt_it->first;
     new_event_callback.alias_used = false;
-	new_event_callback.client_attribute_name = get_client_attribute_name(local_callback_key);
+	new_event_callback.client_attribute_name = filters[0];// here filters[0] is expected to be user defined attribute name
 
     if (inter_event == true)
 		new_event_callback.fully_qualified_event_name = device_name + '.' + event_name;
@@ -3222,16 +3222,17 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		}
 
 		string local_event_name = cb.get_client_attribute_name();
+		string local_domain_name = cb.get_client_attribute_name();
 
 		if (cb.fwd_att == true)
 		{
 			da = new DeviceAttribute();
-			event_data = new FwdEventData(device,domain_name,local_event_name,da,err);
+			event_data = new FwdEventData(device,local_domain_name,local_event_name,da,err);
 			event_data->set_av_5(av_5);
 		}
 		else
 		{
-			event_data = new FwdEventData(device,domain_name,local_event_name,da,err);
+			event_data = new FwdEventData(device,local_domain_name,local_event_name,da,err);
 		}
 
 		AutoTangoMonitor _mon(cb.callback_monitor);

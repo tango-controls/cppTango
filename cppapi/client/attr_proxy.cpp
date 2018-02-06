@@ -57,12 +57,12 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-AttributeProxy::AttributeProxy (string &name):dev_proxy(NULL),ext(Tango_nullptr)
+AttributeProxy::AttributeProxy (string &name):dev_proxy(NULL),ext(new AttributeProxyExt{name})
 {
 	real_constructor(name);
 }
 
-AttributeProxy::AttributeProxy (const char *na):dev_proxy(NULL),ext(Tango_nullptr)
+AttributeProxy::AttributeProxy (const char *na):dev_proxy(NULL),ext(new AttributeProxyExt{na})
 {
 	string name(na);
 	real_constructor(name);
@@ -294,7 +294,7 @@ AttributeProxy::AttributeProxy(const AttributeProxy &prev):ext(Tango_nullptr)
 #ifdef HAS_UNIQUE_PTR
     if (prev.ext.get() != NULL)
     {
-        ext.reset(new AttributeProxyExt);
+        ext.reset(new AttributeProxyExt{prev.get_user_defined_name()});
     }
 #else
 	if (prev.ext != NULL)
@@ -370,7 +370,7 @@ AttributeProxy &AttributeProxy::operator=(const AttributeProxy &rval)
 
 #ifdef HAS_UNIQUE_PTR
         if (rval.ext.get() != NULL)
-            ext.reset(new AttributeProxyExt);
+            ext.reset(new AttributeProxyExt{rval.get_user_defined_name()});
         else
             ext.reset();
 #else
@@ -1358,7 +1358,10 @@ int AttributeProxy::subscribe_event (EventType event, CallBack *callback,
 	int ret;
 	try
 	{
-        ret = api_ptr->get_zmq_event_consumer()->subscribe_event(dev_proxy,attr_name, event, callback, filters, stateless);
+        auto non_const_filters = const_cast<vector<string> &>(filters);
+        non_const_filters.clear();
+        non_const_filters.push_back(get_user_defined_name());
+        ret = api_ptr->get_zmq_event_consumer()->subscribe_event(dev_proxy,attr_name, event, callback, non_const_filters, stateless);
 	}
 	catch (DevFailed &e)
 	{

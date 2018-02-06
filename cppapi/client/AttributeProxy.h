@@ -79,7 +79,8 @@ private :
     class AttributeProxyExt
     {
     public:
-        AttributeProxyExt() {};
+        string user_defined_name;
+        AttributeProxyExt(const string& name):user_defined_name(name) {};
     };
 
 #ifdef HAS_UNIQUE_PTR
@@ -89,6 +90,8 @@ private :
 #endif
 
 public :
+    string get_user_defined_name(){ return ext->user_defined_name; }
+    string get_user_defined_name() const { return ext->user_defined_name; }
 ///@name Constructors
 //@{
 /**
