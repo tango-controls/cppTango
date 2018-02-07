@@ -467,7 +467,7 @@ protected :
     void att_union_to_device(const AttrValUnion *union_ptr,DeviceAttribute *dev_attr);
 	void conf_to_info(AttributeConfig_2 &,AttributeInfoEx **);
 	void get_cs_tango_host(Database *);
-    string get_client_attribute_name(const string &);
+    string get_client_attribute_name(const string &, const vector<string> &filters);
 
 	static map<std::string,std::string> 					device_channel_map;     // key - device_name, value - channel name (full adm name)
 	static map<std::string,EventChannelStruct> 				channel_map;            // key - channel_name (full adm name), value - Event Channel info

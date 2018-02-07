@@ -1710,7 +1710,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
     new_event_callback.event_name = event_name;
     new_event_callback.channel_name = evt_it->first;
     new_event_callback.alias_used = false;
-	new_event_callback.client_attribute_name = filters[0];// here filters[0] is expected to be user defined attribute name
+	new_event_callback.client_attribute_name = get_client_attribute_name(local_callback_key, filters);
 
     if (inter_event == true)
 		new_event_callback.fully_qualified_event_name = device_name + '.' + event_name;
@@ -1832,8 +1832,12 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	return ret_event_id;
 }
 
-string EventConsumer::get_client_attribute_name(const string &local_callback_key)
+string EventConsumer::get_client_attribute_name(const string &local_callback_key, const vector<string> &filters)
 {
+    if(filters.size() == 1)
+        return filters[0];// here filters[0] is expected to be user defined attribute name
+
+
 	auto pos = local_callback_key.rfind('.');//remove event_type e.g. .idl5_change
 	return local_callback_key.substr(0, pos);
 }
