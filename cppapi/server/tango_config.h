@@ -139,7 +139,7 @@
 // rvalues -> gcc 4.3
 // Lambda function -> gcc 4.5
 // nullptr -> gcc 4.6
-//
+// attributes -> gcc 4.8
 
 #ifndef _TG_WINDOWS_
     #if defined(__GNUC__)
@@ -165,6 +165,7 @@
             #endif
             #if __GNUC_MINOR__ > 7
                 #define HAS_UNDERLYING
+                #define HAS_ATTRIBUTE_SPECIFIERS
             #endif
         #elif __GNUC__ > 4
             #define HAS_UNIQUE_PTR
@@ -179,6 +180,7 @@
             #define HAS_UNDERLYING
             #define HAS_VARIADIC_TEMPLATE
             #define HAS_MAP_AT
+            #define HAS_ATTRIBUTE_SPECIFIERS
         #endif
     #endif
 #else
@@ -221,6 +223,7 @@
         #define HAS_UNDERLYING
         #define HAS_VARIADIC_TEMPLATE
         #define HAS_MAP_AT
+        #define HAS_ATTRIBUTE_SPECIFIERS
     #endif
 #endif
 
