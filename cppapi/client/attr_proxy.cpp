@@ -1358,7 +1358,7 @@ int AttributeProxy::subscribe_event (EventType event, CallBack *callback,
 	int ret;
 	try
 	{
-        auto non_const_filters = const_cast<vector<string> &>(filters);
+        vector<string> non_const_filters = const_cast<vector<string> &>(filters);
         non_const_filters.clear();
         non_const_filters.push_back(get_user_defined_name());
         ret = api_ptr->get_zmq_event_consumer()->subscribe_event(dev_proxy,attr_name, event, callback, non_const_filters, stateless);

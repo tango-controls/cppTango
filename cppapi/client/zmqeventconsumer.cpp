@@ -1954,14 +1954,15 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
     bool map_lock = true;
     cout << "Lib: Received event for " << ev_name << endl;
 
-    for (const auto &elem : event_callback_map)
-    {
-        printf("Key in event_callback_map = %s\n", elem.first.c_str());
-    }
-    for (const auto &elem : channel_map)
-    {
-        printf("Key in channel_map = %s\n", elem.first.c_str());
-    }
+    //debug info
+//    for (const auto &elem : event_callback_map)
+//    {
+//        printf("Key in event_callback_map = %s\n", elem.first.c_str());
+//    }
+//    for (const auto &elem : channel_map)
+//    {
+//        printf("Key in channel_map = %s\n", elem.first.c_str());
+//    }
 
     cout << "ds_ctr" << ds_ctr << endl;
 //

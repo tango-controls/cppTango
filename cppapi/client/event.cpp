@@ -1470,7 +1470,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	DeviceProxy *adm_dev = NULL;
 	bool allocated = false;
 
-	auto ipos = device_channel_map.find(device_name);
+    map<std::string,std::string>::iterator ipos = device_channel_map.find(device_name);
 	EvChanIte evt_it = channel_map.end();
 
     string adm_name;
@@ -1838,7 +1838,7 @@ string EventConsumer::get_client_attribute_name(const string &local_callback_key
         return filters[0];// here filters[0] is expected to be user defined attribute name
 
 
-	auto pos = local_callback_key.rfind('.');//remove event_type e.g. .idl5_change
+	size_t pos = local_callback_key.rfind('.');//remove event_type e.g. .idl5_change
 	return local_callback_key.substr(0, pos);
 }
 
@@ -1846,7 +1846,7 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 														  const string &local_callback_key,
 														  const string &adm_name)
 {
-	auto tango_lib_ver = dvlsa->lvalue[0];
+	long tango_lib_ver = dvlsa->lvalue[0];
 
     if (tango_lib_ver >= 930)
 	{
@@ -1854,7 +1854,7 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 	}
 	else
 	{
-		received_from_admin.event_name = std::move(local_callback_key);
+		received_from_admin.event_name = local_callback_key;
 	}
 
     if (tango_lib_ver >= 930)
@@ -1863,12 +1863,12 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 	}
 	else
 	{
-		received_from_admin.channel_name = std::move(adm_name);
+		received_from_admin.channel_name = adm_name;
 	}
 
-	assert(not(received_from_admin.event_name.empty()));
+	assert(!(received_from_admin.event_name.empty()));
 	cout4 << "recieved_from_admin.event_name = " << received_from_admin.event_name << endl;
-	assert(not(received_from_admin.channel_name.empty()));
+	assert(!(received_from_admin.channel_name.empty()));
 	cout4 << "rrecieved_from_admin.channel_name = " << received_from_admin.channel_name << endl;
 }
 
