@@ -57,12 +57,12 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-AttributeProxy::AttributeProxy (string &name):dev_proxy(NULL),ext(new AttributeProxyExt{name})
+AttributeProxy::AttributeProxy (string &name):dev_proxy(NULL),ext(new AttributeProxyExt(name))
 {
 	real_constructor(name);
 }
 
-AttributeProxy::AttributeProxy (const char *na):dev_proxy(NULL),ext(new AttributeProxyExt{na})
+AttributeProxy::AttributeProxy (const char *na):dev_proxy(NULL),ext(new AttributeProxyExt(na))
 {
 	string name(na);
 	real_constructor(name);
