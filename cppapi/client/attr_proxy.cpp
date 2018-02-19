@@ -294,7 +294,7 @@ AttributeProxy::AttributeProxy(const AttributeProxy &prev):ext(Tango_nullptr)
 #ifdef HAS_UNIQUE_PTR
     if (prev.ext.get() != NULL)
     {
-        ext.reset(new AttributeProxyExt{prev.get_user_defined_name()});
+        ext.reset(new AttributeProxyExt(prev.get_user_defined_name()));
     }
 #else
 	if (prev.ext != NULL)
@@ -370,7 +370,7 @@ AttributeProxy &AttributeProxy::operator=(const AttributeProxy &rval)
 
 #ifdef HAS_UNIQUE_PTR
         if (rval.ext.get() != NULL)
-            ext.reset(new AttributeProxyExt{rval.get_user_defined_name()});
+            ext.reset(new AttributeProxyExt(rval.get_user_defined_name()));
         else
             ext.reset();
 #else
