@@ -299,7 +299,7 @@ AttributeProxy::AttributeProxy(const AttributeProxy &prev):ext(Tango_nullptr)
 #else
 	if (prev.ext != NULL)
 	{
-		ext = new AttributeProxyExt();
+		ext = new AttributeProxyExt(prev.get_user_defined_name());
 		*ext = *(prev.ext);
 	}
 	else
@@ -376,7 +376,7 @@ AttributeProxy &AttributeProxy::operator=(const AttributeProxy &rval)
 #else
         if (rval.ext != NULL)
         {
-            ext = new AttributeProxyExt();
+            ext = new AttributeProxyExt(rval.get_user_defined_name());
             *ext = *(rval.ext);
         }
         else
