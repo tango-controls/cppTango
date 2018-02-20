@@ -161,24 +161,24 @@
             #if __GNUC_MINOR__ > 5
                 #define HAS_NULLPTR
                 #define HAS_RANGE_BASE_FOR
-				#define INIT_LIST
+                #define INIT_LIST
             #endif
             #if __GNUC_MINOR__ > 7
-				#define HAS_UNDERLYING
-			#endif
+                #define HAS_UNDERLYING
+            #endif
         #elif __GNUC__ > 4
-                #define HAS_UNIQUE_PTR
-                #define HAS_RVALUE
-                #define HAS_LAMBDA_FUNC
-                #define HAS_ISNAN_IN_STD
-                #define HAS_NULLPTR
-                #define HAS_RANGE_BASE_FOR
-				#define INIT_LIST
-				#define HAS_THREAD
-				#define HAS_TYPE_TRAITS
-				#define HAS_UNDERLYING
-				#define HAS_VARIADIC_TEMPLATE
-				#define HAS_MAP_AT
+            #define HAS_UNIQUE_PTR
+            #define HAS_RVALUE
+            #define HAS_LAMBDA_FUNC
+            #define HAS_ISNAN_IN_STD
+            #define HAS_NULLPTR
+            #define HAS_RANGE_BASE_FOR
+            #define INIT_LIST
+            #define HAS_THREAD
+            #define HAS_TYPE_TRAITS
+            #define HAS_UNDERLYING
+            #define HAS_VARIADIC_TEMPLATE
+            #define HAS_MAP_AT
         #endif
     #endif
 #else
