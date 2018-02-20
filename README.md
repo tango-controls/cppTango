@@ -27,6 +27,8 @@ cppTango tango-9-lts branch is the branch dedicated to Tango 9 Long Term Support
 
 On readthedocs: [tango-controls.readthedocs.io](http://tango-controls.readthedocs.io)
 
+API reference: [tango-controls.github.io/cppTango-docs](https://tango-controls.github.io/cppTango-docs/index.html)
+
 Old Manuals: [tango-controls.org/documentation/kernel](http://www.tango-controls.org/documentation/kernel/)
 
 
