@@ -153,6 +153,15 @@ if(WIN32)
 else(WIN32)
     add_library(server_objects OBJECT ${SOURCES})
     target_compile_options(server_objects PRIVATE -fPIC)
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
+        target_compile_definitions(server_objects PRIVATE _REENTRANT _TANGO_LIB)
+    else()
+        # Do not define _TANGO_LIB when compiling Tango debug library on Linux
+        # in order to keep the same behaviour as in the past:
+        # A Linux Tango Device Server using the debug tango lib will display
+        # twice "Ready to accept requests" at startup
+        target_compile_definitions(server_objects PRIVATE _REENTRANT)
+    endif()
 endif(WIN32)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tango_const.h.in ${CMAKE_CURRENT_BINARY_DIR}/tango_const.h)
