@@ -5,7 +5,7 @@ enable_testing()
 #need to define the version of the library
 set(MAJOR_VERSION "9")
 set(MINOR_VERSION "2")
-set(PATCH_VERSION "7")
+set(PATCH_VERSION "8")
 
 if(WIN32)
     include(configure/cmake_win_defs.cmake)
@@ -37,14 +37,9 @@ endif(NOT WIN32)
 
 if(WIN32)
     include(configure/cmake_win.cmake)
+    include(configure/cpack_win.cmake)
 else(WIN32)
     include(configure/cmake_linux.cmake)
 endif(WIN32)
 
-
-if(WIN32)
-    include(configure/cpack_win.cmake)
-else(WIN32)
-    include(configure/cpack_linux.cmake)
-endif(WIN32)
 include(CPack)

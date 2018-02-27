@@ -24,6 +24,9 @@ configure_file(tango.pc.cmake tango.pc @ONLY)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/tango.pc"
         DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
 
+#CPack
+include(configure/cpack_linux.cmake)
+
 find_program(LSB_RELEASE lsb_release)
 if(NOT LSB_RELEASE)
     message(STATUS "Can not find lsb_release in your path, default to jessie.")
@@ -36,9 +39,9 @@ execute_process(COMMAND ${LSB_RELEASE} -cs
 find_program(CURL curl)
 if(CURL)
     add_custom_target(deploy
-            COMMAND ${CURL} -v -T ${CPACK_OUTPUT_FILE_NAME} -u${BINTRAY_USER_NAME}:${BINTRAY_API_KEY} "https://api.bintray.com/content/tango-controls/debian/cppTango/${LIBRARY_VERSION}/pool/${CPACK_OUTPUT_FILE_NAME};deb_distribution=${LINUX_FLAVOUR};deb_component=main;deb_architecture=${CPACK_DEBIAN_PACKAGE_ARCHITECTURE};publish=1"
+            COMMAND ${CURL} -v -T ${CPACK_PACKAGE_FILE_NAME}.deb -u$ENV{BINTRAY_USER_NAME}:$ENV{BINTRAY_API_KEY} "https://api.bintray.com/content/tango-controls/debian/cppTango/${LIBRARY_VERSION}/pool/${CPACK_PACKAGE_FILE_NAME}.deb;deb_distribution=${LINUX_FLAVOUR};deb_component=main;deb_architecture=${CPACK_DEBIAN_PACKAGE_ARCHITECTURE};publish=1"
             WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-    add_dependencies(deploy package)
+#    add_dependencies(deploy package)
 elseif(CURL)
     message(WARNING "curl was not found deploy won't be possible")
 endif(CURL)
