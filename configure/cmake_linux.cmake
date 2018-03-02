@@ -40,8 +40,8 @@ find_program(CURL curl)
 if(CURL)
     add_custom_target(deploy
             COMMAND ${CURL} -v -T ${CPACK_PACKAGE_FILE_NAME}.deb -u$ENV{BINTRAY_USER_NAME}:$ENV{BINTRAY_API_KEY} "https://api.bintray.com/content/tango-controls/debian/cppTango/${LIBRARY_VERSION}/pool/${CPACK_PACKAGE_FILE_NAME}.deb;deb_distribution=${LINUX_FLAVOUR};deb_component=main;deb_architecture=${CPACK_DEBIAN_PACKAGE_ARCHITECTURE};publish=1"
-            WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
-#    add_dependencies(deploy package)
+            WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+            DEPENDS ${PROJECT_BINARY_DIR}/${CPACK_PACKAGE_FILE_NAME}.deb)
 elseif(CURL)
     message(WARNING "curl was not found deploy won't be possible")
 endif(CURL)

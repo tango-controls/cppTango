@@ -15,4 +15,7 @@ set(CPACK_DEBIAN_PACKAGE_CONFLICTS "libtango7-dev, libtango8-dev, libtango9-dev"
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "TANGO team <tango@esrf.fr>") #required
 set(CPACK_DEBIAN_PACKAGE_DEBUG TRUE)
 
+add_custom_command(OUTPUT ${CPACK_PACKAGE_FILE_NAME}.deb
+        COMMAND cpack -V)
+
 
