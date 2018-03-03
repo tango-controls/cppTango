@@ -115,7 +115,7 @@ t_device* search_device(t_server& s, string& name)
 	{
 		if (equalsIgnoreCase(s.devices[j]->name, name))
 			return s.devices[j];
-	};
+	}
 
 	return NULL;
 }
@@ -1246,7 +1246,7 @@ CORBA::Any*   FileDatabase :: DbGetDeviceProperty(CORBA::Any& send)
 	//	cout << "data_out[" << i << "] = " << (*data_out)[i] << endl;
 
 	return any_ptr;
-};
+}
 
 CORBA::Any*   FileDatabase :: DbPutDeviceProperty(CORBA::Any& send)
 {
@@ -1307,7 +1307,7 @@ CORBA::Any*   FileDatabase :: DbPutDeviceProperty(CORBA::Any& send)
 
 	write_file();
 	return any_ptr;
-};
+}
 
 CORBA::Any*   FileDatabase :: DbDeleteDeviceProperty(CORBA::Any& send)
 {
@@ -1344,7 +1344,7 @@ CORBA::Any*   FileDatabase :: DbDeleteDeviceProperty(CORBA::Any& send)
 	write_file();
 	return any_ptr;
 
-};
+}
 
 
 CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
@@ -1438,7 +1438,7 @@ CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
 
 	return any_ptr;
 
-};
+}
 
 
 CORBA::Any*   FileDatabase :: DbPutDeviceAttributeProperty(CORBA::Any& send)
@@ -1533,7 +1533,7 @@ CORBA::Any*   FileDatabase :: DbPutDeviceAttributeProperty(CORBA::Any& send)
 	}
 	write_file();
 	return ret;
-};
+}
 
 
 CORBA::Any*   FileDatabase :: DbDeleteDeviceAttributeProperty(CORBA::Any& send)
@@ -1577,7 +1577,7 @@ CORBA::Any*   FileDatabase :: DbDeleteDeviceAttributeProperty(CORBA::Any& send)
 	write_file();
 	return ret;
 
-};
+}
 
 
 CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
@@ -1670,7 +1670,7 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 	cout4 << "FILEDATABASE: ending DbGetClassProperty" << endl;
 
 	return any_ptr;
-};
+}
 
 
 CORBA::Any*   FileDatabase :: DbPutClassProperty(CORBA::Any& send)
@@ -1739,7 +1739,7 @@ CORBA::Any*   FileDatabase :: DbPutClassProperty(CORBA::Any& send)
 
 	write_file();
 	return ret;
-};
+}
 
 
 CORBA::Any*   FileDatabase :: DbDeleteClassProperty(CORBA::Any& send)
@@ -1775,7 +1775,7 @@ CORBA::Any*   FileDatabase :: DbDeleteClassProperty(CORBA::Any& send)
 	CORBA::Any* ret = new CORBA::Any;
 	write_file();
 	return ret;
-};
+}
 
 
 CORBA::Any*   FileDatabase :: DbGetClassAttributeProperty(CORBA::Any& send)
@@ -1866,7 +1866,7 @@ CORBA::Any*   FileDatabase :: DbGetClassAttributeProperty(CORBA::Any& send)
 	(*any_ptr) <<= data_out;
 
 	return any_ptr;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbPutClassAttributeProperty(CORBA::Any& send)
@@ -1963,7 +1963,7 @@ CORBA::Any*  FileDatabase :: DbPutClassAttributeProperty(CORBA::Any& send)
 
 	write_file();
 	return ret;
-};
+}
 
 
 CORBA::Any*   FileDatabase :: DbDeleteClassAttributeProperty(CORBA::Any&)
@@ -1973,7 +1973,7 @@ CORBA::Any*   FileDatabase :: DbDeleteClassAttributeProperty(CORBA::Any&)
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"Filedatabase::DbDeleteClassAttributeProperty");
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbGetDeviceList(CORBA::Any& send)
@@ -2034,7 +2034,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceList(CORBA::Any& send)
 
 	(*any_ptr) <<= data_out;
 	return any_ptr;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbInfo(CORBA::Any&){
@@ -2089,7 +2089,7 @@ CORBA::Any*  FileDatabase :: DbInfo(CORBA::Any&){
 	(*any_ptr) <<= data_out;
 
 	return any_ptr;
-};
+}
 
 CORBA::Any*  FileDatabase :: DbImportDevice(CORBA::Any&)
 {
@@ -2100,7 +2100,7 @@ CORBA::Any*  FileDatabase :: DbImportDevice(CORBA::Any&)
 					                       (const char *)"Filedatabase::DbImportDevice");
 
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbExportDevice(CORBA::Any&)
@@ -2111,7 +2111,7 @@ CORBA::Any*  FileDatabase :: DbExportDevice(CORBA::Any&)
 					                       (const char *)"Filedatabase::DbExportDevice");
 
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbUnExportDevice(CORBA::Any&)
@@ -2122,7 +2122,7 @@ CORBA::Any*  FileDatabase :: DbUnExportDevice(CORBA::Any&)
 					                       (const char *)"Filedatabase::DbUnExportDevice");
 
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbAddDevice(CORBA::Any&)
@@ -2133,7 +2133,7 @@ CORBA::Any*  FileDatabase :: DbAddDevice(CORBA::Any&)
 					                       (const char *)"Filedatabase::DbAddDevice");
 
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbDeleteDevice(CORBA::Any&)
@@ -2144,7 +2144,7 @@ CORBA::Any*  FileDatabase :: DbDeleteDevice(CORBA::Any&)
 					                       (const char *)"Filedatabase::DbDeleteDevice");
 
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbAddServer(CORBA::Any&)
@@ -2155,7 +2155,7 @@ CORBA::Any*  FileDatabase :: DbAddServer(CORBA::Any&)
 					                       (const char *)"Filedatabase::DbAddServer");
 
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbDeleteServer(CORBA::Any&)
@@ -2166,7 +2166,7 @@ CORBA::Any*  FileDatabase :: DbDeleteServer(CORBA::Any&)
 					                       (const char *)"Filedatabase::DbDeleteServer");
 
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbExportServer(CORBA::Any&)
@@ -2177,7 +2177,7 @@ CORBA::Any*  FileDatabase :: DbExportServer(CORBA::Any&)
 					                       (const char *)"Filedatabase::DbExportServer");
 
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbUnExportServer(CORBA::Any&)
@@ -2188,7 +2188,7 @@ CORBA::Any*  FileDatabase :: DbUnExportServer(CORBA::Any&)
 					                       (const char *)"Filedatabase::DbExportDevice");
 
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbGetServerInfo(CORBA::Any&)
@@ -2199,7 +2199,7 @@ CORBA::Any*  FileDatabase :: DbGetServerInfo(CORBA::Any&)
 					                       (const char *)"Filedatabase::DbGetServerInfo");
 
 	return ret;
-};
+}
 
 
 
@@ -2213,7 +2213,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceMemberList(CORBA::Any&)
 	(*any_ptr) <<= argout;
 
 	return any_ptr;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbGetDeviceExportedList(CORBA::Any&)
@@ -2224,7 +2224,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceExportedList(CORBA::Any&)
 					                       (const char *)"DbGetDeviceExportedList");
 
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbGetDeviceFamilyList(CORBA::Any&)
@@ -2237,7 +2237,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceFamilyList(CORBA::Any&)
 	(*any_ptr) <<= argout;
 
 	return any_ptr;
-};
+}
 
 CORBA::Any*  FileDatabase :: DbGetDeviceDomainList(CORBA::Any&)
 {
@@ -2249,7 +2249,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceDomainList(CORBA::Any&)
 	(*any_ptr) <<= argout;
 
 	return any_ptr;
-};
+}
 
 /** At the moment we have no information about general properties
  * so I put nothing out
@@ -2276,7 +2276,7 @@ CORBA::Any*  FileDatabase :: DbGetProperty(CORBA::Any& send)
 	(*any_ptr) <<= data_out;
 
 	return any_ptr;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbPutProperty(CORBA::Any&)
@@ -2286,7 +2286,7 @@ CORBA::Any*  FileDatabase :: DbPutProperty(CORBA::Any&)
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbPutProperty");
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbDeleteProperty(CORBA::Any&)
@@ -2297,7 +2297,7 @@ CORBA::Any*  FileDatabase :: DbDeleteProperty(CORBA::Any&)
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbDeleteProperty");
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbGetAliasDevice(CORBA::Any&)
@@ -2308,7 +2308,7 @@ CORBA::Any*  FileDatabase :: DbGetAliasDevice(CORBA::Any&)
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetAliasDevice");
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbGetDeviceAlias(CORBA::Any&)
@@ -2319,7 +2319,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceAlias(CORBA::Any&)
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetDeviceAlias");
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbGetAttributeAlias(CORBA::Any&)
@@ -2330,7 +2330,7 @@ CORBA::Any*  FileDatabase :: DbGetAttributeAlias(CORBA::Any&)
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetAttributeAlias");
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbGetDeviceAliasList(CORBA::Any&)
@@ -2341,7 +2341,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceAliasList(CORBA::Any&)
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetDeviceAliasList");
 	return ret;
-};
+}
 
 
 CORBA::Any*  FileDatabase :: DbGetAttributeAliasList(CORBA::Any&)
@@ -2352,7 +2352,7 @@ CORBA::Any*  FileDatabase :: DbGetAttributeAliasList(CORBA::Any&)
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetAttributeAliasList");
 	return ret;
-};
+}
 
 CORBA::Any* FileDatabase::DbGetClassPipeProperty(CORBA::Any&)
 {
