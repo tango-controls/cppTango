@@ -178,7 +178,7 @@ if(NOT WIN32)
             add_definitions(-D_FORTIFY_SOURCE=3)
         else()
             message("setup for debug build ...")
-            add_compile_options(-O0 -Wall -Wextra)# -pedantic
+            add_compile_options(-O0 -Wall -Wextra -pedantic)
         endif()
         add_definitions(-DGNU_CXX)
     endif()
