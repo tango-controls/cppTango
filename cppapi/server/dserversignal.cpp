@@ -41,7 +41,7 @@
 #include <dserversignal.h>
 
 #ifndef _TG_WINDOWS_
-extern int errno;
+#include <errno.h>
 #endif
 
 namespace Tango
