@@ -10,12 +10,14 @@ then
 fi
 echo "Install tango-idl"
 docker exec cpp_tango make -C /home/tango/idl/build install
+
 echo "Build cppTango:$CMAKE_BUILD_TYPE"
 docker exec cpp_tango cmake -H/home/tango/src -B/home/tango/src/build -DCMAKE_VERBOSE_MAKEFILE=true -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
 if [ $? -ne "0" ]
 then
     exit -1
 fi
+
 docker exec cpp_tango make -C /home/tango/src/build -j 2
 echo "Test log4tango"
 docker exec cpp_tango /bin/sh -c 'cd /home/tango/src/build/log4tango; exec ctest -V'

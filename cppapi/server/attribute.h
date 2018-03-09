@@ -68,20 +68,6 @@ struct WantedProp : public  binary_function<A1,A2,R>
 	}
 };
 
-template <typename A1, typename A2, typename R>
-struct WantedAttr : public binary_function<A1,A2,R>
-{
-	R operator() (A1 attr_ptr, A2 name) const
-	{
-		string st(name);
-		if (st.size() != attr_ptr->get_name_size())
-			return false;
-		transform(st.begin(),st.end(),st.begin(),::tolower);
-		return attr_ptr->get_name_lower() == st;
-	}
-};
-
-
 class AttrProperty;
 class DeviceClass;
 

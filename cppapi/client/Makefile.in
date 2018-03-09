@@ -392,8 +392,7 @@ tangoinclude_HEADERS = accessproxy.h		\
 				  eventconsumer.h	\
 		  		  filedatabase.h    \
 		  		  group.h			\
-				  lockthread.h  \
-				  zmq.hpp
+				  lockthread.h
 
 all: all-recursive
 

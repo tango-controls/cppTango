@@ -3443,8 +3443,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 //
 
     long per = new_attr->get_polling_period();
-    Tango::Util *tg = Tango::Util::instance();
-    if (tg->is_svr_starting() == false && per != 0)
+    if ((!is_attribute_polled(attr_name)) && (per != 0))
     {
         poll_attribute(attr_name, per);
     }

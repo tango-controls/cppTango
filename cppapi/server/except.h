@@ -119,7 +119,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	static inline void throw_exception(const char *reason,
+	TANGO_NORETURN static inline void throw_exception(const char *reason,
 					   const char *desc,
 					   const char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -154,7 +154,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(const char *reason,
+	TANGO_NORETURN static inline void throw_exception(const char *reason,
 					   const char *desc,
 					   char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -190,7 +190,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(const char *reason,
+	TANGO_NORETURN static inline void throw_exception(const char *reason,
 					   char *desc,
 					   const char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -225,7 +225,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	static inline void throw_exception(const char *reason,
+	TANGO_NORETURN static inline void throw_exception(const char *reason,
 					   char *desc,
 					   char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -262,7 +262,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(char *reason,
+	TANGO_NORETURN static inline void throw_exception(char *reason,
 					   const char *desc,
 					   const char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -298,7 +298,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(char *reason,
+	TANGO_NORETURN static inline void throw_exception(char *reason,
 					   const char *desc,
 					   char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -335,7 +335,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(char *reason,
+	TANGO_NORETURN static inline void throw_exception(char *reason,
 					   char *desc,
 					   const char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -372,7 +372,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(char *reason,
+	TANGO_NORETURN static inline void throw_exception(char *reason,
 					   char *desc,
 					   char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -409,7 +409,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(const string &reason,
+	TANGO_NORETURN static inline void throw_exception(const string &reason,
 					   const string &desc,
 					   const string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -443,7 +443,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(const string &reason,
+	TANGO_NORETURN static inline void throw_exception(const string &reason,
 					   const string &desc,
 					   const char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -477,7 +477,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(const string &reason,
+	TANGO_NORETURN static inline void throw_exception(const string &reason,
 					   const char *desc,
 					   const string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -511,7 +511,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(const string &reason,
+	TANGO_NORETURN static inline void throw_exception(const string &reason,
 					   const char *desc,
 					   const char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -545,7 +545,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(const char *reason,
+	TANGO_NORETURN static inline void throw_exception(const char *reason,
 					   const string &desc,
 					   const string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -579,7 +579,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(const char *reason,
+	TANGO_NORETURN static inline void throw_exception(const char *reason,
 					   const string &desc,
 					   const char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -613,7 +613,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(const char *reason,
+	TANGO_NORETURN static inline void throw_exception(const char *reason,
 					   const char *desc,
 					   const string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -648,7 +648,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(const string &reason,
+	TANGO_NORETURN static inline void throw_exception(const string &reason,
 					   const string &desc,
 					   char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -684,7 +684,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(const string &reason,
+	TANGO_NORETURN static inline void throw_exception(const string &reason,
 					   char *desc,
 					   const string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -719,7 +719,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(const string &reason,
+	TANGO_NORETURN static inline void throw_exception(const string &reason,
 					   char *desc,
 					   char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -756,7 +756,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(char *reason,
+	TANGO_NORETURN static inline void throw_exception(char *reason,
 					   const string &desc,
 					   const string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -792,7 +792,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(char *reason,
+	TANGO_NORETURN static inline void throw_exception(char *reason,
 					   const string &desc,
 					   char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -829,7 +829,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void throw_exception(char *reason,
+	TANGO_NORETURN static inline void throw_exception(char *reason,
 					   char *desc,
 					   const string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -869,7 +869,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const char *reason,
 					   const char *desc,
 					   const char *origin,
@@ -906,7 +906,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const char *reason,
 					   const char *desc,
 					   char *origin,
@@ -944,7 +944,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const char *reason,
 					   char *desc,
 					   const char *origin,
@@ -981,7 +981,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const char *reason,
 					   char *desc,
 					   char *origin,
@@ -1020,7 +1020,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   char *reason,
  					   const char *desc,
 					   const char *origin,
@@ -1058,7 +1058,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   char *reason,
 					   const char *desc,
 					   char *origin,
@@ -1097,7 +1097,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   char *reason,
 					   char *desc,
 					   const char *origin,
@@ -1136,7 +1136,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   char *reason,
 					   char *desc,
 					   char *origin,
@@ -1175,7 +1175,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const string &reason,
 					   const string &desc,
 					   const string &origin,
@@ -1211,7 +1211,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const string &reason,
 					   const string &desc,
 					   const char *origin,
@@ -1247,7 +1247,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const string &reason,
 					   const char *desc,
 					   const string &origin,
@@ -1283,7 +1283,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const string &reason,
 					   const char *desc,
 					   const char *origin,
@@ -1319,7 +1319,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const char *reason,
 					   const string &desc,
 					   const string &origin,
@@ -1355,7 +1355,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const char *reason,
 					   const string &desc,
 					   const char *origin,
@@ -1391,7 +1391,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const char *reason,
 					   const char *desc,
 					   const string &origin,
@@ -1428,7 +1428,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const string &reason,
 					   const string &desc,
 					   char *origin,
@@ -1466,7 +1466,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const string &reason,
 					   char *desc,
 					   const string &origin,
@@ -1504,7 +1504,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const string &reason,
 					   char *desc,
 					   char *origin,
@@ -1543,7 +1543,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   char *reason,
 					   const string &desc,
 					   const string &origin,
@@ -1581,7 +1581,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   char *reason,
 					   const string &desc,
 					   char *origin,
@@ -1620,7 +1620,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	static inline void re_throw_exception(Tango::DevFailed &ex,
+	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   char *reason,
 					   char *desc,
 					   const string &origin,
@@ -1660,7 +1660,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	static void throw_exception(const CORBA::SystemException &ex,const char *origin);
+	TANGO_NORETURN static void throw_exception(const CORBA::SystemException &ex,const char *origin);
 
 /**
  * Generate and throw a TANGO DevFailed exception.
@@ -1681,7 +1681,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	static void throw_exception(const CORBA::SystemException &ex,char *origin);
+	TANGO_NORETURN static void throw_exception(const CORBA::SystemException &ex,char *origin);
 
 /**
  * Generate and throw a TANGO DevFailed exception.
@@ -1702,7 +1702,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	static void throw_exception(const CORBA::SystemException &ex,const string &origin);
+	TANGO_NORETURN static void throw_exception(const CORBA::SystemException &ex,const string &origin);
 
 
 /**
@@ -1727,7 +1727,7 @@ public:
  * <b>MultiDevFailed</b> exception specification
  */
 
-	static inline void throw_named_exception(const char *att_name,const char *reason,
+	TANGO_NORETURN static inline void throw_named_exception(const char *att_name,const char *reason,
 					   const char *desc,const char *origin,Tango::ErrSeverity sever = Tango::ERR)
 	{
 		Tango::NamedDevErrorList errors(1);
@@ -1765,7 +1765,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>MultiDevFailed</b> exception specification
  */
-	static inline void throw_named_exception(vector<string> &atts,const char *reason,
+	TANGO_NORETURN static inline void throw_named_exception(vector<string> &atts,const char *reason,
 					   const char *desc,const char *origin,Tango::ErrSeverity sever = Tango::ERR)
 	{
 		unsigned int a_size = (unsigned int)atts.size();
@@ -1811,7 +1811,7 @@ public:
  * <b>MultiDevFailed</b> exception specification
  */
 
-	static void throw_named_exception(Tango::DeviceImpl *d,long att_idx,const char *reason,
+	TANGO_NORETURN static void throw_named_exception(Tango::DeviceImpl *d,long att_idx,const char *reason,
 				   const char *desc,const char *origin,Tango::ErrSeverity sever = Tango::ERR);
 
 /**
@@ -1839,7 +1839,7 @@ public:
  * <b>MultiDevFailed</b> exception specification
  */
 
-	static void throw_named_exception(Tango::DeviceImpl *d,vector<long> &atts,const char *reason,
+  TANGO_NORETURN static void throw_named_exception(Tango::DeviceImpl *d,vector<long> &atts,const char *reason,
 				   const char *desc,const char *origin,Tango::ErrSeverity sever = Tango::ERR);
 
 

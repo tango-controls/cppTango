@@ -3698,10 +3698,6 @@
 				RelativePath="..\..\..\server\w_pipe.tpp"
 				>
 			</File>
-			<File
-				RelativePath="..\..\..\client\zmq.hpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
