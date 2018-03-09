@@ -204,6 +204,7 @@ build_script:
 
 
 after_build:
+  - cmd: set /p TANGO_LIB_VER=<VERSION
   - cmd: cd C:/projects/cppTango 
   # Generating installer
   - cmd: cpack -G WIX
