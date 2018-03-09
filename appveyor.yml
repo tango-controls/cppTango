@@ -199,8 +199,6 @@ build:
   verbosity: minimal
   
 build_script:
-  #TODO set version via cmake
-  - cmd: set TANGO_LIB_VER=9.3.0
   - cmd: cd C:/projects/cppTango 
   - cmake --build ./ --config Release
   - cmd: if %ARCH%==x64-msvc10 call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
@@ -210,6 +208,7 @@ build_script:
 
 
 after_build:
+  - cmd: set /p TANGO_LIB_VER=<VERSION
   - cmd: cd C:/projects/cppTango 
   # Generating installer
   - cmd: cpack -G WIX
