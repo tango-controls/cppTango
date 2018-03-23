@@ -14,7 +14,7 @@ RUN apt-get install -y procps
 
 RUN apt-get install -y wget
 
-RUN apt-get install -y curl
+RUN apt-get install -y curl lsb-release
 
 RUN wget --no-check-certificate https://cmake.org/files/v3.10/cmake-3.10.0-Linux-x86_64.sh -O /tmp/cmake-install.sh
 
