@@ -262,7 +262,7 @@ int main(int argc, char **argv) {
 
     for (i = 0; i < loop; i++) {
         DeviceData din, dout;
-        auto *in = new DevVarBooleanArray(3);
+        DevVarBooleanArray *in = new DevVarBooleanArray(3);
         in->length(3);
         (*in)[0] = true;
         (*in)[1] = false;

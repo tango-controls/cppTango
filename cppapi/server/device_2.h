@@ -256,8 +256,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual Tango::AttributeConfigList_2 *get_attribute_config_2(const Tango::DevVarStringArray& names)
-        throw(Tango::DevFailed, CORBA::SystemException);
+	virtual Tango::AttributeConfigList_2 *get_attribute_config_2(const Tango::DevVarStringArray& names);
 
 
 /**
@@ -281,8 +280,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::DevAttrHistoryList *read_attribute_history_2(const char* name,
-								  CORBA::Long n)
-	throw(Tango::DevFailed, CORBA::SystemException);
+								  CORBA::Long n);
 
 /**
  * Read command value history.
@@ -307,8 +305,7 @@ public:
  */
 
 	virtual Tango::DevCmdHistoryList *command_inout_history_2(const char* command,
-								CORBA::Long n)
-	throw(Tango::DevFailed, CORBA::SystemException);
+								CORBA::Long n);
 //@}
 
 private:

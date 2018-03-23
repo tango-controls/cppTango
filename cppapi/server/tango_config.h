@@ -83,9 +83,11 @@
             #define WIN32_VC10
 		#elif ((_MSC_VER >= 1700) && (_MSC_VER < 1800))
 			#define WIN32_VC11
-		#elif (_MSC_VER >= 1800)
+		#elif ((_MSC_VER >= 1800) && (_MSC_VER < 1900))
 			#define WIN32_VC12
-        #endif   // VC8+/VC9/VC10/VC11/VC12
+        #elif (_MSC_VER >= 1900)
+			#define WIN32_VC14
+        #endif   // VC8+/VC9/VC10/VC11/VC12/VC14
     #endif
 #endif
 
@@ -132,15 +134,19 @@
 
 //
 // Some C++11 feature
+// map::at() -> gcc 4.1.0 (See C++ Standard Library Defect Report 464)
 // Unique_ptr -> gcc 4.3
 // rvalues -> gcc 4.3
 // Lambda function -> gcc 4.5
 // nullptr -> gcc 4.6
-//
+// attributes -> gcc 4.8
 
 #ifndef _TG_WINDOWS_
     #if defined(__GNUC__)
         #if __GNUC__ == 4
+            #if __GNUC_MINOR__ > 0
+                #define HAS_MAP_AT
+            #endif
             #if __GNUC_MINOR__ > 3
                 #define HAS_UNIQUE_PTR
                 #define HAS_RVALUE
@@ -155,23 +161,26 @@
             #if __GNUC_MINOR__ > 5
                 #define HAS_NULLPTR
                 #define HAS_RANGE_BASE_FOR
-				#define INIT_LIST
+                #define INIT_LIST
             #endif
             #if __GNUC_MINOR__ > 7
-				#define HAS_UNDERLYING
-			#endif
+                #define HAS_UNDERLYING
+                #define HAS_ATTRIBUTE_SPECIFIERS
+            #endif
         #elif __GNUC__ > 4
-                #define HAS_UNIQUE_PTR
-                #define HAS_RVALUE
-                #define HAS_LAMBDA_FUNC
-                #define HAS_ISNAN_IN_STD
-                #define HAS_NULLPTR
-                #define HAS_RANGE_BASE_FOR
-				#define INIT_LIST
-				#define HAS_THREAD
-				#define HAS_TYPE_TRAITS
-				#define HAS_UNDERLYING
-				#define HAS_VARIADIC_TEMPLATE
+            #define HAS_UNIQUE_PTR
+            #define HAS_RVALUE
+            #define HAS_LAMBDA_FUNC
+            #define HAS_ISNAN_IN_STD
+            #define HAS_NULLPTR
+            #define HAS_RANGE_BASE_FOR
+            #define INIT_LIST
+            #define HAS_THREAD
+            #define HAS_TYPE_TRAITS
+            #define HAS_UNDERLYING
+            #define HAS_VARIADIC_TEMPLATE
+            #define HAS_MAP_AT
+            #define HAS_ATTRIBUTE_SPECIFIERS
         #endif
     #endif
 #else
@@ -181,6 +190,7 @@
         #define HAS_NULLPTR
         #define HAS_RVALUE
         #define HAS_TYPE_TRAITS
+        #define HAS_MAP_AT
     #endif
     #ifdef WIN32_VC11
         #define HAS_UNIQUE_PTR
@@ -190,6 +200,7 @@
 		#define HAS_RANGE_BASE_FOR
         #define HAS_TYPE_TRAITS
         #define HAS_UNDERLYING
+        #define HAS_MAP_AT
     #endif
     #ifdef WIN32_VC12
         #define HAS_UNIQUE_PTR
@@ -200,6 +211,19 @@
         #define HAS_TYPE_TRAITS
         #define HAS_UNDERLYING
         #define HAS_VARIADIC_TEMPLATE
+        #define HAS_MAP_AT
+    #endif
+    #ifdef WIN32_VC14
+        #define HAS_UNIQUE_PTR
+        #define HAS_LAMBDA_FUNC
+        #define HAS_NULLPTR
+        #define HAS_RVALUE
+        #define HAS_RANGE_BASE_FOR
+        #define HAS_TYPE_TRAITS
+        #define HAS_UNDERLYING
+        #define HAS_VARIADIC_TEMPLATE
+        #define HAS_MAP_AT
+        #define HAS_ATTRIBUTE_SPECIFIERS
     #endif
 #endif
 
@@ -355,6 +379,12 @@
 	#endif
 #else
 	#define TANGO_LONG32
+#endif
+
+#ifdef HAS_ATTRIBUTE_SPECIFIERS
+  #define TANGO_NORETURN [[noreturn]]
+#else
+  #define TANGO_NORETURN
 #endif
 
 #endif /* _TANGO_CONFIG_H */

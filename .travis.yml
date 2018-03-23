@@ -9,7 +9,7 @@ env:
     - OS_TYPE=debian8 CMAKE_BUILD_TYPE=DEBUG
     - OS_TYPE=debian8 CMAKE_BUILD_TYPE=RELEASE
     - OS_TYPE=debian7 CMAKE_BUILD_TYPE=RELEASE
-    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=DEBUG
+#    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=DEBUG
 #    - OS_TYPE=win32
 # etc
 
@@ -20,10 +20,12 @@ services:
   - docker
 
 before_install:
+  - chmod +x .travis/${OS_TYPE}/before_install.sh
+  - .travis/${OS_TYPE}/before_install.sh
   - docker pull tangocs/mysql:9.2.2
   - docker pull tangocs/tango-cs:latest
   - git clone -b tango-9-lts https://${CI_USER_TOKEN}@github.com/tango-controls/tango-idl.git idl
-  - chmod +x .travis/run.sh
+  - chmod +x .travis/${OS_TYPE}/run.sh
 
 before_script:
   - docker run --name mysql_db -e MYSQL_ROOT_PASSWORD=root -d tangocs/mysql:9.2.2 --sql-mode=""
@@ -31,10 +33,10 @@ before_script:
   - IPADDR=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' $CONTAINER)
   - TANGO_HOST=${IPADDR}:10000
   - docker build --build-arg APP_UID=$(id -u) --build-arg APP_GID=$(id -g) -t cpp_tango .travis/${OS_TYPE}
-  - docker run --name cpp_tango -e TANGO_HOST=${TANGO_HOST} --link tango_cs:tango_cs -v `pwd`:/home/tango/src -v `pwd`/idl:/home/tango/idl -dit cpp_tango
+  - docker run --name cpp_tango -e TANGO_HOST=${TANGO_HOST} --link tango_cs:tango_cs -v `pwd`:/home/tango/src -v `pwd`/idl:/home/tango/idl -v `pwd`/cppzmq:/home/tango/cppzmq -dit cpp_tango
 
 script:
-  - .travis/run.sh
+  - .travis/${OS_TYPE}/run.sh
 
 after-script:
   - docker stop cpp_tango

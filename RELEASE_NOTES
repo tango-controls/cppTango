@@ -1,0 +1,10 @@
+9.2.7
+=====
+
+1. CPU load when device has large number of attributes #404 
+2. push event performance issue #244
+3. Fix issue with polling not starting automatically on dynamic attributes #427
+4. Tango 9 lts remove zmq hpp #421
+5. remove event subscription sleeps on linux #415
+6. Fix bug in event name when pushing an error event to IDL5 clients. #400
+7. Tango 9 LTS fix#395 (Inserting const C string in DeviceData) #396
