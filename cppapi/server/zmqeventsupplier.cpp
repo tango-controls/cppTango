@@ -1031,13 +1031,13 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
         local_event_type.erase(0, EVENT_COMPAT_IDL5_SIZE);
     }
 
-    bool intr_change;
+    bool intr_change = false;
     if (local_event_type == EventName[INTERFACE_CHANGE_EVENT])
     {
         intr_change = true;
     }
 
-    bool pipe_event;
+    bool pipe_event = false;
     if (local_event_type == EventName[PIPE_EVENT])
     {
         pipe_event = true;
