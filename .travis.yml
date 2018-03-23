@@ -33,7 +33,7 @@ before_script:
   - IPADDR=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' $CONTAINER)
   - TANGO_HOST=${IPADDR}:10000
   - docker build --build-arg APP_UID=$(id -u) --build-arg APP_GID=$(id -g) -t cpp_tango .travis/${OS_TYPE}
-  - docker run --name cpp_tango -e TANGO_HOST=${TANGO_HOST} --link tango_cs:tango_cs -v `pwd`:/home/tango/src -v `pwd`/idl:/home/tango/idl -v `pwd`/cppzmq:/home/tango/cppzmq -dit cpp_tango
+  - docker run --name cpp_tango -e TANGO_HOST=${TANGO_HOST} -e BINTRAY_USER_NAME=tango-ci -e BINTRAY_API_KEY=${CI_BINTRAY_API_KEY} --link tango_cs:tango_cs -v `pwd`:/home/tango/src -v `pwd`/idl:/home/tango/idl -v `pwd`/cppzmq:/home/tango/cppzmq -dit cpp_tango
 
 script:
   - .travis/${OS_TYPE}/run.sh
