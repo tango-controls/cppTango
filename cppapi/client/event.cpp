@@ -1846,9 +1846,9 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 														  const string &local_callback_key,
 														  const string &adm_name)
 {
-	long tango_lib_ver = dvlsa->lvalue[0];
+	long server_tango_lib_ver = dvlsa->lvalue[0];
 
-    if (tango_lib_ver >= 930)
+    if (server_tango_lib_ver >= 930)
 	{
 		received_from_admin.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
 	}
@@ -1857,13 +1857,15 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 		received_from_admin.event_name = local_callback_key;
 	}
 
-    if (tango_lib_ver >= 930)
+    if (server_tango_lib_ver >= 930)
 	{
 		received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
 	}
 	else
 	{
-		received_from_admin.channel_name = adm_name;
+        string adm_name_lower(adm_name);
+        transform(adm_name_lower.begin(), adm_name_lower.end(), adm_name_lower.begin(), ::tolower);
+		received_from_admin.channel_name = adm_name_lower;
 	}
 
 	assert(!(received_from_admin.event_name.empty()));
