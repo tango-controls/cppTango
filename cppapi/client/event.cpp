@@ -410,10 +410,7 @@ void EventConsumer::shutdown_keep_alive_thread()
 void EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,DeviceData &dd,string &adm_name,bool &necm)
 {
 	string channel_name = adm_name;
-//	if (device_proxy->get_from_env_var() == true)
-//	{
-//		channel_name.insert(0,env_var_fqdn_prefix[0]);
-//	}
+
 
 //
 // If no connection exists to this channel then connect to it. Sometimes, this method is called in order to reconnect
@@ -425,12 +422,6 @@ void EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,DeviceData 
 	{
 		connect_event_channel(channel_name,device_proxy->get_device_db(),false,dd);
 	}
-
-
-//    if (device_proxy->get_from_env_var() == true)
-//    {
-//        adm_name.insert(0,env_var_fqdn_prefix[0]);
-//    }
 
 //
 // Init adm device name in channel map entry
@@ -803,7 +794,7 @@ void EventConsumer::attr_to_device(const AttributeValue_4 *attr_value_4,DeviceAt
 void EventConsumer::attr_to_device(const ZmqAttributeValue_4 *attr_value_4,DeviceAttribute *dev_attr)
 {
 	base_attr_to_device(attr_value_4,dev_attr);
-	
+
 	//
 	// Warning: Since Tango 9, data type SHORT is used for both short attribute and enumeration attribute!
 	// Therefore, we need to store somewhere which exact type it is. With IDL 5, it is easy, because the data type is
@@ -1470,7 +1461,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	DeviceProxy *adm_dev = NULL;
 	bool allocated = false;
 
-    map<std::string,std::string>::iterator ipos = device_channel_map.find(device_name);
+        map<std::string,std::string>::iterator ipos = device_channel_map.find(device_name);
 	EvChanIte evt_it = channel_map.end();
 
     string adm_name;
@@ -1589,7 +1580,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		local_callback_key.insert(pos + 1,EVENT_COMPAT_IDL5);
 	}
 
-	initialize_received_from_admin(dvlsa, local_callback_key, adm_name);
+	initialize_received_from_admin(dvlsa, local_callback_key, adm_name, device->get_from_env_var());
 
 	//
 	// Do we already have this event in the callback map? If yes, simply add this new callback to the event callback list
@@ -1710,7 +1701,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
     new_event_callback.event_name = event_name;
     new_event_callback.channel_name = evt_it->first;
     new_event_callback.alias_used = false;
-	new_event_callback.client_attribute_name = get_client_attribute_name(local_callback_key, filters);
+    new_event_callback.client_attribute_name = get_client_attribute_name(local_callback_key, filters);
 
     if (inter_event == true)
 		new_event_callback.fully_qualified_event_name = device_name + '.' + event_name;
@@ -1795,7 +1786,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 // Insert new entry in map
 //
 
-	pair<EvCbIte, bool> ret = event_callback_map
+    pair<EvCbIte, bool> ret = event_callback_map
 		.insert(pair<string, EventCallBackStruct>(received_from_admin.event_name, new_event_callback));
     if (!ret.second)
     {
@@ -1843,34 +1834,40 @@ string EventConsumer::get_client_attribute_name(const string &local_callback_key
 
 void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLongStringArray *dvlsa,
 														  const string &local_callback_key,
-														  const string &adm_name)
+														  const string &adm_name,
+														  bool device_from_env_var)
 {
-	long server_tango_lib_ver = dvlsa->lvalue[0];
+    long server_tango_lib_ver = dvlsa->lvalue[0];
 
     if (server_tango_lib_ver >= 930)
-	{
-		received_from_admin.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
-	}
-	else
-	{
-		received_from_admin.event_name = local_callback_key;
-	}
+    {
+        received_from_admin.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
+    }
+    else
+    {
+        received_from_admin.event_name = local_callback_key;
+    }
 
     if (server_tango_lib_ver >= 930)
-	{
-		received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
-	}
-	else
-	{
+    {
+        received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
+    }
+    else
+    {
         string adm_name_lower(adm_name);
-        transform(adm_name_lower.begin(), adm_name_lower.end(), adm_name_lower.begin(), ::tolower);
-		received_from_admin.channel_name = adm_name_lower;
-	}
+        if (device_from_env_var)
+        {
+            adm_name_lower.insert(0, env_var_fqdn_prefix[0]);
+        }
 
-	assert(!(received_from_admin.event_name.empty()));
-	cout4 << "recieved_from_admin.event_name = " << received_from_admin.event_name << endl;
-	assert(!(received_from_admin.channel_name.empty()));
-	cout4 << "rrecieved_from_admin.channel_name = " << received_from_admin.channel_name << endl;
+        transform(adm_name_lower.begin(), adm_name_lower.end(), adm_name_lower.begin(), ::tolower);
+        received_from_admin.channel_name = adm_name_lower;
+    }
+
+    assert(!(received_from_admin.event_name.empty()));
+    cout4 << "recieved_from_admin.event_name = " << received_from_admin.event_name << endl;
+    assert(!(received_from_admin.channel_name.empty()));
+    cout4 << "recieved_from_admin.channel_name = " << received_from_admin.channel_name << endl;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------

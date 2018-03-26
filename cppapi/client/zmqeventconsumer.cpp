@@ -1952,7 +1952,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 {
     map_modification_lock.readerIn();
     bool map_lock = true;
-    cout << "Lib: Received event for " << ev_name << endl;
+//    cout << "Lib: Received event for " << ev_name << endl;
 
     //debug info
 //    for (const auto &elem : event_callback_map)
@@ -1964,7 +1964,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 //        printf("Key in channel_map = %s\n", elem.first.c_str());
 //    }
 
-    cout << "ds_ctr" << ds_ctr << endl;
+//    cout << "ds_ctr" << ds_ctr << endl;
 //
 // Search for entry within the event_callback map using the event name received in the event
 //
@@ -2021,7 +2021,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             bool pipe_event = false;
 
             EventCallBackStruct &evt_cb = ipos->second;
-            cout << "evt_cb.ctr" << evt_cb.ctr << endl;
+//            cout << "evt_cb.ctr" << evt_cb.ctr << endl;
 
 //
 // Miss some events?
@@ -2076,7 +2076,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // If the client TANGO_HOST is one alias, replace in the event name the host name by the alias
 //
 
-            string full_att_name = evt_cb.get_client_attribute_name();
+                    string full_att_name = evt_cb.get_client_attribute_name();
 			pos = full_att_name.rfind('/');
 			string att_name = full_att_name.substr(pos + 1);
 

@@ -285,8 +285,6 @@ public :
 
 	string &get_heartbeat_endpoint() {return heartbeat_endpoint;}
 	string &get_event_endpoint() {return event_endpoint;}
-    string get_event_name()
-    { return event_name; }
 
 	vector<string> &get_alternate_heartbeat_endpoint() {return alternate_h_endpoint;}
 	vector<string> &get_alternate_event_endpoint() {return alternate_e_endpoint;}
