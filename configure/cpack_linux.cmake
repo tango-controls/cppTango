@@ -5,8 +5,12 @@ execute_process(COMMAND ${DPKG_CMD} --print-architecture
 set(CPACK_GENERATOR "DEB")
 if(CMAKE_BUILD_TYPE STREQUAL "DEBUG")
     set(CPACK_PACKAGE_NAME libtango9lts-dev)
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcos4-dev, libzmq5-dev | libzmq3-dev")
+    set(CPACK_DEBIAN_PACKAGE_CONFLICTS "libtango7-dev, libtango8-dev, libtango9-dev")
 elseif(CMAKE_BUILD_TYPE STREQUAL "RELEASE")
     set(CPACK_PACKAGE_NAME libtango9lts)
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcos4, libzmq5 | libzmq3")
+    set(CPACK_DEBIAN_PACKAGE_CONFLICTS "libtango7, libtango8, libtango9")
 endif(CMAKE_BUILD_TYPE STREQUAL "DEBUG")
 set(CPACK_PACKAGE_VERSION "${LIBRARY_VERSION}")
 set(CPACK_PACKAGE_VERSION_MAJOR ${MAJOR_VERSION})
@@ -16,7 +20,7 @@ set(CPACK_SYSTEM_NAME "${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcos4-dev, libzmq5-dev | libzmq3-dev")
 set(CPACK_DEBIAN_PACKAGE_CONFLICTS "libtango7-dev, libtango8-dev, libtango9-dev")
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER "TANGO team <tango@esrf.fr>") #required
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Tango Controls team <info@tango-controls.org>") #required
 set(CPACK_DEBIAN_PACKAGE_DEBUG TRUE)
 
 add_custom_command(OUTPUT ${CPACK_PACKAGE_FILE_NAME}.deb
