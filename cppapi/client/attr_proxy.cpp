@@ -1358,8 +1358,9 @@ int AttributeProxy::subscribe_event (EventType event, CallBack *callback,
 	int ret;
 	try
 	{
-        vector<string> non_const_filters = const_cast<vector<string> &>(filters);
-        non_const_filters.clear();
+		//we use filters here to pass user defined attribute name to later use it in event callback
+		// see https://github.com/tango-controls/cppTango/pull/423
+        vector<string> non_const_filters;
         non_const_filters.push_back(get_user_defined_name());
         ret = api_ptr->get_zmq_event_consumer()->subscribe_event(dev_proxy,attr_name, event, callback, non_const_filters, stateless);
 	}

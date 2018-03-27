@@ -90,7 +90,6 @@ private :
 #endif
 
 public :
-    string get_user_defined_name(){ return ext->user_defined_name; }
     string get_user_defined_name() const { return ext->user_defined_name; }
 ///@name Constructors
 //@{

@@ -1,3 +1,11 @@
+9.3.0
+=====
+
+1. Fix FQDN events.
+   Limitations:
+     - this fix uses a dirty trick which breaks backward compatibility with notifd;
+     - in case DeviceProxy is used for event subscription client will get incorrect value in event callback if short domain name is used in env.TANGO_HOST e.g. hzgc103k -> hzgc103.desy.de
+
 9.2.7
 =====
 
