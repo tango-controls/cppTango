@@ -1833,29 +1833,23 @@ string EventConsumer::get_client_attribute_name(const string &local_callback_key
 }
 
 void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLongStringArray *dvlsa,
-														  const string &local_callback_key,
-														  const string &adm_name,
-														  bool device_from_env_var)
+                                                          const string &local_callback_key,
+                                                          const string &adm_name,
+                                                          bool device_from_env_var)
 {
 	long server_tango_lib_ver = dvlsa->lvalue[0];
 
     //event name is used for zmq topics filtering
+    //channel name is used for heartbeat events
 	if (server_tango_lib_ver >= 930)
 	{
 		received_from_admin.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
+        received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
 	}
 	else
 	{
 		received_from_admin.event_name = local_callback_key;
-	}
 
-    //channel name is used for heartbeat events
-	if (server_tango_lib_ver >= 930)
-	{
-		received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
-	}
-	else
-	{
 		string adm_name_lower(adm_name);
 		if (device_from_env_var)
 		{
