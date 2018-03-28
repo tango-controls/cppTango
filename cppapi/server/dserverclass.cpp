@@ -1272,6 +1272,29 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 	return(out_any);
 }
 
+const string ZmqEventSubscriptionChangeCmd::in_desc = R"(Event consumer wants to subscribe to.\n)"
+"device name, attribute/pipe name, action (\"subscribe\"), event name, <Tango client IDL version>\"\n"
+"event name can take the following values:\n"
+"    \"change\",\n"
+"    \"quality\",\n"
+"    \"periodic\",\n"
+"    \"archive\",\n"
+"    \"user_event\",\n"
+"    \"attr_conf\",\n"
+"    \"data_ready\",\n"
+"    \"intr_change\",\n"
+"    \"pipe\"\n"
+"\"info\" can also be used as single parameter to retrieve information about the heartbeat and event pub endpoints.";
+
+const string ZmqEventSubscriptionChangeCmd::out_desc = R"(Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint\n)"
+"...\n"
+"Str[n] = Alternate Heartbeat pub endpoint - Str[n+1] = Alternate Event pub endpoint\n"
+"Str[n+1] = event name used by this server as zmq topic to send events\n"
+"Str[n+2] = channel name used by this server to send heartbeat events\n"
+"Lg[0] = Tango lib release - Lg[1] = Device IDL release\n"
+"Lg[2] = Subscriber HWM - Lg[3] = Multicast rate\n"
+"Lg[4] = Multicast IVL - Lg[5] = ZMQ release";
+
 //+----------------------------------------------------------------------------
 //
 // method : 		ZmqEventSubscriptionChangeCmd::EventSubscriptionChangeCmd()
@@ -1285,23 +1308,16 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 //		- out_desc : The output parameter description
 //
 //-----------------------------------------------------------------------------
-ZmqEventSubscriptionChangeCmd::ZmqEventSubscriptionChangeCmd(const char *name,
-								Tango::CmdArgType in,
-								Tango::CmdArgType out,
-								const char *in_desc,
-								const char *out_desc)
-:Command(name,in,out,in_desc,out_desc)
+ZmqEventSubscriptionChangeCmd::ZmqEventSubscriptionChangeCmd()
+:Command("ZmqEventSubscriptionChange",Tango::DEVVAR_STRINGARRAY, Tango::DEVVAR_LONGSTRINGARRAY,
+         ZmqEventSubscriptionChangeCmd::in_desc.c_str(),
+         ZmqEventSubscriptionChangeCmd::out_desc.c_str())
 {
 }
 
 //
 //	Constructor without in/out parameters description
 //
-
-ZmqEventSubscriptionChangeCmd::ZmqEventSubscriptionChangeCmd(const char *name,Tango::CmdArgType in,Tango::CmdArgType out)
-:Command(name,in,out)
-{
-}
 
 //+----------------------------------------------------------------------------
 //
@@ -1446,7 +1462,7 @@ CORBA::Any *EventConfirmSubscriptionCmd::execute(Tango::DeviceImpl *device,const
     cout4 << "EventConfirmSubscriptionCmd::execute(): arrived" << endl;
 
     //
-    // If we receive this command while the DS is in its shuting down sequence, do nothing
+    // If we receive this command while the DS is in its shutting down sequence, do nothing
     //
 
     Tango::Util *tg = Tango::Util::instance();
@@ -1751,28 +1767,8 @@ void DServerClass::command_factory()
 							"Event consumer wants to subscribe to",
 							"Tango lib release"));
 
-	command_list.push_back(new ZmqEventSubscriptionChangeCmd("ZmqEventSubscriptionChange",
-	                        Tango::DEVVAR_STRINGARRAY, Tango::DEVVAR_LONGSTRINGARRAY,
-	                        "Event consumer wants to subscribe to.\n"
-	                        "device name, attribute/pipe name, action (\"subscribe\"), event name, <Tango client IDL version>\"\n"
-	                        "event name can take the following values:\n"
-	                        "    \"change\",\n"
-	                        "    \"quality\",\n"
-	                        "    \"periodic\",\n"
-	                        "    \"archive\",\n"
-	                        "    \"user_event\",\n"
-	                        "    \"attr_conf\",\n"
-	                        "    \"data_ready\",\n"
-	                        "    \"intr_change\",\n"
-	                        "    \"pipe\"\n"
-	                        "\"info\" can also be used as single parameter to retrieve information about the heartbeat and event pub endpoints.",
-	                        /* argout description: */
-	                        "Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint\n"
-	                        "...\n"
-	                        "Str[n] = Alternate Heartbeat pub endpoint - Str[n+1] = Alternate Event pub endpoint\n"
-	                        "Lg[0] = Tango lib release - Lg[1] = Device IDL release\n"
-	                        "Lg[2] = Subscriber HWM - Lg[3] = Multicast rate\n"
-	                        "Lg[4] = Multicast IVL - Lg[5] = ZMQ release"));
+    command_list.push_back(
+        new ZmqEventSubscriptionChangeCmd());
 
 	command_list.push_back(new EventConfirmSubscriptionCmd("EventConfirmSubscription",
 							Tango::DEVVAR_STRINGARRAY, Tango::DEV_VOID,
