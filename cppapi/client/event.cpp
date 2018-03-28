@@ -1837,37 +1837,37 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 														  const string &adm_name,
 														  bool device_from_env_var)
 {
-    long server_tango_lib_ver = dvlsa->lvalue[0];
+	long server_tango_lib_ver = dvlsa->lvalue[0];
 
-    if (server_tango_lib_ver >= 930)
-    {
-        received_from_admin.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
-    }
-    else
-    {
-        received_from_admin.event_name = local_callback_key;
-    }
+	if (server_tango_lib_ver >= 930)
+	{
+		received_from_admin.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
+	}
+	else
+	{
+		received_from_admin.event_name = local_callback_key;
+	}
 
-    if (server_tango_lib_ver >= 930)
-    {
-        received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
-    }
-    else
-    {
-        string adm_name_lower(adm_name);
-        if (device_from_env_var)
-        {
-            adm_name_lower.insert(0, env_var_fqdn_prefix[0]);
-        }
+	if (server_tango_lib_ver >= 930)
+	{
+		received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
+	}
+	else
+	{
+		string adm_name_lower(adm_name);
+		if (device_from_env_var)
+		{
+			adm_name_lower.insert(0, env_var_fqdn_prefix[0]);
+		}
 
-        transform(adm_name_lower.begin(), adm_name_lower.end(), adm_name_lower.begin(), ::tolower);
-        received_from_admin.channel_name = adm_name_lower;
-    }
+		transform(adm_name_lower.begin(), adm_name_lower.end(), adm_name_lower.begin(), ::tolower);
+		received_from_admin.channel_name = adm_name_lower;
+	}
 
-    assert(!(received_from_admin.event_name.empty()));
-    cout4 << "recieved_from_admin.event_name = " << received_from_admin.event_name << endl;
-    assert(!(received_from_admin.channel_name.empty()));
-    cout4 << "recieved_from_admin.channel_name = " << received_from_admin.channel_name << endl;
+	assert(!(received_from_admin.event_name.empty()));
+	cout4 << "recieved_from_admin.event_name = " << received_from_admin.event_name << endl;
+	assert(!(received_from_admin.channel_name.empty()));
+	cout4 << "recieved_from_admin.channel_name = " << received_from_admin.channel_name << endl;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
