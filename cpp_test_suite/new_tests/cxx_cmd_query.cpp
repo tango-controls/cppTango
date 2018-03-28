@@ -520,29 +520,31 @@ public:
 	void test_command_list_query_ZMQEventSubscriptionChange(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("ZmqEventSubscriptionChange");
-		CommandInfo cmd_inf = cmd_inf_list[31];
-		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"ZmqEventSubscriptionChange");
-		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
-		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_LONGSTRINGARRAY);
-		TS_ASSERT_EQUALS(cmd_inf.in_type_desc,"Event consumer wants to subscribe to.\n"
-		                                      "device name, attribute/pipe name, action (\"subscribe\"), event name, <Tango client IDL version>\"\n"
-		                                      "event name can take the following values:\n"
-		                                      "    \"change\",\n"
-		                                      "    \"quality\",\n"
-		                                      "    \"periodic\",\n"
-		                                      "    \"archive\",\n"
-		                                      "    \"user_event\",\n"
-		                                      "    \"attr_conf\",\n"
-		                                      "    \"data_ready\",\n"
-		                                      "    \"intr_change\",\n"
-		                                      "    \"pipe\"\n"
-		                                      "\"info\" can also be used as single parameter to retrieve information about the heartbeat and event pub endpoints.");
-		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint\n"
-		                                       "...\n"
-		                                       "Str[n] = Alternate Heartbeat pub endpoint - Str[n+1] = Alternate Event pub endpoint\n"
-		                                       "Lg[0] = Tango lib release - Lg[1] = Device IDL release\n"
-		                                       "Lg[2] = Subscriber HWM - Lg[3] = Multicast rate\n"
-		                                       "Lg[4] = Multicast IVL - Lg[5] = ZMQ release");
+        CommandInfo cmd_inf = cmd_inf_list[31];
+        TS_ASSERT_EQUALS(cmd_inf.cmd_name, "ZmqEventSubscriptionChange");
+        TS_ASSERT_EQUALS(cmd_inf.in_type, Tango::DEVVAR_STRINGARRAY);
+        TS_ASSERT_EQUALS(cmd_inf.out_type, Tango::DEVVAR_LONGSTRINGARRAY);
+        TS_ASSERT_EQUALS(cmd_inf.in_type_desc, "Event consumer wants to subscribe to.\n"
+            "device name, attribute/pipe name, action (\"subscribe\"), event name, <Tango client IDL version>\"\n"
+            "event name can take the following values:\n"
+            "    \"change\",\n"
+            "    \"quality\",\n"
+            "    \"periodic\",\n"
+            "    \"archive\",\n"
+            "    \"user_event\",\n"
+            "    \"attr_conf\",\n"
+            "    \"data_ready\",\n"
+            "    \"intr_change\",\n"
+            "    \"pipe\"\n"
+            "\"info\" can also be used as single parameter to retrieve information about the heartbeat and event pub endpoints.");
+        TS_ASSERT_EQUALS(cmd_inf.out_type_desc, "Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint\n"
+            "...\n"
+            "Str[n] = Alternate Heartbeat pub endpoint - Str[n+1] = Alternate Event pub endpoint\n"
+            "Str[n+1] = event name used by this server as zmq topic to send events\n"
+            "Str[n+2] = channel name used by this server to send heartbeat events\n"
+            "Lg[0] = Tango lib release - Lg[1] = Device IDL release\n"
+            "Lg[2] = Subscriber HWM - Lg[3] = Multicast rate\n"
+            "Lg[4] = Multicast IVL - Lg[5] = ZMQ release");
 	}
 
 };

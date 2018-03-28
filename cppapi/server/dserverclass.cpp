@@ -1272,7 +1272,7 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 	return(out_any);
 }
 
-const string ZmqEventSubscriptionChangeCmd::in_desc = R"(Event consumer wants to subscribe to.\n)"
+const string ZmqEventSubscriptionChangeCmd::in_desc = "Event consumer wants to subscribe to.\n"
 "device name, attribute/pipe name, action (\"subscribe\"), event name, <Tango client IDL version>\"\n"
 "event name can take the following values:\n"
 "    \"change\",\n"
@@ -1286,7 +1286,7 @@ const string ZmqEventSubscriptionChangeCmd::in_desc = R"(Event consumer wants to
 "    \"pipe\"\n"
 "\"info\" can also be used as single parameter to retrieve information about the heartbeat and event pub endpoints.";
 
-const string ZmqEventSubscriptionChangeCmd::out_desc = R"(Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint\n)"
+const string ZmqEventSubscriptionChangeCmd::out_desc = "Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint\n"
 "...\n"
 "Str[n] = Alternate Heartbeat pub endpoint - Str[n+1] = Alternate Event pub endpoint\n"
 "Str[n+1] = event name used by this server as zmq topic to send events\n"
