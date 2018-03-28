@@ -1839,6 +1839,7 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 {
 	long server_tango_lib_ver = dvlsa->lvalue[0];
 
+    //event name is used for zmq topics filtering
 	if (server_tango_lib_ver >= 930)
 	{
 		received_from_admin.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
@@ -1848,6 +1849,7 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 		received_from_admin.event_name = local_callback_key;
 	}
 
+    //channel name is used for heartbeat events
 	if (server_tango_lib_ver >= 930)
 	{
 		received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
@@ -1865,9 +1867,9 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 	}
 
 	assert(!(received_from_admin.event_name.empty()));
-	cout4 << "recieved_from_admin.event_name = " << received_from_admin.event_name << endl;
+	cout4 << "received_from_admin.event_name = " << received_from_admin.event_name << endl;
 	assert(!(received_from_admin.channel_name.empty()));
-	cout4 << "recieved_from_admin.channel_name = " << received_from_admin.channel_name << endl;
+	cout4 << "received_from_admin.channel_name = " << received_from_admin.channel_name << endl;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
