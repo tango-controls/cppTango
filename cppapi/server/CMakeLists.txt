@@ -156,4 +156,4 @@ else(WIN32)
     target_compile_options(server_objects PRIVATE -fPIC)
 endif(WIN32)
 
-install(FILES ${HEADERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
+install(FILES ${HEADERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango")

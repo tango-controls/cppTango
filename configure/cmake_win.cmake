@@ -9,6 +9,9 @@ if(CMAKE_CL_64)
     add_definitions(-D_64BITS)
 endif(CMAKE_CL_64)
 
+#dump version into a file, later used by AppVeyor
+file(WRITE ${PROJECT_BINARY_DIR}/VERSION ${LIBRARY_VERSION})
+
 #include and link directories
 
 include_directories(${INCLUDE_OBJECT_MS})

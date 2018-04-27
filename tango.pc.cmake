@@ -1,6 +1,6 @@
 prefix = @CMAKE_INSTALL_PREFIX@
 exec_prefix = ${prefix}
-includedir = ${prefix}/include
+includedir = ${prefix}/include/tango
 libdir = ${prefix}/@CMAKE_INSTALL_LIBDIR@
 
 Name: @CMAKE_PROJECT_NAME@

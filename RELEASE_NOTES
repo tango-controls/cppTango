@@ -1,3 +1,9 @@
+9.2.8
+=====
+1. Cmake release targets #438 - Fix appveyor build. 
+   Install include files in <install_prefix>/include/tango directory instead of 
+   <install_prefix>/include.
+
 9.2.7
 =====
 
@@ -8,3 +14,4 @@
 5. remove event subscription sleeps on linux #415
 6. Fix bug in event name when pushing an error event to IDL5 clients. #400
 7. Tango 9 LTS fix#395 (Inserting const C string in DeviceData) #396
+8. tango_config.h: Add clang detection #442

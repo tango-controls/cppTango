@@ -204,7 +204,9 @@ build_script:
 
 
 after_build:
-  - cmd: cd C:/projects/cppTango 
+  - cmd: cd C:/projects/cppTango
+  - cmd: set /p TANGO_LIB_VER=<VERSION
+  - cmd: echo %TANGO_LIB_VER%
   # Generating installer
   - cmd: cpack -G WIX
   - cmd: cpack -G ZIP
@@ -213,25 +215,25 @@ after_build:
   - cmd: cpack -C Debug -G WIX
   - cmd: cpack -C Debug -G ZIP
   #rename x64-msvc10
-  - cmd: if %ARCH%==x64-msvc10 move libtango_9.2.6_Windows7.1SDK_x64_debug.msi libtango_9.2.6_v100_x64_debug.msi
-  - cmd: if %ARCH%==x64-msvc10 move libtango_9.2.6_Windows7.1SDK_x64_debug.zip libtango_9.2.6_v100_x64_debug.zip
+  - cmd: if %ARCH%==x64-msvc10 move libtango_%TANGO_LIB_VER%_Windows7.1SDK_x64_debug.msi libtango_%TANGO_LIB_VER%_v100_x64_debug.msi
+  - cmd: if %ARCH%==x64-msvc10 move libtango_%TANGO_LIB_VER%_Windows7.1SDK_x64_debug.zip libtango_%TANGO_LIB_VER%_v100_x64_debug.zip
   - cmd: cd C:/projects/cppTango 
-  - cmd: if %ARCH%==x64-msvc10 move libtango_9.2.6_Windows7.1SDK_x64.msi libtango_9.2.6_v100_x64.msi
-  - cmd: if %ARCH%==x64-msvc10 move libtango_9.2.6_Windows7.1SDK_x64.zip libtango_9.2.6_v100_x64.zip
+  - cmd: if %ARCH%==x64-msvc10 move libtango_%TANGO_LIB_VER%_Windows7.1SDK_x64.msi libtango_%TANGO_LIB_VER%_v100_x64.msi
+  - cmd: if %ARCH%==x64-msvc10 move libtango_%TANGO_LIB_VER%_Windows7.1SDK_x64.zip libtango_%TANGO_LIB_VER%_v100_x64.zip
   # copying debug versions for upload
   - cmd: cd c:/projects/debug_build
-  - cmd: if %ARCH%==win32-msvc9 move libtango_9.2.6_v90_x86_debug.msi C:/projects/cppTango
-  - cmd: if %ARCH%==win32-msvc9 move libtango_9.2.6_v90_x86_debug.zip C:/projects/cppTango
-  - cmd: if %ARCH%==x64-msvc9 move libtango_9.2.6_v90_x64_debug.msi C:/projects/cppTango
-  - cmd: if %ARCH%==x64-msvc9 move libtango_9.2.6_v90_x64_debug.zip C:/projects/cppTango
-  - cmd: if %ARCH%==win32-msvc10 move libtango_9.2.6_v100_x86_debug.msi C:/projects/cppTango
-  - cmd: if %ARCH%==win32-msvc10 move libtango_9.2.6_v100_x86_debug.zip C:/projects/cppTango
-  - cmd: if %ARCH%==x64-msvc10 move libtango_9.2.6_v100_x64_debug.msi C:/projects/cppTango
-  - cmd: if %ARCH%==x64-msvc10 move libtango_9.2.6_v100_x64_debug.zip C:/projects/cppTango
-  - cmd: if %ARCH%==x64-msvc12 move libtango_9.2.6_v120_x64_debug.msi C:/projects/cppTango
-  - cmd: if %ARCH%==x64-msvc12 move libtango_9.2.6_v120_x64_debug.zip C:/projects/cppTango
-  - cmd: if %ARCH%==x64-msvc14 move libtango_9.2.6_v140_x64_debug.msi C:/projects/cppTango
-  - cmd: if %ARCH%==x64-msvc14 move libtango_9.2.6_v140_x64_debug.zip C:/projects/cppTango
+  - cmd: if %ARCH%==win32-msvc9 move libtango_%TANGO_LIB_VER%_v90_x86_debug.msi C:/projects/cppTango
+  - cmd: if %ARCH%==win32-msvc9 move libtango_%TANGO_LIB_VER%_v90_x86_debug.zip C:/projects/cppTango
+  - cmd: if %ARCH%==x64-msvc9 move libtango_%TANGO_LIB_VER%_v90_x64_debug.msi C:/projects/cppTango
+  - cmd: if %ARCH%==x64-msvc9 move libtango_%TANGO_LIB_VER%_v90_x64_debug.zip C:/projects/cppTango
+  - cmd: if %ARCH%==win32-msvc10 move libtango_%TANGO_LIB_VER%_v100_x86_debug.msi C:/projects/cppTango
+  - cmd: if %ARCH%==win32-msvc10 move libtango_%TANGO_LIB_VER%_v100_x86_debug.zip C:/projects/cppTango
+  - cmd: if %ARCH%==x64-msvc10 move libtango_%TANGO_LIB_VER%_v100_x64_debug.msi C:/projects/cppTango
+  - cmd: if %ARCH%==x64-msvc10 move libtango_%TANGO_LIB_VER%_v100_x64_debug.zip C:/projects/cppTango
+  - cmd: if %ARCH%==x64-msvc12 move libtango_%TANGO_LIB_VER%_v120_x64_debug.msi C:/projects/cppTango
+  - cmd: if %ARCH%==x64-msvc12 move libtango_%TANGO_LIB_VER%_v120_x64_debug.zip C:/projects/cppTango
+  - cmd: if %ARCH%==x64-msvc14 move libtango_%TANGO_LIB_VER%_v140_x64_debug.msi C:/projects/cppTango
+  - cmd: if %ARCH%==x64-msvc14 move libtango_%TANGO_LIB_VER%_v140_x64_debug.zip C:/projects/cppTango
 
 
 on_finish:
