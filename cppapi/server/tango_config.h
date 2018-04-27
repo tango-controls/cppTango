@@ -182,6 +182,23 @@
             #define HAS_MAP_AT
             #define HAS_ATTRIBUTE_SPECIFIERS
         #endif
+        #if defined(__clang__)
+            #if __clang_major__ > 3
+                #define HAS_UNIQUE_PTR
+                #define HAS_RVALUE
+                #define HAS_LAMBDA_FUNC
+                #define HAS_ISNAN_IN_STD
+                #define HAS_NULLPTR
+                #define HAS_RANGE_BASE_FOR
+                #define INIT_LIST
+                #define HAS_THREAD
+                #define HAS_TYPE_TRAITS
+                #define HAS_UNDERLYING
+                #define HAS_VARIADIC_TEMPLATE
+                #define HAS_MAP_AT
+                #define HAS_ATTRIBUTE_SPECIFIERS
+            #endif
+        #endif
     #endif
 #else
     #ifdef WIN32_VC10
