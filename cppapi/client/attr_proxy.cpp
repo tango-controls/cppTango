@@ -57,12 +57,12 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-AttributeProxy::AttributeProxy (string &name):dev_proxy(NULL),ext(Tango_nullptr)
+AttributeProxy::AttributeProxy (string &name):dev_proxy(NULL),ext(new AttributeProxyExt(name))
 {
 	real_constructor(name);
 }
 
-AttributeProxy::AttributeProxy (const char *na):dev_proxy(NULL),ext(Tango_nullptr)
+AttributeProxy::AttributeProxy (const char *na):dev_proxy(NULL),ext(new AttributeProxyExt(na))
 {
 	string name(na);
 	real_constructor(name);
@@ -294,12 +294,12 @@ AttributeProxy::AttributeProxy(const AttributeProxy &prev):ext(Tango_nullptr)
 #ifdef HAS_UNIQUE_PTR
     if (prev.ext.get() != NULL)
     {
-        ext.reset(new AttributeProxyExt);
+        ext.reset(new AttributeProxyExt(prev.get_user_defined_name()));
     }
 #else
 	if (prev.ext != NULL)
 	{
-		ext = new AttributeProxyExt();
+		ext = new AttributeProxyExt(prev.get_user_defined_name());
 		*ext = *(prev.ext);
 	}
 	else
@@ -370,13 +370,13 @@ AttributeProxy &AttributeProxy::operator=(const AttributeProxy &rval)
 
 #ifdef HAS_UNIQUE_PTR
         if (rval.ext.get() != NULL)
-            ext.reset(new AttributeProxyExt);
+            ext.reset(new AttributeProxyExt(rval.get_user_defined_name()));
         else
             ext.reset();
 #else
         if (rval.ext != NULL)
         {
-            ext = new AttributeProxyExt();
+            ext = new AttributeProxyExt(rval.get_user_defined_name());
             *ext = *(rval.ext);
         }
         else
@@ -1358,7 +1358,11 @@ int AttributeProxy::subscribe_event (EventType event, CallBack *callback,
 	int ret;
 	try
 	{
-        ret = api_ptr->get_zmq_event_consumer()->subscribe_event(dev_proxy,attr_name, event, callback, filters, stateless);
+		//we use filters here to pass user defined attribute name to later use it in event callback
+		// see https://github.com/tango-controls/cppTango/pull/423
+        vector<string> non_const_filters;
+        non_const_filters.push_back(get_user_defined_name());
+        ret = api_ptr->get_zmq_event_consumer()->subscribe_event(dev_proxy,attr_name, event, callback, non_const_filters, stateless);
 	}
 	catch (DevFailed &e)
 	{

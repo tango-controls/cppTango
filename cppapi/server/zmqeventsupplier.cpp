@@ -273,12 +273,34 @@ name_specified(false),double_send(0),double_send_heartbeat(false)
     heartbeat_call_mess_2.copy(&heartbeat_call_mess);
 
 //
-// Start to init the event name used for the DS heartbeat event
-//
-
+// Build heartbeat name
+// This is something like
+//   tango://host:port/dserver/exec_name/inst_name.heartbeat when using DB
+//   tango://host:port/dserver/exec_name/inst_name#dbase=no.heartbeat when using file as database
     heartbeat_event_name = fqdn_prefix;
     heartbeat_event_name = heartbeat_event_name + "dserver/";
-    heartbeat_name_init = false;
+    heartbeat_event_name += tg->get_ds_name();
+    if (Util::_FileDb == true || Util::_UseDb == false)
+    {
+        bool db_ds = false;
+        const vector<DeviceClass *> *cl_ptr = tg->get_class_list();
+        for (size_t loop = 0; loop < cl_ptr->size(); loop++)
+        {
+            if ((*cl_ptr)[loop]->get_name() == DATABASE_CLASS)
+            {
+                db_ds = true;
+                break;
+            }
+        }
+
+        if (db_ds == false)
+        {
+            heartbeat_event_name = heartbeat_event_name + MODIFIER_DBASE_NO;
+        }
+    }
+
+    heartbeat_event_name = heartbeat_event_name + ".heartbeat";
+    transform(heartbeat_event_name.begin(), heartbeat_event_name.end(), heartbeat_event_name.begin(), ::tolower);
 
 //
 // Init data used in no-copy Zmq API
@@ -791,39 +813,6 @@ void ZmqEventSupplier::push_heartbeat_event()
 	delta_time = now_time - adm_dev->last_heartbeat_zmq;
 	cout3 << "ZmqEventSupplier::push_heartbeat_event(): delta time since last heartbeat " << delta_time << endl;
 
-	if (heartbeat_name_init == false)
-	{
-
-//
-// Build heartbeat name
-// This is something like
-//   tango://host:port/dserver/exec_name/inst_name.heartbeat when using DB
-//   tango://host:port/dserver/exec_name/inst_name#dbase=no.heartbeat when using file as database
-//
-
-        heartbeat_event_name = heartbeat_event_name + adm_dev->get_full_name();
-        if (Util::_FileDb == true || Util::_UseDb == false)
-        {
-            bool db_ds = false;
-            const vector<DeviceClass *> *cl_ptr = tg->get_class_list();
-            for (size_t loop = 0;loop < cl_ptr->size();loop++)
-            {
-                if ((*cl_ptr)[loop]->get_name() == DATABASE_CLASS)
-                {
-                    db_ds = true;
-                    break;
-                }
-            }
-
-            if (db_ds == false)
-                heartbeat_event_name = heartbeat_event_name + MODIFIER_DBASE_NO;
-        }
-
-        heartbeat_event_name = heartbeat_event_name + ".heartbeat";
-		transform(heartbeat_event_name.begin(),heartbeat_event_name.end(),heartbeat_event_name.begin(),::tolower);
-	    heartbeat_name_init = true;
-	}
-
 //
 // We here compare delta_time to 8 and not to 10.
 // This is necessary because, sometimes the polling thread is some milli second in advance.
@@ -1034,39 +1023,32 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 // Don't forget case where we have notifd client (thus with a fqdn_prefix modified)
 //
 
-	string loc_obj_name(obj_name);
-	transform(loc_obj_name.begin(),loc_obj_name.end(),loc_obj_name.begin(),::tolower);
+    string local_event_type = event_type;
 
-	bool intr_change = false;
-	if (event_type == EventName[INTERFACE_CHANGE_EVENT])
-		intr_change = true;
+    string::size_type pos = local_event_type.find(EVENT_COMPAT);
+    if (pos != string::npos)
+    {
+        local_event_type.erase(0, EVENT_COMPAT_IDL5_SIZE);
+    }
 
-	bool pipe_event = false;
-	if (event_type == EventName[PIPE_EVENT])
-		pipe_event = true;
+    bool intr_change = false;
+    if (local_event_type == EventName[INTERFACE_CHANGE_EVENT])
+    {
+        intr_change = true;
+    }
 
-	event_name = fqdn_prefix;
+    bool pipe_event = false;
+    if (local_event_type == EventName[PIPE_EVENT])
+    {
+        pipe_event = true;
+    }
 
-	int size = event_name.size();
-	if (event_name[size - 1] == '#')
-        event_name.erase(size - 1);
+    string loc_obj_name(obj_name);
+    transform(loc_obj_name.begin(), loc_obj_name.end(), loc_obj_name.begin(), ::tolower);
 
-	event_name = event_name + device_impl->get_name_lower();
-	if (intr_change == false)
-		event_name = event_name + '/' + loc_obj_name;
-	if (Util::_FileDb == true || Util::_UseDb == false)
-        event_name = event_name + MODIFIER_DBASE_NO;
-    event_name = event_name + '.';
+    create_full_event_name(device_impl, event_type, loc_obj_name, intr_change);
 
-	string ctr_event_name = event_name;
-	string local_event_type = event_type;
-
-    event_name = event_name + event_type;
-
-	string::size_type pos = local_event_type.find(EVENT_COMPAT);
-	if (pos != string::npos)
-		local_event_type.erase(0,EVENT_COMPAT_IDL5_SIZE);
-	ctr_event_name = ctr_event_name + local_event_type;
+    ctr_event_name = ctr_event_name + local_event_type;
 
 //
 // Create zmq messages
@@ -1578,6 +1560,40 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 									(const char *)"ZmqEventSupplier::push_event");
 	}
 
+}
+
+string
+ZmqEventSupplier::create_full_event_name(DeviceImpl *device_impl,
+                                         const string &event_type,
+                                         const string &obj_name_lower,
+                                         bool intr_change)
+{
+    event_name = fqdn_prefix;
+
+    int size = event_name.size();
+    if (event_name[size - 1] == '#')
+    {
+        event_name.erase(size - 1);
+    }
+
+    event_name = event_name + device_impl->get_name_lower();
+    if (intr_change == false)
+    {
+        event_name = event_name + '/' + obj_name_lower;
+    }
+    if (Util::_FileDb == true || Util::_UseDb == false)
+    {
+        event_name = event_name + MODIFIER_DBASE_NO;
+    }
+    event_name = event_name + '.';
+
+    //this field is in push_event
+    //TODO remove this field and replace with full_event_name
+    ctr_event_name = event_name;
+
+    event_name = event_name + event_type;
+
+    return event_name;
 }
 
 //+------------------------------------------------------------------------------------------------------------------

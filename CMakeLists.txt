@@ -4,8 +4,8 @@ include(CTest)
 enable_testing()
 #need to define the version of the library
 set(MAJOR_VERSION "9")
-set(MINOR_VERSION "2")
-set(PATCH_VERSION "8")
+set(MINOR_VERSION "3")
+set(PATCH_VERSION "0")
 
 if(WIN32)
     include(configure/cmake_win_defs.cmake)
@@ -25,6 +25,7 @@ include_directories(cppapi/server)
 include_directories(cppapi/server/idl)
 include_directories(log4tango/include)
 #required for generated config.h
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/cppapi/server)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
 
 

@@ -504,12 +504,13 @@ public:
 class ZmqEventSubscriptionChangeCmd : public Tango::Command
 {
 public:
-	ZmqEventSubscriptionChangeCmd(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
-	ZmqEventSubscriptionChangeCmd(const char *,Tango::CmdArgType, Tango::CmdArgType);
-	~ZmqEventSubscriptionChangeCmd() {};
+    static const std::string in_desc;
+    static const std::string out_desc;
+    ZmqEventSubscriptionChangeCmd();
+    ~ZmqEventSubscriptionChangeCmd(){};
 
-	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
-	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+    virtual bool is_allowed(Tango::DeviceImpl *, const CORBA::Any &);
+    virtual CORBA::Any *execute(Tango::DeviceImpl *, const CORBA::Any &);
 };
 
 //=============================================================================

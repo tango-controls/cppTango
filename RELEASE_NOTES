@@ -1,5 +1,13 @@
+9.3.0
+=====
+
+1. Fix FQDN events.
+   Limitations:
+     - in case DeviceProxy is used for event subscription client will get incorrect value in the event callback if short domain name is used in env.TANGO_HOST e.g. hzgc103k -> hzgc103.desy.de
+
 9.2.8
 =====
+
 1. Cmake release targets #438 - Fix appveyor build. 
    Install include files in <install_prefix>/include/tango directory instead of 
    <install_prefix>/include.

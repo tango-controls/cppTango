@@ -410,10 +410,7 @@ void EventConsumer::shutdown_keep_alive_thread()
 void EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,DeviceData &dd,string &adm_name,bool &necm)
 {
 	string channel_name = adm_name;
-	if (device_proxy->get_from_env_var() == true)
-	{
-		channel_name.insert(0,env_var_fqdn_prefix[0]);
-	}
+
 
 //
 // If no connection exists to this channel then connect to it. Sometimes, this method is called in order to reconnect
@@ -425,12 +422,6 @@ void EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,DeviceData 
 	{
 		connect_event_channel(channel_name,device_proxy->get_device_db(),false,dd);
 	}
-
-
-    if (device_proxy->get_from_env_var() == true)
-    {
-        adm_name.insert(0,env_var_fqdn_prefix[0]);
-    }
 
 //
 // Init adm device name in channel map entry
@@ -803,7 +794,7 @@ void EventConsumer::attr_to_device(const AttributeValue_4 *attr_value_4,DeviceAt
 void EventConsumer::attr_to_device(const ZmqAttributeValue_4 *attr_value_4,DeviceAttribute *dev_attr)
 {
 	base_attr_to_device(attr_value_4,dev_attr);
-	
+
 	//
 	// Warning: Since Tango 9, data type SHORT is used for both short attribute and enumeration attribute!
 	// Therefore, we need to store somewhere which exact type it is. With IDL 5, it is easy, because the data type is
@@ -1454,33 +1445,6 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		add_compat_info = true;
 
 //
-// Do we already have this event in the callback map? If yes, simply add this new callback to the event callback list
-// If it's a ATTR_CONF_EVENT, don't forget to look for the two different event kinds
-//
-
-	EvCbIte iter = event_callback_map.find(local_callback_key);
-
-	if (iter == event_callback_map.end() && add_compat_info == true)
-	{
-		for (int i = 0;i < ATT_CONF_REL_NB;i++)
-		{
-			string mod_local_callback_key(local_callback_key);
-			string::size_type pos = mod_local_callback_key.rfind('.');
-			mod_local_callback_key.insert(pos + 1,EVENT_COMPAT_IDL5);
-			iter = event_callback_map.find(mod_local_callback_key);
-			if (iter != event_callback_map.end())
-				break;
-		}
-	}
-
-	if (iter != event_callback_map.end())
-	{
-		int new_event_id = add_new_callback(iter,callback,ev_queue,event_id);
-		get_fire_sync_event(device,callback,ev_queue,event,event_name,obj_name,iter->second,local_callback_key);
-		return new_event_id;
-	}
-
-//
 // Inform server that we want to subscribe (we cannot use the asynchronous fire-and-forget
 // request so as not to block the client because it does not reconnect if the device is down !)
 // To do this, we need to build DS adm device proxy. If it is not the first call for this
@@ -1497,7 +1461,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	DeviceProxy *adm_dev = NULL;
 	bool allocated = false;
 
-	map<std::string,std::string>::iterator ipos = device_channel_map.find(device_name);
+        map<std::string,std::string>::iterator ipos = device_channel_map.find(device_name);
 	EvChanIte evt_it = channel_map.end();
 
     string adm_name;
@@ -1598,15 +1562,6 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	}
 
 //
-// Some Zmq specific code (Check release compatibility,....)
-//
-
-	zmq_specific(dd,adm_name,device,obj_name);
-
-//	if (allocated == true)
-//		delete adm_dev;
-
-//
 // Change event name if it is IDL 5 compatible:
 // This code is Tango 9 or more. If the remote device is IDL 5 (or more), insert tango IDL release number
 // at the beginning of event name.
@@ -1625,6 +1580,49 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		local_callback_key.insert(pos + 1,EVENT_COMPAT_IDL5);
 	}
 
+	initialize_received_from_admin(dvlsa, local_callback_key, adm_name, device->get_from_env_var());
+
+	//
+	// Do we already have this event in the callback map? If yes, simply add this new callback to the event callback list
+	// If it's a ATTR_CONF_EVENT, don't forget to look for the two different event kinds
+	//
+
+	EvCbIte iter = event_callback_map.find(received_from_admin.event_name);
+
+	if (iter == event_callback_map.end() && add_compat_info == true)
+	{
+		for (int i = 0; i < ATT_CONF_REL_NB; i++)
+		{
+			string mod_local_callback_key(received_from_admin.event_name);
+			string::size_type pos = mod_local_callback_key.rfind('.');
+			mod_local_callback_key.insert(pos + 1, EVENT_COMPAT_IDL5);
+			iter = event_callback_map.find(mod_local_callback_key);
+			if (iter != event_callback_map.end())
+			{
+				break;
+			}
+		}
+	}
+
+	if (iter != event_callback_map.end())
+	{
+		int new_event_id = add_new_callback(iter, callback, ev_queue, event_id);
+		get_fire_sync_event(device,
+							callback,
+							ev_queue,
+							event,
+							event_name,
+							obj_name,
+							iter->second,
+							received_from_admin.event_name);
+		return new_event_id;
+	}
+
+	//
+	// Some Zmq specific code (Check release compatibility,....)
+	//
+	zmq_specific(dd, adm_name, device, obj_name);
+
 //
 // Search (or create) entry for channel map
 //
@@ -1638,7 +1636,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 		try
 		{
-            connect(device,device_name,dd,adm_name,new_entry_in_channel_map);
+			connect(device, device_name, dd, received_from_admin.channel_name, new_entry_in_channel_map);
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -1703,6 +1701,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
     new_event_callback.event_name = event_name;
     new_event_callback.channel_name = evt_it->first;
     new_event_callback.alias_used = false;
+    new_event_callback.client_attribute_name = get_client_attribute_name(local_callback_key, filters);
 
     if (inter_event == true)
 		new_event_callback.fully_qualified_event_name = device_name + '.' + event_name;
@@ -1787,7 +1786,8 @@ int EventConsumer::connect_event(DeviceProxy *device,
 // Insert new entry in map
 //
 
-    pair<EvCbIte, bool> ret = event_callback_map.insert(pair<string, EventCallBackStruct>(local_callback_key, new_event_callback));
+    pair<EvCbIte, bool> ret = event_callback_map
+		.insert(pair<string, EventCallBackStruct>(received_from_admin.event_name, new_event_callback));
     if (!ret.second)
     {
         TangoSys_OMemStream o;
@@ -1820,6 +1820,50 @@ int EventConsumer::connect_event(DeviceProxy *device,
 #endif
 
 	return ret_event_id;
+}
+
+string EventConsumer::get_client_attribute_name(const string &local_callback_key, const vector<string> &filters)
+{
+    if(filters.size() == 1)
+        return filters[0];// here filters[0] is expected to be user defined attribute name
+
+
+	size_t pos = local_callback_key.rfind('.');//remove event_type e.g. .idl5_change
+	return local_callback_key.substr(0, pos);
+}
+
+void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLongStringArray *dvlsa,
+                                                          const string &local_callback_key,
+                                                          const string &adm_name,
+                                                          bool device_from_env_var)
+{
+	long server_tango_lib_ver = dvlsa->lvalue[0];
+
+    //event name is used for zmq topics filtering
+    //channel name is used for heartbeat events
+	if (server_tango_lib_ver >= 930)
+	{
+		received_from_admin.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
+        received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
+	}
+	else
+	{
+		received_from_admin.event_name = local_callback_key;
+
+		string adm_name_lower(adm_name);
+		if (device_from_env_var)
+		{
+			adm_name_lower.insert(0, env_var_fqdn_prefix[0]);
+		}
+
+		transform(adm_name_lower.begin(), adm_name_lower.end(), adm_name_lower.begin(), ::tolower);
+		received_from_admin.channel_name = adm_name_lower;
+	}
+
+	assert(!(received_from_admin.event_name.empty()));
+	cout4 << "received_from_admin.event_name = " << received_from_admin.event_name << endl;
+	assert(!(received_from_admin.channel_name.empty()));
+	cout4 << "received_from_admin.channel_name = " << received_from_admin.channel_name << endl;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -3174,20 +3218,18 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 			err = e.errors;
 		}
 
-		string local_event_name = event_name;
-		pos = local_event_name.find(EVENT_COMPAT);
-		if (pos != string::npos)
-			local_event_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
+		string local_event_name = cb.get_client_attribute_name();
+		string local_domain_name = cb.get_client_attribute_name();
 
 		if (cb.fwd_att == true)
 		{
 			da = new DeviceAttribute();
-			event_data = new FwdEventData(device,domain_name,local_event_name,da,err);
+			event_data = new FwdEventData(device,local_domain_name,local_event_name,da,err);
 			event_data->set_av_5(av_5);
 		}
 		else
 		{
-			event_data = new FwdEventData(device,domain_name,local_event_name,da,err);
+			event_data = new FwdEventData(device,local_domain_name,local_event_name,da,err);
 		}
 
 		AutoTangoMonitor _mon(cb.callback_monitor);
