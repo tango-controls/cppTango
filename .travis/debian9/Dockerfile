@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y apt-utils
 
 RUN apt-get install -y build-essential cmake
 
+RUN apt-get install -y curl lsb-release
+
 RUN apt-get install -y omniidl libomniorb4-dev libcos4-dev libomnithread3-dev libzmq3-dev
 
 RUN groupadd -g "$APP_GID" tango
