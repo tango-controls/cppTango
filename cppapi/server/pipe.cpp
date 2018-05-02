@@ -788,7 +788,12 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 	delta_subscription = now - event_subscription;
 
 	if (delta_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+    {
+        p_data->reset_insert_ctr();
+        DevVarPipeDataEltArray *tmp_ptr = p_data->get_insert_data();
+        delete tmp_ptr;
 		return;
+    }
 
 //
 // Get the event supplier, and simply return if not created
@@ -801,6 +806,9 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 
 	if (event_supplier_zmq == NULL)
 	{
+        p_data->reset_insert_ctr();
+        DevVarPipeDataEltArray *tmp_ptr = p_data->get_insert_data();
+        delete tmp_ptr;
 		return;
 	}
 
