@@ -1,9 +1,14 @@
 9.3.0
 =====
 
-1. Fix FQDN events.
+1. Fix FQDN events (#423,#315)
    Limitations:
-     - in case DeviceProxy is used for event subscription client will get incorrect value in the event callback if short domain name is used in env.TANGO_HOST e.g. hzgc103k -> hzgc103.desy.de
+     - in case DeviceProxy is used for event subscription client will get incorrect value 
+	 in the event callback if short domain name is used in env.TANGO_HOST 
+	 e.g. hzgc103k -> hzgc103.desy.de
+2. Fix memory leak when pipe event is sent and there is no client (#447,#448)
+3. Set the ZMQ Receive Buffer High Water Mark only if it changes (#444,#445) 
+   to reduce the impact of a bug in ZMQ 4.2.0 and ZMQ 4.2.1.
 
 9.2.8
 =====
