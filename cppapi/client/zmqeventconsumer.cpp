@@ -886,17 +886,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
             if (connect_pub == true)
             {
-                int current_sub_hwm = SUB_HWM;
-                size_t curr_sub_hw_size = sizeof(current_sub_hwm);
-                event_sub_sock->getsockopt(ZMQ_RCVHWM,&current_sub_hwm, &curr_sub_hw_size);
-                if(sub_hwm != current_sub_hwm)
-                {
-                    // Set the ZMQ Receive Buffer High Water Mark only if it changes
-                    // This is to reduce the impact of a bug present in ZMQ 4.2.0 and ZMQ 4.2.1
-                    // which leads to a bad lwm and hwm calculation when ZMQ_RCVHWM is set after
-                    // the bind of the socket. See cppTango#444 for more details
-                    event_sub_sock->setsockopt(ZMQ_RCVHWM, &sub_hwm, sizeof(sub_hwm));
-                }
+                set_socket_hwm(sub_hwm);
 
                 event_sub_sock->connect(endpoint);
                 if (force_connect == 0)
@@ -3504,6 +3494,26 @@ void ZmqEventConsumer::get_subscribed_event_ids(DeviceProxy *_dev,vector<int> &_
         {
             _ids.push_back(ite->event_id);
         }
+    }
+}
+
+/**
+ *
+ * Set the ZMQ Receive Buffer High Water Mark only if it changes
+ * This is to reduce the impact of a bug present in ZMQ 4.2.0 and ZMQ 4.2.1
+ * which leads to a bad lwm and hwm calculation when ZMQ_RCVHWM is set after
+ * the bind of the socket. See cppTango#444 for more details
+ *
+ * @param hwm: new ZMQ receive buffer high water mark
+ */
+void ZmqEventConsumer::set_socket_hwm(size_t hwm)
+{
+    int current_sub_hwm = SUB_HWM;
+    size_t curr_sub_hw_size = sizeof(current_sub_hwm);
+    event_sub_sock->getsockopt(ZMQ_RCVHWM,&current_sub_hwm, &curr_sub_hw_size);
+    if(hwm != current_sub_hwm)
+    {
+        event_sub_sock->setsockopt(ZMQ_RCVHWM, &hwm, sizeof(hwm));
     }
 }
 
