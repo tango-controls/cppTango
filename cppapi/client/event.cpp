@@ -1824,8 +1824,8 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 string EventConsumer::get_client_attribute_name(const string &local_callback_key, const vector<string> &filters)
 {
-    if(filters.size() == 1)
-        return filters[0];// here filters[0] is expected to be user defined attribute name
+  if(filters.size() == 1)
+    return filters[0];// here filters[0] is expected to be user defined attribute name
 
 
 	size_t pos = local_callback_key.rfind('.');//remove event_type e.g. .idl5_change
