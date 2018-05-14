@@ -1,3 +1,16 @@
+[Unreleased]
+============
+
+1. Add -pedantic for GCC/Clang and debug mode (#441). This change can generate 
+   errors with very old compilers (e.g. gcc 3.4.6) when compiling the lib debug 
+   version. Please remove manually -pedantic flag in configure/CMakeLists.txt if
+   you need to compile the debug version on a very old compiler.
+2. DServerSignal: Include errno header instead of trying to manually get the declaration right (#441)
+3. Remove GNU_CXX definition for GCC/Clang (#441)
+4. filedatabase.cpp: Remove stray semicolon (#441)
+5. FileDatabase: Use correct format specifier for unsigned arguments to sscanf (#441)
+6. EventConsumer::connect_event: Fix misleading indentation (#441)
+
 9.3.0
 =====
 
