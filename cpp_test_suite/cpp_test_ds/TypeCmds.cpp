@@ -612,6 +612,7 @@ CORBA::Any *IOString::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORB
 	catch (CORBA::Exception &e)
 	  {
 	    Tango::Except::print_exception(e);
+	    throw;
 	  }
 }
 
