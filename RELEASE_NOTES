@@ -11,6 +11,7 @@
 5. FileDatabase: Use correct format specifier for unsigned arguments to sscanf (#441)
 6. EventConsumer::connect_event: Fix misleading indentation (#441)
 7. PollThread: Fix multiline macro definitions (#451)
+8. Generate static library (#17) and fix compilation definitions (#437)
 
 9.3.0
 =====
