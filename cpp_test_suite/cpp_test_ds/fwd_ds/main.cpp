@@ -46,7 +46,7 @@
 #  define INSTALL_CRASH_HANDLER
 #endif
 
-DECLARE_CRASH_HANDLER;
+DECLARE_CRASH_HANDLER
 
 int main(int argc,char *argv[])
 {
