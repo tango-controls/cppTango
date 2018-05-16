@@ -886,7 +886,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
             if (connect_pub == true)
             {
-                set_socket_hwm(sub_hwm);
+                set_socket_hwm((int) sub_hwm);
 
                 event_sub_sock->connect(endpoint);
                 if (force_connect == 0)
@@ -3502,7 +3502,7 @@ void ZmqEventConsumer::get_subscribed_event_ids(DeviceProxy *_dev,vector<int> &_
  *
  * @param hwm: new ZMQ receive buffer high water mark
  */
-void ZmqEventConsumer::set_socket_hwm(size_t hwm)
+void ZmqEventConsumer::set_socket_hwm(int hwm)
 {
     int current_sub_hwm = SUB_HWM;
     size_t curr_sub_hw_size = sizeof(current_sub_hwm);
