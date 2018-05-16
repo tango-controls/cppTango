@@ -638,7 +638,7 @@ private :
 	void print_error_message(const char *mess) {ApiUtil *au=ApiUtil::instance();au->print_error_message(mess);}
 	void set_ctrl_sock_bound() {sock_bound_mutex.lock();ctrl_socket_bound=true;sock_bound_mutex.unlock();}
 	bool is_ctrl_sock_bound() {bool _b;sock_bound_mutex.lock();_b=ctrl_socket_bound;sock_bound_mutex.unlock();return _b;}
-	void set_socket_hwm(size_t hwm);
+	void set_socket_hwm(int hwm);
 
     bool check_zmq_endpoint(const string &);
 
