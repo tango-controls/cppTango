@@ -1860,9 +1860,22 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 		received_from_admin.channel_name = adm_name_lower;
 	}
 
-	assert(!(received_from_admin.event_name.empty()));
+    if (received_from_admin.event_name.empty())
+    {
+        EventSystemExcept::throw_exception(API_NotSupported,
+                                           "Server does not send event_name. Possibly to old server. Event system is not be initialized!",
+                                           "EventConsumer::initialize_received_from_admin()");
+        throw;
+    }
+
 	cout4 << "received_from_admin.event_name = " << received_from_admin.event_name << endl;
-	assert(!(received_from_admin.channel_name.empty()));
+    if (received_from_admin.channel_name.empty())
+    {
+        EventSystemExcept::throw_exception(API_NotSupported,
+                                           "Server does not send channel_name. Possibly to old server. Event system is not be initialized!",
+                                           "EventConsumer::initialize_received_from_admin()");
+        throw;
+    }
 	cout4 << "received_from_admin.channel_name = " << received_from_admin.channel_name << endl;
 }
 
