@@ -1837,7 +1837,14 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
                                                           const string &adm_name,
                                                           bool device_from_env_var)
 {
- 	long server_tango_lib_ver = (dvlsa->lvalue.length() > 0) ? dvlsa->lvalue[0] : 0;
+ 	if(dvlsa->lvalue.length() == 0)
+	{
+		EventSystemExcept::throw_exception(API_NotSupported,
+                                           "Server did not send its tango lib version. The server is possibly too old. The event system is not initialized!",
+                                           "EventConsumer::initialize_received_from_admin()");
+	}	
+	
+	long server_tango_lib_ver = dvlsa->lvalue[0];
 
     //event name is used for zmq topics filtering
     //channel name is used for heartbeat events
