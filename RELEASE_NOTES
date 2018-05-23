@@ -1,4 +1,7 @@
-9.3.1 [UNRELEASED]
+9.3.2 [UNRELEASED]
+============
+
+9.3.1
 ============
 
 1. Add -pedantic for GCC/Clang and debug mode (#441). This change can generate 
