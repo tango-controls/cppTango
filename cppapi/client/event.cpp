@@ -1837,6 +1837,13 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
                                                           const string &adm_name,
                                                           bool device_from_env_var)
 {
+ 	if(dvlsa->lvalue.length() == 0)
+	{
+		EventSystemExcept::throw_exception(API_NotSupported,
+                                           "Server did not send its tango lib version. The server is possibly too old. The event system is not initialized!",
+                                           "EventConsumer::initialize_received_from_admin()");
+	}	
+	
 	long server_tango_lib_ver = dvlsa->lvalue[0];
 
     //event name is used for zmq topics filtering
@@ -1844,7 +1851,7 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 	if (server_tango_lib_ver >= 930)
 	{
 		received_from_admin.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
-        received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
+                received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
 	}
 	else
 	{
@@ -1860,9 +1867,21 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 		received_from_admin.channel_name = adm_name_lower;
 	}
 
-	assert(!(received_from_admin.event_name.empty()));
+        if (received_from_admin.event_name.empty())
+        {
+                EventSystemExcept::throw_exception(API_NotSupported,
+                                           "Server did not send the event name. The server is possibly too old. The event system is not initialized!",
+                                           "EventConsumer::initialize_received_from_admin()");
+        
+        }
+
 	cout4 << "received_from_admin.event_name = " << received_from_admin.event_name << endl;
-	assert(!(received_from_admin.channel_name.empty()));
+        if (received_from_admin.channel_name.empty())
+        {
+                EventSystemExcept::throw_exception(API_NotSupported,
+                                           "Server did not send the channel name. The server is possibly too old. The event system is not initialized!",
+                                           "EventConsumer::initialize_received_from_admin()");        
+        }
 	cout4 << "received_from_admin.channel_name = " << received_from_admin.channel_name << endl;
 }
 
