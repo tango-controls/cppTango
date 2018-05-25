@@ -310,6 +310,11 @@ private:
 			mapElement.att_index_in_vector = index;
 			attr_map[att->get_name_lower()] = mapElement;
 		}
+		void increment_state_and_status_indexes()
+		{
+			attr_map["state"].att_index_in_vector++;
+			attr_map["status"].att_index_in_vector++;
+		}
     };
 
 	void concat(vector<AttrProperty> &,vector<AttrProperty> &,vector<AttrProperty> &);

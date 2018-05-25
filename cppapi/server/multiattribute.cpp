@@ -812,6 +812,7 @@ void MultiAttribute::add_attribute(string &dev_name,DeviceClass *dev_class_ptr,l
 			attr_list.insert(ite,new_attr);
 			index = attr_list.size() - 3;
 			ext->put_attribute_in_map(new_attr,index);
+			ext->increment_state_and_status_indexes();
 		}
 	}
 	else
@@ -828,6 +829,7 @@ void MultiAttribute::add_attribute(string &dev_name,DeviceClass *dev_class_ptr,l
 			attr_list.insert(ite,new_attr);
 			index = attr_list.size() - 3;
 			ext->put_attribute_in_map(new_attr,index);
+			ext->increment_state_and_status_indexes();
 		}
 	}
 
@@ -962,6 +964,7 @@ void MultiAttribute::add_fwd_attribute(string &dev_name,DeviceClass *dev_class_p
 	attr_list.insert(ite,new_fwd_attr);
 	index = attr_list.size() - 3;
 	ext->put_attribute_in_map(new_fwd_attr,index);
+	ext->increment_state_and_status_indexes();
 
 //
 // If it is writable, add it to the writable attribute list
@@ -1045,7 +1048,10 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 	if (update_idx == true)
 	{
 		for (;pos != attr_list.end();++pos)
+		{
 			(*pos)->set_attr_idx((*pos)->get_attr_idx() - 1);
+			ext->attr_map[(*pos)->get_name_lower()].att_index_in_vector--;
+		}
 
 		Tango::Util *tg = Tango::Util::instance();
 		vector<DeviceImpl *> &dev_list = tg->get_device_list_by_class(dev_class_name);
@@ -1061,7 +1067,10 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 			{
 				int idx = dev_att_list[loop]->get_attr_idx();
 				if (idx > old_idx)
+				{
 					dev_att_list[loop]->set_attr_idx(idx - 1);
+					(*dev_ite)->get_device_attr()->ext->attr_map[dev_att_list[loop]->get_name_lower()].att_index_in_vector--;
+				}
 			}
 		}
 	}
