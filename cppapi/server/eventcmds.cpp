@@ -1080,7 +1080,9 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         ret_data->svalue[size] = Tango::string_dup(event_topic.c_str());
 
         string channel_name = ev->get_fqdn_prefix();
-        channel_name += dev->adm_name();
+        char * adm_name = dev->adm_name();
+        channel_name += adm_name;
+        Tango::string_free(adm_name);
         transform(channel_name.begin(), channel_name.end(), channel_name.begin(), ::tolower);
         assert(!(channel_name.empty()));
         cout4 << "Sending channel_name = " << channel_name << endl;
