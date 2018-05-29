@@ -1050,7 +1050,8 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 		for (;pos != attr_list.end();++pos)
 		{
 			(*pos)->set_attr_idx((*pos)->get_attr_idx() - 1);
-			ext->attr_map[(*pos)->get_name_lower()].att_index_in_vector--;
+			string & attr_name_lower = (*pos)->get_name_lower();
+			ext->attr_map[attr_name_lower].att_index_in_vector--;
 		}
 
 		Tango::Util *tg = Tango::Util::instance();
@@ -1063,13 +1064,15 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 				continue;
 
 			vector<Attribute *> &dev_att_list = (*dev_ite)->get_device_attr()->get_attribute_list();
-			for (unsigned int loop = 0;loop < dev_att_list.size();++loop)
+			for (unsigned int i = 0;i < dev_att_list.size();++i)
 			{
-				int idx = dev_att_list[loop]->get_attr_idx();
+				int idx = dev_att_list[i]->get_attr_idx();
 				if (idx > old_idx)
 				{
-					dev_att_list[loop]->set_attr_idx(idx - 1);
-					(*dev_ite)->get_device_attr()->ext->attr_map[dev_att_list[loop]->get_name_lower()].att_index_in_vector--;
+					dev_att_list[i]->set_attr_idx(idx - 1);
+					string & attr_name_lower = dev_att_list[i]->get_name_lower();
+					MultiAttribute * dev_multi_attr = (*dev_ite)->get_device_attr();
+					dev_multi_attr->ext->attr_map[attr_name_lower].att_index_in_vector--;
 				}
 			}
 		}
