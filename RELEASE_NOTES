@@ -1,8 +1,9 @@
 9.3.2 [UNRELEASED]
-============
+==================
+1. Add Tango::string_free and fix memory leak in zmq_event_subscription_change() (#457,#460)
 
 9.3.1
-============
+=====
 
 1. Add -pedantic for GCC/Clang and debug mode (#441). This change can generate 
    errors with very old compilers (e.g. gcc 3.4.6) when compiling the lib debug 
