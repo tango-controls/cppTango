@@ -1063,7 +1063,8 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 			if (*dev_ite == the_dev)
 				continue;
 
-			vector<Attribute *> &dev_att_list = (*dev_ite)->get_device_attr()->get_attribute_list();
+			MultiAttribute * dev_multi_attr = (*dev_ite)->get_device_attr();
+			vector<Attribute *> &dev_att_list = dev_multi_attr->get_attribute_list();
 			for (unsigned int i = 0;i < dev_att_list.size();++i)
 			{
 				int idx = dev_att_list[i]->get_attr_idx();
@@ -1071,7 +1072,6 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 				{
 					dev_att_list[i]->set_attr_idx(idx - 1);
 					string & attr_name_lower = dev_att_list[i]->get_name_lower();
-					MultiAttribute * dev_multi_attr = (*dev_ite)->get_device_attr();
 					dev_multi_attr->ext->attr_map[attr_name_lower].att_index_in_vector--;
 				}
 			}
