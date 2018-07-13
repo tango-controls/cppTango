@@ -20,7 +20,7 @@ bool verbose = false;
 class EventCallback : public Tango::CallBack
 {
 public:
-    EventCallback(string cb_name): cb_executed(0), cb_err(0), name(cb_name) { };
+    explicit EventCallback(string cb_name): cb_executed(0), cb_err(0), name(cb_name) { };
     ~EventCallback() { };
     void push_event( Tango::EventData *ed );
 
