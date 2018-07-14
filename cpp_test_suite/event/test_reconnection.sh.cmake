@@ -28,7 +28,9 @@ kill_servers(){
     sleep 2
 }
 
+kill_servers
 
+start_server "@INST_NAME@"
 start_server "@INST_NAME@2"
 sleep 20
 
@@ -70,12 +72,34 @@ sleep 24 &&  start_server "@INST_NAME@2" &
 ret=$?
 check_return_value $ret
 
-#kill extra server
+# kill DevTest servers
+kill_servers
+
+#
+# Start DevTest servers
+#
+
+start_server "@INST_NAME@"
+start_server "@INST_NAME@2"
+sleep 20
+#
+# Next test will restart servers
+#
+
+echo "Testing event re-connection with client subscribing to several devices (takes time...)"
+sleep 18 &&  start_server "@INST_NAME@" && start_server "@INST_NAME@2" &
+sleep 62 &&  start_server "@INST_NAME@" && start_server "@INST_NAME@2" &
+./reco_several_events @DEV1@ @DEV20@ -v
+ret=$?
+check_return_value $ret
+
+
+# kill DevTest servers
 kill_servers
 
 #restart DEV1
 start_server "@INST_NAME@"
 
-sleep 20
+sleep 5
 
 echo "PID=$(<@PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid)"
