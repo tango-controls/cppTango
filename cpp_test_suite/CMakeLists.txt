@@ -14,7 +14,7 @@ set(DEV20 "${INST_NAME}2/debian8/20")
 set(FWD_DEV "${INST_NAME}/fwd_debian8/10")
 set(DEV1_ALIAS "debian8_alias")
 set(ATTR_ALIAS "debian8_attr_alias")
-cmake_host_system_information(RESULT HOST_NAME QUERY HOSTNAME)
+cmake_host_system_information(RESULT HOST_NAME QUERY FQDN)
 string(TOLOWER ${HOST_NAME} HOST_NAME)
 message("HOST_NAME=${HOST_NAME}")
 
