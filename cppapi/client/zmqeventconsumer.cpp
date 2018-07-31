@@ -1764,8 +1764,8 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
         ::strcpy(&(buffer[length]),endpoint.c_str());
         length = length + endpoint.size() + 1;
 
-        ::strcpy(&(buffer[length]), received_from_admin.event_name.c_str());
-        length = length + received_from_admin.event_name.size() + 1;
+        ::strcpy(&(buffer[length]), full_event_name.c_str());
+        length = length + full_event_name.size() + 1;
 
         DevLong user_hwm = au->get_user_sub_hwm();
         if (user_hwm != -1)

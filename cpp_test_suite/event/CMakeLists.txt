@@ -22,7 +22,8 @@ set(TESTS   archive_event
 #            reco_event
             reco_zmq
             server_event
-            stateless_sub)
+            stateless_sub
+            reco_several_events)
 
 foreach(TEST ${TESTS})
     TEST_SUITE_ADD_TEST(${TEST})
