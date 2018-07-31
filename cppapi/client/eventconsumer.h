@@ -496,10 +496,10 @@ protected :
     virtual void set_channel_type(EventChannelStruct &) = 0;
     virtual void zmq_specific(DeviceData &,string &,DeviceProxy *,const string &) = 0;
 
-    void initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
+    virtual void initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
                                             const string &local_callback_key,
                                             const string &adm_name,
-                                            bool device_from_env_var);
+                                            bool device_from_env_var) = 0;
     struct
     {
         string event_name;
@@ -539,7 +539,10 @@ protected :
 
     virtual void set_channel_type(EventChannelStruct &ecs) {ecs.channel_type = NOTIFD;}
 	virtual void zmq_specific(DeviceData &,string &,DeviceProxy *,const string &) {}
-
+    void initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
+                                        const string &local_callback_key,
+                                        const string &adm_name,
+                                        bool device_from_env_var) override;
 private :
 
 	TANGO_IMP static NotifdEventConsumer 					*_instance;
@@ -597,6 +600,11 @@ protected :
 
     virtual void set_channel_type(EventChannelStruct &ecs) {ecs.channel_type = ZMQ;}
 	virtual void zmq_specific(DeviceData &,string &,DeviceProxy *,const string &);
+
+    void initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
+                                        const string &local_callback_key,
+                                        const string &adm_name,
+                                        bool device_from_env_var) override;
 
 private :
 	TANGO_IMP static ZmqEventConsumer       *_instance;

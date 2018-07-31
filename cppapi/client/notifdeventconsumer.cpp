@@ -1139,5 +1139,25 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 	}
 }
 
+void NotifdEventConsumer::initialize_received_from_admin(const Tango::DevVarLongStringArray *dvlsa,
+                                                         const string &local_callback_key,
+                                                         const string &adm_name,
+                                                         bool device_from_env_var)
+{
+	received_from_admin.event_name = local_callback_key;
+
+	string adm_name_lower(adm_name);
+	if (device_from_env_var)
+	{
+		adm_name_lower.insert(0, env_var_fqdn_prefix[0]);
+	}
+
+	transform(adm_name_lower.begin(), adm_name_lower.end(), adm_name_lower.begin(), ::tolower);
+	received_from_admin.channel_name = adm_name_lower;
+
+	cout4 << "received_from_admin.event_name = " << received_from_admin.event_name << endl;
+	cout4 << "received_from_admin.channel_name = " << received_from_admin.channel_name << endl;
+}
+
 } /* End of Tango namespace */
 
