@@ -7,7 +7,7 @@ configure_file(post_test.sh.cmake post_test.sh @ONLY)
 execute_process(COMMAND chmod +x ${CMAKE_CURRENT_BINARY_DIR}/post_test.sh)
 
 execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/setup.sh)
-add_custom_target(start-tango ${CMAKE_CURRENT_SOURCE_DIR}/setup.sh
+add_custom_target(start-tango ${CMAKE_CURRENT_SOURCE_DIR}/setup.sh ${CMAKE_CURRENT_SOURCE_DIR}/docker-compose.yml
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
         SOURCES setup.sh)
 
@@ -18,6 +18,6 @@ add_custom_target(run-tests ${CMAKE_CURRENT_BINARY_DIR}/run.sh
         SOURCES run.sh.cmake)
 
 execute_process(COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/shutdown.sh)
-add_custom_target(stop-tango ${CMAKE_CURRENT_SOURCE_DIR}/shutdown.sh
+add_custom_target(stop-tango ${CMAKE_CURRENT_SOURCE_DIR}/shutdown.sh ${CMAKE_CURRENT_SOURCE_DIR}/docker-compose.yml
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
         SOURCES shutdown.sh)
