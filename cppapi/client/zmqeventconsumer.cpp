@@ -1658,41 +1658,11 @@ void ZmqEventConsumer::disconnect_event(string &event_name,string &endpoint)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name,string &event_name,TANGO_UNUSED(const vector<string> &filters),
-                                            TANGO_UNUSED(EvChanIte &eve_it),TANGO_UNUSED(EventCallBackStruct &new_event_callback),
+void ZmqEventConsumer::connect_event_system(TANGO_UNUSED(string &device_name),TANGO_UNUSED(string &obj_name),
+                                            TANGO_UNUSED(string &event_name),TANGO_UNUSED(const vector<string> &filters),
+                                            TANGO_UNUSED(EvChanIte &eve_it),EventCallBackStruct &new_event_callback,
                                             DeviceData &dd,size_t valid_end)
 {
-//
-// Build full event name
-// Don't forget case of device in a DS using file as database
-//
-
-    string full_event_name;
-    string::size_type pos;
-
-    bool inter_event = false;
-    if (event_name == EventName[INTERFACE_CHANGE_EVENT])
-		inter_event = true;
-
-    if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos)
-    {
-        full_event_name = device_name;
-        if (inter_event == false)
-		{
-			string tmp = '/' + obj_name;
-			full_event_name.insert(pos,tmp);
-		}
-        full_event_name = full_event_name + '.' + event_name;
-    }
-    else
-	{
-		if (inter_event == true)
-			full_event_name = device_name + '.' + event_name;
-		else
-			full_event_name = device_name + '/' + obj_name + '.' + event_name;
-	}
-
-
 //
 // Extract server command result
 //
@@ -1764,8 +1734,8 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
         ::strcpy(&(buffer[length]),endpoint.c_str());
         length = length + endpoint.size() + 1;
 
-        ::strcpy(&(buffer[length]), full_event_name.c_str());
-        length = length + full_event_name.size() + 1;
+        ::strcpy(&(buffer[length]), new_event_callback.received_from_admin.event_name.c_str());
+        length = length + new_event_callback.received_from_admin.event_name.size() + 1;
 
         DevLong user_hwm = au->get_user_sub_hwm();
         if (user_hwm != -1)

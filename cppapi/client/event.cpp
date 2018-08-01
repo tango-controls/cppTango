@@ -1580,7 +1580,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		local_callback_key.insert(pos + 1,EVENT_COMPAT_IDL5);
 	}
 
-	initialize_received_from_admin(dvlsa, local_callback_key, adm_name, device->get_from_env_var());
+	auto received_from_admin = initialize_received_from_admin(dvlsa, local_callback_key, adm_name, device->get_from_env_var());
 
 	//
 	// Do we already have this event in the callback map? If yes, simply add this new callback to the event callback list
@@ -1696,6 +1696,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
     EventCallBackStruct new_event_callback;
     EventSubscribeStruct new_ess;
 
+    new_event_callback.received_from_admin = received_from_admin;
     new_event_callback.device = device;
     new_event_callback.obj_name = obj_name_lower;
     new_event_callback.event_name = event_name;
@@ -1832,11 +1833,13 @@ string EventConsumer::get_client_attribute_name(const string &local_callback_key
 	return local_callback_key.substr(0, pos);
 }
 
-void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLongStringArray *dvlsa,
-                                                          const string &local_callback_key,
-                                                          const string &adm_name,
-                                                          bool device_from_env_var)
+ReceivedFromAdmin Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLongStringArray *dvlsa,
+                                                                       const string &local_callback_key,
+                                                                       const string &adm_name,
+                                                                       bool device_from_env_var)
 {
+    ReceivedFromAdmin result;
+
  	if(dvlsa->lvalue.length() == 0)
 	{
 		EventSystemExcept::throw_exception(API_NotSupported,
@@ -1850,12 +1853,12 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
     //channel name is used for heartbeat events
 	if (server_tango_lib_ver >= 930)
 	{
-		received_from_admin.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
-                received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
+        result.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
+        result.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
 	}
 	else
 	{
-		received_from_admin.event_name = local_callback_key;
+        result.event_name = local_callback_key;
 
 		string adm_name_lower(adm_name);
 		if (device_from_env_var)
@@ -1864,10 +1867,10 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
 		}
 
 		transform(adm_name_lower.begin(), adm_name_lower.end(), adm_name_lower.begin(), ::tolower);
-		received_from_admin.channel_name = adm_name_lower;
+        result.channel_name = adm_name_lower;
 	}
 
-        if (received_from_admin.event_name.empty())
+        if (result.event_name.empty())
         {
                 EventSystemExcept::throw_exception(API_NotSupported,
                                            "Server did not send the event name. The server is possibly too old. The event system is not initialized!",
@@ -1875,14 +1878,16 @@ void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLon
         
         }
 
-	cout4 << "received_from_admin.event_name = " << received_from_admin.event_name << endl;
-        if (received_from_admin.channel_name.empty())
+	cout4 << "received_from_admin.event_name = " << result.event_name << endl;
+        if (result.channel_name.empty())
         {
                 EventSystemExcept::throw_exception(API_NotSupported,
                                            "Server did not send the channel name. The server is possibly too old. The event system is not initialized!",
-                                           "EventConsumer::initialize_received_from_admin()");        
+                                           "EventConsumer::initialize_received_from_admin()");
         }
-	cout4 << "received_from_admin.channel_name = " << received_from_admin.channel_name << endl;
+	cout4 << "received_from_admin.channel_name = " << result.channel_name << endl;
+
+    return result;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
