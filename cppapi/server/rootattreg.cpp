@@ -787,7 +787,6 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 		if (tg->is_device_restarting(local_dev_name) == false)
 		{
 			attdesc->set_err_kind(FWD_DOUBLE_USED);
-            cbp.update_err_kind(a_name,attdesc->get_err_kind());
 
 			string desc("It's not supported to have in the same device server process two times the same root attribute (");
 			desc = desc + a_name + ")";

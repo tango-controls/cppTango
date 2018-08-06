@@ -906,6 +906,73 @@ void MultiAttribute::add_fwd_attribute(string &dev_name,DeviceClass *dev_class_p
 	add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
 
 //
+// Validate and register the root attribute configuration and update in tango DB
+//
+	Tango::FwdAttr *fwd_attr = (Tango::FwdAttr *) new_attr;
+	if ((new_attr->is_fwd() == true) && (fwd_attr->get_err_kind() == FWD_NO_ERROR))
+	{
+		// Get or update __root_att property of the attribute in tango DB
+		vector<AttrProperty> dev_prop;
+		Tango::Util *tg = Tango::Util::instance();
+		if (tg->_UseDb == true)
+		{
+			Tango::DbData db_data;
+			Tango::Util *tg = Tango::Util::instance();
+			// __root_att not provided in constructor: get tango DB value
+			if (fwd_attr->get_full_root_att() == RootAttNotDef)
+			{
+				db_data.push_back(DbDatum(fwd_attr->get_name()));
+				tg->get_database()->get_device_attribute_property(dev_name,db_data,tg->get_db_cache());
+				for (unsigned int ind=0 ; ind<db_data.size() ; ind++)
+				{
+					if (db_data[ind].name == RootAttrPropName)
+					{
+						dev_prop.push_back(AttrProperty(RootAttrPropName, db_data[ind].value_string[0]));
+						break;
+					}
+				}
+			}
+			// __root_att provided in constructor: update tango DB value
+			else
+			{
+				Tango::DbDatum att(fwd_attr->get_name());
+				Tango::DbDatum root_name(RootAttrPropName);
+				att << (DevShort) 1;
+				root_name << fwd_attr->get_full_root_att();
+				db_data.push_back(att);
+				db_data.push_back(root_name);
+				dev_prop.push_back(AttrProperty(RootAttrPropName, fwd_attr->get_full_root_att()));
+				tg->get_database()->put_device_attribute_property(dev_name, db_data);
+			}
+		}
+
+		// Validate and register the root attribute configuration
+		Tango::DeviceImpl *device = tg->get_device_by_name(dev_name);
+		try
+		{
+			if (fwd_attr->validate_fwd_att(dev_prop, dev_name))
+			{
+				std::cout << "validate_fwd_att OK" << std::endl;
+				fwd_attr->get_root_conf(dev_name,device);
+				std::cout << "get_root_conf OK" << std::endl;
+			}
+		}
+		catch (...)
+		{
+				// If any error add this attribute to the device list of wrong configured attributes
+				DeviceImpl::FwdWrongConf fwc;
+				fwc.att_name = fwd_attr->get_name();
+				fwc.full_root_att_name = fwd_attr->get_full_root_att();
+				fwc.fae = fwd_attr->get_err_kind();
+				vector<DeviceImpl::FwdWrongConf> &fwd_att_wrong_conf = device->get_fwd_att_wrong_conf();
+				fwd_att_wrong_conf.push_back(fwc);
+				// Do not add attribute if already used
+				if (fwd_attr->get_err_kind() == FWD_DOUBLE_USED)
+					return;
+		}
+	}
+
+//
 // Create an Attribute instance and insert it in the attribute list. If the device implement IDL 3
 // (with state and status as attributes), add it at the end of the list but before state and status.
 //
