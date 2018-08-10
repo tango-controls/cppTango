@@ -1496,6 +1496,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		{
 			AutoTangoMonitor _mon(evt_ch.channel_monitor);
 			adm_dev = evt_ch.adm_device_proxy;
+			adm_name = evt_ch.full_adm_name;
 		}
 	}
 
