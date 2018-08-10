@@ -456,7 +456,7 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 						}
 #endif
 						event_consumer->connect_event_system(d_name,epos->second.obj_name,epos->second.event_name,
-                                                             vs,ipos,ecbs,dd,ipos->second.valid_endpoint);
+						                                     vs,ipos,epos->second,dd,ipos->second.valid_endpoint);
 
 						const DevVarLongStringArray *dvlsa;
 						dd >> dvlsa;
