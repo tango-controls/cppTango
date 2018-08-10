@@ -163,6 +163,9 @@
                 #define HAS_RANGE_BASE_FOR
                 #define INIT_LIST
             #endif
+            #if __GNUC_MINOR__ > 6
+                #define HAS_OVERRIDE
+            #endif
             #if __GNUC_MINOR__ > 7
                 #define HAS_UNDERLYING
                 #define HAS_ATTRIBUTE_SPECIFIERS
@@ -229,6 +232,7 @@
         #define HAS_UNDERLYING
         #define HAS_VARIADIC_TEMPLATE
         #define HAS_MAP_AT
+        #define HAS_OVERRIDE
     #endif
     #ifdef WIN32_VC14
         #define HAS_UNIQUE_PTR
@@ -241,6 +245,7 @@
         #define HAS_VARIADIC_TEMPLATE
         #define HAS_MAP_AT
         #define HAS_ATTRIBUTE_SPECIFIERS
+        #define HAS_OVERRIDE
     #endif
 #endif
 

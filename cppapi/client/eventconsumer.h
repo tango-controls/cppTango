@@ -329,6 +329,12 @@ typedef struct event_not_connected
 
 //------------------------ Event Callback related info --------------------------------------
 
+struct ReceivedFromAdmin
+{
+    string event_name;
+    string channel_name;
+};
+
 typedef struct event_subscribe
 {
 	EventQueue						*ev_queue;
@@ -364,6 +370,7 @@ typedef struct event_callback: public EventCallBackBase, public EventCallBackZmq
 	CosNotifyFilter::FilterID filter_id;
 	bool filter_ok;
 	string client_attribute_name;
+	ReceivedFromAdmin received_from_admin;
 	string get_client_attribute_name()
 	{
 		return client_attribute_name;
@@ -496,15 +503,12 @@ protected :
     virtual void set_channel_type(EventChannelStruct &) = 0;
     virtual void zmq_specific(DeviceData &,string &,DeviceProxy *,const string &) = 0;
 
-    void initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
-                                            const string &local_callback_key,
-                                            const string &adm_name,
-                                            bool device_from_env_var);
-    struct
-    {
-        string event_name;
-        string channel_name;
-    } received_from_admin;
+   
+    
+    virtual ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
+                                                             const string &local_callback_key,
+                                                             const string &adm_name,
+                                                             bool device_from_env_var)=0;
 };
 
 /********************************************************************************
@@ -539,6 +543,17 @@ protected :
 
     virtual void set_channel_type(EventChannelStruct &ecs) {ecs.channel_type = NOTIFD;}
 	virtual void zmq_specific(DeviceData &,string &,DeviceProxy *,const string &) {}
+#ifdef HAS_OVERRIDE
+	ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
+	                                                 const string &local_callback_key,
+	                                                 const string &adm_name,
+	                                                 bool device_from_env_var) override;
+#else
+	virtual ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
+	                                                         const string &local_callback_key,
+	                                                         const string &adm_name,
+	                                                         bool device_from_env_var);
+#endif
 
 private :
 
@@ -597,6 +612,18 @@ protected :
 
     virtual void set_channel_type(EventChannelStruct &ecs) {ecs.channel_type = ZMQ;}
 	virtual void zmq_specific(DeviceData &,string &,DeviceProxy *,const string &);
+
+#ifdef HAS_OVERRIDE
+	ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
+	                                                 const string &local_callback_key,
+	                                                 const string &adm_name,
+	                                                 bool device_from_env_var) override;
+#else
+	virtual ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
+	                                                         const string &local_callback_key,
+	                                                         const string &adm_name,
+	                                                         bool device_from_env_var);
+#endif
 
 private :
 	TANGO_IMP static ZmqEventConsumer       *_instance;
