@@ -1658,41 +1658,11 @@ void ZmqEventConsumer::disconnect_event(string &event_name,string &endpoint)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name,string &event_name,TANGO_UNUSED(const vector<string> &filters),
-                                            TANGO_UNUSED(EvChanIte &eve_it),TANGO_UNUSED(EventCallBackStruct &new_event_callback),
+void ZmqEventConsumer::connect_event_system(TANGO_UNUSED(string &device_name),TANGO_UNUSED(string &obj_name),
+                                            TANGO_UNUSED(string &event_name),TANGO_UNUSED(const vector<string> &filters),
+                                            TANGO_UNUSED(EvChanIte &eve_it),EventCallBackStruct &new_event_callback,
                                             DeviceData &dd,size_t valid_end)
 {
-//
-// Build full event name
-// Don't forget case of device in a DS using file as database
-//
-
-    string full_event_name;
-    string::size_type pos;
-
-    bool inter_event = false;
-    if (event_name == EventName[INTERFACE_CHANGE_EVENT])
-		inter_event = true;
-
-    if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos)
-    {
-        full_event_name = device_name;
-        if (inter_event == false)
-		{
-			string tmp = '/' + obj_name;
-			full_event_name.insert(pos,tmp);
-		}
-        full_event_name = full_event_name + '.' + event_name;
-    }
-    else
-	{
-		if (inter_event == true)
-			full_event_name = device_name + '.' + event_name;
-		else
-			full_event_name = device_name + '/' + obj_name + '.' + event_name;
-	}
-
-
 //
 // Extract server command result
 //
@@ -1764,8 +1734,8 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
         ::strcpy(&(buffer[length]),endpoint.c_str());
         length = length + endpoint.size() + 1;
 
-        ::strcpy(&(buffer[length]), received_from_admin.event_name.c_str());
-        length = length + received_from_admin.event_name.size() + 1;
+        ::strcpy(&(buffer[length]), new_event_callback.received_from_admin.event_name.c_str());
+        length = length + new_event_callback.received_from_admin.event_name.size() + 1;
 
         DevLong user_hwm = au->get_user_sub_hwm();
         if (user_hwm != -1)
@@ -3511,6 +3481,69 @@ void ZmqEventConsumer::set_socket_hwm(int hwm)
     {
         event_sub_sock->setsockopt(ZMQ_RCVHWM, &hwm, sizeof(hwm));
     }
+}
+
+ReceivedFromAdmin ZmqEventConsumer::initialize_received_from_admin(const Tango::DevVarLongStringArray *dvlsa,
+                                                                   const string &local_callback_key,
+                                                                   const string &adm_name,
+                                                                   bool device_from_env_var)
+{
+    ReceivedFromAdmin result;
+    if (dvlsa->lvalue.length() == 0)
+    {
+        EventSystemExcept::throw_exception(API_NotSupported,
+                                           "Server did not send its tango lib version. The server is possibly too old. The event system is not initialized!",
+                                           "ZmqEventConsumer::initialize_received_from_admin()");
+    }
+
+    long server_tango_lib_ver = dvlsa->lvalue[0];
+
+    //event name is used for zmq topics filtering
+    //channel name is used for heartbeat events
+    if (server_tango_lib_ver >= 930)
+    {
+        result.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
+        result.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
+    }
+    else
+    {
+        result.event_name = local_callback_key;
+
+        if(server_tango_lib_ver >= 810)
+        {
+            string adm_name_lower(adm_name);
+            if (device_from_env_var)
+            {
+                adm_name_lower.insert(0, env_var_fqdn_prefix[0]);
+            }
+            transform(adm_name_lower.begin(), adm_name_lower.end(), adm_name_lower.begin(), ::tolower);
+            result.channel_name = adm_name_lower;
+        }
+        else
+        {
+            // For event coming from server still using Tango 8.0.x or below, do not lowercase
+            // the adm_name in the channel name
+            result.channel_name = adm_name;
+        }
+    }
+
+    if (result.event_name.empty())
+    {
+        EventSystemExcept::throw_exception(API_NotSupported,
+                                           "Server did not send the event name. The server is possibly too old. The event system is not initialized!",
+                                           "ZmqEventConsumer::initialize_received_from_admin()");
+
+    }
+
+    cout4 << "received_from_admin.event_name = " << result.event_name << endl;
+    if (result.channel_name.empty())
+    {
+        EventSystemExcept::throw_exception(API_NotSupported,
+                                           "Server did not send the channel name. The server is possibly too old. The event system is not initialized!",
+                                           "ZmqEventConsumer::initialize_received_from_admin()");
+    }
+    cout4 << "received_from_admin.channel_name = " << result.channel_name << endl;
+    return result;
 }
 
 //--------------------------------------------------------------------------------------------------------------------
