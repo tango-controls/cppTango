@@ -2,6 +2,7 @@
 ==================
 1. Add Tango::string_free and fix memory leak in zmq_event_subscription_change() (#457,#460)
 2. Fix bug impacting device servers using dynamic attributes (#458,#459)
+3. Polling refactoring
 
 9.3.1
 =====
