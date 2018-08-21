@@ -265,6 +265,20 @@ public :
  * @exception WrongData if requested
  */
 	void insert(const string &str,vector<unsigned char> &buffer);
+
+	/**
+     * Inserts a PipeBlob
+     *
+     * @param blob
+     */
+    void insert(DevicePipeBlob &blob);
+
+    /**
+     * Inserts a PipeBlob
+     *
+     * @param blob
+     */
+    void insert(DevicePipeBlob *blob);
 /**
  * The extract operators
  *
@@ -363,6 +377,8 @@ public :
  * @exception WrongData if requested
  */
     bool extract(const char *&str,const unsigned char *&data,unsigned int &length);
+
+    bool extract(DevicePipeBlob *blob);
 //@}
 
 ///@privatesection
@@ -393,7 +409,7 @@ public :
 	void operator << (vector<float>&);
 	void operator << (vector<double>&);
 	void operator << (DevState datum) {(any.inout()) <<= datum;}
-	void operator << (DevEncoded &datum) {(any.inout()) <<= datum;}
+	void operator << (DevEncoded &datum) {(any.inout()) <<= datum;}void operator<<(DevicePipeBlob &data);
 
 //	void insert(vector<DevLong>&, vector<string>&);
 //	void insert(vector<double>&, vector<string>&);
@@ -488,6 +504,8 @@ public :
 
 	bool operator >> (const DevEncoded* &datum);
 	bool operator >> (DevEncoded &datum);
+
+    bool operator>>(DevicePipeBlob *&datum);
 
 ///@publicsection
 /**@name Exception and error related methods methods
@@ -635,16 +653,39 @@ private:
     class DeviceDataExt
     {
     public:
-        DeviceDataExt() {};
+        DeviceDataExt()
+        {};
 
         bitset<numFlags>    ext_state;
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DeviceDataExt>   ext;
+    unique_ptr<DeviceDataExt> ext;
 #else
 	DeviceDataExt		        *ext;			// Class extension
 #endif
+template<typename T>
+    void checkResult(bool result, T *rv)
+    {
+        if (not(result))
+        {
+            ext->ext_state.set(wrongtype_flag);
+            if (exceptions_flags.test(wrongtype_flag))
+            {
+                ApiDataExcept::throw_exception((const char *) API_IncompatibleCmdArgumentType,
+                                               (const char *) "Cannot extract, data in DeviceData object is not a DevEncoded",
+                                               (const char *) "DeviceData::extract");
+            }
+        }
+
+        if (rv == nullptr)
+        {
+            ext->ext_state.set(wrongtype_flag);
+            ApiDataExcept::throw_exception((const char *) API_IncoherentDevData,
+                                           (const char *) "Incoherent data received from server",
+                                           (const char *) "DeviceData::extract");
+        }
+    }
 };
 
 

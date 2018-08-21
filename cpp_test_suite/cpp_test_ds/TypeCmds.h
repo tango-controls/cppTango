@@ -313,3 +313,12 @@ public:
 
 	Tango::DevLong encoded_cmd_ctr;
 };
+
+struct IOPipeBlob: public Tango::Command
+{
+    IOPipeBlob();
+    virtual ~IOPipeBlob()
+    {}
+    bool is_allowed(Tango::DeviceImpl *dev, const CORBA::Any &in_any) override;
+    CORBA::Any *execute(Tango::DeviceImpl *dev, const CORBA::Any &in_any) override;
+};
