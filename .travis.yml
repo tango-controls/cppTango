@@ -4,11 +4,11 @@ language: cpp
 
 env:
   matrix:
-    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=DEBUG
-    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=RELEASE
-    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=DEBUG
-    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=RELEASE
-    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=RELEASE
+    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=DEBUG COVERALLS=OFF
+    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=RELEASE COVERALLS=OFF
+    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=DEBUG COVERALLS=ON
+    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=RELEASE COVERALLS=OFF
+    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=RELEASE COVERALLS=OFF
 #    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=DEBUG
 #    - OS_TYPE=win32
 # etc
@@ -24,6 +24,7 @@ before_install:
   - .travis/${OS_TYPE}/before_install.sh
   - docker pull tangocs/mysql:9.2.2
   - docker pull tangocs/tango-cs:latest
+  - git clone https://github.com/JoakimSoderberg/coveralls-cmake.git
   - git clone -b tango-9-lts https://${CI_USER_TOKEN}@github.com/tango-controls/tango-idl.git idl
   - chmod +x .travis/${OS_TYPE}/run.sh
 
@@ -33,9 +34,11 @@ before_script:
   - IPADDR=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' $CONTAINER)
   - TANGO_HOST=${IPADDR}:10000
   - docker build --build-arg APP_UID=$(id -u) --build-arg APP_GID=$(id -g) -t cpp_tango .travis/${OS_TYPE}
-  - docker run --name cpp_tango -e TANGO_HOST=${TANGO_HOST} -e BINTRAY_USER_NAME=tango-ci -e BINTRAY_API_KEY=${CI_BINTRAY_API_KEY} --link tango_cs:tango_cs -v `pwd`:/home/tango/src -v `pwd`/idl:/home/tango/idl -v `pwd`/cppzmq:/home/tango/cppzmq -dit cpp_tango
+  - docker run --name cpp_tango -e TANGO_HOST=${TANGO_HOST} -e BINTRAY_USER_NAME=tango-ci -e BINTRAY_API_KEY=${CI_BINTRAY_API_KEY} -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} --link tango_cs:tango_cs -v `pwd`:/home/tango/src -v `pwd`/idl:/home/tango/idl -v `pwd`/cppzmq:/home/tango/cppzmq -dit cpp_tango
 
 script:
+  - chmod 777 .travis/install_tango_idl.sh .travis/${OS_TYPE}/run.sh
+  - .travis/install_tango_idl.sh
   - .travis/${OS_TYPE}/run.sh
 
 deploy:
