@@ -1011,7 +1011,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 
 	Tango::DevVarStringArray dvsa;
 	dvsa.length(1);
-	dvsa[0] = CORBA::string_dup(get_fwd_att_name().c_str());
+	dvsa[0] = Tango::string_dup(get_fwd_att_name().c_str());
 
 	int ctr = 0;
 	AttributeValueList_5 *attr_value_list_5;

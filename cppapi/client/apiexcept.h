@@ -125,10 +125,10 @@ public: \
 	{\
 		Tango::DevErrorList errors(1);\
 		errors.length(1);\
-		errors[0].desc = CORBA::string_dup(desc.c_str()); \
+		errors[0].desc = Tango::string_dup(desc.c_str()); \
 		errors[0].severity = sever; \
-		errors[0].reason = CORBA::string_dup(reason);\
-		errors[0].origin = CORBA::string_dup(origin);\
+		errors[0].reason = Tango::string_dup(reason);\
+		errors[0].origin = Tango::string_dup(origin);\
 		throw Tango::E(errors);\
 	}\
 \
@@ -137,10 +137,10 @@ public: \
 	{\
 		Tango::DevErrorList errors(1);\
 		errors.length(1);\
-		errors[0].desc = CORBA::string_dup(desc);\
+		errors[0].desc = Tango::string_dup(desc);\
 		errors[0].severity = sever;\
-		errors[0].reason = CORBA::string_dup(reason);\
-		errors[0].origin = CORBA::string_dup(origin);\
+		errors[0].reason = Tango::string_dup(reason);\
+		errors[0].origin = Tango::string_dup(origin);\
 		delete[] desc;\
 		throw Tango::E(errors);\
 	}\
@@ -150,10 +150,10 @@ public: \
 	{\
 		Tango::DevErrorList errors(1);\
 		errors.length(1);\
-		errors[0].desc = CORBA::string_dup(desc);\
+		errors[0].desc = Tango::string_dup(desc);\
 		errors[0].severity = sever;\
-		errors[0].reason = CORBA::string_dup(reason);\
-		errors[0].origin = CORBA::string_dup(origin);\
+		errors[0].reason = Tango::string_dup(reason);\
+		errors[0].origin = Tango::string_dup(origin);\
 		throw Tango::E(errors);\
 	}\
 \
@@ -166,15 +166,15 @@ public: \
 		errors.length(2);\
 		Tango::Except::the_mutex.lock(); \
 		char *tmp = Tango::Except::print_CORBA_SystemException(&cex);\
-		errors[0].desc = CORBA::string_dup(tmp);\
+		errors[0].desc = Tango::string_dup(tmp);\
 		Tango::Except::the_mutex.unlock(); \
 		errors[0].severity = sever;\
-		errors[0].reason = CORBA::string_dup("API_CorbaException");\
-		errors[0].origin = CORBA::string_dup(origin);\
-		errors[1].desc = CORBA::string_dup(desc.c_str());\
+		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].origin = Tango::string_dup(origin);\
+		errors[1].desc = Tango::string_dup(desc.c_str());\
 		errors[1].severity = sever;\
-		errors[1].reason = CORBA::string_dup(reason.c_str());\
-		errors[1].origin = CORBA::string_dup(origin);\
+		errors[1].reason = Tango::string_dup(reason.c_str());\
+		errors[1].origin = Tango::string_dup(origin);\
 		throw Tango::E(errors);\
 	}\
 \
@@ -187,15 +187,15 @@ public: \
 		errors.length(2);\
 		Tango::Except::the_mutex.lock(); \
 		char *tmp = Tango::Except::print_CORBA_SystemException(&cex);\
-		errors[0].desc = CORBA::string_dup(tmp);\
+		errors[0].desc = Tango::string_dup(tmp);\
 		Tango::Except::the_mutex.unlock(); \
 		errors[0].severity = sever;\
-		errors[0].reason = CORBA::string_dup("API_CorbaException");\
-		errors[0].origin = CORBA::string_dup(origin);\
-		errors[1].desc = CORBA::string_dup(desc);\
+		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].origin = Tango::string_dup(origin);\
+		errors[1].desc = Tango::string_dup(desc);\
 		errors[1].severity = sever;\
-		errors[1].reason = CORBA::string_dup(reason);\
-		errors[1].origin = CORBA::string_dup(origin);\
+		errors[1].reason = Tango::string_dup(reason);\
+		errors[1].origin = Tango::string_dup(origin);\
 		delete[] desc;\
 		delete[] reason;\
 		throw Tango::E(errors);\
@@ -209,15 +209,15 @@ public: \
 		errors.length(2);\
 		Tango::Except::the_mutex.lock(); \
 		char *tmp = Tango::Except::print_CORBA_SystemException(&cex);\
-		errors[0].desc = CORBA::string_dup(tmp);\
+		errors[0].desc = Tango::string_dup(tmp);\
 		Tango::Except::the_mutex.unlock(); \
 		errors[0].severity = sever;\
-		errors[0].reason = CORBA::string_dup("API_CorbaException");\
-		errors[0].origin = CORBA::string_dup(origin);\
-		errors[1].desc = CORBA::string_dup(desc.c_str());\
+		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].origin = Tango::string_dup(origin);\
+		errors[1].desc = Tango::string_dup(desc.c_str());\
 		errors[1].severity = sever;\
-		errors[1].reason = CORBA::string_dup(reason);\
-		errors[1].origin = CORBA::string_dup(origin);\
+		errors[1].reason = Tango::string_dup(reason);\
+		errors[1].origin = Tango::string_dup(origin);\
 		throw Tango::E(errors);\
 	}\
 	static inline void re_throw_exception(CORBA::SystemException &cex,\
@@ -229,15 +229,15 @@ public: \
 		errors.length(2);\
 		Tango::Except::the_mutex.lock(); \
 		char *tmp = Tango::Except::print_CORBA_SystemException(&cex);\
-		errors[0].desc = CORBA::string_dup(tmp);\
+		errors[0].desc = Tango::string_dup(tmp);\
 		Tango::Except::the_mutex.unlock(); \
 		errors[0].severity = sever;\
-		errors[0].reason = CORBA::string_dup("API_CorbaException");\
-		errors[0].origin = CORBA::string_dup(origin.c_str());\
-		errors[1].desc = CORBA::string_dup(desc.c_str());\
+		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].origin = Tango::string_dup(origin.c_str());\
+		errors[1].desc = Tango::string_dup(desc.c_str());\
 		errors[1].severity = sever;\
-		errors[1].reason = CORBA::string_dup(reason);\
-		errors[1].origin = CORBA::string_dup(origin.c_str());\
+		errors[1].reason = Tango::string_dup(reason);\
+		errors[1].origin = Tango::string_dup(origin.c_str());\
 		throw Tango::E(errors);\
 	}\
 \
@@ -250,15 +250,15 @@ public: \
 		errors.length(2);\
 		Tango::Except::the_mutex.lock(); \
 		char *tmp = Tango::Except::print_CORBA_SystemException(&cex);\
-		errors[0].desc = CORBA::string_dup(tmp);\
+		errors[0].desc = Tango::string_dup(tmp);\
 		Tango::Except::the_mutex.unlock(); \
 		errors[0].severity = sever;\
-		errors[0].reason = CORBA::string_dup("API_CorbaException");\
-		errors[0].origin = CORBA::string_dup(origin);\
-		errors[1].desc = CORBA::string_dup(desc);\
+		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].origin = Tango::string_dup(origin);\
+		errors[1].desc = Tango::string_dup(desc);\
 		errors[1].severity = sever;\
-		errors[1].reason = CORBA::string_dup(reason);\
-		errors[1].origin = CORBA::string_dup(origin);\
+		errors[1].reason = Tango::string_dup(reason);\
+		errors[1].origin = Tango::string_dup(origin);\
 		delete[] desc;\
 		throw Tango::E(errors);\
 	}\
@@ -271,10 +271,10 @@ public: \
 		long nb_err = ex.errors.length();\
 		ex.errors.length(nb_err + 1);\
 		ex.errors[nb_err].severity = sever;\
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);\
+		ex.errors[nb_err].desc = Tango::string_dup(desc);\
 		delete[] desc;\
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);\
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);\
+		ex.errors[nb_err].origin = Tango::string_dup(origin);\
+		ex.errors[nb_err].reason = Tango::string_dup(reason);\
 		throw ex;\
 	}\
 \
@@ -286,9 +286,9 @@ public: \
 		long nb_err = ex.errors.length();\
 		ex.errors.length(nb_err + 1);\
 		ex.errors[nb_err].severity = sever;\
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());\
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);\
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);\
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());\
+		ex.errors[nb_err].origin = Tango::string_dup(origin);\
+		ex.errors[nb_err].reason = Tango::string_dup(reason);\
 		throw ex;\
 	}\
 	static inline void re_throw_exception(Tango::DevFailed &ex,\
@@ -299,10 +299,10 @@ public: \
 		long nb_err = ex.errors.length();\
 		ex.errors.length(nb_err + 1);\
 		ex.errors[nb_err].severity = sever;\
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);\
+		ex.errors[nb_err].desc = Tango::string_dup(desc);\
 		delete[] desc;\
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);\
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);\
+		ex.errors[nb_err].origin = Tango::string_dup(origin);\
+		ex.errors[nb_err].reason = Tango::string_dup(reason);\
 		throw ex;\
 	}\
 \
@@ -314,9 +314,9 @@ public: \
 		long nb_err = ex.errors.length();\
 		ex.errors.length(nb_err + 1);\
 		ex.errors[nb_err].severity = sever;\
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());\
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);\
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);\
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());\
+		ex.errors[nb_err].origin = Tango::string_dup(origin);\
+		ex.errors[nb_err].reason = Tango::string_dup(reason);\
 		throw ex;\
 	}\
 	static inline void re_throw_exception(Tango::DevFailed &ex,\
@@ -327,9 +327,9 @@ public: \
 		long nb_err = ex.errors.length();\
 		ex.errors.length(nb_err + 1);\
 		ex.errors[nb_err].severity = sever;\
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);\
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);\
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);\
+		ex.errors[nb_err].desc = Tango::string_dup(desc);\
+		ex.errors[nb_err].origin = Tango::string_dup(origin);\
+		ex.errors[nb_err].reason = Tango::string_dup(reason);\
 		throw ex;\
 	}\
 \
@@ -340,14 +340,14 @@ public: \
 	{\
 		Tango::DevErrorList errors(2);\
 		errors.length(2);\
-		errors[0].desc = CORBA::string_dup(CORBA_error_desc);\
+		errors[0].desc = Tango::string_dup(CORBA_error_desc);\
 		errors[0].severity = sever;\
-		errors[0].reason = CORBA::string_dup("API_CorbaException");\
-		errors[0].origin = CORBA::string_dup(origin);\
-		errors[1].desc = CORBA::string_dup(desc);\
+		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].origin = Tango::string_dup(origin);\
+		errors[1].desc = Tango::string_dup(desc);\
 		errors[1].severity = sever;\
-		errors[1].reason = CORBA::string_dup(reason);\
-		errors[1].origin = CORBA::string_dup(origin);\
+		errors[1].reason = Tango::string_dup(reason);\
+		errors[1].origin = Tango::string_dup(origin);\
 		delete[] desc;\
 		throw Tango::E(errors);\
 	}\
@@ -359,14 +359,14 @@ public: \
 	{\
 		Tango::DevErrorList errors(2);\
 		errors.length(2);\
-		errors[0].desc = CORBA::string_dup(CORBA_error_desc);\
+		errors[0].desc = Tango::string_dup(CORBA_error_desc);\
 		errors[0].severity = sever;\
-		errors[0].reason = CORBA::string_dup("API_CorbaException");\
-		errors[0].origin = CORBA::string_dup(origin);\
-		errors[1].desc = CORBA::string_dup(desc.c_str());\
+		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].origin = Tango::string_dup(origin);\
+		errors[1].desc = Tango::string_dup(desc.c_str());\
 		errors[1].severity = sever;\
-		errors[1].reason = CORBA::string_dup(reason);\
-		errors[1].origin = CORBA::string_dup(origin);\
+		errors[1].reason = Tango::string_dup(reason);\
+		errors[1].origin = Tango::string_dup(origin);\
 		throw Tango::E(errors);\
 	}\
 };

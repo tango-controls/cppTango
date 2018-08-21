@@ -219,9 +219,9 @@ int main(int argc, char **argv)
 	DevVarStringArray *str_arr = new DevVarStringArray(2);
 	vector<string> str_arr_out;
 	str_arr->length(3);
-	(*str_arr)[0] = CORBA::string_dup("abc");
-	(*str_arr)[1] = CORBA::string_dup("def");
-	(*str_arr)[2] = CORBA::string_dup("ghi");
+	(*str_arr)[0] = Tango::string_dup("abc");
+	(*str_arr)[1] = Tango::string_dup("def");
+	(*str_arr)[2] = Tango::string_dup("ghi");
 	din << str_arr;
 	cout << din << endl;
 	din >> str_arr_out;
@@ -240,8 +240,8 @@ int main(int argc, char **argv)
 	lgstr_arr->lvalue[0] = 1110;
 	lgstr_arr->lvalue[1] = 2220;
 	lgstr_arr->svalue.length(2);
-	lgstr_arr->svalue[0] = CORBA::string_dup("zxc");
-	lgstr_arr->svalue[1] = CORBA::string_dup("qwe");
+	lgstr_arr->svalue[0] = Tango::string_dup("zxc");
+	lgstr_arr->svalue[1] = Tango::string_dup("qwe");
 	din << lgstr_arr;
 	cout << din << endl;
 	din.extract(lg_lgstr,str_lgstr);
@@ -262,9 +262,9 @@ int main(int argc, char **argv)
 	dbstr_arr->dvalue[0] = 1.11;
 	dbstr_arr->dvalue[1] = 22.2;
 	dbstr_arr->svalue.length(3);
-	dbstr_arr->svalue[0] = CORBA::string_dup("iop");
-	dbstr_arr->svalue[1] = CORBA::string_dup("jkl");
-	dbstr_arr->svalue[2] = CORBA::string_dup("bnm");
+	dbstr_arr->svalue[0] = Tango::string_dup("iop");
+	dbstr_arr->svalue[1] = Tango::string_dup("jkl");
+	dbstr_arr->svalue[2] = Tango::string_dup("bnm");
 	din << dbstr_arr;
 	cout << din << endl;
 	din.extract(db_dbstr,str_dbstr);
@@ -291,7 +291,7 @@ int main(int argc, char **argv)
 // test DevEncoded
 
 	DevEncoded de;
-	de.encoded_format = CORBA::string_dup("the string");
+	de.encoded_format = Tango::string_dup("the string");
 	de.encoded_data.length(2);
 	de.encoded_data[0] = 11;
 	de.encoded_data[1] = 22;

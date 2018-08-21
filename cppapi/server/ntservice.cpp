@@ -46,12 +46,12 @@ static char* GetErrorText()
 		             0, GetLastError(), LANG_NEUTRAL, (char*)&str, 0, 0);
     if(str)
     {
-		cstr = CORBA::string_dup(str);
+		cstr = Tango::string_dup(str);
 		::LocalFree((HLOCAL)str);
     }
     else
     {
-		cstr = CORBA::string_dup("FormatMessage failed");
+		cstr = Tango::string_dup("FormatMessage failed");
     }
     return cstr;
 }

@@ -1368,7 +1368,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 					tmp_buffer.length(buffer_data_length);
 					for (unsigned int k = 0;k < buffer_data_length;k++)
 						tmp_buffer[k] = enc->encoded_data[k];
-					(*new_tmp_enc)[ind_in_seq].encoded_format = CORBA::string_dup(enc->encoded_format);
+					(*new_tmp_enc)[ind_in_seq].encoded_format = Tango::string_dup(enc->encoded_format);
 					ind_in_seq = ind_in_seq + 1;
 				}
 				MANAGE_DIM_SIMPLE();
@@ -1534,7 +1534,7 @@ void PollRing::get_attr_history(long n,Tango::DevAttrHistoryList *ptr,long type)
 			(*ptr)[seq_index].value.quality = (*ring[index].attr_value)[0].quality;
 			(*ptr)[seq_index].value.dim_x = (*ring[index].attr_value)[0].dim_x;
 			(*ptr)[seq_index].value.dim_y = (*ring[index].attr_value)[0].dim_y;
-			(*ptr)[seq_index].value.name = CORBA::string_dup((*ring[index].attr_value)[0].name);
+			(*ptr)[seq_index].value.name = Tango::string_dup((*ring[index].attr_value)[0].name);
 
 			if ((*ptr)[seq_index].value.quality != Tango::ATTR_INVALID)
 			{
@@ -1724,7 +1724,7 @@ void PollRing::get_attr_history(long n,Tango::DevAttrHistoryList_3 *ptr,long typ
 			(*ptr)[seq_index].value.quality = (*ring[index].attr_value_3)[0].quality;
 			(*ptr)[seq_index].value.r_dim = (*ring[index].attr_value_3)[0].r_dim;
 			(*ptr)[seq_index].value.w_dim = (*ring[index].attr_value_3)[0].w_dim;
-			(*ptr)[seq_index].value.name = CORBA::string_dup((*ring[index].attr_value_3)[0].name);
+			(*ptr)[seq_index].value.name = Tango::string_dup((*ring[index].attr_value_3)[0].name);
 
 
 			(*ptr)[seq_index].attr_failed = false;
@@ -1930,7 +1930,7 @@ void PollRing::get_attr_history_43(long n,Tango::DevAttrHistoryList_3 *ptr,long 
 			(*ptr)[seq_index].value.quality = (*ring[index].attr_value_4)[0].quality;
 			(*ptr)[seq_index].value.r_dim = (*ring[index].attr_value_4)[0].r_dim;
 			(*ptr)[seq_index].value.w_dim = (*ring[index].attr_value_4)[0].w_dim;
-			(*ptr)[seq_index].value.name = CORBA::string_dup((*ring[index].attr_value_4)[0].name);
+			(*ptr)[seq_index].value.name = Tango::string_dup((*ring[index].attr_value_4)[0].name);
 
 
 			(*ptr)[seq_index].attr_failed = false;

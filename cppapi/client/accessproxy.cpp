@@ -234,10 +234,10 @@ AccessControlType AccessProxy::check_access_control(string &devname)
 			if (multi_ip == true)
 			{
 				dvsa.length(2 + host_ips.size());
-				dvsa[0] = CORBA::string_dup(user.c_str());
-				dvsa[1] = CORBA::string_dup(devname.c_str());
+				dvsa[0] = Tango::string_dup(user.c_str());
+				dvsa[1] = Tango::string_dup(devname.c_str());
 				for (unsigned int i = 0;i < host_ips.size();i++)
-					dvsa[2 + i] = CORBA::string_dup(host_ips[i].c_str());
+					dvsa[2 + i] = Tango::string_dup(host_ips[i].c_str());
 				din << dvsa;
 
 				dout = command_inout("GetAccessForMultiIp",din);
@@ -247,9 +247,9 @@ AccessControlType AccessProxy::check_access_control(string &devname)
 				two_tries = true;
 
 				dvsa.length(3);
-				dvsa[0] = CORBA::string_dup(user.c_str());
-				dvsa[1] = CORBA::string_dup(host_ips[0].c_str());
-				dvsa[2] = CORBA::string_dup(devname.c_str());
+				dvsa[0] = Tango::string_dup(user.c_str());
+				dvsa[1] = Tango::string_dup(host_ips[0].c_str());
+				dvsa[2] = Tango::string_dup(devname.c_str());
 
 				din << dvsa;
 

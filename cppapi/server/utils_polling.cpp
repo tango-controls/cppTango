@@ -154,9 +154,9 @@ void Util::polling_configure()
 				send->lvalue.length(1);
 				send->svalue.length(3);
 
-				send->svalue[0] = CORBA::string_dup(dev_list[j]->get_name().c_str());
-				send->svalue[1] = CORBA::string_dup("command");
-				send->svalue[2] = CORBA::string_dup(poll_cmd_list[k].c_str());
+				send->svalue[0] = Tango::string_dup(dev_list[j]->get_name().c_str());
+				send->svalue[1] = Tango::string_dup("command");
+				send->svalue[2] = Tango::string_dup(poll_cmd_list[k].c_str());
 
 //
 // Convert polling period to a number and store polling thread command params
@@ -196,9 +196,9 @@ void Util::polling_configure()
 				send->lvalue.length(1);
 				send->svalue.length(3);
 
-				send->svalue[0] = CORBA::string_dup(dev_list[j]->get_name().c_str());
-				send->svalue[1] = CORBA::string_dup("attribute");
-				send->svalue[2] = CORBA::string_dup(poll_attr_list[k].c_str());
+				send->svalue[0] = Tango::string_dup(dev_list[j]->get_name().c_str());
+				send->svalue[1] = Tango::string_dup("attribute");
+				send->svalue[2] = Tango::string_dup(poll_attr_list[k].c_str());
 
 //
 // Convert polling period to a number and store polling thread command params
