@@ -19,6 +19,12 @@ notifications:
 services:
   - docker
 
+addons:
+  sonarcloud:
+    organization: "tango-controls"
+    token:
+      secure: ${SONAR_TOKEN}
+
 before_install:
   - chmod +x .travis/${OS_TYPE}/before_install.sh
   - .travis/${OS_TYPE}/before_install.sh
@@ -37,6 +43,7 @@ before_script:
 
 script:
   - .travis/${OS_TYPE}/run.sh
+  - sonar-scanner
 
 deploy:
   - provider: script
