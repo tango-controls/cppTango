@@ -6,6 +6,13 @@ docker exec cpp_tango mkdir -p /home/tango/src/build
 
 echo "Run cmake cppTango in $CMAKE_BUILD_TYPE mode"
 echo "Using COVERALLS=$COVERALLS"
+
+TEST_COMMAND="exec ctest -V"
+if [ $COVERALLS = "ON" ]
+then
+    TEST_COMMAND="exec make coveralls"
+fi
+
 docker exec cpp_tango cmake -H/home/tango/src -B/home/tango/src/build -DCOVERALLS=$COVERALLS -DCOVERALLS_MODULE_PATH=/home/tango/coveralls-cmake/cmake -DCMAKE_VERBOSE_MAKEFILE=true -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE
 if [ $? -ne "0" ]
 then
@@ -25,7 +32,8 @@ then
     exit -1
 fi
 echo "Test cppTango"
-docker exec cpp_tango /bin/sh -c 'cd /home/tango/src/build/cpp_test_suite; exec ctest -V'
+echo "TEST_COMMAND=$TEST_COMMAND"
+docker exec cpp_tango /bin/sh -c "cd /home/tango/src/build/cpp_test_suite; $TEST_COMMAND"
 if [ $? -ne "0" ]
 then
     exit -1
