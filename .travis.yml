@@ -1,14 +1,15 @@
+dist: trusty
 sudo: false
 
 language: cpp
 
 env:
   matrix:
-    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=DEBUG
-    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=RELEASE
-    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=DEBUG
-    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=RELEASE
-    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=RELEASE
+    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=DEBUG SONAR_SCANNER=OFF
+    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=RELEASE SONAR_SCANNER=OFF
+    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=DEBUG SONAR_SCANNER=ON
+    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=RELEASE SONAR_SCANNER=OFF
+    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=RELEASE SONAR_SCANNER=OFF
 #    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=DEBUG
 #    - OS_TYPE=win32
 # etc
@@ -43,7 +44,9 @@ before_script:
 
 script:
   - .travis/${OS_TYPE}/run.sh
-  - sonar-scanner
+
+after_success:
+  - test ${SONAR_SCANNER} = "ON" && sonar-scanner
 
 deploy:
   - provider: script
