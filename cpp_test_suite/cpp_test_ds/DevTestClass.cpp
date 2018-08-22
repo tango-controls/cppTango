@@ -538,6 +538,7 @@ void DevTestClass::command_factory()
 					    Tango::DEV_ENCODED,
 					    "void",
 					    "DevEncoded structure to test polling/history"));
+    command_list.push_back(new IOPipeBlob());
 	command_list.push_back(new PollingPoolTst("PollingPoolTst",
 					    Tango::DEV_VOID,
 					    Tango::DEVVAR_STRINGARRAY,
@@ -671,8 +672,8 @@ void DevTestClass::device_factory(const Tango::DevVarStringArray *devlist_ptr) {
 // Create device and add it into the device list
 //
 
-    device_list.push_back(new DevTest(this,
-				      (*devlist_ptr)[i]));
+      string dev_name((*devlist_ptr)[i]);
+      device_list.push_back(new DevTest(this, dev_name));
 
     //
     // Export device to the outside world
