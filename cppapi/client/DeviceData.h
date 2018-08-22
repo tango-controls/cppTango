@@ -38,6 +38,7 @@
  * 																						*
  ***************************************************************************************/
 
+#include "DevicePipe.h"
 
 /**
  * Fundamental type for sending and receiving data from device commands

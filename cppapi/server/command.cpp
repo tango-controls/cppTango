@@ -295,6 +295,14 @@ namespace Tango {
             throw_bad_type("DevEncoded");
     }
 
+void Command::extract(const CORBA::Any &in, Tango::DevPipeBlob *&data)
+{
+    if ((in >>= data) == false)
+    {
+        throw_bad_type("DevPipeBlob");
+    }
+}
+
 //+----------------------------------------------------------------------------
 //
 // method : 		Command::insert()
@@ -663,6 +671,17 @@ namespace Tango {
 
         return out_any;
     }
+
+CORBA::Any *Command::insert(Tango::DevPipeBlob *data)
+{
+    CORBA::Any *out_any;
+    alloc_any(out_any);
+
+    (*out_any) <<= (*data);
+    delete data;
+
+    return out_any;
+}
 
 //+-------------------------------------------------------------------------
 //
