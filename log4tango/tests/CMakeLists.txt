@@ -20,14 +20,14 @@ if(WIN32)
     endif()
 
     add_test("log4tango_test_dyn"       test_log4tango_dyn)
-    add_test("log4tango_benchmark_dyn"  test_bench_dyn)
+#    add_test("log4tango_benchmark_dyn"  test_bench_dyn)
     add_test("log4tango_test_sta"       test_log4tango_sta)
-    add_test("log4tango_benchmark_sta"  test_bench_sta)
+#    add_test("log4tango_benchmark_sta"  test_bench_sta)
 
 else(WIN32)
     add_executable(test_log4tango ${LOG4TANGO_TEST_SOURCES} $<TARGET_OBJECTS:log4tango_objects>)
     add_executable(test_bench ${BENCH_TEST_SOURCES} $<TARGET_OBJECTS:log4tango_objects>)
 
     add_test("log4tango_test"       test_log4tango)
-    add_test("log4tango_benchmark"  test_bench)
+#    add_test("log4tango_benchmark"  test_bench)
 endif(WIN32)
