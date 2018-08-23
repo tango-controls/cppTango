@@ -118,6 +118,7 @@
 	#include <device_3.h>
 	#include <device_4.h>
 	#include <device_5.h>
+#include <device_6.h>
 	#include <command.h>
 	#include <pipedesc.h>
 	#include <pipe.h>

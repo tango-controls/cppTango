@@ -17,6 +17,7 @@ set(SOURCES attrdesc.cpp
             device_3.cpp
             device_4.cpp
             device_5.cpp
+        device_6.cpp
             deviceclass.cpp
             devicelog.cpp
             devintr.cpp
@@ -81,6 +82,7 @@ set(HEADERS attrdesc.h
             device_3.tpp
             device_4.h
             device_5.h
+        device_6.h
             deviceclass.h
             devintr.h
             dintrthread.h

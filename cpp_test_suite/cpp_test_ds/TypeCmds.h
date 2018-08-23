@@ -313,3 +313,13 @@ public:
 
 	Tango::DevLong encoded_cmd_ctr;
 };
+
+struct IODevEnum: public Tango::Command
+{
+    IODevEnum();
+    ~IODevEnum()
+    {};
+
+    virtual bool is_allowed(Tango::DeviceImpl *, const CORBA::Any &);
+    virtual CORBA::Any *execute(Tango::DeviceImpl *, const CORBA::Any &);
+};

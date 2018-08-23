@@ -36,6 +36,8 @@ execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_D
         ../../new_tests/cxx_pipe.cpp
         ../../new_tests/cxx_z00_dyn_cmd.cpp
         ../../new_tests/cxx_nan_inf_in_prop.cpp
+        ../../new_tests/cxx_cmd_inout_enum.cpp
+        ../../new_tests/cxx_misc_devproxy.cpp
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 add_executable(runner $<TARGET_OBJECTS:compare_test_object> ${CMAKE_CURRENT_SOURCE_DIR}/runner.cpp)

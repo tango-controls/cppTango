@@ -1687,3 +1687,23 @@ CORBA::Any *OEncoded::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUS
     }
 }
 #endif
+
+IODevEnum::IODevEnum()
+    :
+    Command("IODevEnum", Tango::CmdArgType::DEV_ENUM, Tango::CmdArgType::DEV_ENUM, "DevEnum", "DevEnum")
+{
+    set_in_enum_labels({"IN Label 1", "IN Label 2", "IN Label 3"});
+    set_out_enum_labels({"OUT Label 1", "OUT Label 2", "OUT Label 3"});
+}
+
+bool IODevEnum::is_allowed(Tango::DeviceImpl *, const CORBA::Any &)
+{
+    return true;
+}
+
+CORBA::Any *IODevEnum::execute(Tango::DeviceImpl *, const CORBA::Any &any)
+{
+    Tango::DevShort in;
+    extract(any, in);
+    return insert(in);
+}

@@ -137,7 +137,8 @@ protected :
     int					user_connect_timeout;
     bool				tango_host_localhost;
 
-    Tango::Device_5_var	device_5;
+    Tango::Device_5_var device_5;
+    Tango::Device_6_var device_6;
 
 public :
 ///@publicsection
@@ -568,6 +569,7 @@ private:
     void omni420_timeout(int,char *);
     DeviceData omni420_except(int,char *,TgRequest &);
     void toIOR(const char*,IOP::IOR&);
+    void resolve_obj_version(const string &corba_name, const CORBA::Object_var &obj);
 };
 
 
