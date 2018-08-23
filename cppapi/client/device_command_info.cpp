@@ -26,7 +26,7 @@
 //===================================================================================================================
 
 #include <tango.h>
-#include <tango/client/device/device_command_info.h>
+#include <device_command_info.h>
 
 namespace Tango
 {
