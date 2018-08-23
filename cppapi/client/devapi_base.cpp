@@ -3415,10 +3415,9 @@ DeviceInfo const &DeviceProxy::info()
 //		command implemented for this TANGO device
 //
 //-----------------------------------------------------------------------------
-
+//TODO make cmd const &
 CommandInfo DeviceProxy::command_query(string cmd)
 {
-    CommandInfo command_info;
     DevCmdInfo_var cmd_info;
     DevCmdInfo_2_var cmd_info_2;
     DevCmdInfo_6_var cmd_info_6;
@@ -3509,7 +3508,7 @@ CommandInfo DeviceProxy::command_query(string cmd)
         }
     }
 
-    return (command_info);
+    assert(false);//should not reach this line
 }
 
 //-----------------------------------------------------------------------------
@@ -3568,7 +3567,6 @@ CommandInfoList *DeviceProxy::get_command_config(vector<string> &cmd_names)
 
 CommandInfoList *DeviceProxy::command_list_query()
 {
-    CommandInfoList *command_info_list = NULL;
     DevCmdInfoList_var cmd_info_list;
     DevCmdInfoList_2_var cmd_info_list_2;
     DevCmdInfoList_6_var cmd_info_list_6;
@@ -3587,7 +3585,7 @@ CommandInfoList *DeviceProxy::command_list_query()
             {
                 case 1:
                     dev = Device::_duplicate(device);
-                cmd_info_list = dev->command_list_query();
+                    cmd_info_list = dev->command_list_query();
 
                     return newCommandInfoList(cmd_info_list);
                 case 2:
@@ -3605,7 +3603,6 @@ CommandInfoList *DeviceProxy::command_list_query()
 
                     return newCommandInfoList(cmd_info_list_6);
                 }
-            }
             ctr = 2;
         }
         catch (CORBA::TRANSIENT &trans)
@@ -3659,7 +3656,7 @@ CommandInfoList *DeviceProxy::command_list_query()
         }
     }
 
-    return (command_info_list);
+    assert(false);
 }
 
 //-----------------------------------------------------------------------------
