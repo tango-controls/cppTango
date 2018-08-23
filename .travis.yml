@@ -24,7 +24,7 @@ before_install:
   - .travis/${OS_TYPE}/before_install.sh
   - docker pull tangocs/mysql:9.2.2
   - docker pull tangocs/tango-cs:latest
-  - git clone -b tango-9-lts https://${CI_USER_TOKEN}@github.com/tango-controls/tango-idl.git idl
+  - git clone -b cppTango-351 https://${CI_USER_TOKEN}@github.com/tango-controls/tango-idl.git idl
   - chmod +x .travis/${OS_TYPE}/run.sh
 
 before_script:

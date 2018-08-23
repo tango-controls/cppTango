@@ -30,6 +30,7 @@
 
 #include <tango.h>
 #include <tango_const.h>
+#include <device_command_info.h>
 #include <apiexcept.h>
 #include <cbthread.h>
 #include <lockthread.h>
@@ -89,28 +90,6 @@ struct LockingThread
 	LockThread		*l_thread;
 };
 
-/**
- * Base structure for command information
- *
- * @headerfile tango.h
- */
-#ifdef GEN_DOC
-typedef struct DevCommandInfo
-#else
-typedef struct _DevCommandInfo
-#endif
-{
-	string 		cmd_name;           ///< The command name
-	long 		cmd_tag;            ///< The command tag
-	long 		in_type;            ///< Input parameter data type
-	long 		out_type;           ///< Output parameter data type
-	string 		in_type_desc;       ///< Input parameter description
-	string 		out_type_desc;      ///< Ouptput parameter description
-
-///@privatesection
-	bool operator==(const _DevCommandInfo &);
-}DevCommandInfo;
-
 
 struct AttributeDimension
 {
@@ -118,32 +97,7 @@ struct AttributeDimension
 	long dim_y;
 };
 
-/**
- * Command information data extension
- *
- * @headerfile tango.h
- * @ingroup Client
- */
-#ifdef GEN_DOC
-typedef struct CommandInfo : public DevCommandInfo
-#else
-typedef struct _CommandInfo : public DevCommandInfo
-#endif
-{
-	Tango::DispLevel disp_level;    ///< The command display level
 
-/// @privatesection
-	friend ostream &operator<<(ostream &,_CommandInfo &);
-	bool operator==(const _CommandInfo &);
-}CommandInfo;
-
-/**
- * A vector of CommandInfo structure
- *
- * @headerfile tango.h
- * @ingroup Client
- */
-typedef vector<CommandInfo> CommandInfoList;
 
 struct _DeviceInfo
 {
