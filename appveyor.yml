@@ -87,8 +87,8 @@ environment:
       MSVCYEAR: "vs2015"
       MSVCABR: "14"
       VC_VER: 14.0
-      PYTHONPATH: c:\Python35-x64\
-      PYTHONPATHOMNI: "/cygdrive/c/Python35-x64/python"
+      PYTHONPATH: c:\Python36-x64\
+      PYTHONPATHOMNI: "/cygdrive/c/Python36-x64/python"
       BOOST_ROOT: C:\Libraries\boost_1_63_0
       ZMQ_BASE: C:\projects\libzmq
       IDL_BASE: C:\projects\tangoidl
@@ -129,10 +129,6 @@ init:
   - cmd: if %ARCH%==x64-msvc10 7z -y x omniorb-4.2.1_%ARCH%_py33.zip -oC:\projects\omniorb\
   - cmd: if %ARCH%==x64-msvc12 7z -y x omniorb-4.2.1_%ARCH%_py33.zip -oC:\projects\omniorb\
   - cmd: if %ARCH%==x64-msvc14 7z -y x omniorb-4.2.1_%ARCH%_py36.zip -oC:\projects\omniorb\
-  # Lines added just for tests
-  - cmd: if %ARCH%==x64-msvc14 set Path=C:\Python36-x64;%Path%
-  - cmd: echo %Path%
-  - cmd: C:\projects\omniorb\bin\x86_win32\omniidl.exe -V
   #Pthread-Win32
   - cmd: cd "C:\projects\"
   - cmd: md pthreads-win32
@@ -179,7 +175,7 @@ install:
   - cmd: set IDL_BASE=%IDL_BIN%
   - cmd: set OMNI_BASE=C:/projects/omniorb/
   - cmd: set PTHREAD_WIN=C:/projects/pthreads-win32/
-  - cmd: if %ARCH%==x64-msvc14 set path=%path%;%PYTHONPATH%
+  - cmd: if %ARCH%==x64-msvc14 set path=%PYTHONPATH%;%path%
   #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE
   #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE
   - cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DIDL_BASE="%IDL_BASE%" -DOMNI_BASE="%OMNI_BASE%" -DZMQ_BASE="%ZMQ_BASE%" -DPTHREAD_WIN=%PTHREAD_WIN%
