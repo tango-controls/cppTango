@@ -122,14 +122,15 @@ init:
   - if %ARCH%==win32-msvc10 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py33.zip
   - if %ARCH%==x64-msvc10 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py33.zip
   - if %ARCH%==x64-msvc12 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py33.zip
-  - if %ARCH%==x64-msvc14 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py35.zip
+  - if %ARCH%==x64-msvc14 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py36.zip
   - cmd: if %ARCH%==win32-msvc9 7z -y x omniorb-4.2.1_%ARCH%_py27.zip -oC:\projects\omniorb\
   - cmd: if %ARCH%==x64-msvc9 7z -y x omniorb-4.2.1_%ARCH%_py27.zip -oC:\projects\omniorb\
   - cmd: if %ARCH%==win32-msvc10 7z -y x omniorb-4.2.1_%ARCH%_py33.zip -oC:\projects\omniorb\
   - cmd: if %ARCH%==x64-msvc10 7z -y x omniorb-4.2.1_%ARCH%_py33.zip -oC:\projects\omniorb\
   - cmd: if %ARCH%==x64-msvc12 7z -y x omniorb-4.2.1_%ARCH%_py33.zip -oC:\projects\omniorb\
-  - cmd: if %ARCH%==x64-msvc14 7z -y x omniorb-4.2.1_%ARCH%_py35.zip -oC:\projects\omniorb\
+  - cmd: if %ARCH%==x64-msvc14 7z -y x omniorb-4.2.1_%ARCH%_py36.zip -oC:\projects\omniorb\
   # Lines added just for tests
+  - cmd: if %ARCH%==x64-msvc14 set Path=C:\Python36-x64;%Path%
   - cmd: echo %Path%
   - cmd: C:\projects\omniorb\bin\x86_win32\omniidl.exe -V
   #Pthread-Win32
