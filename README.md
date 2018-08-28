@@ -9,7 +9,7 @@
 
 [![release](https://img.shields.io/github/release/tango-controls/cppTango.svg?style=flat)](https://github.com/tango-controls/cppTango/releases/9.3.0)
 
-[![License](https://img.shields.io/badge/license-LGPL--3.0-blue.svg)](https://github.com/tango-controls/cppTango/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-LGPL--3.0-orange.svg)](https://github.com/tango-controls/cppTango/blob/master/LICENSE)
 
 ## SonarCloud.io
 
