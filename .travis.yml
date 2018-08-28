@@ -1,14 +1,15 @@
+dist: trusty
 sudo: false
 
 language: cpp
 
 env:
   matrix:
-    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=DEBUG COVERALLS=OFF
-    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=RELEASE COVERALLS=OFF
-    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=Debug COVERALLS=ON
-    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=RELEASE COVERALLS=OFF
-    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=RELEASE COVERALLS=OFF
+    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=DEBUG SONAR_SCANNER=OFF COVERALLS=OFF
+    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=RELEASE SONAR_SCANNER=OFF COVERALLS=OFF
+    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=Debug SONAR_SCANNER=ON COVERALLS=ON
+    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=RELEASE SONAR_SCANNER=OFF COVERALLS=OFF
+    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=RELEASE SONAR_SCANNER=OFF COVERALLS=OFF
 #    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=DEBUG
 #    - OS_TYPE=win32
 # etc
@@ -18,6 +19,12 @@ notifications:
 
 services:
   - docker
+
+addons:
+  sonarcloud:
+    organization: "tango-controls"
+    token:
+      secure: ${SONAR_TOKEN}
 
 before_install:
   - docker pull tangocs/mysql:9.2.2
@@ -38,7 +45,10 @@ before_script:
 
 script:
   - .travis/${OS_TYPE}/run.sh
-  - .travis/test.sh
+  - .travis/test.sh COVERALLS=OFF
+
+after_success:
+  - test ${SONAR_SCANNER} = "ON" && sonar-scanner
 
 deploy:
   - provider: script
