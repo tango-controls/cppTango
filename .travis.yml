@@ -51,7 +51,7 @@ script:
   - .travis/test.sh COVERALLS=OFF
 
 after_success:
-  - test ${COVERALLS} = "ON" && gcovr -r . -x --object-directory=/home/tango/src/build > report.xml
+  - test ${COVERALLS} = "ON" && gcovr -r . -x --object-directory=/home/tango/src/build > report.xml && pwd && cat report.xml
   - test ${SONAR_SCANNER} = "ON" && sonar-scanner
 
 deploy:
