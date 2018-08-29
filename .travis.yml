@@ -42,14 +42,15 @@ before_script:
   - docker run --name cpp_tango -e TANGO_HOST=${TANGO_HOST} -e BINTRAY_USER_NAME=tango-ci -e BINTRAY_API_KEY=${CI_BINTRAY_API_KEY} -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} --link tango_cs:tango_cs -v `pwd`:/home/tango/src -v `pwd`/idl:/home/tango/idl -v `pwd`/cppzmq:/home/tango/cppzmq -v `pwd`/coveralls-cmake:/home/tango/coveralls-cmake -dit cpp_tango
   - .travis/install_tango_idl.sh
   - .travis/install_cppzmq.sh
+#work around gcov ignored by sonar
+  - sudo mkdir /home/tango && sudo mkdir /home/tango/src && sudo mount --bind `pwd` /home/tango/src
 
 script:
   - .travis/${OS_TYPE}/run.sh
   - .travis/test.sh COVERALLS=OFF
 
 after_success:
-  - test ${COVERALLS} = "ON" && .travis/coverage.sh
-  - test ${SONAR_SCANNER} = "ON" && sonar-scanner
+- test ${SONAR_SCANNER} = "ON" && git fetch --unshallow --quiet && cd /home/tango/src && sonar-scanner
 
 deploy:
   - provider: script

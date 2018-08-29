@@ -6,7 +6,6 @@
 
 [![Build Status](https://travis-ci.org/tango-controls/cppTango.svg?branch=tango-9-lts)](https://travis-ci.org/tango-controls/cppTango)
 [![Build status](https://ci.appveyor.com/api/projects/status/avaox4tnjm7vff13/branch/tango-9-lts?svg=true)](https://ci.appveyor.com/project/bourtemb/cpptango-tt3w8/branch/tango-9-lts)
-[![Coverage Status](https://coveralls.io/repos/github/tango-controls/cppTango/badge.svg?branch=master)](https://coveralls.io/github/tango-controls/cppTango?branch=master)
 
 [![release](https://img.shields.io/github/release/tango-controls/cppTango.svg?style=flat)](https://github.com/tango-controls/cppTango/releases/9.3.0)
 
@@ -27,7 +26,7 @@
 
 
 [![Lines of code](https://sonarcloud.io/api/project_badges/measure?project=org.tango-controls%3Acpp-tango%3Atango-9-lts&metric=ncloc)](https://sonarcloud.io/dashboard?id=org.tango-controls%3Acpp-tango%3Atango-9-lts)
-
+[![Lines of code](https://sonarcloud.io/api/project_badges/measure?project=org.tango-controls%3Acpp-tango%3Atango-9-lts&metric=coverage)](https://sonarcloud.io/dashboard?id=org.tango-controls%3Acpp-tango%3Atango-9-lts)
 
 # TANGO distributed control system - shared library
 

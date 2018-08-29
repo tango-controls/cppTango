@@ -14,7 +14,7 @@ RUN apt-get install -y curl lsb-release
 
 RUN apt-get install -y omniidl libomniorb4-dev libcos4-dev libomnithread3-dev libzmq3-dev
 
-RUN apt-get update && apt-get install -y curl gcovr
+RUN apt-get update && apt-get install -y curl
 
 RUN groupadd -g "$APP_GID" tango
 
