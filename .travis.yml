@@ -25,8 +25,6 @@ addons:
     organization: "tango-controls"
     token:
       secure: ${SONAR_TOKEN}
-  apt:
-    update: true
 
 before_install:
   - docker pull tangocs/mysql:9.2.2
@@ -34,7 +32,6 @@ before_install:
   - git clone https://github.com/JoakimSoderberg/coveralls-cmake.git
   - git clone -b v4.2.2 https://${CI_USER_TOKEN}@github.com/zeromq/cppzmq.git cppzmq
   - git clone -b tango-9-lts https://${CI_USER_TOKEN}@github.com/tango-controls/tango-idl.git idl
-  - sudo apt-get install -y gcovr
 
 before_script:
   - docker run --name mysql_db -e MYSQL_ROOT_PASSWORD=root -d tangocs/mysql:9.2.2 --sql-mode=""
@@ -51,7 +48,7 @@ script:
   - .travis/test.sh COVERALLS=OFF
 
 after_success:
-  - test ${COVERALLS} = "ON" && gcovr -r . -x --object-directory=/home/tango/src/build > report.xml
+  - test ${COVERALLS} = "ON" && .travis/coverage.sh
   - test ${SONAR_SCANNER} = "ON" && sonar-scanner
 
 deploy:
