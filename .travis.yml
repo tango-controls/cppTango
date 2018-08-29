@@ -50,7 +50,7 @@ script:
   - .travis/test.sh COVERALLS=OFF
 
 after_success:
-- test ${SONAR_SCANNER} = "ON" && git fetch --unshallow --quiet && cd /home/tango/src && sonar-scanner
+- test ${SONAR_SCANNER} = "ON" && .travis/sonar.sh
 
 deploy:
   - provider: script
