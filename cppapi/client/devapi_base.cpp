@@ -5710,7 +5710,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string> &attr_strin
             ApiUtil *au = ApiUtil::instance();
             ci.cpp_clnt(au->get_client_pid());
 
-            if (version == 5)
+            if (version >= 5)
             {
                 Device_5_var dev = Device_5::_duplicate(device_5);
                 attr_value_list_5 = dev->read_attributes_5(attr_list, local_source, ci);
