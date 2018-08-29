@@ -51,7 +51,7 @@ script:
   - .travis/test.sh COVERALLS=OFF
 
 after_success:
-  - test ${COVERALLS} = "ON" && gcovr -r `pwd`/cppapi -g --xml --object-directory=`pwd`/build --verbose --output report.xml && cat report.xml
+  - test ${COVERALLS} = "ON" && .travis/coverage.sh
   - test ${SONAR_SCANNER} = "ON" && sonar-scanner
 
 deploy:
