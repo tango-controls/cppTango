@@ -4873,7 +4873,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
                 ApiUtil *au = ApiUtil::instance();
                 ci.cpp_clnt(au->get_client_pid());
 
-                if (version == 5)
+                if (version >= 5)
                 {
                     Device_5_var dev = Device_5::_duplicate(device_5);
                     dev->set_attribute_config_5(attr_config_list_5, ci);
