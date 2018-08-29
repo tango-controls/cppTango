@@ -50,7 +50,7 @@ script:
   - .travis/test.sh COVERALLS=OFF
 
 after_success:
-- test ${SONAR_SCANNER} = "ON" && .travis/sonar.sh
+  - test ${SONAR_SCANNER} = "ON" && .travis/sonar.sh
 
 deploy:
   - provider: script
