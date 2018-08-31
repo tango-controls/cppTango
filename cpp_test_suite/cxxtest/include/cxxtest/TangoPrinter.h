@@ -27,6 +27,8 @@
 #include <string>
 #include <string.h>
 #include <map>
+#include <config.h>
+#include <cstdlib>
 
 // Tango exceptions handling
 //#undef _TS_CATCH_ABORT
@@ -761,6 +763,7 @@ public:
         params_tmp["device1"] = param_desc("--device1=", "device1 name, e.g. test/device/1");
         params_tmp["device2"] = param_desc("--device2=", "device2 name, e.g. test/device/2");
         params_tmp["device3"] = param_desc("--device3=", "device3 name, e.g. test/device/3");
+            params_tmp["device20"] = param_desc("--device20=", "device20 name, e.g. test2/debian8/20");
         params_tmp["fulldsname"] = param_desc("--fulldsname=", "full device server name, e.g. devTest/myserver");
         params_tmp["clienthost"] = param_desc("--clienthost=",
                                               "client host's fully qualified domain name, e.g. mypc.myinstitute.com (small caps)");
@@ -782,6 +785,16 @@ public:
         params_tmp["attributealias"] = param_desc("--attributealias=", "Short_attr alias"); // Short_attr alias
         return params_tmp;
     }
+
+        static void start_server(const std::string& instance){
+            std::string command = Tango::kStartServerCmd;
+            command += instance;
+            system(command.c_str());
+        }
+
+        static void kill_server() {
+            system(Tango::kKillServerCmd.c_str());
+        }
 
 private:
     class Adapter: public OutputStream
