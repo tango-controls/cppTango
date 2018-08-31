@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-TEST_COMMAND="exec ctest"
+TEST_COMMAND="exec ctest --output-on-failure"
 if [ $COVERALLS = "ON" ]
 then
     TEST_COMMAND="exec make coveralls"
