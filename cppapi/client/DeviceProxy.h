@@ -96,6 +96,7 @@ private :
 
 	friend class AttributeProxy;
 
+DevPipeData createDevPipeData(DevicePipe &dev_pipe) const;
 protected :
 /// @privatesection
 	virtual string get_corba_name(bool);
@@ -123,14 +124,15 @@ private:
     class DeviceProxyExt
     {
     public:
-        DeviceProxyExt() {};
+        DeviceProxyExt()
+        {};
 
         bool            nethost_alias;
         string          orig_tango_host;
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DeviceProxyExt>  ext_proxy;
+    unique_ptr<DeviceProxyExt> ext_proxy;
 #else
 	DeviceProxyExt		        *ext_proxy;		// Class extension
 #endif
@@ -482,7 +484,7 @@ public :
  * @throws NonSupportedFeature, ConnectionFailed, CommunicationFailed, DevFailed from device
  */
 	virtual vector<DeviceDataHistory> *command_history(const char *cmd_name,int depth)
-			{string str(cmd_name);return command_history(str,depth);}
+    {string str(cmd_name);return command_history(str,depth);}
 //@}
 
 /** @name Synchronous attribute related methods */
@@ -822,7 +824,7 @@ public :
  * @throws NonSupportedFeature, ConnectionFailed, CommunicationFailed, DevFailed from device
  */
 	virtual vector<DeviceAttributeHistory> *attribute_history(const char *att_name,int depth)
-			{string str(att_name);return attribute_history(str,depth);}
+    {string str(att_name);return attribute_history(str,depth);}
 //@}
 
 /** @name Pipe related methods */
@@ -1164,7 +1166,7 @@ public :
  * @return Pending asynchronous request number
  */
 	virtual long pending_asynch_call(asyn_req_type req)
-			{if (req == POLLING)return pasyn_ctr;
+    {if (req == POLLING)return pasyn_ctr;
 			else if (req==CALL_BACK) return pasyn_cb_ctr;
 			else return (pasyn_ctr + pasyn_cb_ctr);}
 //@}
@@ -1225,7 +1227,7 @@ public :
  * @return The command polling period
  */
 	virtual int get_command_poll_period(const char *cmd_name)
-			{string tmp(cmd_name);return get_command_poll_period(tmp);}
+    {string tmp(cmd_name);return get_command_poll_period(tmp);}
 /**
  * Get attribute polling period
  *
@@ -1244,7 +1246,7 @@ public :
  * @return The attribute polling period
  */
 	virtual int get_attribute_poll_period(const char *att_name)
-			{string tmp(att_name);return get_attribute_poll_period(tmp);}
+    {string tmp(att_name);return get_attribute_poll_period(tmp);}
 /**
  * Get polling status
  *

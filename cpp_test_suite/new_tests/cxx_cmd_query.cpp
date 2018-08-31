@@ -545,8 +545,16 @@ public:
             "Lg[0] = Tango lib release - Lg[1] = Device IDL release\n"
             "Lg[2] = Subscriber HWM - Lg[3] = Multicast rate\n"
             "Lg[4] = Multicast IVL - Lg[5] = ZMQ release");
-	}
+    }
 
+    void test_command_IOPipeBlob_query(void)
+    {
+        CommandInfo info;
+        TS_ASSERT_THROWS_NOTHING(info = device1->command_query("IOPipeBlob"));
+
+        TS_ASSERT_EQUALS(Tango::DEV_PIPE_BLOB, info.in_type);
+        TS_ASSERT_EQUALS(Tango::DEV_PIPE_BLOB, info.out_type);
+    }
 };
 #undef cout
 #endif // CmdQueryTestSuite_h
