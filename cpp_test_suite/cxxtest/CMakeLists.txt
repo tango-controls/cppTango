@@ -7,11 +7,6 @@ macro(CXX_GENERATE_TEST name)
             ../../new_tests/${name}.cpp
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
-add_executable(runner $<TARGET_OBJECTS:compare_test_object> ${CMAKE_CURRENT_SOURCE_DIR}/runner.cpp)
-target_include_directories(runner PUBLIC include)
-target_link_libraries(runner PUBLIC tango ${CMAKE_DL_LIBS})
-target_compile_definitions(runner PUBLIC "-DVALGRIND -D_PTHREADS -D_REENTRANT")
-
     add_executable(${name} $<TARGET_OBJECTS:compare_test_object> ${name}.cpp)
     target_include_directories(${name} PRIVATE include ${CMAKE_CURRENT_BINARY_DIR}/include)
     target_link_libraries(${name} PRIVATE tango ${CMAKE_THREAD_LIBS_INIT})
