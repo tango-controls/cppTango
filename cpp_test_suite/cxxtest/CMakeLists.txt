@@ -54,7 +54,7 @@ add_test("CXX::runner" runner
         --fulldsname=${SERV_NAME}/${INST_NAME}
         --serverhost=${HOST_NAME}
         --clienthost=${HOST_NAME}
-        --serverversion=5
+        --serverversion=6
         --docurl=http://www.tango-controls.org
         --devtype=TestDevice
         --dbserver=sys/database/2

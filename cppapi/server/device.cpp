@@ -123,7 +123,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, string &d_name)
       min_poll_period(0), run_att_conf_loop(true), force_alarm_state(false), with_fwd_att(false),
       event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(Tango_nullptr)
 {
-    desc = "A Tango device";
+    desc = "A TANGO device";
     device_state = Tango::UNKNOWN;
     device_status = StatusNotSet;
 

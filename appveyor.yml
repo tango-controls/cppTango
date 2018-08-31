@@ -87,8 +87,8 @@ environment:
       MSVCYEAR: "vs2015"
       MSVCABR: "14"
       VC_VER: 14.0
-      PYTHONPATH: c:\Python35-x64\
-      PYTHONPATHOMNI: "/cygdrive/c/Python35-x64/python"
+      PYTHONPATH: c:\Python36-x64\
+      PYTHONPATHOMNI: "/cygdrive/c/Python36-x64/python"
       BOOST_ROOT: C:\Libraries\boost_1_63_0
       ZMQ_BASE: C:\projects\libzmq
       IDL_BASE: C:\projects\tangoidl
@@ -110,35 +110,30 @@ init:
   - cmd: cd "C:\projects\"
   - cmd: md zeromq
   - cmd: cd "C:\projects\"
-  - if %ARCH%==win32-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/kif9t1ni9dorv7ai/artifacts/zmq-4.0.5_%ARCH%.zip
-  - if %ARCH%==x64-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/v08rh5ojx3uljbm0/artifacts/zmq-4.0.5_%ARCH%.zip
-  - if %ARCH%==win32-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/bfw1w51dmwb4t1s8/artifacts/zmq-4.0.5_%ARCH%.zip
-  - if %ARCH%==x64-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/dv6koti648n78wru/artifacts/zmq-4.0.5_%ARCH%.zip
-  - if %ARCH%==x64-msvc12 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/92i5i0466vrsf8uf/artifacts/zmq-4.0.5_%ARCH%.zip
-  - if %ARCH%==x64-msvc14 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/jlsd4d38c425kumq/artifacts/zmq-4.0.5_%ARCH%.zip
+  - appveyor DownloadFile https://github.com/tango-controls/zmq-windows-ci/releases/download/4.0.5/zmq-4.0.5_%ARCH%.zip
   - cmd: 7z -y x zmq-4.0.5_%ARCH%.zip -oC:\projects\zeromq\
   #- cmd: move C:\projects\zeromq\lib\Release\libzmq*mt-4*.lib C:\projects\zeromq\lib\Release\libzmq.lib
   # OmniOrb
   - cmd: cd "C:\projects\"
   - cmd: md omniorb
   - cmd: cd "C:\projects\"
-  - if %ARCH%==win32-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/b3j87c59nps33ga8/artifacts/omniorb-4.2.1_%ARCH%.zip
-  - if %ARCH%==x64-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/t0c9a59fr0ixb6to/artifacts/omniorb-4.2.1_%ARCH%.zip
-  - if %ARCH%==win32-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/0ywhsy2wnmfw99ia/artifacts/omniorb-4.2.1_%ARCH%.zip
-  - if %ARCH%==x64-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/x2sr2c1i0f7hy1cg/artifacts/omniorb-4.2.1_%ARCH%.zip
-  - if %ARCH%==x64-msvc12 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/2e8wjs2aalg6cryl/artifacts/omniorb-4.2.1_%ARCH%.zip
-  - if %ARCH%==x64-msvc14 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/ry9yevfyjddf6j2e/artifacts/omniorb-4.2.1_%ARCH%.zip
-  - cmd: 7z -y x omniorb-4.2.1_%ARCH%.zip -oC:\projects\omniorb\
+  - if %ARCH%==win32-msvc9 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py27.zip
+  - if %ARCH%==x64-msvc9 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py27.zip
+  - if %ARCH%==win32-msvc10 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py33.zip
+  - if %ARCH%==x64-msvc10 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py33.zip
+  - if %ARCH%==x64-msvc12 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py33.zip
+  - if %ARCH%==x64-msvc14 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py36.zip
+  - cmd: if %ARCH%==win32-msvc9 7z -y x omniorb-4.2.1_%ARCH%_py27.zip -oC:\projects\omniorb\
+  - cmd: if %ARCH%==x64-msvc9 7z -y x omniorb-4.2.1_%ARCH%_py27.zip -oC:\projects\omniorb\
+  - cmd: if %ARCH%==win32-msvc10 7z -y x omniorb-4.2.1_%ARCH%_py33.zip -oC:\projects\omniorb\
+  - cmd: if %ARCH%==x64-msvc10 7z -y x omniorb-4.2.1_%ARCH%_py33.zip -oC:\projects\omniorb\
+  - cmd: if %ARCH%==x64-msvc12 7z -y x omniorb-4.2.1_%ARCH%_py33.zip -oC:\projects\omniorb\
+  - cmd: if %ARCH%==x64-msvc14 7z -y x omniorb-4.2.1_%ARCH%_py36.zip -oC:\projects\omniorb\
   #Pthread-Win32
   - cmd: cd "C:\projects\"
   - cmd: md pthreads-win32
   - cmd: cd "C:\projects\"
-  - if %ARCH%==win32-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/7aj99tp6e6fvron0/artifacts/pthreads-win32-2.9.1_win32-msvc9.zip
-  - if %ARCH%==x64-msvc9 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/pgefsid2t7ma16j6/artifacts/pthreads-win32-2.9.1_x64-msvc9.zip
-  - if %ARCH%==win32-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/3hhh3rfhif1lgw0f/artifacts/pthreads-win32-2.9.1_win32-msvc10.zip
-  - if %ARCH%==x64-msvc10 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/g6g73i5paldagoc4/artifacts/pthreads-win32-2.9.1_x64-msvc10.zip
-  - if %ARCH%==x64-msvc12 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/w4vojpste8j6l823/artifacts/pthreads-win32-2.9.1_x64-msvc12.zip
-  - if %ARCH%==x64-msvc14 appveyor DownloadFile https://ci.appveyor.com/api/buildjobs/6tson2rjxm3vgwra/artifacts/pthreads-win32-2.9.1_x64-msvc14.zip
+  - appveyor DownloadFile https://github.com/tango-controls/Pthread_WIN32/releases/download/2.9.1/pthreads-win32-2.9.1_%ARCH%.zip
   - cmd: 7z -y x pthreads-win32-2.9.1_%ARCH%.zip -oC:\projects\pthreads-win32\
   #VS2008 patch
   - cmd: cd "C:\projects\"
@@ -180,7 +175,7 @@ install:
   - cmd: set IDL_BASE=%IDL_BIN%
   - cmd: set OMNI_BASE=C:/projects/omniorb/
   - cmd: set PTHREAD_WIN=C:/projects/pthreads-win32/
-  - cmd: if %ARCH%==x64-msvc14 set path=%path%;%PYTHONPATH%
+  - cmd: if %ARCH%==x64-msvc14 set path=%PYTHONPATH%;%path%
   #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE
   #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE
   - cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DIDL_BASE="%IDL_BASE%" -DOMNI_BASE="%OMNI_BASE%" -DZMQ_BASE="%ZMQ_BASE%" -DPTHREAD_WIN=%PTHREAD_WIN%
