@@ -285,7 +285,7 @@ public:
         TS_ASSERT_THROWS_NOTHING(att_list = device->get_attribute_list());
 
         cout << "att_list size = " << att_list->size() << endl;
-        TS_ASSERT_EQUALS(103, att_list->size());
+        TS_ASSERT_EQUALS(102, att_list->size());
 //		assert ( (*att_list)[0] == "Short_attr");
 //		assert ( (*att_list)[1] == "Long_attr");
 //		assert ( (*att_list)[21] == "String_attr_w");
