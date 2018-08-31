@@ -60,7 +60,7 @@ deploy:
     on:
       tags: true
 
-after-scrhttps://sonarcloud.io/static/cpp/build-wrapper-linux-x8664.zipipt:
+after-script:
   - docker stop cpp_tango
   - docker rm cpp_tango
   - docker stop tango_cs
