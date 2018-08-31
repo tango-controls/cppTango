@@ -91,7 +91,7 @@ public:
 
   /**
    * Streams in a Initiator. Just a trick to return a ref to self.
-   * @param i The log initiator
+   *
    * @returns A reference to itself.
    **/
   inline LOG4TANGO_EXPORT LoggerStream& operator<< (LOG4TANGO_UNUSED(LogInitiator& i)) {
@@ -101,7 +101,7 @@ public:
   /**
    * Streams in a Separator.Sends the contents of the stream buffer
    * to the Logger with set level and empties the buffer.
-   * @param s The log separator
+   *
    * @returns A reference to itself.
    **/
   inline LOG4TANGO_EXPORT LoggerStream& operator<< (LOG4TANGO_UNUSED(LogSeparator& s)) {
@@ -112,7 +112,7 @@ public:
   /**
    * Streams in a ls_manipulator. Sends the contents of the stream buffer
    * to the Logger with set level and empties the buffer.
-   * @param endoflog The log terminator
+   *
    * @returns A reference to itself.
    **/
   inline LOG4TANGO_EXPORT LoggerStream& operator<< (LOG4TANGO_UNUSED(ls_terminator endoflog)) {
