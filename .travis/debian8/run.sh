@@ -13,4 +13,4 @@ then
     exit -1
 fi
 
-docker exec cpp_tango /home/tango/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output make -C /home/tango/src/build -j 2
+docker exec cpp_tango /home/tango/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir /home/tango/src/bw-output make -C /home/tango/src/build -j 2
