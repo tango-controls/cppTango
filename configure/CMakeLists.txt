@@ -1,8 +1,15 @@
 include(FindPkgConfig)
+include(FindDoxygen)
+include(GNUInstallDirs)
 
 if(NOT CMAKE_BUILD_TYPE)
-    message("No build type specified - default is Release")
-    set(CMAKE_BUILD_TYPE Release)
+    message("No build type specified - default is RELEASE")
+    set(CMAKE_BUILD_TYPE RELEASE)
+endif()
+
+if(NOT TANGO_DEVICE_SERVER_PATH)
+    #TODO windows
+    set(TANGO_DEVICE_SERVER_PATH ${CMAKE_INSTALL_FULL_BINDIR})
 endif()
 
 if(CPPZMQ_BASE)
@@ -109,7 +116,7 @@ if(PTHREAD_WIN)
     message("Using PTHREAD_WIN=${PTHREAD_WIN}")
     add_definitions(-DHAVE_PTHREAD_NP_H)
     set(PTHREAD_WIN_PKG_INCLUDE_DIRS ${PTHREAD_WIN}/include)
-    
+
     if (CMAKE_BUILD_TYPE STREQUAL "Debug")
         set(PTHREAD_WIN_PKG_LIBRARIES_DYN "pthreadVC2d.lib")
         set(PTHREAD_WIN_PKG_LIBRARIES_STA "pthreadVC2-sd.lib")
@@ -173,7 +180,7 @@ if(NOT WIN32)
     #setup for GNU CXX compiler
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         message("found GNU compiler ...")
-        if(CMAKE_BUILD_TYPE MATCHES Release)
+        if(CMAKE_BUILD_TYPE MATCHES RELEASE)
             message("setup for release build ...")
             add_definitions(-D_FORTIFY_SOURCE=2)
         else()
@@ -183,3 +190,4 @@ if(NOT WIN32)
     endif()
 endif()
 include(GNUInstallDirs)
+include(configure/coveralls.cmake)
