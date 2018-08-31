@@ -5,7 +5,6 @@ macro(CXX_GENERATE_TEST name)
     execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
             -o ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cpp
             ../../new_tests/${name}.cpp
-            ../../new_tests/cxx_nan_inf_in_prop.cpp
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
     if(${FAILED})
@@ -78,7 +77,7 @@ CXX_GENERATE_TEST(cxx_old_poll)
 CXX_GENERATE_TEST(cxx_server_event)
 CXX_GENERATE_TEST(cxx_reconnection_zmq)
 CXX_GENERATE_TEST(cxx_stateless_subscription)
-
+CXX_GENERATE_TEST(cxx_nan_inf_in_prop)
 
 #utilities
 configure_file(bin/start_server.sh.cmake    ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/start_server.sh @ONLY)
