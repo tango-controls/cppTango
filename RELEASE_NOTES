@@ -1,3 +1,8 @@
+9.4.0 [UNRELEASED]
+==================
+
+1. Event system refactoring
+
 9.3.2 [UNRELEASED]
 ==================
 1. Add Tango::string_free and fix memory leak in zmq_event_subscription_change() (#457,#460)
