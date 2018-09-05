@@ -394,13 +394,16 @@ public:
 		this->get_ext()->in_enum_labels = v;
 	}
 
-/**
- * Set in_enum_labels from vector rvalue
- */
-	void set_in_enum_labels(vector<string> &&v)
-	{
-		this->get_ext()->in_enum_labels = move(v);
-	}
+
+#ifndef _TG_WINDOWS_
+   /**
+    * Set in_enum_labels from vector rvalue
+    */
+    void set_in_enum_labels(vector<string> &&v)
+    {
+        this->get_ext()->in_enum_labels = move(v);
+    }
+#endif
 
 	/**
  * Set in_enum_labels from vector ref
@@ -410,6 +413,7 @@ public:
 		this->get_ext()->out_enum_labels = v;
 	}
 
+#ifndef _TG_WINDOWS_
 /**
  * Set in_enum_labels from vector rvalue
  */
@@ -417,6 +421,7 @@ public:
 	{
 		this->get_ext()->out_enum_labels = move(v);
 	}
+#endif
 
 /**@name Extract methods.
  * All these methods extract data from the CORBA Any object received as

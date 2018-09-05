@@ -64,7 +64,12 @@ public:
         idl_version = 6;
     }
 
+#ifndef _TG_WINDOWS_
     virtual ~Device_6Impl() = default;
+#else
+    virtual ~Device_6Impl(){};
+#endif
+
 
     /**
      *
