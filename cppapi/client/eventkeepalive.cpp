@@ -1469,7 +1469,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 
 					event_data = new FwdEventData(epos->second.device,
 									domain_name,
-									epos->second.event_name,
+									ev_name,
 									da_copy,
 									err);
 				}
@@ -1477,7 +1477,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 				{
 					event_data = new FwdEventData(epos->second.device,
 									domain_name,
-									epos->second.event_name,
+									ev_name,
 									da,
 									err);
 				}
