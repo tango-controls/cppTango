@@ -1046,9 +1046,8 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
     string loc_obj_name(obj_name);
     transform(loc_obj_name.begin(), loc_obj_name.end(), loc_obj_name.begin(), ::tolower);
 
-    create_full_event_name(device_impl, event_type, loc_obj_name, intr_change);
-
-    ctr_event_name = ctr_event_name + local_event_type;
+    event_name = create_full_event_name(device_impl, event_type, loc_obj_name, intr_change);
+    ctr_event_name = create_full_event_name(device_impl, local_event_type, loc_obj_name, intr_change);
 
 //
 // Create zmq messages
@@ -1568,32 +1567,27 @@ ZmqEventSupplier::create_full_event_name(DeviceImpl *device_impl,
                                          const string &obj_name_lower,
                                          bool intr_change)
 {
-    event_name = fqdn_prefix;
+    string full_event_name = fqdn_prefix;
 
-    int size = event_name.size();
-    if (event_name[size - 1] == '#')
+    int size = full_event_name.size();
+    if (full_event_name[size - 1] == '#')
     {
-        event_name.erase(size - 1);
+        full_event_name.erase(size - 1);
     }
 
-    event_name = event_name + device_impl->get_name_lower();
+    full_event_name = full_event_name + device_impl->get_name_lower();
     if (intr_change == false)
     {
-        event_name = event_name + '/' + obj_name_lower;
+        full_event_name = full_event_name + '/' + obj_name_lower;
     }
     if (Util::_FileDb == true || Util::_UseDb == false)
     {
-        event_name = event_name + MODIFIER_DBASE_NO;
+        full_event_name = full_event_name + MODIFIER_DBASE_NO;
     }
-    event_name = event_name + '.';
+    full_event_name = full_event_name + '.';
+    full_event_name = full_event_name + event_type;
 
-    //this field is in push_event
-    //TODO remove this field and replace with full_event_name
-    ctr_event_name = event_name;
-
-    event_name = event_name + event_type;
-
-    return event_name;
+    return full_event_name;
 }
 
 //+------------------------------------------------------------------------------------------------------------------

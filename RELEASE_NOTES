@@ -6,6 +6,7 @@
 4. Fix some event compatibility issues with device server <= Tango 8 (#456)
 5. Fix event field in EventData structure passed to user's callback (broken in Tango 9.3.0 and 9.3.1)
 6. Fix attribute name in EventData structure passed to user's callback for Attribute Config events
+7. Fix a bug occurring when an event is pushed at the same time as an event (re)subscription occurs (#484)
 
 9.3.1
 =====
