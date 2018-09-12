@@ -1,5 +1,6 @@
-9.3.2 [UNRELEASED]
-==================
+9.3.2
+=====
+
 1. Add Tango::string_free and fix memory leak in zmq_event_subscription_change() (#457,#460)
 2. Fix bug impacting device servers using dynamic attributes (#458,#459)
 3. Fix reconnection issues when a client subscribes to several events (#455)
@@ -8,6 +9,9 @@
 6. Fix attribute name in EventData structure passed to user's callback for Attribute Config events
 7. Fix a bug occurring when an event is pushed at the same time as an event (re)subscription occurs (#484, #485)
 8. Fix event name (EventData.event) passed to client's Callback after Tango 9 attribute reconnection (#486)
+9. Integrate Coveralls and Sonar
+10. Tests: Split runner executable into several executables. Disable log4tango bench test.
+11. Doxygen: upgrade to doxygen 1.8.13. Fix some doxygen warnings.
 
 9.3.1
 =====
@@ -32,7 +36,7 @@
    Limitations:
      - in case DeviceProxy is used for event subscription client will get incorrect value 
 	 in the event callback if short domain name is used in env.TANGO_HOST 
-	 e.g. hzgc103k -> hzgc103.desy.de
+	 e.g. hzgc103 -> hzgc103.desy.de
 2. Fix memory leak when pipe event is sent and there is no client (#447,#448)
 3. Set the ZMQ Receive Buffer High Water Mark only if it changes (#444,#445) 
    to reduce the impact of a bug in ZMQ 4.2.0 and ZMQ 4.2.1.
