@@ -2,6 +2,7 @@ UNRELEASED
 ==========
 
 1. Replace CORBA::string_dup with Tango::string_dup (#474)
+2. Fix memory leak on get_device_property() on Windows when code compiled with Visual Studio 10 or older (#439, #488)
 
 9.3.2
 =====
