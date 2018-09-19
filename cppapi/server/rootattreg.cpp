@@ -185,9 +185,9 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 										send.lvalue.length(1);
 										send.svalue.length(3);
 
-										send.svalue[0] = CORBA::string_dup(the_dev->get_name().c_str());
-										send.svalue[1] = CORBA::string_dup("attribute");
-										send.svalue[2] = CORBA::string_dup((*pos).c_str());
+										send.svalue[0] = Tango::string_dup(the_dev->get_name().c_str());
+										send.svalue[1] = Tango::string_dup("attribute");
+										send.svalue[2] = Tango::string_dup((*pos).c_str());
 
 										stringstream ss;
 										long upd;

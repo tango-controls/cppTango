@@ -313,7 +313,7 @@ const DevVarLongStringArray *DbServerCache::import_adm_dev()
 	imp_adm_data.lvalue[1] = ::atoi((*data_list)[imp_adm.last_idx]);
 
 	for (int loop = 0;loop < 5;loop++)
-		imp_adm_data.svalue[loop] = CORBA::string_dup((*data_list)[imp_adm.first_idx + loop]);
+		imp_adm_data.svalue[loop] = Tango::string_dup((*data_list)[imp_adm.first_idx + loop]);
 
 	return &imp_adm_data;
 }
@@ -346,7 +346,7 @@ const DevVarLongStringArray *DbServerCache::import_notifd_event()
 	imp_notifd_event_data.lvalue[1] = ::atoi((*data_list)[imp_notifd_event.last_idx]);
 
 	for (int loop = 0;loop < 4;loop++)
-		imp_notifd_event_data.svalue[loop] = CORBA::string_dup((*data_list)[imp_notifd_event.first_idx + loop]);
+		imp_notifd_event_data.svalue[loop] = Tango::string_dup((*data_list)[imp_notifd_event.first_idx + loop]);
 
 	return &imp_notifd_event_data;
 }
@@ -380,7 +380,7 @@ const DevVarLongStringArray *DbServerCache::import_adm_event()
 	imp_adm_event_data.lvalue[1] = ::atoi((*data_list)[imp_notifd_event.last_idx]);
 
 	for (int loop = 0;loop < 4;loop++)
-		imp_adm_event_data.svalue[loop] = CORBA::string_dup((*data_list)[imp_adm_event.first_idx + loop]);
+		imp_adm_event_data.svalue[loop] = Tango::string_dup((*data_list)[imp_adm_event.first_idx + loop]);
 
 	return &imp_adm_event_data;
 }
@@ -411,21 +411,21 @@ const DevVarStringArray *DbServerCache::get_class_property(DevVarStringArray *in
 	if (TG_strcasecmp((*in_param)[0],"DServer") == 0)
 	{
 		ret_obj_prop.length(ret_length);
-		ret_obj_prop[0] = CORBA::string_dup("DServer");
+		ret_obj_prop[0] = Tango::string_dup("DServer");
 
 		get_obj_prop(in_param,DServer_class_prop);
 	}
 	else if (TG_strcasecmp((*in_param)[0],"Default") == 0)
 	{
 		ret_obj_prop.length(ret_length);
-		ret_obj_prop[0] = CORBA::string_dup("Default");
+		ret_obj_prop[0] = Tango::string_dup("Default");
 
 		get_obj_prop(in_param,Default_prop);
 	}
 	else
 	{
 		ret_obj_prop.length(ret_length);
-		ret_obj_prop[0] = CORBA::string_dup((*in_param)[0]);
+		ret_obj_prop[0] = Tango::string_dup((*in_param)[0]);
 
 		int cl_idx = find_class((*in_param)[0]);
 		if (cl_idx != -1)
@@ -486,12 +486,12 @@ void DbServerCache::get_obj_prop(DevVarStringArray *in_param,PropEltIdx &obj,boo
 				ret_length = ret_length + 2 + nb_elt;
 
 				ret_obj_prop.length(ret_length);
-				ret_obj_prop[old_ret_length] = CORBA::string_dup((*in_param)[loop + 1]);
-				ret_obj_prop[old_ret_length + 1] = CORBA::string_dup((*data_list)[obj.props_idx[lo] + 1]);
+				ret_obj_prop[old_ret_length] = Tango::string_dup((*in_param)[loop + 1]);
+				ret_obj_prop[old_ret_length + 1] = Tango::string_dup((*data_list)[obj.props_idx[lo] + 1]);
 
 				for (int k = 0;k < nb_elt;k++)
 				{
-					ret_obj_prop[old_ret_length + 2 + k] = CORBA::string_dup((*data_list)[obj.props_idx[lo] + 2 + k]);
+					ret_obj_prop[old_ret_length + 2 + k] = Tango::string_dup((*data_list)[obj.props_idx[lo] + 2 + k]);
 				}
 				found_prop++;
 				break;
@@ -505,16 +505,16 @@ void DbServerCache::get_obj_prop(DevVarStringArray *in_param,PropEltIdx &obj,boo
 				ret_length++;
 
 			ret_obj_prop.length(ret_length);
-			ret_obj_prop[old_length] = CORBA::string_dup((*in_param)[loop + 1]);
-			ret_obj_prop[old_length + 1] = CORBA::string_dup("0");
+			ret_obj_prop[old_length] = Tango::string_dup((*in_param)[loop + 1]);
+			ret_obj_prop[old_length + 1] = Tango::string_dup("0");
 			if (dev_prop == true)
-				ret_obj_prop[old_length + 2] = CORBA::string_dup(" ");
+				ret_obj_prop[old_length + 2] = Tango::string_dup(" ");
 			found_prop++;
 
 		}
 	}
 	::sprintf(n_prop_str,"%d",found_prop);
-	ret_obj_prop[1] = CORBA::string_dup(n_prop_str);
+	ret_obj_prop[1] = Tango::string_dup(n_prop_str);
 
 //	cout4 << "DbCache --> Data returned for a get_obj_property for object " << (*in_param)[0] << endl;
 //	for (unsigned int ll=0;ll< ret_obj_prop.length();ll++)
@@ -559,7 +559,7 @@ const DevVarStringArray *DbServerCache::get_dev_property(DevVarStringArray *in_p
 										   (const char *)"DbServerCache::get_dev_property");
 	    }
 		ret_obj_prop.length(ret_length);
-		ret_obj_prop[0] = CORBA::string_dup((*in_param)[0]);
+		ret_obj_prop[0] = Tango::string_dup((*in_param)[0]);
 
 		get_obj_prop(in_param,adm_dev_prop,true);
 	}
@@ -578,7 +578,7 @@ const DevVarStringArray *DbServerCache::get_dev_property(DevVarStringArray *in_p
 		else
 		{
 			ret_obj_prop.length(ret_length);
-			ret_obj_prop[0] = CORBA::string_dup((*in_param)[0]);
+			ret_obj_prop[0] = Tango::string_dup((*in_param)[0]);
 
 			get_obj_prop(in_param,classes_idx[class_ind].devs_idx[dev_ind].dev_prop,true);
 		}
@@ -611,7 +611,7 @@ const DevVarStringArray *DbServerCache::get_dev_list(DevVarStringArray *in_param
 	{
 		ret_dev_list.length(classes_idx[cl_idx].dev_nb);
 		for (int loop = 0;loop < classes_idx[cl_idx].dev_nb;loop++)
-			ret_dev_list[loop] = CORBA::string_dup((*data_list)[classes_idx[cl_idx].dev_list.first_idx + 2 + loop]);
+			ret_dev_list[loop] = Tango::string_dup((*data_list)[classes_idx[cl_idx].dev_list.first_idx + 2 + loop]);
 	}
 	else
 		ret_dev_list.length(0);
@@ -664,7 +664,7 @@ const DevVarStringArray *DbServerCache::get_class_att_property(DevVarStringArray
 	char n_att_str[256];
 
 	ret_obj_att_prop.length(2);
-	ret_obj_att_prop[0] = CORBA::string_dup((*in_param)[0]);
+	ret_obj_att_prop[0] = Tango::string_dup((*in_param)[0]);
 
 	int cl_idx = find_class((*in_param)[0]);
 	if (cl_idx != -1)
@@ -705,7 +705,7 @@ const DevVarStringArray *DbServerCache::get_class_att_property(DevVarStringArray
 					int old_length = ret_obj_att_prop.length();
 					ret_obj_att_prop.length(old_length + nb_to_copy);
 					for (int j = 0;j < nb_to_copy;j++)
-						ret_obj_att_prop[old_length + j] = CORBA::string_dup((*data_list)[att_index + j]);
+						ret_obj_att_prop[old_length + j] = Tango::string_dup((*data_list)[att_index + j]);
 					found_att++;
 					break;
 				}
@@ -715,12 +715,12 @@ const DevVarStringArray *DbServerCache::get_class_att_property(DevVarStringArray
 				found_att++;
 				int old_length = ret_obj_att_prop.length();
 				ret_obj_att_prop.length(old_length + 2);
-				ret_obj_att_prop[old_length] = CORBA::string_dup((*in_param)[loop + 1]);
-				ret_obj_att_prop[old_length + 1] = CORBA::string_dup("0");
+				ret_obj_att_prop[old_length] = Tango::string_dup((*in_param)[loop + 1]);
+				ret_obj_att_prop[old_length + 1] = Tango::string_dup("0");
 			}
 		}
 		::sprintf(n_att_str,"%d",found_att);
-		ret_obj_att_prop[1] = CORBA::string_dup(n_att_str);
+		ret_obj_att_prop[1] = Tango::string_dup(n_att_str);
 	}
 	else
 	{
@@ -761,7 +761,7 @@ const DevVarStringArray *DbServerCache::get_dev_att_property(DevVarStringArray *
 	char n_att_str[256];
 
 	ret_obj_att_prop.length(2);
-	ret_obj_att_prop[0] = CORBA::string_dup((*in_param)[0]);
+	ret_obj_att_prop[0] = Tango::string_dup((*in_param)[0]);
 
 	int class_ind,dev_ind;
 
@@ -793,7 +793,7 @@ const DevVarStringArray *DbServerCache::get_dev_att_property(DevVarStringArray *
 					int old_length = ret_obj_att_prop.length();
 					ret_obj_att_prop.length(old_length + nb_to_copy);
 					for (int j = 0;j < nb_to_copy;j++)
-						ret_obj_att_prop[old_length + j] = CORBA::string_dup((*data_list)[att_index + j]);
+						ret_obj_att_prop[old_length + j] = Tango::string_dup((*data_list)[att_index + j]);
 					found_att++;
 					break;
 				}
@@ -804,12 +804,12 @@ const DevVarStringArray *DbServerCache::get_dev_att_property(DevVarStringArray *
 				int old_length = ret_obj_att_prop.length();
 
 				ret_obj_att_prop.length(old_length + 2);
-				ret_obj_att_prop[old_length] = CORBA::string_dup((*in_param)[loop + 1]);
-				ret_obj_att_prop[old_length + 1] = CORBA::string_dup("0");
+				ret_obj_att_prop[old_length] = Tango::string_dup((*in_param)[loop + 1]);
+				ret_obj_att_prop[old_length + 1] = Tango::string_dup("0");
 			}
 		}
 		::sprintf(n_att_str,"%d",found_att);
-		ret_obj_att_prop[1] = CORBA::string_dup(n_att_str);
+		ret_obj_att_prop[1] = Tango::string_dup(n_att_str);
 	}
 	else
 	{
@@ -824,7 +824,7 @@ const DevVarStringArray *DbServerCache::get_dev_att_property(DevVarStringArray *
 		else
 		{
 			::sprintf(n_att_str,"%d",found_att);
-			ret_obj_att_prop[1] = CORBA::string_dup(n_att_str);
+			ret_obj_att_prop[1] = Tango::string_dup(n_att_str);
 		}
 	}
 
@@ -1145,7 +1145,7 @@ const DevVarStringArray *DbServerCache::get_obj_property(DevVarStringArray *in_p
 	    int ret_length = 2;
 
 		ret_obj_prop.length(ret_length);
-		ret_obj_prop[0] = CORBA::string_dup((*in_param)[0]);
+		ret_obj_prop[0] = Tango::string_dup((*in_param)[0]);
 
 		get_obj_prop(in_param,ctrl_serv_prop,true);
 	}
@@ -1344,7 +1344,7 @@ void DbServerCache::get_obj_prop_list(DevVarStringArray *in_param,PropEltIdx &ob
 		if (store == true)
 		{
 			ret_prop_list.length(ret_length);
-			ret_prop_list[ret_length - 1] = CORBA::string_dup((*data_list)[obj.props_idx[lo]]);
+			ret_prop_list[ret_length - 1] = Tango::string_dup((*data_list)[obj.props_idx[lo]]);
 			ret_length = ret_length + 1;
 		}
 	}
@@ -1426,7 +1426,7 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 	imp_tac_data.lvalue[1] = ::atoi((*data_list)[imp_tac.last_idx - 1]);
 
 	for (int loop = 0;loop < 5;loop++)
-		imp_tac_data.svalue[loop] = CORBA::string_dup((*data_list)[imp_tac.first_idx + loop]);
+		imp_tac_data.svalue[loop] = Tango::string_dup((*data_list)[imp_tac.first_idx + loop]);
 
 	return &imp_tac_data;
 }
@@ -1466,7 +1466,7 @@ const DevVarStringArray *DbServerCache::get_class_pipe_property(DevVarStringArra
 	char n_pipe_str[256];
 
 	ret_obj_pipe_prop.length(2);
-	ret_obj_pipe_prop[0] = CORBA::string_dup((*in_param)[0]);
+	ret_obj_pipe_prop[0] = Tango::string_dup((*in_param)[0]);
 
 	int cl_idx = find_class((*in_param)[0]);
 	if (cl_idx != -1)
@@ -1506,7 +1506,7 @@ const DevVarStringArray *DbServerCache::get_class_pipe_property(DevVarStringArra
 					int old_length = ret_obj_pipe_prop.length();
 					ret_obj_pipe_prop.length(old_length + nb_to_copy);
 					for (int j = 0;j < nb_to_copy;j++)
-						ret_obj_pipe_prop[old_length + j] = CORBA::string_dup((*data_list)[pipe_index + j]);
+						ret_obj_pipe_prop[old_length + j] = Tango::string_dup((*data_list)[pipe_index + j]);
 					found_pipe++;
 					break;
 				}
@@ -1516,12 +1516,12 @@ const DevVarStringArray *DbServerCache::get_class_pipe_property(DevVarStringArra
 				found_pipe++;
 				int old_length = ret_obj_pipe_prop.length();
 				ret_obj_pipe_prop.length(old_length + 2);
-				ret_obj_pipe_prop[old_length] = CORBA::string_dup((*in_param)[loop + 1]);
-				ret_obj_pipe_prop[old_length + 1] = CORBA::string_dup("0");
+				ret_obj_pipe_prop[old_length] = Tango::string_dup((*in_param)[loop + 1]);
+				ret_obj_pipe_prop[old_length + 1] = Tango::string_dup("0");
 			}
 		}
 		::sprintf(n_pipe_str,"%d",found_pipe);
-		ret_obj_pipe_prop[1] = CORBA::string_dup(n_pipe_str);
+		ret_obj_pipe_prop[1] = Tango::string_dup(n_pipe_str);
 	}
 	else
 	{
@@ -1574,7 +1574,7 @@ const DevVarStringArray *DbServerCache::get_dev_pipe_property(DevVarStringArray 
 	char n_pipe_str[256];
 
 	ret_obj_pipe_prop.length(2);
-	ret_obj_pipe_prop[0] = CORBA::string_dup((*in_param)[0]);
+	ret_obj_pipe_prop[0] = Tango::string_dup((*in_param)[0]);
 
 	int class_ind,dev_ind;
 
@@ -1606,7 +1606,7 @@ const DevVarStringArray *DbServerCache::get_dev_pipe_property(DevVarStringArray 
 					int old_length = ret_obj_pipe_prop.length();
 					ret_obj_pipe_prop.length(old_length + nb_to_copy);
 					for (int j = 0;j < nb_to_copy;j++)
-						ret_obj_pipe_prop[old_length + j] = CORBA::string_dup((*data_list)[pipe_index + j]);
+						ret_obj_pipe_prop[old_length + j] = Tango::string_dup((*data_list)[pipe_index + j]);
 					found_pipe++;
 					break;
 				}
@@ -1617,12 +1617,12 @@ const DevVarStringArray *DbServerCache::get_dev_pipe_property(DevVarStringArray 
 				int old_length = ret_obj_pipe_prop.length();
 
 				ret_obj_pipe_prop.length(old_length + 2);
-				ret_obj_pipe_prop[old_length] = CORBA::string_dup((*in_param)[loop + 1]);
-				ret_obj_pipe_prop[old_length + 1] = CORBA::string_dup("0");
+				ret_obj_pipe_prop[old_length] = Tango::string_dup((*in_param)[loop + 1]);
+				ret_obj_pipe_prop[old_length + 1] = Tango::string_dup("0");
 			}
 		}
 		::sprintf(n_pipe_str,"%d",found_pipe);
-		ret_obj_pipe_prop[1] = CORBA::string_dup(n_pipe_str);
+		ret_obj_pipe_prop[1] = Tango::string_dup(n_pipe_str);
 	}
 	else
 	{
@@ -1637,7 +1637,7 @@ const DevVarStringArray *DbServerCache::get_dev_pipe_property(DevVarStringArray 
 		else
 		{
 			::sprintf(n_pipe_str,"%d",found_pipe);
-			ret_obj_pipe_prop[1] = CORBA::string_dup(n_pipe_str);
+			ret_obj_pipe_prop[1] = Tango::string_dup(n_pipe_str);
 		}
 	}
 

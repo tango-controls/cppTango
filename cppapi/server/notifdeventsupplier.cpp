@@ -472,13 +472,13 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 			{
         		Tango::DevVarStringArray *eve_export_list = new Tango::DevVarStringArray;
         		eve_export_list->length(5);
-        		(*eve_export_list)[0] = CORBA::string_dup(d_name.c_str());
-    			(*eve_export_list)[1] = CORBA::string_dup(ior_string.c_str());
-    			(*eve_export_list)[2] = CORBA::string_dup(host_name.c_str());
+        		(*eve_export_list)[0] = Tango::string_dup(d_name.c_str());
+    			(*eve_export_list)[1] = Tango::string_dup(ior_string.c_str());
+    			(*eve_export_list)[2] = Tango::string_dup(host_name.c_str());
     			ostringstream ostream;
     			ostream << getpid() << ends;
-    			(*eve_export_list)[3] = CORBA::string_dup(ostream.str().c_str());
-    			(*eve_export_list)[4] = CORBA::string_dup("1");
+    			(*eve_export_list)[3] = Tango::string_dup(ostream.str().c_str());
+    			(*eve_export_list)[4] = Tango::string_dup("1");
 
 				bool retry = true;
 				int ctr = 0;
@@ -682,15 +682,15 @@ void NotifdEventSupplier::push_heartbeat_event()
 	{
 		domain_name = "dserver/" + adm_dev->get_full_name();
 
-		struct_event.header.fixed_header.event_type.domain_name = CORBA::string_dup(domain_name.c_str());
- 		struct_event.header.fixed_header.event_type.type_name   = CORBA::string_dup(fqdn_prefix.c_str());
+		struct_event.header.fixed_header.event_type.domain_name = Tango::string_dup(domain_name.c_str());
+ 		struct_event.header.fixed_header.event_type.type_name   = Tango::string_dup(fqdn_prefix.c_str());
   		struct_event.header.variable_header.length( 0 );
 
 		cout3 << "NotifdEventSupplier::push_heartbeat_event(): detected heartbeat event for " << domain_name << endl;
 		cout3 << "NotifdEventSupplier::push_heartbeat_event(): delta _time " << delta_time << endl;
-  		struct_event.header.fixed_header.event_name  = CORBA::string_dup("heartbeat");
+  		struct_event.header.fixed_header.event_name  = Tango::string_dup("heartbeat");
   		struct_event.filterable_data.length(1);
-  		struct_event.filterable_data[0].name = CORBA::string_dup("heartbeat_counter");
+  		struct_event.filterable_data[0].name = Tango::string_dup("heartbeat_counter");
   		struct_event.filterable_data[0].value <<= (CORBA::Long) heartbeat_counter++;
 		adm_dev->last_heartbeat = now_time;
 
@@ -866,8 +866,8 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 	if (pos != string::npos)
 		event_type.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
-	struct_event.header.fixed_header.event_type.domain_name = CORBA::string_dup(domain_name.c_str());
-	struct_event.header.fixed_header.event_type.type_name = CORBA::string_dup(fqdn_prefix.c_str());
+	struct_event.header.fixed_header.event_type.domain_name = Tango::string_dup(domain_name.c_str());
+	struct_event.header.fixed_header.event_type.type_name = Tango::string_dup(fqdn_prefix.c_str());
 
 	struct_event.header.variable_header.length( 0 );
 
@@ -882,7 +882,7 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		{
 			for (unsigned long i = 0; i < nb_filter; i++)
 			{
-				struct_event.filterable_data[i].name = CORBA::string_dup(filterable_names[i].c_str());
+				struct_event.filterable_data[i].name = Tango::string_dup(filterable_names[i].c_str());
 				struct_event.filterable_data[i].value <<= (CORBA::Double) filterable_data[i];
 			}
 		}
@@ -894,7 +894,7 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		{
 			for (unsigned long i = 0; i < nb_filter_lg; i++)
 			{
-				struct_event.filterable_data[i + nb_filter].name = CORBA::string_dup(filterable_names_lg[i].c_str());
+				struct_event.filterable_data[i + nb_filter].name = Tango::string_dup(filterable_names_lg[i].c_str());
 	  			struct_event.filterable_data[i + nb_filter].value <<= (CORBA::Long) filterable_data_lg[i];
 			}
 		}
@@ -940,7 +940,7 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 	}
 	else
 		struct_event.remainder_of_body <<= except->errors;
-	struct_event.header.fixed_header.event_name = CORBA::string_dup(event_type.c_str());
+	struct_event.header.fixed_header.event_name = Tango::string_dup(event_type.c_str());
 
 	cout3 << "EventSupplier::push_event(): push event " << event_type << " for " << device_impl->get_name() + "/" + attr_name << endl;
 

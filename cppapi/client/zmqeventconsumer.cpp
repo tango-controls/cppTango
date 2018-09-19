@@ -2240,7 +2240,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						errors.length(1);
 						errors[0].reason = API_WrongEventData;
 						errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-						errors[0].desc = CORBA::string_dup(o.str().c_str());
+						errors[0].desc = Tango::string_dup(o.str().c_str());
 						errors[0].severity = ERR;
 					}
 				}
@@ -2274,7 +2274,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
 								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].desc = Tango::string_dup(o.str().c_str());
 								errors[0].severity = ERR;
 							}
 						}
@@ -2298,7 +2298,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
 								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].desc = Tango::string_dup(o.str().c_str());
 								errors[0].severity = ERR;
 							}
 						}
@@ -2330,7 +2330,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							errors.length(1);
 							errors[0].reason = API_WrongEventData;
 							errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-							errors[0].desc = CORBA::string_dup(o.str().c_str());
+							errors[0].desc = Tango::string_dup(o.str().c_str());
 							errors[0].severity = ERR;
 						}
 						break;
@@ -2351,7 +2351,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							errors.length(1);
 							errors[0].reason = API_WrongEventData;
 							errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-							errors[0].desc = CORBA::string_dup(o.str().c_str());
+							errors[0].desc = Tango::string_dup(o.str().c_str());
 							errors[0].severity = ERR;
 						}
 						break;
@@ -2391,7 +2391,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
 								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].desc = Tango::string_dup(o.str().c_str());
 								errors[0].severity = ERR;
 							}
 						}
@@ -2429,7 +2429,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
 								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].desc = Tango::string_dup(o.str().c_str());
 								errors[0].severity = ERR;
 							}
 						}
@@ -2453,7 +2453,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
 								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].desc = Tango::string_dup(o.str().c_str());
 								errors[0].severity = ERR;
 							}
 						}
@@ -2476,7 +2476,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
 								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].desc = Tango::string_dup(o.str().c_str());
 								errors[0].severity = ERR;
 							}
 						}
@@ -2513,7 +2513,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							errors.length(1);
 							errors[0].reason = API_WrongEventData;
 							errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-							errors[0].desc = CORBA::string_dup(o.str().c_str());
+							errors[0].desc = Tango::string_dup(o.str().c_str());
 							errors[0].severity = ERR;
 						}
 						break;

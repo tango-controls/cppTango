@@ -140,8 +140,8 @@ void Pipe::set_upd_properties(const PipeConfig &new_conf,DeviceImpl *dev)
 //
 
 	PipeConfig old_conf = new_conf;
-	old_conf.label = CORBA::string_dup(label.c_str());
-	old_conf.description = CORBA::string_dup(desc.c_str());
+	old_conf.label = Tango::string_dup(label.c_str());
+	old_conf.description = Tango::string_dup(desc.c_str());
 
 	try
 	{
@@ -826,7 +826,7 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 //
 
 	ad.pipe_val = new DevPipeData();
-	ad.pipe_val->name = CORBA::string_dup(name.c_str());
+	ad.pipe_val->name = Tango::string_dup(name.c_str());
 
 	::memset(&(ad.pipe_val->time),0,sizeof(ad.pipe_val->time));
 	ad.pipe_val->time.tv_sec = t.tv_sec;

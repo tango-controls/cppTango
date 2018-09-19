@@ -127,10 +127,10 @@ public:
 		Tango::DevErrorList errors(1);
 
 		errors.length(1);
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].reason = Tango::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -162,10 +162,10 @@ public:
 		Tango::DevErrorList errors(1);
 
 		errors.length(1);
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].reason = Tango::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
 
 		throw Tango::DevFailed(errors);
@@ -199,10 +199,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 		delete[] desc;
-		errors[0].origin = CORBA::string_dup(origin);
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin);
+		errors[0].reason = Tango::string_dup(reason);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -234,10 +234,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].reason = Tango::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw Tango::DevFailed(errors);
@@ -271,10 +271,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin);
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].origin = Tango::string_dup(origin);
+		errors[0].desc = Tango::string_dup(desc);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -307,11 +307,11 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -344,10 +344,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin);
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].origin = Tango::string_dup(origin);
+		errors[0].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw Tango::DevFailed(errors);
@@ -381,11 +381,11 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw Tango::DevFailed(errors);
@@ -418,9 +418,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -452,9 +452,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin);
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin);
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -486,9 +486,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -520,9 +520,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin);
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin);
+		errors[0].desc = Tango::string_dup(desc);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -554,9 +554,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].reason = Tango::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -588,9 +588,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
-		errors[0].origin = CORBA::string_dup(origin);
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].reason = Tango::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin);
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -622,9 +622,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].reason = Tango::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -657,10 +657,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -693,10 +693,12 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin);
+        errors[0].desc   = Tango::string_dup(desc);
 		delete[] desc;
+		errors[0].desc = Tango::string_dup(origin.c_str());
+
 		throw Tango::DevFailed(errors);
 	}
 
@@ -728,10 +730,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 		delete desc;
 
 		throw Tango::DevFailed(errors);
@@ -765,10 +767,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -801,11 +803,11 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -838,10 +840,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw Tango::DevFailed(errors);
@@ -878,10 +880,10 @@ public:
 		long nb_err = ex.errors.length();
 		ex.errors.length(nb_err + 1);
 
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 
 		throw ex;
 	}
@@ -915,10 +917,10 @@ public:
 		long nb_err = ex.errors.length();
 		ex.errors.length(nb_err + 1);
 
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
 
 		throw ex;
@@ -954,10 +956,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 
 		throw ex;
 	}
@@ -991,10 +993,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw ex;
@@ -1030,10 +1032,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 
 		throw ex;
 	}
@@ -1068,11 +1070,11 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 
 		throw ex;
 	}
@@ -1107,10 +1109,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw ex;
@@ -1146,11 +1148,11 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw ex;
@@ -1185,9 +1187,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1221,9 +1223,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1257,9 +1259,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 
 		throw ex;
 	}
@@ -1293,9 +1295,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 
 		throw ex;
 	}
@@ -1329,9 +1331,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1365,9 +1367,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1401,9 +1403,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 
 		throw ex;
 	}
@@ -1438,10 +1440,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1476,9 +1478,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw ex;
@@ -1514,10 +1516,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete desc;
 
 		throw ex;
@@ -1553,10 +1555,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1591,11 +1593,11 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1630,10 +1632,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw ex;
@@ -1733,13 +1735,13 @@ public:
 		Tango::NamedDevErrorList errors(1);
 
 		errors.length(1);
-		errors[0].name = CORBA::string_dup(att_name);
+		errors[0].name = Tango::string_dup(att_name);
 		errors[0].index_in_call = 999;
 		errors[0].err_list.length(1);
-		errors[0].err_list[0].desc = CORBA::string_dup(desc);
+		errors[0].err_list[0].desc = Tango::string_dup(desc);
 		errors[0].err_list[0].severity = sever;
-		errors[0].err_list[0].reason = CORBA::string_dup(reason);
-		errors[0].err_list[0].origin = CORBA::string_dup(origin);
+		errors[0].err_list[0].reason = Tango::string_dup(reason);
+		errors[0].err_list[0].origin = Tango::string_dup(origin);
 
 		throw Tango::MultiDevFailed(errors);
 	}
@@ -1774,13 +1776,13 @@ public:
 		errors.length(a_size);
 		for (unsigned int loop = 0;loop < a_size;loop++)
 		{
-			errors[loop].name = CORBA::string_dup(atts[loop].c_str());
+			errors[loop].name = Tango::string_dup(atts[loop].c_str());
 			errors[loop].index_in_call = 999;
 			errors[loop].err_list.length(1);
-			errors[loop].err_list[0].desc = CORBA::string_dup(desc);
+			errors[loop].err_list[0].desc = Tango::string_dup(desc);
 			errors[loop].err_list[0].severity = sever;
-			errors[loop].err_list[0].reason = CORBA::string_dup(reason);
-			errors[loop].err_list[0].origin = CORBA::string_dup(origin);
+			errors[loop].err_list[0].reason = Tango::string_dup(reason);
+			errors[loop].err_list[0].origin = Tango::string_dup(origin);
 		}
 
 		throw Tango::MultiDevFailed(errors);

@@ -280,7 +280,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
                 (*aid.data_5)[0].time.tv_nsec = 0;
 
                 (*aid.data_5)[0].quality = qu;
-                (*aid.data_5)[0].name = CORBA::string_dup(att_name.c_str());
+                (*aid.data_5)[0].name = Tango::string_dup(att_name.c_str());
 
                 (*aid.data_5)[0].w_dim.dim_x = 0;
                 (*aid.data_5)[0].w_dim.dim_y = 0;
@@ -297,7 +297,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
                 (*aid.data_4)[0].time.tv_nsec = 0;
 
                 (*aid.data_4)[0].quality = qu;
-                (*aid.data_4)[0].name = CORBA::string_dup(att_name.c_str());
+                (*aid.data_4)[0].name = Tango::string_dup(att_name.c_str());
 
                 (*aid.data_4)[0].w_dim.dim_x = 0;
                 (*aid.data_4)[0].w_dim.dim_y = 0;
@@ -313,7 +313,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
                 (*aid.data_3)[0].time.tv_nsec = 0;
 
                 (*aid.data_3)[0].quality = qu;
-                (*aid.data_3)[0].name = CORBA::string_dup(att_name.c_str());
+                (*aid.data_3)[0].name = Tango::string_dup(att_name.c_str());
 
                 (*aid.data_3)[0].w_dim.dim_x = 0;
                 (*aid.data_3)[0].w_dim.dim_y = 0;

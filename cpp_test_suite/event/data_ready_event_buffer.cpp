@@ -141,7 +141,7 @@ int main(int argc, char **argv)
 		dvlsa.svalue.length(1);
 		dvlsa.lvalue.length(1);
 		dvlsa.lvalue[0] = 9;
-		dvlsa.svalue[0] = CORBA::string_dup(att_name.c_str());
+		dvlsa.svalue[0] = Tango::string_dup(att_name.c_str());
 		DeviceData d_in;
 
 		for (int i=0; i<10; i++)
@@ -366,7 +366,7 @@ int main(int argc, char **argv)
 		dvlsa1.svalue.length(1);
 		dvlsa1.lvalue.length(1);
 		dvlsa1.lvalue[0] = 9;
-		dvlsa1.svalue[0] = CORBA::string_dup(att_name.c_str());
+		dvlsa1.svalue[0] = Tango::string_dup(att_name.c_str());
 		DeviceData d_in1;
 
 		for (int i=0; i<10; i++)

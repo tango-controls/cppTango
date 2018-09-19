@@ -330,7 +330,7 @@ void DServer::init_device()
 					if (list.empty() == true)
 					{
 						dev_list_nodb->length(1);
-						(*dev_list_nodb)[0] = CORBA::string_dup("NoName");
+						(*dev_list_nodb)[0] = Tango::string_dup("NoName");
 					}
 					else
 					{
@@ -706,7 +706,7 @@ Tango::DevVarStringArray *DServer::query_device()
 	int nb_dev = vs.size();
 	ret->length(nb_dev);
 	for (int k = 0;k < nb_dev;k++)
-		(*ret)[k] = CORBA::string_dup(vs[k].c_str());
+		(*ret)[k] = Tango::string_dup(vs[k].c_str());
 
 	return(ret);
 }
@@ -993,12 +993,12 @@ void DServer::restart(string &d_name)
 //
 
 		send->lvalue[0] = dev_pol[i].upd;
-		send->svalue[0] = CORBA::string_dup(name[0]);
+		send->svalue[0] = Tango::string_dup(name[0]);
 		if (dev_pol[i].type == Tango::POLL_CMD)
-			send->svalue[1] = CORBA::string_dup("command");
+			send->svalue[1] = Tango::string_dup("command");
 		else
-			send->svalue[1] = CORBA::string_dup("attribute");
-		send->svalue[2] = CORBA::string_dup(dev_pol[i].name.c_str());
+			send->svalue[1] = Tango::string_dup("attribute");
+		send->svalue[2] = Tango::string_dup(dev_pol[i].name.c_str());
 
 		try
 		{
@@ -1301,7 +1301,7 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 
 		for (int i = 0;i < nb_prop;i++)
 		{
-			(*ret)[i] = CORBA::string_dup(wiz[i].c_str());
+			(*ret)[i] = Tango::string_dup(wiz[i].c_str());
 		}
 	}
 	catch (bad_alloc &)
@@ -1372,7 +1372,7 @@ Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 
 		for (int i = 0;i < nb_prop;i++)
 		{
-			(*ret)[i] = CORBA::string_dup(wiz[i].c_str());
+			(*ret)[i] = Tango::string_dup(wiz[i].c_str());
 		}
 	}
 	catch (bad_alloc &)
