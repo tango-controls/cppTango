@@ -1,3 +1,8 @@
+UNRELEASED
+==========
+
+1. Replace CORBA::string_dup with Tango::string_dup (#474)
+
 9.3.2
 =====
 
