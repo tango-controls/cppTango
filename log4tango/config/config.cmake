@@ -69,4 +69,4 @@ else(WIN32)
 endif(WIN32)
 
 
-configure_file(config/config.h.in ${PROJECT_BINARY_DIR}/log4tango/include/log4tango/config.h)
+configure_file(config/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/log4tango/config.h)
