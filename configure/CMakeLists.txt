@@ -19,7 +19,7 @@ endif(CPPZMQ_BASE)
 
 if(IDL_BASE)
     message("Using IDL_BASEIDL_BASE=${IDL_BASE}")
-    set(IDL_PKG_INCLUDE_DIRS ${IDL_BASE}/include)
+    set(IDL_PKG_INCLUDE_DIRS ${IDL_BASE})
 else(IDL_BASE)
     pkg_search_module(IDL_PKG REQUIRED tangoidl)
 endif(IDL_BASE)
