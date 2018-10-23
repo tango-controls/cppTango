@@ -714,7 +714,7 @@ public:
 		EventCallBack cb(this);
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
-
+		fwd_device->set_source(CACHE_DEV);
 		try
 		{
 			fwd_device->subscribe_event("fwd_short_rw",Tango::PERIODIC_EVENT,&cb);
@@ -741,7 +741,6 @@ public:
 		attr_poll.svalue[2] = "short_attr_rw";
 		din << attr_poll;
 		TS_ASSERT_THROWS_NOTHING(root_admin->command_inout("AddObjPolling", din));
-		Tango_sleep(1);
 		TS_ASSERT_THROWS_NOTHING(eve_id = fwd_device->subscribe_event("fwd_short_rw",Tango::PERIODIC_EVENT,&cb));
 
 		Tango_sleep(3);
