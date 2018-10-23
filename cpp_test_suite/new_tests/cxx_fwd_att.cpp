@@ -741,12 +741,12 @@ public:
 		attr_poll.svalue[2] = "short_attr_rw";
 		din << attr_poll;
 		TS_ASSERT_THROWS_NOTHING(root_admin->command_inout("AddObjPolling", din));
-
+		Tango_sleep(1);
 		TS_ASSERT_THROWS_NOTHING(eve_id = fwd_device->subscribe_event("fwd_short_rw",Tango::PERIODIC_EVENT,&cb));
 
 		Tango_sleep(3);
 
-		TS_ASSERT(cb.cb_err == 1);
+		TS_ASSERT(cb.cb_err == 0);
 		TS_ASSERT(cb.cb_executed >= 3);
 
 		string at_name = fwd_device_name + "/fwd_short_rw";
