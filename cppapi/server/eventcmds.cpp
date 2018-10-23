@@ -698,7 +698,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         ret_data->svalue.length(2);
 
         ret_data->lvalue.length(1);
-        ret_data->lvalue[0] = (Tango::DevLong)tg->get_tango_lib_release();;
+        ret_data->lvalue[0] = (Tango::DevLong)tg->get_tango_lib_release();
 
         ZmqEventSupplier *ev;
         if ((ev = tg->get_zmq_event_supplier()) != NULL)
@@ -1073,8 +1073,22 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         size_t size = ret_data->svalue.length();
         ret_data->svalue.length(size + 2);
 
-        string event_topic =
-            ev->create_full_event_name(dev, EVENT_COMPAT_IDL5 + event, obj_name_lower, intr_change);
+        string event_topic = "";
+        bool add_compat_info = false;
+        if ((event != EventName[PIPE_EVENT]) &&
+            (event != EventName[INTERFACE_CHANGE_EVENT]) &&
+            (event != EventName[DATA_READY_EVENT]))
+        {
+            add_compat_info = true;
+        }
+        if(client_release >= 5 && add_compat_info) // client_release here is the minimum of the client release and dev IDL version
+        {
+            event_topic = ev->create_full_event_name(dev, EVENT_COMPAT_IDL5 + event, obj_name_lower, intr_change);
+        }
+        else
+        {
+            event_topic = ev->create_full_event_name(dev, event, obj_name_lower, intr_change);
+        }
         assert(!(event_topic.empty()));
         cout4 << "Sending event_topic = " << event_topic << endl;
         ret_data->svalue[size] = Tango::string_dup(event_topic.c_str());

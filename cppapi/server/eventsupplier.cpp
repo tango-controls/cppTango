@@ -2405,7 +2405,6 @@ EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl, const string &
     vector<long> filterable_data_lg;
 
     string ev_type(DATA_READY_TYPE_EVENT);
-    ev_type = EVENT_COMPAT_IDL5 + ev_type;
 
     AttDataReady dat_ready;
     dat_ready.name = attr_name.c_str();
@@ -2560,7 +2559,6 @@ void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,
     vector<long> filterable_data_lg;
 
     string ev_type(EventName[INTERFACE_CHANGE_EVENT]);
-    ev_type = EVENT_COMPAT_IDL5 + ev_type;
     time_t now, dev_intr_subscription;
 
 //
