@@ -2866,12 +2866,17 @@ void DeviceProxy::redo_synch_write_call(TgRequest &req)
 //
 
 	const Tango::AttributeValueList *att;
+	const Tango::AttributeValueList_4 *att_4;
+
 	try
 	{
 		CORBA::NVList_ptr args_ptr = req.request->arguments();
 		CORBA::NamedValue_ptr arg_ptr = args_ptr->item(0);
 		CORBA::Any *arg_val = arg_ptr->value();
-		(*arg_val) >>= att;
+		if(version < 4)
+			(*arg_val) >>= att;
+		else
+			(*arg_val) >>= att_4;
 	}
 	catch (CORBA::SystemException &e)
 	{
@@ -2891,7 +2896,10 @@ void DeviceProxy::redo_synch_write_call(TgRequest &req)
 // Redo the write_attributes but synchronously
 //
 
-	return write_attribute(*att);
+	if (version < 4)
+		return write_attribute(*att);
+	else
+		return write_attribute(*att_4);
 }
 
 //-----------------------------------------------------------------------------
