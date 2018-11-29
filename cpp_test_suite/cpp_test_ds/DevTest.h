@@ -155,6 +155,7 @@ public :
 	void read_Enum_spec_attr_rw(Tango::Attribute &att);
 	void read_DynEnum_attr(Tango::Attribute &att);
 	void read_ReynaldPoll_attr(Tango::Attribute &att);
+	void read_attr_asyn_write(Tango::Attribute &att);
 
 	void write_Short_attr_rw(Tango::WAttribute &att);
 	void write_Long64_attr_rw(Tango::WAttribute &att);
@@ -360,6 +361,8 @@ protected :
 
     int                                     Reynald_ctr;
     double                                  Reynald_val;
+
+    Tango::DevLong                          attr_asyn_write_val;
 };
 
 #endif
