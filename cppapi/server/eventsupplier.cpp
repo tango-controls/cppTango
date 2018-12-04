@@ -364,10 +364,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
             attr.prev_change_event.err = false;
         }
         attr.prev_change_event.inited = true;
-        if (user_push == true)
-        {
-            is_change = true;
-        }
+        is_change = true;
     }
     else
     {
@@ -726,10 +723,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         attr.archive_last_periodic = now_ms;
         attr.archive_last_event = now_ms;
         attr.prev_archive_event.inited = true;
-        if (user_push == true)
-        {
-            is_change = true;
-        }
+        is_change = true;
     }
     else
     {
