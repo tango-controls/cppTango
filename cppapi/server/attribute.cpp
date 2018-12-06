@@ -3792,23 +3792,20 @@ void Attribute::fire_change_event(DevFailed *except)
 
 		if (client_libs.empty() == true)
 		{
-			if ( (name_lower != "state") && (name_lower != "status"))
-			{
-				// delete the data values allocated in the attribute
-				bool data_flag = get_value_flag();
-				if ( data_flag == true )
-				{
-					// For writable scalar attributes the sequence for the
-					// attribute data is not yet allocated. This will happen
-					// only when adding the set point!
-					if ( !check_scalar_wattribute() )
-					{
-						if (quality != Tango::ATTR_INVALID)
-							delete_seq();
+            // delete the data values allocated in the attribute
+            bool data_flag = get_value_flag();
+            if ( data_flag == true )
+            {
+                // For writable scalar attributes the sequence for the
+                // attribute data is not yet allocated. This will happen
+                // only when adding the set point!
+                if ( !check_scalar_wattribute() )
+                {
+                    if (quality != Tango::ATTR_INVALID)
+                        delete_seq();
 //						set_value_flag (false);
-					}
-				}
-			}
+                }
+            }
 			return;
 		}
 
@@ -3818,23 +3815,20 @@ void Attribute::fire_change_event(DevFailed *except)
 
 		if ((event_supplier_nd == NULL) && (event_supplier_zmq == NULL))
 		{
-			if ( name_lower != "state" )
-			{
-				// delete the data values allocated in the attribute
-				bool data_flag = get_value_flag();
-				if ( data_flag == true )
-				{
-					// For writable scalar attributes the sequence for the
-					// attribute data is not yet allcoated. This will happen
-					// only when adding the set point!
-					if ( !check_scalar_wattribute() )
-					{
-						if (quality != Tango::ATTR_INVALID)
-							delete_seq();
+            // delete the data values allocated in the attribute
+            bool data_flag = get_value_flag();
+            if ( data_flag == true )
+            {
+                // For writable scalar attributes the sequence for the
+                // attribute data is not yet allcoated. This will happen
+                // only when adding the set point!
+                if ( !check_scalar_wattribute() )
+                {
+                    if (quality != Tango::ATTR_INVALID)
+                        delete_seq();
 //						set_value_flag (false);
-					}
-				}
-			}
+                }
+            }
 			return;
 		}
 
@@ -3851,23 +3845,20 @@ void Attribute::fire_change_event(DevFailed *except)
 // Check that the attribute value has been set
 //
 
-			if ((name_lower != "state") && (name_lower != "status"))
-			{
-				if (quality != Tango::ATTR_INVALID)
-				{
-					if (value_flag == false)
-					{
-						TangoSys_OMemStream o;
+            if (quality != Tango::ATTR_INVALID)
+            {
+                if (value_flag == false)
+                {
+                    TangoSys_OMemStream o;
 
-						o << "Value for attribute ";
-						o << name;
-						o << " has not been updated. Can't send change event\n";
-						o << "Set the attribute value (using set_value(...) method) before!" << ends;
+                    o << "Value for attribute ";
+                    o << name;
+                    o << " has not been updated. Can't send change event\n";
+                    o << "Set the attribute value (using set_value(...) method) before!" << ends;
 
-						Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_change_event()");
-					}
-				}
-			}
+                    Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_change_event()");
+                }
+            }
 		}
 
 //
@@ -4078,16 +4069,13 @@ void Attribute::fire_change_event(DevFailed *except)
 // Delete the data values allocated in the attribute
 //
 
-		if ( (name_lower != "state") && (name_lower != "status") )
-		{
-			bool data_flag = get_value_flag();
-			if ( data_flag == true )
-			{
-				if (quality != Tango::ATTR_INVALID)
-					delete_seq();
+        bool data_flag = get_value_flag();
+        if ( data_flag == true )
+        {
+            if (quality != Tango::ATTR_INVALID)
+                delete_seq();
 //				set_value_flag (false);
-			}
-		}
+        }
 	}
 	catch (...)
 	{
@@ -4098,19 +4086,15 @@ void Attribute::fire_change_event(DevFailed *except)
 		else
 			delete send_attr;
 
-		if ( (name_lower != "state") && (name_lower != "status"))
-		{
-
 // delete the data values allocated in the attribute
 
-			bool data_flag = get_value_flag();
-			if ( data_flag == true )
-			{
-				if (quality != Tango::ATTR_INVALID)
-					delete_seq();
+        bool data_flag = get_value_flag();
+        if ( data_flag == true )
+        {
+            if (quality != Tango::ATTR_INVALID)
+                delete_seq();
 //				set_value_flag (false);
-			}
-		}
+        }
 
 		throw;
 	}
@@ -4250,9 +4234,6 @@ void Attribute::fire_archive_event(DevFailed *except)
 
 		if ((event_supplier_nd == NULL) && (event_supplier_zmq == NULL))
         {
-			if ( name_lower != "state" )
-            {
-
 //
 // Delete the data values allocated in the attribute
 //
@@ -4274,7 +4255,6 @@ void Attribute::fire_archive_event(DevFailed *except)
 //						set_value_flag (false);
 					}
                 }
-            }
 			return;
         }
 
@@ -4292,24 +4272,21 @@ void Attribute::fire_archive_event(DevFailed *except)
 // Check that the attribute value has been set
 //
 
-			if ((name_lower != "state") && (name_lower != "status"))
-			{
-				if (quality != Tango::ATTR_INVALID)
-				{
-					if (value_flag == false)
-					{
-						TangoSys_OMemStream o;
+            if (quality != Tango::ATTR_INVALID)
+            {
+                if (value_flag == false)
+                {
+                    TangoSys_OMemStream o;
 
-						o << "Value for attribute ";
-						o << name;
-						o << " has not been updated. Can't send archive event\n";
-						o << "Set the attribute value (using set_value(...) method) before!" << ends;
+                    o << "Value for attribute ";
+                    o << name;
+                    o << " has not been updated. Can't send archive event\n";
+                    o << "Set the attribute value (using set_value(...) method) before!" << ends;
 
-						Except::throw_exception((const char *)API_AttrValueNotSet,o.str(),
-				        		(const char *)"Attribute::fire_archive_event()");
-					}
-				}
-			}
+                    Except::throw_exception((const char *)API_AttrValueNotSet,o.str(),
+                            (const char *)"Attribute::fire_archive_event()");
+                }
+            }
 		}
 
 //
@@ -4518,16 +4495,13 @@ void Attribute::fire_archive_event(DevFailed *except)
 // Delete the data values allocated in the attribute
 //
 
-		if ((name_lower != "state") && (name_lower != "status"))
-		{
-			bool data_flag = get_value_flag();
-			if ( data_flag == true )
-			{
-				if (quality != Tango::ATTR_INVALID)
-					delete_seq();
+        bool data_flag = get_value_flag();
+        if ( data_flag == true )
+        {
+            if (quality != Tango::ATTR_INVALID)
+                delete_seq();
 //				set_value_flag (false);
-			}
-		}
+        }
 	}
 	catch (...)
 	{
@@ -4542,16 +4516,13 @@ void Attribute::fire_archive_event(DevFailed *except)
 // Delete the data values allocated in the attribute
 //
 
-		if ((name_lower != "state") && (name_lower != "status"))
-		{
-			bool data_flag = get_value_flag();
-			if ( data_flag == true )
-			{
-				if (quality != Tango::ATTR_INVALID)
-					delete_seq();
+        bool data_flag = get_value_flag();
+        if ( data_flag == true )
+        {
+            if (quality != Tango::ATTR_INVALID)
+                delete_seq();
 //				set_value_flag (false);
-			}
-		}
+        }
 
 		throw;
 	}
@@ -4705,23 +4676,20 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 // Check that the attribute value has been set
 //
 
-			if ((name_lower != "state") && (name_lower != "status"))
-			{
-				if (quality != Tango::ATTR_INVALID)
-				{
-					if (value_flag == false)
-					{
-						TangoSys_OMemStream o;
+            if (quality != Tango::ATTR_INVALID)
+            {
+                if (value_flag == false)
+                {
+                    TangoSys_OMemStream o;
 
-						o << "Value for attribute ";
-						o << name;
-						o << " has not been updated. Can't send user event\n";
-						o << "Set the attribute value (using set_value(...) method) before!" << ends;
+                    o << "Value for attribute ";
+                    o << name;
+                    o << " has not been updated. Can't send user event\n";
+                    o << "Set the attribute value (using set_value(...) method) before!" << ends;
 
-						Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_event()");
-					}
-				}
-			}
+                    Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_event()");
+                }
+            }
 		}
 
 //
@@ -4804,16 +4772,13 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 // delete the data values allocated in the attribute
 //
 
-		if ((name_lower != "state") && (name_lower != "status"))
-		{
-			bool data_flag = get_value_flag();
-			if ( data_flag == true )
-			{
-				if (quality != Tango::ATTR_INVALID)
-					delete_seq();
+        bool data_flag = get_value_flag();
+        if ( data_flag == true )
+        {
+            if (quality != Tango::ATTR_INVALID)
+                delete_seq();
 //				set_value_flag (false);
-			}
-		}
+        }
 	}
 	catch (...)
 	{
@@ -4828,16 +4793,13 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 // delete the data values allocated in the attribute
 //
 
-		if ((name_lower != "state") && (name_lower != "status"))
-		{
-			bool data_flag = get_value_flag();
-			if ( data_flag == true )
-			{
-				if (quality != Tango::ATTR_INVALID)
-					delete_seq();
+        bool data_flag = get_value_flag();
+        if ( data_flag == true )
+        {
+            if (quality != Tango::ATTR_INVALID)
+                delete_seq();
 //				set_value_flag (false);
-			}
-		}
+        }
 
 		throw;
 	}
