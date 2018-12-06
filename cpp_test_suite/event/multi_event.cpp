@@ -248,7 +248,7 @@ int main(int argc, char **argv)
 #endif
 						
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 4);
+		assert (cb.cb_executed == 6);
 		assert (cb.val == 31);
 		assert (cb.val_size == 4);
 				
@@ -269,7 +269,7 @@ int main(int argc, char **argv)
 #endif
 			
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 6);
+		assert (cb.cb_executed == 8);
 		assert (cb.val == 30);
 		assert (cb.val_size == 4);
 				
@@ -333,7 +333,7 @@ int main(int argc, char **argv)
 #endif
 						
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 10);
+		assert (cb.cb_executed == 12);
 		assert (ex == true);
 				
 		cout << "   Two CallBacks executed after a try to subscribe to one attribute with a NULL callback --> OK" << endl;
@@ -369,7 +369,7 @@ int main(int argc, char **argv)
 #endif
 						
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 11);
+		assert (cb.cb_executed == 13);
 		assert (cb.val == 32);
 		assert (cb.val_size == 4);
 				
@@ -390,7 +390,7 @@ int main(int argc, char **argv)
 #endif
 			
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 12);
+		assert (cb.cb_executed == 14);
 		assert (cb.val == 31);
 		assert (cb.val_size == 4);
 				
