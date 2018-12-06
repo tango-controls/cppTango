@@ -1366,96 +1366,52 @@ void Attribute::set_upd_properties(const T &conf, string &dev_name, bool from_ds
 template<typename T>
 void Attribute::Attribute_2_AttributeValue_base(T *ptr, Tango::DeviceImpl *d)
 {
-    if ((name_lower == "state") || (name_lower == "status"))
+    if (quality != Tango::ATTR_INVALID)
     {
-        ptr->quality = Tango::ATTR_VALID;
+        MultiAttribute *m_attr = d->get_device_attr();
 
-        if (name_lower == "state")
+        // Add the attribute setpoint to the value sequence
+
+        if ((writable == Tango::READ_WRITE) ||
+            (writable == Tango::READ_WITH_WRITE))
         {
-            ptr->value.dev_state_att(d->get_state());
+            m_attr->add_write_value(*this);
+        }
+
+        // check for alarms to position the data quality value.
+        if (is_alarmed().any() == true)
+        {
+            check_alarm();
+        }
+
+        ptr->r_dim.dim_x = dim_x;
+        ptr->r_dim.dim_y = dim_y;
+        if ((writable == Tango::READ_WRITE) ||
+            (writable == Tango::READ_WITH_WRITE))
+        {
+            WAttribute &assoc_att = m_attr->get_w_attr_by_ind(get_assoc_ind());
+            ptr->w_dim.dim_x = assoc_att.get_w_dim_x();
+            ptr->w_dim.dim_y = assoc_att.get_w_dim_y();
         }
         else
         {
-            Tango::DevVarStringArray str_seq(1);
-            str_seq.length(1);
-            str_seq[0] = CORBA::string_dup(d->get_status().c_str());
-
-            ptr->value.string_att_value(str_seq);
+            ptr->w_dim.dim_x = 0;
+            ptr->w_dim.dim_y = 0;
         }
-
-#ifdef _TG_WINDOWS_
-        struct _timeb t;
-        _ftime(&t);
-
-        ptr->time.tv_sec = (long)t.time;
-        ptr->time.tv_usec = (long)(t.millitm * 1000);
-        ptr->time.tv_nsec = 0;
-#else
-        struct timeval after;
-
-        gettimeofday(&after, NULL);
-
-        ptr->time.tv_sec = after.tv_sec;
-        ptr->time.tv_usec = after.tv_usec;
-        ptr->time.tv_nsec = 0;
-#endif
-        ptr->r_dim.dim_x = 1;
-        ptr->r_dim.dim_y = 0;
-        ptr->w_dim.dim_x = 0;
-        ptr->w_dim.dim_y = 0;
-
-        ptr->name = CORBA::string_dup(name.c_str());
-        ptr->data_format = data_format;
     }
     else
     {
-        if (quality != Tango::ATTR_INVALID)
-        {
-            MultiAttribute *m_attr = d->get_device_attr();
-
-            // Add the attribute setpoint to the value sequence
-
-            if ((writable == Tango::READ_WRITE) ||
-                (writable == Tango::READ_WITH_WRITE))
-            {
-                m_attr->add_write_value(*this);
-            }
-
-            // check for alarms to position the data quality value.
-            if (is_alarmed().any() == true)
-            {
-                check_alarm();
-            }
-
-            ptr->r_dim.dim_x = dim_x;
-            ptr->r_dim.dim_y = dim_y;
-            if ((writable == Tango::READ_WRITE) ||
-                (writable == Tango::READ_WITH_WRITE))
-            {
-                WAttribute &assoc_att = m_attr->get_w_attr_by_ind(get_assoc_ind());
-                ptr->w_dim.dim_x = assoc_att.get_w_dim_x();
-                ptr->w_dim.dim_y = assoc_att.get_w_dim_y();
-            }
-            else
-            {
-                ptr->w_dim.dim_x = 0;
-                ptr->w_dim.dim_y = 0;
-            }
-        }
-        else
-        {
-            ptr->r_dim.dim_x = 0;
-            ptr->r_dim.dim_y = 0;
-            ptr->w_dim.dim_x = 0;
-            ptr->w_dim.dim_y = 0;
-            ptr->value.union_no_data(true);
-        }
-
-        ptr->time = when;
-        ptr->quality = quality;
-        ptr->data_format = data_format;
-        ptr->name = CORBA::string_dup(name.c_str());
+        ptr->r_dim.dim_x = 0;
+        ptr->r_dim.dim_y = 0;
+        ptr->w_dim.dim_x = 0;
+        ptr->w_dim.dim_y = 0;
+        ptr->value.union_no_data(true);
     }
+
+    ptr->time = when;
+    ptr->quality = quality;
+    ptr->data_format = data_format;
+    ptr->name = CORBA::string_dup(name.c_str());
 }
 
 template<typename T, typename V>
