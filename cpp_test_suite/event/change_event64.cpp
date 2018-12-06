@@ -218,7 +218,7 @@ int main(int argc, char **argv)
 #endif
 						
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 2);
+		assert (cb.cb_executed == 3);
 		assert (cb.val == 0x800000001LL);
 		assert (cb.val_size == 2);
 				
@@ -239,7 +239,7 @@ int main(int argc, char **argv)
 #endif
 			
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 3);
+		assert (cb.cb_executed == 4);
 		assert (cb.val == 0x800000000LL);
 		assert (cb.val_size == 2);
 				
@@ -254,7 +254,7 @@ int main(int argc, char **argv)
 		Tango_sleep(2);
 			
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 4);
+		assert (cb.cb_executed == 5);
 		assert (cb.val == 0x800000000LL);
 		assert (cb.val_size == 3);
 				
@@ -269,7 +269,7 @@ int main(int argc, char **argv)
 		Tango_sleep(2);
 			
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 5);
+		assert (cb.cb_executed == 6);
 		assert (cb.val == 0x800000000LL);
 		assert (cb.val_size == 2);
 				
