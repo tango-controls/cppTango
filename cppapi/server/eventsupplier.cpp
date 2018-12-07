@@ -293,7 +293,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
 //--------------------------------------------------------------------------------------------------------------------
 
 bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct SuppliedEventData &attr_value,
-                                                 Attribute &attr, string &attr_name, DevFailed *except, bool user_push)
+                                                 Attribute &attr, string &attr_name, DevFailed *except, TANGO_UNUSED(bool user_push))
 {
     string event, domain_name;
     double delta_change_rel = 0.0;
@@ -565,7 +565,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
                                                   string &attr_name,
                                                   DevFailed *except,
                                                   struct timeval *time_bef_attr,
-                                                  bool user_push)
+                                                  TANGO_UNUSED(bool user_push))
 {
     string event, domain_name;
     double delta_change_rel = 0.0;
