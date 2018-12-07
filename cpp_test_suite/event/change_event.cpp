@@ -245,7 +245,7 @@ int main(int argc, char **argv)
 #endif
 						
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 2);
+		assert (cb.cb_executed == 3);
 		assert (cb.val == 31);
 		assert (cb.val_size == 4);
 				
@@ -266,7 +266,7 @@ int main(int argc, char **argv)
 #endif
 			
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 3);
+		assert (cb.cb_executed == 4);
 		assert (cb.val == 30);
 		assert (cb.val_size == 4);
 				
@@ -281,7 +281,7 @@ int main(int argc, char **argv)
 		Tango_sleep(2);
 			
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 4);
+		assert (cb.cb_executed == 5);
 		assert (cb.val == 30);
 		assert (cb.val_size == 5);
 				
@@ -296,7 +296,7 @@ int main(int argc, char **argv)
 		Tango_sleep(2);
 			
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 5);
+		assert (cb.cb_executed == 6);
 		assert (cb.val == 30);
 		assert (cb.val_size == 4);
 				
@@ -365,7 +365,7 @@ int main(int argc, char **argv)
 #endif
 						
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 7);
+		assert (cb.cb_executed == 8);
 		assert (ex == true);
 				
 		cout << "   CallBack executed after a try to subscribe to one attribute with a NULL callback --> OK" << endl;
@@ -523,14 +523,14 @@ device = new DeviceProxy(device_name);
 #endif
 						
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 1);
+		assert (cb.cb_executed == 2);
 		
 		device->command_inout("IOIncValue");
 		device->command_inout("IOIncValue");
 		
 		Tango_sleep(1);
 		
-		assert (cb.cb_executed == 2);
+		assert (cb.cb_executed == 3);
 		assert (cb.val == 33);
 		assert (cb.val_size == 4);
 				
@@ -551,20 +551,20 @@ device = new DeviceProxy(device_name);
 #endif
 						
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 2);
+		assert (cb.cb_executed == 3);
 		
 		device->command_inout("IODecValue");
-		device->command_inout("IODecValue");
-		
-		Tango_sleep(1);
-		
-		assert (cb.cb_executed == 2);
-		
 		device->command_inout("IODecValue");
 		
 		Tango_sleep(1);
 		
 		assert (cb.cb_executed == 3);
+		
+		device->command_inout("IODecValue");
+		
+		Tango_sleep(1);
+		
+		assert (cb.cb_executed == 4);
 		assert (cb.val == 29);
 		assert (cb.val_size == 4);
 				
