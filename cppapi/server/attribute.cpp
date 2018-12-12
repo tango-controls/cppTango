@@ -3343,7 +3343,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_4 *ptr_4,Tango:
 	Tango::AttributeValueList_4 dummy_list(1,1,ptr_4,false);
 	aid.data_4 = &dummy_list;
 
-	if ((name_lower != "state") && (name_lower != "status") && (quality != Tango::ATTR_INVALID))
+	if ((quality != Tango::ATTR_INVALID))
         d->data_into_net_object(*this,aid,0,writable,false);
 }
 
@@ -3371,7 +3371,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_5 *ptr_5,Tango:
 	Tango::AttributeValueList_5 dummy_list(1,1,ptr_5,false);
 	aid.data_5 = &dummy_list;
 
-	if ((name_lower != "state") && (name_lower != "status") && (quality != Tango::ATTR_INVALID))
+	if ((quality != Tango::ATTR_INVALID))
         d->data_into_net_object(*this,aid,0,writable,false);
 
 	ptr_5->data_type = data_type;
