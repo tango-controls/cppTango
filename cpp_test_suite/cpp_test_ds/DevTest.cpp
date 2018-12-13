@@ -112,6 +112,7 @@ void DevTest::init_device()
 	attr_state_rw = Tango::FAULT;
 	PollLong_attr_num = 0;
 	PollString_spec_attr_num = 0;
+	attr_asyn_write_val = 42;
 
 	Short_attr_except = false;
 	if (tg->is_svr_starting() == true || tg->is_device_restarting(device_name) == true)
@@ -867,8 +868,16 @@ void DevTest::write_attr_asyn_write(Tango::WAttribute &att)
 
 	Tango::DevLong lg;
 	att.get_write_value(lg);
+	attr_asyn_write_val = lg;
 	cout << "Attribute value = " << lg << endl;
 	Tango_sleep(2);
+}
+
+void DevTest::read_attr_asyn_write(Tango::Attribute &att)
+{
+	cout << "In read_attr_asyn_write for attribute " << att.get_name() << endl;
+	Tango_sleep(2);
+	att.set_value(&attr_asyn_write_val);
 }
 
 void DevTest::write_attr_asyn_write_to(Tango::WAttribute &att)

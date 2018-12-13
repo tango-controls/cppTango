@@ -3,6 +3,12 @@ UNRELEASED
 
 1. Replace CORBA::string_dup with Tango::string_dup (#474)
 2. Fix memory leak on get_device_property() on Windows when code compiled with Visual Studio 10 or older (#439, #488)
+3. Fix cxx_fwd_att occasional failure (#384,#428,#493)
+4. Fix "Change event subscription blind to change events right after device server restart" issue (#359,#503). 
+This bug fix may trigger the reception of 2 consecutive events having possibly the same attribute value during the 
+Device Server startup phase.
+5. Added asyn_reconnection test (#502)
+6. Fix client crash in case of asynchronous write_attribute executed immediately after reconnection (#502)
 
 9.3.2
 =====

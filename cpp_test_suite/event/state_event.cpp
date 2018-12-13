@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 		
 		Tango_sleep(2);
 		
-		assert (cb.cb_executed == 3);
+		assert (cb.cb_executed == 4);
 		assert (cb.cb_err == 0);
 		assert (cb.sta == Tango::ON);
 		
@@ -272,7 +272,7 @@ int main(int argc, char **argv)
 		Tango_sleep(2);
 
 		string::size_type pos = cb.status.find("ON");		
-		assert (cb.cb_executed == 3);
+		assert (cb.cb_executed == 4);
 		assert (pos != string::npos);
 		assert (cb.cb_err == 0);
 		
