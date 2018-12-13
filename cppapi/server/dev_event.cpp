@@ -735,11 +735,13 @@ void DeviceImpl::set_change_event  (string attr_name, bool implemented, bool det
 
 void DeviceImpl::push_change_event(string attr_name, DevFailed *except)
 {
-    if(attr_name == "state"){
+    string lower_attr_name = attr_name;
+	transform(lower_attr_name.begin(), lower_attr_name.end(), lower_attr_name.begin(), ::tolower);
+    if(lower_attr_name == "state"){
         push_state_change_event();
         return;
     }
-    if(attr_name == "status"){
+    if(lower_attr_name == "status"){
         push_status_change_event();
         return;
     }
