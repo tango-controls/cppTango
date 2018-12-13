@@ -2615,10 +2615,12 @@ void DevTest::cmd_push_state_status_event()
 	struct timeval tv;
 	gettimeofday(&tv, nullptr);
 
-	auto state = Tango::DevState::MOVING;
+	Tango::DevState state = Tango::DevState::MOVING;
 	Tango::DevString status = "some status";
 
-    this->push_change_event("state", &state, tv, Tango::AttrQuality::ATTR_VALID);
+	//set_state(state);
+	//set_status(status);
+    this->push_change_event("state", &state, tv, Tango::AttrQuality::ATTR_CHANGING);
     this->push_change_event("status", &status, tv, Tango::AttrQuality::ATTR_VALID);
 
 	set_change_event("State",false,false);

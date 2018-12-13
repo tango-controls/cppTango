@@ -4200,9 +4200,6 @@ void Attribute::fire_archive_event(DevFailed *except)
 
 		if (client_libs.empty() == true)
         {
-			if ( (name_lower != "state") && (name_lower != "status") )
-            {
-
 //
 // Delete the data values allocated in the attribute
 //
@@ -4224,7 +4221,6 @@ void Attribute::fire_archive_event(DevFailed *except)
 //						set_value_flag (false);
 					}
                 }
-            }
 			return;
         }
 
@@ -4634,9 +4630,6 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 
 		if (((event_supplier_nd == NULL) && (event_supplier_zmq == NULL)) || client_libs.empty() == true)
 		{
-			if (name_lower != "state")
-			{
-
 //
 // Delete the data values allocated in the attribute
 //
@@ -4658,7 +4651,6 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 //						set_value_flag (false);
 					}
 				}
-			}
 			return;
 		}
 
