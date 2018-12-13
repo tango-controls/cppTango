@@ -3419,6 +3419,8 @@ public:
 
 	void set_client_lib(int _l) {if (count(client_lib.begin(),client_lib.end(),_l)==0)client_lib.push_back(_l);}
 
+    void push_state_change_event();
+    void push_status_change_event();
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
 	{return logger ? logger : get_logger_i();}

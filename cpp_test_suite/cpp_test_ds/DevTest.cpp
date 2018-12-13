@@ -2627,6 +2627,9 @@ void DevTest::cmd_push_state_status_event()
 	Tango::DevState state = Tango::DevState::MOVING;
 	Tango::DevString status = "some status";
 
+    this->push_change_event("state");
+    this->push_change_event("status");
+
 	//set_state(state);
 	//set_status(status);
     this->push_change_event("state", &state, tv, Tango::AttrQuality::ATTR_CHANGING);

@@ -6482,4 +6482,15 @@ void DeviceImpl::set_pipe_prop(vector<PipeProperty> &dev_prop, Pipe *pi_ptr, Pip
     cout4 << "Leaving set_pipe_prop() method" << endl;
 }
 
-} // End of Tango namespace
+void DeviceImpl::push_state_change_event()
+{
+    DevState state = get_state();
+    push_change_event("state", &state);
+}
+
+void DeviceImpl::push_status_change_event()
+{
+    const char* status = get_status().c_str();
+    push_change_event("status", (DevString *) &status);
+}
+}// End of Tango namespace

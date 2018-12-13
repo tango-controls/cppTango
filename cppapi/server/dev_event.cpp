@@ -735,6 +735,15 @@ void DeviceImpl::set_change_event  (string attr_name, bool implemented, bool det
 
 void DeviceImpl::push_change_event(string attr_name, DevFailed *except)
 {
+    if(attr_name == "state"){
+        push_state_change_event();
+        return;
+    }
+    if(attr_name == "status"){
+        push_status_change_event();
+        return;
+    }
+
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
 
