@@ -273,7 +273,7 @@ public:
 
 	void test_reading_forwarded_attribute(void)
 	{
-		DeviceAttribute short_attr, string_attr, sp_db, ima_str;
+		DeviceAttribute short_attr, string_attr, sp_db, ima_str, string_rw_attr;
 
 		// read attributes
 
@@ -317,6 +317,15 @@ public:
 		TS_ASSERT(v_str[0] == "Alors la, pour une surprise");
 		TS_ASSERT(v_str[1] == "c'est une surprise");
 		TS_ASSERT(v_str[2] == "Not initialised");
+
+		TS_ASSERT_THROWS_NOTHING(string_rw_attr = fwd_device->read_attribute("fwd_string_rw"));
+		string string_rw_str;
+		string_rw_attr >> string_rw_str;
+		TS_ASSERT(string_rw_attr.name == "fwd_string_rw");
+		TS_ASSERT(string_rw_attr.quality == Tango::ATTR_VALID);
+		TS_ASSERT(string_rw_attr.dim_x == 1);
+		TS_ASSERT(string_rw_attr.dim_y == 0);
+		TS_ASSERT(string_rw_str == "The incredible initial string!");
 	}
 
 // Test attribute writing

@@ -368,6 +368,18 @@ public:
 	{(static_cast<DevTest *>(dev))->write_State_attr_rw(att);}
 };
 
+class String_attr_rwAttr: public Tango::Attr
+{
+public:
+	String_attr_rwAttr():Attr("String_attr_rw", Tango::DEV_STRING, Tango::READ_WRITE) {};
+	~String_attr_rwAttr() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<DevTest *>(dev))->read_String_attr_rw(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<DevTest *>(dev))->write_String_attr_rw(att);}
+};
+
 
 class Short_attr_wAttr: public Tango::Attr
 {

@@ -113,6 +113,7 @@ void DevTest::init_device()
 	PollLong_attr_num = 0;
 	PollString_spec_attr_num = 0;
 	attr_asyn_write_val = 42;
+	attr_string_rw = Tango::string_dup("The incredible initial string!");
 
 	Short_attr_except = false;
 	if (tg->is_svr_starting() == true || tg->is_device_restarting(device_name) == true)
@@ -948,6 +949,12 @@ void DevTest::write_State_attr_rw(Tango::WAttribute &att)
 	att.get_write_value(attr_state_rw);
 }
 
+void DevTest::write_String_attr_rw(Tango::WAttribute &att)
+{
+	cout << "In write_String_attr_rw for attribute " << att.get_name() << endl;
+	att.get_write_value(attr_string_rw);
+}
+
 void DevTest::write_Float_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_Float_attr_w for attribute " << att.get_name() << endl;
@@ -1471,6 +1478,12 @@ void DevTest::read_State_attr_rw(Tango::Attribute &att)
 {
       	cout << "[DevTest::read_attr] attribute name State_attr_rw" << endl;
       	att.set_value(&attr_state_rw);
+}
+
+void DevTest::read_String_attr_rw(Tango::Attribute &att)
+{
+	cout << "[DevTest::read_attr] attribute name String_attr_rw" << endl;
+	att.set_value(&attr_string_rw);
 }
 
 void DevTest::read_attr_asyn(Tango::Attribute &att)
