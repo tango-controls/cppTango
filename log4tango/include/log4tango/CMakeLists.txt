@@ -24,6 +24,6 @@ set(HEADER_FILES
 add_subdirectory(threading)
 
 install(FILES ${HEADER_FILES}
-        DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/log4tango)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/log4tango)
+        DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/log4tango)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/log4tango)
 #TODO if windows 32 install config-win32.h
