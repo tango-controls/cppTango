@@ -833,7 +833,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 			if (pos != connected_heartbeat.end())
 				connected_heartbeat.erase(pos);
 
-			heartbeat_sub_sock->disconnect(endpoint);
+			disconnect_socket(*heartbeat_sub_sock, endpoint);
 
 //
 // Remove the event endpoint from the already connected event and disconnect the event socket
@@ -843,7 +843,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 			if (pos != connected_pub.end())
 			{
 				connected_pub.erase(pos);
-				event_sub_sock->disconnect(endpoint_event);
+				disconnect_socket(*event_sub_sock, endpoint_event);
 			}
 #endif
         }
@@ -3544,6 +3544,22 @@ ReceivedFromAdmin ZmqEventConsumer::initialize_received_from_admin(const Tango::
     }
     cout4 << "received_from_admin.channel_name = " << result.channel_name << endl;
     return result;
+}
+
+void ZmqEventConsumer::disconnect_socket(zmq::socket_t& socket, const char* endpoint)
+{
+    try
+    {
+        socket.disconnect(endpoint);
+    }
+    catch (const zmq::error_t& e)
+    {
+        // Silently ignore ENOENT as it indicates that endpoint is already disconnected.
+        if (e.num() != ENOENT)
+        {
+            throw;
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------------------------------------------
