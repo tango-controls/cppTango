@@ -2639,26 +2639,7 @@ DeviceProxy::~DeviceProxy()
 //
 // If the device has some subscribed event, unsubscribe them
 //
-
-    if (ApiUtil::_is_instance_null() == false)
-    {
-        ApiUtil *api_ptr = ApiUtil::instance();
-        ZmqEventConsumer *zmq = api_ptr->get_zmq_event_consumer();
-        if (zmq != Tango_nullptr)
-        {
-            vector<int> ids;
-            zmq->get_subscribed_event_ids(this, ids);
-            if (ids.empty() == false)
-            {
-                vector<int>::iterator ite;
-                for (ite = ids.begin(); ite != ids.end(); ++ite)
-                {
-                    unsubscribe_event(*ite);
-                }
-
-            }
-        }
-    }
+    unsubscribe_all_events();
 
 //
 // If the device is locked, unlock it whatever the lock counter is
@@ -2688,6 +2669,38 @@ DeviceProxy::~DeviceProxy()
 #endif
 }
 
+void DeviceProxy::unsubscribe_all_events()
+{
+    if (ApiUtil* api = ApiUtil::instance())
+    {
+        if (ZmqEventConsumer* zmq_event_consumer = api->get_zmq_event_consumer())
+        {
+            vector<int> event_ids;
+            zmq_event_consumer->get_subscribed_event_ids(this, event_ids);
+
+            for (vector<int>::iterator event_id = event_ids.begin();
+                event_id != event_ids.end();
+                ++event_id)
+            {
+                try
+                {
+                    unsubscribe_event(*event_id);
+                }
+                catch (CORBA::Exception& e)
+                {
+                    Tango::Except::print_exception(e);
+                }
+                catch (...)
+                {
+                    std::cerr <<
+                        "DeviceProxy::unsubscribe_all_events(): "
+                        "Unknown exception thrown from unsubscribe_event() for "
+                        "device \"" << name() << "\" and event_id=" << *event_id << std::endl;
+                }
+            }
+        }
+    }
+}
 
 //-----------------------------------------------------------------------------
 //
