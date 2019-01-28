@@ -1,8 +1,10 @@
 find_package (Threads REQUIRED)
+find_program(PYTHON_INTERPRETER NAMES python2 python)
 
 macro(CXX_GENERATE_TEST name)
     message("Generate ${name}.cpp")
-    execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
+    execute_process(COMMAND "${PYTHON_INTERPRETER}" cxxtestgen.py
+            --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
             -o ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cpp
             ../../new_tests/${name}.cpp
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
