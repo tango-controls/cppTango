@@ -814,6 +814,7 @@ void DServer::restart(string &d_name)
 	}
 
 	DeviceImpl *dev_to_del = *ite;
+	unsigned long found_class_index = i;
 
 //
 // Memorize device interface if some client(s) are listening on device interface change event
@@ -847,12 +848,6 @@ void DServer::restart(string &d_name)
 	Tango::Util *tg = Tango::Util::instance();
 	tg->get_sub_dev_diag().remove_sub_devices (dev_to_del->get_name());
 	tg->get_sub_dev_diag().set_associated_device(dev_to_del->get_name());
-
-//
-// Remove ourself from device list
-//
-
-	class_list[i]->get_device_list().erase(ite);
 
 //
 // Get device name, class pointer, polled object list and event parameters
@@ -927,6 +922,12 @@ void DServer::restart(string &d_name)
         if (dev_to_del->get_exported_flag() == true)
             r_poa->deactivate_object(dev_to_del->get_obj_id().in());
         CORBA::release(r_poa);
+
+//
+// Remove ourself from device list
+//
+
+		class_list[found_class_index]->get_device_list().erase(ite);
 
 //
 // Re-create device. Take the monitor in case of class or process serialisation model
