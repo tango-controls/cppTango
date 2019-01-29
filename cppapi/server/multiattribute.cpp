@@ -1028,7 +1028,7 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 
 	Attribute *att = attr_list[att_index];
 
-	int old_idx = att->get_attr_idx();
+	long old_idx = att->get_attr_idx();
 	DeviceImpl *the_dev = att->get_att_device();
 	string &dev_class_name = the_dev->get_device_class()->get_name();
 
@@ -1038,22 +1038,32 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 	advance(pos,att_index);
 	pos = attr_list.erase(pos);
 
-//
-// Update all the index for attribute following the one which has been deleted
-// This is a 2 steps process:
-// 1 - Update index in local device
-// 2 - Update indexes in remaining device(s) belonging to the same class
-//
+// Update all the att_index_in_vector indexes for the attributes following the one which has been deleted
+	for (vector<Tango::Attribute *>::iterator tmp_pos = pos ;tmp_pos != attr_list.end();++tmp_pos)
+	{
+		string & attr_name_lower = (*tmp_pos)->get_name_lower();
+		ext->attr_map[attr_name_lower].att_index_in_vector--;
+	}
 
 	if (update_idx == true)
 	{
-		for (;pos != attr_list.end();++pos)
-		{
-			(*pos)->set_attr_idx((*pos)->get_attr_idx() - 1);
-			string & attr_name_lower = (*pos)->get_name_lower();
-			ext->attr_map[attr_name_lower].att_index_in_vector--;
-		}
-
+// This attribute has been removed from the class attributes list
+// In devices attributes lists for this class, update all the indexes to
+// MultiClassAttribute vector for the attributes which are following (in MultiClassAttribute vector) the one
+// which has been deleted
+// This is a 2 steps process:
+// 1 - Update indexes in local device
+// 2 - Update indexes in remaining device(s) belonging to the same class
+// Update indexes in local device
+        for(vector<Tango::Attribute *>::iterator pos_it = attr_list.begin(); pos_it != attr_list.end(); pos_it++)
+        {
+            long idx = (*pos_it)->get_attr_idx();
+            if (idx > old_idx)
+            {
+                (*pos_it)->set_attr_idx(idx - 1);
+            }
+        }
+//  Update indexes in remaining device(s) belonging to the same class
 		Tango::Util *tg = Tango::Util::instance();
 		vector<DeviceImpl *> &dev_list = tg->get_device_list_by_class(dev_class_name);
 
@@ -1065,14 +1075,12 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 
 			MultiAttribute * dev_multi_attr = (*dev_ite)->get_device_attr();
 			vector<Attribute *> &dev_att_list = dev_multi_attr->get_attribute_list();
-			for (unsigned int i = 0;i < dev_att_list.size();++i)
+			for (unsigned int i = 0;i < dev_att_list.size()-2 /* ignore state and status */ ;++i)
 			{
-				int idx = dev_att_list[i]->get_attr_idx();
+				long idx = dev_att_list[i]->get_attr_idx();
 				if (idx > old_idx)
 				{
 					dev_att_list[i]->set_attr_idx(idx - 1);
-					string & attr_name_lower = dev_att_list[i]->get_name_lower();
-					dev_multi_attr->ext->attr_map[attr_name_lower].att_index_in_vector--;
 				}
 			}
 		}
