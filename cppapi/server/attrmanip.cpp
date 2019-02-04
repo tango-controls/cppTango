@@ -40,7 +40,7 @@
 namespace Tango
 {
 
-void execute_manip(ostream &o_str, string &manip)
+void execute_manip(std::ostream &o_str, std::string &manip)
 {
 
 //
@@ -49,32 +49,32 @@ void execute_manip(ostream &o_str, string &manip)
 
 	if (manip == "fixed")
 	{
-		o_str.setf(ios::fixed,ios::floatfield);
+		o_str.setf(std::ios::fixed,std::ios::floatfield);
 		return;
 	}
 	else if (manip == "scientific")
 	{
-		o_str.setf(ios::scientific,ios::floatfield);
+		o_str.setf(std::ios::scientific,std::ios::floatfield);
 		return;
 	}
 	else if (manip == "uppercase")
 	{
-		o_str.setf(ios::uppercase);
+		o_str.setf(std::ios::uppercase);
 		return;
 	}
 	else if (manip == "showpoint")
 	{
-		o_str.setf(ios::showpoint);
+		o_str.setf(std::ios::showpoint);
 		return;
 	}
 	else if (manip == "showpos")
 	{
-		o_str.setf(ios::showpos);
+		o_str.setf(std::ios::showpos);
 		return;
 	}
 	else if (manip.substr(0,13) == "setprecision(")
 	{
-		string num_str = manip.substr(13,manip.size() - 14);
+		std::string num_str = manip.substr(13,manip.size() - 14);
 		TangoSys_MemStream o;
 		long num;
 		o << num_str;
@@ -84,7 +84,7 @@ void execute_manip(ostream &o_str, string &manip)
 	}
 	else if (manip.substr(0,5) == "setw(")
 	{
-		string num_str = manip.substr(5,manip.size() - 6);
+		std::string num_str = manip.substr(5,manip.size() - 6);
 		TangoSys_MemStream o;
 		long num;
 		o << num_str;
@@ -96,18 +96,18 @@ void execute_manip(ostream &o_str, string &manip)
 
 //#ifndef TANGO_HAS_LOG4TANGO
 
-ostream &operator<<(ostream &o_str,const AttrManip &manip)
+std::ostream &operator<<(std::ostream &o_str,const AttrManip &manip)
 {
 
 //
 // Extract each manipulator (; separated) and call the execute_manip for each one
 //
 
-	string::size_type start = 0;
-	string str;
-	string::size_type pos;
+	std::string::size_type start = 0;
+	std::string str;
+	std::string::size_type pos;
 
-	while ((pos = manip.format.find(';',start)) != string::npos)
+	while ((pos = manip.format.find(';',start)) != std::string::npos)
 	{
 		str = manip.format.substr(start,pos - start);
 		start = pos + 1;
