@@ -51,7 +51,7 @@
 class DbDevice
 {
 private :
-	string 		name;
+	std::string 		name;
 	Database 	*dbase;
 	int 		db_ind;
 	bool 		ext_dbase;
@@ -63,7 +63,7 @@ private :
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DbDeviceExt>     ext;
+    std::unique_ptr<DbDeviceExt>     ext;
 #else
 	DbDeviceExt	                *ext;
 #endif
@@ -80,7 +80,7 @@ public :
  * @param [in] dev_name	The device name
  *
  */
-	DbDevice(string &dev_name);
+	DbDevice(std::string &dev_name);
 /**
  * Create a DbDevice object using a specified database
  *
@@ -91,7 +91,7 @@ public :
  * @param [in] db The database object
  *
  */
-	DbDevice(string &dev_name, Database *db);
+	DbDevice(std::string &dev_name, Database *db);
 //@}
 
 
@@ -224,14 +224,14 @@ public :
 
 /// @privatesection
 
-	DbDevice(string &,string &,string &);
+	DbDevice(std::string &,std::string &,std::string &);
 	~DbDevice();
-	void set_name(string &new_name) {name = new_name;}
+	void set_name(std::string &new_name) {name = new_name;}
 	Database *get_dbase();
 	void set_dbase(Database *db) {dbase = db;}
 
 	AccessControlType check_access_control();
 	void clear_access_except_errors();
-	void get_property_list(const string &,vector<string> &);
+	void get_property_list(const std::string &,std::vector<std::string> &);
 };
 #endif /* _DBDEVICE_H */

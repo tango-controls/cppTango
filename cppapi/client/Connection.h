@@ -59,15 +59,15 @@ protected :
 	bool 				dbase_used;			// Dev. with database
 	bool 				from_env_var;		// DB from TANGO_HOST
 
-	string 				host;				// DS host (if dbase_used=false)
-	string 				port;				// DS port (if dbase_used=false)
+	std::string 				host;				// DS host (if dbase_used=false)
+	std::string 				port;				// DS port (if dbase_used=false)
 	int 				port_num;			// DS port (as number)
 
-	string 				db_host;			// DB host
-	string 				db_port;			// DB port
+	std::string 				db_host;			// DB host
+	std::string 				db_port;			// DB port
 	int 				db_port_num;		// DB port (as number)
 
-	string 				ior;
+	std::string 				ior;
 	long 				pasyn_ctr;
 	long				pasyn_cb_ctr;
 
@@ -83,15 +83,15 @@ protected :
 	bool				check_acc;
 	AccessControlType	access;
 
-	virtual string get_corba_name(bool)=0;
-	virtual string build_corba_name()=0;
+	virtual std::string get_corba_name(bool)=0;
+	virtual std::string build_corba_name()=0;
 	virtual int get_lock_ctr()=0;
 	virtual void set_lock_ctr(int)=0;
 
 	DeviceData redo_synch_cmd(TgRequest &);
 
-	int get_env_var(const char *,string &);
-	int get_env_var_from_file(string &,const char *,string &);
+	int get_env_var(const char *,std::string &);
+	int get_env_var_from_file(std::string &,const char *,std::string &);
 
 	void set_connection_state(int);
 
@@ -118,7 +118,7 @@ protected :
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<ConnectionExt>   ext;
+    std::unique_ptr<ConnectionExt>   ext;
 #else
 	ConnectionExt		        *ext; 	// Class extension
 #endif
@@ -221,7 +221,7 @@ public :
  * @return The command result
  * @throws ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
  */
-	virtual DeviceData command_inout(string &cmd_name);
+	virtual DeviceData command_inout(std::string &cmd_name);
 /**
  * Execute a command (without input data)
  *
@@ -231,7 +231,7 @@ public :
  * @return The command result
  * @throws ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
  */
-	virtual DeviceData command_inout(const char *cmd_name) {string str(cmd_name);return command_inout(str);}
+	virtual DeviceData command_inout(const char *cmd_name) {std::string str(cmd_name);return command_inout(str);}
 /**
  * Execute a command (with input data)
  *
@@ -243,7 +243,7 @@ public :
  * @return The command result
  * @throws ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
  */
-	virtual DeviceData command_inout(string &cmd_name, DeviceData &d_in);
+	virtual DeviceData command_inout(std::string &cmd_name, DeviceData &d_in);
 /**
  * Execute a command (with input data)
  *
@@ -255,7 +255,7 @@ public :
  * @return The command result
  * @throws ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
  */
-	virtual DeviceData command_inout(const char *cmd_name,DeviceData &d_in) {string str(cmd_name);return command_inout(str,d_in);}
+	virtual DeviceData command_inout(const char *cmd_name,DeviceData &d_in) {std::string str(cmd_name);return command_inout(str,d_in);}
 //@}
 
 /** @name Aynchronous command oriented methods */
@@ -295,7 +295,7 @@ public :
  * @return The call identifier
  * @throws ConnectionFailed
  */
-	virtual long command_inout_asynch(string &cmd_name,DeviceData &argin,bool forget=false);
+	virtual long command_inout_asynch(std::string &cmd_name,DeviceData &argin,bool forget=false);
 /**
  * Execute a command asynchronously
  *
@@ -327,7 +327,7 @@ public :
  * @return The call identifier
  * @throws ConnectionFailed
  */
-	virtual long command_inout_asynch(string &cmd_name,bool forget=false);
+	virtual long command_inout_asynch(std::string &cmd_name,bool forget=false);
 /**
  * Check an asynchronous command_inout answer is arrived
  *
@@ -349,7 +349,7 @@ public :
  * }
  * catch(Tango::AsynReplyNotArrived)
  * {
- *    cerr << "Command not arrived !" << endl;
+ *    std::cerr << "Command not arrived !" << std::endl;
  * }
  * catch (Tango::DevFailed &e)
  * {
@@ -388,7 +388,7 @@ public :
  * @param [in] cb The call-back object
  * @throws ConnectionFailed
  */
-	virtual void command_inout_asynch(string &cmd_name,CallBack &cb);
+	virtual void command_inout_asynch(std::string &cmd_name,CallBack &cb);
 /**
  * Execute a command asynchronously with callback
  *
@@ -414,7 +414,7 @@ public :
  * @param [in] cb The call-back object
  * @throws ConnectionFailed
  */
-    virtual void command_inout_asynch(string &cmd_name,DeviceData &argin,CallBack &cb);
+    virtual void command_inout_asynch(std::string &cmd_name,DeviceData &argin,CallBack &cb);
 /**
  * Execute a command asynchronously with input value and callback
  *
@@ -457,8 +457,8 @@ public :
  *    {
  *       short cmd_result;
  *       cmd->argout >> cmd_result;
- *       cout << "Command result = " << cmd_result << endl;
- *       cout << "Callback personal data = " << data << endl;
+ *       cout << "Command result = " << cmd_result << std::endl;
+ *       cout << "Callback personal data = " << data << std::endl;
  *    }
  * }
  *
@@ -516,7 +516,7 @@ public :
 //@}
 
 ///@privatesection
-	virtual string dev_name()=0;
+	virtual std::string dev_name()=0;
 
 	Connection(CORBA::ORB *orb = NULL);
 	Connection(bool dummy);
@@ -524,17 +524,17 @@ public :
 	Connection(const Connection &);
 	Connection & operator=(const Connection &);
 
-	string &get_db_host() {return db_host;}
-	string &get_db_port() {return db_port;}
+	std::string &get_db_host() {return db_host;}
+	std::string &get_db_port() {return db_port;}
 	int get_db_port_num() {return db_port_num;}
 	bool get_from_env_var() {return from_env_var;}
-	static void get_fqdn(string &);
+	static void get_fqdn(std::string &);
 
 	bool is_dbase_used() {return dbase_used;}
-	string &get_dev_host() {return host;}
-	string &get_dev_port() {return port;}
+	std::string &get_dev_host() {return host;}
+	std::string &get_dev_port() {return port;}
 
-	void connect(string &name);
+	void connect(std::string &name);
 	virtual void reconnect(bool);
 	bool is_connected();
 
@@ -542,8 +542,8 @@ public :
 	Tango::Device_4_ptr get_device_4() {return Device_4::_duplicate(device_4);}
 	Tango::Device_5_ptr get_device_5() {return Device_5::_duplicate(device_5);}
 
-	virtual CORBA::Any_var command_inout(string &, CORBA::Any&);
-	virtual CORBA::Any_var command_inout(const char *co, CORBA::Any &d) {string str(co);return command_inout(str,d);}
+	virtual CORBA::Any_var command_inout(std::string &, CORBA::Any&);
+	virtual CORBA::Any_var command_inout(const char *co, CORBA::Any &d) {std::string str(co);return command_inout(str,d);}
 
 //
 // Asynchronous methods

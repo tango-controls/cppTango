@@ -281,7 +281,7 @@ public:
  *
  * @param	def_enum_labels	The enumeration labels
  */
-	void set_enum_labels(vector<string> &def_enum_labels)
+	void set_enum_labels(std::vector<std::string> &def_enum_labels)
 	{
 		for (size_t loop = 0;loop < def_enum_labels.size();loop++)
 		{
@@ -325,27 +325,27 @@ public:
 		set_archive_event_period(def_archive_period);
 	}
 
-	string 			label;
-	string 			description;
-	string 			unit;
-	string 			standard_unit;
-	string 			display_unit;
-	string 			format;
-	string 			min_value;
-	string			max_value;
-	string			min_alarm;
-	string			max_alarm;
-	string			min_warning;
-	string			max_warning;
-	string			delta_val;
-	string			delta_t;
-	string			abs_change;
-	string			rel_change;
-	string			period;
-	string			archive_abs_change;
-	string			archive_rel_change;
-	string			archive_period;
-	string			enum_labels;
+	std::string 			label;
+	std::string 			description;
+	std::string 			unit;
+	std::string 			standard_unit;
+	std::string 			display_unit;
+	std::string 			format;
+	std::string 			min_value;
+	std::string			max_value;
+	std::string			min_alarm;
+	std::string			max_alarm;
+	std::string			min_warning;
+	std::string			max_warning;
+	std::string			delta_val;
+	std::string			delta_t;
+	std::string			abs_change;
+	std::string			rel_change;
+	std::string			period;
+	std::string			archive_abs_change;
+	std::string			archive_rel_change;
+	std::string			archive_period;
+	std::string			enum_labels;
 
 private:
     class UserDefaultAttrPropExt
@@ -353,7 +353,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<UserDefaultAttrPropExt>  ext;           // Class extension
+    std::unique_ptr<UserDefaultAttrPropExt>  ext;           // Class extension
 #else
 	UserDefaultAttrPropExt	            *ext;
 #endif
@@ -538,7 +538,7 @@ public:
 
 /// @privatesection
     Attr(const Attr &);
-	string  &get_name() {return name;}
+	std::string  &get_name() {return name;}
 	Tango::AttrDataFormat get_format() {return format;}
 	Tango::AttrWriteType get_writable() {return writable;}
 	long get_type() {return type;}
@@ -546,14 +546,14 @@ public:
 	long get_polling_period() {return poll_period;}
 	bool get_memorized() {return mem;}
 	bool get_memorized_init() {return mem_init;}
-	string	&get_assoc() {return assoc_name;}
-	const string &get_cl_name() {return cl_name;}
-	void set_cl_name(const string &cl) {cl_name = cl;}
+	std::string	&get_assoc() {return assoc_name;}
+	const std::string &get_cl_name() {return cl_name;}
+	void set_cl_name(const std::string &cl) {cl_name = cl;}
 	bool is_assoc() {if (assoc_name != AssocWritNotSpec)return true;else return false;}
 
-	vector<AttrProperty>	&get_class_properties() {return class_properties;}
-	vector<AttrProperty>	&get_user_default_properties() {return user_default_properties;}
-	void set_class_properties(vector<AttrProperty> &in_prop) {class_properties=in_prop;}
+	std::vector<AttrProperty>	&get_class_properties() {return class_properties;}
+	std::vector<AttrProperty>	&get_user_default_properties() {return user_default_properties;}
+	void set_class_properties(std::vector<AttrProperty> &in_prop) {class_properties=in_prop;}
 	void check_type();
 
 	virtual bool is_fwd() {return false;}
@@ -562,20 +562,20 @@ public:
 	virtual void write(DeviceImpl *,WAttribute &) {};
 	virtual bool is_allowed(DeviceImpl *,AttReqType) {return true;}
 
-	virtual bool same_type(const type_info &) {return false;}
-	virtual string get_enum_type() {return string("Unknown");}
+	virtual bool same_type(const std::type_info &) {return false;}
+	virtual std::string get_enum_type() {return std::string("Unknown");}
 
 #ifndef TANGO_HAS_LOG4TANGO
-	friend ostream &operator<<(ostream &,const Attr &);
+	friend std::ostream &operator<<(std::ostream &,const Attr &);
 #endif
 
 protected:
 /// @privatesection
-	string					name;
+	std::string					name;
 	Tango::AttrDataFormat	format;
 	Tango::AttrWriteType	writable;
 	long					type;
-	string					assoc_name;
+	std::string					assoc_name;
 	bool					mem;
 	bool					mem_init;
 
@@ -592,12 +592,12 @@ protected:
     bool					check_archive_event;
     bool					fire_dr_event;
 
-	vector<AttrProperty>	class_properties;
-	vector<AttrProperty>	user_default_properties;
+	std::vector<AttrProperty>	class_properties;
+	std::vector<AttrProperty>	user_default_properties;
 
- 	void convert_def_prop(const string &, double &);
- 	void validate_def_prop(const string &, const char *);
- 	void validate_def_change_prop(const string &, const char *);
+ 	void convert_def_prop(const std::string &, double &);
+ 	void validate_def_prop(const std::string &, const char *);
+ 	void validate_def_change_prop(const std::string &, const char *);
  	void throw_incoherent_def_prop(const char *, const char *);
  	void throw_invalid_def_prop(const char *, const char *);
 
@@ -609,12 +609,12 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<AttrExt>     ext;           // Class extension
+    std::unique_ptr<AttrExt>     ext;           // Class extension
 #else
 	AttrExt					*ext;
 #endif
 
-    string					cl_name;
+    std::string					cl_name;
 };
 
 /**
@@ -717,7 +717,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<SpectrumAttrExt>     ext;           // Class extension
+    std::unique_ptr<SpectrumAttrExt>     ext;           // Class extension
 #else
 	SpectrumAttrExt		            *ext;
 #endif
@@ -832,7 +832,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<ImageAttrExt>    ext;           // Class extension
+    std::unique_ptr<ImageAttrExt>    ext;           // Class extension
 #else
 	ImageAttrExt		        *ext;
 #endif

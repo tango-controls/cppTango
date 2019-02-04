@@ -411,9 +411,9 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	TANGO_NORETURN static inline void throw_exception(const string &reason,
-					   const string &desc,
-					   const string &origin,
+	TANGO_NORETURN static inline void throw_exception(const std::string &reason,
+					   const std::string &desc,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		Tango::DevErrorList errors(1);
@@ -445,8 +445,8 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	TANGO_NORETURN static inline void throw_exception(const string &reason,
-					   const string &desc,
+	TANGO_NORETURN static inline void throw_exception(const std::string &reason,
+					   const std::string &desc,
 					   const char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
@@ -479,9 +479,9 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	TANGO_NORETURN static inline void throw_exception(const string &reason,
+	TANGO_NORETURN static inline void throw_exception(const std::string &reason,
 					   const char *desc,
-					   const string &origin,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		Tango::DevErrorList errors(1);
@@ -513,7 +513,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	TANGO_NORETURN static inline void throw_exception(const string &reason,
+	TANGO_NORETURN static inline void throw_exception(const std::string &reason,
 					   const char *desc,
 					   const char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -548,8 +548,8 @@ public:
  */
 
 	TANGO_NORETURN static inline void throw_exception(const char *reason,
-					   const string &desc,
-					   const string &origin,
+					   const std::string &desc,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		Tango::DevErrorList errors(1);
@@ -582,7 +582,7 @@ public:
  */
 
 	TANGO_NORETURN static inline void throw_exception(const char *reason,
-					   const string &desc,
+					   const std::string &desc,
 					   const char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
@@ -617,7 +617,7 @@ public:
 
 	TANGO_NORETURN static inline void throw_exception(const char *reason,
 					   const char *desc,
-					   const string &origin,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		Tango::DevErrorList errors(1);
@@ -650,8 +650,8 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	TANGO_NORETURN static inline void throw_exception(const string &reason,
-					   const string &desc,
+	TANGO_NORETURN static inline void throw_exception(const std::string &reason,
+					   const std::string &desc,
 					   char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
@@ -686,9 +686,9 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	TANGO_NORETURN static inline void throw_exception(const string &reason,
+	TANGO_NORETURN static inline void throw_exception(const std::string &reason,
 					   char *desc,
-					   const string &origin,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		Tango::DevErrorList errors(1);
@@ -723,7 +723,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 
-	TANGO_NORETURN static inline void throw_exception(const string &reason,
+	TANGO_NORETURN static inline void throw_exception(const std::string &reason,
 					   char *desc,
 					   char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -761,8 +761,8 @@ public:
  */
 
 	TANGO_NORETURN static inline void throw_exception(char *reason,
-					   const string &desc,
-					   const string &origin,
+					   const std::string &desc,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		Tango::DevErrorList errors(1);
@@ -797,7 +797,7 @@ public:
  */
 
 	TANGO_NORETURN static inline void throw_exception(char *reason,
-					   const string &desc,
+					   const std::string &desc,
 					   char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
@@ -835,7 +835,7 @@ public:
 
 	TANGO_NORETURN static inline void throw_exception(char *reason,
 					   char *desc,
-					   const string &origin,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		Tango::DevErrorList errors(1);
@@ -1180,9 +1180,9 @@ public:
  */
 
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
-					   const string &reason,
-					   const string &desc,
-					   const string &origin,
+					   const std::string &reason,
+					   const std::string &desc,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		long nb_err = ex.errors.length();
@@ -1216,8 +1216,8 @@ public:
  */
 
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
-					   const string &reason,
-					   const string &desc,
+					   const std::string &reason,
+					   const std::string &desc,
 					   const char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
@@ -1252,9 +1252,9 @@ public:
  */
 
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
-					   const string &reason,
+					   const std::string &reason,
 					   const char *desc,
-					   const string &origin,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		long nb_err = ex.errors.length();
@@ -1288,7 +1288,7 @@ public:
  */
 
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
-					   const string &reason,
+					   const std::string &reason,
 					   const char *desc,
 					   const char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -1325,8 +1325,8 @@ public:
 
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const char *reason,
-					   const string &desc,
-					   const string &origin,
+					   const std::string &desc,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		long nb_err = ex.errors.length();
@@ -1361,7 +1361,7 @@ public:
 
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const char *reason,
-					   const string &desc,
+					   const std::string &desc,
 					   const char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
@@ -1398,7 +1398,7 @@ public:
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   const char *reason,
 					   const char *desc,
-					   const string &origin,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		long nb_err = ex.errors.length();
@@ -1433,8 +1433,8 @@ public:
  */
 
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
-					   const string &reason,
-					   const string &desc,
+					   const std::string &reason,
+					   const std::string &desc,
 					   char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
@@ -1471,9 +1471,9 @@ public:
  */
 
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
-					   const string &reason,
+					   const std::string &reason,
 					   char *desc,
-					   const string &origin,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		long nb_err = ex.errors.length();
@@ -1509,7 +1509,7 @@ public:
  */
 
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
-					   const string &reason,
+					   const std::string &reason,
 					   char *desc,
 					   char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
@@ -1549,8 +1549,8 @@ public:
 
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   char *reason,
-					   const string &desc,
-					   const string &origin,
+					   const std::string &desc,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		long nb_err = ex.errors.length();
@@ -1587,7 +1587,7 @@ public:
 
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   char *reason,
-					   const string &desc,
+					   const std::string &desc,
 					   char *origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
@@ -1627,7 +1627,7 @@ public:
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
 					   char *reason,
 					   char *desc,
-					   const string &origin,
+					   const std::string &origin,
 		            		   Tango::ErrSeverity sever = Tango::ERR)
 	{
 		long nb_err = ex.errors.length();
@@ -1706,7 +1706,7 @@ public:
  * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	TANGO_NORETURN static void throw_exception(const CORBA::SystemException &ex,const string &origin);
+	TANGO_NORETURN static void throw_exception(const CORBA::SystemException &ex,const std::string &origin);
 
 
 /**
@@ -1769,7 +1769,7 @@ public:
  * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>MultiDevFailed</b> exception specification
  */
-	TANGO_NORETURN static inline void throw_named_exception(vector<string> &atts,const char *reason,
+	TANGO_NORETURN static inline void throw_named_exception(std::vector<std::string> &atts,const char *reason,
 					   const char *desc,const char *origin,Tango::ErrSeverity sever = Tango::ERR)
 	{
 		unsigned int a_size = (unsigned int)atts.size();
@@ -1843,7 +1843,7 @@ public:
  * <b>MultiDevFailed</b> exception specification
  */
 
-  TANGO_NORETURN static void throw_named_exception(Tango::DeviceImpl *d,vector<long> &atts,const char *reason,
+  TANGO_NORETURN static void throw_named_exception(Tango::DeviceImpl *d,std::vector<long> &atts,const char *reason,
 				   const char *desc,const char *origin,Tango::ErrSeverity sever = Tango::ERR);
 
 

@@ -66,13 +66,13 @@ public :
 	Tango::DevVarStringArray *query_device();
 	Tango::DevVarStringArray *query_sub_device();
 	void kill();
-	void restart(string &);
+	void restart(std::string &);
 	void restart_server();
-	Tango::DevVarStringArray *query_class_prop(string &);
-	Tango::DevVarStringArray *query_dev_prop(string &);
+	Tango::DevVarStringArray *query_class_prop(std::string &);
+	Tango::DevVarStringArray *query_dev_prop(std::string &);
 
 	Tango::DevVarStringArray *polled_device();
-	Tango::DevVarStringArray *dev_poll_status(string &);
+	Tango::DevVarStringArray *dev_poll_status(std::string &);
 	void add_obj_polling(const Tango::DevVarLongStringArray *,bool with_db_upd = true,int delta_ms = 0);
 	void upd_obj_polling_period(const Tango::DevVarLongStringArray *,bool with_db_upd = true);
 	void rem_obj_polling(const Tango::DevVarStringArray *,bool with_db_upd = true);
@@ -103,35 +103,35 @@ public :
 	void start_logging (void);
 #endif
 
-	string &get_process_name() {return process_name;}
-	string &get_personal_name() {return instance_name;}
-	string &get_instance_name() {return instance_name;}
-	string &get_full_name() {return full_name;}
-	string &get_fqdn() {return fqdn;}
+	std::string &get_process_name() {return process_name;}
+	std::string &get_personal_name() {return instance_name;}
+	std::string &get_instance_name() {return instance_name;}
+	std::string &get_full_name() {return full_name;}
+	std::string &get_fqdn() {return fqdn;}
 	bool get_heartbeat_started() {return heartbeat_started;}
 	void set_heartbeat_started(bool val) {heartbeat_started = val;}
 
-	vector<DeviceClass *> &get_class_list() {return class_list;}
+	std::vector<DeviceClass *> &get_class_list() {return class_list;}
 	virtual void init_device();
 
 	unsigned long get_poll_th_pool_size() {return polling_th_pool_size;}
 	void set_poll_th_pool_size(unsigned long val) {polling_th_pool_size = val;}
 	bool get_opt_pool_usage() {return optimize_pool_usage;}
-	vector<string> get_poll_th_conf() {return polling_th_pool_conf;}
+	std::vector<std::string> get_poll_th_conf() {return polling_th_pool_conf;}
 
 	void check_lock_owner(DeviceImpl *,const char *,const char *);
-	void check_upd_authorized(DeviceImpl *,int,PollObjType,string &);
+	void check_upd_authorized(DeviceImpl *,int,PollObjType,std::string &);
 
 	TANGO_IMP_EXP static void register_class_factory(ClassFactoryFuncPtr f_ptr) {class_factory_func_ptr = f_ptr;}
 	void _add_class(DeviceClass *dc) {this->add_class(dc);}
 	void _create_cpp_class(const char *c1,const char *c2) {this->create_cpp_class(c1,c2);}
 
-	void mcast_event_for_att(string &,string &,vector<string> &);
-	void mem_event_par(map<string, vector<EventPar> > &);
-	void apply_event_par(map<string,vector<EventPar> > &);
+	void mcast_event_for_att(std::string &,std::string &,std::vector<std::string> &);
+	void mem_event_par(std::map<std::string, std::vector<EventPar> > &);
+	void apply_event_par(std::map<std::string,std::vector<EventPar> > &);
 
-	void mem_devices_interface(map<string,DevIntr> &);
-	void changed_devices_interface(map<string,DevIntr> &);
+	void mem_devices_interface(std::map<std::string,DevIntr> &);
+	void changed_devices_interface(std::map<std::string,DevIntr> &);
 
     bool is_polling_bef_9_def() {return polling_bef_9_def;}
     bool get_polling_bef_9() {return polling_bef_9;}
@@ -140,19 +140,19 @@ public :
 	friend class ZmqEventSupplier;
 
 protected :
-	string							process_name;
-	string							instance_name;
-	string							full_name;
-	string 							fqdn;
+	std::string							process_name;
+	std::string							instance_name;
+	std::string							full_name;
+	std::string 							fqdn;
 
-	vector<DeviceClass *>			class_list;
+	std::vector<DeviceClass *>			class_list;
 
 	time_t							last_heartbeat;
 	time_t                          last_heartbeat_zmq;
 	bool							heartbeat_started;
 
 	unsigned long					polling_th_pool_size;
-	vector<string>					polling_th_pool_conf;
+	std::vector<std::string>					polling_th_pool_conf;
 	bool							optimize_pool_usage;
 
 	static ClassFactoryFuncPtr 		class_factory_func_ptr;
@@ -166,13 +166,13 @@ private:
 	void add_class(DeviceClass *);
 	void create_cpp_class(const char *,const char *);
 	void get_dev_prop(Tango::Util *);
-    void event_subscription(string &,string &,string &,string &,string &,ChannelType,string &,int &,int &,DeviceImpl *,int l=0);
+    void event_subscription(std::string &,std::string &,std::string &,std::string &,std::string &,ChannelType,std::string &,int &,int &,DeviceImpl *,int l=0);
 	void get_event_misc_prop(Tango::Util *);
-	bool is_event_name(string &);
-	bool is_ip_address(string &);
+	bool is_event_name(std::string &);
+	bool is_ip_address(std::string &);
 
 	bool			from_constructor;
-	vector<string>	mcast_event_prop;
+	std::vector<std::string>	mcast_event_prop;
 
 	DevLong         mcast_hops;
 	DevLong         mcast_rate;
@@ -204,7 +204,7 @@ struct Pol
 {
 	PollObjType 	type;
 	long			upd;
-	string 			name;
+	std::string 			name;
 };
 
 
@@ -214,7 +214,7 @@ struct Pol
  *
  ******************************************************************************/
 
-inline bool DServer::is_event_name(string &str)
+inline bool DServer::is_event_name(std::string &str)
 {
 	if (count(str.begin(),str.end(),'/') != 3)
 		return false;
@@ -223,7 +223,7 @@ inline bool DServer::is_event_name(string &str)
 	return true;
 }
 
-inline bool DServer::is_ip_address(string &str)
+inline bool DServer::is_ip_address(std::string &str)
 {
 	if (count(str.begin(),str.end(),'.') != 3)
 		return false;

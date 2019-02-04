@@ -80,7 +80,7 @@ class CmdDoneEvent
 public:
 ///@privatesection
 	CmdDoneEvent(DeviceProxy *dev,
-		     string &cmd,
+		     std::string &cmd,
 		     DeviceData &arg,
 		     DevErrorList &err_in):device(dev),
 					   cmd_name(cmd),
@@ -90,7 +90,7 @@ public:
 
 ///@publicsection
 	Tango::DeviceProxy 	*device;        ///< The DeviceProxy object on which the call was executed
-	string				&cmd_name;      ///< The command name
+  std::string	&cmd_name;      ///< The command name
 	DeviceData			&argout;        ///< The command argout
 	bool				err;            ///< A boolean flag set to true if the command failed. False otherwise
 	DevErrorList		&errors;        ///< The error stack
@@ -103,7 +103,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<CmdDoneEventExt> ext;
+    std::unique_ptr<CmdDoneEventExt> ext;
 #else
 	CmdDoneEventExt		        *ext;
 #endif
@@ -133,8 +133,8 @@ class AttrReadEvent
 public:
 ///@privatesection
 	AttrReadEvent(DeviceProxy *dev,
-		      vector<string> &att_names,
-		      vector<DeviceAttribute> *arg,
+		      std::vector<std::string> &att_names,
+		      std::vector<DeviceAttribute> *arg,
 		      DevErrorList &err_in):device(dev),
 					    attr_names(att_names),
 					    argout(arg),
@@ -143,8 +143,8 @@ public:
 
 ///@publicsection
 	Tango::DeviceProxy 		*device;        ///< The DeviceProxy object on which the call was executed
-	vector<string>			&attr_names;    ///< The attribute name list
-	vector<DeviceAttribute>	*argout;        ///< The attribute data
+ std::vector<std::string>			&attr_names;    ///< The attribute name list
+ std::vector<DeviceAttribute>	*argout;        ///< The attribute data
 	bool					err;            ///< A boolean flag set to true if the request failed. False otherwise
 	DevErrorList			&errors;        ///< The error stack
 
@@ -156,7 +156,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<AttrReadEventExt>    ext;
+    std::unique_ptr<AttrReadEventExt>    ext;
 #else
 	AttrReadEventExt		        *ext;
 #endif
@@ -186,7 +186,7 @@ class AttrWrittenEvent
 public:
 ///@privatesection
 	AttrWrittenEvent(DeviceProxy *dev,
-			 vector<string> &att_names,
+			 std::vector<std::string> &att_names,
 			 NamedDevFailedList &err_in):device(dev),
 			 		       attr_names(att_names),
 					       errors(err_in)
@@ -194,7 +194,7 @@ public:
 
 ///@publicsection
 	Tango::DeviceProxy	*device;        ///< The DeviceProxy object on which the call was executed
-	vector<string>		&attr_names;    ///< The attribute name list
+ std::vector<std::string>		&attr_names;    ///< The attribute name list
 	bool				err;            ///< A boolean flag set to true if the request failed. False otherwise
 	NamedDevFailedList	&errors;        ///< The error stack
 
@@ -206,7 +206,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<AttrWrittenEventExt> ext;
+    std::unique_ptr<AttrWrittenEventExt> ext;
 #else
 	AttrWrittenEventExt	            *ext;
 #endif
@@ -339,7 +339,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<CallBackExt> ext;
+    std::unique_ptr<CallBackExt> ext;
 #else
 	CallBackExt		        *ext;
 #endif
@@ -407,7 +407,7 @@ public:
 	size_t get_cb_request_nb_i() {return cb_req_table.size();}
 
 	void mark_as_arrived(CORBA::Request_ptr req);
-	multimap<Connection *,TgRequest> &get_cb_dev_table() {return cb_dev_table;}
+	std::multimap<Connection *,TgRequest> &get_cb_dev_table() {return cb_dev_table;}
 
 	void mark_as_cancelled(long);
 	void mark_all_polling_as_cancelled();
@@ -415,13 +415,13 @@ public:
 	void signal() {omni_mutex_lock sync(*this);cond.signal();}
 
 protected:
-	map<long,TgRequest>			asyn_poll_req_table;
+	std::map<long,TgRequest>			asyn_poll_req_table;
 	UniqIdent 					*ui_ptr;
 
-	multimap<Connection *,TgRequest>	cb_dev_table;
-	map<CORBA::Request_ptr,TgRequest>	cb_req_table;
+	std::multimap<Connection *,TgRequest>	cb_dev_table;
+	std::map<CORBA::Request_ptr,TgRequest>	cb_req_table;
 
-	vector<long>				cancelled_request;
+  std::vector<long>				cancelled_request;
 
 private:
 	omni_condition				cond;

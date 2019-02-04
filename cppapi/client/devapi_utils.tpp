@@ -46,7 +46,7 @@ namespace Tango
 //-------------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void DeviceProxy::from_hist_2_AttHistory(T &hist,vector<DeviceAttributeHistory> *ddh)
+void DeviceProxy::from_hist_2_AttHistory(T &hist,std::vector<DeviceAttributeHistory> *ddh)
 {
 
 //

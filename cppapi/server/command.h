@@ -58,8 +58,8 @@ struct WantedCmd : public binary_function<A1,A2,R>
 	{
 		if (::strlen(name) != cmd_ptr->get_lower_name().size())
 			return false;
-        string tmp_name(name);
-		transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+        std::string tmp_name(name);
+		std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
 		return cmd_ptr->get_lower_name() == tmp_name;
 	}
 };
@@ -119,7 +119,7 @@ public:
  * @param	out 	The command output parameter type
  *
  */
-	Command(string &s,Tango::CmdArgType in,Tango::CmdArgType out);
+	Command(std::string &s,Tango::CmdArgType in,Tango::CmdArgType out);
 
 /**
  * Constructs a newly allocated Command object for a command from its
@@ -148,8 +148,8 @@ public:
  * @param	out_desc The output parameter description
  *
  */
-	Command(string &s,Tango::CmdArgType in,Tango::CmdArgType out,
-		string &in_desc,string &out_desc);
+	Command(std::string &s,Tango::CmdArgType in,Tango::CmdArgType out,
+		std::string &in_desc,std::string &out_desc);
 /**
  * Constructs a newly allocated Command object for a command from its
  * name and its input and output parameter types.
@@ -177,7 +177,7 @@ public:
  * @param	level	The command display level
  *
  */
-	Command(string &s,Tango::CmdArgType in,Tango::CmdArgType out,
+	Command(std::string &s,Tango::CmdArgType in,Tango::CmdArgType out,
 		Tango::DispLevel level);
 
 /**
@@ -208,8 +208,8 @@ public:
  * @param	level	The command display level
  *
  */
-	Command(string &s,Tango::CmdArgType in,Tango::CmdArgType out,
-		string &in_desc,string &out_desc,
+	Command(std::string &s,Tango::CmdArgType in,Tango::CmdArgType out,
+		std::string &in_desc,std::string &out_desc,
 		Tango::DispLevel level);
 //@}
 
@@ -283,21 +283,21 @@ public:
  *
  * @return The command name
  */
-	string &get_name() {return name;}
+	std::string &get_name() {return name;}
 
 /**
  * Set the command name.
  *
  * @param new_name The new command name
  */
-	void set_name(string &new_name) {name=new_name;}
+	void set_name(std::string &new_name) {name=new_name;}
 
 /**
  * Return the command name in lower case letters.
  *
  * @return The command name
  */
-	string &get_lower_name() {return lower_name;}
+	std::string &get_lower_name() {return lower_name;}
 
 /**
  * Return the input parameter type.
@@ -318,14 +318,14 @@ public:
  *
  * @return The input parameter description
  */
-	string &get_in_type_desc() {return in_type_desc;}
+	std::string &get_in_type_desc() {return in_type_desc;}
 
 /**
  * Return the output parameter description.
  *
  * @return The output parameter description
  */
-	string &get_out_type_desc() {return out_type_desc;}
+	std::string &get_out_type_desc() {return out_type_desc;}
 
 /**
  * Return the command display level.
@@ -346,7 +346,7 @@ public:
  *
  * @param desc The input parameter description
  */
-	void set_in_type_desc(string &desc) {in_type_desc = desc;}
+	void set_in_type_desc(std::string &desc) {in_type_desc = desc;}
 
 /**
  * Set the output parameter description field.
@@ -360,7 +360,7 @@ public:
  *
  * @param desc The output parameter description
  */
-	void set_out_type_desc(string &desc) {out_type_desc = desc;}
+	void set_out_type_desc(std::string &desc) {out_type_desc = desc;}
 
 /**
  * Set the command display level.
@@ -1214,11 +1214,11 @@ protected:
 /**
  * The command name
  */
-	string 			name;
+	std::string 			name;
 /**
  * The command name in lower case
  */
-	string 			lower_name;
+	std::string 			lower_name;
 /**
  * The command input parameter type
  */
@@ -1230,11 +1230,11 @@ protected:
 /**
  * The command input parameter description
  */
-	string			in_type_desc;
+	std::string			in_type_desc;
 /**
  * The command output parameter type
  */
-	string			out_type_desc;
+	std::string			out_type_desc;
 //@}
 
 private:
@@ -1248,7 +1248,7 @@ private:
 	void throw_bad_type(const char *);
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<CommandExt>          ext;           // Class extension
+    std::unique_ptr<CommandExt>          ext;           // Class extension
 #else
 	CommandExt		                *ext;
 #endif
@@ -1328,7 +1328,7 @@ public:
  * @param	exe_method	Pointer to the command execution method
  *
  */
-	TemplCommand(string &cmd_name,void (DeviceImpl::*exe_method)());
+	TemplCommand(std::string &cmd_name,void (DeviceImpl::*exe_method)());
 
 /**
  * Constructs a newly allocated TemplCommand object for a command with a
@@ -1359,7 +1359,7 @@ public:
  * @param	state_method 	Pointer to the command allowed method
  *
  */
-	TemplCommand(string &cmd_name,void (DeviceImpl::*exe_method)(),
+	TemplCommand(std::string &cmd_name,void (DeviceImpl::*exe_method)(),
 		     bool (DeviceImpl::*state_method)(const CORBA::Any &));
 
 /**
@@ -1389,8 +1389,8 @@ public:
  * @param	out_desc	The command output parameter description
  *
  */
-	TemplCommand(string &cmd_name,void (DeviceImpl::*exe_method)(),
-		     string &in_desc,string &out_desc);
+	TemplCommand(std::string &cmd_name,void (DeviceImpl::*exe_method)(),
+		     std::string &in_desc,std::string &out_desc);
 
 /**
  * Constructs a newly allocated TemplCommand object for a command with a
@@ -1424,9 +1424,9 @@ public:
  * @param	out_desc	The command output parameter description
  *
  */
-	TemplCommand(string &cmd_name,void (DeviceImpl::*exe_method)(),
+	TemplCommand(std::string &cmd_name,void (DeviceImpl::*exe_method)(),
 		     bool (DeviceImpl::*state_method)(const CORBA::Any &),
-		     string &in_desc,string &out_desc);
+		     std::string &in_desc,std::string &out_desc);
 
 /**
  * Constructs a newly allocated TemplCommand object for a command with a
@@ -1455,7 +1455,7 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommand(string &cmd_name,void (DeviceImpl::*exe_method)(),
+	TemplCommand(std::string &cmd_name,void (DeviceImpl::*exe_method)(),
 		     Tango::DispLevel level);
 
 /**
@@ -1488,7 +1488,7 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommand(string &cmd_name,void (DeviceImpl::*exe_method)(),
+	TemplCommand(std::string &cmd_name,void (DeviceImpl::*exe_method)(),
 		     bool (DeviceImpl::*state_method)(const CORBA::Any &),
 		     Tango::DispLevel level);
 
@@ -1520,8 +1520,8 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommand(string &cmd_name,void (DeviceImpl::*exe_method)(),
-		     string &in_desc,string &out_desc,
+	TemplCommand(std::string &cmd_name,void (DeviceImpl::*exe_method)(),
+		     std::string &in_desc,std::string &out_desc,
 		     Tango::DispLevel level);
 
 /**
@@ -1557,23 +1557,23 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommand(string &cmd_name,void (DeviceImpl::*exe_method)(),
+	TemplCommand(std::string &cmd_name,void (DeviceImpl::*exe_method)(),
 		     bool (DeviceImpl::*state_method)(const CORBA::Any &),
-		     string &in_desc,string &out_desc,
+		     std::string &in_desc,std::string &out_desc,
 		     Tango::DispLevel level);
 //@}
 
 	TemplCommand(const char *);
-	TemplCommand(string &);
+	TemplCommand(std::string &);
 
 	TemplCommand(const char *,Tango::DispLevel);
-	TemplCommand(string &,Tango::DispLevel);
+	TemplCommand(std::string &,Tango::DispLevel);
 
 	TemplCommand(const char *,const char *,const char *);
-	TemplCommand(string &,string &,string &);
+	TemplCommand(std::string &,std::string &,std::string &);
 
 	TemplCommand(const char *,const char *,const char *,DispLevel);
-	TemplCommand(string &,string &,string &,DispLevel);
+	TemplCommand(std::string &,std::string &,std::string &,DispLevel);
 
 /**@name Miscellaneous methods */
 //@{
@@ -1590,7 +1590,7 @@ public:
  * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	void set_type(const type_info &data_type,Tango::CmdArgType &type);
+	void set_type(const std::type_info &data_type,Tango::CmdArgType &type);
 
 /**
  * Invoke the command execution method given at object creation time.
@@ -1637,7 +1637,7 @@ private:
 
 	void (DeviceImpl::*exe_ptr)();
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<TemplCommandExt>     ext;           // Class extension
+    std::unique_ptr<TemplCommandExt>     ext;           // Class extension
 #else
 	TemplCommandExt		            *ext;
 #endif
@@ -1719,7 +1719,7 @@ public:
  * @param	exe_method	Pointer to the command execution method
  *
  */
-	TemplCommandInOut(string &cmd_name,
+	TemplCommandInOut(std::string &cmd_name,
 			  OUTARG (DeviceImpl::*exe_method)(INARG));
 
 /**
@@ -1752,7 +1752,7 @@ public:
  * @param	state_method 	Pointer to the command allowed method
  *
  */
-	TemplCommandInOut(string &cmd_name,
+	TemplCommandInOut(std::string &cmd_name,
 			  OUTARG (DeviceImpl::*exe_method)(INARG),
 		     	  bool (DeviceImpl::*state_method)(const CORBA::Any &));
 
@@ -1786,9 +1786,9 @@ public:
  * @param	out_desc	The command output parameter description
  *
  */
-	TemplCommandInOut(string &cmd_name,
+	TemplCommandInOut(std::string &cmd_name,
 			  OUTARG (DeviceImpl::*exe_method)(INARG),
-			  string &in_desc,string &out_desc);
+			  std::string &in_desc,std::string &out_desc);
 
 /**
  * Constructs a newly allocated TemplCommandInOut object for a command with a
@@ -1823,10 +1823,10 @@ public:
  * @param	out_desc	The command output parameter description
  *
  */
-	TemplCommandInOut(string &cmd_name,
+	TemplCommandInOut(std::string &cmd_name,
 			  OUTARG (DeviceImpl::*exe_method)(INARG),
 		    	  bool (DeviceImpl::*state_method)(const CORBA::Any &),
-		     	  string &in_desc,string &out_desc);
+		     	  std::string &in_desc,std::string &out_desc);
 
 /**
  * Constructs a newly allocated TemplCommandInOut object for a command with a
@@ -1856,7 +1856,7 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommandInOut(string &cmd_name,
+	TemplCommandInOut(std::string &cmd_name,
 			  OUTARG (DeviceImpl::*exe_method)(INARG),
 			  Tango::DispLevel level);
 
@@ -1891,7 +1891,7 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommandInOut(string &cmd_name,
+	TemplCommandInOut(std::string &cmd_name,
 			  OUTARG (DeviceImpl::*exe_method)(INARG),
 		     	  bool (DeviceImpl::*state_method)(const CORBA::Any &),
 			  Tango::DispLevel level);
@@ -1927,9 +1927,9 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommandInOut(string &cmd_name,
+	TemplCommandInOut(std::string &cmd_name,
 			  OUTARG (DeviceImpl::*exe_method)(INARG),
-			  string &in_desc,string &out_desc,
+			  std::string &in_desc,std::string &out_desc,
 			  Tango::DispLevel level);
 
 /**
@@ -1966,10 +1966,10 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommandInOut(string &cmd_name,
+	TemplCommandInOut(std::string &cmd_name,
 			  OUTARG (DeviceImpl::*exe_method)(INARG),
 		    	  bool (DeviceImpl::*state_method)(const CORBA::Any &),
-		     	  string &in_desc,string &out_desc,
+		     	  std::string &in_desc,std::string &out_desc,
 			  Tango::DispLevel level);
 //@}
 
@@ -2012,7 +2012,7 @@ private:
 
 	OUTARG (DeviceImpl::*exe_ptr_inout)(INARG);
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<TemplCommandInOut>       ext;           // Class extension
+    std::unique_ptr<TemplCommandInOut>       ext;           // Class extension
 #else
 	TemplCommandInOutExt		        *ext;
 #endif
@@ -2043,7 +2043,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceI
 }
 
 template <typename INARG,typename OUTARG>
-TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(string &s,OUTARG (DeviceImpl::*f)(INARG))
+TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG))
 :TemplCommand(s),exe_ptr_inout(f),ext(Tango_nullptr)
 {
 	allowed_ptr = NULL;
@@ -2051,7 +2051,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(string &s,OUTARG (DeviceImpl:
 }
 
 template <typename INARG,typename OUTARG>
-TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(string &s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &))
+TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &))
 :TemplCommand(s),exe_ptr_inout(f),ext(Tango_nullptr)
 {
 	allowed_ptr = a;
@@ -2075,7 +2075,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceI
 }
 
 template <typename INARG,typename OUTARG>
-TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(string &s,OUTARG (DeviceImpl::*f)(INARG),string &in_desc,string &out_desc)
+TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),std::string &in_desc,std::string &out_desc)
 :TemplCommand(s,in_desc,out_desc),exe_ptr_inout(f),ext(Tango_nullptr)
 {
 	allowed_ptr = NULL;
@@ -2083,7 +2083,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(string &s,OUTARG (DeviceImpl:
 }
 
 template <typename INARG,typename OUTARG>
-TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(string &s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),string &in_desc,string &out_desc)
+TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),std::string &in_desc,std::string &out_desc)
 :TemplCommand(s,in_desc,out_desc),exe_ptr_inout(f),ext(Tango_nullptr)
 {
 	allowed_ptr = a;
@@ -2107,7 +2107,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceI
 }
 
 template <typename INARG,typename OUTARG>
-TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(string &s,OUTARG (DeviceImpl::*f)(INARG),Tango::DispLevel level)
+TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),Tango::DispLevel level)
 :TemplCommand(s,level),exe_ptr_inout(f),ext(Tango_nullptr)
 {
 	allowed_ptr = NULL;
@@ -2115,7 +2115,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(string &s,OUTARG (DeviceImpl:
 }
 
 template <typename INARG,typename OUTARG>
-TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(string &s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
+TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
 :TemplCommand(s,level),exe_ptr_inout(f),ext(Tango_nullptr)
 {
 	allowed_ptr = a;
@@ -2139,7 +2139,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceI
 }
 
 template <typename INARG,typename OUTARG>
-TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(string &s,OUTARG (DeviceImpl::*f)(INARG),string &in_desc,string &out_desc,Tango::DispLevel level)
+TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),std::string &in_desc,std::string &out_desc,Tango::DispLevel level)
 :TemplCommand(s,in_desc,out_desc,level),exe_ptr_inout(f),ext(Tango_nullptr)
 {
 	allowed_ptr = NULL;
@@ -2147,7 +2147,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(string &s,OUTARG (DeviceImpl:
 }
 
 template <typename INARG,typename OUTARG>
-TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(string &s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),string &in_desc,string &out_desc,Tango::DispLevel level)
+TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),std::string &in_desc,std::string &out_desc,Tango::DispLevel level)
 :TemplCommand(s,in_desc,out_desc,level),exe_ptr_inout(f),ext(Tango_nullptr)
 {
 	allowed_ptr = a;
@@ -2276,7 +2276,7 @@ public:
  * @param	exe_method	Pointer to the command execution method
  *
  */
-	TemplCommandIn(string &cmd_name,
+	TemplCommandIn(std::string &cmd_name,
 		       void (DeviceImpl::*exe_method)(INARG));
 
 /**
@@ -2309,7 +2309,7 @@ public:
  * @param	state_method 	Pointer to the command allowed method
  *
  */
-	TemplCommandIn(string &cmd_name,
+	TemplCommandIn(std::string &cmd_name,
 		       void (DeviceImpl::*exe_method)(INARG),
 		       bool (DeviceImpl::*state_method)(const CORBA::Any &));
 
@@ -2343,9 +2343,9 @@ public:
  * @param	out_desc	The command output parameter description
  *
  */
-	TemplCommandIn(string &cmd_name,
+	TemplCommandIn(std::string &cmd_name,
 		       void (DeviceImpl::*exe_method)(INARG),
-		       string &in_desc,string &out_desc);
+		       std::string &in_desc,std::string &out_desc);
 
 /**
  * Constructs a newly allocated TemplCommandIn object for a command with a
@@ -2380,10 +2380,10 @@ public:
  * @param	out_desc	The command output parameter description
  *
  */
-	TemplCommandIn(string &cmd_name,
+	TemplCommandIn(std::string &cmd_name,
 		       void (DeviceImpl::*exe_method)(INARG),
 		       bool (DeviceImpl::*state_method)(const CORBA::Any &),
-		       string &in_desc,string &out_desc);
+		       std::string &in_desc,std::string &out_desc);
 
 /**
  * Constructs a newly allocated TemplCommandIn object for a command with a
@@ -2413,7 +2413,7 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommandIn(string &cmd_name,
+	TemplCommandIn(std::string &cmd_name,
 		       void (DeviceImpl::*exe_method)(INARG),
 		       Tango::DispLevel level);
 
@@ -2448,7 +2448,7 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommandIn(string &cmd_name,
+	TemplCommandIn(std::string &cmd_name,
 		       void (DeviceImpl::*exe_method)(INARG),
 		       bool (DeviceImpl::*state_method)(const CORBA::Any &),
 		       Tango::DispLevel level);
@@ -2484,9 +2484,9 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommandIn(string &cmd_name,
+	TemplCommandIn(std::string &cmd_name,
 		       void (DeviceImpl::*exe_method)(INARG),
-		       string &in_desc,string &out_desc,
+		       std::string &in_desc,std::string &out_desc,
 		       Tango::DispLevel level);
 
 /**
@@ -2523,10 +2523,10 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommandIn(string &cmd_name,
+	TemplCommandIn(std::string &cmd_name,
 		       void (DeviceImpl::*exe_method)(INARG),
 		       bool (DeviceImpl::*state_method)(const CORBA::Any &),
-		       string &in_desc,string &out_desc,
+		       std::string &in_desc,std::string &out_desc,
 		       Tango::DispLevel level);
 //@}
 
@@ -2569,7 +2569,7 @@ private:
 
 	void (DeviceImpl::*exe_ptr_in)(INARG);
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<TemplCommandInExt>    ext;           // Class extension
+    std::unique_ptr<TemplCommandInExt>    ext;           // Class extension
 #else
 	TemplCommandInExt		        *ext;
 #endif
@@ -2600,7 +2600,7 @@ TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG)
 }
 
 template <typename INARG>
-TemplCommandIn<INARG>::TemplCommandIn(string &s,void (DeviceImpl::*f)(INARG))
+TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG))
 :TemplCommand(s),exe_ptr_in(f),ext(Tango_nullptr)
 {
 	allowed_ptr = NULL;
@@ -2608,7 +2608,7 @@ TemplCommandIn<INARG>::TemplCommandIn(string &s,void (DeviceImpl::*f)(INARG))
 }
 
 template <typename INARG>
-TemplCommandIn<INARG>::TemplCommandIn(string &s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &))
+TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &))
 :TemplCommand(s),exe_ptr_in(f),ext(Tango_nullptr)
 {
 	allowed_ptr = a;
@@ -2632,7 +2632,7 @@ TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG)
 }
 
 template <typename INARG>
-TemplCommandIn<INARG>::TemplCommandIn(string &s,void (DeviceImpl::*f)(INARG),string &in_desc,string &out_desc)
+TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),std::string &in_desc,std::string &out_desc)
 :TemplCommand(s,in_desc,out_desc),exe_ptr_in(f),ext(Tango_nullptr)
 {
 	allowed_ptr = NULL;
@@ -2640,7 +2640,7 @@ TemplCommandIn<INARG>::TemplCommandIn(string &s,void (DeviceImpl::*f)(INARG),str
 }
 
 template <typename INARG>
-TemplCommandIn<INARG>::TemplCommandIn(string &s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),string &in_desc,string &out_desc)
+TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),std::string &in_desc,std::string &out_desc)
 :TemplCommand(s,in_desc,out_desc),exe_ptr_in(f),ext(Tango_nullptr)
 {
 	allowed_ptr = a;
@@ -2664,7 +2664,7 @@ TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG)
 }
 
 template <typename INARG>
-TemplCommandIn<INARG>::TemplCommandIn(string &s,void (DeviceImpl::*f)(INARG),Tango::DispLevel level)
+TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),Tango::DispLevel level)
 :TemplCommand(s,level),exe_ptr_in(f),ext(Tango_nullptr)
 {
 	allowed_ptr = NULL;
@@ -2672,7 +2672,7 @@ TemplCommandIn<INARG>::TemplCommandIn(string &s,void (DeviceImpl::*f)(INARG),Tan
 }
 
 template <typename INARG>
-TemplCommandIn<INARG>::TemplCommandIn(string &s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
+TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
 :TemplCommand(s,level),exe_ptr_in(f),ext(Tango_nullptr)
 {
 	allowed_ptr = a;
@@ -2696,7 +2696,7 @@ TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG)
 }
 
 template <typename INARG>
-TemplCommandIn<INARG>::TemplCommandIn(string &s,void (DeviceImpl::*f)(INARG),string &in_desc,string &out_desc,Tango::DispLevel level)
+TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),std::string &in_desc,std::string &out_desc,Tango::DispLevel level)
 :TemplCommand(s,in_desc,out_desc,level),exe_ptr_in(f),ext(Tango_nullptr)
 {
 	allowed_ptr = NULL;
@@ -2704,7 +2704,7 @@ TemplCommandIn<INARG>::TemplCommandIn(string &s,void (DeviceImpl::*f)(INARG),str
 }
 
 template <typename INARG>
-TemplCommandIn<INARG>::TemplCommandIn(string &s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),string &in_desc,string &out_desc,Tango::DispLevel level)
+TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),std::string &in_desc,std::string &out_desc,Tango::DispLevel level)
 :TemplCommand(s,in_desc,out_desc,level),exe_ptr_in(f),ext(Tango_nullptr)
 {
 	allowed_ptr = a;
@@ -2826,7 +2826,7 @@ public:
  * @param	exe_method	Pointer to the command execution method
  *
  */
- 	TemplCommandOut(string &cmd_name,OUTARG (DeviceImpl::*exe_method)());
+ 	TemplCommandOut(std::string &cmd_name,OUTARG (DeviceImpl::*exe_method)());
 
 /**
  * Constructs a newly allocated TemplCommandOut object for a command with a
@@ -2857,7 +2857,7 @@ public:
  * @param	state_method 	Pointer to the command allowed method
  *
  */
-	TemplCommandOut(string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
+	TemplCommandOut(std::string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
 		     bool (DeviceImpl::*state_method)(const CORBA::Any &));
 
 /**
@@ -2889,8 +2889,8 @@ public:
  * @param	out_desc	The command output parameter description
  *
  */
-	TemplCommandOut(string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
-			string &in_desc,string &out_desc);
+	TemplCommandOut(std::string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
+			std::string &in_desc,std::string &out_desc);
 
 /**
  * Constructs a newly allocated TemplCommandOut object for a command with a
@@ -2924,9 +2924,9 @@ public:
  * @param	out_desc	The command output parameter description
  *
  */
-	TemplCommandOut(string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
+	TemplCommandOut(std::string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
 		        bool (DeviceImpl::*state_method)(const CORBA::Any &),
-		        string &in_desc,string &out_desc);
+		        std::string &in_desc,std::string &out_desc);
 
 /**
  * Constructs a newly allocated TemplCommandOut object for a command with a
@@ -2955,7 +2955,7 @@ public:
  * @param	level		The command display level
  *
  */
- 	TemplCommandOut(string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
+ 	TemplCommandOut(std::string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
  			Tango::DispLevel level);
 
 /**
@@ -2988,7 +2988,7 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommandOut(string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
+	TemplCommandOut(std::string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
 		     bool (DeviceImpl::*state_method)(const CORBA::Any &),
 		     Tango::DispLevel level);
 
@@ -3022,8 +3022,8 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommandOut(string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
-			string &in_desc,string &out_desc,
+	TemplCommandOut(std::string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
+			std::string &in_desc,std::string &out_desc,
 			Tango::DispLevel level);
 
 /**
@@ -3059,9 +3059,9 @@ public:
  * @param	level		The command display level
  *
  */
-	TemplCommandOut(string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
+	TemplCommandOut(std::string &cmd_name,OUTARG (DeviceImpl::*exe_method)(),
 		        bool (DeviceImpl::*state_method)(const CORBA::Any &),
-		        string &in_desc,string &out_desc,
+		        std::string &in_desc,std::string &out_desc,
 			Tango::DispLevel level);
 //@}
 
@@ -3105,7 +3105,7 @@ private:
 
 	OUTARG (DeviceImpl::*exe_ptr_out)();
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<TemplCommandOutExt>      ext;           // Class extension
+    std::unique_ptr<TemplCommandOutExt>      ext;           // Class extension
 #else
 	TemplCommandOutExt		            *ext;
 #endif
@@ -3136,7 +3136,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)()
 }
 
 template <typename OUTARG>
-TemplCommandOut<OUTARG>::TemplCommandOut(string &s,OUTARG (DeviceImpl::*f)())
+TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)())
 :TemplCommand(s),exe_ptr_out(f),ext(Tango_nullptr)
 {
 	allowed_ptr = NULL;
@@ -3144,7 +3144,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(string &s,OUTARG (DeviceImpl::*f)())
 }
 
 template <typename OUTARG>
-TemplCommandOut<OUTARG>::TemplCommandOut(string &s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &))
+TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &))
 :TemplCommand(s),exe_ptr_out(f),ext(Tango_nullptr)
 {
 	allowed_ptr = a;
@@ -3168,7 +3168,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)()
 }
 
 template <typename OUTARG>
-TemplCommandOut<OUTARG>::TemplCommandOut(string &s,OUTARG (DeviceImpl::*f)(),string &in_desc,string &out_desc)
+TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),std::string &in_desc,std::string &out_desc)
 :TemplCommand(s,in_desc,out_desc),exe_ptr_out(f),ext(Tango_nullptr)
 {
 	allowed_ptr = NULL;
@@ -3176,7 +3176,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(string &s,OUTARG (DeviceImpl::*f)(),str
 }
 
 template <typename OUTARG>
-TemplCommandOut<OUTARG>::TemplCommandOut(string &s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),string &in_desc,string &out_desc)
+TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),std::string &in_desc,std::string &out_desc)
 :TemplCommand(s,in_desc,out_desc),exe_ptr_out(f),ext(Tango_nullptr)
 {
 	allowed_ptr = a;
@@ -3200,7 +3200,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)()
 }
 
 template <typename OUTARG>
-TemplCommandOut<OUTARG>::TemplCommandOut(string &s,OUTARG (DeviceImpl::*f)(),Tango::DispLevel level)
+TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),Tango::DispLevel level)
 :TemplCommand(s,level),exe_ptr_out(f),ext(Tango_nullptr)
 {
 	allowed_ptr = NULL;
@@ -3208,7 +3208,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(string &s,OUTARG (DeviceImpl::*f)(),Tan
 }
 
 template <typename OUTARG>
-TemplCommandOut<OUTARG>::TemplCommandOut(string &s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
+TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
 :TemplCommand(s,level),exe_ptr_out(f),ext(Tango_nullptr)
 {
 	allowed_ptr = a;
@@ -3232,7 +3232,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)()
 }
 
 template <typename OUTARG>
-TemplCommandOut<OUTARG>::TemplCommandOut(string &s,OUTARG (DeviceImpl::*f)(),string &in_desc,string &out_desc,Tango::DispLevel level)
+TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),std::string &in_desc,std::string &out_desc,Tango::DispLevel level)
 :TemplCommand(s,in_desc,out_desc,level),exe_ptr_out(f),ext(Tango_nullptr)
 {
 	allowed_ptr = NULL;
@@ -3240,7 +3240,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(string &s,OUTARG (DeviceImpl::*f)(),str
 }
 
 template <typename OUTARG>
-TemplCommandOut<OUTARG>::TemplCommandOut(string &s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),string &in_desc,string &out_desc,Tango::DispLevel level)
+TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),std::string &in_desc,std::string &out_desc,Tango::DispLevel level)
 :TemplCommand(s,in_desc,out_desc,level),exe_ptr_out(f),ext(Tango_nullptr)
 {
 	allowed_ptr = a;

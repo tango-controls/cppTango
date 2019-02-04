@@ -68,7 +68,7 @@ class TangoMonitor;
 // Some typedef
 //
 
-typedef vector<DbDatum> DbData;
+typedef std::vector<DbDatum> DbData;
 
 typedef union
 {
@@ -80,8 +80,8 @@ struct LockerInfo
 {
 	LockerLanguage	ll;
 	LockerId		li;
-	string			locker_host;
-	string			locker_class;
+	std::string			locker_host;
+	std::string			locker_class;
 };
 
 struct LockingThread
@@ -102,12 +102,12 @@ typedef struct DevCommandInfo
 typedef struct _DevCommandInfo
 #endif
 {
-	string 		cmd_name;           ///< The command name
+	std::string 		cmd_name;           ///< The command name
 	long 		cmd_tag;            ///< The command tag
 	long 		in_type;            ///< Input parameter data type
 	long 		out_type;           ///< Output parameter data type
-	string 		in_type_desc;       ///< Input parameter description
-	string 		out_type_desc;      ///< Ouptput parameter description
+	std::string 		in_type_desc;       ///< Input parameter description
+	std::string 		out_type_desc;      ///< Ouptput parameter description
 
 ///@privatesection
 	bool operator==(const _DevCommandInfo &);
@@ -135,7 +135,7 @@ typedef struct _CommandInfo : public DevCommandInfo
 	Tango::DispLevel disp_level;    ///< The command display level
 
 /// @privatesection
-	friend ostream &operator<<(ostream &,_CommandInfo &);
+	friend std::ostream &operator<<(std::ostream &,_CommandInfo &);
 	bool operator==(const _CommandInfo &);
 }CommandInfo;
 
@@ -145,16 +145,16 @@ typedef struct _CommandInfo : public DevCommandInfo
  * @headerfile tango.h
  * @ingroup Client
  */
-typedef vector<CommandInfo> CommandInfoList;
+typedef std::vector<CommandInfo> CommandInfoList;
 
 struct _DeviceInfo
 {
-	string 	dev_class;
-	string 	server_id;
-	string 	server_host;
+	std::string 	dev_class;
+	std::string 	server_id;
+	std::string 	server_host;
 	long 	server_version;
-	string 	doc_url;
-	string 	dev_type;
+	std::string 	doc_url;
+	std::string 	dev_type;
 };
 
 typedef _DeviceInfo DeviceInfo;
@@ -170,24 +170,24 @@ typedef struct DeviceAttributeConfig
 typedef struct _DeviceAttributeConfig
 #endif
 {
-	string 			name;               ///< Name
+	std::string 			name;               ///< Name
 	AttrWriteType 	writable;           ///< Writable type (Read, Write,...)
 	AttrDataFormat 	data_format;        ///< Data format (Scalar, Spectrum,...)
 	int 			data_type;          ///< Data type
 	int 			max_dim_x;          ///< Max dim X
 	int 			max_dim_y;          ///< Max dim Y
-	string 			description;        ///< Description
-	string 			label;              ///< Label
-	string 			unit;               ///< Unit
-	string 			standard_unit;      ///< Standard unit
-	string 			display_unit;       ///< Display unit
-	string 			format;             ///< Format
-	string 			min_value;          ///< Min value
-	string 			max_value;          ///< Max value
-	string 			min_alarm;          ///< Min alarm
-	string 			max_alarm;          ///< Max alarm
-	string 			writable_attr_name; ///< Writable att. name
-	vector<string> 	extensions;         ///< For future extensions
+	std::string 			description;        ///< Description
+	std::string 			label;              ///< Label
+	std::string 			unit;               ///< Unit
+	std::string 			standard_unit;      ///< Standard unit
+	std::string 			display_unit;       ///< Display unit
+	std::string 			format;             ///< Format
+	std::string 			min_value;          ///< Min value
+	std::string 			max_value;          ///< Max value
+	std::string 			min_alarm;          ///< Min alarm
+	std::string 			max_alarm;          ///< Max alarm
+	std::string 			writable_attr_name; ///< Writable att. name
+	std::vector<std::string> 	extensions;         ///< For future extensions
 
 /// @privatesection
 	bool operator==(const _DeviceAttributeConfig &);
@@ -208,7 +208,7 @@ typedef struct _AttributeInfo : public DeviceAttributeConfig
 	Tango::DispLevel disp_level;        ///< Display level
 
 /// @privatesection
-	friend ostream &operator<<(ostream &,_AttributeInfo &);
+	friend std::ostream &operator<<(std::ostream &,_AttributeInfo &);
 	bool operator==(const _AttributeInfo &);
 }AttributeInfo;
 
@@ -224,13 +224,13 @@ typedef struct AttributeAlarmInfo
 typedef struct _AttributeAlarmInfo
 #endif
 {
-	string			min_alarm;      ///< Min alarm level
-	string			max_alarm;      ///< max alarm level
-	string 			min_warning;    ///< Min warning level
-	string			max_warning;    ///< Max warning level
-	string			delta_t;        ///< Delta t RDS
-	string			delta_val;      ///< Delta val RDS
-	vector<string>	extensions;     ///< Future extensions
+	std::string			min_alarm;      ///< Min alarm level
+	std::string			max_alarm;      ///< max alarm level
+	std::string 			min_warning;    ///< Min warning level
+	std::string			max_warning;    ///< Max warning level
+	std::string			delta_t;        ///< Delta t RDS
+	std::string			delta_val;      ///< Delta val RDS
+	std::vector<std::string>	extensions;     ///< Future extensions
 
 /// @privatesection
 	bool operator==(const _AttributeAlarmInfo &);
@@ -248,9 +248,9 @@ typedef struct ChangeEventInfo
 typedef struct _ChangeEventInfo
 #endif
 {
-	string			rel_change;     ///< Relative change threshold
-	string			abs_change;     ///< Absolute change threshold
-	vector<string>	extensions;     ///< Future extensions
+	std::string			rel_change;     ///< Relative change threshold
+	std::string			abs_change;     ///< Absolute change threshold
+	std::vector<std::string>	extensions;     ///< Future extensions
 }ChangeEventInfo;
 
 /**
@@ -265,8 +265,8 @@ typedef struct PeriodicEventInfo
 typedef struct _PeriodicEventInfo
 #endif
 {
-	string			period;         ///< Event period
-	vector<string>	extensions;     ///< Future extensions
+	std::string			period;         ///< Event period
+	std::vector<std::string>	extensions;     ///< Future extensions
 }PeriodicEventInfo;
 
 /**
@@ -281,10 +281,10 @@ typedef struct ArchiveEventInfo
 typedef struct _ArchiveEventInfo
 #endif
 {
-	string			archive_rel_change;     ///< Archive relative change threshold
-	string			archive_abs_change;     ///< Archive abosolute change threshold
-	string			archive_period;         ///< Archive event period
-	vector<string>	extensions;             ///< Future exetnsions
+	std::string			archive_rel_change;     ///< Archive relative change threshold
+	std::string			archive_abs_change;     ///< Archive abosolute change threshold
+	std::string			archive_period;         ///< Archive event period
+	std::vector<std::string>	extensions;             ///< Future exetnsions
 }ArchiveEventInfo;
 
 /**
@@ -334,23 +334,23 @@ typedef struct AttributeInfoEx: public AttributeInfo
 typedef struct _AttributeInfoEx : public AttributeInfo
 #endif
 {
-	string				root_attr_name;		///< Root attribute name (in case of forwarded attribute)
+	std::string				root_attr_name;		///< Root attribute name (in case of forwarded attribute)
 	AttrMemorizedType	memorized;			///< The attribute memorization type
-	vector<string>		enum_labels;		///< Enumerated attribute labels
+	std::vector<std::string>		enum_labels;		///< Enumerated attribute labels
 	AttributeAlarmInfo 	alarms;             ///< The attribute alarms
 	AttributeEventInfo	events;             ///< The attribute events configuration
-	vector<string>		sys_extensions;     ///< Future extensions
+	std::vector<std::string>		sys_extensions;     ///< Future extensions
 
 /// @privatesection
 	_AttributeInfoEx & operator=(const AttributeConfig_2 *);
 	_AttributeInfoEx & operator=(const AttributeConfig_3 *);
 	_AttributeInfoEx & operator=(const AttributeConfig_5 *);
 
-	friend ostream &operator<<(ostream &,_AttributeInfoEx &);
+	friend std::ostream &operator<<(std::ostream &,_AttributeInfoEx &);
 	bool operator==(const _AttributeInfoEx &);
 }AttributeInfoEx;
 
-typedef vector<AttributeInfo> AttributeInfoList;
+typedef std::vector<AttributeInfo> AttributeInfoList;
 
 /**
  * vector of AttributeInfoEx structure
@@ -358,7 +358,7 @@ typedef vector<AttributeInfo> AttributeInfoList;
  * @headerfile tango.h
  * @ingroup Client
  */
-typedef vector<AttributeInfoEx> AttributeInfoListEx;
+typedef std::vector<AttributeInfoEx> AttributeInfoListEx;
 
 /**
  * Base structure for pipe information
@@ -371,21 +371,21 @@ typedef struct PipeInfo
 typedef struct _PipeInfo
 #endif
 {
-	string 					name;          		///< Pipe name
-	string					description;		///< Pipe description
-	string 					label;       		///< Pipe label
+	std::string 					name;          		///< Pipe name
+	std::string					description;		///< Pipe description
+	std::string 					label;       		///< Pipe label
 	Tango::DispLevel 		disp_level;        	///< Display level
 	Tango::PipeWriteType 	writable;           ///< Writable type (Read, Read-Write)
-	vector<string> 			extensions;         ///< For future extensions
+	std::vector<std::string> 			extensions;         ///< For future extensions
 
 ///@privatesection
-	friend ostream &operator<<(ostream &,_PipeInfo &);
+	friend std::ostream &operator<<(std::ostream &,_PipeInfo &);
 //	bool operator==(const _PipeInfo &);
 }PipeInfo;
 
 // TODO: Pipe -> Change the type for writable to replace PIPE_READ, PIPE_READ_WRITE by READ, READ_WRITE (IDL limitation)
 
-typedef vector<PipeInfo> PipeInfoList;
+typedef std::vector<PipeInfo> PipeInfoList;
 
 //
 // Can't use CALLBACK (without _) in the following enum because it's a
@@ -564,13 +564,13 @@ public :
  * @code
  * DeviceProxy *dev = new DeviceProxy(“...”);
  * int hist_depth = 4;
- * vector<DeviceDataHistory> *hist;
+ * std::vector<DeviceDataHistory> *hist;
  *
  * hist = dev->command_history(“MyCommand”,hist_depth);
  *
  * for (int i = 0;i < hist_depth;i++)
  * {
- *    cout << (*hist)[i] << endl;
+ *    cout << (*hist)[i] << std::endl;
  * }
  * delete hist;
  * @endcode
@@ -578,7 +578,7 @@ public :
  * @param [in] str The printing stream
  * @param [in] ddh The instance to be printed
  */
-	friend ostream &operator<<(ostream &str,DeviceDataHistory &ddh);
+	friend std::ostream &operator<<(std::ostream &str,DeviceDataHistory &ddh);
 
 ///@privatesection
 // Three following methods for compatibility with older release
@@ -607,13 +607,13 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DeviceDataHistoryExt>    ext_hist;
+    std::unique_ptr<DeviceDataHistoryExt>    ext_hist;
 #else
 	DeviceDataHistoryExt	            *ext_hist;		// Class extension
 #endif
 };
 
-typedef vector<DeviceDataHistory> DeviceDataHistoryList;
+typedef std::vector<DeviceDataHistory> DeviceDataHistoryList;
 
 /**
  * Fundamental type for receiving data from device attribute polling buffers
@@ -670,13 +670,13 @@ public :
  * @code
  * DeviceProxy *dev = new DeviceProxy(“...”);
  * int hist_depth = 4;
- * vector<DeviceAttributeHistory> *hist;
+ * std::vector<DeviceAttributeHistory> *hist;
 
  * hist = dev->attribute_history(“MyAttribute”,hist_depth);
 
  * for (int i = 0;i < hist_depth;i++)
  * {
- *    cout << (*hist)[i] << endl;
+ *    cout << (*hist)[i] << std::endl;
  * }
  * delete hist;
  * @endcode
@@ -684,7 +684,7 @@ public :
  * @param [in] str The printing stream
  * @param [in] dah The instance to be printed
  */
- 	friend ostream &operator<<(ostream &str,DeviceAttributeHistory &dah);
+ 	friend std::ostream &operator<<(std::ostream &str,DeviceAttributeHistory &dah);
 
 ///@privatesection
 // Three following methods for compatibility with older release
@@ -707,7 +707,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DeviceAttributeHistoryExt>   ext_hist;
+    std::unique_ptr<DeviceAttributeHistoryExt>   ext_hist;
 #else
 	DeviceAttributeHistoryExt	            *ext_hist;	// Class extension
 #endif
@@ -753,14 +753,14 @@ class DummyDeviceProxy: public Tango::Connection
 public:
 	DummyDeviceProxy():Tango::Connection(true) {};
 
-	virtual string get_corba_name(bool) {string str;return str;}
-	virtual string build_corba_name() {string str;return str;}
+	virtual std::string get_corba_name(bool) {std::string str;return str;}
+	virtual std::string build_corba_name() {std::string str;return str;}
 	virtual int get_lock_ctr() {return 0;}
 	virtual void set_lock_ctr(int) {};
 
-	virtual string dev_name() {string str;return str;}
+	virtual std::string dev_name() {std::string str;return str;}
 
-	int get_env_var(const char *cc,string &str_ref) {return Tango::Connection::get_env_var(cc,str_ref);}
+	int get_env_var(const char *cc,std::string &str_ref) {return Tango::Connection::get_env_var(cc,str_ref);}
 };
 
 
@@ -838,23 +838,23 @@ inline void DeviceProxy::check_connect_adm_device()
 // For Tango 8 ZMQ event system
 //
 
-inline int DeviceProxy::subscribe_event (const string &attr_name, EventType event, CallBack *callback)
+inline int DeviceProxy::subscribe_event (const std::string &attr_name, EventType event, CallBack *callback)
 {
-    vector<string> filt;
-	return subscribe_event (attr_name,event,callback,filt,false);
+    std::vector<std::string> filt;
+    return subscribe_event (attr_name,event,callback,filt,false);
 }
 
-inline int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
+inline int DeviceProxy::subscribe_event (const std::string &attr_name, EventType event,
                                  CallBack *callback,bool stateless)
 {
-    vector<string> filt;
+    std::vector<std::string> filt;
     return subscribe_event(attr_name,event,callback,filt,stateless);
 }
 
-inline int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
+inline int DeviceProxy::subscribe_event (const std::string &attr_name, EventType event,
                                  int event_queue_size,bool stateless)
 {
-    vector<string> filt;
+    std::vector<std::string> filt;
     return subscribe_event(attr_name,event,event_queue_size,filt,stateless);
 }
 
@@ -868,7 +868,7 @@ inline int DeviceProxy::subscribe_event (const string &attr_name, EventType even
 		{ \
 			TangoSys_OMemStream desc; \
 			desc << "Failed to read_attribute on device " << device_name; \
-			desc << ", attribute " << NAME_CHAR << ends; \
+			desc << ", attribute " << NAME_CHAR << std::ends; \
 			ApiConnExcept::re_throw_exception(e,(const char*)"API_AttributeFailed", \
                         	desc.str(), (const char*)"DeviceProxy::read_attribute()"); \
 		} \
@@ -876,7 +876,7 @@ inline int DeviceProxy::subscribe_event (const string &attr_name, EventType even
 		{ \
 			TangoSys_OMemStream desc; \
 			desc << "Failed to read_attribute on device " << device_name; \
-			desc << ", attribute " << NAME_CHAR << ends; \
+			desc << ", attribute " << NAME_CHAR << std::ends; \
 			Except::re_throw_exception(e,(const char*)"API_AttributeFailed", \
                         	desc.str(), (const char*)"DeviceProxy::read_attribute()"); \
 		} \
@@ -894,7 +894,7 @@ inline int DeviceProxy::subscribe_event (const string &attr_name, EventType even
 			{ \
 				set_connection_state(CONNECTION_NOTOK); \
 				TangoSys_OMemStream desc; \
-				desc << "Failed to read_attribute on device " << device_name << ends; \
+				desc << "Failed to read_attribute on device " << device_name << std::ends; \
 				ApiCommExcept::re_throw_exception(one, \
 							      (const char*)"API_CommunicationFailed", \
                         				      desc.str(), \
@@ -911,7 +911,7 @@ inline int DeviceProxy::subscribe_event (const string &attr_name, EventType even
 			{ \
 				set_connection_state(CONNECTION_NOTOK); \
 				TangoSys_OMemStream desc; \
-				desc << "Failed to read_attribute on device " << device_name << ends; \
+				desc << "Failed to read_attribute on device " << device_name << std::ends; \
 				ApiCommExcept::re_throw_exception(comm, \
 							      (const char*)"API_CommunicationFailed", \
                         				      desc.str(), \
@@ -922,7 +922,7 @@ inline int DeviceProxy::subscribe_event (const string &attr_name, EventType even
         { \
 			set_connection_state(CONNECTION_NOTOK); \
 			TangoSys_OMemStream desc; \
-			desc << "Failed to read_attribute on device " << device_name << ends; \
+			desc << "Failed to read_attribute on device " << device_name << std::ends; \
 			ApiCommExcept::re_throw_exception(ce, \
 						      (const char*)"API_CommunicationFailed", \
                         			      desc.str(), \

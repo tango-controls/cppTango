@@ -64,8 +64,8 @@ namespace Tango
 class PollObj: public omni_mutex
 {
 public:
-	PollObj(DeviceImpl *,PollObjType,const string &,int);
-	PollObj(DeviceImpl *,PollObjType,const string &,int,long);
+	PollObj(DeviceImpl *,PollObjType,const std::string &,int);
+	PollObj(DeviceImpl *,PollObjType,const std::string &,int,long);
 
 	void insert_data(CORBA::Any *,struct timeval &,struct timeval &);
 	void insert_data(Tango::AttributeValueList *,struct timeval &,struct timeval &);
@@ -89,8 +89,8 @@ public:
 	long get_upd() {omni_mutex_lock sync(*this);return get_upd_i();}
 	long get_upd_i() {return ((upd.tv_sec * 1000) + (upd.tv_usec / 1000));}
 
-	string &get_name() {omni_mutex_lock sync(*this);return get_name_i();}
-	string &get_name_i() {return name;}
+	std::string &get_name() {omni_mutex_lock sync(*this);return get_name_i();}
+	std::string &get_name_i() {return name;}
 
 	inline double get_needed_time() {omni_mutex_lock sync(*this);return get_needed_time_i();}
 	inline double get_needed_time_i()
@@ -113,8 +113,8 @@ public:
 	Tango::DevFailed *get_last_except_i() {return ring.get_last_except();}
 	Tango::DevErrorList &get_last_attr_error_i() {return ring.get_last_attr_error();}
 
-	void get_delta_t(vector<double> &vd, long nb) {omni_mutex_lock sync(*this);get_delta_t_i(vd,nb);}
-	void get_delta_t_i(vector<double> &vd,long nb) {ring.get_delta_t(vd,nb);}
+	void get_delta_t(std::vector<double> &vd, long nb) {omni_mutex_lock sync(*this);get_delta_t_i(vd,nb);}
+	void get_delta_t_i(std::vector<double> &vd,long nb) {ring.get_delta_t(vd,nb);}
 
 	long get_elt_nb_in_buffer() {omni_mutex_lock sync(*this);return get_elt_nb_in_buffer_i();}
 	long get_elt_nb_in_buffer_i() {return ring.get_nb_elt();}
@@ -134,7 +134,7 @@ public:
 protected:
 	DeviceImpl			*dev;
 	PollObjType			type;
-	string 				name;
+	std::string 				name;
 	struct timeval		upd;
 	struct timeval		needed_time;
 	double				max_delta_t;

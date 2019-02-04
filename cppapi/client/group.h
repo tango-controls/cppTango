@@ -1873,7 +1873,7 @@ long Group::command_inout_asynch_i (const std::string& c, /*const*/ std::vector<
          << " - got:"
          << d.size()
          << "]"
-         << ends;
+         << std::ends;
     ApiDataExcept::throw_exception((const char*)API_MethodArgument,
                                    (const char*)desc.str().c_str(),
                                    (const char*)"Group::command_inout_asynch");
@@ -1947,7 +1947,7 @@ long Group::write_attribute_asynch_i (const std::string& a, /*const*/ std::vecto
          << " - got:"
          << d.size()
          << "]"
-         << ends;
+         << std::ends;
     ApiDataExcept::throw_exception((const char*)API_MethodArgument,
                                    (const char*)desc.str().c_str(),
                                    (const char*)"Group::write_attribute_asynch");

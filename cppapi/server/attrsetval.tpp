@@ -73,21 +73,21 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 	{
 		SAFE_DELETE(enum_ptr);
 
-		stringstream o;
-		o << "Invalid data type for attribute " << name << ends;
+		std::stringstream o;
+		o << "Invalid data type for attribute " << name << std::ends;
 
 		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::set_value()");
 	}
 
 #ifdef HAS_UNDERLYING
-	bool short_enum = is_same<short,typename underlying_type<T>::type>::value;
-	bool uns_int_enum = is_same<unsigned int,typename underlying_type<T>::type>::value;
+	bool short_enum = std::is_same<short,typename std::underlying_type<T>::type>::value;
+	bool uns_int_enum = std::is_same<unsigned int,typename std::underlying_type<T>::type>::value;
 
 	if (short_enum == false && uns_int_enum == false)
 	{
 		SAFE_DELETE(enum_ptr);
 
-		stringstream ss;
+		std::stringstream ss;
 		ss << "Invalid enumeration type. Supported types are C++11 scoped enum with short as underlying data type\n";
 		ss << "or old enum";
 
@@ -100,7 +100,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 //
 
 #ifdef HAS_TYPE_TRAITS
-	if (is_enum<T>::value == false)
+	if (std::is_enum<T>::value == false)
 	{
 		SAFE_DELETE(enum_ptr);
 		Except::throw_exception(API_IncompatibleArgumentType,
@@ -117,7 +117,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 	{
 		SAFE_DELETE(enum_ptr);
 
-		stringstream ss;
+		std::stringstream ss;
 		ss << "Attribute " << name << " data type is enum but no enum labels are defined!";
 
 		Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_value()");
@@ -136,7 +136,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 	{
 		SAFE_DELETE(enum_ptr);
 
-		stringstream ss;
+		std::stringstream ss;
 		ss << "Invalid enumeration type. Requested enum type is " << att.get_enum_type();
 		Except::throw_exception(API_IncompatibleArgumentType,ss.str(),"Attribute::set_value()");
 	}
@@ -149,8 +149,8 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 	{
 		SAFE_DELETE(enum_ptr);
 
-		stringstream o;
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
+		std::stringstream o;
+		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 
 		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::set_value()");
 	}
@@ -196,7 +196,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 			SAFE_DELETE(enum_ptr);
 			enum_nb = 0;
 
-			stringstream ss;
+			std::stringstream ss;
 			ss << "Wrong value for attribute " << name;
 			ss << ". Element " << i << " (value = " << loc_enum_ptr[i] << ") is negative or above the limit defined by the enum (" << max_val << ").";
 			delete [] loc_enum_ptr;

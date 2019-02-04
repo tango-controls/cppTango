@@ -42,7 +42,7 @@ class NTEventLogger
 {
 private:
     	HANDLE eventSource_; 			// The event source
-	string service_; 			// Service name
+ std::string service_; 			// Service name
     	DWORD eventId_; 			// The event ID
 
     	void emitMessage(int, const char*);
@@ -72,10 +72,10 @@ class NTService
 private:
    	static NTService* instance_; 		// The one and only instance
 
-	string full_exec_name_;			// Full executable name
-	string exec_name_;			// Executable name
-    	string name_; 				// The name
-    	string title_; 				// The title
+      std::string full_exec_name_;			// Full executable name
+      std::string exec_name_;			// Executable name
+      std::string name_; 				// The name
+      std::string title_; 				// The title
     	bool debug_; 				// Are we debugging?
     	DWORD checkPoint_; 			// Check point value
     	SERVICE_STATUS status_; 		// Status of the service

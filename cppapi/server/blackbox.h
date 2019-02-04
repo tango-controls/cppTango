@@ -65,11 +65,11 @@ public:
 	char				client_ip[IP_ADDR_BUFFER_SIZE];
 	LockerLanguage		client_lang;
 	TangoSys_Pid		client_pid;
-	string				java_main_class;
+	std::string				java_main_class;
 	DevULong64			java_ident[2];
 
-	int client_ip_2_client_name(string &) const;
-	friend ostream &operator<<(ostream &o_str,const client_addr &ca);
+	int client_ip_2_client_name(std::string &) const;
+	friend std::ostream &operator<<(std::ostream &o_str,const client_addr &ca);
 };
 
 //==================================================================================================================
@@ -154,8 +154,8 @@ public:
 	BlackBoxElt_ReqType		req_type;
 	BlackBoxElt_AttrType	attr_type;
 	BlackBoxElt_OpType		op_type;
-	string					cmd_name;
-	vector<string>			attr_names;
+	std::string					cmd_name;
+	std::vector<std::string>			attr_names;
 	struct timeval			when;
 	char					host_ip_str[IP_ADDR_BUFFER_SIZE];
 	DevSource				source;
@@ -163,7 +163,7 @@ public:
 	bool					client_ident;
 	LockerLanguage			client_lang;
 	TangoSys_Pid			client_pid;
-	string					java_main_class;
+	std::string					java_main_class;
 };
 
 inline bool operator<(const BlackBoxElt &,const BlackBoxElt &)
@@ -222,14 +222,14 @@ private:
 	void insert_attr_nl_4(const Tango::AttributeValueList_4 &);
 	void insert_attr_wr_nl(const Tango::AttributeValueList_4 &,const Tango::DevVarStringArray &,long);
 
-	vector<BlackBoxElt>	box;
+	std::vector<BlackBoxElt>	box;
 	long				insert_elt;
 	long				nb_elt;
 	long				max_elt;
 
 	omni_mutex			sync;
 
-	string				elt_str;
+	std::string				elt_str;
 };
 
 } // End of Tango namespace

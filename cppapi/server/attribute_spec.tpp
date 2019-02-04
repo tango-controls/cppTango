@@ -67,34 +67,34 @@ namespace Tango
 template <>
 inline void Attribute::set_min_alarm(const Tango::DevEncoded &)
 {
-	string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
+	std::string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
 	Except::throw_exception((const char *)API_MethodArgument,
 				  (const char *)err_msg.c_str(),
 				  (const char *)"Attribute::set_min_alarm()");
 }
 
 template <>
-inline void Attribute::set_min_alarm(const string &new_min_alarm_str)
+inline void Attribute::set_min_alarm(const std::string &new_min_alarm_str)
 {
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
 		throw_err_data_type("min_alarm",d_name,"Attribute::set_min_alarm()");
 
-	string min_alarm_str_tmp = new_min_alarm_str;
-	string dev_name = d_name;
+	std::string min_alarm_str_tmp = new_min_alarm_str;
+	std::string dev_name = d_name;
 
 	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
-	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
-	vector<AttrProperty> &def_class_prop = att.get_class_properties();
+	std::vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
+	std::vector<AttrProperty> &def_class_prop = att.get_class_properties();
 
 	size_t nb_class = def_class_prop.size();
 	size_t nb_user = def_user_prop.size();
 
-	string usr_def_val;
-	string class_def_val;
+	std::string usr_def_val;
+	std::string class_def_val;
 	bool user_defaults = false;
 	bool class_defaults = false;
 
@@ -260,34 +260,34 @@ inline void Attribute::set_min_alarm(const string &new_min_alarm_str)
 template <>
 inline void Attribute::set_max_alarm(const Tango::DevEncoded &)
 {
-	string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
+	std::string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
 	Except::throw_exception((const char *)API_MethodArgument,
 				  (const char *)err_msg.c_str(),
 				  (const char *)"Attribute::set_max_alarm()");
 }
 
 template <>
-inline void Attribute::set_max_alarm(const string &new_max_alarm_str)
+inline void Attribute::set_max_alarm(const std::string &new_max_alarm_str)
 {
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
 		throw_err_data_type("max_alarm",d_name,"Attribute::set_max_alarm()");
 
-	string max_alarm_str_tmp = new_max_alarm_str;
-	string dev_name = d_name;
+	std::string max_alarm_str_tmp = new_max_alarm_str;
+	std::string dev_name = d_name;
 
 	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
-	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
-	vector<AttrProperty> &def_class_prop = att.get_class_properties();
+	std::vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
+	std::vector<AttrProperty> &def_class_prop = att.get_class_properties();
 
 	size_t nb_class = def_class_prop.size();
 	size_t nb_user = def_user_prop.size();
 
-	string usr_def_val;
-	string class_def_val;
+	std::string usr_def_val;
+	std::string class_def_val;
 	bool user_defaults = false;
 	bool class_defaults = false;
 
@@ -453,34 +453,34 @@ inline void Attribute::set_max_alarm(const string &new_max_alarm_str)
 template <>
 inline void Attribute::set_min_warning(const Tango::DevEncoded &)
 {
-	string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
+	std::string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
 	Except::throw_exception((const char *)API_MethodArgument,
 				  (const char *)err_msg.c_str(),
 				  (const char *)"Attribute::set_min_warning()");
 }
 
 template <>
-inline void Attribute::set_min_warning(const string &new_min_warning_str)
+inline void Attribute::set_min_warning(const std::string &new_min_warning_str)
 {
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
 		throw_err_data_type("min_warning",d_name,"Attribute::set_min_warning()");
 
-	string min_warning_str_tmp = new_min_warning_str;
-	string dev_name = d_name;
+	std::string min_warning_str_tmp = new_min_warning_str;
+	std::string dev_name = d_name;
 
 	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
-	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
-	vector<AttrProperty> &def_class_prop = att.get_class_properties();
+	std::vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
+	std::vector<AttrProperty> &def_class_prop = att.get_class_properties();
 
 	size_t nb_class = def_class_prop.size();
 	size_t nb_user = def_user_prop.size();
 
-	string usr_def_val;
-	string class_def_val;
+	std::string usr_def_val;
+	std::string class_def_val;
 	bool user_defaults = false;
 	bool class_defaults = false;
 
@@ -646,34 +646,34 @@ inline void Attribute::set_min_warning(const string &new_min_warning_str)
 template <>
 inline void Attribute::set_max_warning(const Tango::DevEncoded &)
 {
-	string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
+	std::string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
 	Except::throw_exception((const char *)API_MethodArgument,
 				  (const char *)err_msg.c_str(),
 				  (const char *)"Attribute::set_max_warning()");
 }
 
 template <>
-inline void Attribute::set_max_warning(const string &new_max_warning_str)
+inline void Attribute::set_max_warning(const std::string &new_max_warning_str)
 {
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
 		throw_err_data_type("max_warning",d_name,"Attribute::set_max_warning()");
 
-	string max_warning_str_tmp = new_max_warning_str;
-	string dev_name = d_name;
+	std::string max_warning_str_tmp = new_max_warning_str;
+	std::string dev_name = d_name;
 
 	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
-	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
-	vector<AttrProperty> &def_class_prop = att.get_class_properties();
+	std::vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
+	std::vector<AttrProperty> &def_class_prop = att.get_class_properties();
 
 	size_t nb_class = def_class_prop.size();
 	size_t nb_user = def_user_prop.size();
 
-	string usr_def_val;
-	string class_def_val;
+	std::string usr_def_val;
+	std::string class_def_val;
 	bool user_defaults = false;
 	bool class_defaults = false;
 

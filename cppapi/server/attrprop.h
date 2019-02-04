@@ -89,13 +89,13 @@ public:
  *
  * @param value_str The 'C string' representation of attribute property.
  */
-	AttrProp(const char *value_str) : str(string(value_str)), is_value(false), ext(Tango_nullptr) {}
+	AttrProp(const char *value_str) : str(std::string(value_str)), is_value(false), ext(Tango_nullptr) {}
 /**
  * Create a new AttrProp object.
  *
  * @param value_str The string representation of attribute property value.
  */
-	AttrProp(const string &value_str) : str(value_str), is_value(false), ext(Tango_nullptr) {}
+	AttrProp(const std::string &value_str) : str(value_str), is_value(false), ext(Tango_nullptr) {}
 //@}
 
 /**@name Assignment operators
@@ -140,7 +140,7 @@ public:
  *
  * @return AttrProp object with the string representation of its value set.
  */
-	AttrProp &operator=(const string &value_str)
+	AttrProp &operator=(const std::string &value_str)
 	{
 		str = value_str;
 		is_value = false;
@@ -162,7 +162,7 @@ public:
 	{
 		if(is_value == false)
 		{
-			string err_msg = "Numeric representation of the property's value (" + str + ") has not been set";
+			std::string err_msg = "Numeric representation of the property's value (" + str + ") has not been set";
 			Tango::Except::throw_exception(API_AttrPropValueNotSet,err_msg,"AttrProp::get_val",Tango::ERR);
 		}
 		return val;
@@ -172,7 +172,7 @@ public:
  *
  * @return The string representation of the attribute property value.
  */
-	string &get_str() {return str;}
+	std::string &get_str() {return str;}
 /**
  * Set the attribute property value.
  *
@@ -194,13 +194,13 @@ public:
  *
  * @param value_str The the 'C string' representation of the attribute property value.
  */
-	void set_str(const char *value_str) {str = string(value_str); is_value = false;}
+	void set_str(const char *value_str) {str = std::string(value_str); is_value = false;}
 /**
  * Set string representation of the attribute property value.
  *
  * @param value_str The the string representation of the attribute property value.
  */
-	void set_str(const string &value_str) {str = value_str; is_value = false;}
+	void set_str(const std::string &value_str) {str = value_str; is_value = false;}
 //@}
 
 /**@name Check method
@@ -220,7 +220,7 @@ public:
 
 /// @privatesection
 
-	operator string()
+	operator std::string()
 	{
 		return str;
 	}
@@ -231,7 +231,7 @@ public:
 
 private:
 	T val;
-	string str;
+	std::string str;
 	bool is_value;
 
 //
@@ -241,7 +241,7 @@ private:
 	class AttrPropExt {};
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<AttrPropExt>		ext;           // Class extension
+    std::unique_ptr<AttrPropExt>		ext;           // Class extension
 #else
     AttrPropExt					*ext;
 #endif
@@ -285,7 +285,7 @@ public:
  * @param values A vector containing two values of
  * the compound attribute property.
  */
-	DoubleAttrProp(const vector<T> &values) : val(values), is_value(true)
+	DoubleAttrProp(const std::vector<T> &values) : val(values), is_value(true)
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
@@ -314,13 +314,13 @@ public:
  *
  * @param value_str The 'C string' representation of values of the compound attribute property.
  */
-	DoubleAttrProp(const char *value_str) : str(string(value_str)), is_value(false) {}
+	DoubleAttrProp(const char *value_str) : str(std::string(value_str)), is_value(false) {}
 /**
  * Create a new DoubleAttrProp object.
  *
  * @param value_str The string representation of values of the compound attribute property.
  */
-	DoubleAttrProp(const string &value_str) : str(value_str), is_value(false) {}
+	DoubleAttrProp(const std::string &value_str) : str(value_str), is_value(false) {}
 //@}
 
 /**@name Assignment operators
@@ -336,7 +336,7 @@ public:
  * @return DoubleAttrProp object with both values of the compound attribute property
  * and their string representation set.
  */
-	DoubleAttrProp & operator=(const vector<T> &values)
+	DoubleAttrProp & operator=(const std::vector<T> &values)
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
@@ -394,7 +394,7 @@ public:
  * @return DoubleAttrProp object with string representation of values of
  * the compound attribute property set.
  */
-	DoubleAttrProp & operator=(const string &value_str)
+	DoubleAttrProp & operator=(const std::string &value_str)
 	{
 		str = value_str;
 		is_value = false;
@@ -412,11 +412,11 @@ public:
  *
  * @return The vector containing the compound attribute property values.
  */
-	vector<T> get_val()
+	std::vector<T> get_val()
 	{
 		if(is_value == false)
 		{
-			string err_msg = "Numeric representation of the property's value (" + str + ") has not been set";
+			std::string err_msg = "Numeric representation of the property's value (" + str + ") has not been set";
 			Tango::Except::throw_exception(API_AttrPropValueNotSet,err_msg,"AttrProp::get_val",Tango::ERR);
 		}
 		return val;
@@ -426,7 +426,7 @@ public:
  *
  * @return The string representation of the compound attribute property values.
  */
-	string &get_str() {return str;}
+	std::string &get_str() {return str;}
 /**
  * Set the compound attribute property values.
  *
@@ -434,7 +434,7 @@ public:
  *
  * @param values The vector containing the compound attribute property values.
  */
-	void set_val(const vector<T> &values)
+	void set_val(const std::vector<T> &values)
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
@@ -470,13 +470,13 @@ public:
  *
  * @param value_str The 'C string' representation of the compound attribute property values.
  */
-	void set_str(const char *value_str) {str = string(value_str); is_value = false;}
+	void set_str(const char *value_str) {str = std::string(value_str); is_value = false;}
 /**
  * Set string representation of the compound attribute property values.
  *
  * @param value_str The string representation of the compound attribute property values.
  */
-	void set_str(const string &value_str) {str = value_str; is_value = false;}
+	void set_str(const std::string &value_str) {str = value_str; is_value = false;}
 //@}
 
 /**@name Check method
@@ -497,7 +497,7 @@ public:
 
 /// @privatesection
 
-	operator string()
+	operator std::string()
 	{
 		return str;
 	}
@@ -507,8 +507,8 @@ public:
 	}
 
 private:
-	vector<T> val;
-	string str;
+	std::vector<T> val;
+	std::string str;
 	bool is_value;
 
 //
@@ -518,7 +518,7 @@ private:
 	class DoubleAttrPropExt {};
 
 #ifdef HAS_UNIQUE_PTR
-	unique_ptr<DoubleAttrPropExt>	ext;           // Class extension
+	std::unique_ptr<DoubleAttrPropExt>	ext;           // Class extension
 #else
 	DoubleAttrPropExt				*ext;
 #endif
@@ -564,27 +564,27 @@ public:
 /**
  * Attribute label
  */
-		string 						label;
+		std::string 						label;
 /**
  * Attribute description
  */
-		string 						description;
+		std::string 						description;
 /**
  * Attribute unit
  */
-		string 						unit;
+		std::string 						unit;
 /**
  * Attribute standard_unit
  */
-		string 						standard_unit;
+		std::string 						standard_unit;
 /**
  * Attribute display_unit
  */
-		string 						display_unit;
+		std::string 						display_unit;
 /**
  * Attribute format
  */
-		string 						format;
+		std::string 						format;
 /**
  * Attribute min_value
  */
@@ -644,7 +644,7 @@ public:
 /**
  * Enumeration labels (For DevEnum data type)
  */
-        vector<string>				enum_labels;
+        std::vector<std::string>				enum_labels;
 //@}
 private:
 
@@ -655,7 +655,7 @@ private:
 	class MultiAttrPropExt {};
 
 #ifdef HAS_UNIQUE_PTR
-	unique_ptr<MultiAttrPropExt>	ext;           // Class extension
+	std::unique_ptr<MultiAttrPropExt>	ext;           // Class extension
 #else
 	MultiAttrPropExt				*ext;
 #endif

@@ -115,7 +115,7 @@ public:
  *
  */
 	CORBA::Any *command_handler(DeviceImpl *device,
-				    string &command,const CORBA::Any &in_any);
+				    std::string &command,const CORBA::Any &in_any);
 /**
  * Create command objects for all command supported by this class of device.
  *
@@ -133,7 +133,7 @@ public:
  * create and store the supported attributes in a vector.
  *
  */
-	virtual void attribute_factory(vector<Attr *> &) {};
+	virtual void attribute_factory(std::vector<Attr *> &) {};
 /**
  * Create all the pipes supported by this class of device.
  *
@@ -169,7 +169,7 @@ public:
  * @param list Reference to the device name list
  */
 
-	virtual void device_name_factory(vector<string> &list) {(void)list;};
+	virtual void device_name_factory(std::vector<std::string> &list) {(void)list;};
 
 /**
  * Delete device.
@@ -181,7 +181,7 @@ public:
  * @param dev_name Reference to the device name
  */
 
-	void device_destroyer(const string &dev_name);
+	void device_destroyer(const std::string &dev_name);
 
 /**
  * Delete device.
@@ -207,31 +207,31 @@ public:
  *
  * @return The TANGO device class name
  */
-	string &get_name() {return name;}
+	std::string &get_name() {return name;}
 /**
  * Get the TANGO device class documentation URL.
  *
  * @return The TANGO device class documentation
  */
-	string &get_doc_url() {return doc_url;}
+	std::string &get_doc_url() {return doc_url;}
 /**
  * Get the TANGO device type name.
  *
  * @return The TANGO device type name
  */
-	string &get_type() {return type;}
+	std::string &get_type() {return type;}
 /**
  * Get the device object vector.
  *
  * @return A reference to the device vector
  */
-	vector<DeviceImpl *> &get_device_list() {return device_list;}
+	std::vector<DeviceImpl *> &get_device_list() {return device_list;}
 /**
  * Get the command object vector.
  *
  * @return A reference to the command vector
  */
-	vector<Command *> &get_command_list() {return command_list;}
+	std::vector<Command *> &get_command_list() {return command_list;}
 /**
  * Get the pipe object vector.
  *
@@ -239,13 +239,13 @@ public:
  *
  * @return A reference to the pipe vector containing all device pipes
  */
-	vector<Pipe *> &get_pipe_list(const string &dev_name);
+	std::vector<Pipe *> &get_pipe_list(const std::string &dev_name);
 /**
  * Get a reference to a command object.
  *
  * @return A reference to the command object
  */
-	Command &get_cmd_by_name(const string &);
+	Command &get_cmd_by_name(const std::string &);
 /**
  * Get a reference to a pipe object.
  *
@@ -254,7 +254,7 @@ public:
  *
  * @return A reference to the pipe object
  */
-	Pipe &get_pipe_by_name(const string &pipe_name,const string &dev_name);
+	Pipe &get_pipe_by_name(const std::string &pipe_name,const std::string &dev_name);
 /**
  * Get a pointer to the associated DbClass object.
  *
@@ -279,7 +279,7 @@ public:
  *
  * @param dev_type The new TANGO device type name
  */
-	void set_type(string &dev_type) {type = dev_type;}
+	void set_type(std::string &dev_type) {type = dev_type;}
 /**
  * Set the TANGO device type name.
  *
@@ -364,7 +364,7 @@ protected:
  * @param 	s	The Tango device class name
  *
  */
-	DeviceClass(string &s);
+	DeviceClass(std::string &s);
 //@}
 
 /**@name Miscellaneous protected methods */
@@ -405,23 +405,23 @@ protected:
 /**
  * The TANGO device class name
  */
-	string 					name;
+	std::string 					name;
 /**
  * The TANGO device class documentation URL
  */
-	string					doc_url;
+	std::string					doc_url;
 /**
  * The TANGO device type name
  */
-	string					type;
+	std::string					type;
 /**
  * The command(s) list
  */
-	vector<Command *> 		command_list;
+	std::vector<Command *> 		command_list;
 /**
  * The device(s) list
  */
-	vector<DeviceImpl *>	device_list;
+	std::vector<DeviceImpl *>	device_list;
 /**
  * The associated DbClass object
  */
@@ -437,31 +437,31 @@ protected:
 /**
  * The pipe(s) list
  */
-	vector<Pipe *> 			pipe_list;
+	std::vector<Pipe *> 			pipe_list;
 //@}
 
 public:
 /// @privatesection
-	vector<string> &get_nodb_name_list() {return nodb_name_list;}
+	std::vector<std::string> &get_nodb_name_list() {return nodb_name_list;}
 	void set_memorized_values(bool flag, long idx = 0,bool from_init = false);
 
-	void add_wiz_dev_prop(string &name,string &desc,string &def);
-	void add_wiz_dev_prop(string &name,string &desc);
+	void add_wiz_dev_prop(std::string &name,std::string &desc,std::string &def);
+	void add_wiz_dev_prop(std::string &name,std::string &desc);
 
-	void add_wiz_class_prop(string &name,string &desc,string &def);
-	void add_wiz_class_prop(string &name,string &desc);
+	void add_wiz_class_prop(std::string &name,std::string &desc,std::string &def);
+	void add_wiz_class_prop(std::string &name,std::string &desc);
 
-	vector<string> &get_wiz_class_prop() {return wiz_class_prop;}
-	vector<string> &get_wiz_dev_prop() {return wiz_dev_prop;}
+	std::vector<std::string> &get_wiz_class_prop() {return wiz_class_prop;}
+	std::vector<std::string> &get_wiz_dev_prop() {return wiz_dev_prop;}
 
-	string &get_cvs_tag() {return cvs_tag;}
-	string &get_cvs_location() {return cvs_location;}
+	std::string &get_cvs_tag() {return cvs_tag;}
+	std::string &get_cvs_location() {return cvs_location;}
 
-	string &get_svn_tag() {return svn_tag;}
-	string &get_svn_location() {return svn_location;}
+	std::string &get_svn_tag() {return svn_tag;}
+	std::string &get_svn_location() {return svn_location;}
 
-	void set_cvs_tag(string &str) {cvs_tag=str;}
-	void set_cvs_location(string &str) {cvs_location=str;}
+	void set_cvs_tag(std::string &str) {cvs_tag=str;}
+	void set_cvs_location(std::string &str) {cvs_location=str;}
 
 	void add_device(DeviceImpl *dev) {device_list.push_back(dev);}
 	void delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_poa);
@@ -479,10 +479,10 @@ public:
 	void check_att_conf();
 	void release_devices_mon();
 
-	void remove_command(const string &);
+	void remove_command(const std::string &);
 
 	void create_device_pipe(DeviceClass *,DeviceImpl *);
-	vector<Pipe *> &get_pipe_list() {return pipe_list;}
+	std::vector<Pipe *> &get_pipe_list() {return pipe_list;}
 
 protected:
 /// @privatesection
@@ -494,19 +494,19 @@ private:
     public:
         DeviceClassExt() {};
 
-        map<string,vector<Pipe *> > dev_pipe_list;
+        std::map<std::string,std::vector<Pipe *> > dev_pipe_list;
     };
 
 	void get_class_system_resource();
 	void throw_mem_value(DeviceImpl *,Attribute &);
 
-	vector<string>			wiz_class_prop;
-	vector<string>			wiz_dev_prop;
+	std::vector<std::string>			wiz_class_prop;
+	std::vector<std::string>			wiz_dev_prop;
 
-	vector<string>			allowed_cmds;
+	std::vector<std::string>			allowed_cmds;
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DeviceClassExt>      ext;           // Class extension
+    std::unique_ptr<DeviceClassExt>      ext;           // Class extension
 #else
 	DeviceClassExt			        *ext;
 #endif
@@ -515,14 +515,14 @@ private:
 // Ported from the extension class
 //
 
-    vector<string>		nodb_name_list;
+    std::vector<std::string>		nodb_name_list;
     TangoMonitor		only_one;
-    string				cvs_tag;
-    string				cvs_location;
+    std::string				cvs_tag;
+    std::string				cvs_location;
     Command * 			default_cmd;
     bool				py_class;
-    string              svn_tag;
-    string              svn_location;
+    std::string              svn_tag;
+    std::string              svn_location;
     bool                device_factory_done;
 };
 

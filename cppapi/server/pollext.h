@@ -756,12 +756,12 @@ public:
  *
  * @return The stack itself
  */
-	vector<TimedAttrData<T> > &get_data();
+	std::vector<TimedAttrData<T> > &get_data();
 
 /// @privatesection
 	AttrHistoryStack() {};
 
-	vector<Tango::TimedAttrData<T> >	hist;
+	std::vector<Tango::TimedAttrData<T> >	hist;
 };
 
 
@@ -943,13 +943,13 @@ public:
  *
  * @return The stack itself
  */
-	vector<TimedCmdData<T> > &get_data();
+	std::vector<TimedCmdData<T> > &get_data();
 
 /// @privatesection
 
 	CmdHistoryStack() {};
 
-	vector<Tango::TimedCmdData<T> >	hist;
+	std::vector<Tango::TimedCmdData<T> >	hist;
 };
 
 

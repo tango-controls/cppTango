@@ -115,20 +115,20 @@ public :
  * @li DevEncoded
  * @li float
  * @li double
- * @li string
+ * @li std::string
  * @li char* (insert only)
  * @li const char *
- * @li vector<bool>
- * @li vector<unsigned char>
- * @li vector<string>
- * @li vector<short>
- * @li vector<unsigned short>
- * @li vector<DevLong>
- * @li vector<DevULong>
- * @li vector<DevLong64>
- * @li vector<DevULong64>
- * @li vector<float>
- * @li vector<double>
+ * @li std::vector<bool>
+ * @li std::vector<unsigned char>
+ * @li std::vector<std::string>
+ * @li std::vector<short>
+ * @li std::vector<unsigned short>
+ * @li std::vector<DevLong>
+ * @li std::vector<DevULong>
+ * @li std::vector<DevLong64>
+ * @li std::vector<DevULong64>
+ * @li std::vector<float>
+ * @li std::vector<double>
  *
  * Operators exist for inserting the native TANGO CORBA sequence types. These can be
  * useful for programmers who want to use the TANGO api internally in their device servers and do not want
@@ -178,11 +178,11 @@ public :
  * @code
  * DeviceData my_short, my_long, my_string;
  * DeviceData my_float_vector, my_double_vector;
- * string a_string;
+ * std::string a_string;
  * short a_short;
  * DevLong a_long;
- * vector<float> a_float_vector;
- * vector<double> a_double_vector;
+ * std::vector<float> a_float_vector;
+ * std::vector<double> a_double_vector;
  *
  * my_short << 100; // insert a short
  * my_short >> a_short; // extract a short
@@ -190,7 +190,7 @@ public :
  * my_long << 1000; // insert a long
  * my_long >> a_long; // extract a long
  *
- * my_string << string(“estas lista a bailar el tango ?”); // insert a string
+ * my_string << std::string(“estas lista a bailar el tango ?”); // insert a string
  * my_string >> a_string; // extract a string
  *
  * my_float_vector << a_float_vector // insert a vector of floats
@@ -238,7 +238,7 @@ public :
  * @param [in] vs The string vector to be inserted
  * @exception WrongData if requested
  */
-	void insert(vector<DevLong> &vl, vector<string>&vs);
+	void insert(std::vector<DevLong> &vl, std::vector<std::string>&vs);
 /**
  * Insert data into a DeviceData for the DevVarDoubleStringArray data type
  *
@@ -248,7 +248,7 @@ public :
  * @param [in] vs The string vector to be inserted
  * @exception WrongData if requested
  */
-	void insert(vector<double> &vd, vector<string> &vs);
+	void insert(std::vector<double> &vd, std::vector<std::string> &vs);
 /**
  * Insert data into a DeviceData for the DevEncoded data type
  *
@@ -264,7 +264,7 @@ public :
  * @param [in] buffer The data part of the DevEncoded instance
  * @exception WrongData if requested
  */
-	void insert(const string &str,vector<unsigned char> &buffer);
+	void insert(const std::string &str,std::vector<unsigned char> &buffer);
 /**
  * The extract operators
  *
@@ -278,22 +278,22 @@ public :
  * @li DevULong64
  * @li float
  * @li double
- * @li string
+ * @li std::string
  * @li char* (insert only)
  * @li const char *
  * @li DevEncoded
  * @li DevState
- * @li vector<bool>
- * @li vector<unsigned char>
- * @li vector<string>
- * @li vector<short>
- * @li vector<unsigned short>
- * @li vector<DevLong>
- * @li vector<DevULong>
- * @li vector<DevLong64>
- * @li vector<DevULong64>
- * @li vector<float>
- * @li vector<double>
+ * @li std::vector<bool>
+ * @li std::vector<unsigned char>
+ * @li std::vector<std::string>
+ * @li std::vector<short>
+ * @li std::vector<unsigned short>
+ * @li std::vector<DevLong>
+ * @li std::vector<DevULong>
+ * @li std::vector<DevLong64>
+ * @li std::vector<DevULong64>
+ * @li std::vector<float>
+ * @li std::vector<double>
  *
  * Operators exist for extracting the native TANGO CORBA sequence types. These can be
  * useful for programmers who want to use the TANGO api internally in their device servers and do not want
@@ -337,7 +337,7 @@ public :
  * @return Boolean set to false if the extraction failed
  * @exception WrongData if requested
  */
-	bool extract(vector<DevLong> &vl, vector<string> &vs);
+	bool extract(std::vector<DevLong> &vl, std::vector<std::string> &vs);
 /**
  * Extract data from a DeviceData for the DevVarDoubleStringArray data type
  *
@@ -348,13 +348,13 @@ public :
  * @return Boolean set to false if the extraction failed
  * @exception WrongData if requested
  */
-	bool extract(vector<double> &vd, vector<string> &vs);
+	bool extract(std::vector<double> &vd, std::vector<std::string> &vs);
 /**
  * Extract data from a DeviceData for the DevEncoded data type
  *
  * Extract command data when the command data type is DevEncoded
  * Similar method with following signature also exist
- * @li <B>extract(string &str,vector<unsigned char> &data);</B>
+ * @li <B>extract(std::string &str,std::vector<unsigned char> &data);</B>
  *
  * @param [out] str The DevEncoded string
  * @param [out] data The DevEncoded data pointer
@@ -380,18 +380,18 @@ public :
 	void operator << (double datum) {any <<= datum;}
 	void operator << (char *datum) {any <<= datum;}
 	void operator << (const char *datum) {any <<= datum;}
-	void operator << (string &datum) {any <<= datum.c_str();}
-	void operator << (vector<bool>&);
-	void operator << (vector<unsigned char>&);
-	void operator << (vector<string>&);
-	void operator << (vector<short>&);
-	void operator << (vector<unsigned short>&);
-	void operator << (vector<DevLong> &);
-	void operator << (vector<DevULong> &);
-	void operator << (vector<DevLong64> &);
-	void operator << (vector<DevULong64> &);
-	void operator << (vector<float>&);
-	void operator << (vector<double>&);
+	void operator << (std::string &datum) {any <<= datum.c_str();}
+	void operator << (std::vector<bool>&);
+	void operator << (std::vector<unsigned char>&);
+	void operator << (std::vector<std::string>&);
+	void operator << (std::vector<short>&);
+	void operator << (std::vector<unsigned short>&);
+	void operator << (std::vector<DevLong> &);
+	void operator << (std::vector<DevULong> &);
+	void operator << (std::vector<DevLong64> &);
+	void operator << (std::vector<DevULong64> &);
+	void operator << (std::vector<float>&);
+	void operator << (std::vector<double>&);
 	void operator << (DevState datum) {(any.inout()) <<= datum;}
 	void operator << (DevEncoded &datum) {(any.inout()) <<= datum;}
 
@@ -448,25 +448,25 @@ public :
 	bool operator >> (float&);
 	bool operator >> (double&);
 	bool operator >> (const char*&);
-	bool operator >> (string&);
+	bool operator >> (std::string&);
 
-	bool operator >> (vector<bool>&);
-	bool operator >> (vector<unsigned char>&);
-	bool operator >> (vector<string>&);
-	bool operator >> (vector<short>&);
-	bool operator >> (vector<unsigned short>&);
-	bool operator >> (vector<DevLong>&);
-	bool operator >> (vector<DevULong>&);
-	bool operator >> (vector<DevLong64>&);
-	bool operator >> (vector<DevULong64>&);
-	bool operator >> (vector<float>&);
-	bool operator >> (vector<double>&);
+	bool operator >> (std::vector<bool>&);
+	bool operator >> (std::vector<unsigned char>&);
+	bool operator >> (std::vector<std::string>&);
+	bool operator >> (std::vector<short>&);
+	bool operator >> (std::vector<unsigned short>&);
+	bool operator >> (std::vector<DevLong>&);
+	bool operator >> (std::vector<DevULong>&);
+	bool operator >> (std::vector<DevLong64>&);
+	bool operator >> (std::vector<DevULong64>&);
+	bool operator >> (std::vector<float>&);
+	bool operator >> (std::vector<double>&);
 	bool operator >> (DevState&);
-//	bool extract(vector<DevLong>&, vector<string>&);
-//	bool extract(vector<double>&, vector<string>&);
+//	bool extract(std::vector<DevLong>&, std::vector<std::string>&);
+//	bool extract(std::vector<double>&, std::vector<std::string>&);
 
 //  bool extract(const char *&,unsigned char *&,unsigned int &);
-    bool extract(string &,vector<unsigned char> &);
+    bool extract(std::string &,std::vector<unsigned char> &);
 
 //
 // extract methods for TANGO CORBA sequence types
@@ -506,7 +506,7 @@ public :
  *
  * @param [in] fl The exception flag
  */
-	void exceptions(bitset<numFlags> fl) {exceptions_flags = fl;}
+	void exceptions(std::bitset<numFlags> fl) {exceptions_flags = fl;}
 /**
  * Get exception flag
  *
@@ -515,18 +515,18 @@ public :
  * @code
  * DeviceData dd;
  *
- * bitset<DeviceData::numFlags> bs = dd.exceptions();
- * cout << "bs = " << bs << endl;
+ * std::bitset<DeviceData::numFlags> bs = dd.exceptions();
+ * cout << "bs = " << bs << std::endl;
  *
  * da.set_exceptions(DeviceData::wrongtype_flag);
  * bs = dd.exceptions();
  *
- * cout << "bs = " << bs << endl;
+ * cout << "bs = " << bs << std::endl;
  * @endcode
  *
  * @return The exception flag
  */
-	bitset<numFlags> exceptions() {return exceptions_flags;}
+	std::bitset<numFlags> exceptions() {return exceptions_flags;}
 /**
  * Reset one exception flag
  *
@@ -552,13 +552,13 @@ public :
  * @code
  * DeviceData dd = ....
  *
- * bitset<DeviceData::numFlags> bs;
+ * std::bitset<DeviceData::numFlags> bs;
  * da.exceptions(bs);
  *
  * DevLong dl;
  * if ((da >> dl) == false)
  * {
- *    bitset<DeviceData::numFlags> bs_err = da.state();
+ *    std::bitset<DeviceData::numFlags> bs_err = da.state();
  *    if (bs_err.test(DeviceData::isempty_flag) == true)
  *        .....
  * }
@@ -566,7 +566,7 @@ public :
  *
  * @return The error bit set.
  */
-	bitset<numFlags> state() {return ext->ext_state;}
+	std::bitset<numFlags> state() {return ext->ext_state;}
 //@}
 
 /**@name miscellaneous methods */
@@ -578,18 +578,18 @@ public :
  * contains data or not. It can be used to test whether the DeviceData has been initialized or not but
  * you have first to disable exception throwing in case of empty object e.g.
  * @code
- * string string_read;
+ * std::string std::string_read;
  *
  * DeviceData sl_read = my_device->command_inout(“ReadLine”);
  * sl_read.reset_exceptions(DeviceData::isempty_flag);
  *
  * if (! sl_read.is_empty())
  * {
- *    sl_read >> string_read;
+ *    sl_read >> std::string_read;
  * }
  * else
  * {
- *    cout << “ no data read from serial line !” << endl;
+ *    cout << “ no data read from serial line !” << std::endl;
  * }
  * @endcode
  *
@@ -617,19 +617,19 @@ public :
  * DeviceData out;
  *
  * out = dev->command_inout(“MyCommand”);
- * cout << “Command returned: ” << out << endl;
+ * cout << “Command returned: ” << out << std::endl;
  * @endcode
  *
  * @param [in] str The printing stream
  * @param [in] dd The instance to be printed
  */
-	friend ostream &operator<<(ostream &str,DeviceData &dd);
+	friend std::ostream &operator<<(std::ostream &str,DeviceData &dd);
 
 protected :
 ///@privatesection
 	bool any_is_null();
 
-	bitset<numFlags> 	exceptions_flags;
+	std::bitset<numFlags> 	exceptions_flags;
 
 private:
     class DeviceDataExt
@@ -637,11 +637,11 @@ private:
     public:
         DeviceDataExt() {};
 
-        bitset<numFlags>    ext_state;
+        std::bitset<numFlags>    ext_state;
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DeviceDataExt>   ext;
+    std::unique_ptr<DeviceDataExt>   ext;
 #else
 	DeviceDataExt		        *ext;			// Class extension
 #endif

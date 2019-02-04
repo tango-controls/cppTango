@@ -113,19 +113,19 @@ public :
  *
  * Create a DeviceAttribute object from attribute name and value for @b scalar attribute.
  * These constructors exists for the following data type:
- * @li DeviceAttribute(string &, bool);
- * @li DeviceAttribute(string &, short);
- * @li DeviceAttribute(string &, DevLong);
- * @li DeviceAttribute(string &, DevLong64);
- * @li DeviceAttribute(string &, float);
- * @li DeviceAttribute(string &, double);
- * @li DeviceAttribute(string &, unsigned char);
- * @li DeviceAttribute(string &, unsigned short);
- * @li DeviceAttribute(string &, DevULong);
- * @li DeviceAttribute(string &, DevULong64);
- * @li DeviceAttribute(string &, string &);
- * @li DeviceAttribute(string &, DevState);
- * @li DeviceAttribute(string &, DevEncoded &);
+ * @li DeviceAttribute(std::string &, bool);
+ * @li DeviceAttribute(std::string &, short);
+ * @li DeviceAttribute(std::string &, DevLong);
+ * @li DeviceAttribute(std::string &, DevLong64);
+ * @li DeviceAttribute(std::string &, float);
+ * @li DeviceAttribute(std::string &, double);
+ * @li DeviceAttribute(std::string &, unsigned char);
+ * @li DeviceAttribute(std::string &, unsigned short);
+ * @li DeviceAttribute(std::string &, DevULong);
+ * @li DeviceAttribute(std::string &, DevULong64);
+ * @li DeviceAttribute(std::string &, std::string &);
+ * @li DeviceAttribute(std::string &, DevState);
+ * @li DeviceAttribute(std::string &, DevEncoded &);
  * @n @n
  * @li DeviceAttribute(const char *, bool);
  * @li DeviceAttribute(const char *, short);
@@ -137,49 +137,49 @@ public :
  * @li DeviceAttribute(const char *, unsigned short);
  * @li DeviceAttribute(const char *, DevULong);
  * @li DeviceAttribute(const char *, DevULong64);
- * @li DeviceAttribute(const char *, string &);
+ * @li DeviceAttribute(const char *, std::string &);
  * @li DeviceAttribute(const char *, DevState);
  * @li DeviceAttribute(const char *,DevEncoded &);
  *
  * @param [in] name The attribute name
  * @param [in] val The attribute value
  */
-	DeviceAttribute(string &name, short val);
+	DeviceAttribute(std::string &name, short val);
 /**
  * Create a DeviceAttribute object from attribute name and value for spectrum attribute
  *
  * Create a DeviceAttribute object from attribute name and value for @b spectrum attribute.
  * These constructors exists for the following data type:
- * @li DeviceAttribute(string &, vector<bool> &);
- * @li DeviceAttribute(string &, vector<short> &);
- * @li DeviceAttribute(string &, vector<DevLong> &);
- * @li DeviceAttribute(string &, vector<DevLong64>&);
- * @li DeviceAttribute(string &, vector<float> &);
- * @li DeviceAttribute(string &, vector<double> &);
- * @li DeviceAttribute(string &, vector<unsigned char> &);
- * @li DeviceAttribute(string &, vector<unsigned short> &);
- * @li DeviceAttribute(string &, vector<DevULong> &);
- * @li DeviceAttribute(string &, vector<DevULong64>&);
- * @li DeviceAttribute(string &, vector<string> & );
- * @li DeviceAttribute(string &, vector<DevState> &);
+ * @li DeviceAttribute(std::string &, std::vector<bool> &);
+ * @li DeviceAttribute(std::string &, std::vector<short> &);
+ * @li DeviceAttribute(std::string &, std::vector<DevLong> &);
+ * @li DeviceAttribute(std::string &, std::vector<DevLong64>&);
+ * @li DeviceAttribute(std::string &, std::vector<float> &);
+ * @li DeviceAttribute(std::string &, std::vector<double> &);
+ * @li DeviceAttribute(std::string &, std::vector<unsigned char> &);
+ * @li DeviceAttribute(std::string &, std::vector<unsigned short> &);
+ * @li DeviceAttribute(std::string &, std::vector<DevULong> &);
+ * @li DeviceAttribute(std::string &, std::vector<DevULong64>&);
+ * @li DeviceAttribute(std::string &, std::vector<std::string> & );
+ * @li DeviceAttribute(std::string &, std::vector<DevState> &);
  * @n @n
- * @li DeviceAttribute(const char *, vector<bool> &);
- * @li DeviceAttribute(const char *, vector<short> &);
- * @li DeviceAttribute(const char *, vector<DevLong> &);
- * @li DeviceAttribute(const char *, vector<DevLong64>&);
- * @li DeviceAttribute(const char *, vector<float> &);
- * @li DeviceAttribute(const char *, vector<double> &);
- * @li DeviceAttribute(const char *, vector<unsigned char> &);
- * @li DeviceAttribute(const char *, vector<unsigned short> &);
- * @li DeviceAttribute(const char *, vector<DevULong> &);
- * @li DeviceAttribute(const char *, vector<DevULong64>&);
- * @li DeviceAttribute(const char *, vector<string> & );
- * @li DeviceAttribute(const char *, vector<DevState> &);
+ * @li DeviceAttribute(const char *, std::vector<bool> &);
+ * @li DeviceAttribute(const char *, std::vector<short> &);
+ * @li DeviceAttribute(const char *, std::vector<DevLong> &);
+ * @li DeviceAttribute(const char *, std::vector<DevLong64>&);
+ * @li DeviceAttribute(const char *, std::vector<float> &);
+ * @li DeviceAttribute(const char *, std::vector<double> &);
+ * @li DeviceAttribute(const char *, std::vector<unsigned char> &);
+ * @li DeviceAttribute(const char *, std::vector<unsigned short> &);
+ * @li DeviceAttribute(const char *, std::vector<DevULong> &);
+ * @li DeviceAttribute(const char *, std::vector<DevULong64>&);
+ * @li DeviceAttribute(const char *, std::vector<std::string> & );
+ * @li DeviceAttribute(const char *, std::vector<DevState> &);
  *
  * @param [in] name The attribute name
  * @param [in] val The attribute value
  */
-	DeviceAttribute(string &name, vector<short> &val);
+	DeviceAttribute(std::string &name, std::vector<short> &val);
 /**
  * Create a DeviceAttribute object from attribute name and value for image attribute
  *
@@ -187,82 +187,82 @@ public :
  * These constructors have two more parameters allowing the user to define the x and y image
  * dimensions.
  * These constructors exists for the following data type:
- * @li DeviceAttribute(string &, vector<bool> &, int, int);
- * @li DeviceAttribute(string &, vector<short> &, int, int);
- * @li DeviceAttribute(string &, vector<DevLong> &, int, int);
- * @li DeviceAttribute(string &, vector<DevLong64>&, int, int);
- * @li DeviceAttribute(string &, vector<float> &, int, int);
- * @li DeviceAttribute(string &, vector<double> &, int, int);
- * @li DeviceAttribute(string &, vector<unsigned char> &, int, int);
- * @li DeviceAttribute(string &, vector<unsigned short> &, int, int);
- * @li DeviceAttribute(string &, vector<DevULong> &, int, int);
- * @li DeviceAttribute(string &, vector<DevULong64>&, int, int);
- * @li DeviceAttribute(string &, vector<string> &, int, int );
- * @li DeviceAttribute(string &, vector<DevState> &, int, int);
+ * @li DeviceAttribute(std::string &, std::vector<bool> &, int, int);
+ * @li DeviceAttribute(std::string &, std::vector<short> &, int, int);
+ * @li DeviceAttribute(std::string &, std::vector<DevLong> &, int, int);
+ * @li DeviceAttribute(std::string &, std::vector<DevLong64>&, int, int);
+ * @li DeviceAttribute(std::string &, std::vector<float> &, int, int);
+ * @li DeviceAttribute(std::string &, std::vector<double> &, int, int);
+ * @li DeviceAttribute(std::string &, std::vector<unsigned char> &, int, int);
+ * @li DeviceAttribute(std::string &, std::vector<unsigned short> &, int, int);
+ * @li DeviceAttribute(std::string &, std::vector<DevULong> &, int, int);
+ * @li DeviceAttribute(std::string &, std::vector<DevULong64>&, int, int);
+ * @li DeviceAttribute(std::string &, std::vector<std::string> &, int, int );
+ * @li DeviceAttribute(std::string &, std::vector<DevState> &, int, int);
  * @n @n
- * DeviceAttribute(const char *, vector<bool> &, int, int);
- * @li DeviceAttribute(const char *, vector<short> &, int, int);
- * @li DeviceAttribute(const char *, vector<DevLong> &, int, int);
- * @li DeviceAttribute(const char *, vector<DevLong64>&, int, int);
- * @li DeviceAttribute(const char *, vector<float> &, int, int);
- * @li DeviceAttribute(const char *, vector<double> &, int, int);
- * @li DeviceAttribute(const char *, vector<unsigned char> &, int, int);
- * @li DeviceAttribute(const char *, vector<unsigned short> &, int, int);
- * @li DeviceAttribute(const char *, vector<DevULong> &, int, int);
- * @li DeviceAttribute(const char *, vector<DevULong64>&, int, int);
- * @li DeviceAttribute(const char *, vector<string> & , int, int);
- * @li DeviceAttribute(const char *, vector<DevState) &, int, int);
+ * DeviceAttribute(const char *, std::vector<bool> &, int, int);
+ * @li DeviceAttribute(const char *, std::vector<short> &, int, int);
+ * @li DeviceAttribute(const char *, std::vector<DevLong> &, int, int);
+ * @li DeviceAttribute(const char *, std::vector<DevLong64>&, int, int);
+ * @li DeviceAttribute(const char *, std::vector<float> &, int, int);
+ * @li DeviceAttribute(const char *, std::vector<double> &, int, int);
+ * @li DeviceAttribute(const char *, std::vector<unsigned char> &, int, int);
+ * @li DeviceAttribute(const char *, std::vector<unsigned short> &, int, int);
+ * @li DeviceAttribute(const char *, std::vector<DevULong> &, int, int);
+ * @li DeviceAttribute(const char *, std::vector<DevULong64>&, int, int);
+ * @li DeviceAttribute(const char *, std::vector<std::string> & , int, int);
+ * @li DeviceAttribute(const char *, std::vector<DevState) &, int, int);
  *
  * @param [in] name The attribute name
  * @param [in] val The attribute value
  * @param [in] dim_x The attribute X dimension
  * @param [in] dim_y The attribute Y dimension
  */
-	DeviceAttribute(string &name, vector<short> &val,int dim_x,int dim_y);
+	DeviceAttribute(std::string &name, std::vector<short> &val,int dim_x,int dim_y);
 //@}
 ///@privatesection
-	DeviceAttribute(string&, DevLong);
-	DeviceAttribute(string&, double);
-	DeviceAttribute(string&, string&);
-	DeviceAttribute(string&, const char *);
-	DeviceAttribute(string&, float);
-	DeviceAttribute(string&, bool);
-	DeviceAttribute(string&, unsigned short);
-	DeviceAttribute(string&, unsigned char);
-	DeviceAttribute(string&, DevLong64);
-	DeviceAttribute(string&, DevULong);
-	DeviceAttribute(string&, DevULong64);
-	DeviceAttribute(string&, DevState);
-	DeviceAttribute(string&, DevEncoded &);
+	DeviceAttribute(std::string&, DevLong);
+	DeviceAttribute(std::string&, double);
+	DeviceAttribute(std::string&, std::string&);
+	DeviceAttribute(std::string&, const char *);
+	DeviceAttribute(std::string&, float);
+	DeviceAttribute(std::string&, bool);
+	DeviceAttribute(std::string&, unsigned short);
+	DeviceAttribute(std::string&, unsigned char);
+	DeviceAttribute(std::string&, DevLong64);
+	DeviceAttribute(std::string&, DevULong);
+	DeviceAttribute(std::string&, DevULong64);
+	DeviceAttribute(std::string&, DevState);
+	DeviceAttribute(std::string&, DevEncoded &);
 
-	DeviceAttribute(string&, vector<DevLong> &);
-	DeviceAttribute(string&, vector<double> &);
-	DeviceAttribute(string&, vector<string> &);
-	DeviceAttribute(string&, vector<float> &);
-	DeviceAttribute(string&, vector<bool> &);
-	DeviceAttribute(string&, vector<unsigned short> &);
-	DeviceAttribute(string&, vector<unsigned char> &);
-	DeviceAttribute(string&, vector<DevLong64> &);
-	DeviceAttribute(string&, vector<DevULong> &);
-	DeviceAttribute(string&, vector<DevULong64> &);
-	DeviceAttribute(string&, vector<DevState> &);
+	DeviceAttribute(std::string&, std::vector<DevLong> &);
+	DeviceAttribute(std::string&, std::vector<double> &);
+	DeviceAttribute(std::string&, std::vector<std::string> &);
+	DeviceAttribute(std::string&, std::vector<float> &);
+	DeviceAttribute(std::string&, std::vector<bool> &);
+	DeviceAttribute(std::string&, std::vector<unsigned short> &);
+	DeviceAttribute(std::string&, std::vector<unsigned char> &);
+	DeviceAttribute(std::string&, std::vector<DevLong64> &);
+	DeviceAttribute(std::string&, std::vector<DevULong> &);
+	DeviceAttribute(std::string&, std::vector<DevULong64> &);
+	DeviceAttribute(std::string&, std::vector<DevState> &);
 
-	DeviceAttribute(string&, vector<DevLong> &,int,int);
-	DeviceAttribute(string&, vector<double> &,int,int);
-	DeviceAttribute(string&, vector<string> &,int,int);
-	DeviceAttribute(string&, vector<float> &,int,int);
-	DeviceAttribute(string&, vector<bool> &,int,int);
-	DeviceAttribute(string&, vector<unsigned short> &,int,int);
-	DeviceAttribute(string&, vector<unsigned char> &,int,int);
-	DeviceAttribute(string&, vector<DevLong64> &,int,int);
-	DeviceAttribute(string&, vector<DevULong> &,int,int);
-	DeviceAttribute(string&, vector<DevULong64> &,int,int);
-	DeviceAttribute(string&, vector<DevState> &,int,int);
+	DeviceAttribute(std::string&, std::vector<DevLong> &,int,int);
+	DeviceAttribute(std::string&, std::vector<double> &,int,int);
+	DeviceAttribute(std::string&, std::vector<std::string> &,int,int);
+	DeviceAttribute(std::string&, std::vector<float> &,int,int);
+	DeviceAttribute(std::string&, std::vector<bool> &,int,int);
+	DeviceAttribute(std::string&, std::vector<unsigned short> &,int,int);
+	DeviceAttribute(std::string&, std::vector<unsigned char> &,int,int);
+	DeviceAttribute(std::string&, std::vector<DevLong64> &,int,int);
+	DeviceAttribute(std::string&, std::vector<DevULong> &,int,int);
+	DeviceAttribute(std::string&, std::vector<DevULong64> &,int,int);
+	DeviceAttribute(std::string&, std::vector<DevState> &,int,int);
 
 	DeviceAttribute(const char *, short);
 	DeviceAttribute(const char *, DevLong);
 	DeviceAttribute(const char *, double);
-	DeviceAttribute(const char *, string&);
+	DeviceAttribute(const char *, std::string&);
 	DeviceAttribute(const char *, const char *);
 	DeviceAttribute(const char *, float);
 	DeviceAttribute(const char *, bool);
@@ -274,51 +274,51 @@ public :
 	DeviceAttribute(const char *, DevState);
 	DeviceAttribute(const char *, DevEncoded &);
 
-	DeviceAttribute(const char *, vector<short> &);
-	DeviceAttribute(const char *, vector<DevLong> &);
-	DeviceAttribute(const char *, vector<double> &);
-	DeviceAttribute(const char *, vector<string> &);
-	DeviceAttribute(const char *, vector<float> &);
-	DeviceAttribute(const char *, vector<bool> &);
-	DeviceAttribute(const char *, vector<unsigned short> &);
-	DeviceAttribute(const char *, vector<unsigned char> &);
-	DeviceAttribute(const char *, vector<DevLong64> &);
-	DeviceAttribute(const char *, vector<DevULong> &);
-	DeviceAttribute(const char *, vector<DevULong64> &);
-	DeviceAttribute(const char *, vector<DevState> &);
+	DeviceAttribute(const char *, std::vector<short> &);
+	DeviceAttribute(const char *, std::vector<DevLong> &);
+	DeviceAttribute(const char *, std::vector<double> &);
+	DeviceAttribute(const char *, std::vector<std::string> &);
+	DeviceAttribute(const char *, std::vector<float> &);
+	DeviceAttribute(const char *, std::vector<bool> &);
+	DeviceAttribute(const char *, std::vector<unsigned short> &);
+	DeviceAttribute(const char *, std::vector<unsigned char> &);
+	DeviceAttribute(const char *, std::vector<DevLong64> &);
+	DeviceAttribute(const char *, std::vector<DevULong> &);
+	DeviceAttribute(const char *, std::vector<DevULong64> &);
+	DeviceAttribute(const char *, std::vector<DevState> &);
 
-	DeviceAttribute(const char *, vector<short> &,int,int);
-	DeviceAttribute(const char *, vector<DevLong> &,int,int);
-	DeviceAttribute(const char *, vector<double> &,int,int);
-	DeviceAttribute(const char *, vector<string> &,int,int);
-	DeviceAttribute(const char *, vector<float> &,int,int);
-	DeviceAttribute(const char *, vector<bool> &,int,int);
-	DeviceAttribute(const char *, vector<unsigned short> &,int,int);
-	DeviceAttribute(const char *, vector<unsigned char> &,int,int);
-	DeviceAttribute(const char *, vector<DevLong64> &,int,int);
-	DeviceAttribute(const char *, vector<DevULong> &,int,int);
-	DeviceAttribute(const char *, vector<DevULong64> &,int,int);
-	DeviceAttribute(const char *, vector<DevState> &,int,int);
+	DeviceAttribute(const char *, std::vector<short> &,int,int);
+	DeviceAttribute(const char *, std::vector<DevLong> &,int,int);
+	DeviceAttribute(const char *, std::vector<double> &,int,int);
+	DeviceAttribute(const char *, std::vector<std::string> &,int,int);
+	DeviceAttribute(const char *, std::vector<float> &,int,int);
+	DeviceAttribute(const char *, std::vector<bool> &,int,int);
+	DeviceAttribute(const char *, std::vector<unsigned short> &,int,int);
+	DeviceAttribute(const char *, std::vector<unsigned char> &,int,int);
+	DeviceAttribute(const char *, std::vector<DevLong64> &,int,int);
+	DeviceAttribute(const char *, std::vector<DevULong> &,int,int);
+	DeviceAttribute(const char *, std::vector<DevULong64> &,int,int);
+	DeviceAttribute(const char *, std::vector<DevState> &,int,int);
 
-	template <typename T> DeviceAttribute(string &,T);
+	template <typename T> DeviceAttribute(std::string &,T);
 	template <typename T> DeviceAttribute(const char *,T);
-	template <typename T> DeviceAttribute(string &,vector<T> &);
-	template <typename T> DeviceAttribute(const char *,vector<T> &);
-	template <typename T> DeviceAttribute(string &,vector<T> &,int,int);
-	template <typename T> DeviceAttribute(const char *,vector<T> &,int,int);
+	template <typename T> DeviceAttribute(std::string &,std::vector<T> &);
+	template <typename T> DeviceAttribute(const char *,std::vector<T> &);
+	template <typename T> DeviceAttribute(std::string &,std::vector<T> &,int,int);
+	template <typename T> DeviceAttribute(const char *,std::vector<T> &,int,int);
 
 	template <typename T> void base_val(T);
-	template <typename T> void base_vect(vector<T> &);
-	template <typename T> void base_vect_size(vector<T> &);
+	template <typename T> void base_vect(std::vector<T> &);
+	template <typename T> void base_vect_size(std::vector<T> &);
 
 	template <typename T> void operator << (T);
-	template <typename T> void operator << (vector<T> &);
-	template <typename T> void insert(vector<T> &,int,int);
+	template <typename T> void operator << (std::vector<T> &);
+	template <typename T> void insert(std::vector<T> &,int,int);
 
 	template <typename T> bool operator >> (T &);
-	template <typename T> bool operator >> (vector<T> &);
-	template <typename T> bool extract_read (vector<T> &);
-	template <typename T> bool extract_set(vector<T> &);
+	template <typename T> bool operator >> (std::vector<T> &);
+	template <typename T> bool extract_read (std::vector<T> &);
+	template <typename T> bool extract_set(std::vector<T> &);
 
 	template <typename T> bool template_type_check(T &);
 
@@ -329,7 +329,7 @@ public :
 	AttrQuality 		quality;
 	AttrDataFormat		data_format;
 	int					data_type;
-	string 				name;
+	std::string 				name;
 	int 				dim_x;
 	int 				dim_y;
 	int 				w_dim_x;
@@ -398,25 +398,25 @@ public :
  * @li unsigned short
  * @li DevULong
  * @li DevULong64
- * @li string
+ * @li std::string
  * @li DevState
  * @li DevEncoded
  * @li DevString
  * @li const char *
  *
  * Insert operators for the following C++ vector types for @b spectrum attributes :
- * @li vector<bool>
- * @li vector<short>
- * @li vector<DevLong>
- * @li vector<DevLong64>
- * @li vector<float>
- * @li vector<double>
- * @li vector<unsigned char>
- * @li vector<unsigned short>
- * @li vector<DevULong>
- * @li vector<DevULong64>
- * @li vector<string>
- * @li vector<DevState>
+ * @li std::vector<bool>
+ * @li std::vector<short>
+ * @li std::vector<DevLong>
+ * @li std::vector<DevLong64>
+ * @li std::vector<float>
+ * @li std::vector<double>
+ * @li std::vector<unsigned char>
+ * @li std::vector<unsigned short>
+ * @li std::vector<DevULong>
+ * @li std::vector<DevULong64>
+ * @li std::vector<std::string>
+ * @li std::vector<DevState>
  *
  * Insert operators for @b spectrum attribute and for the following types by pointer (with memory ownership transfert) :
  * @li DevVarBooleanArray *
@@ -450,11 +450,11 @@ public :
  * @code
  * DeviceAttribute my_short, my_long, my_string;
  * DeviceAttribute my_float_vector, my_double_vector;
- * string a_string;
+ * std::string a_string;
  * short a_short;
  * DevLong a_long;
- * vector<float> a_float_vector;
- * vector<double> a_double_vector;
+ * std::vector<float> a_float_vector;
+ * std::vector<double> a_double_vector;
  *
  * my_short << 100; // insert a short
  * my_short >> a_short; // extract a short
@@ -462,7 +462,7 @@ public :
  * my_long << 1000; // insert a long
  * my_long >> a_long; // extract a DevLong
  *
- * my_string << string("estas lista a bailar el tango ?"); // insert a string
+ * my_string << std::string("estas lista a bailar el tango ?"); // insert a string
  * my_string >> a_string; // extract a string
  *
  * my_float_vector << a_float_vector // insert a vector of floats
@@ -474,7 +474,7 @@ public :
  * // Extract read and set value of an attribute separately
  * // and get their dimensions
  * //
- * vector<float> r_float_vector, w_float_vector;
+ * std::vector<float> r_float_vector, w_float_vector;
  *
  * my_float_vector.extract_read (r_float_vector) // extract read values
  * int dim_x = my_float_vector.get_dim_x(); // get x dimension
@@ -513,7 +513,7 @@ public :
  *
  * Insert attribute data when the attribute data type is DevEncoded
  * @n Similar methods with following signature also exist
- * @li <B> insert(const string &str, vector<unsigned char> &data);</B>
+ * @li <B> insert(const std::string &str, std::vector<unsigned char> &data);</B>
  * @li <B> insert(const char *str, DevVarCharArray *data);</B>
  *
  * These three methods do not take ownership of the memory used for the data buffer.
@@ -530,18 +530,18 @@ public :
  *
  * Insert methods for the following C++ vector types for image attributes allowing the specification of
  * the x and y image dimensions :
- * @li insert(vector<bool> &,int, int)
- * @li insert(vector<short> &,int, int)
- * @li insert(vector<DevLong>&,int, int)
- * @li insert(vector<DevLong64>&,int, int)
- * @li insert(vector<float> &,int, int)
- * @li insert(vector<double> &,int, int)
- * @li insert(vector<unsigned char> &,int, int)
- * @li insert(vector<unsigned short> &,int, int)
- * @li insert(vector<DevULong>&,int, int)
- * @li insert(vector<DevULong64>&,int, int)
- * @li insert(vector<string> &,int, int)
- * @li insert(vector<DevState> &,int, int)
+ * @li insert(std::vector<bool> &,int, int)
+ * @li insert(std::vector<short> &,int, int)
+ * @li insert(std::vector<DevLong>&,int, int)
+ * @li insert(std::vector<DevLong64>&,int, int)
+ * @li insert(std::vector<float> &,int, int)
+ * @li insert(std::vector<double> &,int, int)
+ * @li insert(std::vector<unsigned char> &,int, int)
+ * @li insert(std::vector<unsigned short> &,int, int)
+ * @li insert(std::vector<DevULong>&,int, int)
+ * @li insert(std::vector<DevULong64>&,int, int)
+ * @li insert(std::vector<std::string> &,int, int)
+ * @li insert(std::vector<DevState> &,int, int)
 
  * See DeviceAttribute::operator<< for example of inserting and extracting data to/from DeviceAttribute instance
  *
@@ -550,7 +550,7 @@ public :
  * @param [in] dim_y The attribute Y dimension
  * @exception WrongData if requested
  */
-	void insert(vector<short> &datum,int dim_x,int dim_y);
+	void insert(std::vector<short> &datum,int dim_x,int dim_y);
 /**
  * Insert attribute data for image attribute (from CORBA sequence by reference)
  *
@@ -625,23 +625,23 @@ public :
  * @li unsigned short
  * @li DevULong
  * @li DevULong64
- * @li string
+ * @li std::string
  * @li DevState
  * @li DevEncoded
  *
  * Extract operators for the following C++ vector types for @b spectrum and @b image attributes :
- * @li vector<bool>
- * @li vector<short>
- * @li vector<DevLong>
- * @li vector<DevLong64>
- * @li vector<float>
- * @li vector<double>
- * @li vector<unsigned char>
- * @li vector<unsigned short>
- * @li vector<DevULong>
- * @li vector<DevULong64>
- * @li vector<string>
- * @li vector<DevState>
+ * @li std::vector<bool>
+ * @li std::vector<short>
+ * @li std::vector<DevLong>
+ * @li std::vector<DevLong64>
+ * @li std::vector<float>
+ * @li std::vector<double>
+ * @li std::vector<unsigned char>
+ * @li std::vector<unsigned short>
+ * @li std::vector<DevULong>
+ * @li std::vector<DevULong64>
+ * @li std::vector<std::string>
+ * @li std::vector<DevState>
  *
  * Extract operators for the following CORBA sequence types <B>with memory consumption</B> :
  * @li DevVarBooleanArray *
@@ -671,7 +671,7 @@ public :
  * It's the user responsability to release the memory pointed to by the two
  * pointers method parameter.
  * @n Similar method with following signature also exist
- * @b extract(string &,vector<unsigned char> &);
+ * @b extract(std::string &,std::vector<unsigned char> &);
  * @n See DeviceAttribute::operator<< for example of inserting and extracting data to/from DeviceAttribute instance
  *
  * @param [out] str The DevEncoded string
@@ -687,26 +687,26 @@ public :
  * the read value can be read by using the methods get_dim_x() and get_dim_y() or get_r_dimension().
  * The methods use the same return values as the extraction operators with exceptions triggered by the
  * exception flags. This method exist for the following data type:
- * @li bool DeviceAttribute::extract_read (vector<bool>&);
- * @li bool DeviceAttribute::extract_read (vector<short>&);
- * @li bool DeviceAttribute::extract_read (vector<DevLong>&);
- * @li bool DeviceAttribute::extract_read (vector<DevLong64>&);
- * @li bool DeviceAttribute::extract_read (vector<float>&);
- * @li bool DeviceAttribute::extract_read (vector<double>&);
- * @li bool DeviceAttribute::extract_read (vector<unsigned char>&);
- * @li bool DeviceAttribute::extract_read (vector<unsigned short>&);
- * @li bool DeviceAttribute::extract_read (vector<DevULong>&);
- * @li bool DeviceAttribute::extract_read (vector<DevULong64>&);
- * @li bool DeviceAttribute::extract_read (vector<string>&);
- * @li bool DeviceAttribute::extract_read (vector<DevState>&);
- * @li bool DeviceAttribute::extract_read(string&, vector<unsigned char> &);
+ * @li bool DeviceAttribute::extract_read (std::vector<bool>&);
+ * @li bool DeviceAttribute::extract_read (std::vector<short>&);
+ * @li bool DeviceAttribute::extract_read (std::vector<DevLong>&);
+ * @li bool DeviceAttribute::extract_read (std::vector<DevLong64>&);
+ * @li bool DeviceAttribute::extract_read (std::vector<float>&);
+ * @li bool DeviceAttribute::extract_read (std::vector<double>&);
+ * @li bool DeviceAttribute::extract_read (std::vector<unsigned char>&);
+ * @li bool DeviceAttribute::extract_read (std::vector<unsigned short>&);
+ * @li bool DeviceAttribute::extract_read (std::vector<DevULong>&);
+ * @li bool DeviceAttribute::extract_read (std::vector<DevULong64>&);
+ * @li bool DeviceAttribute::extract_read (std::vector<std::string>&);
+ * @li bool DeviceAttribute::extract_read (std::vector<DevState>&);
+ * @li bool DeviceAttribute::extract_read(std::string&, std::vector<unsigned char> &);
 
  * See DeviceAttribute::operator<< for example of inserting and extracting data to/from DeviceAttribute instance
  *
  * @param [out] data The attribute data
  * @exception WrongData if requested, DevFailed from device
  */
-	bool extract_read (vector<string> &data);
+	bool extract_read (std::vector<std::string> &data);
 /**
  * Extract only written part of attribute data
  *
@@ -714,32 +714,32 @@ public :
  * of the set value can be read by using the methods get_written_dim_x() and get_written_dim_y()
  * or get_w_dimension(). The methods use the same return values as the extraction operators with
  * exceptions triggered by the exception flags. This method exist for the following data type:
- * @li bool DeviceAttribute::extract_set (vector<bool>&);
- * @li bool DeviceAttribute::extract_set (vector<short>&);
- * @li bool DeviceAttribute::extract_set (vector<DevLong>&);
- * @li bool DeviceAttribute::extract_set (vector<DevLong64>&);
- * @li bool DeviceAttribute::extract_set (vector<float>&);
- * @li bool DeviceAttribute::extract_set (vector<double>&);
- * @li bool DeviceAttribute::extract_set (vector<unsigned char>&);
- * @li bool DeviceAttribute::extract_set (vector<unsigned short>&);
- * @li bool DeviceAttribute::extract_set (vector<DevULong>&);
- * @li bool DeviceAttribute::extract_set (vector<DevULong64>&);
- * @li bool DeviceAttribute::extract_set (vector<string>&);
- * @li bool DeviceAttribute::extract_set (vector<DevState>&);
- * @li bool DeviceAttribute::extract_set(string &, vector<unsigned char> &);
+ * @li bool DeviceAttribute::extract_set (std::vector<bool>&);
+ * @li bool DeviceAttribute::extract_set (std::vector<short>&);
+ * @li bool DeviceAttribute::extract_set (std::vector<DevLong>&);
+ * @li bool DeviceAttribute::extract_set (std::vector<DevLong64>&);
+ * @li bool DeviceAttribute::extract_set (std::vector<float>&);
+ * @li bool DeviceAttribute::extract_set (std::vector<double>&);
+ * @li bool DeviceAttribute::extract_set (std::vector<unsigned char>&);
+ * @li bool DeviceAttribute::extract_set (std::vector<unsigned short>&);
+ * @li bool DeviceAttribute::extract_set (std::vector<DevULong>&);
+ * @li bool DeviceAttribute::extract_set (std::vector<DevULong64>&);
+ * @li bool DeviceAttribute::extract_set (std::vector<std::string>&);
+ * @li bool DeviceAttribute::extract_set (std::vector<DevState>&);
+ * @li bool DeviceAttribute::extract_set(std::string &, std::vector<unsigned char> &);
 
  * See DeviceAttribute::operator<< for example of inserting and extracting data to/from DeviceAttribute instance
  *
  * @param [out] data The attribute data
  * @exception WrongData if requested, DevFailed from device
  */
-	bool extract_set  (vector<string> &data);
+	bool extract_set  (std::vector<std::string> &data);
 //@}
 ///@privatesection
 //	void operator << (short);
 	void operator << (DevLong);
 	void operator << (double);
-	void operator << (string &);
+	void operator << (std::string &);
 	void operator << (float);
 	void operator << (bool);
 	void operator << (unsigned short);
@@ -752,18 +752,18 @@ public :
 	void operator << (DevString);
 	void operator << (const char *);
 
-	void operator << (vector<short> &);
-	void operator << (vector<DevLong> &);
-	void operator << (vector<double> &);
-	void operator << (vector<string> &);
-	void operator << (vector<float> &);
-	void operator << (vector<bool> &);
-	void operator << (vector<unsigned short> &);
-	void operator << (vector<unsigned char> &);
-	void operator << (vector<DevLong64> &);
-	void operator << (vector<DevULong> &);
-	void operator << (vector<DevULong64> &);
-	void operator << (vector<DevState> &);
+	void operator << (std::vector<short> &);
+	void operator << (std::vector<DevLong> &);
+	void operator << (std::vector<double> &);
+	void operator << (std::vector<std::string> &);
+	void operator << (std::vector<float> &);
+	void operator << (std::vector<bool> &);
+	void operator << (std::vector<unsigned short> &);
+	void operator << (std::vector<unsigned char> &);
+	void operator << (std::vector<DevLong64> &);
+	void operator << (std::vector<DevULong> &);
+	void operator << (std::vector<DevULong64> &);
+	void operator << (std::vector<DevState> &);
 
 	void operator << (const DevVarShortArray &datum);
 	void operator << (const DevVarLongArray &datum);
@@ -796,18 +796,18 @@ public :
 // Insert methods
 //
 
-//	void insert(vector<short> &,int,int);
-	void insert(vector<DevLong> &,int,int);
-	void insert(vector<double> &,int,int);
-	void insert(vector<string> &,int,int);
-	void insert(vector<float> &,int,int);
-	void insert(vector<bool> &,int,int);
-	void insert(vector<unsigned short> &,int,int);
-	void insert(vector<unsigned char> &,int,int);
-	void insert(vector<DevLong64> &,int,int);
-	void insert(vector<DevULong> &,int,int);
-	void insert(vector<DevULong64> &,int,int);
-	void insert(vector<DevState> &,int,int);
+//	void insert(std::vector<short> &,int,int);
+	void insert(std::vector<DevLong> &,int,int);
+	void insert(std::vector<double> &,int,int);
+	void insert(std::vector<std::string> &,int,int);
+	void insert(std::vector<float> &,int,int);
+	void insert(std::vector<bool> &,int,int);
+	void insert(std::vector<unsigned short> &,int,int);
+	void insert(std::vector<unsigned char> &,int,int);
+	void insert(std::vector<DevLong64> &,int,int);
+	void insert(std::vector<DevULong> &,int,int);
+	void insert(std::vector<DevULong64> &,int,int);
+	void insert(std::vector<DevState> &,int,int);
 
 //	void insert(const DevVarShortArray &datum,int,int);
 	void insert(const DevVarLongArray &datum,int,int);
@@ -837,8 +837,8 @@ public :
 
 	void insert(char *&,unsigned char *&,unsigned int);     // Deprecated. For compatibility purpose
 //	void insert(const char *str,unsigned char *data,unsigned int length);
-	void insert(const string &,vector<unsigned char> &);
-	void insert(string &,vector<unsigned char> &);      // Deprecated. For compatibility purpose
+	void insert(const std::string &,std::vector<unsigned char> &);
+	void insert(std::string &,std::vector<unsigned char> &);      // Deprecated. For compatibility purpose
 	void insert(const char *,DevVarCharArray *);
 
 //
@@ -848,7 +848,7 @@ public :
 //	bool operator >> (short &);
 	bool operator >> (DevLong &);
 	bool operator >> (double &);
-	bool operator >> (string&);
+	bool operator >> (std::string&);
 	bool operator >> (float &);
 	bool operator >> (bool &);
 	bool operator >> (unsigned short &);
@@ -859,18 +859,18 @@ public :
 	bool operator >> (DevState &);
 	bool operator >> (DevEncoded &);
 
-	bool operator >> (vector<string>&);
-	bool operator >> (vector<short>&);
-	bool operator >> (vector<DevLong>&);
-	bool operator >> (vector<double>&);
-	bool operator >> (vector<float>&);
-	bool operator >> (vector<bool>&);
-	bool operator >> (vector<unsigned short>&);
-	bool operator >> (vector<unsigned char>&);
-	bool operator >> (vector<DevLong64>&);
-	bool operator >> (vector<DevULong>&);
-	bool operator >> (vector<DevULong64>&);
-	bool operator >> (vector<DevState>&);
+	bool operator >> (std::vector<std::string>&);
+	bool operator >> (std::vector<short>&);
+	bool operator >> (std::vector<DevLong>&);
+	bool operator >> (std::vector<double>&);
+	bool operator >> (std::vector<float>&);
+	bool operator >> (std::vector<bool>&);
+	bool operator >> (std::vector<unsigned short>&);
+	bool operator >> (std::vector<unsigned char>&);
+	bool operator >> (std::vector<DevLong64>&);
+	bool operator >> (std::vector<DevULong>&);
+	bool operator >> (std::vector<DevULong64>&);
+	bool operator >> (std::vector<DevState>&);
 
 	bool operator >> (DevVarShortArray* &datum);
 	bool operator >> (DevVarLongArray* &datum);
@@ -890,37 +890,37 @@ public :
 // Extract_xxx methods
 //
 
-//	bool extract_read (vector<string>&);
-	bool extract_read (vector<short>&);
-	bool extract_read (vector<DevLong>&);
-	bool extract_read (vector<double>&);
-	bool extract_read (vector<float>&);
-	bool extract_read (vector<bool>&);
-	bool extract_read (vector<unsigned short>&);
-	bool extract_read (vector<unsigned char>&);
-	bool extract_read (vector<DevLong64>&);
-	bool extract_read (vector<DevULong>&);
-	bool extract_read (vector<DevULong64>&);
-	bool extract_read (vector<DevState>&);
-	bool extract_read (string &,vector<unsigned char> &);
+//	bool extract_read (std::vector<std::string>&);
+	bool extract_read (std::vector<short>&);
+	bool extract_read (std::vector<DevLong>&);
+	bool extract_read (std::vector<double>&);
+	bool extract_read (std::vector<float>&);
+	bool extract_read (std::vector<bool>&);
+	bool extract_read (std::vector<unsigned short>&);
+	bool extract_read (std::vector<unsigned char>&);
+	bool extract_read (std::vector<DevLong64>&);
+	bool extract_read (std::vector<DevULong>&);
+	bool extract_read (std::vector<DevULong64>&);
+	bool extract_read (std::vector<DevState>&);
+	bool extract_read (std::string &,std::vector<unsigned char> &);
 
-//	bool extract_set  (vector<string>&);
-	bool extract_set  (vector<short>&);
-	bool extract_set  (vector<DevLong>&);
-	bool extract_set  (vector<double>&);
-	bool extract_set  (vector<float>&);
-	bool extract_set  (vector<bool>&);
-	bool extract_set  (vector<unsigned short>&);
-	bool extract_set  (vector<unsigned char>&);
-	bool extract_set  (vector<DevLong64>&);
-	bool extract_set  (vector<DevULong>&);
-	bool extract_set  (vector<DevULong64>&);
-	bool extract_set  (vector<DevState>&);
-	bool extract_set  (string &,vector<unsigned char> &);
+//	bool extract_set  (std::vector<std::string>&);
+	bool extract_set  (std::vector<short>&);
+	bool extract_set  (std::vector<DevLong>&);
+	bool extract_set  (std::vector<double>&);
+	bool extract_set  (std::vector<float>&);
+	bool extract_set  (std::vector<bool>&);
+	bool extract_set  (std::vector<unsigned short>&);
+	bool extract_set  (std::vector<unsigned char>&);
+	bool extract_set  (std::vector<DevLong64>&);
+	bool extract_set  (std::vector<DevULong>&);
+	bool extract_set  (std::vector<DevULong64>&);
+	bool extract_set  (std::vector<DevState>&);
+	bool extract_set  (std::string &,std::vector<unsigned char> &);
 
 //	bool extract(const char *&,unsigned char *&,unsigned int &);
 	bool extract(char *&,unsigned char *&,unsigned int &);      // Deprecated. For compatibility purpose
-	bool extract(string &,vector<unsigned char> &);
+	bool extract(std::string &,std::vector<unsigned char> &);
 
 ///@publicsection
 
@@ -947,7 +947,7 @@ public :
  *
  * @param [in] fl The exception flag
  */
-	void exceptions(bitset<numFlags> fl) {exceptions_flags = fl;}
+	void exceptions(std::bitset<numFlags> fl) {exceptions_flags = fl;}
 /**
  * Get exception flag
  *
@@ -956,18 +956,18 @@ public :
  * @code
  * DeviceAttribute da;
  *
- * bitset<DeviceAttribute::numFlags> bs = da.exceptions();
- * cout << "bs = " << bs << endl;
+ * std::bitset<DeviceAttribute::numFlags> bs = da.exceptions();
+ * cout << "bs = " << bs << std::endl;
  *
  * da.set_exceptions(DeviceAttribute::wrongtype_flag);
  * bs = da.exceptions();
  *
- * cout << "bs = " << bs << endl;
+ * cout << "bs = " << bs << std::endl;
  * @endcode
  *
  * @return The exception flag
  */
-	bitset<numFlags> exceptions() {return exceptions_flags;}
+	std::bitset<numFlags> exceptions() {return exceptions_flags;}
 /**
  * Reset one exception flag
  *
@@ -1007,13 +1007,13 @@ public :
  * @code
  * DeviceAttribute da = ....
  *
- * bitset<DeviceAttribute::numFlags> bs;
+ * std::bitset<DeviceAttribute::numFlags> bs;
  * da.exceptions(bs);
  *
  * DevLong dl;
  * if ((da >> dl) == false)
  * {
- *    bitset<DeviceAttribute::numFlags> bs_err = da.state();
+ *    std::bitset<DeviceAttribute::numFlags> bs_err = da.state();
  *    if (bs_err.test(DeviceAttribute::isempty_flag) == true)
  *        .....
  * }
@@ -1021,7 +1021,7 @@ public :
  *
  * @return The error bit set.
  */
-	bitset<numFlags> state() {return ext->ext_state;}
+	std::bitset<numFlags> state() {return ext->ext_state;}
 /**
  * Check if the call failed
  *
@@ -1038,7 +1038,7 @@ public :
  * The following is an example of the three available ways to get data out of a DeviceAttribute object
  * @code
  * DeviceAttribute da;
- * vector<short> attr_data;
+ * std::vector<short> attr_data;
  *
  * try
  * {
@@ -1053,7 +1053,7 @@ public :
  * ------------------------------------------------------------------------
  *
  * DeviceAttribute da;
- * vector<short> attr_data;
+ * std::vector<short> attr_data;
  *
  * da.reset_exceptions(DeviceAttribute::failed_flag);
  *
@@ -1079,7 +1079,7 @@ public :
  * ----------------------------------------------------------------------
  *
  * DeviceAttribute da;
- * vector<short> attr_data;
+ * std::vector<short> attr_data;
  *
  * try
  * {
@@ -1122,7 +1122,7 @@ public :
  * default behavior. It can be used to test whether the DeviceAttribute has been initialized or not
  * e.g.
  * @code
- * string parity;
+ * std::string parity;
  * DeviceAttribute sl_parity = my_device->read_attribute("parity");
  * sl_parity.reset_exceptions(DeviceAttribute::isempty_flag);
  *
@@ -1132,7 +1132,7 @@ public :
  * }
  * else
  * {
- *     cout << " no parity attribute defined for serial line !" << endl;
+ *     cout << " no parity attribute defined for serial line !" << std::endl;
  * }
  * @endcode
  *
@@ -1147,7 +1147,7 @@ public :
  *
  * @return The attribute name
  */
-	string &get_name() {return name;}
+	std::string &get_name() {return name;}
 /**
  * Set attribute name
  *
@@ -1155,7 +1155,7 @@ public :
  *
  * @param na The attribute name
  */
-	void set_name(string &na) {name =  na;}
+	void set_name(std::string &na) {name =  na;}
 /**
  * Set attribute name
  *
@@ -1163,7 +1163,7 @@ public :
  *
  * @param na The attribute name
  */
-	void set_name(const char *na) {string str(na);name = str;}
+	void set_name(const char *na) {std::string str(na);name = str;}
 /**
  * Get attribute X dimension
  *
@@ -1226,7 +1226,7 @@ public :
  * Returns the number of written values. Here is an example of these last methods usage.
  * @code
  * DeviceAttribute da;
- * vector<short> attr_data;
+ * std::vector<short> attr_data;
  *
  * try
  * {
@@ -1242,10 +1242,10 @@ public :
  * long written = da.get_nb_written();
  *
  * for (long i = 0;i < read;i++)
- *    cout << "Read value " << i+1 << " = " << attr_data[i] << endl;
+ *    cout << "Read value " << i+1 << " = " << attr_data[i] << std::endl;
  *
  * for (long j = 0; j < written;j++)
- *    cout << "Last written value " << j+1 << " = " << attr_data[j + read] << endl;
+ *    cout << "Last written value " << j+1 << " = " << attr_data[j + read] << std::endl;
  * @endcode
  *
  * @return The read value number
@@ -1292,11 +1292,11 @@ public :
 	TimeVal &get_date() {return time;}
 //@}
 ///@privatesection
-	friend ostream &operator<<(ostream &,DeviceAttribute &);
+	friend std::ostream &operator<<(std::ostream &,DeviceAttribute &);
 
 protected :
 ///@privatesection
-	bitset<numFlags> 	exceptions_flags;
+	std::bitset<numFlags> 	exceptions_flags;
 	void del_mem(int);
 	bool check_for_data();
 	bool check_wrong_type_exception();
@@ -1308,13 +1308,13 @@ protected :
         DeviceAttributeExt() {};
         DeviceAttributeExt & operator=(const DeviceAttributeExt &);
 
-        bitset<numFlags>    ext_state;
+        std::bitset<numFlags>    ext_state;
 
         void deep_copy(const DeviceAttributeExt &);
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DeviceAttributeExt>  ext;
+    std::unique_ptr<DeviceAttributeExt>  ext;
 #else
 	DeviceAttributeExt	            *ext;		// Class extension
 #endif

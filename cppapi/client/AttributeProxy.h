@@ -57,40 +57,40 @@
 class AttributeProxy
 {
 private :
-	string 				attr_name;
-	string 				device_name;
-	string 				alias_name;
+	std::string 				attr_name;
+	std::string 				device_name;
+	std::string 				alias_name;
 	Tango::DeviceProxy 	*dev_proxy;
 	Tango::DbAttribute 	*db_attr;
 	bool    			dbase_used;		// Dev. with database
 	bool    			from_env_var;   // DB from TANGO_HOST
 
-	string  			host;           // DS host (if dbase_used=false)
-	string  			port;           // DS port (if dbase_used=false)
+	std::string  			host;           // DS host (if dbase_used=false)
+	std::string  			port;           // DS port (if dbase_used=false)
 	int     			port_num;       // DS port (as number)
 
-	string  			db_host;        // DB host
-	string  			db_port;        // DB port
+	std::string  			db_host;        // DB host
+	std::string  			db_port;        // DB port
 	int     			db_port_num;    // DB port (as number)
 
-	void real_constructor(string &);
-	void ctor_from_dp(const DeviceProxy *,string &);
+	void real_constructor(std::string &);
+	void ctor_from_dp(const DeviceProxy *,std::string &);
 
     class AttributeProxyExt
     {
     public:
-        string user_defined_name;
-        AttributeProxyExt(const string& name):user_defined_name(name) {};
+        std::string user_defined_name;
+        AttributeProxyExt(const std::string& name):user_defined_name(name) {};
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<AttributeProxyExt>   ext;
+    std::unique_ptr<AttributeProxyExt>   ext;
 #else
 	AttributeProxyExt	            *ext;     		// Class extension
 #endif
 
 public :
-    string get_user_defined_name() const { return ext->user_defined_name; }
+    std::string get_user_defined_name() const { return ext->user_defined_name; }
 ///@name Constructors
 //@{
 /**
@@ -112,7 +112,7 @@ public :
  *
  * @param [in] name	The attribute name
  */
-	AttributeProxy(string &name);
+	AttributeProxy(std::string &name);
 /**
  * Create a AttributeProxy object.
  *
@@ -132,7 +132,7 @@ public :
  *
  * @return The attribute name
  */
-	virtual inline string name() { return attr_name; }
+	virtual inline std::string name() { return attr_name; }
 /**
  * Get associated DeviceProxy instance
  *
@@ -147,20 +147,20 @@ public :
  * A method which return the status of the device to which the attribute belongs to. The status is returned as
  * a string. Example :
  * @code
- * cout << "device status: " << my_attr->status() << endl;
+ * cout << "device status: " << my_attr->status() << std::endl;
  * @endcode
  *
  * @return The underlying device status
  * @exception ConnectionFailed, CommunnicationFailed
  */
-	virtual string status();
+	virtual std::string status();
 /**
  * Get device state
  *
  * A method which returns the state of the device to which the attribute belongs to. This state is returned as a
  * Tango::DevState type. Example :
  * @code
- * dev_state = my_attr->state() << endl;
+ * dev_state = my_attr->state() << std::endl;
  * @endcode
  *
  * @return The underlying device state
@@ -173,7 +173,7 @@ public :
  * A method which sends a ping to the device to which the attribute belongs and returns the time elapsed in
  * microseconds. Example :
  * @code
- * cout << "device ping took " << my_device->ping() << “ microseconds” << endl;
+ * cout << "device ping took " << my_device->ping() << “ microseconds” << std::endl;
  * @endcode
  *
  * @return Time needed by the ping call
@@ -261,7 +261,7 @@ public :
  * polling.
  * @code
  * AttributeProxy attr = new AttributeProxy("my/own/device/Current");
- * vector<DeviceAttributeHistory> *hist;
+ * std::vector<DeviceAttributeHistory> *hist;
  *
  * hist = attr->history(5);
  *
@@ -270,18 +270,18 @@ public :
  *    bool fail = (*hist)[i].has_failed();
  *    if (fail == false)
  *    {
- *       cout << "Attribute name = " << (*hist)[i].get_name() << endl;
- *       cout << "Attribute quality factor = " << (*hist)[i].get_quality() << endl;
+ *       cout << "Attribute name = " << (*hist)[i].get_name() << std::endl;
+ *       cout << "Attribute quality factor = " << (*hist)[i].get_quality() << std::endl;
  *       long value;
  *       (*hist)[i] >> value;
- *       cout << "Current = " << value << endl;
+ *       cout << "Current = " << value << std::endl;
  *    }
  *    else
  *    {
- *       cout << "Attribute failed !" << endl;
- *       cout << "Error level 0 desc = " << ((*hist)[i].get_err_stack())[0].desc << endl;
+ *       cout << "Attribute failed !" << std::endl;
+ *       cout << "Error level 0 desc = " << ((*hist)[i].get_err_stack())[0].desc << std::endl;
  *    }
- *    cout << "Date = " << (*hist)[i].get_date().tv_sec << endl;
+ *    cout << "Date = " << (*hist)[i].get_date().tv_sec << std::endl;
  * }
  * delete hist;
  * @endcode
@@ -290,7 +290,7 @@ public :
  * @return The attribute value history
  * @exception ConnectionFailed, CommunnicationFailed, NonSupportedFeature, DevFailed from device
  */
-	virtual vector<DeviceAttributeHistory> *history(int depth);
+	virtual std::vector<DeviceAttributeHistory> *history(int depth);
 //@}
 
 ///@name Asynchronous methods
@@ -611,7 +611,7 @@ public :
  * @param [out] db Property value
  * @exception NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database
  */
-	virtual void get_property(string &prop_name, DbData &db);
+	virtual void get_property(std::string &prop_name, DbData &db);
 /**
  * Get multiple attribute property
  *
@@ -622,7 +622,7 @@ public :
  * @param [out] db Properties value
  * @exception NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database
  */
-	virtual void get_property(vector<string> &prop_names, DbData &db);
+	virtual void get_property(std::vector<std::string> &prop_names, DbData &db);
 /**
  * Get attribute property(ies)
  *
@@ -652,7 +652,7 @@ public :
  * @param [in] prop_name The property name
  * @exception NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database
  */
-	virtual void delete_property(string &prop_name);
+	virtual void delete_property(std::string &prop_name);
 /**
  * Delete a list of attribute property
  *
@@ -662,7 +662,7 @@ public :
  * @param [in] prop_names The properties name
  * @exception NonDbDevice, ConnectionFailed, CommunicationFailed, DevFailed from database
  */
-	virtual void delete_property(vector<string> &prop_names);
+	virtual void delete_property(std::vector<std::string> &prop_names);
 /**
  * Delete attribute property(ies)
  *
@@ -681,7 +681,7 @@ public :
 //
 // general methods
 //
-	virtual void parse_name(string &);
+	virtual void parse_name(std::string &);
 	virtual void set_transparency_reconnection(bool);
 	virtual bool get_transparency_reconnection();
 
@@ -689,12 +689,12 @@ public :
 // Old event methods
 //
 
-	virtual int subscribe_event (EventType event, CallBack *,const vector<string> &filters); // For compatibility
-	virtual int subscribe_event (EventType event, CallBack *,const vector<string> &filters, bool stateless); // For compatibility
-	virtual int subscribe_event (EventType event, int event_queue_size,const vector<string> &filters, bool stateless = false); // For compatibility
+	virtual int subscribe_event (EventType event, CallBack *,const std::vector<std::string> &filters); // For compatibility
+	virtual int subscribe_event (EventType event, CallBack *,const std::vector<std::string> &filters, bool stateless); // For compatibility
+	virtual int subscribe_event (EventType event, int event_queue_size,const std::vector<std::string> &filters, bool stateless = false); // For compatibility
 
 
-	AttributeProxy(const DeviceProxy *,string &);
+	AttributeProxy(const DeviceProxy *,std::string &);
 	AttributeProxy(const DeviceProxy *,const char *);
 	AttributeProxy(const AttributeProxy &);
 	AttributeProxy & operator=(const AttributeProxy &);

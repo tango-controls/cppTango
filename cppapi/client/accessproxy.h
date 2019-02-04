@@ -38,21 +38,21 @@ namespace Tango {
 class AccessProxy: public Tango::DeviceProxy
 {
 public:
-	AccessProxy(string &);
+	AccessProxy(std::string &);
 	AccessProxy(const char *);
 	~AccessProxy() {}
 
-	AccessControlType check_access_control(string &);
-	bool is_command_allowed(string &,string &);
+	AccessControlType check_access_control(std::string &);
+	bool is_command_allowed(std::string &,std::string &);
 
 protected:
-	string							user;
-	vector<string>					host_ips;
-	bool							forced;
-	map<string,vector<string> > 	allowed_cmd_table;
-	omni_mutex						only_one;
+	std::string	user;
+	std::vector<std::string> host_ips;
+	bool forced;
+	std::map<std::string,std::vector<std::string> > 	allowed_cmd_table;
+	omni_mutex only_one;
 
-	void get_allowed_commands(string &,vector<string> &);
+	void get_allowed_commands(std::string &,std::vector<std::string> &);
 
 private:
 	void real_ctor();

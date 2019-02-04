@@ -81,7 +81,7 @@ public:
  * @param [out] value The environment variable value
  * @return Set to -1 if the environment varaibel is not found
  */
-	TANGO_IMP_EXP static int get_env_var(const char *name,string &value);
+	TANGO_IMP_EXP static int get_env_var(const char *name,std::string &value);
 /**
  * Get pending asynchronous requets number
  *
@@ -140,8 +140,8 @@ public:
 	void set_orb(CORBA::ORB_ptr orb_in) {_orb = orb_in;}
 	void create_orb();
 	int	get_db_ind();
-	int	get_db_ind(string &host,int port);
-	vector<Database *> &get_db_vect() {return db_vect;}
+	int	get_db_ind(std::string &host,int port);
+	std::vector<Database *> &get_db_vect() {return db_vect;}
 	bool in_server() {return in_serv;}
 	void in_server(bool serv) {in_serv = serv;}
 
@@ -166,7 +166,7 @@ public:
 	DevLong get_user_sub_hwm() {return user_sub_hwm;}
 	void set_event_buffer_hwm(DevLong val) {if (user_sub_hwm == -1)user_sub_hwm=val;}
 
-	void get_ip_from_if(vector<string> &);
+	void get_ip_from_if(std::vector<std::string> &);
 	void print_error_message(const char *);
 
 	void set_sig_handler();
@@ -199,7 +199,7 @@ public:
 	static void attr_to_device(const AttributeValue_5 *,long,DeviceAttribute *);
 
 	static void device_to_attr(const DeviceAttribute &,AttributeValue_4 &);
-	static void device_to_attr(const DeviceAttribute &,AttributeValue &,string &);
+	static void device_to_attr(const DeviceAttribute &,AttributeValue &,std::string &);
 
 //
 // Conv. between AttributeConfig and AttributeInfoEx
@@ -212,7 +212,7 @@ protected:
 	ApiUtil();
 	virtual ~ApiUtil();
 
-	vector<Database *>			db_vect;
+	std::vector<Database *>			db_vect;
 	omni_mutex					the_mutex;
 	CORBA::ORB_ptr				_orb;
 	bool						in_serv;
@@ -226,7 +226,7 @@ protected:
 public:
 /// @privatesection
 	omni_mutex					lock_th_map;
-	map<string,LockingThread>	lock_threads;
+	std::map<std::string,LockingThread>	lock_threads;
 
 private:
     class ApiUtilExt
@@ -241,7 +241,7 @@ private:
 	bool						reset_already_executed_flag;
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<ApiUtilExt>      ext;
+    std::unique_ptr<ApiUtilExt>      ext;
 #else
 	ApiUtilExt					*ext; 		// Class extension
 #endif
@@ -250,7 +250,7 @@ private:
     TangoSys_Pid		        cl_pid;
     int					        user_connect_timeout;
     ZmqEventConsumer            *zmq_event_consumer;
-    vector<string>              host_ip_adrs;
+    std::vector<std::string>              host_ip_adrs;
     DevLong                     user_sub_hwm;
 
     template <typename T> static void attr_to_device_base(const T *,DeviceAttribute *);

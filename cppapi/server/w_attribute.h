@@ -82,7 +82,7 @@ public:
  * @param idx The index of the related Attr object in the MultiClassAttribute
  *            vector of Attr object
  */
-	WAttribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string &dev_name,long idx);
+	WAttribute(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::string &dev_name,long idx);
 //@}
 
 /**@name Destructor
@@ -475,7 +475,7 @@ public:
  * @param x The attribute set value x length. Default value is 1
  * @param y The attribute set value y length. Default value is 0
  */
-	void set_write_value(vector<Tango::DevShort> &val, long x = 1, long y = 0);
+	void set_write_value(std::vector<Tango::DevShort> &val, long x = 1, long y = 0);
 
 /**
  * Set the writable scalar attribute value when the attribute data type is
@@ -502,7 +502,7 @@ public:
  * @param x The attribute set value x length. Default value is 1
  * @param y The attribute set value y length. Default value is 0
  */
-	void set_write_value(vector<Tango::DevLong> &val, long x = 1, long y = 0);
+	void set_write_value(std::vector<Tango::DevLong> &val, long x = 1, long y = 0);
 
 /**
  * Set the writable scalar attribute value when the attribute data type is
@@ -529,7 +529,7 @@ public:
  * @param x The attribute set value x length. Default value is 1
  * @param y The attribute set value y length. Default value is 0
  */
-	void set_write_value(vector<Tango::DevLong64> &val, long x = 1, long y = 0);
+	void set_write_value(std::vector<Tango::DevLong64> &val, long x = 1, long y = 0);
 
 /**
  * Set the writable scalar attribute value when the attribute data type is
@@ -556,7 +556,7 @@ public:
  * @param x The attribute set value x length. Default value is 1
  * @param y The attribute set value y length. Default value is 0
  */
-	void set_write_value(vector<Tango::DevDouble> &val, long x = 1, long y = 0);
+	void set_write_value(std::vector<Tango::DevDouble> &val, long x = 1, long y = 0);
 
 /**
  * Set the writable scalar attribute value when the attribute data type is
@@ -571,7 +571,7 @@ public:
  *
  * @param val A reference to a std::string
  */
-	void set_write_value(string &val);
+	void set_write_value(std::string &val);
 /**
  * Set the writable spectrum or image attribute value when the attribute
  * data type is Tango::DevString.
@@ -589,7 +589,7 @@ public:
  * @param x The attribute set value x length. Default value is 1
  * @param y The attribute set value y length. Default value is 0
  */
-	void set_write_value(vector<string> &val, long x = 1, long y = 0);
+	void set_write_value(std::vector<std::string> &val, long x = 1, long y = 0);
 
 /**
  * Set the writable scalar attribute value when the attribute data type is
@@ -616,7 +616,7 @@ public:
  * @param x The attribute set value x length. Default value is 1
  * @param y The attribute set value y length. Default value is 0
  */
-	void set_write_value(vector<Tango::DevFloat> &val, long x = 1, long y = 0);
+	void set_write_value(std::vector<Tango::DevFloat> &val, long x = 1, long y = 0);
 
 /**
  * Set the writable scalar attribute value when the attribute data type is
@@ -643,7 +643,7 @@ public:
  * @param x The attribute set value x length. Default value is 1
  * @param y The attribute set value y length. Default value is 0
  */
-	void set_write_value(vector<Tango::DevBoolean> &val, long x = 1, long y = 0);
+	void set_write_value(std::vector<Tango::DevBoolean> &val, long x = 1, long y = 0);
 
 /**
  * Set the writable scalar attribute value when the attribute data type is
@@ -670,7 +670,7 @@ public:
  * @param x The attribute set value x length. Default value is 1
  * @param y The attribute set value y length. Default value is 0
  */
-	void set_write_value(vector<Tango::DevUShort> &val, long x = 1, long y = 0);
+	void set_write_value(std::vector<Tango::DevUShort> &val, long x = 1, long y = 0);
 
 /**
  * Set the writable scalar attribute value when the attribute data type is
@@ -697,7 +697,7 @@ public:
  * @param x The attribute set value x length. Default value is 1
  * @param y The attribute set value y length. Default value is 0
  */
-	void set_write_value(vector<Tango::DevUChar> &val, long x = 1, long y = 0);
+	void set_write_value(std::vector<Tango::DevUChar> &val, long x = 1, long y = 0);
 
 /**
  * Set the writable scalar attribute value when the attribute data type is
@@ -724,7 +724,7 @@ public:
  * @param x The attribute set value x length. Default value is 1
  * @param y The attribute set value y length. Default value is 0
  */
-	void set_write_value(vector<Tango::DevULong> &val, long x = 1, long y = 0);
+	void set_write_value(std::vector<Tango::DevULong> &val, long x = 1, long y = 0);
 
 /**
  * Set the writable scalar attribute value when the attribute data type is
@@ -751,7 +751,7 @@ public:
  * @param x The attribute set value x length. Default value is 1
  * @param y The attribute set value y length. Default value is 0
  */
-	void set_write_value(vector<Tango::DevULong64> &val, long x = 1, long y = 0);
+	void set_write_value(std::vector<Tango::DevULong64> &val, long x = 1, long y = 0);
 
 /**
  * Set the writable scalar attribute value when the attribute data type is
@@ -777,7 +777,7 @@ public:
  * @param x The attribute set value x length. Default value is 1
  * @param y The attribute set value y length. Default value is 0
  */
-	void set_write_value(vector<Tango::DevState> &val, long x = 1, long y = 0);
+	void set_write_value(std::vector<Tango::DevState> &val, long x = 1, long y = 0);
 //@}
 
 /// @privatesection
@@ -789,7 +789,7 @@ public:
 	void get_write_value(const T *&);
 
 	template <typename T>
-	void check_type(T &,const string &);
+	void check_type(T &,const std::string &);
 
 	template <typename T>
 	void set_write_value(T);
@@ -798,7 +798,7 @@ public:
 	void set_write_value(T *,long,long);
 
 	template <typename T>
-	void set_write_value(vector<T> &,long,long);
+	void set_write_value(std::vector<T> &,long,long);
 
 
 
@@ -844,10 +844,10 @@ public:
 	bool is_memorized_init() {return memorized_init;}
 	bool get_memorized_init() {return memorized_init;}
 	void set_memorized_init(bool mem_init) {memorized_init = mem_init;}
-	string &get_mem_value() {return mem_value;}
-	void set_mem_value(const string &new_val) {mem_value = new_val;}
+	std::string &get_mem_value() {return mem_value;}
+	void set_mem_value(const std::string &new_val) {mem_value = new_val;}
 	void set_written_date();
-    bool mem_value_below_above(MinMaxValueCheck,string &);
+    bool mem_value_below_above(MinMaxValueCheck,std::string &);
 
 	void set_mem_exception(const DevErrorList &df)
 	{
@@ -945,11 +945,11 @@ private:
 	bool						string_allocated;
 	bool 						memorized;
 	bool 						memorized_init;
-	string						mem_value;
+	std::string						mem_value;
 	struct timeval				write_date;
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<WAttributeExt>   w_ext;           // Class extension
+    std::unique_ptr<WAttributeExt>   w_ext;           // Class extension
 #else
 	WAttributeExt				*w_ext;
 #endif

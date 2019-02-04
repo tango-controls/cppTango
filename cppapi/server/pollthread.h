@@ -66,7 +66,7 @@ struct PollThCmd
 	PollCmdCode		cmd_code;		// The command code
 	DeviceImpl		*dev;			// The device pointer (servant)
 	long			index;			// Index in the device poll_list
-	string			name;			// Object name
+	std::string			name;			// Object name
 	PollObjType		type;			// Object type (cmd/attr)
 	int				new_upd;		// New update period (For upd period com.)
 };
@@ -75,11 +75,11 @@ struct PollThCmd
 struct WorkItem
 {
 	DeviceImpl			*dev;			// The device pointer (servant)
-	vector<PollObj *> 	*poll_list;		// The device poll list
+	std::vector<PollObj *> 	*poll_list;		// The device poll list
 	struct timeval		wake_up_date;	// The next wake up date
 	int 				update;			// The update period (mS)
 	PollObjType			type;			// Object type (command/attr)
-	vector<string>		name;			// Object name(s)
+	std::vector<std::string>		name;			// Object name(s)
 	struct timeval		needed_time;	// Time needed to execute action
 };
 
@@ -137,8 +137,8 @@ protected:
 	PollThCmd			&shared_cmd;
 	TangoMonitor		&p_mon;
 
-	list<WorkItem>		works;
-	vector<WorkItem>	ext_trig_works;
+	std::list<WorkItem>		works;
+	std::vector<WorkItem>	ext_trig_works;
 
 	PollThCmd			local_cmd;
 
@@ -161,10 +161,10 @@ private:
 	AttributeValue_5	dummy_att5;
 	long				tune_ctr;
 	bool				need_two_tuning;
-	vector<long>		auto_upd;
-	vector<string>      auto_name;
-	vector<long>        rem_upd;
-	vector<string>      rem_name;
+	std::vector<long>		auto_upd;
+	std::vector<std::string>      auto_name;
+	std::vector<long>        rem_upd;
+	std::vector<std::string>      rem_name;
 	bool				send_heartbeat;
 	u_int				heartbeat_ctr;
 	u_int               previous_nb_late;
@@ -175,7 +175,7 @@ private:
 
 public:
 	static DeviceImpl 	*dev_to_del;
-	static string	   	name_to_del;
+	static std::string	   	name_to_del;
 	static PollObjType	type_to_del;
 };
 

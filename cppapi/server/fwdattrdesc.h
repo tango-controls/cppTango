@@ -75,7 +75,7 @@ public:
  *
  * @param	def_label	The user default label property
  */
-	void set_label(const string &def_label)
+	void set_label(const std::string &def_label)
 	{
 		label = def_label;
 	}
@@ -84,7 +84,7 @@ public:
 /// @privatesection
 	~UserDefaultFwdAttrProp() {}
 
-	string 			label;
+	std::string 			label;
 
 private:
     class UserDefaultFwdAttrPropExt
@@ -92,7 +92,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<UserDefaultFwdAttrPropExt>  	ext;           // Class extension
+    std::unique_ptr<UserDefaultFwdAttrPropExt>  	ext;           // Class extension
 #else
 	UserDefaultFwdAttrPropExt	            *ext;
 #endif
@@ -127,7 +127,7 @@ public:
  * @param	root_attribute	The root attribute name (FQAN)
  *
  */
-	FwdAttr(const string &name,const string &root_attribute=RootAttNotDef);
+	FwdAttr(const std::string &name,const std::string &root_attribute=RootAttNotDef);
 //@}
 
 /**@name Miscellaneous methods*/
@@ -144,9 +144,9 @@ public:
     FwdAttr(const FwdAttr &);
 	virtual bool is_fwd() {return true;}
 
-	string &get_fwd_root_att() {return fwd_root_att;}
-	string &get_fwd_dev_name() {return fwd_dev_name;}
-	string &get_full_root_att() {return full_root_att;}
+	std::string &get_fwd_root_att() {return fwd_root_att;}
+	std::string &get_fwd_dev_name() {return fwd_dev_name;}
+	std::string &get_full_root_att() {return full_root_att;}
 	bool is_correctly_configured() {return fwd_wrongly_conf;}
 	FwdAttError get_err_kind() {return err_kind;}
 	void set_err_kind(FwdAttError _e) {err_kind = _e;}
@@ -156,17 +156,17 @@ public:
 	virtual bool is_allowed(DeviceImpl *,AttReqType) {return true;}
 
 	virtual void init_conf(AttrConfEventData *);
-	bool validate_fwd_att(vector<AttrProperty> &,const string &);
-	void get_root_conf(string &,DeviceImpl *);
+	bool validate_fwd_att(std::vector<AttrProperty> &,const std::string &);
+	void get_root_conf(std::string &,DeviceImpl *);
 
-    void remove_useless_prop(vector<AttrProperty> &,string &,MultiAttribute *);
- 	string &get_label_from_default_properties();
+    void remove_useless_prop(std::vector<AttrProperty> &,std::string &,MultiAttribute *);
+ 	std::string &get_label_from_default_properties();
 
 protected:
 /// @privatesection
-	string				full_root_att;			// Root att (dev_name/att_name)
-	string				fwd_dev_name;			// Root att device name (lower case)
-	string				fwd_root_att;			// Root att (lower case)
+	std::string				full_root_att;			// Root att (dev_name/att_name)
+	std::string				fwd_dev_name;			// Root att device name (lower case)
+	std::string				fwd_root_att;			// Root att (lower case)
 	bool				fwd_wrongly_conf;
 	FwdAttError			err_kind;
 
@@ -176,7 +176,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<FwdAttrExt>    	ext;           // Class extension
+    std::unique_ptr<FwdAttrExt>    	ext;           // Class extension
 #else
 	FwdAttrExt		        	*ext;
 #endif

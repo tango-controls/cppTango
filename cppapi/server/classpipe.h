@@ -53,15 +53,15 @@ namespace Tango
 class PipeProperty
 {
 public:
-	PipeProperty(const string &name,const string &value):prop_name(name),prop_value(value) {}
+	PipeProperty(const std::string &name,const std::string &value):prop_name(name),prop_value(value) {}
 	~PipeProperty() {};
 
-	const string &get_value() {return prop_value;}
-	const string &get_name() {return prop_name;}
+	const std::string &get_value() {return prop_value;}
+	const std::string &get_name() {return prop_name;}
 
 private:
-	string			prop_name;
-	string			prop_value;
+	std::string			prop_name;
+	std::string			prop_value;
 };
 
 //=================================================================================================================
@@ -83,11 +83,11 @@ public:
 
 	void init_class_pipe(DeviceClass *);
 
-	vector<Tango::PipeProperty> &get_prop_list(const string &);
+	std::vector<Tango::PipeProperty> &get_prop_list(const std::string &);
 /*	PipeProperty &get_prop(const string &prop_name);*/
 
 protected:
-	map<string,vector<Tango::PipeProperty> >		pipe_prop_list;			// pipe_name - prop list
+	std::map<std::string,std::vector<Tango::PipeProperty> >		pipe_prop_list;			// pipe_name - prop list
 };
 
 } // End of Tango namespace

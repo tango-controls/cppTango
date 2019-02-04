@@ -78,7 +78,7 @@ typedef struct _NotifService
 	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var 	StrProPush;
 	CosNotifyChannelAdmin::EventChannelFactory_var 			EveChaFac;
 	CosNotifyChannelAdmin::EventChannel_var 				EveCha;
-	string													ec_ior;
+	std::string													ec_ior;
 } NotifService;
 
 //---------------------------------------------------------------------
@@ -93,7 +93,7 @@ public :
     EventSupplier(Util *);
 	virtual ~EventSupplier() {}
 
-	void push_att_data_ready_event(DeviceImpl *,const string &,long,DevLong);
+	void push_att_data_ready_event(DeviceImpl *,const std::string &,long,DevLong);
 	void push_dev_intr_change_event(DeviceImpl *,bool,DevCmdInfoList_2 *,AttributeConfigList_5 *);
 	bool any_dev_intr_client(DeviceImpl *);
 
@@ -112,7 +112,7 @@ public :
         zmq::message_t	  		  *zmq_mess;
     };
 
-	SendEventType detect_and_push_events(DeviceImpl *,struct SuppliedEventData &,DevFailed *,string &,struct timeval *);
+	SendEventType detect_and_push_events(DeviceImpl *,struct SuppliedEventData &,DevFailed *,std::string &,struct timeval *);
 
 //------------------ Change event ---------------------------
 
@@ -120,30 +120,30 @@ public :
 
 //------------------ Detect, push change event --------------
 
-	bool detect_and_push_change_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,string &,DevFailed *,bool user_push = false);
+	bool detect_and_push_change_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,std::string &,DevFailed *,bool user_push = false);
 
 //------------------ Detect, push archive event --------------
 
-	bool detect_and_push_archive_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,string &,DevFailed *,struct timeval *,bool user_push = false);
+	bool detect_and_push_archive_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,std::string &,DevFailed *,struct timeval *,bool user_push = false);
 
 //------------------ Detect, push periodic event -------------
 
-	bool detect_and_push_periodic_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,string &,DevFailed *,struct timeval *);
+	bool detect_and_push_periodic_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,std::string &,DevFailed *,struct timeval *);
 
 //------------------ Push event -------------------------------
 
-	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,string &,DevFailed *,bool) = 0;
-	virtual void push_event_loop(DeviceImpl *,EventType,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *) = 0;
+	virtual void push_event(DeviceImpl *,std::string,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,std::string &,DevFailed *,bool) = 0;
+	virtual void push_event_loop(DeviceImpl *,EventType,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *) = 0;
 	virtual void push_heartbeat_event() = 0;
 
 //------------------- Attribute conf change event ---------------------
 
-	void push_att_conf_events(DeviceImpl *device_impl,SuppliedEventData &,DevFailed *,string &);
+	void push_att_conf_events(DeviceImpl *device_impl,SuppliedEventData &,DevFailed *,std::string &);
 
 	omni_mutex &get_push_mutex() {return push_mutex;}
 	omni_condition &get_push_cond() {return push_cond;}
 	static omni_mutex &get_event_mutex() {return event_mutex;}
-	string &get_fqdn_prefix() {return fqdn_prefix;}
+	std::string &get_fqdn_prefix() {return fqdn_prefix;}
 
 	void convert_att_event_to_5(struct SuppliedEventData &,struct SuppliedEventData &,bool &,Attribute &);
 	void convert_att_event_to_4(struct SuppliedEventData &,struct SuppliedEventData &,bool &,Attribute &);
@@ -159,7 +159,7 @@ protected :
 		return ((after.tv_sec-before.tv_sec)*1000000 + after.tv_usec - before.tv_usec);
 	}
 
-	static string 		    fqdn_prefix;
+	static std::string 		    fqdn_prefix;
 
 	// Added a mutex to synchronize the access to
 	//	detect_and_push_change_event	and
@@ -193,20 +193,20 @@ class NotifdEventSupplier : public EventSupplier, public POA_CosNotifyComm::Stru
 {
 public :
 
-	TANGO_IMP_EXP static NotifdEventSupplier *create(CORBA::ORB_var,string,Util *);
+	TANGO_IMP_EXP static NotifdEventSupplier *create(CORBA::ORB_var,std::string,Util *);
 	void connect();
 	void disconnect_structured_push_supplier();
 	void disconnect_from_notifd();
 	void subscription_change(const CosNotification::EventTypeSeq& added,const CosNotification::EventTypeSeq& deled);
 
 	void push_heartbeat_event();
-	string &get_event_channel_ior() {return event_channel_ior;}
+	std::string &get_event_channel_ior() {return event_channel_ior;}
     void file_db_svr();
 
 //------------------ Push event -------------------------------
 
-	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,string &,DevFailed *,bool);
-	virtual void push_event_loop(DeviceImpl *,EventType,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *) {}
+	virtual void push_event(DeviceImpl *,std::string,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,std::string &,DevFailed *,bool);
+	virtual void push_event_loop(DeviceImpl *,EventType,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *) {}
 
 protected :
 
@@ -217,7 +217,7 @@ protected :
 		CosNotifyChannelAdmin::StructuredProxyPushConsumer_var,
 		CosNotifyChannelAdmin::EventChannelFactory_var,
 		CosNotifyChannelAdmin::EventChannel_var,
-		string &,
+		std::string &,
 		Util *);
 
 private :
@@ -230,10 +230,10 @@ private :
 	CosNotifyChannelAdmin::EventChannelFactory_var 			eventChannelFactory;
 	CORBA::ORB_var 											orb_;
 
-	string 		event_channel_ior;
+	std::string 		event_channel_ior;
 
 	void reconnect_notifd();
-	TANGO_IMP_EXP static void connect_to_notifd(NotifService &,CORBA::ORB_var &,string &,Util *);
+	TANGO_IMP_EXP static void connect_to_notifd(NotifService &,CORBA::ORB_var &,std::string &,Util *);
 };
 
 
@@ -248,7 +248,7 @@ private :
 
 #ifndef HAS_LAMBDA_FUNC
 template <typename A1,typename A2,typename R>
-struct WantedClient : public binary_function<A1,A2,R>
+struct WantedClient : public std::binary_function<A1,A2,R>
 {
 	R operator() (A1 conn_client, A2 client) const
 	{
@@ -257,7 +257,7 @@ struct WantedClient : public binary_function<A1,A2,R>
 };
 
 template <typename A1,typename A2,typename R>
-struct OldClient : public binary_function<A1,A2,R>
+struct OldClient : public std::binary_function<A1,A2,R>
 {
 	R operator() (A1 conn_client, A2 ti) const
 	{
@@ -280,20 +280,20 @@ public :
 //------------------ Push event -------------------------------
 
 	void push_heartbeat_event();
-	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,string &,DevFailed *,bool);
-	virtual void push_event_loop(DeviceImpl *,EventType,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *);
+	virtual void push_event(DeviceImpl *,std::string,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,std::string &,DevFailed *,bool);
+	virtual void push_event_loop(DeviceImpl *,EventType,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *);
 
-	string &get_heartbeat_endpoint() {return heartbeat_endpoint;}
-	string &get_event_endpoint() {return event_endpoint;}
+	std::string &get_heartbeat_endpoint() {return heartbeat_endpoint;}
+	std::string &get_event_endpoint() {return event_endpoint;}
 
-	vector<string> &get_alternate_heartbeat_endpoint() {return alternate_h_endpoint;}
-	vector<string> &get_alternate_event_endpoint() {return alternate_e_endpoint;}
+	std::vector<std::string> &get_alternate_heartbeat_endpoint() {return alternate_h_endpoint;}
+	std::vector<std::string> &get_alternate_event_endpoint() {return alternate_e_endpoint;}
 
     void create_event_socket();
-    void create_mcast_event_socket(string &,string &,int,bool);
-    bool is_event_mcast(string &);
-    string &get_mcast_event_endpoint(string &);
-    void init_event_cptr(string &event_name);
+    void create_mcast_event_socket(std::string &,std::string &,int,bool);
+    bool is_event_mcast(std::string &);
+    std::string &get_mcast_event_endpoint(std::string &);
+    void init_event_cptr(std::string &event_name);
     size_t get_mcast_event_nb() {return event_mcast.size();}
 
     bool update_connected_client(client_addr *);
@@ -303,9 +303,9 @@ public :
     int get_calling_th() {return calling_th;}
     void set_require_wait(bool bo) {require_wait=bo;}
 
-    string create_full_event_name(DeviceImpl *device_impl,
-                                  const string &event_type,
-                                  const string &obj_name_lower,
+    std::string create_full_event_name(DeviceImpl *device_impl,
+                                  const std::string &event_type,
+                                  const std::string &obj_name_lower,
                                   bool intr_change);
 protected :
 	ZmqEventSupplier(Util *);
@@ -315,7 +315,7 @@ private :
 
     struct McastSocketPub
     {
-        string                  endpoint;
+        std::string                  endpoint;
         zmq::socket_t           *pub_socket;
         bool                    local_client;
         bool					double_send;
@@ -330,19 +330,19 @@ private :
 	zmq::context_t              zmq_context;            // ZMQ context
 	zmq::socket_t               *heartbeat_pub_sock;    // heartbeat publisher socket
 	zmq::socket_t               *event_pub_sock;        // events publisher socket
-	map<string,McastSocketPub>  event_mcast;            // multicast socket(s) map
+	std::map<std::string,McastSocketPub>  event_mcast;            // multicast socket(s) map
 														// The key is the full event name
 														// ie: tango://kidiboo.esrf.fr:1000/dev/test/10/att.change
 
-	string                      heartbeat_endpoint;     // heartbeat publisher endpoint
-	string                      host_ip;                // Host IP address
-	vector<string>              alt_ip;                 // Host alternate IP addresses
-	string                      heartbeat_event_name;   // The event name used for the heartbeat
+	std::string                      heartbeat_endpoint;     // heartbeat publisher endpoint
+	std::string                      host_ip;                // Host IP address
+	std::vector<std::string>              alt_ip;                 // Host alternate IP addresses
+	std::string                      heartbeat_event_name;   // The event name used for the heartbeat
 	ZmqCallInfo                 heartbeat_call;         // The heartbeat call info
     cdrMemoryStream             heartbeat_call_cdr;     //
     TangoCdrMemoryStream        data_call_cdr;
-    string                      event_name;
-    vector<string>              alternate_h_endpoint;   // Alternate heartbeat endpoint (host with several NIC)
+    std::string                      event_name;
+    std::vector<std::string>              alternate_h_endpoint;   // Alternate heartbeat endpoint (host with several NIC)
 
     zmq::message_t              endian_mess;            // Zmq messages
     zmq::message_t              endian_mess_2;          //
@@ -355,14 +355,14 @@ private :
 
 	bool                        ip_specified;           // The user has specified an IP address
 	bool                        name_specified;         // The user has specified a name as IP address
-	string                      user_ip;                // The specified IP address
+	std::string                      user_ip;                // The specified IP address
 
-	string                      event_endpoint;         // event publisher endpoint
-    vector<string>              alternate_e_endpoint;   // Alternate event endpoint (host with several NIC)
+	std::string                      event_endpoint;         // event publisher endpoint
+    std::vector<std::string>              alternate_e_endpoint;   // Alternate event endpoint (host with several NIC)
 
-	map<string,unsigned int>    event_cptr;             // event counter map
+	std::map<std::string,unsigned int>    event_cptr;             // event counter map
 
-	list<ConnectedClient>       con_client;             // Connected clients
+	std::list<ConnectedClient>       con_client;             // Connected clients
 	int                         double_send;            // Double send ctr
 	bool                        double_send_heartbeat;
 
@@ -371,12 +371,12 @@ private :
 	int 						calling_th;
 	bool 						require_wait;
 
-	void tango_bind(zmq::socket_t *,string &);
+	void tango_bind(zmq::socket_t *,std::string &);
 	unsigned char test_endian();
-    void create_mcast_socket(string &,int,McastSocketPub &);
+    void create_mcast_socket(std::string &,int,McastSocketPub &);
     size_t get_blob_data_nb(DevVarPipeDataEltArray &);
 	size_t get_data_elt_data_nb(DevPipeDataElt &);
-    string ctr_event_name;
+    std::string ctr_event_name;
 };
 
 //

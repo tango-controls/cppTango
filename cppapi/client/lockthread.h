@@ -57,14 +57,14 @@ struct LockThCmd
 {
 	bool			cmd_pending;	// The new command flag
 	LockCmdCode		cmd_code;		// The command code
-	string			dev_name;		// The device name
+	std::string			dev_name;		// The device name
 	DevLong			lock_validity;	// The lock validity
 	bool			suicide;		// The suicide flag
 };
 
 struct LockedDevice
 {
-	string			dev_name;		// The locked device name
+	std::string			dev_name;		// The locked device name
 	DevLong			validity;		// The locked device validity
 
 	bool operator<(LockedDevice &arg) {return validity < arg.validity;}
@@ -90,7 +90,7 @@ class TangoMonitor;
 class LockThread: public omni_thread
 {
 public:
-	LockThread(LockThCmd &,TangoMonitor &,DeviceProxy *,string &,DevLong);
+	LockThread(LockThCmd &,TangoMonitor &,DeviceProxy *,std::string &,DevLong);
 
 	void run(void *);
 
@@ -108,8 +108,8 @@ protected:
 	LockThCmd				local_cmd;
 	DevLong					sleep;
 
-	vector<LockedDevice>	locked_devices;
-	vector<string>			re_lock_cmd_args;
+	std::vector<LockedDevice>	locked_devices;
+	std::vector<std::string>			re_lock_cmd_args;
 	DevLong					period;
 	DevLong 				period_ms;
 	DeviceProxy				*admin_proxy;
