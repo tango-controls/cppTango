@@ -74,23 +74,22 @@
 //
 
 #ifdef _WIN32
-    #ifdef _MSC_VER
-        #if ((_MSC_VER >= 1400)  && (_MSC_VER < 1500))
-            #define WIN32_VC8
-        #elif ((_MSC_VER >= 1500) && (_MSC_VER < 1600))
-            #define WIN32_VC9
-        #elif ((_MSC_VER >= 1600) && (_MSC_VER < 1700))
-            #define WIN32_VC10
+	#ifdef _MSC_VER
+		#if ((_MSC_VER >= 1400)	&& (_MSC_VER < 1500))
+			#define WIN32_VC8
+		#elif ((_MSC_VER >= 1500) && (_MSC_VER < 1600))
+			#define WIN32_VC9
+		#elif ((_MSC_VER >= 1600) && (_MSC_VER < 1700))
+			#define WIN32_VC10
 		#elif ((_MSC_VER >= 1700) && (_MSC_VER < 1800))
 			#define WIN32_VC11
 		#elif ((_MSC_VER >= 1800) && (_MSC_VER < 1900))
 			#define WIN32_VC12
-        #elif (_MSC_VER >= 1900)
+		#elif (_MSC_VER >= 1900)
 			#define WIN32_VC14
-        #endif   // VC8+/VC9/VC10/VC11/VC12/VC14
-    #endif
+		#endif	 // VC8+/VC9/VC10/VC11/VC12/VC14
+	#endif
 #endif
-
 
 //
 // Define a common preprocessor macros for all Windows (32 or 64 bits)
@@ -227,7 +226,7 @@
         #define HAS_LAMBDA_FUNC
         #define HAS_NULLPTR
         #define HAS_RVALUE
-		#define HAS_RANGE_BASE_FOR
+        #define HAS_RANGE_BASE_FOR
         #define HAS_TYPE_TRAITS
         #define HAS_UNDERLYING
         #define HAS_VARIADIC_TEMPLATE
