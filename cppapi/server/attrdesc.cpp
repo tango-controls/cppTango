@@ -73,11 +73,11 @@ fire_dr_event(false),ext(new AttrExt),cl_name("Attr")
 
 	if ((writable == Tango::WRITE) && (assoc_name != AssocWritNotSpec))
 	{
-		cout3 << "Attr::Attr throwing exception" << endl;
+		cout3 << "Attr::Attr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name << ": ";
-		o << " Associated attribute is not supported" << ends;
+		o << " Associated attribute is not supported" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::Attr");
@@ -85,11 +85,11 @@ fire_dr_event(false),ext(new AttrExt),cl_name("Attr")
 
 	if ((writable == Tango::READ_WITH_WRITE) && (assoc_name == AssocWritNotSpec))
 	{
-		cout3 << "Attr::Attr throwing exception" << endl;
+		cout3 << "Attr::Attr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name << ": ";
-		o << " Associated attribute not defined" << ends;
+		o << " Associated attribute not defined" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::Attr");
@@ -120,11 +120,11 @@ poll_period(0),ext(new AttrExt)
 
 	if ((writable == Tango::WRITE) && (assoc_name != AssocWritNotSpec))
 	{
-		cout3 << "Attr::Attr throwing exception" << endl;
+		cout3 << "Attr::Attr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name << ": ";
-		o << " Associated attribute is not supported" << ends;
+		o << " Associated attribute is not supported" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::Attr");
@@ -132,11 +132,11 @@ poll_period(0),ext(new AttrExt)
 
 	if ((writable == Tango::READ_WITH_WRITE) && (assoc_name == AssocWritNotSpec))
 	{
-		cout3 << "Attr::Attr throwing exception" << endl;
+		cout3 << "Attr::Attr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name << ": ";
-		o << " Associated attribute not defined" << ends;
+		o << " Associated attribute not defined" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::Attr");
@@ -216,11 +216,11 @@ void Attr::check_type()
 
 	if (unsuported == true)
 	{
-		cout3 << "Attr::check_type throwing exception" << endl;
+		cout3 << "Attr::check_type throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name << ": ";
-		o << " Data type is not supported" << ends;
+		o << " Data type is not supported" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::check_type");
@@ -257,7 +257,7 @@ void Attr::set_default_properties(UserDefaultAttrProp &prop_list)
 		num_ranges
 	};
 
-	bitset<num_ranges> ranges;
+	std::bitset<num_ranges> ranges;
 
 	if ((prop_list.label.empty() == false) &&
 		(TG_strcasecmp(prop_list.label.c_str(),AlrmValueNotSpec) != 0) &&
@@ -463,7 +463,7 @@ void Attr::set_default_properties(UserDefaultAttrProp &prop_list)
 
 	if(ranges.test(delta_val) ^ ranges.test(delta_t))
 	{
-		string err_msg = "Just one of the user default properties : delta_val or delta_t is set. Both or none of the values have to be set";
+		std::string err_msg = "Just one of the user default properties : delta_val or delta_t is set. Both or none of the values have to be set";
 		Except::throw_exception(API_IncoherentValues,err_msg,"Attr::set_default_properties()");
 	}
 }
@@ -484,7 +484,7 @@ void Attr::set_default_properties(UserDefaultAttrProp &prop_list)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attr::convert_def_prop(const string &val, double &db)
+void Attr::convert_def_prop(const std::string &val, double &db)
 {
 	TangoSys_MemStream str;
 	str.precision(TANGO_FLOAT_PRECISION);
@@ -508,7 +508,7 @@ void Attr::convert_def_prop(const string &val, double &db)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attr::validate_def_prop(const string &val, const char* prop)
+void Attr::validate_def_prop(const std::string &val, const char* prop)
 {
 	TangoSys_MemStream str;
 	str.precision(TANGO_FLOAT_PRECISION);
@@ -594,19 +594,19 @@ void Attr::validate_def_prop(const string &val, const char* prop)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attr::validate_def_change_prop(const string &val, const char * prop)
+void Attr::validate_def_change_prop(const std::string &val, const char * prop)
 {
 	TangoSys_MemStream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
-	string change_prop_str = val;
+	std::string change_prop_str = val;
 	double db;
 
 	size_t pos = change_prop_str.find(',');
-	if(pos != string::npos)
+	if(pos != std::string::npos)
 	{
-		string prop_min = change_prop_str.substr(0,pos);
-		string prop_max = change_prop_str.erase(0,pos+1);
+		std::string prop_min = change_prop_str.substr(0,pos);
+		std::string prop_max = change_prop_str.erase(0,pos+1);
 		str << prop_min;
 		if (!(str >> db && str.eof()))
 			throw_invalid_def_prop(prop,"DevDouble or \"DevDouble,DevDouble\"");
@@ -628,13 +628,13 @@ void Attr::validate_def_change_prop(const string &val, const char * prop)
 
 void Attr::throw_incoherent_def_prop(const char* min, const char* max)
 {
-	string err_msg = "User default property " + string(min) + " for attribute : " + get_name() + " is greater then or equal " + string(max);
+	std::string err_msg = "User default property " + std::string(min) + " for attribute : " + get_name() + " is greater then or equal " + std::string(max);
 	Except::throw_exception(API_IncoherentValues,err_msg,"Attr::set_default_properties()");
 }
 
 void Attr::throw_invalid_def_prop(const char* prop, const char* type)
 {
-	string err_msg = "User default property " + string(prop) + " for attribute : " + get_name() + " is defined in unsupported format. Expected " + string(type);
+	std::string err_msg = "User default property " + std::string(prop) + " for attribute : " + get_name() + " is defined in unsupported format. Expected " + std::string(type);
 	Except::throw_exception(API_IncompatibleAttrDataType,err_msg,"Attr::set_default_properties()");
 }
 
@@ -653,11 +653,11 @@ void Attr::set_memorized()
 {
 	if (format != Tango::SCALAR)
 	{
-		cout3 << "Attr::set_memorized() throwing exception" << endl;
+		cout3 << "Attr::set_memorized() throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name;
-		o << " is not scalar and can not be memorized" << ends;
+		o << " is not scalar and can not be memorized" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::set_memorized");
@@ -665,11 +665,11 @@ void Attr::set_memorized()
 
 	if ((type == DEV_STATE) || (type == DEV_ENCODED))
 	{
-		cout3 << "Attr::set_memorized() throwing exception" << endl;
+		cout3 << "Attr::set_memorized() throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name;
-		o << " can not be memorized" << ends;
+		o << " can not be memorized" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::set_memorized");
@@ -677,11 +677,11 @@ void Attr::set_memorized()
 
 	if ((writable == READ) || (writable == READ_WITH_WRITE))
 	{
-		cout3 << "Attr::set_memorized() throwing exception" << endl;
+		cout3 << "Attr::set_memorized() throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name;
-		o << " is not writable and therefore can not be memorized" << ends;
+		o << " is not writable and therefore can not be memorized" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::set_memorized");
@@ -708,11 +708,11 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x)
 	format = Tango::SPECTRUM;
 	if (x <= 0)
 	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
+		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name << ": ";
-		o << " Maximum x dim. wrongly defined" << ends;
+		o << " Maximum x dim. wrongly defined" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
@@ -720,11 +720,11 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x)
 
 	if (type == DEV_ENCODED)
 	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
+		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute: " << name << ": ";
-		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
+		o << "DevEncode data type allowed only for SCALAR attribute" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,o.str(),
 							(const char *)"SpectrumAttr::SpectrumAttr");
 	}
@@ -737,11 +737,11 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 	format = Tango::SPECTRUM;
 	if (x <= 0)
 	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
+		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name << ": ";
-		o << " Maximum x dim. wrongly defined" << ends;
+		o << " Maximum x dim. wrongly defined" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
@@ -749,11 +749,11 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 
 	if (type == DEV_ENCODED)
 	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
+		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute: " << name << ": ";
-		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
+		o << "DevEncode data type allowed only for SCALAR attribute" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,o.str(),
 							(const char *)"SpectrumAttr::SpectrumAttr");
 	}
@@ -766,11 +766,11 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x,DispLevel l
 	format = Tango::SPECTRUM;
 	if (x <= 0)
 	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
+		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name << ": ";
-		o << " Maximum x dim. wrongly defined" << ends;
+		o << " Maximum x dim. wrongly defined" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
@@ -778,11 +778,11 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x,DispLevel l
 
 	if (type == DEV_ENCODED)
 	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
+		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute: " << name << ": ";
-		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
+		o << "DevEncode data type allowed only for SCALAR attribute" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,o.str(),
 							(const char *)"SpectrumAttr::SpectrumAttr");
 	}
@@ -795,11 +795,11 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 	format = Tango::SPECTRUM;
 	if (x <= 0)
 	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
+		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name << ": ";
-		o << " Maximum x dim. wrongly defined" << ends;
+		o << " Maximum x dim. wrongly defined" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
@@ -807,11 +807,11 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 
 	if (type == DEV_ENCODED)
 	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
+		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute: " << name << ": ";
-		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
+		o << "DevEncode data type allowed only for SCALAR attribute" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,o.str(),
 							(const char *)"SpectrumAttr::SpectrumAttr");
 	}
@@ -839,11 +839,11 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,long x,long y)
 	format = Tango::IMAGE;
 	if (y <= 0)
 	{
-		cout3 << "ImageAttr::ImageAttr throwing exception" << endl;
+		cout3 << "ImageAttr::ImageAttr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name << ": ";
-		o << " Maximum y dim. wrongly defined" << ends;
+		o << " Maximum y dim. wrongly defined" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"ImageAttr::ImageAttr");
@@ -858,11 +858,11 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_t
 	format = Tango::IMAGE;
 	if (y <= 0)
 	{
-		cout3 << "ImageAttr::ImageAttr throwing exception" << endl;
+		cout3 << "ImageAttr::ImageAttr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name << ": ";
-		o << " Maximum y dim. wrongly defined" << ends;
+		o << " Maximum y dim. wrongly defined" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"ImageAttr::ImageAttr");
@@ -877,11 +877,11 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,long x,
 	format = Tango::IMAGE;
 	if (y <= 0)
 	{
-		cout3 << "ImageAttr::ImageAttr throwing exception" << endl;
+		cout3 << "ImageAttr::ImageAttr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name << ": ";
-		o << " Maximum y dim. wrongly defined" << ends;
+		o << " Maximum y dim. wrongly defined" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"ImageAttr::ImageAttr");
@@ -896,11 +896,11 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_t
 	format = Tango::IMAGE;
 	if (y <= 0)
 	{
-		cout3 << "ImageAttr::ImageAttr throwing exception" << endl;
+		cout3 << "ImageAttr::ImageAttr throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
 		o << "Attribute : " << name << ": ";
-		o << " Maximum y dim. wrongly defined" << ends;
+		o << " Maximum y dim. wrongly defined" << std::ends;
 		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"ImageAttr::ImageAttr");
