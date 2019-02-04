@@ -34,11 +34,13 @@
 #define _EXCEPT_H
 
 #include <string>
+#include <tango_const.h>
 
 #include <idl/tango.h>
 
-using namespace std;
-
+#ifdef TANGO_USE_USING_NAMESPACE
+  using namespace std;
+#endif
 
 namespace Tango
 {

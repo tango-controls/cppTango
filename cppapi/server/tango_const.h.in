@@ -291,6 +291,11 @@ const size_t kMaxRollingThreshold          = 1024 * 1024;
 
 #endif // TANGO_HAS_LOG4TANGO
 
+// Include namespaces in header files (deprecated).
+#ifndef TANGO_USE_USING_NAMESPACE
+#cmakedefine TANGO_USE_USING_NAMESPACE
+#endif
+
 //
 // The optional attribute properties
 //

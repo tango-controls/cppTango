@@ -29,7 +29,11 @@
 #include <except.h>
 #include <vector>
 
-using namespace std;
+#include <tango_const.h>
+
+#ifdef TANGO_USE_USING_NAMESPACE
+  using namespace std;
+#endif
 
 namespace Tango {
 

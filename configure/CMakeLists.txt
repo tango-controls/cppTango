@@ -200,3 +200,5 @@ if(NOT WIN32)
 endif()
 include(GNUInstallDirs)
 include(configure/coveralls.cmake)
+
+option(TANGO_USE_USING_NAMESPACE "Use \"using namespace\" in header files (deprecated, but ON for backwards compatibility.)." ON)

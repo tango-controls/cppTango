@@ -27,7 +27,9 @@
 
 #include <tango.h>
 
-using namespace std;
+#ifdef TANGO_USE_USING_NAMESPACE
+  using namespace std;
+#endif
 
 namespace Tango {
 
