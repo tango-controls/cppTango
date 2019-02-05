@@ -16,6 +16,8 @@
 
 #include "tango.h"
 
+using namespace std;
+
 const char * const notset = "Not specified";
 
 // redundancy problem with:
@@ -80,11 +82,11 @@ int main(int argc, char **argv)
 		{
 			rc = 1;
 //			cout << "test 1: FAILED, set and control numerical changes." << endl;
-			
+
 			ail.clear();
         	ail.push_back( ai_orig );
         	dev->set_attribute_config( ail );
-			
+
 			exit(-1);
 		}
 		else
@@ -109,11 +111,11 @@ int main(int argc, char **argv)
 		{
 			rc = rc*10 + 1;
 //			cout << "test 2: FAILED, set all to '" << notset << "' control changes"  << endl;
-			
+
 			ail.clear();
         	ail.push_back( ai_orig );
         	dev->set_attribute_config( ail );
-			
+
 			exit(-1);
 		}
 		else
@@ -142,7 +144,7 @@ int main(int argc, char **argv)
 			ail.clear();
         	ail.push_back( ai_orig );
         	dev->set_attribute_config( ail );
-			
+
 			exit(-1);
 		}
 		else
