@@ -57,18 +57,18 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-AttributeProxy::AttributeProxy (string &name):dev_proxy(NULL),ext(new AttributeProxyExt(name))
+AttributeProxy::AttributeProxy (std::string &name):dev_proxy(NULL),ext(new AttributeProxyExt(name))
 {
 	real_constructor(name);
 }
 
 AttributeProxy::AttributeProxy (const char *na):dev_proxy(NULL),ext(new AttributeProxyExt(na))
 {
-	string name(na);
+	std::string name(na);
 	real_constructor(name);
 }
 
-void AttributeProxy::real_constructor (string &name)
+void AttributeProxy::real_constructor (std::string &name)
 {
 
 //
@@ -76,7 +76,7 @@ void AttributeProxy::real_constructor (string &name)
 //
 
 	parse_name(name);
-	string corba_name;
+	std::string corba_name;
 
 //
 // Create the associated DeviceProxy object
@@ -101,7 +101,7 @@ void AttributeProxy::real_constructor (string &name)
 		}
 		else
 		{
-			string noenv_dev_name(db_host);
+			std::string noenv_dev_name(db_host);
 			noenv_dev_name = noenv_dev_name + ":" + db_port + "/" + device_name;
 			dev_proxy = new DeviceProxy(noenv_dev_name);
 			db_attr = new DbAttribute(attr_name,device_name,db_host,db_port);
@@ -111,9 +111,9 @@ void AttributeProxy::real_constructor (string &name)
 	{
 		db_attr = NULL;
 
-		string::size_type stop;
+		std::string::size_type stop;
 		stop = name.rfind(DEVICE_SEP);
-		string nodb_dev_name  = name.substr(0,stop);
+		std::string nodb_dev_name  = name.substr(0,stop);
 		nodb_dev_name = nodb_dev_name + MODIFIER_DBASE_NO;
 
 		dev_proxy = new DeviceProxy(nodb_dev_name);
@@ -137,7 +137,7 @@ void AttributeProxy::real_constructor (string &name)
 		if (strcmp(dfe.errors[0].reason.in(),API_AttrNotFound) == 0)
 		{
 			TangoSys_OMemStream desc;
-			desc << "Attribute " << attr_name << " is not supported by device " << device_name << ends;
+			desc << "Attribute " << attr_name << " is not supported by device " << device_name << std::ends;
 
 			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedAttribute",
 						desc.str(),
@@ -148,7 +148,7 @@ void AttributeProxy::real_constructor (string &name)
 }
 
 
-void AttributeProxy::ctor_from_dp(const DeviceProxy *dev_ptr,string &att_name)
+void AttributeProxy::ctor_from_dp(const DeviceProxy *dev_ptr,std::string &att_name)
 {
 
 //
@@ -217,7 +217,7 @@ void AttributeProxy::ctor_from_dp(const DeviceProxy *dev_ptr,string &att_name)
 		if (strcmp(dfe.errors[0].reason.in(),API_AttrNotFound) == 0)
 		{
 			TangoSys_OMemStream desc;
-			desc << "Attribute " << attr_name << " is not supported by device " << device_name << ends;
+			desc << "Attribute " << attr_name << " is not supported by device " << device_name << std::ends;
 
 			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedAttribute",
 						desc.str(),
@@ -228,11 +228,11 @@ void AttributeProxy::ctor_from_dp(const DeviceProxy *dev_ptr,string &att_name)
 
 AttributeProxy::AttributeProxy (const DeviceProxy *dev_ptr,const char *att_name):ext(Tango_nullptr)
 {
-	string att_na(att_name);
+	std::string att_na(att_name);
 	ctor_from_dp(dev_ptr,att_na);
 }
 
-AttributeProxy::AttributeProxy (const DeviceProxy *dev_ptr,string &att_name):ext(Tango_nullptr)
+AttributeProxy::AttributeProxy (const DeviceProxy *dev_ptr,std::string &att_name):ext(Tango_nullptr)
 {
 	ctor_from_dp(dev_ptr,att_name);
 }
@@ -278,7 +278,7 @@ AttributeProxy::AttributeProxy(const AttributeProxy &prev):ext(Tango_nullptr)
 			}
 			else
 			{
-				string noenv_dev_name(db_host);
+				std::string noenv_dev_name(db_host);
 				noenv_dev_name = noenv_dev_name + ":" + db_port + "/" + device_name;
 				dev_proxy = new DeviceProxy(noenv_dev_name);
 				db_attr = new DbAttribute(attr_name,device_name);
@@ -361,7 +361,7 @@ AttributeProxy &AttributeProxy::operator=(const AttributeProxy &rval)
             }
             else
             {
-                string noenv_dev_name(db_host);
+                std::string noenv_dev_name(db_host);
                 noenv_dev_name = noenv_dev_name + ":" + db_port + "/" + device_name;
                 dev_proxy = new DeviceProxy(noenv_dev_name);
                 db_attr = new DbAttribute(attr_name,device_name,db_host,db_port);
@@ -396,24 +396,24 @@ AttributeProxy &AttributeProxy::operator=(const AttributeProxy &rval)
 //
 //-----------------------------------------------------------------------------
 
-void AttributeProxy::parse_name(string &full_name)
+void AttributeProxy::parse_name(std::string &full_name)
 {
-	string name_wo_prot;
-	string name_wo_db_mod;
+	std::string name_wo_prot;
+	std::string name_wo_db_mod;
 
 //
 // Attribute name in lower case letters
 //
 
-	string cased_name = full_name;
-	transform(full_name.begin(),full_name.end(),full_name.begin(),::tolower);
+	std::string cased_name = full_name;
+	std::transform(full_name.begin(),full_name.end(),full_name.begin(),::tolower);
 
 //
 // Try to find protocol specification in attribute name and analyse it
 //
 
-	string::size_type pos = full_name.find(PROT_SEP);
-	if (pos == string::npos)
+	std::string::size_type pos = full_name.find(PROT_SEP);
+	if (pos == std::string::npos)
 	{
 		if (full_name.size() > 2)
 		{
@@ -427,7 +427,7 @@ void AttributeProxy::parse_name(string &full_name)
 	}
 	else
 	{
-		string protocol = full_name.substr(0,pos);
+		std::string protocol = full_name.substr(0,pos);
 
 		if (protocol == TANGO_PROTOCOL)
 		{
@@ -436,7 +436,7 @@ void AttributeProxy::parse_name(string &full_name)
 		else if (protocol == TACO_PROTOCOL)
 		{
 			TangoSys_OMemStream desc;
-			desc << "Taco protocol is not supported" << ends;
+			desc << "Taco protocol is not supported" << std::ends;
 			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedProtocol",
 						desc.str(),
 						(const char*)"AttributeProxy::parse_name()");
@@ -445,7 +445,7 @@ void AttributeProxy::parse_name(string &full_name)
 		{
 			TangoSys_OMemStream desc;
 			desc << protocol;
-			desc << " protocol is an unsupported protocol" << ends;
+			desc << " protocol is an unsupported protocol" << std::ends;
 			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedProtocol",
 						desc.str(),
 						(const char*)"AttributeProxy::parse_name()");
@@ -457,19 +457,19 @@ void AttributeProxy::parse_name(string &full_name)
 //
 
 	pos = name_wo_prot.find(MODIFIER);
-	if (pos != string::npos)
+	if (pos != std::string::npos)
 	{
-		string mod = name_wo_prot.substr(pos + 1);
+		std::string mod = name_wo_prot.substr(pos + 1);
 
 		if (mod == DBASE_YES)
 		{
-			string::size_type len = name_wo_prot.size();
+			std::string::size_type len = name_wo_prot.size();
 			name_wo_db_mod = name_wo_prot.substr(0,len - (len - pos));
 			dbase_used = true;
 		}
 		else if (mod == DBASE_NO)
 		{
-			string::size_type len = name_wo_prot.size();
+			std::string::size_type len = name_wo_prot.size();
 			name_wo_db_mod = name_wo_prot.substr(0,len - (len - pos));
 			dbase_used = false;
 		}
@@ -477,7 +477,7 @@ void AttributeProxy::parse_name(string &full_name)
 		{
 			TangoSys_OMemStream desc;
 			desc << mod;
-			desc << " modifier is an unsupported db modifier" << ends;
+			desc << " modifier is an unsupported db modifier" << std::ends;
 			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedDBaseModifier",
 						desc.str(),
 						(const char*)"AttributeProxy::parse_name()");
@@ -497,7 +497,7 @@ void AttributeProxy::parse_name(string &full_name)
 //
 
 		pos = name_wo_db_mod.find(HOST_SEP);
-		if (pos == string::npos)
+		if (pos == std::string::npos)
 		{
 			ApiWrongNameExcept::throw_exception((const char*)API_WrongAttributeNameSyntax,
 						(const char*)"Host and port not correctly defined in device name",
@@ -505,8 +505,8 @@ void AttributeProxy::parse_name(string &full_name)
 		}
 
 		host = name_wo_db_mod.substr(0,pos);
-		string::size_type tmp = name_wo_db_mod.find(PORT_SEP);
-		if (tmp == string::npos)
+		std::string::size_type tmp = name_wo_db_mod.find(PORT_SEP);
+		if (tmp == std::string::npos)
 		{
 			ApiWrongNameExcept::throw_exception((const char*)API_WrongAttributeNameSyntax,
 						(const char*)"Host and port not correctly defined in device name",
@@ -514,7 +514,7 @@ void AttributeProxy::parse_name(string &full_name)
 		}
 		port = name_wo_db_mod.substr(pos + 1,tmp - pos - 1);
 		TangoSys_MemStream s;
-		s << port << ends;
+		s << port << std::ends;
 		s >> port_num;
 		device_name = name_wo_db_mod.substr(tmp + 1);
 
@@ -530,7 +530,7 @@ void AttributeProxy::parse_name(string &full_name)
 //
 
 		pos = name_wo_db_mod.find(PORT_SEP);
-		if (pos == string::npos)
+		if (pos == std::string::npos)
 		{
 			device_name = name_wo_db_mod;
 			from_env_var = true;
@@ -540,9 +540,9 @@ void AttributeProxy::parse_name(string &full_name)
 		}
 		else
 		{
-			string bef_sep = name_wo_db_mod.substr(0,pos);
-			string::size_type tmp = bef_sep.find(HOST_SEP);
-			if (tmp == string::npos)
+			std::string bef_sep = name_wo_db_mod.substr(0,pos);
+			std::string::size_type tmp = bef_sep.find(HOST_SEP);
+			if (tmp == std::string::npos)
 			{
 				device_name = name_wo_db_mod;
 				from_env_var = true;
@@ -555,7 +555,7 @@ void AttributeProxy::parse_name(string &full_name)
 				db_host = bef_sep.substr(0,tmp);
 				db_port = bef_sep.substr(tmp + 1);
 				TangoSys_MemStream s;
-				s << db_port << ends;
+				s << db_port << std::ends;
 				s >> db_port_num;
 				device_name = name_wo_db_mod.substr(pos + 1);
 				from_env_var = false;
@@ -572,12 +572,12 @@ void AttributeProxy::parse_name(string &full_name)
 //
 
 	int n_sep = 0;
-	string device_name_tmp(device_name);
-	string::size_type device_name_end_pos=0;
+	std::string device_name_tmp(device_name);
+	std::string::size_type device_name_end_pos=0;
 	do
 	{
 		pos = device_name_tmp.find(DEVICE_SEP);
-		if (pos != string::npos)
+		if (pos != std::string::npos)
 		{
 			if (pos == 0)
 			{
@@ -596,7 +596,7 @@ void AttributeProxy::parse_name(string &full_name)
 			device_name_end_pos += pos+1;
 		}
 	}
-	while (pos != string::npos);
+	while (pos != std::string::npos);
 
 	if ((n_sep > 1) && (n_sep != 3))
 	{
@@ -624,7 +624,7 @@ void AttributeProxy::parse_name(string &full_name)
 //
 
 		pos = device_name.find(HOST_SEP);
-		if (pos != string::npos)
+		if (pos != std::string::npos)
 		{
 			ApiWrongNameExcept::throw_exception((const char *)API_WrongAttributeNameSyntax,
 			(const char *)"Wrong alias name (: not allowed in alias name)",
@@ -632,7 +632,7 @@ void AttributeProxy::parse_name(string &full_name)
 		}
 
 		pos = device_name.find(RES_SEP);
-		if (pos != string::npos)
+		if (pos != std::string::npos)
 		{
 			ApiWrongNameExcept::throw_exception((const char *)API_WrongAttributeNameSyntax,
 			(const char *)"Wrong alias name (-> not allowed in alias name)",
@@ -644,7 +644,7 @@ void AttributeProxy::parse_name(string &full_name)
 //
 
 		ApiUtil *ui = ApiUtil::instance();
-		string db_attr_name;
+		std::string db_attr_name;
 		if (from_env_var == true)
 		{
 			if (ui->in_server() == true)
@@ -658,7 +658,7 @@ void AttributeProxy::parse_name(string &full_name)
 					if (strcmp(dfe.errors[0].reason,"DB_SQLError") == 0)
 					{
 						TangoSys_OMemStream desc;
-						desc << "Can't connect to attribute with alias " << device_name << ends;
+						desc << "Can't connect to attribute with alias " << device_name << std::ends;
 						ApiConnExcept::re_throw_exception(dfe,
 								(const char *)"API_AliasNotDefined",
 					 			desc.str(),
@@ -680,7 +680,7 @@ void AttributeProxy::parse_name(string &full_name)
 					if (strcmp(dfe.errors[0].reason,"DB_SQLError") == 0)
 					{
 						TangoSys_OMemStream desc;
-						desc << "Can't connect to attribute with alias " << device_name << ends;
+						desc << "Can't connect to attribute with alias " << device_name << std::ends;
 						ApiConnExcept::re_throw_exception(dfe,
 								(const char *)"API_AliasNotDefined",
 					 			desc.str(),
@@ -703,7 +703,7 @@ void AttributeProxy::parse_name(string &full_name)
 				if (strcmp(dfe.errors[0].reason,"DB_SQLError") == 0)
 				{
 					TangoSys_OMemStream desc;
-					desc << "Can't connect to attribute with alias " << device_name << ends;
+					desc << "Can't connect to attribute with alias " << device_name << std::ends;
 					ApiConnExcept::re_throw_exception(dfe,
 							(const char *)"API_AliasNotDefined",
 					 		desc.str(),
@@ -718,18 +718,18 @@ void AttributeProxy::parse_name(string &full_name)
 // A fast syntax check on the full attribute name returned from the database
 //
 
-		string attr_name_tmp = db_attr_name;
+		std::string attr_name_tmp = db_attr_name;
 		do
 		{
 			pos = attr_name_tmp.find(DEVICE_SEP);
-			if (pos != string::npos)
+			if (pos != std::string::npos)
 			{
 				n_sep++;
 				attr_name_tmp = attr_name_tmp.substr(pos+1);
 				device_name_end_pos += pos+1;
 			}
 		}
-		while (pos != string::npos);
+		while (pos != std::string::npos);
 
 		if (n_sep != 3)
 		{
@@ -777,8 +777,8 @@ void AttributeProxy::parse_name(string &full_name)
 		}
 
 		pos = cased_name.rfind(DEVICE_SEP);
-		string::size_type pos_mod = cased_name.rfind(MODIFIER);
-		if (pos_mod != string::npos)
+		std::string::size_type pos_mod = cased_name.rfind(MODIFIER);
+		if (pos_mod != std::string::npos)
 			attr_name = cased_name.substr(pos + 1,pos_mod - (pos + 1));
 		else
 			attr_name = cased_name.substr(pos + 1);
@@ -834,7 +834,7 @@ DevState AttributeProxy::state()
 //
 //-----------------------------------------------------------------------------
 
-string AttributeProxy::status()
+std::string AttributeProxy::status()
 {
 	return(dev_proxy->status());
 }
@@ -869,7 +869,7 @@ bool AttributeProxy::get_transparency_reconnection()
 //
 //-----------------------------------------------------------------------------
 
-void AttributeProxy::get_property(string &property_name, DbData &user_data)
+void AttributeProxy::get_property(std::string &property_name, DbData &user_data)
 {
 	if (dbase_used == false)
 	{
@@ -922,7 +922,7 @@ void AttributeProxy::get_property(string &property_name, DbData &user_data)
 //
 //-----------------------------------------------------------------------------
 
-void AttributeProxy::get_property(vector<string> &property_names, DbData &user_data)
+void AttributeProxy::get_property(std::vector<std::string> &property_names, DbData &user_data)
 {
 	if (dbase_used == false)
 	{
@@ -1063,7 +1063,7 @@ void AttributeProxy::put_property(DbData &user_data)
 //
 //-----------------------------------------------------------------------------
 
-void AttributeProxy::delete_property(string &property_name)
+void AttributeProxy::delete_property(std::string &property_name)
 {
 	if (dbase_used == false)
 	{
@@ -1096,7 +1096,7 @@ void AttributeProxy::delete_property(string &property_name)
 //
 //-----------------------------------------------------------------------------
 
-void AttributeProxy::delete_property(vector<string> &property_names)
+void AttributeProxy::delete_property(std::vector<std::string> &property_names)
 {
 	if (dbase_used == false)
 	{
@@ -1192,7 +1192,7 @@ void AttributeProxy::set_config(AttributeInfo &dev_attr_info)
         catch (CORBA::SystemException &ce)
         {
 		TangoSys_OMemStream desc;
-		desc << "Failed to execute set_attribute_config on device " << device_name << ends;
+		desc << "Failed to execute set_attribute_config on device " << device_name << std::ends;
 		ApiCommExcept::re_throw_exception(ce,
 					      (const char*)"API_CommunicationFailed",
                         		      desc.str(),
@@ -1213,7 +1213,7 @@ void AttributeProxy::set_config(AttributeInfoEx &dev_attr_info)
         catch (CORBA::SystemException &ce)
         {
 		TangoSys_OMemStream desc;
-		desc << "Failed to execute set_attribute_config on device " << device_name << ends;
+		desc << "Failed to execute set_attribute_config on device " << device_name << std::ends;
 		ApiCommExcept::re_throw_exception(ce,
 					      (const char*)"API_CommunicationFailed",
                         		      desc.str(),
@@ -1263,7 +1263,7 @@ DeviceAttribute AttributeProxy::write_read(DeviceAttribute& attr_value)
 //
 //-----------------------------------------------------------------------------
 
-vector<DeviceAttributeHistory> *AttributeProxy::history(int depth)
+std::vector<DeviceAttributeHistory> *AttributeProxy::history(int depth)
 {
 
 	return(dev_proxy->attribute_history(attr_name, depth));
@@ -1326,14 +1326,14 @@ void AttributeProxy::stop_poll()
 //-----------------------------------------------------------------------------
 
 int AttributeProxy::subscribe_event (EventType event, CallBack *callback,
-                                    const vector<string> &filters)
+                                    const std::vector<std::string> &filters)
 {
 	return subscribe_event (event, callback, filters, false);
 }
 
 int AttributeProxy::subscribe_event (EventType event, CallBack *callback)
 {
-    vector<string> filters;
+    std::vector<std::string> filters;
 	return subscribe_event (event, callback, filters, false);
 }
 
@@ -1346,7 +1346,7 @@ int AttributeProxy::subscribe_event (EventType event, CallBack *callback)
 //-----------------------------------------------------------------------------
 
 int AttributeProxy::subscribe_event (EventType event, CallBack *callback,
-                                    const vector<string> &filters, bool stateless)
+                                    const std::vector<std::string> &filters, bool stateless)
 {
     ApiUtil *api_ptr = ApiUtil::instance();
     if (api_ptr->get_zmq_event_consumer() == NULL)
@@ -1360,13 +1360,13 @@ int AttributeProxy::subscribe_event (EventType event, CallBack *callback,
 	{
 		//we use filters here to pass user defined attribute name to later use it in event callback
 		// see https://github.com/tango-controls/cppTango/pull/423
-        vector<string> non_const_filters;
+        std::vector<std::string> non_const_filters;
         non_const_filters.push_back(get_user_defined_name());
         ret = api_ptr->get_zmq_event_consumer()->subscribe_event(dev_proxy,attr_name, event, callback, non_const_filters, stateless);
 	}
 	catch (DevFailed &e)
 	{
-	    string reason(e.errors[0].reason.in());
+	    std::string reason(e.errors[0].reason.in());
 	    if (reason == API_CommandNotFound)
 	    {
             if (ApiUtil::instance()->get_notifd_event_consumer() == NULL)
@@ -1385,7 +1385,7 @@ int AttributeProxy::subscribe_event (EventType event, CallBack *callback,
 
 int AttributeProxy::subscribe_event (EventType event, CallBack *callback,bool stateless)
 {
-    vector<string> vs;
+    std::vector<std::string> vs;
     return subscribe_event(event,callback,vs,stateless);
 }
 
@@ -1398,7 +1398,7 @@ int AttributeProxy::subscribe_event (EventType event, CallBack *callback,bool st
 //-----------------------------------------------------------------------------
 
 int AttributeProxy::subscribe_event (EventType event, int event_queue_size,
-                                    const vector<string> &filters, bool stateless)
+                                    const std::vector<std::string> &filters, bool stateless)
 {
     ApiUtil *api_ptr = ApiUtil::instance();
 	if (api_ptr->get_zmq_event_consumer() == NULL)
@@ -1413,7 +1413,7 @@ int AttributeProxy::subscribe_event (EventType event, int event_queue_size,
     }
     catch (DevFailed &e)
     {
-        string reason(e.errors[0].reason.in());
+        std::string reason(e.errors[0].reason.in());
         if (reason == API_CommandNotFound)
         {
             if (api_ptr->get_notifd_event_consumer() == NULL)
@@ -1430,7 +1430,7 @@ int AttributeProxy::subscribe_event (EventType event, int event_queue_size,
 
 int AttributeProxy::subscribe_event (EventType event, int event_queue_size,bool stateless)
 {
-    vector<string> vs;
+    std::vector<std::string> vs;
     return subscribe_event(event,event_queue_size,vs,stateless);
 }
 
