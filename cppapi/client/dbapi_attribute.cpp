@@ -46,7 +46,7 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-DbAttribute::DbAttribute(string &att_name, string &dev_name, Database *att_dbase)
+DbAttribute::DbAttribute(std::string &att_name, std::string &dev_name, Database *att_dbase)
 {
 	name = att_name;
 	device_name = dev_name;
@@ -62,7 +62,7 @@ DbAttribute::DbAttribute(string &att_name, string &dev_name, Database *att_dbase
 //
 //-----------------------------------------------------------------------------
 
-DbAttribute::DbAttribute(string &att_name, string &dev_name)
+DbAttribute::DbAttribute(std::string &att_name, std::string &dev_name)
 {
 	name = att_name;
 	device_name = dev_name;
@@ -78,14 +78,14 @@ DbAttribute::DbAttribute(string &att_name, string &dev_name)
 //
 //-----------------------------------------------------------------------------
 
-DbAttribute::DbAttribute(string &att_name, string &dev_name, string &host,string &port_str)
+DbAttribute::DbAttribute(std::string &att_name, std::string &dev_name, std::string &host,std::string &port_str)
 {
 	name = att_name;
 	device_name = dev_name;
 
 	TangoSys_MemStream s;
 	int port_num;
-	s << port_str << ends;
+	s << port_str << std::ends;
 	s >> port_num;
 
 	db_ind = ApiUtil::instance()->get_db_ind(host,port_num);
