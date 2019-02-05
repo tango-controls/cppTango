@@ -139,7 +139,7 @@ void Attribute::get_properties(Tango::AttributeConfig_3 &conf)
 
 	if (data_type == DATA_TYPE_UNKNOWN)
 	{
-		string desc("Attribute ");
+		std::string desc("Attribute ");
 		FwdAttribute *fwd = static_cast<FwdAttribute *>(this);
 		desc = desc + get_name() + " is a forwarded attribute and its root device (";
 		desc = desc + fwd->get_fwd_dev_name();
@@ -385,7 +385,7 @@ void Attribute::add_config_5_specific(AttributeConfig_5 &conf)
 	if (is_fwd_att() == true)
 	{
 		FwdAttribute *fwd = static_cast<FwdAttribute *>(this);
-		string str(fwd->get_fwd_dev_name() + '/' + fwd->get_fwd_att_name());
+		std::string str(fwd->get_fwd_dev_name() + '/' + fwd->get_fwd_att_name());
 		conf.root_attr_name = Tango::string_dup(str.c_str());
 	}
 	else
@@ -439,7 +439,7 @@ void Attribute::add_config_5_specific(AttributeConfig_5 &conf)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_name,TANGO_UNUSED(bool from_ds),vector<AttPropDb> &v_db)
+void Attribute::set_properties(const Tango::AttributeConfig &conf,std::string &dev_name,TANGO_UNUSED(bool from_ds),std::vector<AttPropDb> &v_db)
 {
     if (name_lower == "state" || name_lower == "status")
         return;
@@ -464,8 +464,8 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 
-	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
-	vector<AttrProperty> &def_class_prop = att.get_class_properties();
+	std::vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
+	std::vector<AttrProperty> &def_class_prop = att.get_class_properties();
 
 //
 // First the string properties
@@ -516,7 +516,7 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 }
 
 
-void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_name,bool from_ds,vector<AttPropDb> &v_db)
+void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,std::string &dev_name,bool from_ds,std::vector<AttPropDb> &v_db)
 {
 
 //
@@ -567,7 +567,7 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 //
 
 	bool state_or_status = false;
-	vector<AttrProperty> fake_attr_prop;
+	std::vector<AttrProperty> fake_attr_prop;
 
     if (name_lower == "state" || name_lower == "status")
         state_or_status = true;
@@ -587,8 +587,8 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 		att_ptr = &(mca->get_attr(name));
 	}
 
-	vector<AttrProperty> &def_user_prop = state_or_status == false ? att_ptr->get_user_default_properties() : fake_attr_prop;
-	vector<AttrProperty> &def_class_prop = state_or_status == false ? att_ptr->get_class_properties() : fake_attr_prop;
+	std::vector<AttrProperty> &def_user_prop = state_or_status == false ? att_ptr->get_user_default_properties() : fake_attr_prop;
+	std::vector<AttrProperty> &def_class_prop = state_or_status == false ? att_ptr->get_class_properties() : fake_attr_prop;
 
 	if ((state_or_status == false) &&
      	((data_type != Tango::DEV_STRING) &&
@@ -651,7 +651,7 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 }
 
 
-void Attribute::set_properties(const Tango::AttributeConfig_5 &conf,string &dev_name,bool from_ds,vector<AttPropDb> &v_db)
+void Attribute::set_properties(const Tango::AttributeConfig_5 &conf,std::string &dev_name,bool from_ds,std::vector<AttPropDb> &v_db)
 {
 //
 // Check that the request is not to change some unmutable properties added in IDL 5
@@ -718,14 +718,14 @@ void Attribute::set_properties(const Tango::AttributeConfig_5 &conf,string &dev_
 //--------------------------------------------------------------------------------------------------------------------
 
 void Attribute::set_one_str_prop(const char *prop_name,const CORBA::String_member &conf_val,
-								 string &att_conf,vector<AttPropDb> &v_db,vector<AttrProperty> &def_user_prop,
-								vector<AttrProperty> &def_class_prop,const char *lib_def)
+								 std::string &att_conf,std::vector<AttPropDb> &v_db,std::vector<AttrProperty> &def_user_prop,
+								std::vector<AttrProperty> &def_class_prop,const char *lib_def)
 {
 	AttPropDb apd;
 	apd.name = prop_name;
 
 	bool user_defaults, class_defaults;
-	string usr_def_val, class_def_val;
+	std::string usr_def_val, class_def_val;
 	size_t nb_user = def_user_prop.size();
 	size_t nb_class = def_class_prop.size();
 
@@ -740,7 +740,7 @@ void Attribute::set_one_str_prop(const char *prop_name,const CORBA::String_membe
 // these defaults
 //
 
-		string old_val = att_conf;
+		std::string old_val = att_conf;
 		bool fmt_changed = false;
 
 		if (strcmp(prop_name,"format") == 0)
@@ -775,7 +775,7 @@ void Attribute::set_one_str_prop(const char *prop_name,const CORBA::String_membe
 // overwrite this default value.
 //
 
-		string old_val = att_conf;
+		std::string old_val = att_conf;
 		bool fmt_changed = false;
 
         if (user_defaults == true)
@@ -814,7 +814,7 @@ void Attribute::set_one_str_prop(const char *prop_name,const CORBA::String_membe
 // Return to class default or user default or lib default
 //
 
-		string old_val = att_conf;
+		std::string old_val = att_conf;
 		bool fmt_changed = false;
 
 		if (class_defaults == true)
@@ -846,7 +846,7 @@ void Attribute::set_one_str_prop(const char *prop_name,const CORBA::String_membe
 // Set property
 //
 
-		string old_val = att_conf;
+		std::string old_val = att_conf;
 		att_conf = conf_val;
 
 		if (user_defaults == true && att_conf == usr_def_val)
@@ -990,9 +990,9 @@ void Attribute::set_one_str_prop(const char *prop_name,const CORBA::String_membe
 //---------------------------------------------------------------------------------------------------------------------
 
 void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_member &conf_val,
-								string &att_conf_str,Tango::Attr_CheckVal &att_conf, vector<AttPropDb> &v_db,
-								vector<AttrProperty> &def_user_prop,
-								vector<AttrProperty> &def_class_prop,bool &check_it)
+								std::string &att_conf_str,Tango::Attr_CheckVal &att_conf, std::vector<AttPropDb> &v_db,
+								std::vector<AttrProperty> &def_user_prop,
+								std::vector<AttrProperty> &def_class_prop,bool &check_it)
 {
 
 	if (((data_type == Tango::DEV_STRING) ||
@@ -1008,18 +1008,18 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 	apd.name = prop_name;
 
 	bool user_defaults, class_defaults;
-	string usr_def_val, class_def_val;
+	std::string usr_def_val, class_def_val;
 	size_t nb_user = def_user_prop.size();
 	size_t nb_class = def_class_prop.size();
 
     user_defaults = prop_in_list(prop_name,usr_def_val,nb_user,def_user_prop);
     class_defaults = prop_in_list(prop_name,class_def_val,nb_class,def_class_prop);
 
-	stringstream str;
+	std::stringstream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
 	double alrm_usr_def_db;
-	string alrm_class_def;
+	std::string alrm_class_def;
 	double alrm_class_def_db;
 
 	bool store_in_db = false;
@@ -1034,7 +1034,7 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 // these defaults
 //
 
-		string old_val = att_conf_str;
+		std::string old_val = att_conf_str;
 		att_conf_str = AlrmValueNotSpec;
 
 		if (old_val != att_conf_str)
@@ -1057,7 +1057,7 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 // overwrite this default value.
 //
 
-		string old_val = att_conf_str;
+		std::string old_val = att_conf_str;
 
         if (user_defaults == false)
             att_conf_str = AlrmValueNotSpec;
@@ -1090,7 +1090,7 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 	{
 // set class default if defined, user default value if defined, otherwise use the library defaults
 
-		string old_val = att_conf_str;
+		std::string old_val = att_conf_str;
 
 		if (class_defaults == false)
 		{
@@ -1123,7 +1123,7 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 // Set property
 //
 
-		string old_val = att_conf_str;
+		std::string old_val = att_conf_str;
 		att_conf_str = conf_val;
 
 		bool equal_class_def = false;
@@ -1138,12 +1138,12 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 
 			if (user_defaults == true)
 			{
-				stringstream ss1;
+				std::stringstream ss1;
 				ss1 << usr_def_val;
 				ss1 >> alrm_usr_def_db;
 
 				double db;
-				stringstream ss;
+				std::stringstream ss;
 				ss.precision(TANGO_FLOAT_PRECISION);
 
 				ss << conf_val;
@@ -1211,12 +1211,12 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 
 			if (class_defaults == true)
 			{
-				stringstream ss1;
+				std::stringstream ss1;
 				ss1 << class_def_val;
 				ss1 >> alrm_class_def_db;
 
 				double db;
-				stringstream ss;
+				std::stringstream ss;
 				ss.precision(TANGO_FLOAT_PRECISION);
 
 				ss << conf_val;
@@ -1320,7 +1320,7 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 		if ((w_type == Tango::READ_WRITE) || (w_type == Tango::WRITE))
 		{
 			WAttribute *w_att = static_cast<WAttribute *>(this);
-			string mem_value;
+			std::string mem_value;
 			if (strcmp(prop_name,"min_value") == 0 || strcmp(prop_name,"min_alarm") == 0)
 			{
 				if ((w_att->is_memorized() == true) && (w_att->mem_value_below_above(MIN,mem_value) == true))
@@ -1365,7 +1365,7 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 
 	if (store_in_db == true)
 	{
-		string tmp = conf_val.in();
+		std::string tmp = conf_val.in();
 		if (user_val == true)
             tmp = usr_def_val.c_str();
 		else if (avns == true)
@@ -1374,7 +1374,7 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 		{
 			double db;
 
-			stringstream ss;
+			std::stringstream ss;
 			ss.precision(TANGO_FLOAT_PRECISION);
 
 			ss << conf_val;
@@ -1461,10 +1461,10 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 //---------------------------------------------------------------------------------------------------------------------
 
 
-void Attribute::set_rds_prop(const AttributeAlarm &att_alarm, string &dev_name,
-							 vector<AttPropDb> &v_db,
-							 vector<AttrProperty> &def_user_prop,
-							 vector<AttrProperty> &def_class_prop)
+void Attribute::set_rds_prop(const AttributeAlarm &att_alarm, std::string &dev_name,
+							 std::vector<AttPropDb> &v_db,
+							 std::vector<AttrProperty> &def_user_prop,
+							 std::vector<AttrProperty> &def_class_prop)
 {
 	Tango::Attr_CheckVal old_delta_val = delta_val;
 	long old_delta_t = delta_t;
@@ -1547,17 +1547,17 @@ void Attribute::set_rds_prop(const AttributeAlarm &att_alarm, string &dev_name,
 //---------------------------------------------------------------------------------------------------------------------
 
 
-void Attribute::set_rds_prop_val(const AttributeAlarm &att_alarm, string &dev_name,
-							 vector<AttrProperty> &def_user_prop,
-							 vector<AttrProperty> &def_class_prop)
+void Attribute::set_rds_prop_val(const AttributeAlarm &att_alarm, std::string &dev_name,
+							 std::vector<AttrProperty> &def_user_prop,
+							 std::vector<AttrProperty> &def_class_prop)
 {
-	stringstream str;
+	std::stringstream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
 	bool delta_val_defined = false;
-	string delta_val_usr_def;
+	std::string delta_val_usr_def;
 	double delta_val_usr_def_db;
-	string delta_val_class_def;
+	std::string delta_val_class_def;
 	double delta_val_class_def_db;
 	bool usr_defaults = false;
 	bool class_defaults = false;
@@ -1666,9 +1666,9 @@ void Attribute::set_rds_prop_val(const AttributeAlarm &att_alarm, string &dev_na
 //
 
 	bool delta_t_defined = false;
-	string delta_t_usr_def;
+	std::string delta_t_usr_def;
 	double delta_t_usr_def_db = 0.0;
-	string delta_t_class_def;
+	std::string delta_t_class_def;
 	double delta_t_class_def_db = 0.0;
 	usr_defaults = false;
 	class_defaults = false;
@@ -1799,18 +1799,18 @@ void Attribute::set_rds_prop_val(const AttributeAlarm &att_alarm, string &dev_na
 			if (dev == NULL)
 			{
 				// TODO: check how to make cerr quiet
-				cerr.setstate(ios::failbit);
+				std::cerr.setstate(std::ios::failbit);
 				Tango::Util *tg = Tango::Util::instance();
 				dev = tg->get_device_by_name(d_name);
-				cerr.clear();
+        std::cerr.clear();
 			}
 
 			if (dev->get_logger()->is_warn_enabled())
-					dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "RDS (Read Different Set) incoherent in attribute " << name << " (only " << (delta_t_defined ? "delta_t" : "delta_val") << " is set) " << endl;
+					dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "RDS (Read Different Set) incoherent in attribute " << name << " (only " << (delta_t_defined ? "delta_t" : "delta_val") << " is set) " << std::endl;
 		}
 		catch(...)
 		{
-			cerr.clear();
+      std::cerr.clear();
 		}
 	}
 	else
@@ -1840,14 +1840,14 @@ void Attribute::set_rds_prop_val(const AttributeAlarm &att_alarm, string &dev_na
 
 
 void Attribute::set_rds_prop_db(const AttributeAlarm &att_alarm,
-							 vector<AttPropDb> &v_db,
-							 vector<AttrProperty> &def_user_prop,
-							 vector<AttrProperty> &def_class_prop)
+							 std::vector<AttPropDb> &v_db,
+							 std::vector<AttrProperty> &def_user_prop,
+							 std::vector<AttrProperty> &def_class_prop)
 {
-	stringstream str;
+	std::stringstream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
-	string delta_val_usr_def_val, delta_val_class_def_val;
+	std::string delta_val_usr_def_val, delta_val_class_def_val;
 	size_t nb_user = def_user_prop.size();
 	size_t nb_class = def_class_prop.size();
 
@@ -1863,7 +1863,7 @@ void Attribute::set_rds_prop_db(const AttributeAlarm &att_alarm,
 // delta_val
 //
 
-	string delta_val_tmp_str = att_alarm.delta_val.in();
+	std::string delta_val_tmp_str = att_alarm.delta_val.in();
 	bool delta_val_is_number = true;
 
 	delta_val_user_defaults = prop_in_list("delta_val",delta_val_usr_def_val,nb_user,def_user_prop);
@@ -2001,9 +2001,9 @@ void Attribute::set_rds_prop_db(const AttributeAlarm &att_alarm,
 // delta_t
 //
 
-	string delta_t_tmp_str = att_alarm.delta_t.in();
-	string delta_t_usr_def_val;
-	string delta_t_class_def_val;
+	std::string delta_t_tmp_str = att_alarm.delta_t.in();
+	std::string delta_t_usr_def_val;
+	std::string delta_t_class_def_val;
 	bool delta_t_user_defaults;
 	bool delta_t_class_defaults;
 	bool delta_t_is_number = true;
@@ -2161,23 +2161,23 @@ void Attribute::set_rds_prop_db(const AttributeAlarm &att_alarm,
 //---------------------------------------------------------------------------------------------------------------------
 
 void Attribute::set_one_event_prop(const char *prop_name,const CORBA::String_member &conf_val,double *prop_val,
-								vector<AttPropDb> &v_db,vector<AttrProperty> &def_user_prop,
-								vector<AttrProperty> &def_class_prop)
+								std::vector<AttPropDb> &v_db,std::vector<AttrProperty> &def_user_prop,
+								std::vector<AttrProperty> &def_class_prop)
 {
 	AttPropDb apd;
 	apd.name = prop_name;
 
-	string rel_change_str(conf_val); // provided, comma separated min and/or max values for the property
-	string rel_change_usr_str; // user default, comma separated min and/or max values for the property, if defined
-	string rel_change_class_str; // class default, comma separated min and/or max values for the property, if defined
-	vector<double> rel_change_tmp; // vector containing min and max values of the property
-	vector<double> rel_change_usr; // vector containing user default min and max values of the property
-	vector<double> rel_change_class; // vector containing class default min and max values of the property
+	std::string rel_change_str(conf_val); // provided, comma separated min and/or max values for the property
+	std::string rel_change_usr_str; // user default, comma separated min and/or max values for the property, if defined
+	std::string rel_change_class_str; // class default, comma separated min and/or max values for the property, if defined
+	std::vector<double> rel_change_tmp; // vector containing min and max values of the property
+	std::vector<double> rel_change_usr; // vector containing user default min and max values of the property
+	std::vector<double> rel_change_class; // vector containing class default min and max values of the property
 	bool rel_change_usr_def; // true if there are user defaults defined for the property
 	bool rel_change_class_def; // true if there are class defaults defined for the property
 
-	vector<bool> rel_change_set_usr_def; // vector indicating if to use provided values for the property or the user defaults if defined
-	vector<bool> rel_change_set_class_def; // vector indicating if to use provided values for the property or the class defaults if defined
+	std::vector<bool> rel_change_set_usr_def; // vector indicating if to use provided values for the property or the user defaults if defined
+	std::vector<bool> rel_change_set_class_def; // vector indicating if to use provided values for the property or the class defaults if defined
 
 	size_t nb_user = def_user_prop.size();
 	size_t nb_class = def_class_prop.size();
@@ -2345,7 +2345,7 @@ void Attribute::set_one_event_prop(const char *prop_name,const CORBA::String_mem
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_name,bool from_ds,vector<AttPropDb> &v_db)
+void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,std::string &dev_name,bool from_ds,std::vector<AttPropDb> &v_db)
 {
 	if (data_type == Tango::DEV_ENUM)
 	{
@@ -2359,7 +2359,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 
 		if (conf.enum_labels.length() == 0)
 		{
-			stringstream ss;
+			std::stringstream ss;
 			ss << "Device " << dev_name << "- Attribute : " << name;
 			ss << "- No value defined for the property enum_labels";
 
@@ -2375,7 +2375,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 			{
 				if (conf.enum_labels.length() != enum_labels.size())
 				{
-					stringstream ss;
+					std::stringstream ss;
 					ss << "Device " << dev_name << "-> Attribute : " << name;
 					ss << "\nIt's not supported to change enumeration labels number from outside the Tango device class code";
 
@@ -2394,30 +2394,30 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 		Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 		att_ptr = &(mca->get_attr(name));
 
-		vector<AttrProperty> &def_user_prop = att_ptr->get_user_default_properties();
+		std::vector<AttrProperty> &def_user_prop = att_ptr->get_user_default_properties();
 		size_t nb_user = def_user_prop.size();
 
-		vector<AttrProperty> &def_class_prop = att_ptr->get_class_properties();
+		std::vector<AttrProperty> &def_class_prop = att_ptr->get_class_properties();
 		size_t nb_class = def_class_prop.size();
 
 //
 // Set the enum labels
 //
 
-		string enum_labels_usr_def;
-		string enum_labels_class_def;
+		std::string enum_labels_usr_def;
+		std::string enum_labels_class_def;
 		bool usr_defaults = false;
 		bool class_defaults = false;
 
 		usr_defaults = prop_in_list("enum_labels",enum_labels_usr_def,nb_user,def_user_prop);
 		class_defaults = prop_in_list("enum_labels",enum_labels_class_def,nb_class,def_class_prop);
 
-		vector<string> old_labels = enum_labels;
+		std::vector<std::string> old_labels = enum_labels;
 
 		if(TG_strcasecmp(conf.enum_labels[0],AlrmValueNotSpec) == 0)
 		{
 			// no library defaults for enum
-			stringstream ss;
+			std::stringstream ss;
 			ss << "Device " << dev_name << "-> Attribute : " << name;
 			ss << "\nNo enumeration label(s) default library value for attribute of the Tango::DEV_ENUM data type";
 
@@ -2429,7 +2429,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 
 			if (usr_defaults == false)
 			{
-				stringstream ss;
+				std::stringstream ss;
 				ss << "Device " << dev_name << "-> Attribute : " << name;
 				ss << "\nNo enumeration labels default library value for attribute of the Tango::DEV_ENUM data type";
 
@@ -2453,7 +2453,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 			{
 				if (usr_defaults == false)
 				{
-					stringstream ss;
+					std::stringstream ss;
 					ss << "Device " << dev_name << "-> Attribute : " << name;
 					ss << "\nNo enumeration labels default library value for attribute of the Tango::DEV_ENUM data type";
 
@@ -2483,7 +2483,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 		{
 			// set property
 
-			string labs;
+			std::string labs;
 			for (size_t loop = 0;loop < conf.enum_labels.length();loop++)
 			{
 				labs = labs + conf.enum_labels[loop].in();
@@ -2527,45 +2527,45 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 
 void Attribute::set_min_alarm(char *new_min_alarm_str)
 {
-	set_min_alarm(string(new_min_alarm_str));
+	set_min_alarm(std::string(new_min_alarm_str));
 }
 
 void Attribute::set_min_alarm(const char *new_min_alarm_str)
 {
-	set_min_alarm(string(new_min_alarm_str));
+	set_min_alarm(std::string(new_min_alarm_str));
 }
 
 
 void Attribute::set_max_alarm(char *new_max_alarm_str)
 {
-	set_max_alarm(string(new_max_alarm_str));
+	set_max_alarm(std::string(new_max_alarm_str));
 }
 
 void Attribute::set_max_alarm(const char *new_max_alarm_str)
 {
-	set_max_alarm(string(new_max_alarm_str));
+	set_max_alarm(std::string(new_max_alarm_str));
 }
 
 
 void Attribute::set_min_warning(char *new_min_warning_str)
 {
-	set_min_warning(string(new_min_warning_str));
+	set_min_warning(std::string(new_min_warning_str));
 }
 
 void Attribute::set_min_warning(const char *new_min_warning_str)
 {
-	set_min_warning(string(new_min_warning_str));
+	set_min_warning(std::string(new_min_warning_str));
 }
 
 
 void Attribute::set_max_warning(char *new_max_warning_str)
 {
-	set_max_warning(string(new_max_warning_str));
+	set_max_warning(std::string(new_max_warning_str));
 }
 
 void Attribute::set_max_warning(const char *new_max_warning_str)
 {
-	set_max_warning(string(new_max_warning_str));
+	set_max_warning(std::string(new_max_warning_str));
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2582,7 +2582,7 @@ void Attribute::set_max_warning(const char *new_max_warning_str)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::check_range_coherency(string &dev_name)
+void Attribute::check_range_coherency(std::string &dev_name)
 {
 
 //
@@ -2807,7 +2807,7 @@ void Attribute::check_range_coherency(string &dev_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::db_access(Attribute::CheckOneStrProp &cosp,string &dev_name)
+void Attribute::db_access(Attribute::CheckOneStrProp &cosp,std::string &dev_name)
 {
 
 //
@@ -2816,10 +2816,10 @@ void Attribute::db_access(Attribute::CheckOneStrProp &cosp,string &dev_name)
 
 	if (*cosp.prop_to_update != 0)
 	{
-		cout4 << *cosp.prop_to_update << " properties to update in db" << endl;
+		cout4 << *cosp.prop_to_update << " properties to update in db" << std::endl;
 		(*cosp.db_d)[0] << *cosp.prop_to_update;
 //for (const auto &elem: *cosp.db_d)
-//	cout << "prop_to_update name = " << elem.name << endl;
+//	cout << "prop_to_update name = " << elem.name << std::endl;
 
 		Tango::Util *tg = Tango::Util::instance();
 
@@ -2845,10 +2845,10 @@ void Attribute::db_access(Attribute::CheckOneStrProp &cosp,string &dev_name)
 
 	if (*cosp.prop_to_delete != 0)
 	{
-		cout4 << *cosp.prop_to_delete << " properties to delete in db" << endl;
+		cout4 << *cosp.prop_to_delete << " properties to delete in db" << std::endl;
 		(*cosp.db_del)[0] << *cosp.prop_to_delete;
 //for (const auto &elem: *cosp.db_del)
-//	cout << "prop_to_delete name = " << elem.name << endl;
+//	cout << "prop_to_delete name = " << elem.name << std::endl;
 
 		Tango::Util *tg = Tango::Util::instance();
 
@@ -2893,10 +2893,10 @@ void Attribute::db_access(Attribute::CheckOneStrProp &cosp,string &dev_name)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::validate_change_properties(const string &dev_name, const char *prop_name, string &change_prop_str, vector<double> &validated_prop)
+void Attribute::validate_change_properties(const std::string &dev_name, const char *prop_name, std::string &change_prop_str, std::vector<double> &validated_prop)
 {
-	vector<bool> bring_usr_def;
-	vector<bool> bring_class_def;
+	std::vector<bool> bring_usr_def;
+	std::vector<bool> bring_class_def;
 
 	validate_change_properties(dev_name, prop_name, change_prop_str, validated_prop, bring_usr_def,bring_class_def);
 }
@@ -2925,8 +2925,8 @@ void Attribute::validate_change_properties(const string &dev_name, const char *p
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Attribute::validate_change_properties(const string &dev_name, const char *prop_name, string &change_prop_str, vector<double> &validated_prop,
-                                           vector<bool> &bring_usr_def,vector<bool> &bring_class_def)
+void Attribute::validate_change_properties(const std::string &dev_name, const char *prop_name, std::string &change_prop_str, std::vector<double> &validated_prop,
+                                           std::vector<bool> &bring_usr_def,std::vector<bool> &bring_class_def)
 {
 	// by default, values for event change properties are set to INT_MAX
 	validated_prop.clear();
@@ -2942,15 +2942,15 @@ void Attribute::validate_change_properties(const string &dev_name, const char *p
 	bring_class_def.push_back(false);
 	bring_class_def.push_back(false);
 
-	stringstream str;
+	std::stringstream str;
 	str.precision(TANGO_FLOAT_PRECISION);
-	string prop_min;
-	string prop_max;
+	std::string prop_min;
+	std::string prop_max;
 	bool one_param = true;
 	double prop_tmp;
 
 	size_t pos = change_prop_str.find(',');
-	if(pos != string::npos)
+	if(pos != std::string::npos)
 	{
 		prop_min = change_prop_str.substr(0,pos);
 		prop_max = change_prop_str.erase(0,pos+1);
@@ -2992,7 +2992,7 @@ void Attribute::validate_change_properties(const string &dev_name, const char *p
 					validated_prop[1] = fabs(prop_tmp);
 				}
 				else
-					throw_err_data_type(prop_name,const_cast<string&>(dev_name),"Attribute::validate_change_properties()");
+					throw_err_data_type(prop_name,const_cast<std::string&>(dev_name),"Attribute::validate_change_properties()");
 			}
 		}
 		else
@@ -3027,7 +3027,7 @@ void Attribute::validate_change_properties(const string &dev_name, const char *p
 						validated_prop[1] = fabs(prop_tmp);
 					}
 					else
-						throw_err_data_type(prop_name,const_cast<string&>(dev_name),"Attribute::validate_change_properties()");
+						throw_err_data_type(prop_name,const_cast<std::string&>(dev_name),"Attribute::validate_change_properties()");
 				}
 			}
 			else
@@ -3053,11 +3053,11 @@ void Attribute::validate_change_properties(const string &dev_name, const char *p
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::event_prop_db_xxx(vector<double> &rel_change_tmp,vector<double> &rel_change_usr,vector<AttPropDb> &v_db,AttPropDb &apd)
+void Attribute::event_prop_db_xxx(std::vector<double> &rel_change_tmp,std::vector<double> &rel_change_usr,std::vector<AttPropDb> &v_db,AttPropDb &apd)
 {
 
-    vector<string> rel_change_str_tmp(2);
-    vector<bool> rel_change_usr_def_tmp(2);
+    std::vector<std::string> rel_change_str_tmp(2);
+    std::vector<bool> rel_change_usr_def_tmp(2);
     rel_change_usr_def_tmp[0] = rel_change_usr_def_tmp[1] = false;
 
     if(rel_change_tmp[0] == rel_change_usr[0])
@@ -3085,7 +3085,7 @@ void Attribute::event_prop_db_xxx(vector<double> &rel_change_tmp,vector<double> 
     }
     else
     {
-        stringstream str;
+        std::stringstream str;
         str.precision(TANGO_FLOAT_PRECISION);
         if(rel_change_usr_def_tmp[0] && !rel_change_usr_def_tmp[1])
         {
@@ -3125,8 +3125,8 @@ void Attribute::event_prop_db_xxx(vector<double> &rel_change_tmp,vector<double> 
 //---------------------------------------------------------------------------------------------------------------------
 
 void Attribute::set_one_event_period(const char *prop_name,const CORBA::String_member &conf_val,int &prop_val,const int &prop_def,
-								vector<AttPropDb> &v_db,vector<AttrProperty> &def_user_prop,
-								vector<AttrProperty> &def_class_prop)
+								std::vector<AttPropDb> &v_db,std::vector<AttrProperty> &def_user_prop,
+								std::vector<AttrProperty> &def_class_prop)
 {
 	AttPropDb apd;
 	apd.name = prop_name;
@@ -3134,16 +3134,16 @@ void Attribute::set_one_event_period(const char *prop_name,const CORBA::String_m
 	size_t nb_user = def_user_prop.size();
 	size_t nb_class = def_class_prop.size();
 
-	stringstream def_event_period;
+	std::stringstream def_event_period;
 	def_event_period << (int)(prop_def);
 
-    string class_def_val;
-    string usr_def_val;
+    std::string class_def_val;
+    std::string usr_def_val;
 
 	bool user_defaults = prop_in_list(prop_name,usr_def_val,nb_user,def_user_prop);
 	bool class_defaults = prop_in_list(prop_name,class_def_val,nb_class,def_class_prop);
 
-	stringstream str;
+	std::stringstream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
 	int old_prop_val = prop_val;
@@ -3224,7 +3224,7 @@ void Attribute::set_one_event_period(const char *prop_name,const CORBA::String_m
 					(TG_strcasecmp(class_def_val.c_str(),NotANumber) == 0) ||
 					(strlen(class_def_val.c_str()) == 0))
 			{
-				stringstream str;
+				std::stringstream str;
 				str << (int)(prop_def);
 				class_def_val = str.str();
 			}
@@ -3294,7 +3294,7 @@ void Attribute::set_one_event_period(const char *prop_name,const CORBA::String_m
 
 		if(store_in_db)
 		{
-			string tmp = conf_val.in();
+			std::string tmp = conf_val.in();
 			if (TG_strcasecmp(conf_val,AlrmValueNotSpec) == 0)
 			{
 				tmp = def_event_period.str();
@@ -3357,9 +3357,9 @@ void Attribute::check_hard_coded(const AttributeConfig_5 &user_conf)
 	if (is_fwd_att() == true)
 	{
 		FwdAttribute *fwd = static_cast<FwdAttribute *>(this);
-		string root_attr_name(fwd->get_fwd_dev_name() + '/' + fwd->get_fwd_att_name());
-		string user_root_att_name(user_conf.root_attr_name.in());
-		transform(user_root_att_name.begin(),user_root_att_name.end(),user_root_att_name.begin(),::tolower);
+		std::string root_attr_name(fwd->get_fwd_dev_name() + '/' + fwd->get_fwd_att_name());
+		std::string user_root_att_name(user_conf.root_attr_name.in());
+		std::transform(user_root_att_name.begin(),user_root_att_name.end(),user_root_att_name.begin(),::tolower);
 		if (user_root_att_name != root_attr_name)
 		{
 			throw_hard_coded_prop("root_attr_name");
@@ -3407,9 +3407,9 @@ void Attribute::check_hard_coded(const AttributeConfig_5 &user_conf)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Attribute::convert_prop_value(const char *prop_name,string &value_str,Attr_CheckVal &val,const string &dev_name)
+void Attribute::convert_prop_value(const char *prop_name,std::string &value_str,Attr_CheckVal &val,const std::string &dev_name)
 {
-	stringstream str;
+	std::stringstream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
 	str << value_str;
@@ -3501,7 +3501,7 @@ void Attribute::convert_prop_value(const char *prop_name,string &value_str,Attr_
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-void Attribute::upd_database(vector<AttPropDb> &v_db)
+void Attribute::upd_database(std::vector<AttPropDb> &v_db)
 {
 
 //
@@ -3517,7 +3517,7 @@ void Attribute::upd_database(vector<AttPropDb> &v_db)
 	db_d.push_back(DbDatum(name));
 	db_del.push_back(DbDatum(name));
 
-	vector<AttPropDb>::iterator ite;
+	std::vector<AttPropDb>::iterator ite;
 
 //
 // A loop for each db action
