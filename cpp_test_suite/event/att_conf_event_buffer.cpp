@@ -1,4 +1,4 @@
-/* 
+/*
  * example of a client using the TANGO device api.
  */
 
@@ -22,15 +22,15 @@ bool verbose = false;
 class EventCallBack : public Tango::CallBack
 {
 	void push_event(Tango::AttrConfEventData*);
-	
+
 public:
 	int cb_executed;
 	int cb_err;
 	int old_sec,old_usec;
 	int delta_msec;
-	
-	string min_value;
-	string max_value;
+
+	std::string min_value;
+	std::string max_value;
 };
 
 void EventCallBack::push_event(Tango::AttrConfEventData* event_data)
@@ -46,8 +46,8 @@ void EventCallBack::push_event(Tango::AttrConfEventData* event_data)
 	gettimeofday(&now_timeval,NULL);
 #endif
 	coutv << "date : tv_sec = " << now_timeval.tv_sec;
-	coutv << ", tv_usec = " << now_timeval.tv_usec << endl;
-	
+	coutv << ", tv_usec = " << now_timeval.tv_usec << std::endl;
+
 	int delta_s = now_timeval.tv_sec - old_sec;
 	if (delta_s == 0)
 		delta_msec = (now_timeval.tv_usec - old_usec) / 1000;
@@ -59,8 +59,8 @@ void EventCallBack::push_event(Tango::AttrConfEventData* event_data)
 	}
 	old_sec = now_timeval.tv_sec;
 	old_usec = now_timeval.tv_usec;
-	
-	coutv << "delta_msec = " << delta_msec << endl;
+
+	coutv << "delta_msec = " << delta_msec << std::endl;
 
 	cb_executed++;
 	try
@@ -68,13 +68,13 @@ void EventCallBack::push_event(Tango::AttrConfEventData* event_data)
 		coutv << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
 		if (!event_data->err)
 		{
-			coutv << *(event_data->attr_conf) << endl;
+			coutv << *(event_data->attr_conf) << std::endl;
 			min_value = event_data->attr_conf->min_value;
 			max_value = event_data->attr_conf->max_value;
 		}
 		else
 		{
-			coutv << "Error send to callback" << endl;
+			coutv << "Error send to callback" << std::endl;
 			Tango::Except::print_error_stack(event_data->errors);
 		}
 	}
@@ -88,22 +88,22 @@ void EventCallBack::push_event(Tango::AttrConfEventData* event_data)
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
-	
+
 	if (argc == 1)
 	{
-		cout << "usage: %s device [-v]" << endl;
+		cout << "usage: %s device [-v]" << std::endl;
 		exit(-1);
 	}
 
-	string device_name = argv[1];
+	std::string device_name = argv[1];
 
 	if (argc == 3)
 	{
 		if (strcmp(argv[2],"-v") == 0)
 			verbose = true;
 	}
-	
-	try 
+
+	try
 	{
 		device = new DeviceProxy(device_name);
 	}
@@ -113,18 +113,18 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+	coutv << std::endl << "new DeviceProxy(" << device->name() << ") returned" << std::endl << std::endl;
 
 	try
 	{
-		string att_name("Double_attr_w");
-		
+		std::string att_name("Double_attr_w");
+
 //
 // Check that the attribute is still not polled
 //
 
 		bool po = device->is_attribute_polled(att_name);
-		coutv << "attribute polled : " << po << endl;
+		coutv << "attribute polled : " << po << std::endl;
 		assert( po == false);
 
 
@@ -132,12 +132,12 @@ int main(int argc, char **argv)
 // subscribe to an attribute config event
 //
 		int eve_id;
-		vector<string> filters;
+		std::vector<std::string> filters;
 		EventCallBack cb;
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
-		
+
 		eve_id = device->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,1,filters);
 
 //
@@ -153,9 +153,9 @@ int main(int argc, char **argv)
 			dvda[1] = dvda[1] + 1;
 			DeviceData d_in;
 			d_in << dvda;
-			
+
 			device->command_inout("IOSetWAttrLimit",d_in);
-			
+
 #ifdef _TG_WINDOWS_
 			Sleep((DWORD)200);
 #else
@@ -169,18 +169,18 @@ int main(int argc, char **argv)
 // Check that only the last event was kept
 //
 		device->get_events(eve_id, &cb);
-		
-		coutv << "cb excuted = " << cb.cb_executed << endl;
+
+		coutv << "cb excuted = " << cb.cb_executed << std::endl;
 		assert (cb.cb_executed == 1);
 		assert (cb.min_value == "0");
 		assert (cb.max_value == "20");
-		
-		cout << "   CallBack executed only for the last arrived event --> OK" << endl;
+
+		cout << "   CallBack executed only for the last arrived event --> OK" << std::endl;
 //
 // unsubscribe to the event
 //
 		device->unsubscribe_event(eve_id);
-		cout << "   unsubscribe_event --> OK" << endl;
+		cout << "   unsubscribe_event --> OK" << std::endl;
 
 
 //
@@ -189,7 +189,7 @@ int main(int argc, char **argv)
 //
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
-		cb.old_sec = cb.old_usec = 0;		
+		cb.old_sec = cb.old_usec = 0;
 
 		eve_id = device->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,5,filters);
 
@@ -201,9 +201,9 @@ int main(int argc, char **argv)
 			dvda[1] = dvda[1] + 1;
 			DeviceData d_in;
 			d_in << dvda;
-			
+
 			device->command_inout("IOSetWAttrLimit",d_in);
-			
+
 #ifdef _TG_WINDOWS_
 			Sleep((DWORD)200);
 #else
@@ -217,18 +217,18 @@ int main(int argc, char **argv)
 // Check that only the last event was kept
 //
 		device->get_events(eve_id, &cb);
-		
-		coutv << "cb excuted = " << cb.cb_executed << endl;
+
+		coutv << "cb excuted = " << cb.cb_executed << std::endl;
 		assert (cb.cb_executed == 5);
 		assert (cb.min_value == "0");
 		assert (cb.max_value == "30");
-		
-		cout << "   CallBack executed only for the last 5 arrived events --> OK" << endl;
+
+		cout << "   CallBack executed only for the last 5 arrived events --> OK" << std::endl;
 //
 // unsubscribe to the event
 //
 		device->unsubscribe_event(eve_id);
-		cout << "   unsubscribe_event --> OK" << endl;
+		cout << "   unsubscribe_event --> OK" << std::endl;
 
 //
 // Subscribe for attibute configuration events.
@@ -236,7 +236,7 @@ int main(int argc, char **argv)
 //
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
-		cb.old_sec = cb.old_usec = 0;		
+		cb.old_sec = cb.old_usec = 0;
 
 		eve_id = device->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,ALL_EVENTS,filters);
 
@@ -248,9 +248,9 @@ int main(int argc, char **argv)
 			dvda[1] = dvda[1] + 1;
 			DeviceData d_in;
 			d_in << dvda;
-			
+
 			device->command_inout("IOSetWAttrLimit",d_in);
-			
+
 #ifdef _TG_WINDOWS_
 			Sleep((DWORD)200);
 #else
@@ -264,13 +264,13 @@ int main(int argc, char **argv)
 // Check that only the last event was kept
 //
 		device->get_events(eve_id, &cb);
-		
-		coutv << "cb excuted = " << cb.cb_executed << endl;
+
+		coutv << "cb excuted = " << cb.cb_executed << std::endl;
 		assert (cb.cb_executed == 11);
 		assert (cb.min_value == "0");
 		assert (cb.max_value == "40");
-		
-		cout << "   CallBack executed for 11 arrived events --> OK" << endl;
+
+		cout << "   CallBack executed for 11 arrived events --> OK" << std::endl;
 
 //
 // Check the attribute config event data reading as a vector
@@ -278,7 +278,7 @@ int main(int argc, char **argv)
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
-		
+
 //
 // Send 15 attribute configuration events
 //
@@ -287,9 +287,9 @@ int main(int argc, char **argv)
 			dvda[1] = dvda[1] + 1;
 			DeviceData d_in;
 			d_in << dvda;
-			
+
 			device->command_inout("IOSetWAttrLimit",d_in);
-			
+
 #ifdef _TG_WINDOWS_
 			Sleep((DWORD)200);
 #else
@@ -302,33 +302,33 @@ int main(int argc, char **argv)
 //
 // Check that all events were kept and can be read as a vector
 //
-		coutv << "event queue size = " << device->event_queue_size(eve_id) << endl;
+		coutv << "event queue size = " << device->event_queue_size(eve_id) << std::endl;
 		assert (device->event_queue_size(eve_id) == 15);
-		
+
 		AttrConfEventDataList event_list;
 		device->get_events(eve_id, event_list);
-		coutv << "number of events read = " << event_list.size() << endl;
+		coutv << "number of events read = " << event_list.size() << std::endl;
 		assert (event_list.size() == 15);
-		
+
 		double ref_val = 41;
 		AttrConfEventDataList::iterator vpos;
 		for (vpos=event_list.begin(); vpos!=event_list.end(); vpos++)
 		{
 			double min_value = atof ( ((*vpos)->attr_conf->min_value).c_str());
 			double max_value = atof ( ((*vpos)->attr_conf->max_value).c_str());
-			
-			coutv << "min value = " << min_value << endl;
-			coutv << "max value = " << max_value << endl;
+
+			coutv << "min value = " << min_value << std::endl;
+			coutv << "max value = " << max_value << std::endl;
 			assert (max_value == ref_val);
 			ref_val++;
 		}
-		cout << "   Data received for 15 arrived events --> OK" << endl;
+		cout << "   Data received for 15 arrived events --> OK" << std::endl;
 
 //
 // unsubscribe to the event
 //
 		device->unsubscribe_event(eve_id);
-		cout << "   unsubscribe_event --> OK" << endl;
+		cout << "   unsubscribe_event --> OK" << std::endl;
 
 //
 // subscribe to an attribute config event several times
@@ -350,7 +350,7 @@ int main(int argc, char **argv)
 		cb3.cb_executed = 0;
 		cb3.cb_err = 0;
 		cb3.old_sec = cb.old_usec = 0;
-		
+
 		eve_id1 = device->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,ALL_EVENTS,filters);
 		eve_id2 = device->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,ALL_EVENTS,filters);
 		eve_id3 = device->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,ALL_EVENTS,filters);
@@ -364,9 +364,9 @@ int main(int argc, char **argv)
 			dvda[1] = dvda[1] + 1;
 			DeviceData d_in;
 			d_in << dvda;
-			
+
 			device->command_inout("IOSetWAttrLimit",d_in);
-			
+
 #ifdef _TG_WINDOWS_
 			Sleep((DWORD)200);
 #else
@@ -380,34 +380,34 @@ int main(int argc, char **argv)
 //
 // Check that all events were kept and can be read as a vector
 //
-		coutv << "event queue size = " << device->event_queue_size(eve_id1) << endl;
+		coutv << "event queue size = " << device->event_queue_size(eve_id1) << std::endl;
 		assert (device->event_queue_size(eve_id1) == 16);
 		assert (device->event_queue_size(eve_id2) == 16);
 		assert (device->event_queue_size(eve_id3) == 16);
-		
+
 		AttrConfEventDataList event_list1;
 		device->get_events(eve_id1, event_list1);
-		coutv << "number of events read = " << event_list1.size() << endl;
+		coutv << "number of events read = " << event_list1.size() << std::endl;
 		assert (event_list1.size() == 16);
 
 		AttrConfEventDataList event_list2;
 		device->get_events(eve_id2, event_list2);
-		coutv << "number of events read = " << event_list2.size() << endl;
+		coutv << "number of events read = " << event_list2.size() << std::endl;
 		assert (event_list2.size() == 16);
 
 		AttrConfEventDataList event_list3;
 		device->get_events(eve_id3, event_list3);
-		coutv << "number of events read = " << event_list3.size() << endl;
+		coutv << "number of events read = " << event_list3.size() << std::endl;
 		assert (event_list3.size() == 16);
-		
+
 		ref_val = 55;
 		for (vpos=event_list1.begin(); vpos!=event_list1.end(); vpos++)
 		{
 			double min_value = atof ( ((*vpos)->attr_conf->min_value).c_str());
 			double max_value = atof ( ((*vpos)->attr_conf->max_value).c_str());
-			
-			coutv << "min value = " << min_value << endl;
-			coutv << "max value = " << max_value << endl;
+
+			coutv << "min value = " << min_value << std::endl;
+			coutv << "max value = " << max_value << std::endl;
 			assert (max_value == ref_val);
 			ref_val++;
 		}
@@ -417,9 +417,9 @@ int main(int argc, char **argv)
 		{
 			double min_value = atof ( ((*vpos)->attr_conf->min_value).c_str());
 			double max_value = atof ( ((*vpos)->attr_conf->max_value).c_str());
-			
-			coutv << "min value = " << min_value << endl;
-			coutv << "max value = " << max_value << endl;
+
+			coutv << "min value = " << min_value << std::endl;
+			coutv << "max value = " << max_value << std::endl;
 			assert (max_value == ref_val);
 			ref_val++;
 		}
@@ -429,14 +429,14 @@ int main(int argc, char **argv)
 		{
 			double min_value = atof ( ((*vpos)->attr_conf->min_value).c_str());
 			double max_value = atof ( ((*vpos)->attr_conf->max_value).c_str());
-			
-			coutv << "min value = " << min_value << endl;
-			coutv << "max value = " << max_value << endl;
+
+			coutv << "min value = " << min_value << std::endl;
+			coutv << "max value = " << max_value << std::endl;
 			assert (max_value == ref_val);
 			ref_val++;
 		}
 
-		cout << "   Data received for 15 arrived events (3 subscribe) --> OK" << endl;
+		cout << "   Data received for 15 arrived events (3 subscribe) --> OK" << std::endl;
 
 //
 // unsubscribe to the events
@@ -446,9 +446,9 @@ int main(int argc, char **argv)
 		device->unsubscribe_event(eve_id2);
 		device->unsubscribe_event(eve_id3);
 
-		cout << "   unsubscribe_events --> OK" << endl;
+		cout << "   unsubscribe_events --> OK" << std::endl;
 
-	
+
 	}
 	catch (Tango::DevFailed &e)
 	{
@@ -462,6 +462,6 @@ int main(int argc, char **argv)
 	}
 
 	delete device;
-	
+
 	return 0;
 }
