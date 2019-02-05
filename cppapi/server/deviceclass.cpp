@@ -56,9 +56,9 @@ extern omni_thread::key_t key_py_data;
 namespace Tango
 {
 
-static void lower_cmd_name(string &cmd)
+static void lower_cmd_name(std::string &cmd)
 {
-	transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
+	std::transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
 }
 
 bool less_than_pipe (Pipe *a,Pipe *b)
@@ -72,14 +72,14 @@ bool less_than_pipe (Pipe *a,Pipe *b)
 //+------------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		DeviceClass::DeviceClass(string &s)
+//		DeviceClass::DeviceClass(std::string &s)
 //
 // description :
 //		DeviceClass constructor. Protected method which will be called automatically by the compiler.
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-DeviceClass::DeviceClass(string &s):name(s),ext(new DeviceClassExt),
+DeviceClass::DeviceClass(std::string &s):name(s),ext(new DeviceClassExt),
 		only_one("class"),default_cmd(NULL),py_class(false),device_factory_done(false)
 {
 
@@ -101,7 +101,7 @@ DeviceClass::DeviceClass(string &s):name(s),ext(new DeviceClassExt),
 		command_list[1]->set_out_type_desc("Device state");
 		command_list.push_back(new DevInitCmd("Init",Tango::DEV_VOID,Tango::DEV_VOID));
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		if (command_list.empty() == false)
 		{
@@ -141,7 +141,7 @@ DeviceClass::DeviceClass(string &s):name(s),ext(new DeviceClassExt),
 //+-------------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		DeviceClass::get_class_system_resource(string &s)
+//		DeviceClass::get_class_system_resource(std::string &s)
 //
 // description :
 //		Method to retrieve some basic class resource(s)
@@ -175,7 +175,7 @@ void DeviceClass::get_class_system_resource()
 		catch (Tango::DevFailed &)
 		{
 			TangoSys_OMemStream o;
-			o << "Database error while trying to retrieve properties for class " << name.c_str() << ends;
+			o << "Database error while trying to retrieve properties for class " << name.c_str() << std::ends;
 
 			Except::throw_exception((const char *)API_DatabaseAccess,
 					o.str(),
@@ -199,7 +199,7 @@ void DeviceClass::get_class_system_resource()
 
 		if (db_data[0].is_empty() == true)
 		{
-			cout4 << "doc_url property for class " << name << " is not defined in database" << endl;
+			cout4 << "doc_url property for class " << name << " is not defined in database" << std::endl;
 			try
 			{
 				db->get_class_property("Default",db_data,tg->get_db_cache());
@@ -207,7 +207,7 @@ void DeviceClass::get_class_system_resource()
 			catch (Tango::DevFailed &)
 			{
 				TangoSys_OMemStream o;
-				o << "Database error while trying to retrieve properties for class " << name.c_str() << ends;
+				o << "Database error while trying to retrieve properties for class " << name.c_str() << std::ends;
 
 				Except::throw_exception((const char *)API_DatabaseAccess,
 							o.str(),
@@ -255,7 +255,7 @@ void DeviceClass::get_class_system_resource()
 
 void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 {
-	cout4 << "Entering DeviceClass::set_memorized_values() method" << endl;
+	cout4 << "Entering DeviceClass::set_memorized_values() method" << std::endl;
 
 	short sh;
 	Tango::DevVarShortArray sh_seq(1);
@@ -332,7 +332,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 //
 
 		AttributeValueList att_val(10);
-		vector<long> &att_list = device_list[i]->get_device_attr()->get_w_attr_list();
+		std::vector<long> &att_list = device_list[i]->get_device_attr()->get_w_attr_list();
 
 		long nb_wr = 0;
 		for (unsigned long j = 0;j < att_list.size();j++)
@@ -343,7 +343,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 			if (att.is_memorized() == true)
 			{
 
-				string &mem_value = att.get_mem_value();
+				std::string &mem_value = att.get_mem_value();
 				if (mem_value != MemNotUsed)
 				{
 					nb_wr++;
@@ -363,7 +363,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 
 					TangoSys_MemStream str;
 					if (from_init == false)
-						str << mem_value << ends;
+						str << mem_value << std::ends;
 
 					try
 					{
@@ -444,7 +444,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 						case Tango::DEV_BOOLEAN:
 							if (from_init == false)
 							{
-								if (!(str >> boolalpha >> boo))
+								if (!(str >> std::boolalpha >> boo))
 									throw_mem_value(device_list[i],att);
 								att.set_write_value(boo);
 							}
@@ -556,7 +556,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 
 					catch (Tango::DevFailed &e)
 					{
-						cout3 << "Cannot configure setpoint value for memorized attribute " << att.get_name() << endl;
+						cout3 << "Cannot configure setpoint value for memorized attribute " << att.get_name() << std::endl;
 						Tango::Except::print_exception(e);
 
 						nb_wr--;
@@ -578,17 +578,17 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 
 			try
 			{
-				cout4 << "Writing data for " << att_val.length() << " attribute(s) for device " << device_list[i]->get_name() << endl;
+				cout4 << "Writing data for " << att_val.length() << " attribute(s) for device " << device_list[i]->get_name() << std::endl;
 				(static_cast<Device_3Impl *>(device_list[i]))->write_attributes_3(att_val);
 			}
 			catch (Tango::DevFailed &e)
 			{
-				cout3 << "Cannot write setpoint(s) value for any memorized attribute(s) on device " << device_list[i]->get_name() << endl;
+				cout3 << "Cannot write setpoint(s) value for any memorized attribute(s) on device " << device_list[i]->get_name() << std::endl;
 				Tango::Except::print_exception(e);
 			}
 			catch (Tango::MultiDevFailed &e)
 			{
-				cout3 << "Cannot write setpoint(s) value for memorized attribute(s) of device " << device_list[i]->get_name() << endl;
+				cout3 << "Cannot write setpoint(s) value for memorized attribute(s) of device " << device_list[i]->get_name() << std::endl;
 				for (unsigned long k = 0;k < e.errors.length();k++)
 				{
 					WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[e.errors[k].index_in_call].name.in());
@@ -596,9 +596,9 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 					log4tango::Logger *log = device_list[i]->get_logger();
 					if (log->is_warn_enabled())
 					{
-						log->warn_stream() << log4tango::LogInitiator::_begin_log << "Writing set_point for attribute " << att.get_name() << " failed" << endl;
-						log->warn_stream() << log4tango::LogInitiator::_begin_log << "\tException desc = " << e.errors[k].err_list[0].desc.in() << endl;
-						log->warn_stream() << log4tango::LogInitiator::_begin_log << "\tException reason = " << e.errors[k].err_list[0].reason.in() << endl;
+						log->warn_stream() << log4tango::LogInitiator::_begin_log << "Writing set_point for attribute " << att.get_name() << " failed" << std::endl;
+						log->warn_stream() << log4tango::LogInitiator::_begin_log << "\tException desc = " << e.errors[k].err_list[0].desc.in() << std::endl;
+						log->warn_stream() << log4tango::LogInitiator::_begin_log << "\tException reason = " << e.errors[k].err_list[0].reason.in() << std::endl;
 					}
 
 				}
@@ -609,13 +609,13 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 			}
 			catch (...)
 			{
-				cout3 << "Cannot write setpoint(s) value for memorized attribute(s) of device " << device_list[i]->get_name() << endl;
-				cerr << "Received unknown exception while trying to write memorized attribute(s)" << endl;
+				cout3 << "Cannot write setpoint(s) value for memorized attribute(s) of device " << device_list[i]->get_name() << std::endl;
+				std::cerr << "Received unknown exception while trying to write memorized attribute(s)" << std::endl;
 
 				size_t nb_att = att_val.length();
 				for (size_t k = 0;k < nb_att;k++)
 				{
-                    stringstream ss;
+                    std::stringstream ss;
                     ss << "Received unknown exception (nor a devfailed, nor a MultiDevFailed !!";
 
                     Tango::DevErrorList errors;
@@ -630,7 +630,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 					log4tango::Logger *log = device_list[i]->get_logger();
 					if (log->is_warn_enabled())
 					{
-						log->warn_stream() << log4tango::LogInitiator::_begin_log << "Writing set_point for attribute " << att.get_name() << " failed" << endl;
+						log->warn_stream() << log4tango::LogInitiator::_begin_log << "Writing set_point for attribute " << att.get_name() << " failed" << std::endl;
 					}
 				}
 				device_list[i]->set_run_att_conf_loop(true);
@@ -648,7 +648,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 		}
 	}
 
-	cout4 << "Leaving DeviceClass::set_memorized_values() method" << endl;
+	cout4 << "Leaving DeviceClass::set_memorized_values() method" << std::endl;
 
 }
 
@@ -675,7 +675,7 @@ void DeviceClass::throw_mem_value(DeviceImpl *dev,Attribute &att)
 	o << att.get_name();
 	o << " (device ";
 	o << dev->get_name();
-	o << ") is in an incorrect format !" << ends;
+	o << ") is in an incorrect format !" << std::ends;
 
 	Except::throw_exception((const char *)API_AttrWrongMemValue,
 				o.str(),
@@ -685,7 +685,7 @@ void DeviceClass::throw_mem_value(DeviceImpl *dev,Attribute &att)
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		DeviceClass::~DeviceClass(string &s)
+//		DeviceClass::~DeviceClass(std::string &s)
 //
 // description :
 //		DeviceClass class destructor.
@@ -694,7 +694,7 @@ void DeviceClass::throw_mem_value(DeviceImpl *dev,Attribute &att)
 
 DeviceClass::~DeviceClass()
 {
-	cout4 << "Entering DeviceClass destructor for class " << name << endl;
+	cout4 << "Entering DeviceClass destructor for class " << name << std::endl;
 
 //
 // Destroy the DbClass object
@@ -743,7 +743,7 @@ DeviceClass::~DeviceClass()
 			if (tg->get_polled_dyn_cmd_names().size() != 0)
 				tg->clean_cmd_polled_prop();
 
-			vector<DeviceImpl *>::iterator it = device_list.begin();
+			std::vector<DeviceImpl *>::iterator it = device_list.begin();
 			device_list.erase(it);
 		}
 		device_list.clear();
@@ -762,7 +762,7 @@ DeviceClass::~DeviceClass()
 // Destroy the pipe list
 //
 
-	map<string,vector<Pipe *> >::iterator ite;
+	std::map<std::string,std::vector<Pipe *> >::iterator ite;
 	for (ite = ext->dev_pipe_list.begin();ite != ext->dev_pipe_list.end();ite++)
 	{
 	    for (size_t loop = 0;loop < ite->second.size();loop++)
@@ -796,7 +796,7 @@ DeviceClass::~DeviceClass()
 	delete ext;
 #endif
 
-	cout4 << "Leaving DeviceClass destructor for class " << name << endl;
+	cout4 << "Leaving DeviceClass destructor for class " << name << std::endl;
 }
 
 
@@ -819,7 +819,7 @@ DeviceClass::~DeviceClass()
 
 void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_poa)
 {
-	cout4 << "Entering DeviceClas::delete_dev method for device with index " << idx << endl;
+	cout4 << "Entering DeviceClas::delete_dev method for device with index " << idx << std::endl;
 
 //
 // If the polling thread is alive and if device is polled, ask polling thread to stop polling
@@ -875,7 +875,7 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 #endif
 	}
 
-	cout4 << "Leaving DeviceClass delete_dev" << endl;
+	cout4 << "Leaving DeviceClass delete_dev" << std::endl;
 }
 
 
@@ -898,20 +898,20 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 #if defined _TG_WINDOWS_
 void DeviceClass::register_signal(long signo)
 {
-	cout4 << "DeviceClass::register_signal() arrived for signal " << signo << endl;
+	cout4 << "DeviceClass::register_signal() arrived for signal " << signo << std::endl;
 
 	DServerSignal::instance()->register_class_signal(signo,this);
 
-	cout4 << "Leaving DeviceClass::register_signal method()" << endl;
+	cout4 << "Leaving DeviceClass::register_signal method()" << std::endl;
 }
 #else
 void DeviceClass::register_signal(long signo,bool handler)
 {
-	cout4 << "DeviceClass::register_signal() arrived for signal " << signo << endl;
+	cout4 << "DeviceClass::register_signal() arrived for signal " << signo << std::endl;
 
 	DServerSignal::instance()->register_class_signal(signo,handler,this);
 
-	cout4 << "Leaving DeviceClass::register_signal method()" << endl;
+	cout4 << "Leaving DeviceClass::register_signal method()" << std::endl;
 }
 #endif
 
@@ -932,11 +932,11 @@ void DeviceClass::register_signal(long signo,bool handler)
 
 void DeviceClass::unregister_signal(long signo)
 {
-	cout4 << "DeviceClass::unregister_signal() arrived for signal " << signo << endl;
+	cout4 << "DeviceClass::unregister_signal() arrived for signal " << signo << std::endl;
 
 	DServerSignal::instance()->unregister_class_signal(signo,this);
 
-	cout4 << "Leaving DeviceClass::unregister_signal method()" << endl;
+	cout4 << "Leaving DeviceClass::unregister_signal method()" << std::endl;
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -956,9 +956,9 @@ void DeviceClass::unregister_signal(long signo)
 
 void DeviceClass::signal_handler(long signo)
 {
-	cout4 << "DeviceClass::signal_handler() arrived for signal " << signo << endl;
+	cout4 << "DeviceClass::signal_handler() arrived for signal " << signo << std::endl;
 
-	cout4 << "Leaving DeviceClass::signal_handler method()" << endl;
+	cout4 << "Leaving DeviceClass::signal_handler method()" << std::endl;
 }
 
 
@@ -981,7 +981,7 @@ void DeviceClass::signal_handler(long signo)
 
 void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 {
-	cout4 << "DeviceClass::export_device() arrived" << endl;
+	cout4 << "DeviceClass::export_device() arrived" << std::endl;
 
 	Device_var d;
 
@@ -995,7 +995,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 // But don't do this for dynamic devices which are not created in the DServer::init_device method class loop
 //
 
-		string &dev_name = dev->get_name_lower();
+		std::string &dev_name = dev->get_name_lower();
 		if ((get_device_factory_done() == false) && (dev_name.find("dserver") != 0))
 			dev->get_dev_monitor().get_monitor();
 
@@ -1023,7 +1023,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 		catch (...)
 		{
 			TangoSys_OMemStream o;
-			o << "Cant get CORBA reference Id for device " << dev->get_name() << ends;
+			o << "Cant get CORBA reference Id for device " << dev->get_name() << std::ends;
 			Except::throw_exception((const char *)API_CantGetDevObjectId,
 							o.str(),
 							(const char *)"DeviceClass::export_device");
@@ -1040,8 +1040,8 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 // Register device in POA with lower case letters
 //
 
-		string corba_obj_name_lower(corba_obj_name);
-		transform(corba_obj_name_lower.begin(),corba_obj_name_lower.end(),corba_obj_name_lower.begin(),::tolower);
+		std::string corba_obj_name_lower(corba_obj_name);
+		std::transform(corba_obj_name_lower.begin(),corba_obj_name_lower.end(),corba_obj_name_lower.begin(),::tolower);
 		PortableServer::ObjectId_var id = PortableServer::string_to_ObjectId(corba_obj_name_lower.c_str());
 		try
 		{
@@ -1052,7 +1052,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 		catch (...)
 		{
 			TangoSys_OMemStream o;
-			o << "Can't get CORBA reference Id for device " << dev->get_name() << ends;
+			o << "Can't get CORBA reference Id for device " << dev->get_name() << std::ends;
 			Except::throw_exception((const char *)API_CantGetDevObjectId,
 						o.str(),
 						(const char *)"DeviceClass::export_device");
@@ -1074,7 +1074,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 		CORBA::ORB_ptr orb_ptr = tg->get_orb();
 
 		char *s = orb_ptr->object_to_string(d);
-		string ior_string(s);
+		std::string ior_string(s);
 
 		Tango::DbDevExportInfo exp;
 
@@ -1096,7 +1096,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 		}
 		catch (Tango::CommunicationFailed &)
 		{
-			cerr << "CommunicationFailed while exporting device " << dev->get_name() << endl;
+			std::cerr << "CommunicationFailed while exporting device " << dev->get_name() << std::endl;
 			CORBA::release(orb_ptr);
 			Tango::string_free(s);
 			throw;
@@ -1113,7 +1113,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 	dev->set_exported_flag(true);
 	dev->enable_intr_change_ev();
 
-	cout4 << "Leaving DeviceClass::export_device method()" << endl;
+	cout4 << "Leaving DeviceClass::export_device method()" << std::endl;
 }
 
 
@@ -1129,16 +1129,16 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,const CORBA::Any &in_any)
+CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,std::string &command,const CORBA::Any &in_any)
 {
 	CORBA::Any *ret = NULL;
-	vector<Command *>::iterator i_cmd;
+	std::vector<Command *>::iterator i_cmd;
 
-	string command_lower(command);
+	std::string command_lower(command);
 
-	cout4 << "Entering DeviceClass::command_handler() method" << endl;
+	cout4 << "Entering DeviceClass::command_handler() method" << std::endl;
 
-	transform(command_lower.begin(),command_lower.end(),command_lower.begin(),::tolower);
+	std::transform(command_lower.begin(),command_lower.end(),command_lower.begin(),::tolower);
 
 //
 // Search for command object first at class level then at device level (case of dynamic command installed at device
@@ -1157,7 +1157,7 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 
 	if (found == false)
 	{
-		vector<Command *> &dev_command_list = device->get_local_command_list();
+		std::vector<Command *> &dev_command_list = device->get_local_command_list();
 		for (i_cmd = dev_command_list.begin();i_cmd < dev_command_list.end();++i_cmd)
 		{
 			if ((*i_cmd)->get_lower_name() == command_lower)
@@ -1184,7 +1184,7 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 		if ((*i_cmd)->is_allowed(device,in_any) == false)
 		{
 			TangoSys_OMemStream o;
-			o << "Command " << command << " not allowed when the device is in " << Tango::DevStateName[device->get_state()] << " state"  << ends;
+			o << "Command " << command << " not allowed when the device is in " << Tango::DevStateName[device->get_state()] << " state"  << std::ends;
 			Except::throw_exception((const char *)API_CommandNotAllowed,
 						      o.str(),
 						      (const char *)"DeviceClass::command_handler");
@@ -1200,7 +1200,7 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 	if (found == false)
 	{
 
-		cout3 << "DeviceClass::command_handler(): command " << command << " not found in class/device command" << endl;
+		cout3 << "DeviceClass::command_handler(): command " << command << " not found in class/device command" << std::endl;
 
 		Command *def_cmd = get_default_command();
 		if (def_cmd != NULL)
@@ -1225,7 +1225,7 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 			if (def_cmd->is_allowed(device,in_any) == false)
 			{
 				TangoSys_OMemStream o;
-				o << "Command " << command << " not allowed when the device is in " << Tango::DevStateName[device->get_state()] << " state"  << ends;
+				o << "Command " << command << " not allowed when the device is in " << Tango::DevStateName[device->get_state()] << " state"  << std::ends;
 				Except::throw_exception((const char *)API_CommandNotAllowed,
 						o.str(),
 						(const char *)"DeviceClass::command_handler");
@@ -1248,14 +1248,14 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 
 			TangoSys_OMemStream o;
 
-			o << "Command " << command << " not found" << ends;
+			o << "Command " << command << " not found" << std::ends;
 			Except::throw_exception((const char *)API_CommandNotFound,
 					      o.str(),
 					      (const char *)"DeviceClass::command_handler");
 		}
 	}
 
-	cout4 << "Leaving DeviceClass::command_handler() method" << endl;
+	cout4 << "Leaving DeviceClass::command_handler() method" << std::endl;
 	return ret;
 }
 
@@ -1276,25 +1276,25 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DeviceClass::add_wiz_dev_prop(string &p_name,string &desc,string &def)
+void DeviceClass::add_wiz_dev_prop(std::string &p_name,std::string &desc,std::string &def)
 {
 
 //
 // Name in lowercase letters
 //
 
-	string name_low = p_name;
-	transform(name_low.begin(),name_low.end(),name_low.begin(),::tolower);
+	std::string name_low = p_name;
+	std::transform(name_low.begin(),name_low.end(),name_low.begin(),::tolower);
 
 //
 // Check that this property is not already in the vector
 //
 
-	vector<string>::iterator ite;
+	std::vector<std::string>::iterator ite;
 	for (ite = wiz_dev_prop.begin();ite < wiz_dev_prop.end();++ite)
 	{
-		string tmp_name(*ite);
-		transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+		std::string tmp_name(*ite);
+		std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
 		if (tmp_name == name_low)
 			break;
 	}
@@ -1303,7 +1303,7 @@ void DeviceClass::add_wiz_dev_prop(string &p_name,string &desc,string &def)
 	{
 		TangoSys_OMemStream o;
 		o << "Device property " << p_name;
-		o << " for class " << name << " is already defined in the wizard" << ends;
+		o << " for class " << name << " is already defined in the wizard" << std::ends;
 		Except::throw_exception((const char *)API_WizardConfError,
 					o.str(),
 					(const char *)"DeviceClass::add_wiz_dev_prop");
@@ -1320,9 +1320,9 @@ void DeviceClass::add_wiz_dev_prop(string &p_name,string &desc,string &def)
 }
 
 
-void DeviceClass::add_wiz_dev_prop(string &p_name,string &desc)
+void DeviceClass::add_wiz_dev_prop(std::string &p_name,std::string &desc)
 {
-	string def(AlrmValueNotSpec);
+	std::string def(AlrmValueNotSpec);
 	add_wiz_dev_prop(p_name,desc,def);
 }
 
@@ -1343,24 +1343,24 @@ void DeviceClass::add_wiz_dev_prop(string &p_name,string &desc)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DeviceClass::add_wiz_class_prop(string &p_name,string &desc,string &def)
+void DeviceClass::add_wiz_class_prop(std::string &p_name,std::string &desc,std::string &def)
 {
 //
 // Name in lowercase letters
 //
 
-	string name_low = p_name;
-	transform(name_low.begin(),name_low.end(),name_low.begin(),::tolower);
+	std::string name_low = p_name;
+	std::transform(name_low.begin(),name_low.end(),name_low.begin(),::tolower);
 
 //
 // Check that this property is not already in the vector
 //
 
-	vector<string>::iterator ite;
+	std::vector<std::string>::iterator ite;
 	for (ite = wiz_class_prop.begin();ite < wiz_class_prop.end();++ite)
 	{
-		string tmp_name(*ite);
-		transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+		std::string tmp_name(*ite);
+		std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
 		if (tmp_name == name_low)
 			break;
 	}
@@ -1369,7 +1369,7 @@ void DeviceClass::add_wiz_class_prop(string &p_name,string &desc,string &def)
 	{
 		TangoSys_OMemStream o;
 		o << "Class property " << p_name;
-		o << " for class " << name << " is already defined in the wizard" << ends;
+		o << " for class " << name << " is already defined in the wizard" << std::ends;
 		Except::throw_exception((const char *)API_WizardConfError,
 					o.str(),
 					(const char *)"DeviceClass::add_wiz_dev_prop");
@@ -1385,9 +1385,9 @@ void DeviceClass::add_wiz_class_prop(string &p_name,string &desc,string &def)
 }
 
 
-void DeviceClass::add_wiz_class_prop(string &p_name,string &desc)
+void DeviceClass::add_wiz_class_prop(std::string &p_name,std::string &desc)
 {
-	string def(AlrmValueNotSpec);
+	std::string def(AlrmValueNotSpec);
 	add_wiz_class_prop(p_name,desc,def);
 }
 
@@ -1405,7 +1405,7 @@ void DeviceClass::add_wiz_class_prop(string &p_name,string &desc)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DeviceClass::device_destroyer(const string &dev_name)
+void DeviceClass::device_destroyer(const std::string &dev_name)
 {
 
 //
@@ -1422,7 +1422,7 @@ void DeviceClass::device_destroyer(const string &dev_name)
 	if (k == device_list.size())
 	{
 		TangoSys_OMemStream o;
-		o << "Device " << dev_name << " not in Tango class device list!" << ends;
+		o << "Device " << dev_name << " not in Tango class device list!" << std::ends;
 
 		Tango::Except::throw_exception((const char *)API_CantDestroyDevice,o.str(),
 							(const char *)"DeviceClass::device_destroyer");
@@ -1445,7 +1445,7 @@ void DeviceClass::device_destroyer(const string &dev_name)
 
 	PortableServer::POA_ptr r_poa = tg->get_poa();
 	delete_dev(k,tg,r_poa);
-	vector<DeviceImpl *>::iterator it = device_list.begin();
+	std::vector<DeviceImpl *>::iterator it = device_list.begin();
 	it += k;
 	device_list.erase(it);
 	CORBA::release(r_poa);
@@ -1453,7 +1453,7 @@ void DeviceClass::device_destroyer(const string &dev_name)
 
 void DeviceClass::device_destroyer(const char *dev_name)
 {
-	string name_str(dev_name);
+	std::string name_str(dev_name);
 	return device_destroyer(name_str);
 }
 
@@ -1476,10 +1476,10 @@ bool DeviceClass::is_command_allowed(const char *cmd)
 {
 	bool ret = true;
 
-	string tmp_cmd(cmd);
-	transform(tmp_cmd.begin(),tmp_cmd.end(),tmp_cmd.begin(),::tolower);
+	std::string tmp_cmd(cmd);
+	std::transform(tmp_cmd.begin(),tmp_cmd.end(),tmp_cmd.begin(),::tolower);
 
-	vector<string>::iterator pos = find(allowed_cmds.begin(),allowed_cmds.end(),tmp_cmd);
+	std::vector<std::string>::iterator pos = find(allowed_cmds.begin(),allowed_cmds.end(),tmp_cmd);
 	if (pos == allowed_cmds.end())
 		ret = false;
 
@@ -1503,12 +1503,12 @@ bool DeviceClass::is_command_allowed(const char *cmd)
 
 void DeviceClass::get_mcast_event(DServer *dserv)
 {
-	cout4 << "Entering DeviceClass::get_mcast_event() method" << endl;
-	vector<string> m_cast;
+	cout4 << "Entering DeviceClass::get_mcast_event() method" << std::endl;
+	std::vector<std::string> m_cast;
 
 	for (unsigned int i = 0;i < device_list.size();++i)
 	{
-		vector<Attribute *> &att_list = device_list[i]->get_device_attr()->get_attribute_list();
+		std::vector<Attribute *> &att_list = device_list[i]->get_device_attr()->get_attribute_list();
 		for (unsigned int j = 0;j < att_list.size();++j)
 		{
 			dserv->mcast_event_for_att(device_list[i]->get_name_lower(),att_list[j]->get_name_lower(),m_cast);
@@ -1532,9 +1532,9 @@ void DeviceClass::get_mcast_event(DServer *dserv)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
+Command &DeviceClass::get_cmd_by_name(const std::string &cmd_name)
 {
-	vector<Command *>::iterator pos;
+	std::vector<Command *>::iterator pos;
 
 #ifdef HAS_LAMBDA_FUNC
 	pos = find_if(command_list.begin(),command_list.end(),
@@ -1542,21 +1542,21 @@ Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
 					{
 						if (cmd_name.size() != cmd->get_lower_name().size())
 							return false;
-						string tmp_name(cmd_name);
-						transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+						std::string tmp_name(cmd_name);
+						std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
 						return cmd->get_lower_name() == tmp_name;
 					});
 #else
 	pos = find_if(command_list.begin(),command_list.end(),
-				bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
+				std::bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
 #endif
 
 	if (pos == command_list.end())
 	{
-		cout3 << "DeviceClass::get_cmd_by_name throwing exception" << endl;
+		cout3 << "DeviceClass::get_cmd_by_name throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
-		o << cmd_name << " command not found" << ends;
+		o << cmd_name << " command not found" << std::ends;
 		Except::throw_exception((const char *)API_CommandNotFound,
 				      o.str(),
 				      (const char *)"DeviceClass::get_cmd_by_name");
@@ -1580,19 +1580,19 @@ Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-Pipe &DeviceClass::get_pipe_by_name(const string &pipe_name,const string &dev_name)
+Pipe &DeviceClass::get_pipe_by_name(const std::string &pipe_name,const std::string &dev_name)
 {
-    map<string,vector<Pipe *> >::iterator ite = ext->dev_pipe_list.find(dev_name);
+    std::map<std::string,std::vector<Pipe *> >::iterator ite = ext->dev_pipe_list.find(dev_name);
     if (ite == ext->dev_pipe_list.end())
     {
-		cout3 << "DeviceClass::get_pipe_by_name throwing exception" << endl;
+		cout3 << "DeviceClass::get_pipe_by_name throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
-		o << dev_name << " device not found in pipe map" << ends;
+		o << dev_name << " device not found in pipe map" << std::ends;
 		Except::throw_exception(API_PipeNotFound,o.str(),"DeviceClass::get_pipe_by_name");
     }
 
-	vector<Pipe *>::iterator pos;
+	std::vector<Pipe *>::iterator pos;
 
 #ifdef HAS_LAMBDA_FUNC
 	pos = find_if(ite->second.begin(),ite->second.end(),
@@ -1600,21 +1600,21 @@ Pipe &DeviceClass::get_pipe_by_name(const string &pipe_name,const string &dev_na
 					{
 						if (pipe_name.size() != pi->get_lower_name().size())
 							return false;
-						string tmp_name(pipe_name);
-						transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+						std::string tmp_name(pipe_name);
+						std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
 						return pi->get_lower_name() == tmp_name;
 					});
 #else
 	pos = find_if(ite->second.begin(),ite->second.end(),
-				bind2nd(WantedPipe<Pipe *,const char *,bool>(),pipe_name.c_str()));
+				std::bind2nd(WantedPipe<Pipe *,const char *,bool>(),pipe_name.c_str()));
 #endif
 
 	if (pos == ite->second.end())
 	{
-		cout3 << "DeviceClass::get_pipe_by_name throwing exception" << endl;
+		cout3 << "DeviceClass::get_pipe_by_name throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
-		o << pipe_name << " pipe not found" << ends;
+		o << pipe_name << " pipe not found" << std::ends;
 		Except::throw_exception(API_PipeNotFound,o.str(),"DeviceClass::get_pipe_by_name");
 	}
 
@@ -1635,9 +1635,9 @@ Pipe &DeviceClass::get_pipe_by_name(const string &pipe_name,const string &dev_na
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-void DeviceClass::remove_command(const string &cmd_name)
+void DeviceClass::remove_command(const std::string &cmd_name)
 {
-	vector<Command *>::iterator pos;
+	std::vector<Command *>::iterator pos;
 
 #ifdef HAS_LAMBDA_FUNC
 	pos = find_if(command_list.begin(),command_list.end(),
@@ -1649,15 +1649,15 @@ void DeviceClass::remove_command(const string &cmd_name)
 					});
 #else
 	pos = find_if(command_list.begin(),command_list.end(),
-				bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
+				std::bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
 #endif
 
 	if (pos == command_list.end())
 	{
-		cout3 << "DeviceClass::get_cmd_by_name throwing exception" << endl;
+		cout3 << "DeviceClass::get_cmd_by_name throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
-		o << cmd_name << " command not found" << ends;
+		o << cmd_name << " command not found" << std::ends;
 		Except::throw_exception((const char *)API_CommandNotFound,
 				      o.str(),
 				      (const char *)"DeviceClass::get_cmd_by_name");
@@ -1678,7 +1678,7 @@ void DeviceClass::remove_command(const string &cmd_name)
 
 void DeviceClass::check_att_conf()
 {
-	vector<DeviceImpl *>::iterator ite;
+	std::vector<DeviceImpl *>::iterator ite;
 
 	for (ite = device_list.begin();ite != device_list.end();++ite)
 		(*ite)->check_att_conf();
@@ -1697,7 +1697,7 @@ void DeviceClass::check_att_conf()
 
 void DeviceClass::release_devices_mon()
 {
-	vector<DeviceImpl *>::iterator ite;
+	std::vector<DeviceImpl *>::iterator ite;
 
 //
 // Release monitor for all devices belonging to this class
@@ -1739,7 +1739,7 @@ void DeviceClass::create_device_pipe(DeviceClass *cl,DeviceImpl *dev)
 
     sort(pipe_list.begin(),pipe_list.end(),less_than_pipe);
 
-    string dev_name = dev->get_name_lower();
+    std::string dev_name = dev->get_name_lower();
     ext->dev_pipe_list.insert(make_pair(dev_name,pipe_list));
 
     pipe_list.clear();
@@ -1759,18 +1759,18 @@ void DeviceClass::create_device_pipe(DeviceClass *cl,DeviceImpl *dev)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-vector<Pipe *> &DeviceClass::get_pipe_list(const string &dev_name)
+std::vector<Pipe *> &DeviceClass::get_pipe_list(const std::string &dev_name)
 {
-    string local_dev_name(dev_name);
-    transform(local_dev_name.begin(),local_dev_name.end(),local_dev_name.begin(),::tolower);
+    std::string local_dev_name(dev_name);
+    std::transform(local_dev_name.begin(),local_dev_name.end(),local_dev_name.begin(),::tolower);
 
-    map<string,vector<Pipe *> >::iterator ite = ext->dev_pipe_list.find(local_dev_name);
+    std::map<std::string,std::vector<Pipe *> >::iterator ite = ext->dev_pipe_list.find(local_dev_name);
     if (ite == ext->dev_pipe_list.end())
     {
-		cout3 << "DeviceClass::get_pipe_by_name throwing exception" << endl;
+		cout3 << "DeviceClass::get_pipe_by_name throwing exception" << std::endl;
 		TangoSys_OMemStream o;
 
-		o << dev_name << " device not found in pipe map" << ends;
+		o << dev_name << " device not found in pipe map" << std::ends;
 		Except::throw_exception(API_PipeNotFound,o.str(),"DeviceClass::get_pipe_list");
     }
 
