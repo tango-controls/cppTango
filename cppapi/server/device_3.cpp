@@ -64,23 +64,23 @@ namespace Tango
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-Device_3Impl::Device_3Impl(DeviceClass *device_class,string &dev_name):
+Device_3Impl::Device_3Impl(DeviceClass *device_class,std::string &dev_name):
 Device_2Impl(device_class,dev_name),ext_3(new Device_3ImplExt)
 {
     real_ctor();
 }
 
 Device_3Impl::Device_3Impl(DeviceClass *device_class,
-			   string &dev_name,
-			   string &desc):
+			   std::string &dev_name,
+			   std::string &desc):
 Device_2Impl(device_class,dev_name,desc),ext_3(new Device_3ImplExt)
 {
     real_ctor();
 }
 
 Device_3Impl::Device_3Impl(DeviceClass *device_class,
-	           	   string &dev_name,string &desc,
-	           	   Tango::DevState dev_state,string &dev_status):
+	           	   std::string &dev_name,std::string &desc,
+	           	   Tango::DevState dev_state,std::string &dev_status):
 Device_2Impl(device_class,dev_name,desc,dev_state,dev_status),ext_3(new Device_3ImplExt)
 {
     real_ctor();
@@ -124,7 +124,7 @@ void Device_3Impl::real_ctor()
 Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVarStringArray& names,
 					     Tango::DevSource source)
 {
-	cout4 << "Device_3Impl::read_attributes_3 arrived for dev " << get_name() << ", att[0] = " << names[0] << endl;
+	cout4 << "Device_3Impl::read_attributes_3 arrived for dev " << get_name() << ", att[0] = " << names[0] << std::endl;
 
 //
 // Record operation request in black box
@@ -146,7 +146,7 @@ Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVar
 
 	if (nb_names == 1)
 	{
-		string att_name(names[0]);
+		std::string att_name(names[0]);
 		if (att_name == AllAttr)
 		{
 			real_names.length(nb_dev_attr);
@@ -177,7 +177,7 @@ Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVar
 		aid.data_3 = new Tango::AttributeValueList_3(nb_names);
 		aid.data_3->length(nb_names);
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -189,7 +189,7 @@ Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVar
 // major fault (cannot allocate memory,....)
 //
 
-	vector <long> idx_in_back;
+	std::vector <long> idx_in_back;
 
 	if (source == Tango::DEV)
 	{
@@ -314,7 +314,7 @@ Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVar
 void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& names,
 					     Tango::AttributeIdlData &aid,
 					     bool second_try,
-					     vector<long> &idx)
+					     std::vector<long> &idx)
 {
 
 //
@@ -324,7 +324,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 //
 
 	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
-	string last_associated_device = sub.get_associated_device();
+	std::string last_associated_device = sub.get_associated_device();
 	sub.set_associated_device(get_name());
 
 //
@@ -339,8 +339,8 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 //
 
 		long nb_names = names.length();
-		vector<AttIdx> wanted_attr;
-		vector<AttIdx> wanted_w_attr;
+		std::vector<AttIdx> wanted_attr;
+		std::vector<AttIdx> wanted_w_attr;
 		bool state_wanted = false;
 		bool status_wanted = false;
 		long state_idx,status_idx;
@@ -352,8 +352,8 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 		{
 			AttIdx x;
 			x.idx_in_names = i;
-			string att_name(names[i]);
-			transform(att_name.begin(),att_name.end(),att_name.begin(),::tolower);
+			std::string att_name(names[i]);
+			std::transform(att_name.begin(),att_name.end(),att_name.begin(),::tolower);
 
 			if (att_name == "state")
 			{
@@ -469,7 +469,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 		if (nb_wanted_attr != 0)
 		{
-			vector<long> tmp_idx;
+			std::vector<long> tmp_idx;
 			for (i = 0;i < nb_wanted_attr;i++)
 			{
 				long ii = wanted_attr[i].idx_in_multi_attr;
@@ -499,14 +499,14 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 				try
 				{
-					vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
+					std::vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
 					if (attr_vect[att.get_attr_idx()]->is_allowed(this,Tango::READ_REQ) == false)
 					{
 						is_allowed_failed = true;
 						TangoSys_OMemStream o;
 
 						o << "It is currently not allowed to read attribute ";
-						o << att.get_name() << ends;
+						o << att.get_name() << std::ends;
 
 						Except::throw_exception((const char *)API_AttrNotAllowed,
 					        			o.str(),
@@ -519,11 +519,11 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 					if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (aid.data_4 != Tango_nullptr || aid.data_5 != Tango_nullptr))
 					{
-						cout4 << "Locking attribute mutex for attribute " << att.get_name() << endl;
+						cout4 << "Locking attribute mutex for attribute " << att.get_name() << std::endl;
 						omni_mutex *attr_mut = att.get_attr_mutex();
 						if (attr_mut->trylock() == 0)
 						{
-							cout4 << "Mutex for attribute " << att.get_name() << " is already taken.........." << endl;
+							cout4 << "Mutex for attribute " << att.get_name() << " is already taken.........." << std::endl;
 							attr_mut->lock();
 						}
 					}
@@ -570,7 +570,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					{
 						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
 						{
-							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
+							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << std::endl;
 							omni_mutex *attr_mut = att.get_attr_mutex();
 							attr_mut->unlock();
 						}
@@ -580,7 +580,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					{
 						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
 						{
-							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
+							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << std::endl;
 							omni_mutex *attr_mut = att.get_attr_mutex();
 							attr_mut->unlock();
 						}
@@ -610,7 +610,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					{
 						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
 						{
-							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to a severe error which is not a DevFailed" << endl;
+							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to a severe error which is not a DevFailed" << std::endl;
 							omni_mutex *attr_mut = att.get_attr_mutex();
 							attr_mut->unlock();
 						}
@@ -620,7 +620,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					{
 						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
 						{
-							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to severe error which is not a DevFailed" << endl;
+							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to severe error which is not a DevFailed" << std::endl;
 							omni_mutex *attr_mut = att.get_attr_mutex();
 							attr_mut->unlock();
 						}
@@ -674,7 +674,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 				{
 					if ((atsm != ATTR_NO_SYNC) && (w_type == Tango::READ_WITH_WRITE))
 					{
-						cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
+						cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << std::endl;
 						omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
 						attr_mut->unlock();
 					}
@@ -684,7 +684,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 				{
 					if ((atsm != ATTR_NO_SYNC) && (w_type == Tango::READ_WITH_WRITE))
 					{
-						cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
+						cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << std::endl;
 						omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
 						attr_mut->unlock();
 					}
@@ -835,33 +835,33 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 						try
 						{
-							string att_name(names[i]);
-							transform(att_name.begin(),att_name.end(),att_name.begin(),::tolower);
+							std::string att_name(names[i]);
+							std::transform(att_name.begin(),att_name.end(),att_name.begin(),::tolower);
 
-							vector<PollObj *>::iterator ite = get_polled_obj_by_type_name(Tango::POLL_ATTR,att_name);
+							std::vector<PollObj *>::iterator ite = get_polled_obj_by_type_name(Tango::POLL_ATTR,att_name);
 							long upd = (*ite)->get_upd();
 							if (upd == 0)
 							{
 								o << "Attribute ";
 								o << att.get_name();
 								o << " value is available only by CACHE.\n";
-								o << "Attribute values are set by external polling buffer filling" << ends;
+								o << "Attribute values are set by external polling buffer filling" << std::ends;
 							}
 							else
 							{
 								o << "Read value for attribute ";
 								o << att.get_name();
-								o << " has not been updated" << ends;
+								o << " has not been updated" << std::ends;
 							}
 						}
 						catch (Tango::DevFailed &)
 						{
 							o << "Read value for attribute ";
 							o << att.get_name();
-							o << " has not been updated" << ends;
+							o << " has not been updated" << std::ends;
 						}
 
-						string s = o.str();
+						std::string s = o.str();
 
 						const char *ori = "Device_3Impl::read_attributes_no_except";
 						const char *reas = API_AttrValueNotSet;
@@ -871,7 +871,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						{
 							if ((i != state_idx) && (i != status_idx) && (atsm != ATTR_NO_SYNC) && (att.get_writable() != Tango::WRITE))
 							{
-								cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
+								cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << std::endl;
 								omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
 								attr_mut->unlock();
 							}
@@ -881,7 +881,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						{
 							if ((i != state_idx) && (i != status_idx) && (atsm != ATTR_NO_SYNC) && (att.get_writable() != Tango::WRITE))
 							{
-								cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
+								cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << std::endl;
 								omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
 								attr_mut->unlock();
 							}
@@ -921,7 +921,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							{
 								if ((atsm != ATTR_NO_SYNC) && ((att.is_fwd_att() == true) || (w_type != Tango::WRITE)))
 								{
-									cout4 << "Giving attribute mutex to CORBA structure for attribute " << att.get_name() << endl;
+									cout4 << "Giving attribute mutex to CORBA structure for attribute " << att.get_name() << std::endl;
 									if (atsm == ATTR_BY_KERNEL)
 										GIVE_ATT_MUTEX_5(aid.data_5,index,att);
 									else
@@ -935,7 +935,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							{
 								if ((atsm != ATTR_NO_SYNC) && ((att.is_fwd_att() == true) || (w_type != Tango::WRITE)))
 								{
-									cout4 << "Giving attribute mutex to CORBA structure for attribute " << att.get_name() << endl;
+									cout4 << "Giving attribute mutex to CORBA structure for attribute " << att.get_name() << std::endl;
 									if (atsm == ATTR_BY_KERNEL)
 										GIVE_ATT_MUTEX(aid.data_4,index,att);
 									else
@@ -953,7 +953,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						{
 							if (aid.data_5 != Tango_nullptr)
 							{
-								cout4 << "Asking CORBA structure to release attribute mutex for attribute " << att.get_name() << endl;
+								cout4 << "Asking CORBA structure to release attribute mutex for attribute " << att.get_name() << std::endl;
 								if (att.get_writable() != Tango::WRITE)
 								{
 									REL_ATT_MUTEX_5(aid.data_5,index,att);
@@ -962,7 +962,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							}
 							else if (aid.data_4 != Tango_nullptr)
 							{
-								cout4 << "Asking CORBA structure to release attribute mutex for attribute " << att.get_name() << endl;
+								cout4 << "Asking CORBA structure to release attribute mutex for attribute " << att.get_name() << std::endl;
 								if (att.get_writable() != Tango::WRITE)
 								{
 									REL_ATT_MUTEX(aid.data_4,index,att);
@@ -987,7 +987,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					{
 						if ((atsm != ATTR_NO_SYNC) && (att.get_writable() != Tango::WRITE))
 						{
-							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
+							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << std::endl;
 							omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
 							attr_mut->unlock();
 						}
@@ -1000,7 +1000,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					{
 						if ((atsm != ATTR_NO_SYNC) && (att.get_writable() != Tango::WRITE))
 						{
-							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
+							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << std::endl;
 							omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
 							attr_mut->unlock();
 						}
@@ -1032,7 +1032,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 	sub.set_associated_device(last_associated_device);
 
-	cout4 << "Leaving Device_3Impl::read_attributes_no_except" << endl;
+	cout4 << "Leaving Device_3Impl::read_attributes_no_except" << std::endl;
 }
 
 
@@ -1058,7 +1058,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& names,Tango::AttributeIdlData &aid)
 {
 	unsigned long nb_names = names.length();
-    cout4 << "Reading " << nb_names << " attr in read_attributes_from_cache()" << endl;
+    cout4 << "Reading " << nb_names << " attr in read_attributes_from_cache()" << std::endl;
 
 //
 // Check that device supports the wanted attribute and that the attribute is polled. If some are non polled, store
@@ -1066,8 +1066,8 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 //
 
 	unsigned long i;
-    vector<PollObj *> &poll_list = get_poll_obj_list();
-	vector<long> non_polled;
+    std::vector<PollObj *> &poll_list = get_poll_obj_list();
+	std::vector<long> non_polled;
 	unsigned long nb_poll = poll_list.size();
 	unsigned long j;
 
@@ -1106,7 +1106,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 // list of attr which should not be polled, start to poll them
 //
 
-	vector<long> poll_period;
+	std::vector<long> poll_period;
 	unsigned long not_polled_attr = 0;
 
 	if (non_polled.empty() == false)
@@ -1124,8 +1124,8 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			if (poll_period.back() == 0)
 			{
 				TangoSys_OMemStream o;
-				o << "Attribute " << att.get_name() << " not polled" << ends;
-				string s = o.str();
+				o << "Attribute " << att.get_name() << " not polled" << std::ends;
+				std::string s = o.str();
 
 				const char *ori = "Device_3Impl::read_attributes_from_cache";
 				const char *reas = API_AttrNotPolled;
@@ -1199,8 +1199,8 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
         if (polled_attr == NULL)
         {
 			TangoSys_OMemStream o;
-			o << "No data available in cache for attribute " << names[i] << ends;
-			string s = o.str();
+			o << "No data available in cache for attribute " << names[i] << std::ends;
+			std::string s = o.str();
 
 			const char *ori = "Device_3Impl::read_attributes_from_cache";
 			const char *reas = API_NoDataYet;
@@ -1228,8 +1228,8 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 		if (polled_attr->is_ring_empty() == true)
 		{
 			TangoSys_OMemStream o;
-			o << "No data available in cache for attribute " << names[i] << ends;
-			string s = o.str();
+			o << "No data available in cache for attribute " << names[i] << std::ends;
+			std::string s = o.str();
 
 			const char *ori = "Device_3Impl::read_attributes_from_cache";
 			const char *reas = API_NoDataYet;
@@ -1269,8 +1269,8 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			{
 				TangoSys_OMemStream o;
 				o << "Data in cache for attribute " << names[i];
-				o << " not updated any more" << ends;
-				string s = o.str();
+				o << " not updated any more" << std::ends;
+				std::string s = o.str();
 
 				const char *ori = "Device_3Impl::read_attributes_from_cache";
 				const char *reas = API_NotUpdatedAnyMore;
@@ -1414,7 +1414,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 void Device_3Impl::write_attributes_3(const Tango::AttributeValueList& values)
 {
 	AutoTangoMonitor sync(this,true);
-	cout4 << "Device_3Impl::write_attributes_3 arrived" << endl;
+	cout4 << "Device_3Impl::write_attributes_3 arrived" << std::endl;
 
 //
 // Record operation request in black box. If this method is executed with the request to store info in
@@ -1477,7 +1477,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 //
 
 	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
-	string last_associated_device = sub.get_associated_device();
+	std::string last_associated_device = sub.get_associated_device();
 	sub.set_associated_device(get_name());
 
 //
@@ -1491,7 +1491,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 // Retrieve index of wanted attributes in the device attribute list
 //
 
-		vector<AttIdx> updated_attr;
+		std::vector<AttIdx> updated_attr;
 		unsigned long nb_updated_attr;
 		if (values_3 != NULL)
 			nb_updated_attr = values_3->length();
@@ -1537,7 +1537,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 
 					o << "Attribute ";
 					o << att.get_name();
-					o << " is not writable" << ends;
+					o << " is not writable" << std::ends;
 
 					updated_attr.pop_back();
 					Except::throw_exception((const char *)API_AttrNotWritable,
@@ -1569,7 +1569,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 					{
 						o << "dimesion is greater than the max defined for attribute ";
 						o << att.get_name();
-						o << ends;
+						o << std::ends;
 
 						updated_attr.pop_back();
 						Except::throw_exception((const char *)API_WAttrOutsideLimit,
@@ -1610,7 +1610,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 // Set attribute internal value
 //
 
-		vector<AttIdx>::iterator ctr;
+		std::vector<AttIdx>::iterator ctr;
 		for (ctr = updated_attr.begin();ctr < updated_attr.end();++ctr)
 		{
 
@@ -1668,8 +1668,8 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 
 		if (nb_failed != nb_updated_attr)
 		{
-			vector<AttIdx>::iterator ite;
-			vector<long> att_idx;
+			std::vector<AttIdx>::iterator ite;
+			std::vector<long> att_idx;
 
 			for(ite = updated_attr.begin();ite != updated_attr.end();)
 			{
@@ -1680,14 +1680,14 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 				{
 					att.set_value_flag(false);
 					att.set_user_set_write_value(false);
-					vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
+					std::vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
 					if (attr_vect[att.get_attr_idx()]->is_allowed(this,Tango::WRITE_REQ) == false)
 					{
 						TangoSys_OMemStream o;
 
 						o << "It is currently not allowed to write attribute ";
 						o << att.get_name();
-						o << ". The device state is " << Tango::DevStateName[get_state()] << ends;
+						o << ". The device state is " << Tango::DevStateName[get_state()] << std::ends;
 
 
 						Except::throw_exception((const char *)API_AttrNotAllowed,
@@ -1761,7 +1761,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 						nb_failed++;
 						errs.length(nb_failed);
 
-						vector<AttIdx>::iterator ite_att;
+						std::vector<AttIdx>::iterator ite_att;
 
 						for(ite_att = updated_attr.begin();ite_att != updated_attr.end();++ite_att)
 						{
@@ -1782,7 +1782,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 				}
 				catch (Tango::DevFailed &e)
 				{
-					vector<long>::iterator ite;
+					std::vector<long>::iterator ite;
 					for(ite = att_idx.begin();ite != att_idx.end();++ite)
 					{
 						WAttribute &att = dev_attr->get_w_attr_by_ind(*ite);
@@ -1792,7 +1792,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 						errs.length(nb_failed);
 						errs[nb_failed - 1].name = Tango::string_dup(att.get_name().c_str());
 
-						vector<AttIdx>::iterator ite_att;
+						std::vector<AttIdx>::iterator ite_att;
 						for(ite_att = updated_attr.begin();ite_att != updated_attr.end();++ite_att)
 						{
 							if (ite_att->idx_in_multi_attr == *ite)
@@ -1819,7 +1819,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 // Therefore, no need to call copy_data
 //
 
-		vector<long> att_in_db;
+		std::vector<long> att_in_db;
 
 		for (i = 0;i < updated_attr.size();i++)
 		{
@@ -1893,7 +1893,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 // Return to caller.
 //
 
-	cout4 << "Leaving Device_3Impl::write_attributes_34" << endl;
+	cout4 << "Leaving Device_3Impl::write_attributes_34" << std::endl;
 
 	if (nb_failed != 0)
 	{
@@ -1928,7 +1928,7 @@ Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* 
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
 
-	cout4 << "Device_3Impl::read_attribute_history_3 arrived" << endl;
+	cout4 << "Device_3Impl::read_attribute_history_3 arrived" << std::endl;
 
 //
 // Record operation request in black box
@@ -1937,7 +1937,7 @@ Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* 
 	blackbox_ptr->insert_op(Op_Read_Attr_history_3);
 
 	Tango::DevAttrHistoryList_3 *back = NULL;
-	vector<PollObj *> &poll_list = get_poll_obj_list();
+	std::vector<PollObj *> &poll_list = get_poll_obj_list();
 	long nb_poll = poll_list.size();
 
 //
@@ -1946,8 +1946,8 @@ Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* 
 
 	Attribute &att = dev_attr->get_attr_by_name(name);
 
-	string attr_str(name);
-	transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
+	std::string attr_str(name);
+	std::transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
 
 //
 // Check that the wanted attribute is polled.
@@ -1967,7 +1967,7 @@ Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* 
 	if (polled_attr == NULL)
 	{
 		TangoSys_OMemStream o;
-		o << "Attribute " << attr_str << " not polled" << ends;
+		o << "Attribute " << attr_str << " not polled" << std::ends;
 		Except::throw_exception((const char *)API_AttrNotPolled,
 					o.str(),
 					(const char *)"Device_3Impl::read_attribute_history_3");
@@ -1980,7 +1980,7 @@ Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* 
 	if (polled_attr->is_ring_empty() == true)
 	{
 		TangoSys_OMemStream o;
-		o << "No data available in cache for attribute " << attr_str << ends;
+		o << "No data available in cache for attribute " << attr_str << std::ends;
 		Except::throw_exception((const char *)API_NoDataYet,
 					o.str(),
 					(const char *)"Device_3Impl::read_attribute_history_3");
@@ -2003,7 +2003,7 @@ Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* 
 		back = new Tango::DevAttrHistoryList_3(n);
                 back->length(n);
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -2021,7 +2021,7 @@ Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* 
 	else
 		polled_attr->get_attr_history_43(n,back,att.get_data_type());
 
-	cout4 << "Leaving Device_3Impl::command_inout_history_3 method" << endl;
+	cout4 << "Leaving Device_3Impl::command_inout_history_3 method" << std::endl;
 	return back;
 }
 
@@ -2039,7 +2039,7 @@ Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* 
 
 Tango::DevInfo_3 *Device_3Impl::info_3()
 {
-	cout4 << "Device_3Impl::info_3 arrived" << endl;
+	cout4 << "Device_3Impl::info_3 arrived" << std::endl;
 
 	Tango::DevInfo_3 *back = NULL;
 
@@ -2051,7 +2051,7 @@ Tango::DevInfo_3 *Device_3Impl::info_3()
 	{
 		back = new Tango::DevInfo_3();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -2077,15 +2077,15 @@ Tango::DevInfo_3 *Device_3Impl::info_3()
 // Build the complete info sent in the doc_url string
 //
 
-	string doc_url("Doc URL = ");
+	std::string doc_url("Doc URL = ");
 	doc_url = doc_url + device_class->get_doc_url();
-	string &cvs_tag = device_class->get_cvs_tag();
+	std::string &cvs_tag = device_class->get_cvs_tag();
 	if (cvs_tag.size() != 0)
 	{
 		doc_url = doc_url + "\nCVS Tag = ";
 		doc_url = doc_url + cvs_tag;
 	}
-	string &cvs_location = device_class->get_cvs_location();
+	std::string &cvs_location = device_class->get_cvs_location();
 	if (cvs_location.size() != 0)
 	{
 		doc_url = doc_url + "\nCVS Location = ";
@@ -2109,7 +2109,7 @@ Tango::DevInfo_3 *Device_3Impl::info_3()
 // Return to caller
 //
 
-	cout4 << "Leaving Device_3Impl::info_3" << endl;
+	cout4 << "Leaving Device_3Impl::info_3" << std::endl;
 	return back;
 }
 
@@ -2141,7 +2141,7 @@ Tango::AttributeConfigList_3 *Device_3Impl::get_attribute_config_3(const Tango::
 	TangoMonitor &mon = get_att_conf_monitor();
 	AutoTangoMonitor sync(&mon);
 
-	cout4 << "Device_3Impl::get_attribute_config_3 arrived" << endl;
+	cout4 << "Device_3Impl::get_attribute_config_3 arrived" << std::endl;
 
 	long nb_attr = names.length();
 	Tango::AttributeConfigList_3 *back = NULL;
@@ -2165,7 +2165,7 @@ Tango::AttributeConfigList_3 *Device_3Impl::get_attribute_config_3(const Tango::
 // state/status as attribute), decrement attribute number
 //
 
-	string in_name(names[0]);
+	std::string in_name(names[0]);
 	if (nb_attr == 1)
 	{
 		if (in_name == AllAttr_3)
@@ -2184,7 +2184,7 @@ Tango::AttributeConfigList_3 *Device_3Impl::get_attribute_config_3(const Tango::
 		back = new Tango::AttributeConfigList_3(nb_attr);
 		back->length(nb_attr);
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -2221,7 +2221,7 @@ Tango::AttributeConfigList_3 *Device_3Impl::get_attribute_config_3(const Tango::
 // Return to caller
 //
 
-	cout4 << "Leaving Device_3Impl::get_attribute_config_3" << endl;
+	cout4 << "Leaving Device_3Impl::get_attribute_config_3" << std::endl;
 
 	return back;
 }
@@ -2244,7 +2244,7 @@ Tango::AttributeConfigList_3 *Device_3Impl::get_attribute_config_3(const Tango::
 void Device_3Impl::set_attribute_config_3(const Tango::AttributeConfigList_3& new_conf)
 {
 	AutoTangoMonitor sync(this,true);
-	cout4 << "DeviceImpl::set_attribute_config_3 arrived" << endl;
+	cout4 << "DeviceImpl::set_attribute_config_3 arrived" << std::endl;
 
 //
 // The attribute conf. is protected by two monitors. One protects access between get and set attribute conf.
@@ -2291,7 +2291,7 @@ void Device_3Impl::set_attribute_config_3(const Tango::AttributeConfigList_3& ne
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Device_3Impl::write_attributes_in_db(vector<long> &att_in_db,vector<AttIdx> &updated_attr)
+void Device_3Impl::write_attributes_in_db(std::vector<long> &att_in_db,std::vector<AttIdx> &updated_attr)
 {
 //
 // Store memorized attribute in db
@@ -2384,9 +2384,9 @@ void Device_3Impl::write_attributes_in_db(vector<long> &att_in_db,vector<AttIdx>
 
 }
 
-void Device_3Impl::write_attributes_in_db(vector<long> &att_in_db,vector<long> &updated_attr)
+void Device_3Impl::write_attributes_in_db(std::vector<long> &att_in_db,std::vector<long> &updated_attr)
 {
-	vector<AttIdx> v;
+	std::vector<AttIdx> v;
 	for (unsigned int i = 0;i < updated_attr.size();i++)
 	{
 		AttIdx ai;
@@ -2415,8 +2415,8 @@ void Device_3Impl::add_state_status_attrs()
 //
 
 	Tango::Attr att_state("State",Tango::DEV_STATE);
-	vector<AttrProperty> prop_list_state;
-	string att_name("State");
+	std::vector<AttrProperty> prop_list_state;
+	std::string att_name("State");
 	get_attr_props("State",prop_list_state);
 	dev_attr->add_default(prop_list_state,device_name,att_name,Tango::DEV_STATE);
 
@@ -2427,7 +2427,7 @@ void Device_3Impl::add_state_status_attrs()
 //
 
 	Tango::Attr att_status("Status",Tango::DEV_STRING);
-	vector<AttrProperty> prop_list_status;
+	std::vector<AttrProperty> prop_list_status;
 	att_name = "Status";
 	get_attr_props("Status",prop_list_status);
 	dev_attr->add_default(prop_list_status,device_name,att_name,Tango::DEV_STRING);
@@ -2451,7 +2451,7 @@ void Device_3Impl::add_state_status_attrs()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Device_3Impl::get_attr_props(const char *attr_name,vector<AttrProperty> &prop_list)
+void Device_3Impl::get_attr_props(const char *attr_name,std::vector<AttrProperty> &prop_list)
 {
 	Tango::Util *tg = Tango::Util::instance();
 
@@ -2470,10 +2470,10 @@ void Device_3Impl::get_attr_props(const char *attr_name,vector<AttrProperty> &pr
 		}
 		catch (Tango::DevFailed &)
 		{
-			cout4 << "Exception while accessing database" << endl;
+			cout4 << "Exception while accessing database" << std::endl;
 
 			TangoSys_OMemStream o;
-			o << "Can't get device attribute properties for device " << device_name << ", attribute " << attr_name << ends;
+			o << "Can't get device attribute properties for device " << device_name << ", attribute " << attr_name << std::ends;
 
 			Except::throw_exception((const char *)API_DatabaseAccess,
 								o.str(),
@@ -2494,7 +2494,7 @@ void Device_3Impl::get_attr_props(const char *attr_name,vector<AttrProperty> &pr
 		{
 			if (db_list[ind].size() > 1)
 			{
-				string tmp(db_list[ind].value_string[0]);
+				std::string tmp(db_list[ind].value_string[0]);
 				long nb = db_list[ind].size();
 				for (int k = 1;k < nb;k++)
 				{
@@ -2525,9 +2525,9 @@ void Device_3Impl::get_attr_props(const char *attr_name,vector<AttrProperty> &pr
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Device_3Impl::add_alarmed(vector<long> &att_list)
+void Device_3Impl::add_alarmed(std::vector<long> &att_list)
 {
-	vector<long> &alarmed_list = dev_attr->get_alarm_list();
+	std::vector<long> &alarmed_list = dev_attr->get_alarm_list();
 	long nb_wanted_attr = alarmed_list.size();
 
 	if (nb_wanted_attr != 0)
@@ -2578,9 +2578,9 @@ void Device_3Impl::add_alarmed(vector<long> &att_list)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-long Device_3Impl::reading_state_necessary(vector<AttIdx> &wanted_attr)
+long Device_3Impl::reading_state_necessary(std::vector<AttIdx> &wanted_attr)
 {
-	vector<long> &alarmed_list = dev_attr->get_alarm_list();
+	std::vector<long> &alarmed_list = dev_attr->get_alarm_list();
 	long nb_alarmed_attr = alarmed_list.size();
 	long ret = -1;
 
@@ -2621,9 +2621,9 @@ long Device_3Impl::reading_state_necessary(vector<AttIdx> &wanted_attr)
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-void Device_3Impl::alarmed_not_read(vector<AttIdx> &wanted_attr)
+void Device_3Impl::alarmed_not_read(std::vector<AttIdx> &wanted_attr)
 {
-	vector<long> &alarmed_list = dev_attr->get_alarm_list();
+	std::vector<long> &alarmed_list = dev_attr->get_alarm_list();
 	long nb_alarmed_attr = alarmed_list.size();
 	long nb_attr = wanted_attr.size();
 

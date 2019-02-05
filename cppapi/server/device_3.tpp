@@ -57,7 +57,7 @@ template <typename T,typename V>
 void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(const V &dummy_arg),
 												bool fwd_cb,int caller_idl)
 {
-	cout4 << "Entering Device_3Impl::set_attribute_config_3_local" << endl;
+	cout4 << "Entering Device_3Impl::set_attribute_config_3_local" << std::endl;
 
 //
 // Return exception if the device does not have any attribute
@@ -142,7 +142,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 
 			if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
 			{
-				string tmp_name(new_conf[i].name);
+				std::string tmp_name(new_conf[i].name);
 
 //
 // The event data has to be the new attribute conf which could be different than the one we received (in case some
@@ -161,7 +161,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 
 				if (get_dev_idl_version() > 4)
 				{
-					vector<int> cl_lib = attr.get_client_lib(ATTR_CONF_EVENT);
+					std::vector<int> cl_lib = attr.get_client_lib(ATTR_CONF_EVENT);
 
 					if (caller_idl <= 4)
 					{
@@ -267,9 +267,9 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 			o << "\nAll previous attribute(s) have been successfully updated";
 		if (i != (nb_attr - 1))
 			o << "\nAll remaining attribute(s) have not been updated";
-		o << ends;
+		o << std::ends;
 
-		string s = o.str();
+		std::string s = o.str();
 		e.errors[0].reason = Tango::string_dup(s.c_str());
 		throw;
 	}
@@ -294,7 +294,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 // Return to caller
 //
 
-	cout4 << "Leaving Device_3Impl::set_attribute_config_3_local" << endl;
+	cout4 << "Leaving Device_3Impl::set_attribute_config_3_local" << std::endl;
 }
 
 template <typename T>
@@ -316,7 +316,7 @@ inline void Device_3Impl::error_from_errorlist(T &back,DevErrorList &e,const cha
 }
 
 template <typename T>
-inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,string &mess,Attribute &att)
+inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,std::string &mess,Attribute &att)
 {
 	back.err_list.length(1);
 
@@ -331,7 +331,7 @@ inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,str
 }
 
 template <typename T>
-inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,string &mess,const char *na)
+inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,std::string &mess,const char *na)
 {
 	back.err_list.length(1);
 
