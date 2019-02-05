@@ -582,7 +582,7 @@ inline void AttrHistoryStack<T>::push(TimedAttrData<T> const &elt)
 }
 
 template <typename T>
-inline vector<TimedAttrData<T> > &AttrHistoryStack<T>::get_data()
+inline std::vector<TimedAttrData<T> > &AttrHistoryStack<T>::get_data()
 {
 	return hist;
 }
@@ -668,7 +668,7 @@ inline void CmdHistoryStack<T>::push(Tango::TimedCmdData<T> const &elt)
 }
 
 template <typename T>
-inline vector<TimedCmdData<T> > & CmdHistoryStack<T>::get_data()
+inline std::vector<TimedCmdData<T> > & CmdHistoryStack<T>::get_data()
 {
 	return hist;
 }

@@ -59,8 +59,8 @@ void Attribute::check_hard_coded_properties(const T &user_conf)
 // Check attribute name
 //
 
-    string user_att_name(user_conf.name.in());
-    transform(user_att_name.begin(), user_att_name.end(), user_att_name.begin(), ::tolower);
+    std::string user_att_name(user_conf.name.in());
+    std::transform(user_att_name.begin(), user_att_name.end(), user_att_name.begin(), ::tolower);
     if (user_att_name != get_name_lower())
     {
         throw_hard_coded_prop("name");
@@ -115,10 +115,10 @@ void Attribute::check_hard_coded_properties(const T &user_conf)
 // Check writable_attr_name
 //
 
-    string local_w_name(writable_attr_name);
-    transform(local_w_name.begin(), local_w_name.end(), local_w_name.begin(), ::tolower);
-    string user_w_name(user_conf.writable_attr_name.in());
-    transform(user_w_name.begin(), user_w_name.end(), user_w_name.begin(), ::tolower);
+    std::string local_w_name(writable_attr_name);
+    std::transform(local_w_name.begin(), local_w_name.end(), local_w_name.begin(), ::tolower);
+    std::string user_w_name(user_conf.writable_attr_name.in());
+    std::transform(user_w_name.begin(), user_w_name.end(), user_w_name.begin(), ::tolower);
 
     if (user_w_name != local_w_name)
     {
@@ -183,7 +183,7 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
     else if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
         (data_type != ranges_type2const<T>::enu))
     {
-        string err_msg =
+        std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
         Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                 (const char *) err_msg.c_str(),
@@ -212,7 +212,7 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
         str << (short) new_min_alarm; // to represent the numeric value
     else
         str << new_min_alarm;
-    string min_alarm_tmp_str;
+    std::string min_alarm_tmp_str;
     min_alarm_tmp_str = str.str();
 
 //
@@ -241,10 +241,10 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
     Tango::DeviceClass *dev_class = get_att_device_class(d_name);
     Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
     Tango::Attr &att = mca->get_attr(name);
-    vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
+    std::vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
     size_t nb_user = def_user_prop.size();
 
-    string usr_def_val;
+    std::string usr_def_val;
     bool user_defaults = false;
     if (nb_user != 0)
     {
@@ -347,7 +347,7 @@ void Attribute::get_min_alarm(T &min_al)
     if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
         (data_type != ranges_type2const<T>::enu))
     {
-        string err_msg =
+        std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
         Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                 (const char *) err_msg.c_str(),
@@ -358,7 +358,7 @@ void Attribute::get_min_alarm(T &min_al)
         (data_type == Tango::DEV_STATE) ||
         (data_type == Tango::DEV_ENUM))
     {
-        string err_msg =
+        std::string err_msg =
             "Minimum alarm has no meaning for the attribute's (" + name + ") data type : " + ranges_type2const<T>::str;
         Except::throw_exception((const char *) API_AttrOptProp,
                                 err_msg.c_str(),
@@ -407,7 +407,7 @@ void Attribute::set_max_alarm(const T &new_max_alarm)
     else if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
         (data_type != ranges_type2const<T>::enu))
     {
-        string err_msg =
+        std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
         Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                 (const char *) err_msg.c_str(),
@@ -436,7 +436,7 @@ void Attribute::set_max_alarm(const T &new_max_alarm)
         str << (short) new_max_alarm; // to represent the numeric value
     else
         str << new_max_alarm;
-    string max_alarm_tmp_str;
+    std::string max_alarm_tmp_str;
     max_alarm_tmp_str = str.str();
 
 //
@@ -465,10 +465,10 @@ void Attribute::set_max_alarm(const T &new_max_alarm)
     Tango::DeviceClass *dev_class = get_att_device_class(d_name);
     Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
     Tango::Attr &att = mca->get_attr(name);
-    vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
+    std::vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
     size_t nb_user = def_user_prop.size();
 
-    string usr_def_val;
+    std::string usr_def_val;
     bool user_defaults = false;
     if (nb_user != 0)
     {
@@ -572,7 +572,7 @@ void Attribute::get_max_alarm(T &max_al)
     if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
         (data_type != ranges_type2const<T>::enu))
     {
-        string err_msg =
+        std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
         Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::get_max_alarm()");
     }
@@ -581,7 +581,7 @@ void Attribute::get_max_alarm(T &max_al)
         (data_type == Tango::DEV_STATE) ||
         (data_type == Tango::DEV_ENUM))
     {
-        string err_msg =
+        std::string err_msg =
             "Maximum alarm has no meaning for the attribute's (" + name + ") data type : " + ranges_type2const<T>::str;
         Except::throw_exception(API_AttrOptProp, err_msg.c_str(), "Attribute::get_max_alarm()");
     }
@@ -629,7 +629,7 @@ void Attribute::set_min_warning(const T &new_min_warning)
         ranges_type2const<T>::enu == DEV_UCHAR) &&
         (data_type != ranges_type2const<T>::enu))
     {
-        string err_msg =
+        std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
         Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::set_min_warning()");
     }
@@ -656,7 +656,7 @@ void Attribute::set_min_warning(const T &new_min_warning)
         str << (short) new_min_warning; // to represent the numeric value
     else
         str << new_min_warning;
-    string min_warning_tmp_str;
+    std::string min_warning_tmp_str;
     min_warning_tmp_str = str.str();
 
 //
@@ -685,10 +685,10 @@ void Attribute::set_min_warning(const T &new_min_warning)
     Tango::DeviceClass *dev_class = get_att_device_class(d_name);
     Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
     Tango::Attr &att = mca->get_attr(name);
-    vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
+    std::vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
     size_t nb_user = def_user_prop.size();
 
-    string usr_def_val;
+    std::string usr_def_val;
     bool user_defaults = false;
     if (nb_user != 0)
     {
@@ -792,7 +792,7 @@ void Attribute::get_min_warning(T &min_war)
     if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
         (data_type != ranges_type2const<T>::enu))
     {
-        string err_msg =
+        std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
         Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::get_min_warning()");
     }
@@ -801,7 +801,7 @@ void Attribute::get_min_warning(T &min_war)
         (data_type == Tango::DEV_STATE) ||
         (data_type == Tango::DEV_ENUM))
     {
-        string err_msg = "Minimum warning has no meaning for the attribute's (" + name + ") data type : "
+        std::string err_msg = "Minimum warning has no meaning for the attribute's (" + name + ") data type : "
             + ranges_type2const<T>::str;
         Except::throw_exception(API_AttrOptProp, err_msg.c_str(), "Attribute::get_min_warning()");
     }
@@ -848,7 +848,7 @@ void Attribute::set_max_warning(const T &new_max_warning)
     else if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
         (data_type != ranges_type2const<T>::enu))
     {
-        string err_msg =
+        std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
         Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::set_max_warning()");
     }
@@ -875,7 +875,7 @@ void Attribute::set_max_warning(const T &new_max_warning)
         str << (short) new_max_warning; // to represent the numeric value
     else
         str << new_max_warning;
-    string max_warning_tmp_str;
+    std::string max_warning_tmp_str;
     max_warning_tmp_str = str.str();
 
 //
@@ -904,10 +904,10 @@ void Attribute::set_max_warning(const T &new_max_warning)
     Tango::DeviceClass *dev_class = get_att_device_class(d_name);
     Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
     Tango::Attr &att = mca->get_attr(name);
-    vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
+    std::vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
     size_t nb_user = def_user_prop.size();
 
-    string usr_def_val;
+    std::string usr_def_val;
     bool user_defaults = false;
     if (nb_user != 0)
     {
@@ -1010,7 +1010,7 @@ void Attribute::get_max_warning(T &max_war)
     if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
         (data_type != ranges_type2const<T>::enu))
     {
-        string err_msg =
+        std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
         Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::get_max_warning()");
     }
@@ -1019,7 +1019,7 @@ void Attribute::get_max_warning(T &max_war)
         (data_type == Tango::DEV_STATE) ||
         (data_type == Tango::DEV_ENUM))
     {
-        string err_msg = "Maximum warning has no meaning for the attribute's (" + name + ") data type : "
+        std::string err_msg = "Maximum warning has no meaning for the attribute's (" + name + ") data type : "
             + ranges_type2const<T>::str;
         Except::throw_exception(API_AttrOptProp, err_msg.c_str(), "Attribute::get_max_warning()");
     }
@@ -1060,7 +1060,7 @@ void Attribute::get_properties(Tango::MultiAttrProp<T> &props)
         !(data_type == DEV_ENUM && ranges_type2const<T>::enu == DEV_SHORT) &&
         (data_type != ranges_type2const<T>::enu))
     {
-        string err_msg =
+        std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
         Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::get_properties()");
     }
@@ -1128,7 +1128,7 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
         !(data_type == DEV_ENUM && ranges_type2const<T>::enu == DEV_SHORT) &&
         (data_type != ranges_type2const<T>::enu))
     {
-        string err_msg =
+        std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
         Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::set_properties()");
     }
@@ -1249,7 +1249,7 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 //-------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::set_upd_properties(const T &conf, string &dev_name, bool from_ds)
+void Attribute::set_upd_properties(const T &conf, std::string &dev_name, bool from_ds)
 {
 
 //
@@ -1275,7 +1275,7 @@ void Attribute::set_upd_properties(const T &conf, string &dev_name, bool from_ds
 // Set properties locally. In case of exception bring the backed-up values
 //
 
-        vector<AttPropDb> v_db;
+        std::vector<AttPropDb> v_db;
         set_properties(conf, dev_name, from_ds, v_db);
 
 //
@@ -1322,7 +1322,7 @@ void Attribute::set_upd_properties(const T &conf, string &dev_name, bool from_ds
 
                 o << "Device " << dev_name << "-> Attribute : " << name;
                 o << "\nDatabase error occurred whilst setting attribute properties. The database may be corrupted."
-                  << ends;
+                  << std::ends;
                 Except::throw_exception(API_CorruptedDatabase, o.str(), "Attribute::set_upd_properties()");
             }
 
@@ -1339,7 +1339,7 @@ void Attribute::set_upd_properties(const T &conf, string &dev_name, bool from_ds
 
         if (is_startup_exception == false && startup_exceptions_clear == true && is_fwd_att() == false)
         {
-            vector<AttPropDb> v_db;
+            std::vector<AttPropDb> v_db;
             set_properties(old_conf, dev_name, true, v_db);
         }
 

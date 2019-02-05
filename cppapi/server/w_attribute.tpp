@@ -67,7 +67,7 @@ void WAttribute::set_min_value(const T &new_min_value)
 	if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
 		(data_type != ranges_type2const<T>::enu))
 	{
-		string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
+		std::string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
 		Except::throw_exception((const char *)API_IncompatibleAttrDataType,
 					  (const char *)err_msg.c_str(),
 					  (const char *)"WAttribute::set_min_value()");
@@ -95,7 +95,7 @@ void WAttribute::set_min_value(const T &new_min_value)
 		str << (short)new_min_value; // to represent the numeric value
 	else
 		str << new_min_value;
-	string min_value_tmp_str = str.str();
+	std::string min_value_tmp_str = str.str();
 
 //
 // Get the monitor protecting device att config
@@ -123,10 +123,10 @@ void WAttribute::set_min_value(const T &new_min_value)
 	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
-	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
+	std::vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
 	size_t nb_user = def_user_prop.size();
 
-	string usr_def_val;
+	std::string usr_def_val;
 	bool user_defaults = false;
 	if (nb_user != 0)
 	{
@@ -229,7 +229,7 @@ void WAttribute::get_min_value(T &min_val)
 	if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
 		(data_type != ranges_type2const<T>::enu))
 	{
-		string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
+		std::string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
 		Except::throw_exception((const char *)API_IncompatibleAttrDataType,
 					  (const char *)err_msg.c_str(),
 					  (const char *)"WAttribute::get_min_value()");
@@ -277,7 +277,7 @@ void WAttribute::set_max_value(const T &new_max_value)
 	if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
 		(data_type != ranges_type2const<T>::enu))
 	{
-		string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
+		std::string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
 		Except::throw_exception((const char *)API_IncompatibleAttrDataType,
 					  (const char *)err_msg.c_str(),
 					  (const char *)"WAttribute::set_max_value()");
@@ -305,7 +305,7 @@ void WAttribute::set_max_value(const T &new_max_value)
 		str << (short)new_max_value; // to represent the numeric value
 	else
 		str << new_max_value;
-	string max_value_tmp_str = str.str();
+	std::string max_value_tmp_str = str.str();
 
 //
 // Get the monitor protecting device att config
@@ -333,10 +333,10 @@ void WAttribute::set_max_value(const T &new_max_value)
 	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
-	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
+	std::vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
 	size_t nb_user = def_user_prop.size();
 
-	string usr_def_val;
+	std::string usr_def_val;
 	bool user_defaults = false;
 	if (nb_user != 0)
 	{
@@ -439,7 +439,7 @@ void WAttribute::get_max_value(T &max_val)
 	if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
 		(data_type != ranges_type2const<T>::enu))
 	{
-		string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
+		std::string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
 		Except::throw_exception((const char *)API_IncompatibleAttrDataType,
 					  (const char *)err_msg.c_str(),
 					  (const char *)"WAttribute::get_max_value()");
@@ -485,7 +485,7 @@ void WAttribute::check_min_max(const unsigned int nb_data,const T1 &seq, const T
                 TangoSys_OMemStream o;
 
                 o << "Set value for attribute " << name;
-                o << " is below the minimum authorized (at least element " << i << ")" << ends;
+                o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
 
                 Except::throw_exception((const char *)API_WAttrOutsideLimit,o.str(),"WAttribute::check_written_value()");
             }
@@ -500,7 +500,7 @@ void WAttribute::check_min_max(const unsigned int nb_data,const T1 &seq, const T
                 TangoSys_OMemStream o;
 
                 o << "Set value for attribute " << name;
-                o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
                 Except::throw_exception((const char *)API_WAttrOutsideLimit,o.str(),"WAttribute::check_written_value()");
             }
         }

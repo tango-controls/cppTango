@@ -53,7 +53,7 @@ namespace Tango
 //----------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistoryStack<T>  &data)
+void Util::fill_attr_polling_buffer(DeviceImpl *dev,std::string &att_name,AttrHistoryStack<T>  &data)
 {
 //
 // Check that the device is polled
@@ -62,7 +62,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
     if (dev->is_polled() == false)
     {
         TangoSys_OMemStream o;
-        o << "Device " << dev->get_name() << " is not polled" << ends;
+        o << "Device " << dev->get_name() << " is not polled" << std::ends;
 
         Except::throw_exception(API_DeviceNotPolled,o.str(),"Util::fill_attr_polling_buffer");
     }
@@ -71,8 +71,8 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 // Attribute name in lower case letters and check that it is marked as polled
 //
 
-    string obj_name(att_name);
-    transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
+    std::string obj_name(att_name);
+    std::transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 
     dev->get_polled_obj_by_type_name(Tango::POLL_ATTR,obj_name);
 
@@ -94,7 +94,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
     {
         TangoSys_OMemStream o;
         o << "Attribute " << att_name;
-        o << " of device " << dev->get_name() << " is WRITE only" << ends;
+        o << " of device " << dev->get_name() << " is WRITE only" << std::ends;
 
         Except::throw_exception(API_DeviceNotPolled,o.str(),"Util::fill_attr_polling_buffer");
     }
@@ -114,7 +114,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
                 o << "The attribute " << att_name;
                 o << " for device " << dev->get_name();
                 o << " is not a READ_WRITE attribute. You can't set the attribute written part.";
-                o << "It is defined for record number " << i + 1 << ends;
+                o << "It is defined for record number " << i + 1 << std::ends;
 
                 Except::throw_exception(API_NotSupportedFeature,o.str(),"Util::fill_attr_polling_buffer");
             }
@@ -132,7 +132,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
         o << "The attribute " << att_name;
         o << " for device " << dev->get_name();
         o << " is of type DEV_ENCODED. Your device supports only IDL V3.";
-        o << " DEV_ENCODED data type is supported starting with IDL V4" << ends;
+        o << " DEV_ENCODED data type is supported starting with IDL V4" << std::ends;
 
         Except::throw_exception(API_NotSupportedFeature,o.str(),"Util::fill_attr_polling_buffer");
     }
@@ -154,7 +154,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
                 o << "The attribute " << att_name;
                 o << " for device " << dev->get_name();
                 o << " is of type DEV_ENCODED. Only Scalar attribute are supported for DEV_ENCODED";
-                o << "It is defined for record number " << i + 1 << ends;
+                o << "It is defined for record number " << i + 1 << std::ends;
 
                 Except::throw_exception(API_NotSupportedFeature,o.str(),"Util::fill_attr_polling_buffer");
             }
@@ -169,7 +169,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
     {
         TangoSys_OMemStream o;
         o << "The device " << dev->get_name() << " is too old to support this feature. ";
-        o << "Please update your device to IDL 3 or more" << ends;
+        o << "Please update your device to IDL 3 or more" << std::ends;
 
         Except::throw_exception(API_NotSupportedFeature,o.str(),"Util::fill_attr_polling_buffer");
     }
@@ -186,7 +186,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
         o << "The polling buffer depth for attribute " << att_name;
         o << " for device " << dev->get_name();
         o << " is only " << nb_poll;
-        o << " which is less than " << nb_elt << "!" << ends;
+        o << " which is less than " << nb_elt << "!" << std::ends;
 
         Except::throw_exception(API_DeviceNotPolled,o.str(),"Util::fill_attr_polling_buffer");
     }
@@ -226,7 +226,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
             {
                 save_except = new Tango::DevFailed((data.get_data())[i].err);
             }
-            catch (bad_alloc &)
+            catch (std::bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception(API_MemoryAllocation,
@@ -261,7 +261,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
                     aid.data_3->length(1);
                 }
             }
-            catch (bad_alloc &)
+            catch (std::bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception(API_MemoryAllocation,
@@ -421,7 +421,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 
         try
         {
-            vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_ATTR,obj_name);
+            std::vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_ATTR,obj_name);
 
             if (attr_failed == false)
             {
@@ -488,7 +488,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 //----------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHistoryStack<T>  &data)
+void Util::fill_cmd_polling_buffer(DeviceImpl *dev,std::string &cmd_name,CmdHistoryStack<T>  &data)
 {
 
 //
@@ -498,7 +498,7 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHistorySt
     if (dev->is_polled() == false)
     {
         TangoSys_OMemStream o;
-        o << "Device " << dev->get_name() << " is not polled" << ends;
+        o << "Device " << dev->get_name() << " is not polled" << std::ends;
 
         Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
                     (const char *)"Util::fill_cmd_polling_buffer");
@@ -508,8 +508,8 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHistorySt
 // Command name in lower case letters and check that it is marked as polled
 //
 
-    string obj_name(cmd_name);
-    transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
+    std::string obj_name(cmd_name);
+    std::transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 
     dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
 
@@ -526,7 +526,7 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHistorySt
         o << "The polling buffer depth for command " << cmd_name;
         o << " for device " << dev->get_name();
         o << " is only " << nb_poll;
-        o << " which is less than " << nb_elt << "!" << ends;
+        o << " which is less than " << nb_elt << "!" << std::ends;
 
         Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
                     (const char *)"Util::fill_cmd_polling_buffer");
@@ -564,7 +564,7 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHistorySt
             {
                 save_except = new Tango::DevFailed((data.get_data())[i].err);
             }
-            catch (bad_alloc &)
+            catch (std::bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception((const char *)API_MemoryAllocation,
@@ -583,7 +583,7 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHistorySt
             {
                 any_ptr = new CORBA::Any();
             }
-            catch (bad_alloc &)
+            catch (std::bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception((const char *)API_MemoryAllocation,
@@ -608,7 +608,7 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHistorySt
 
         try
         {
-            vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
+            std::vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
             when.tv_sec = (data.get_data())[i].t_val.tv_sec - DELTA_T;
             when.tv_usec = (data.get_data())[i].t_val.tv_usec;
             if (cmd_failed == false)
