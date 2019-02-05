@@ -1,4 +1,4 @@
-/* 
+/*
  * example of a client using the TANGO device api.
  */
 
@@ -22,7 +22,7 @@ bool verbose = false;
 class EventCallBack : public Tango::CallBack
 {
 	void push_event(Tango::DevIntrChangeEventData*);
-	
+
 public:
 	int cb_executed;
 	int cb_err;
@@ -40,14 +40,14 @@ void EventCallBack::push_event(Tango::DevIntrChangeEventData* event_data)
 		coutv << "EventCallBack::push_event(): called device " << event_data->device_name << " event " << event_data->event << "\n";
 		if (!event_data->err)
 		{
-			coutv << "Received device interface change event for device " << event_data->device_name << endl;
+			coutv << "Received device interface change event for device " << event_data->device_name << std::endl;
 			nb_cmd = event_data->cmd_list.size();
 			nb_att = event_data->att_list.size();
 			dev_start = event_data->dev_started;
 		}
 		else
 		{
-			coutv << "Error send to callback" << endl;
+			coutv << "Error send to callback" << std::endl;
 			Tango::Except::print_error_stack(event_data->errors);
 		}
 	}
@@ -61,22 +61,22 @@ void EventCallBack::push_event(Tango::DevIntrChangeEventData* event_data)
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
-	
+
 	if (argc == 1)
 	{
-		cout << "usage: %s device [-v]" << endl;
+		cout << "usage: %s device [-v]" << std::endl;
 		exit(-1);
 	}
 
-	string device_name = argv[1];
+	std::string device_name = argv[1];
 
 	if (argc == 3)
 	{
 		if (strcmp(argv[2],"-v") == 0)
 			verbose = true;
 	}
-	
-	try 
+
+	try
 	{
 		device = new DeviceProxy(device_name);
 	}
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+	coutv << std::endl << "new DeviceProxy(" << device->name() << ") returned" << std::endl << std::endl;
 
 	try
 	{
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 //
 // subscribe to a data ready event
 //
-		
+
 		int eve_id1 = device->subscribe_event(Tango::INTERFACE_CHANGE_EVENT,&cb);
 
 //
@@ -110,9 +110,9 @@ int main(int argc, char **argv)
 		size_t old_cmd_nb = cb.nb_cmd;
 		size_t old_att_nb = cb.nb_att;
 		cb.dev_start = false;
-						
-		cout << "   subscribe_event --> OK" << endl;
-		
+
+		cout << "   subscribe_event --> OK" << std::endl;
+
 //
 // Add a dynamic command -> Should generate a device interface change event
 //
@@ -121,9 +121,9 @@ int main(int argc, char **argv)
 		DeviceData d_in;
 		d_in << in;
 		device->command_inout("IOAddCommand",d_in);
-				
+
 		Tango_sleep(1);
-		
+
 		assert (cb.cb_executed == 2);
 		assert (cb.nb_cmd == old_cmd_nb + 1);
 		assert (cb.nb_att == old_att_nb);
@@ -133,9 +133,9 @@ int main(int argc, char **argv)
 //
 
 		device->command_inout("IORemoveCommand",d_in);
-				
+
 		Tango_sleep(1);
-		
+
 		assert (cb.cb_executed == 3);
 		assert (cb.nb_cmd == old_cmd_nb);
 		assert (cb.nb_att == old_att_nb);
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
 		assert (cb.nb_cmd == old_cmd_nb + 3);
 		assert (cb.nb_att == old_att_nb);
 
-		cout << "   Dev. interface change event after add/remove dynamic command --> OK" << endl;
+		cout << "   Dev. interface change event after add/remove dynamic command --> OK" << std::endl;
 
 //
 // Init and DevRestart command without any dev. interface change -> No event
@@ -164,7 +164,7 @@ int main(int argc, char **argv)
 		Tango_sleep(1);
 
 		assert (cb.cb_executed == 4);
-		string adm_name = device->adm_name();
+		std::string adm_name = device->adm_name();
 		DeviceProxy adm(adm_name);
 
 		Tango::DeviceData d_in_restart;
@@ -176,7 +176,7 @@ int main(int argc, char **argv)
 		assert (cb.nb_cmd == old_cmd_nb);
 		assert (cb.nb_att == old_att_nb);
 
-		cout << "   Dev. interface change event after Init or DevRestart command --> OK" << endl;
+		cout << "   Dev. interface change event after Init or DevRestart command --> OK" << std::endl;
 
 //
 // Restart server cmd -> event generated
@@ -185,7 +185,7 @@ int main(int argc, char **argv)
 		in = 0;
 		d_in << in;
 		device->command_inout("IOAddCommand",d_in);
-				
+
 		Tango_sleep(1);
 
 		assert (cb.cb_executed == 6);
@@ -200,15 +200,15 @@ int main(int argc, char **argv)
 		assert (cb.nb_att == old_att_nb);
 		assert (cb.dev_start == false);
 
-		cout << "   Event sent after RestartServer command --> OK" << endl;
-	
+		cout << "   Event sent after RestartServer command --> OK" << std::endl;
+
 //
 // unsubscribe to the event
 //
 
 		device->unsubscribe_event(eve_id1);
-		
-		cout << "   unsubscribe_event --> OK" << endl;					
+
+		cout << "   unsubscribe_event --> OK" << std::endl;
 	}
 	catch (Tango::DevFailed &e)
 	{
@@ -222,6 +222,6 @@ int main(int argc, char **argv)
 	}
 
 	delete device;
-	
+
 	return 0;
 }
