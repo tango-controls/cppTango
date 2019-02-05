@@ -55,7 +55,7 @@ namespace Tango
 
 void Util::polling_configure()
 {
-	cout4 << "Entering polling_configure()" << endl;
+	cout4 << "Entering polling_configure()" << std::endl;
 
 //
 // Get the polling threads pool conf from the DServer device
@@ -77,7 +77,7 @@ void Util::polling_configure()
 
 	admin_dev->stop_polling();
 
-	vector<DeviceClass *> &tmp_cl_list = admin_dev->get_class_list();
+	std::vector<DeviceClass *> &tmp_cl_list = admin_dev->get_class_list();
 	unsigned long i,j,k;
 	int upd;
 	TangoSys_MemStream s;
@@ -86,9 +86,9 @@ void Util::polling_configure()
 // Create the structure used to send data to the polling thread and store them in a vector
 //
 
-	vector<DevVarLongStringArray *> v_poll_cmd;
-	vector<DevVarLongStringArray *> v_poll_cmd_fwd;
-	vector<DevDbUpd> dev_db_upd;
+	std::vector<DevVarLongStringArray *> v_poll_cmd;
+	std::vector<DevVarLongStringArray *> v_poll_cmd_fwd;
+	std::vector<DevDbUpd> dev_db_upd;
 
 //
 // A loop on each class and each device in class
@@ -99,13 +99,13 @@ void Util::polling_configure()
 
 	for (i = 0;i < tmp_cl_list.size();i++)
 	{
-		vector<DeviceImpl *> &dev_list = tmp_cl_list[i]->get_device_list();
+		std::vector<DeviceImpl *> &dev_list = tmp_cl_list[i]->get_device_list();
 		for (j = 0;j < dev_list.size();j++)
 		{
 			v_poll_cmd.clear();
 
-			vector<string> &poll_cmd_list = dev_list[j]->get_polled_cmd();
-			vector<string> &poll_attr_list = dev_list[j]->get_polled_attr();
+			std::vector<std::string> &poll_cmd_list = dev_list[j]->get_polled_cmd();
+			std::vector<std::string> &poll_attr_list = dev_list[j]->get_polled_attr();
 
 //
 // Check that cmd_list and attr_list have a correct syntax
@@ -114,7 +114,7 @@ void Util::polling_configure()
 			if ((poll_cmd_list.size() % 2) == 1)
 			{
 				TangoSys_OMemStream o;
-				o << "System property polled_cmd for device " << dev_list[j]->get_name() << " has wrong syntax" << ends;
+				o << "System property polled_cmd for device " << dev_list[j]->get_name() << " has wrong syntax" << std::ends;
 				Except::throw_exception((const char *)API_BadConfigurationProperty,
 				        		o.str(),
 				        		(const char *)"Util::polling_configure");
@@ -123,7 +123,7 @@ void Util::polling_configure()
 			if ((poll_attr_list.size() % 2) == 1)
 			{
 				TangoSys_OMemStream o;
-				o << "System property polled_attr for device " << dev_list[j]->get_name() << " has wrong syntax" << ends;
+				o << "System property polled_attr for device " << dev_list[j]->get_name() << " has wrong syntax" << std::ends;
 				Except::throw_exception((const char *)API_BadConfigurationProperty,
 				        		o.str(),
 				        		(const char *)"Util::polling_configure");
@@ -269,7 +269,7 @@ void Util::polling_configure()
 //
 
 	unsigned long nb_thread = poll_ths.size();
-	cout4 << "POLLING: " << nb_thread << " thread(s) needed for polling from a pool of " << get_polling_threads_pool_size() << endl;
+	cout4 << "POLLING: " << nb_thread << " thread(s) needed for polling from a pool of " << get_polling_threads_pool_size() << std::endl;
 	for (unsigned long loop = 0;loop < nb_thread;++loop)
 	{
 		unsigned long nb_cmd = poll_ths[loop]->v_poll_cmd.size();
@@ -283,7 +283,7 @@ void Util::polling_configure()
 
 		cout4 << "PollConfigureThread: smallest_upd = " << poll_ths[loop]->smallest_upd;
 		cout4 << ", delta_time = " << sleeping_time;
-		cout4 << ", nb_poll_objects = " << nb_cmd << endl;
+		cout4 << ", nb_poll_objects = " << nb_cmd << std::endl;
 
 		for (unsigned long cmd_loop = 0;cmd_loop  < nb_cmd;++cmd_loop)
 		{
@@ -320,7 +320,7 @@ void Util::polling_configure()
 						o << ", cmd = ";
 					else
 						o << ", attr = ";
-					o << poll_ths[loop]->v_poll_cmd[cmd_loop]->svalue[2].in() << ends;
+					o << poll_ths[loop]->v_poll_cmd[cmd_loop]->svalue[2].in() << std::ends;
 					Except::re_throw_exception(e,(const char *)API_BadConfigurationProperty,
 												o.str(),
 													(const char *)"Util::polling_configure");
@@ -377,7 +377,7 @@ void Util::polling_configure()
 				TangoSys_OMemStream o;
 				o << "Error when configuring polling for device " << v_poll_cmd_fwd[loop]->svalue[0].in();
 				o << ", attr = ";
-				o << v_poll_cmd_fwd[loop]->svalue[2].in() << ends;
+				o << v_poll_cmd_fwd[loop]->svalue[2].in() << std::ends;
 				Except::re_throw_exception(e,(const char *)API_BadConfigurationProperty,
 											o.str(),
 												(const char *)"Util::polling_configure");
@@ -411,7 +411,7 @@ void Util::polling_configure()
 	}
 	else
 	{
-	    vector<string> tmp_pool_conf;
+	    std::vector<std::string> tmp_pool_conf;
 	    build_first_pool_conf(tmp_pool_conf);
 	    if (tmp_pool_conf != poll_pool_conf)
 	    {
@@ -423,7 +423,7 @@ void Util::polling_configure()
 	if (((dev_db_upd.empty() == false) || (conf_needs_db_upd == true)) && (_UseDb == true))
 		upd_polling_prop(dev_db_upd,admin_dev);
 
-	cout4 << "Leaving polling_configure()" << endl;
+	cout4 << "Leaving polling_configure()" << std::endl;
 
 }
 
@@ -443,9 +443,9 @@ void Util::polling_configure()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
+void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const std::string &name)
 {
-	cout4 << "Sending trigger to polling thread" << endl;
+	cout4 << "Sending trigger to polling thread" << std::endl;
 
 //
 // Check that the device is polled
@@ -454,7 +454,7 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 	if (dev->is_polled() == false)
 	{
 		TangoSys_OMemStream o;
-		o << "Device " << dev->get_name() << " is not polled" << ends;
+		o << "Device " << dev->get_name() << " is not polled" << std::ends;
 
 		Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
 				   	(const char *)"Util::trigger_attr_polling");
@@ -464,10 +464,10 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 // Find the wanted object in the list of device polled object
 //
 
-	string obj_name(name);
-	transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
+	std::string obj_name(name);
+	std::transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 
-	vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_ATTR,obj_name);
+	std::vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_ATTR,obj_name);
 
 //
 // Check that it is an externally triggered polling object. If it is not the case, throw exception
@@ -482,7 +482,7 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 		o << name;
 		o << " (device " << dev->get_name() << ") ";
 		o << " is not externally triggered.";
-		o << ends;
+		o << std::ends;
 		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"Util::trigger_attr_polling");
 	}
@@ -497,7 +497,7 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 	if (poll_th_id == 0)
 	{
 		TangoSys_OMemStream o;
-		o << "Can't find a polling thread for device " << dev->get_name() << ends;
+		o << "Can't find a polling thread for device " << dev->get_name() << std::ends;
 		Except::throw_exception((const char *)API_NotSupported,o.str(),
 							(const char *)"Util::trigger_cmd_polling");
 	}
@@ -524,7 +524,7 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 
 		mon.signal();
 
-		cout4 << "Trigger sent to polling thread" << endl;
+		cout4 << "Trigger sent to polling thread" << std::endl;
 
 //
 // Wait for thread to execute command
@@ -558,7 +558,7 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 			long lock_ctr = 0;
 			if (th->id() == dev_mon.get_locking_thread_id())
 			{
-				cout4 << "Possible deadlock detected!" << endl;
+				cout4 << "Possible deadlock detected!" << std::endl;
 				deadlock = true;
 				lock_ctr = dev_mon.get_locking_ctr();
 				for (long loop = 0;loop < lock_ctr;loop++)
@@ -574,14 +574,14 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 
 			if ((shared_cmd.trigger == true) && (interupted == 0))
 			{
-				cout4 << "TIME OUT" << endl;
+				cout4 << "TIME OUT" << std::endl;
 				Except::throw_exception((const char *)API_CommandTimedOut,
 					        	(const char *)"Polling thread blocked !!!",
 					        	(const char *)"Util::trigger_attr_polling");
 			}
 		}
 	}
-	cout4 << "Thread cmd normally executed" << endl;
+	cout4 << "Thread cmd normally executed" << std::endl;
 }
 
 
@@ -601,9 +601,9 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
+void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const std::string &name)
 {
-	cout4 << "Sending trigger to polling thread" << endl;
+	cout4 << "Sending trigger to polling thread" << std::endl;
 
 //
 // Check that the device is polled
@@ -612,7 +612,7 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 	if (dev->is_polled() == false)
 	{
 		TangoSys_OMemStream o;
-		o << "Device " << dev->get_name() << " is not polled" << ends;
+		o << "Device " << dev->get_name() << " is not polled" << std::ends;
 
 		Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
 				   	(const char *)"Util::trigger_cmd_polling");
@@ -622,10 +622,10 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 // Find the wanted object in the list of device polled object
 //
 
-	string obj_name(name);
-	transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
+	std::string obj_name(name);
+	std::transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 
-	vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
+	std::vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
 
 //
 // Check that it is an externally triggered polling object. If it is not the case, throw exception
@@ -640,7 +640,7 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 		o << name;
 		o << " (device " << dev->get_name() << ") ";
 		o << " is not externally triggered.";
-		o << ends;
+		o << std::ends;
 		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"Util::trigger_cmd_polling");
 	}
@@ -655,7 +655,7 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 	if (poll_th_id == 0)
 	{
 		TangoSys_OMemStream o;
-		o << "Can't find a polling thread for device " << dev->get_name() << ends;
+		o << "Can't find a polling thread for device " << dev->get_name() << std::ends;
 		Except::throw_exception((const char *)API_NotSupported,o.str(),
 							(const char *)"Util::trigger_cmd_polling");
 	}
@@ -682,7 +682,7 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 
 		mon.signal();
 
-		cout4 << "Trigger sent to polling thread" << endl;
+		cout4 << "Trigger sent to polling thread" << std::endl;
 
 //
 // Wait for thread to execute command
@@ -716,7 +716,7 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 			long lock_ctr = 0;
 			if (th->id() == dev_mon.get_locking_thread_id())
 			{
-				cout4 << "Possible deadlock detected!" << endl;
+				cout4 << "Possible deadlock detected!" << std::endl;
 				deadlock = true;
 				lock_ctr = dev_mon.get_locking_ctr();
 				for (long loop = 0;loop < lock_ctr;loop++)
@@ -732,14 +732,14 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 
 			if ((shared_cmd.trigger == true) && (interupted == 0))
 			{
-				cout4 << "TIME OUT" << endl;
+				cout4 << "TIME OUT" << std::endl;
 				Except::throw_exception((const char *)API_CommandTimedOut,
 					        	(const char *)"Polling thread blocked !!!",
 					        	(const char *)"Util::trigger_cmd_polling");
 			}
 		}
 	}
-	cout4 << "Thread cmd normally executed" << endl;
+	cout4 << "Thread cmd normally executed" << std::endl;
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -761,7 +761,7 @@ void Util::clean_attr_polled_prop()
 
 		for (unsigned int loop = 0;loop < polled_dyn_attr_names.size();loop++)
 		{
-			vector<string>::iterator ite_attr = find(polled_att_list.begin(),polled_att_list.end(), polled_dyn_attr_names[loop]);
+			std::vector<std::string>::iterator ite_attr = find(polled_att_list.begin(),polled_att_list.end(), polled_dyn_attr_names[loop]);
 			if (ite_attr != polled_att_list.end())
 			{
 				ite_attr = polled_att_list.erase(ite_attr);
@@ -773,7 +773,7 @@ void Util::clean_attr_polled_prop()
 				TangoSys_OMemStream o;
 
 				o << "Polling properties for attribute " << polled_dyn_attr_names[loop] << " on device " << dyn_att_dev_name;
-				o << " not found device in polled attribute list!" << ends;
+				o << " not found device in polled attribute list!" << std::ends;
 
 				Except::throw_exception((const char *)API_MethodArgument,o.str(),
 										(const char *)"Util::clean_attr_polling_prop");
@@ -809,7 +809,7 @@ void Util::clean_cmd_polled_prop()
 
 		for (unsigned int loop = 0;loop < polled_dyn_cmd_names.size();loop++)
 		{
-			vector<string>::iterator ite_cmd = find(polled_cmd_list.begin(),polled_cmd_list.end(), polled_dyn_cmd_names[loop]);
+			std::vector<std::string>::iterator ite_cmd = find(polled_cmd_list.begin(),polled_cmd_list.end(), polled_dyn_cmd_names[loop]);
 			if (ite_cmd != polled_cmd_list.end())
 			{
 				ite_cmd = polled_cmd_list.erase(ite_cmd);
@@ -821,7 +821,7 @@ void Util::clean_cmd_polled_prop()
 				TangoSys_OMemStream o;
 
 				o << "Polling properties for command " << polled_dyn_cmd_names[loop] << " on device " << dyn_cmd_dev_name;
-				o << " not found device in polled command list!" << ends;
+				o << " not found device in polled command list!" << std::ends;
 
 				Except::throw_exception((const char *)API_MethodArgument,o.str(),
 										(const char *)"Util::clean_cmd_polling_prop");
@@ -865,14 +865,14 @@ void Util::clean_cmd_polled_prop()
 int Util::create_poll_thread(const char *dev_name,bool startup,bool polling_9,int smallest_upd)
 {
 	int ret = -2;
-	string local_dev_name(dev_name);
-	transform(local_dev_name.begin(),local_dev_name.end(),local_dev_name.begin(),::tolower);
+	std::string local_dev_name(dev_name);
+	std::transform(local_dev_name.begin(),local_dev_name.end(),local_dev_name.begin(),::tolower);
 
 //
 // If there is already a polling thread for this device, simply returns
 //
 
-	map<string,int>::iterator ite;
+	std::map<std::string,int>::iterator ite;
 	ite = dev_poll_th_map.find(local_dev_name);
 	if (ite != dev_poll_th_map.end())
 	{
@@ -896,13 +896,13 @@ int Util::create_poll_thread(const char *dev_name,bool startup,bool polling_9,in
 // Get from the pool conf which device(s) have the same thread than this one
 //
 
-		vector<string> asso_devs;
+		std::vector<std::string> asso_devs;
 		int ind;
 		ind = get_th_polled_devs(local_dev_name,asso_devs);
 
 		if (asso_devs.empty() != true)
 		{
-			vector<string>::iterator it;
+			std::vector<std::string>::iterator it;
 
 //
 // If we find a thread for one of the associated device, no need to create a new one. Simply add the device entry
@@ -960,13 +960,13 @@ int Util::create_poll_thread(const char *dev_name,bool startup,bool polling_9,in
 // Get from the pool conf which device(s) have the same thread than this one
 //
 
-		vector<string> asso_devs;
+		std::vector<std::string> asso_devs;
 		int ind;
 		ind = get_th_polled_devs(local_dev_name,asso_devs);
 
 		if (asso_devs.empty() != true)
 		{
-			vector<string>::iterator it;
+			std::vector<std::string>::iterator it;
 
 //
 // If we find a thread for one of the associated device, simply add the device entry in the map <dev_name,thread id>
@@ -998,7 +998,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,bool polling_9,in
 // Find the thread with the lowest polled object number
 //
 
-		vector<PollingThreadInfo *>::iterator iter,lower_iter;
+		std::vector<PollingThreadInfo *>::iterator iter,lower_iter;
 		int lower_polled_objects = poll_ths[0]->nb_polled_objects;
 		lower_iter = poll_ths.begin();
 
@@ -1015,7 +1015,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,bool polling_9,in
 // Find a device already assigned to this thread and then get the device entry in the thread pool
 //
 
-		string d_name;
+		std::string d_name;
 
 		for (ite = dev_poll_th_map.begin();ite != dev_poll_th_map.end();++ite)
 		{
@@ -1032,7 +1032,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,bool polling_9,in
 
 			o << "The polling threads pool is full.\n";
 			o << "Device " << dev_name << " should be polled by the thread already polling " << d_name;
-			o << " but this device is not defined in the polled device map!!" << ends;
+			o << " but this device is not defined in the polled device map!!" << std::ends;
 
 			Except::throw_exception((const char *)API_PolledDeviceNotInPoolMap,o.str(),
 									(const char *)"Util::create_poll_thread");
@@ -1046,7 +1046,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,bool polling_9,in
 
 			o << "The polling threads pool is full.\n";
 			o << "Device " << dev_name << " should be polled by the thread already polling " << d_name;
-			o << " but this device is not defined in the pool configuration!!" << ends;
+			o << " but this device is not defined in the pool configuration!!" << std::ends;
 
 			Except::throw_exception((const char *)API_PolledDeviceNotInPoolConf,o.str(),
 									(const char *)"Util::create_poll_thread");
@@ -1082,7 +1082,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,bool polling_9,in
 
 void Util::stop_all_polling_threads()
 {
-	vector<PollingThreadInfo *>::iterator iter;
+	std::vector<PollingThreadInfo *>::iterator iter;
 
 	for (iter = poll_ths.begin();iter != poll_ths.end();++iter)
 	{
@@ -1164,10 +1164,10 @@ int Util::get_polling_thread_id_by_name(const char *dev_name)
 {
 	int ret = 0;
 
-	string local_dev_name(dev_name);
-	transform(local_dev_name.begin(),local_dev_name.end(),local_dev_name.begin(),::tolower);
+	std::string local_dev_name(dev_name);
+	std::transform(local_dev_name.begin(),local_dev_name.end(),local_dev_name.begin(),::tolower);
 
-	map<string,int>::iterator iter;
+	std::map<std::string,int>::iterator iter;
 	iter = dev_poll_th_map.find(local_dev_name);
 	if (iter != dev_poll_th_map.end())
 		ret = iter->second;
@@ -1196,7 +1196,7 @@ int Util::get_polling_thread_id_by_name(const char *dev_name)
 PollingThreadInfo *Util::get_polling_thread_info_by_id(int th_id)
 {
 	PollingThreadInfo *ret_ptr = NULL;
-	vector<PollingThreadInfo *>::iterator iter;
+	std::vector<PollingThreadInfo *>::iterator iter;
 
 	for (iter = poll_ths.begin();iter != poll_ths.end();++iter)
 	{
@@ -1211,7 +1211,7 @@ PollingThreadInfo *Util::get_polling_thread_info_by_id(int th_id)
 	{
 		TangoSys_OMemStream o;
 
-		o << "There is no polling thread with ID = " << th_id << " in the polling threads pool"<< ends;
+		o << "There is no polling thread with ID = " << th_id << " in the polling threads pool"<< std::ends;
 
 		Except::throw_exception((const char *)API_PollingThreadNotFound,o.str(),
 								(const char *)"Util::get_polling_thread_info_by_id");
@@ -1248,7 +1248,7 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 	if (poll_pool_conf.empty() == true)
 		return;
 
-	vector<string> mod_conf = poll_pool_conf;
+	std::vector<std::string> mod_conf = poll_pool_conf;
 
 //
 // First, get the list of devices instanciated in this server and check if the polled devices are defined within
@@ -1259,15 +1259,15 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 	unsigned int nb_dev = dev_list->length();
 	unsigned int loop;
 	int stop = 0;
-	vector<string> splitted;
+	std::vector<std::string> splitted;
 
-	vector<string>::iterator iter,iter_entry;
+	std::vector<std::string>::iterator iter,iter_entry;
 	for (iter = mod_conf.begin();iter != mod_conf.end();++iter)
 	{
 		split_string(*iter,',',splitted);
 		stop++;
 
-		string mod_entry;
+		std::string mod_entry;
 		for (iter_entry = splitted.begin(); iter_entry != splitted.end();++iter_entry)
 		{
 
@@ -1275,8 +1275,8 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 // Check that this device is not already defined
 //
 
-			string::size_type po;
-			if ((po = mod_entry.find(*iter_entry)) != string::npos)
+			std::string::size_type po;
+			if ((po = mod_entry.find(*iter_entry)) != std::string::npos)
 				continue;
 			else if (is_dev_already_in_pool_conf(*iter_entry,mod_conf,stop - 1) == true)
 				continue;
@@ -1285,18 +1285,18 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 // Check if the device is instanciated in this server
 //
 
-			string entry_lower(*iter_entry);
-			transform(entry_lower.begin(),entry_lower.end(),entry_lower.begin(),::tolower);
+			std::string entry_lower(*iter_entry);
+			std::transform(entry_lower.begin(),entry_lower.end(),entry_lower.begin(),::tolower);
 
 			for (loop = 0;loop < nb_dev;++loop)
 			{
-				string real_dev_name((*dev_list)[loop]);
-				string::size_type pos;
+				std::string real_dev_name((*dev_list)[loop]);
+				std::string::size_type pos;
 				pos = real_dev_name.find(':');
 				pos = pos + 2;
 				real_dev_name = real_dev_name.substr(pos);
 
-				transform(real_dev_name.begin(),real_dev_name.end(),real_dev_name.begin(),::tolower);
+				std::transform(real_dev_name.begin(),real_dev_name.end(),real_dev_name.begin(),::tolower);
 
 				if (entry_lower == real_dev_name)
 					break;
@@ -1309,8 +1309,8 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 			if (loop == nb_dev)
 			{
 				cout << "WARNING: Device " << *iter_entry << " is used in polling threads pool configuration";
-				cout << " but it is not defined in DS"<< endl;
-				cout << "The pool configuration will be automatically updated" << endl;
+				cout << " but it is not defined in DS"<< std::endl;
+				cout << "The pool configuration will be automatically updated" << std::endl;
 			}
 			else
 			{
@@ -1321,14 +1321,14 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 
 				DeviceImpl *dev = get_device_by_name(*iter_entry);
 
-				vector<string> &poll_cmd_list = dev->get_polled_cmd();
-				vector<string> &poll_attr_list = dev->get_polled_attr();
+				std::vector<std::string> &poll_cmd_list = dev->get_polled_cmd();
+				std::vector<std::string> &poll_attr_list = dev->get_polled_attr();
 
 				if ((poll_cmd_list.empty() == true) && (poll_attr_list.empty() == true))
 				{
 					cout << "WARNING: Device " << *iter_entry << " is used in polling threads pool configuration";
-					cout << " but it does not have any cmd/attr polled"<< endl;
-					cout << "The pool configuration will be automatically updated" << endl;
+					cout << " but it does not have any cmd/attr polled"<< std::endl;
+					cout << "The pool configuration will be automatically updated" << std::endl;
 				}
 				else
 				{
@@ -1368,8 +1368,8 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 	if (mod_conf.size() > pool_size)
 	{
 		cout << "WARNING: More threads defined in the polling threads pool configuration";
-		cout << " than in its size ("<< mod_conf.size() << " > " << pool_size << ")" << endl;
-		cout << "The pool configuration will be automatically updated" << endl;
+		cout << " than in its size ("<< mod_conf.size() << " > " << pool_size << ")" << std::endl;
+		cout << "The pool configuration will be automatically updated" << std::endl;
 
 //
 // If we have more threads in the conf than in the pool, distribute the extra thread devices to the still existing
@@ -1379,10 +1379,10 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 		long nb_extra_th = mod_conf.size() - pool_size;
 		for (long i = 0;i < nb_extra_th;i++)
 		{
-			vector<string> polled_dev_th;
+			std::vector<std::string> polled_dev_th;
 			get_th_polled_devs(i + pool_size,polled_dev_th);
 			unsigned long loop = 0;
-			vector<string>::iterator it;
+			std::vector<std::string>::iterator it;
 			for (it = polled_dev_th.begin();it != polled_dev_th.end();++it)
 			{
 				mod_conf[loop] = mod_conf[loop] + ',' + *it;
@@ -1392,7 +1392,7 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 			}
 		}
 
-		vector<string>::iterator it = mod_conf.begin();
+		std::vector<std::string>::iterator it = mod_conf.begin();
 		it = it + pool_size;
 		mod_conf.erase(it,mod_conf.end());
 	}
@@ -1430,7 +1430,7 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr_list,DeviceImpl *dev)
+int Util::check_dev_poll(std::vector<std::string> &poll_cmd_list,std::vector<std::string> &poll_attr_list,DeviceImpl *dev)
 {
 	int ret = 0;
 
@@ -1438,20 +1438,20 @@ int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr
 // First, get device commands list
 //
 
-	vector<Command *> &cmd_list = dev->get_device_class()->get_command_list();
+	std::vector<Command *> &cmd_list = dev->get_device_class()->get_command_list();
 
 //
 // Check polled cmds
 //
 
-	vector<string>::iterator iter;
+	std::vector<std::string>::iterator iter;
 
 	for (iter = poll_cmd_list.begin();iter != poll_cmd_list.end();iter = iter + 2)
 	{
-		string polled_cmd = *iter;
-		transform(polled_cmd.begin(),polled_cmd.end(),polled_cmd.begin(),::tolower);
+		std::string polled_cmd = *iter;
+		std::transform(polled_cmd.begin(),polled_cmd.end(),polled_cmd.begin(),::tolower);
 
-		vector<Command *>::iterator i_cmd;
+		std::vector<Command *>::iterator i_cmd;
 
 		for (i_cmd = cmd_list.begin();i_cmd < cmd_list.end();++i_cmd)
 		{
@@ -1462,8 +1462,8 @@ int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr
 		if (i_cmd == cmd_list.end())
 		{
 			cout << "WARNING: Device " << dev->get_name() << " is configured to be polled with";
-			cout << " a command which does not exist anymore"<< endl;
-			cout << "The device polling configuration will be automatically updated" << endl;
+			cout << " a command which does not exist anymore"<< std::endl;
+			cout << "The device polling configuration will be automatically updated" << std::endl;
 
 			ret = -1;
 			poll_cmd_list.erase(iter,iter + 2);
@@ -1475,7 +1475,7 @@ int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr
 // Now, get device attribute list
 //
 
-	vector<Attribute *> &att_list = dev->get_device_attr()->get_attribute_list();
+	std::vector<Attribute *> &att_list = dev->get_device_attr()->get_attribute_list();
 
 //
 // Check polled attributes
@@ -1483,10 +1483,10 @@ int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr
 
     for (iter = poll_attr_list.begin();iter != poll_attr_list.end();iter = iter + 2)
 	{
-		string polled_attr = *iter;
-		transform(polled_attr.begin(),polled_attr.end(),polled_attr.begin(),::tolower);
+		std::string polled_attr = *iter;
+		std::transform(polled_attr.begin(),polled_attr.end(),polled_attr.begin(),::tolower);
 
-		vector<Attribute *>::iterator i_attr;
+		std::vector<Attribute *>::iterator i_attr;
 
 		for (i_attr = att_list.begin();i_attr < att_list.end();++i_attr)
 		{
@@ -1497,8 +1497,8 @@ int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr
 		if (i_attr == att_list.end())
 		{
 			cout << "WARNING: Device " << dev->get_name() << " is configured to be polled with";
-			cout << " an attribute which does not exist anymore (" << polled_attr << ")" << endl;
-			cout << "The device polling configuration will be automatically updated" << endl;
+			cout << " an attribute which does not exist anymore (" << polled_attr << ")" << std::endl;
+			cout << "The device polling configuration will be automatically updated" << std::endl;
 
 			if (ret == -1)
 				ret = -3;
@@ -1528,13 +1528,13 @@ int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Util::split_string(string &the_str,char delim,vector<string> &splitted_str)
+void Util::split_string(std::string &the_str,char delim,std::vector<std::string> &splitted_str)
 {
-	string::size_type pos,start;
+	std::string::size_type pos,start;
 	splitted_str.clear();
 
 	start = 0;
-	while ((pos = the_str.find(delim,start)) != string::npos)
+	while ((pos = the_str.find(delim,start)) != std::string::npos)
 	{
 		splitted_str.push_back(the_str.substr(start,pos - start));
 		start = pos + 1;
@@ -1562,9 +1562,9 @@ void Util::split_string(string &the_str,char delim,vector<string> &splitted_str)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
+void Util::upd_polling_prop(std::vector<DevDbUpd> &upd_devs,DServer *admin_dev)
 {
-	vector<DeviceClass *> &tmp_cl_list = admin_dev->get_class_list();
+	std::vector<DeviceClass *> &tmp_cl_list = admin_dev->get_class_list();
 	unsigned long i;
 
 //
@@ -1573,10 +1573,10 @@ void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
 
 	for (i = 0;i < upd_devs.size();i++)
 	{
-		vector<DeviceImpl *> &dev_list = tmp_cl_list[upd_devs[i].class_ind]->get_device_list();
+		std::vector<DeviceImpl *> &dev_list = tmp_cl_list[upd_devs[i].class_ind]->get_device_list();
 
-		vector<string> &poll_cmd_list = dev_list[upd_devs[i].dev_ind]->get_polled_cmd();
-		vector<string> &poll_attr_list = dev_list[upd_devs[i].dev_ind]->get_polled_attr();
+		std::vector<std::string> &poll_cmd_list = dev_list[upd_devs[i].dev_ind]->get_polled_cmd();
+		std::vector<std::string> &poll_attr_list = dev_list[upd_devs[i].dev_ind]->get_polled_attr();
 
 		DbData del_prop;
 		DbData upd_prop;
@@ -1643,16 +1643,16 @@ void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
 
 		if ((poll_attr_list.empty() == true) && (poll_cmd_list.empty() == true))
 		{
-			vector<string>::iterator iter;
+			std::vector<std::string>::iterator iter;
 
 			for (iter = poll_pool_conf.begin();iter != poll_pool_conf.end();++iter)
 			{
-				string tmp = *iter;
-				string &d_name = dev_list[upd_devs[i].dev_ind]->get_name();
-				if (tmp.find(d_name) != string::npos)
+				std::string tmp = *iter;
+				std::string &d_name = dev_list[upd_devs[i].dev_ind]->get_name();
+				if (tmp.find(d_name) != std::string::npos)
 				{
-					string::size_type pos;
-					if ((pos = tmp.find(',')) == string::npos)
+					std::string::size_type pos;
+					if ((pos = tmp.find(',')) == std::string::npos)
 					{
 						iter = poll_pool_conf.erase(iter);
 					}
@@ -1696,22 +1696,22 @@ void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
 // several sub-entries using the \ characters at the end of each sub-entries
 //
 
-					vector<string>::iterator iter;
-					vector<string> new_vect;
+					std::vector<std::string>::iterator iter;
+					std::vector<std::string> new_vect;
 
                     for (iter = poll_pool_conf.begin();iter != poll_pool_conf.end();++iter)
                     {
-                        string v_entry = *iter;
+                        std::string v_entry = *iter;
                         unsigned int length = v_entry.size();
                         int nb_lines = (length / MaxDevPropLength) + 1;
                         if (nb_lines > 1)
                         {
-                            string::size_type start;
+                            std::string::size_type start;
                             start = 0;
 
 							for (int i = 0;i < nb_lines;i++)
 							{
-								string sub = v_entry.substr(start,MaxDevPropLength);
+								std::string sub = v_entry.substr(start,MaxDevPropLength);
 								if (i < (nb_lines - 1))
 									sub = sub + '\\';
 								start = start + MaxDevPropLength;
@@ -1758,24 +1758,24 @@ void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-int Util::get_th_polled_devs(string &dev,vector<string> &th_polled_devs)
+int Util::get_th_polled_devs(std::string &dev,std::vector<std::string> &th_polled_devs)
 {
 	th_polled_devs.clear();
 
-	vector<string>::iterator iter;
+	std::vector<std::string>::iterator iter;
 	unsigned int dev_nb_char = dev.size();
 	unsigned int pool_dev_nb_char;
 
 	for (iter = poll_pool_conf.begin();iter != poll_pool_conf.end();++iter)
 	{
-		string tmp = *iter;
-		transform(tmp.begin(),tmp.end(),tmp.begin(),::tolower);
-		string::size_type pos,end_pos;
+		std::string tmp = *iter;
+		std::transform(tmp.begin(),tmp.end(),tmp.begin(),::tolower);
+		std::string::size_type pos,end_pos;
 		pos = tmp.find(dev);
-		if (pos != string::npos)
+		if (pos != std::string::npos)
 		{
 			end_pos = tmp.find(',',pos);
-			if (end_pos != string::npos)
+			if (end_pos != std::string::npos)
 				pool_dev_nb_char = end_pos - pos;
 			else
 				pool_dev_nb_char = tmp.size() - pos;
@@ -1790,11 +1790,11 @@ int Util::get_th_polled_devs(string &dev,vector<string> &th_polled_devs)
 	return iter - poll_pool_conf.begin();
 }
 
-void Util::get_th_polled_devs(long i,vector<string> &th_polled_devs)
+void Util::get_th_polled_devs(long i,std::vector<std::string> &th_polled_devs)
 {
 	th_polled_devs.clear();
 
-	string tmp = poll_pool_conf[i];
+	std::string tmp = poll_pool_conf[i];
 	split_string(tmp,',',th_polled_devs);
 }
 
@@ -1812,14 +1812,14 @@ void Util::get_th_polled_devs(long i,vector<string> &th_polled_devs)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Util::build_first_pool_conf(vector<string> &pool_conf)
+void Util::build_first_pool_conf(std::vector<std::string> &pool_conf)
 {
-	vector<PollingThreadInfo *>::iterator iter;
+	std::vector<PollingThreadInfo *>::iterator iter;
 
 	for (iter = poll_ths.begin();iter != poll_ths.end();++iter)
 	{
-		string tmp;
-		vector<string>::iterator it;
+		std::string tmp;
+		std::vector<std::string>::iterator it;
 		for (it = (*iter)->polled_devices.begin();it != (*iter)->polled_devices.end();++it)
 		{
 			if (it != (*iter)->polled_devices.begin())
@@ -1850,14 +1850,14 @@ void Util::build_first_pool_conf(vector<string> &pool_conf)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool Util::is_dev_already_in_pool_conf(string &dev_name,vector<string>& pool,int stop)
+bool Util::is_dev_already_in_pool_conf(std::string &dev_name,std::vector<std::string>& pool,int stop)
 {
-	vector<string>::iterator iter;
+	std::vector<std::string>::iterator iter;
 
 	for (iter = pool.begin();iter != pool.begin() + stop;++iter)
 	{
-		vector<string> dev_list;
-		vector<string>::iterator it;
+		std::vector<std::string> dev_list;
+		std::vector<std::string>::iterator it;
 
 		split_string(*iter,',',dev_list);
 		for (it = dev_list.begin();it != dev_list.end();++it)
@@ -1887,21 +1887,21 @@ bool Util::is_dev_already_in_pool_conf(string &dev_name,vector<string>& pool,int
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-int Util::get_dev_entry_in_pool_conf(string &dev_name)
+int Util::get_dev_entry_in_pool_conf(std::string &dev_name)
 {
-	vector<string>::iterator iter;
+	std::vector<std::string>::iterator iter;
 	unsigned int dev_nb_char = dev_name.size();
 	unsigned int pool_dev_nb_char;
 
 	for (iter = poll_pool_conf.begin();iter != poll_pool_conf.end();++iter)
 	{
-		string tmp = *iter;
-		string::size_type pos,end_pos;
+		std::string tmp = *iter;
+		std::string::size_type pos,end_pos;
 		pos = tmp.find(dev_name);
-		if (pos != string::npos)
+		if (pos != std::string::npos)
 		{
 			end_pos = tmp.find(',',pos);
-			if (end_pos != string::npos)
+			if (end_pos != std::string::npos)
 				pool_dev_nb_char = end_pos - pos;
 			else
 				pool_dev_nb_char = tmp.size() - pos;
@@ -1932,9 +1932,9 @@ int Util::get_dev_entry_in_pool_conf(string &dev_name)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Util::remove_dev_from_polling_map(string &dev_name)
+void Util::remove_dev_from_polling_map(std::string &dev_name)
 {
-	map<string,int>::iterator iter;
+	std::map<std::string,int>::iterator iter;
 	iter = dev_poll_th_map.find(dev_name);
 	if (iter != dev_poll_th_map.end())
 		dev_poll_th_map.erase(iter);
@@ -1956,7 +1956,7 @@ void Util::remove_dev_from_polling_map(string &dev_name)
 
 void Util::remove_polling_thread_info_by_id(int th_id)
 {
-	vector<PollingThreadInfo *>::iterator iter;
+	std::vector<PollingThreadInfo *>::iterator iter;
 
 	for (iter = poll_ths.begin();iter != poll_ths.end();++iter)
 	{
@@ -1972,7 +1972,7 @@ void Util::remove_polling_thread_info_by_id(int th_id)
 	{
 		TangoSys_OMemStream o;
 
-		o << "There is no polling thread with ID = " << th_id << " in the polling threads pool"<< ends;
+		o << "There is no polling thread with ID = " << th_id << " in the polling threads pool"<< std::ends;
 
 		Except::throw_exception((const char *)API_PollingThreadNotFound,o.str(),
 								(const char *)"Util::remove_polling_thread_info_by_id");
