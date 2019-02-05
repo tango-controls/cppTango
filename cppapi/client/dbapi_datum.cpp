@@ -46,7 +46,7 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-DbDatum::DbDatum(string p_name):ext(Tango_nullptr)
+DbDatum::DbDatum(std::string p_name):ext(Tango_nullptr)
 {
 	name = p_name;
 	value_size = 0;
@@ -157,11 +157,11 @@ bool DbDatum::is_empty()
 
 void DbDatum::operator << (bool datum)
 {
-	ostringstream ostream;
-	ostream << boolalpha << datum;
+	std::ostringstream ostream;
+	ostream << std::boolalpha << datum;
 
 	value_string.resize(1);
-	value_string[0] = string(ostream.str());
+	value_string[0] = std::string(ostream.str());
 
 	value_type = DEV_BOOLEAN;
 	value_size = 1;
@@ -190,13 +190,13 @@ bool DbDatum::operator >> (bool &datum)
 	else
 	{
 
-		transform(value_string[0].begin(),
+		std::transform(value_string[0].begin(),
 			  value_string[0].end(),
 			  value_string[0].begin(),
 			  ::tolower);
 
-		istringstream istream(value_string[0]);
-		istream >> boolalpha >> datum;
+    std::istringstream istream(value_string[0]);
+		istream >> std::boolalpha >> datum;
 		if (!istream)
 		{
 			if (exceptions_flags.test(wrongtype_flag))
@@ -223,11 +223,11 @@ bool DbDatum::operator >> (bool &datum)
 
 void DbDatum::operator << (short datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	ostream << datum;
 
 	value_string.resize(1);
-	value_string[0] = string(ostream.str());
+	value_string[0] = std::string(ostream.str());
 
 	value_type = DEV_SHORT;
 	value_size = 1;
@@ -255,7 +255,7 @@ bool DbDatum::operator >> (short &datum)
 	}
 	else
 	{
-		istringstream istream(value_string[0]);
+    std::istringstream istream(value_string[0]);
 
 		istream >> datum;
 		if (!istream)
@@ -283,11 +283,11 @@ bool DbDatum::operator >> (short &datum)
 
 void DbDatum::operator << (unsigned char datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	ostream << (short)datum; // to accept only numbers
 
 	value_string.resize(1);
-	value_string[0] = string(ostream.str());
+	value_string[0] = std::string(ostream.str());
 
 	value_type = DEV_UCHAR;
 	value_size = 1;
@@ -314,7 +314,7 @@ bool DbDatum::operator >> (unsigned char& datum)
 	}
 	else
 	{
-		istringstream istream(value_string[0]);
+    std::istringstream istream(value_string[0]);
 		istream >> datum;
 		if (!istream)
 		{
@@ -341,11 +341,11 @@ bool DbDatum::operator >> (unsigned char& datum)
 
 void DbDatum::operator << (unsigned short datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	ostream << datum;
 
 	value_string.resize(1);
-	value_string[0] = string(ostream.str());
+	value_string[0] = std::string(ostream.str());
 
 	value_type = DEV_USHORT;
 	value_size = 1;
@@ -372,7 +372,7 @@ bool DbDatum::operator >> (unsigned short& datum)
 	}
 	else
 	{
-		istringstream istream(value_string[0]);
+    std::istringstream istream(value_string[0]);
 		istream >> datum;
 		if (!istream)
 		{
@@ -399,11 +399,11 @@ bool DbDatum::operator >> (unsigned short& datum)
 
 void DbDatum::operator << (DevLong datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	ostream << datum;
 
 	value_string.resize(1);
-	value_string[0] = string(ostream.str());
+	value_string[0] = std::string(ostream.str());
 
 	value_type = DEV_LONG;
 	value_size = 1;
@@ -430,7 +430,7 @@ bool DbDatum::operator >> (DevLong& datum)
 	}
 	else
 	{
-		istringstream istream(value_string[0]);
+    std::istringstream istream(value_string[0]);
 		istream >> datum;
 		if (!istream)
 		{
@@ -457,11 +457,11 @@ bool DbDatum::operator >> (DevLong& datum)
 
 void DbDatum::operator << (DevULong datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	ostream << datum;
 
 	value_string.resize(1);
-	value_string[0] = string(ostream.str());
+	value_string[0] = std::string(ostream.str());
 
 	value_type = DEV_ULONG;
 	value_size = 1;
@@ -488,7 +488,7 @@ bool DbDatum::operator >> (DevULong& datum)
 	}
 	else
 	{
-		istringstream istream(value_string[0]);
+    std::istringstream istream(value_string[0]);
 		istream >> datum;
 		if (!istream)
 		{
@@ -515,11 +515,11 @@ bool DbDatum::operator >> (DevULong& datum)
 
 void DbDatum::operator << (DevLong64 datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	ostream << datum;
 
 	value_string.resize(1);
-	value_string[0] = string(ostream.str());
+	value_string[0] = std::string(ostream.str());
 
 	value_type = DEV_LONG64;
 	value_size = 1;
@@ -546,7 +546,7 @@ bool DbDatum::operator >> (DevLong64 &datum)
 	}
 	else
 	{
-		istringstream istream(value_string[0]);
+    std::istringstream istream(value_string[0]);
 		istream >> datum;
 		if (!istream)
 		{
@@ -573,11 +573,11 @@ bool DbDatum::operator >> (DevLong64 &datum)
 
 void DbDatum::operator << (DevULong64 datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	ostream << datum;
 
 	value_string.resize(1);
-	value_string[0] = string(ostream.str());
+	value_string[0] = std::string(ostream.str());
 
 	value_type = DEV_ULONG64;
 	value_size = 1;
@@ -604,7 +604,7 @@ bool DbDatum::operator >> (DevULong64 &datum)
 	}
 	else
 	{
-		istringstream istream(value_string[0]);
+    std::istringstream istream(value_string[0]);
 		istream >> datum;
 		if (!istream)
 		{
@@ -631,11 +631,11 @@ bool DbDatum::operator >> (DevULong64 &datum)
 
 void DbDatum::operator << (float datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	ostream << std::setprecision(TANGO_FLOAT_PRECISION) << datum;
 
 	value_string.resize(1);
-	value_string[0] = string(ostream.str());
+	value_string[0] = std::string(ostream.str());
 
 	value_type = DEV_FLOAT;
 	value_size = 1;
@@ -662,7 +662,7 @@ bool DbDatum::operator >> (float& datum)
 	}
 	else
 	{
-		istringstream istream(value_string[0]);
+    std::istringstream istream(value_string[0]);
 		istream >> datum;
 		if (!istream)
 		{
@@ -706,11 +706,11 @@ bool DbDatum::operator >> (float& datum)
 
 void DbDatum::operator << (double datum)
 {
-	ostringstream ostream;
-	ostream << setprecision(TANGO_FLOAT_PRECISION) << datum;
+	std::ostringstream ostream;
+	ostream << std::setprecision(TANGO_FLOAT_PRECISION) << datum;
 
 	value_string.resize(1);
-	value_string[0] = string(ostream.str());
+	value_string[0] = std::string(ostream.str());
 
 	value_type = DEV_DOUBLE;
 	value_size = 1;
@@ -737,7 +737,7 @@ bool DbDatum::operator >> (double& datum)
 	}
 	else
 	{
-		istringstream istream(value_string[0]);
+    std::istringstream istream(value_string[0]);
 		istream >> std::setprecision(TANGO_FLOAT_PRECISION) >> datum;
 		if (!istream)
 		{
@@ -776,11 +776,11 @@ bool DbDatum::operator >> (double& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator <<(string &) - insert a string into DbDatum
+// DbDatum::operator <<(std::string &) - insert a string into DbDatum
 //
 //-----------------------------------------------------------------------------
 
-void DbDatum::operator << (string& datum)
+void DbDatum::operator << (std::string& datum)
 {
 	value_string.resize(1);
 	value_string[0] = datum;
@@ -790,11 +790,11 @@ void DbDatum::operator << (string& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator >>(string &) - extract a string from DbDatum
+// DbDatum::operator >>(std::string &) - extract a string from DbDatum
 //
 //-----------------------------------------------------------------------------
 
-bool DbDatum::operator >> (string& datum)
+bool DbDatum::operator >> (std::string& datum)
 {
 	bool ret;
 	if (value_string.size() == 0)
@@ -890,13 +890,13 @@ bool DbDatum::operator >> (const char*& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator <<(vector<short> &) - insert a vector<short> into DbDatum
+// DbDatum::operator <<(std::vector<short> &) - insert a vector<short> into DbDatum
 //
 //-----------------------------------------------------------------------------
 
-void DbDatum::operator << (vector<short>& datum)
+void DbDatum::operator << (std::vector<short>& datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	value_string.resize(datum.size());
 	for (unsigned int i=0; i<datum.size(); i++)
 	{
@@ -911,11 +911,11 @@ void DbDatum::operator << (vector<short>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator >>(vector<short> &) - extract a vector<short> from DbDatum
+// DbDatum::operator >>(std::vector<short> &) - extract a vector<short> from DbDatum
 //
 //-----------------------------------------------------------------------------
 
-bool DbDatum::operator >> (vector<short>& datum)
+bool DbDatum::operator >> (std::vector<short>& datum)
 {
 	bool ret = true;
 	if (value_string.size() == 0)
@@ -931,13 +931,13 @@ bool DbDatum::operator >> (vector<short>& datum)
 	}
 	else
 	{
-		stringstream iostream;
+    std::stringstream iostream;
 
 		datum.resize(value_string.size());
 		for (unsigned int i=0; i<value_string.size(); i++)
 		{
 			iostream.seekp (0); iostream.seekg(0); iostream.clear();
-			iostream << value_string[i] << ends;
+			iostream << value_string[i] << std::ends;
 			iostream >> datum[i];
 			if (!iostream)
 			{
@@ -945,7 +945,7 @@ bool DbDatum::operator >> (vector<short>& datum)
 				{
 					TangoSys_OMemStream desc;
 					desc << "Cannot extract short vector, elt number ";
-					desc << i+1 << " is not a short" << ends;
+					desc << i+1 << " is not a short" << std::ends;
 
 					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
@@ -962,13 +962,13 @@ bool DbDatum::operator >> (vector<short>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator <<(vector<unsigned short> &) - insert a vector<unsigned short> into DbDatum
+// DbDatum::operator <<(std::vector<unsigned short> &) - insert a vector<unsigned short> into DbDatum
 //
 //-----------------------------------------------------------------------------
 
-void DbDatum::operator << (vector<unsigned short>& datum)
+void DbDatum::operator << (std::vector<unsigned short>& datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	value_string.resize(datum.size());
 	for (unsigned int i=0; i<datum.size(); i++)
 	{
@@ -982,11 +982,11 @@ void DbDatum::operator << (vector<unsigned short>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator >>(vector<unsigned short> &) - extract a vector<unsigned short> from DbDatum
+// DbDatum::operator >>(std::vector<unsigned short> &) - extract a vector<unsigned short> from DbDatum
 //
 //-----------------------------------------------------------------------------
 
-bool DbDatum::operator >> (vector<unsigned short>& datum)
+bool DbDatum::operator >> (std::vector<unsigned short>& datum)
 {
 	bool ret = true;
 	if (value_string.size() == 0)
@@ -1002,13 +1002,13 @@ bool DbDatum::operator >> (vector<unsigned short>& datum)
 	}
 	else
 	{
-		stringstream iostream;
+    std::stringstream iostream;
 
 		datum.resize(value_string.size());
 		for (unsigned int i=0; i<value_string.size(); i++)
 		{
 			iostream.seekp (0); iostream.seekg(0); iostream.clear();
-			iostream << value_string[i] << ends;
+			iostream << value_string[i] << std::ends;
 			iostream >> datum[i];
 			if (!iostream)
 			{
@@ -1016,7 +1016,7 @@ bool DbDatum::operator >> (vector<unsigned short>& datum)
 				{
 					TangoSys_OMemStream desc;
 					desc << "Cannot extract unsigned short vector, elt number ";
-					desc << i+1 << " is not an unsigned short" << ends;
+					desc << i+1 << " is not an unsigned short" << std::ends;
 
 					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
@@ -1033,13 +1033,13 @@ bool DbDatum::operator >> (vector<unsigned short>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator <<(vector<DevLong> &) - insert a vector<DevLong> into DbDatum
+// DbDatum::operator <<(std::vector<DevLong> &) - insert a vector<DevLong> into DbDatum
 //
 //-----------------------------------------------------------------------------
 
-void DbDatum::operator << (vector<DevLong>& datum)
+void DbDatum::operator << (std::vector<DevLong>& datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 
 	value_string.resize(datum.size());
 	for (unsigned int i=0; i<datum.size(); i++)
@@ -1054,11 +1054,11 @@ void DbDatum::operator << (vector<DevLong>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator >>(vector<DevLong> &) - extract a vector<DevLong> from DbDatum
+// DbDatum::operator >>(std::vector<DevLong> &) - extract a vector<DevLong> from DbDatum
 //
 //-----------------------------------------------------------------------------
 
-bool DbDatum::operator >> (vector<DevLong>& datum)
+bool DbDatum::operator >> (std::vector<DevLong>& datum)
 {
 	bool ret = true;
 	if (value_string.size() == 0)
@@ -1074,13 +1074,13 @@ bool DbDatum::operator >> (vector<DevLong>& datum)
 	}
 	else
 	{
-		stringstream iostream;
+    std::stringstream iostream;
 
 		datum.resize(value_string.size());
 		for (unsigned int i=0; i<value_string.size(); i++)
 		{
 			iostream.seekp (0); iostream.seekg(0); iostream.clear();
-			iostream << value_string[i] << ends;
+			iostream << value_string[i] << std::ends;
 			iostream >> datum[i];
 			if (!iostream)
 			{
@@ -1088,7 +1088,7 @@ bool DbDatum::operator >> (vector<DevLong>& datum)
 				{
 					TangoSys_OMemStream desc;
 					desc << "Cannot extract long vector, elt number ";
-					desc << i+1 << " is not a DevLong (long 32 bits)" << ends;
+					desc << i+1 << " is not a DevLong (long 32 bits)" << std::ends;
 
 					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
@@ -1105,13 +1105,13 @@ bool DbDatum::operator >> (vector<DevLong>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator <<(vector<DevULong> &) - insert a vector<DevULong> into DbDatum
+// DbDatum::operator <<(std::vector<DevULong> &) - insert a vector<DevULong> into DbDatum
 //
 //-----------------------------------------------------------------------------
 
-void DbDatum::operator << (vector<DevULong>& datum)
+void DbDatum::operator << (std::vector<DevULong>& datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 
 	value_string.resize(datum.size());
 	for (unsigned int i=0; i<datum.size(); i++)
@@ -1126,11 +1126,11 @@ void DbDatum::operator << (vector<DevULong>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator >>(vector<DevULong> &) - extract a vector<DevULong> from DbDatum
+// DbDatum::operator >>(std::vector<DevULong> &) - extract a vector<DevULong> from DbDatum
 //
 //-----------------------------------------------------------------------------
 
-bool DbDatum::operator >> (vector<DevULong>& datum)
+bool DbDatum::operator >> (std::vector<DevULong>& datum)
 {
 	bool ret = true;
 	if (value_string.size() == 0)
@@ -1146,12 +1146,13 @@ bool DbDatum::operator >> (vector<DevULong>& datum)
 	}
 	else
 	{
-		stringstream iostream;
+    std::stringstream iostream;
+
 		datum.resize(value_string.size());
 		for (unsigned int i=0; i<value_string.size(); i++)
 		{
 			iostream.seekp (0); iostream.seekg(0); iostream.clear();
-			iostream << value_string[i] << ends;
+			iostream << value_string[i] << std::ends;
 			iostream >> datum[i];
 			if (!iostream)
 			{
@@ -1159,7 +1160,7 @@ bool DbDatum::operator >> (vector<DevULong>& datum)
 				{
 					TangoSys_OMemStream desc;
 					desc << "Cannot extract unsigned long vector, elt number ";
-					desc << i+1 << " is not a DevULong (unsigned long 32 bits)" << ends;
+					desc << i+1 << " is not a DevULong (unsigned long 32 bits)" << std::ends;
 
 					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
@@ -1176,13 +1177,13 @@ bool DbDatum::operator >> (vector<DevULong>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator <<(vector<DevLong64> &) - insert a vector<DevLong64> into DbDatum
+// DbDatum::operator <<(std::vector<DevLong64> &) - insert a vector<DevLong64> into DbDatum
 //
 //-----------------------------------------------------------------------------
 
-void DbDatum::operator << (vector<DevLong64>& datum)
+void DbDatum::operator << (std::vector<DevLong64>& datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 
 	value_string.resize(datum.size());
 	for (unsigned int i=0; i<datum.size(); i++)
@@ -1197,11 +1198,11 @@ void DbDatum::operator << (vector<DevLong64>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator >>(vector<DevLong64> &) - extract a vector<DevLong64> from DbDatum
+// DbDatum::operator >>(std::vector<DevLong64> &) - extract a vector<DevLong64> from DbDatum
 //
 //-----------------------------------------------------------------------------
 
-bool DbDatum::operator >> (vector<DevLong64>& datum)
+bool DbDatum::operator >> (std::vector<DevLong64>& datum)
 {
 	bool ret = true;
 	if (value_string.size() == 0)
@@ -1217,13 +1218,13 @@ bool DbDatum::operator >> (vector<DevLong64>& datum)
 	}
 	else
 	{
-		stringstream iostream;
+    std::stringstream iostream;
 
 		datum.resize(value_string.size());
 		for (unsigned int i=0; i<value_string.size(); i++)
 		{
 			iostream.seekp (0); iostream.seekg(0); iostream.clear();
-			iostream << value_string[i] << ends;
+			iostream << value_string[i] << std::ends;
 			iostream >> datum[i];
 			if (!iostream)
 			{
@@ -1231,7 +1232,7 @@ bool DbDatum::operator >> (vector<DevLong64>& datum)
 				{
 					TangoSys_OMemStream desc;
 					desc << "Cannot extract unsigned long vector, elt number ";
-					desc << i+1 << " is not a DevLong64 (long 64 bits)" << ends;
+					desc << i+1 << " is not a DevLong64 (long 64 bits)" << std::ends;
 
 					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
@@ -1248,13 +1249,13 @@ bool DbDatum::operator >> (vector<DevLong64>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator <<(vector<DevULong64> &) - insert a vector<DevULong64> into DbDatum
+// DbDatum::operator <<(std::vector<DevULong64> &) - insert a vector<DevULong64> into DbDatum
 //
 //-----------------------------------------------------------------------------
 
-void DbDatum::operator << (vector<DevULong64>& datum)
+void DbDatum::operator << (std::vector<DevULong64>& datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 
 	value_string.resize(datum.size());
 	for (unsigned int i=0; i<datum.size(); i++)
@@ -1269,11 +1270,11 @@ void DbDatum::operator << (vector<DevULong64>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator >>(vector<DevULong64> &) - extract a vector<DevULong64> from DbDatum
+// DbDatum::operator >>(std::vector<DevULong64> &) - extract a vector<DevULong64> from DbDatum
 //
 //-----------------------------------------------------------------------------
 
-bool DbDatum::operator >> (vector<DevULong64>& datum)
+bool DbDatum::operator >> (std::vector<DevULong64>& datum)
 {
 	bool ret = true;
 	if (value_string.size() == 0)
@@ -1289,13 +1290,13 @@ bool DbDatum::operator >> (vector<DevULong64>& datum)
 	}
 	else
 	{
-		stringstream iostream;
+    std::stringstream iostream;
 
 		datum.resize(value_string.size());
 		for (unsigned int i=0; i<value_string.size(); i++)
 		{
 			iostream.seekp (0); iostream.seekg(0); iostream.clear();
-			iostream << value_string[i] << ends;
+			iostream << value_string[i] << std::ends;
 			iostream >> datum[i];
 			if (!iostream)
 			{
@@ -1303,7 +1304,7 @@ bool DbDatum::operator >> (vector<DevULong64>& datum)
 				{
 					TangoSys_OMemStream desc;
 					desc << "Cannot extract unsigned long vector, elt number ";
-					desc << i+1 << " is not a DevULong64 (unsigned long 64 bits)" << ends;
+					desc << i+1 << " is not a DevULong64 (unsigned long 64 bits)" << std::ends;
 
 					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
@@ -1320,13 +1321,13 @@ bool DbDatum::operator >> (vector<DevULong64>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator <<(vector<float> &) - insert a vector<float> into DbDatum
+// DbDatum::operator <<(std::vector<float> &) - insert a vector<float> into DbDatum
 //
 //-----------------------------------------------------------------------------
 
-void DbDatum::operator << (vector<float>& datum)
+void DbDatum::operator << (std::vector<float>& datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 
 	value_string.resize(datum.size());
 	for (unsigned int i=0; i<datum.size(); i++)
@@ -1341,11 +1342,11 @@ void DbDatum::operator << (vector<float>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator >>(vector<float> &) - extract a vector<float> from DbDatum
+// DbDatum::operator >>(std::vector<float> &) - extract a vector<float> from DbDatum
 //
 //-----------------------------------------------------------------------------
 
-bool DbDatum::operator >> (vector<float>& datum)
+bool DbDatum::operator >> (std::vector<float>& datum)
 {
 	bool ret = true;
 	if (value_string.size() == 0)
@@ -1361,12 +1362,13 @@ bool DbDatum::operator >> (vector<float>& datum)
 	}
 	else
 	{
-		stringstream iostream;
+    std::stringstream iostream;
+
 		datum.resize(value_string.size());
 		for (unsigned int i=0; i<value_string.size(); i++)
 		{
 			iostream.clear(); iostream.seekp(0); iostream.seekg(0);
-			iostream << value_string[i] << ends;
+			iostream << value_string[i] << std::ends;
 			iostream >> datum[i];
 			if (!iostream)
 			{
@@ -1387,7 +1389,7 @@ bool DbDatum::operator >> (vector<float>& datum)
 				{
 					TangoSys_OMemStream desc;
 					desc << "Cannot extract float vector, elt number ";
-					desc << i+1 << " is not a float" << ends;
+					desc << i+1 << " is not a float" << std::ends;
 					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					                               desc.str(),
 					                               (const char*)"DbDatum::operator >>(vector<float>)");
@@ -1406,13 +1408,13 @@ bool DbDatum::operator >> (vector<float>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator <<(vector<double> &) - insert a vector<double> into DbDatum
+// DbDatum::operator <<(std::vector<double> &) - insert a vector<double> into DbDatum
 //
 //-----------------------------------------------------------------------------
 
-void DbDatum::operator << (vector<double>& datum)
+void DbDatum::operator << (std::vector<double>& datum)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	value_string.resize(datum.size());
 
 	for (unsigned int i=0; i<datum.size(); i++)
@@ -1428,11 +1430,11 @@ void DbDatum::operator << (vector<double>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator >>(vector<double> &) - extract a vector<double> from DbDatum
+// DbDatum::operator >>(std::vector<double> &) - extract a vector<double> from DbDatum
 //
 //-----------------------------------------------------------------------------
 
-bool DbDatum::operator >> (vector<double>& datum)
+bool DbDatum::operator >> (std::vector<double>& datum)
 {
 	bool ret = true;
 	if (value_string.size() == 0)
@@ -1448,13 +1450,13 @@ bool DbDatum::operator >> (vector<double>& datum)
 	}
 	else
 	{
-		stringstream iostream;
+    std::stringstream iostream;
 
 		datum.resize(value_string.size());
 		for (unsigned int i=0; i<value_string.size(); i++)
 		{
 			iostream.clear(); iostream.seekp(0); iostream.seekg(0);
-			iostream << value_string[i] << ends;
+			iostream << value_string[i] << std::ends;
 			iostream >> std::setprecision(TANGO_FLOAT_PRECISION) >> datum[i];
 			if (!iostream)
 			{
@@ -1475,7 +1477,7 @@ bool DbDatum::operator >> (vector<double>& datum)
 				{
 					TangoSys_OMemStream desc;
 					desc << "Cannot extract double vector, elt number ";
-					desc << i+1 << " is not a double" << ends;
+					desc << i+1 << " is not a double" << std::ends;
 					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					                               desc.str(),
 					                               (const char*)"DbDatum::operator >>(vector<double>)");
@@ -1493,11 +1495,11 @@ bool DbDatum::operator >> (vector<double>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator <<(vector<string> &) - insert a vector<string> into DbDatum
+// DbDatum::operator <<(std::vector<std::string> &) - insert a vector<string> into DbDatum
 //
 //-----------------------------------------------------------------------------
 
-void DbDatum::operator << (vector<string>& datum)
+void DbDatum::operator << (std::vector<std::string>& datum)
 {
 	value_string.resize(datum.size());
 	for (unsigned int i=0; i<datum.size(); i++)
@@ -1510,11 +1512,11 @@ void DbDatum::operator << (vector<string>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DbDatum::operator >>(vector<string> &) - extract a vector<string> from DbDatum
+// DbDatum::operator >>(std::vector<std::string> &) - extract a vector<string> from DbDatum
 //
 //-----------------------------------------------------------------------------
 
-bool DbDatum::operator >> (vector<string>& datum)
+bool DbDatum::operator >> (std::vector<std::string>& datum)
 {
 	bool ret = true;
 	if (value_string.size() == 0)
