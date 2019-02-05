@@ -54,7 +54,7 @@ namespace Tango
 
 SubDevDiag::~SubDevDiag()
 {
-	cout4 << "SubDevDiag::~SubDevDiag() entering ... " << endl;
+	cout4 << "SubDevDiag::~SubDevDiag() entering ... " << std::endl;
 
 	// lock the sub device map
 	omni_mutex_lock l(sub_dev_map_mutex);
@@ -76,7 +76,7 @@ SubDevDiag::~SubDevDiag()
 //
 //-----------------------------------------------------------------------------
 
-void SubDevDiag::set_associated_device(string dev_name)
+void SubDevDiag::set_associated_device(std::string dev_name)
 {
 	cout4 << "SubDevDiag::set_associated_device() entering ... ";
 
@@ -102,11 +102,11 @@ void SubDevDiag::set_associated_device(string dev_name)
 //
 //-----------------------------------------------------------------------------
 
-string SubDevDiag::get_associated_device()
+std::string SubDevDiag::get_associated_device()
 {
-	cout4 << "SubDevDiag::get_associated_device() entering ... " << endl;
+	cout4 << "SubDevDiag::get_associated_device() entering ... " << std::endl;
 
-	string dev_name = "";
+	std::string dev_name = "";
 
 	// get thread
 	omni_thread *th = omni_thread::self();
@@ -118,7 +118,7 @@ string SubDevDiag::get_associated_device()
 			dev_name = (static_cast<PyData *>(tmp_py_data))->device_name;
 	}
 
-	cout4 << "SubDevDiag::get_associated_device() found : " << dev_name << endl;
+	cout4 << "SubDevDiag::get_associated_device() found : " << dev_name << std::endl;
 	return dev_name;
 }
 
@@ -134,10 +134,10 @@ string SubDevDiag::get_associated_device()
 //
 //-----------------------------------------------------------------------------
 
-void SubDevDiag::register_sub_device (string dev_name, string sub_dev_name)
+void SubDevDiag::register_sub_device (std::string dev_name, std::string sub_dev_name)
 {
 	cout4 << "SubDevDiag::register_sub_device() dev_name = " << dev_name
-	      << " sub_dev_name = "<< sub_dev_name << endl;
+	      << " sub_dev_name = "<< sub_dev_name << std::endl;
 
 	bool found = false;
 
@@ -151,7 +151,7 @@ void SubDevDiag::register_sub_device (string dev_name, string sub_dev_name)
 	omni_mutex_lock l(sub_dev_map_mutex);
 
 	// Find whether a sub device list for the device is already available
-	std::map<string,SubDeviceList>::iterator ipos;
+	std::map<std::string,SubDeviceList>::iterator ipos;
 	ipos = sub_device_map.find(dev_name);
 
 	if (ipos == sub_device_map.end())
@@ -191,9 +191,9 @@ void SubDevDiag::register_sub_device (string dev_name, string sub_dev_name)
 //
 //-----------------------------------------------------------------------------
 
-void SubDevDiag::remove_sub_devices (string dev_name)
+void SubDevDiag::remove_sub_devices (std::string dev_name)
 {
-	cout4 << "SubDevDiag::remove_sub_device() dev_name = " << dev_name << endl;
+	cout4 << "SubDevDiag::remove_sub_device() dev_name = " << dev_name << std::endl;
 
 	// be sure that all names are lower case letters
 	std::transform(dev_name.begin(), dev_name.end(),
@@ -203,7 +203,7 @@ void SubDevDiag::remove_sub_devices (string dev_name)
 	omni_mutex_lock l(sub_dev_map_mutex);
 
 	// remove the list of sub devices for a device
-	std::map<string,SubDeviceList>::iterator ipos;
+	std::map<std::string,SubDeviceList>::iterator ipos;
 	ipos = sub_device_map.find(dev_name);
 
 	if (ipos != sub_device_map.end())
@@ -224,7 +224,7 @@ void SubDevDiag::remove_sub_devices (string dev_name)
 
 void SubDevDiag::remove_sub_devices()
 {
-	cout4 << "SubDevDiag::remove_sub_devices() remove ALL " << endl;
+	cout4 << "SubDevDiag::remove_sub_devices() remove ALL " << std::endl;
 
 	// lock the sub device map
 	omni_mutex_lock l(sub_dev_map_mutex);
@@ -249,18 +249,18 @@ void SubDevDiag::remove_sub_devices()
 
 Tango::DevVarStringArray *SubDevDiag::get_sub_devices()
 {
-	cout4 << "SubDevDiag::get_sub_devices() entering ... " << endl;
+	cout4 << "SubDevDiag::get_sub_devices() entering ... " << std::endl;
 
 	Tango::DevVarStringArray *ret;
-	vector<string> sub_dev_list;
-	string tmp;
+	std::vector<std::string> sub_dev_list;
+	std::string tmp;
 
 	// lock the sub device map
 	omni_mutex_lock l(sub_dev_map_mutex);
 
 	try
 	{
-		std::map<string,SubDeviceList>::iterator ipos;
+		std::map<std::string,SubDeviceList>::iterator ipos;
 		for (ipos = sub_device_map.begin(); ipos != sub_device_map.end(); ++ipos)
 		{
 			for (unsigned int i=0; i<ipos->second.sub_devices.size(); i++)
@@ -282,7 +282,7 @@ Tango::DevVarStringArray *SubDevDiag::get_sub_devices()
 		return(ret);
 	}
 
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -316,7 +316,7 @@ Tango::DevVarStringArray *SubDevDiag::get_sub_devices()
 
 void SubDevDiag::store_sub_devices()
 {
-	cout4 << "SubDevDiag::store_sub_devices() entering ... " << endl;
+	cout4 << "SubDevDiag::store_sub_devices() entering ... " << std::endl;
 
 	Tango::Util *tg = Tango::Util::instance();
 
@@ -325,7 +325,7 @@ void SubDevDiag::store_sub_devices()
 
 	// loop over the sub device map
 
-	std::map<string,SubDeviceList>::iterator ipos;
+	std::map<std::string,SubDeviceList>::iterator ipos;
 	for (ipos = sub_device_map.begin(); ipos != sub_device_map.end(); ++ipos)
 	{
 		// Check whether the list was modified
@@ -417,7 +417,7 @@ void SubDevDiag::store_sub_devices()
 //-----------------------------------------------------------------------------
 void SubDevDiag::get_sub_devices_from_cache()
 {
-	cout4 << "SubDevDiag::get_sub_devices_from_cache() entering ... " << endl;
+	cout4 << "SubDevDiag::get_sub_devices_from_cache() entering ... " << std::endl;
 
 	DbServerCache *db_cache;
 	Tango::Util *tg = Tango::Util::instance();
@@ -436,17 +436,17 @@ void SubDevDiag::get_sub_devices_from_cache()
 	{
 		// get the name of the admin device
 		DServer *adm_dev = tg->get_dserver_device();
-		string adm_name = adm_dev->get_name();
+		std::string adm_name = adm_dev->get_name();
 		// be sure that all names are lower case letters
 		std::transform(adm_name.begin(), adm_name.end(),
 		               adm_name.begin(), ::tolower);
 
 		// get all devices served
-		vector<DeviceImpl *> dev_list = tg->get_device_list("*");
+		std::vector<DeviceImpl *> dev_list = tg->get_device_list("*");
 
 		for (unsigned int k=0; k<dev_list.size(); k++)
 		{
-			string dev_name = dev_list[k]->get_name();
+			std::string dev_name = dev_list[k]->get_name();
 			// be sure that all names are lower case letters
 			std::transform(dev_name.begin(), dev_name.end(),
 			               dev_name.begin(), ::tolower);
@@ -477,14 +477,14 @@ void SubDevDiag::get_sub_devices_from_cache()
 
 			catch(Tango::DevFailed &)
 			{
-				cerr << "Sub device not found in DB cache for " << dev_name << endl;
+				std::cerr << "Sub device not found in DB cache for " << dev_name << std::endl;
 			}
 
 			delete property_names;
 		}
 	}
 	else
-		cerr << "No database cache found to initialise sub device map!" << endl;
+		std::cerr << "No database cache found to initialise sub device map!" << std::endl;
 }
 
 } // End of Tango namespace
