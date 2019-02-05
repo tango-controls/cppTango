@@ -75,7 +75,7 @@ DevStatusCmd::DevStatusCmd(const char *name,Tango::CmdArgType in,Tango::CmdArgTy
 CORBA::Any *DevStatusCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
-	cout4 << "DevStatus::execute(): arrived " << endl;
+	cout4 << "DevStatus::execute(): arrived " << std::endl;
 
 //
 // return status string as Any
@@ -86,7 +86,7 @@ CORBA::Any *DevStatusCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -106,7 +106,7 @@ CORBA::Any *DevStatusCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::
 		throw;
 	}
 
-	cout4 << "Leaving DevStatus::execute()" << endl;
+	cout4 << "Leaving DevStatus::execute()" << std::endl;
 	return out_any;
 
 }
@@ -139,7 +139,7 @@ DevStateCmd::DevStateCmd(const char *name,Tango::CmdArgType in, Tango::CmdArgTyp
 CORBA::Any *DevStateCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
-	cout4 << "DevState::execute(): arrived" << endl;
+	cout4 << "DevState::execute(): arrived" << std::endl;
 
 //
 // return state as Any
@@ -150,7 +150,7 @@ CORBA::Any *DevStateCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::A
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -171,7 +171,7 @@ CORBA::Any *DevStateCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::A
 		throw;
 	}
 
-	cout4 << "Leaving DevState::execute()" << endl;
+	cout4 << "Leaving DevState::execute()" << std::endl;
 	return out_any;
 }
 
@@ -207,7 +207,7 @@ DevInitCmd::DevInitCmd(const char *name,Tango::CmdArgType in, Tango::CmdArgType 
 
 CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
-	cout4 << "Init::execute(): arrived" << endl;
+	cout4 << "Init::execute(): arrived" << std::endl;
 
 //
 // Get device interface only if necessary (some client(s) listening on device interface change event)
@@ -283,7 +283,7 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 //
 
 		Tango::DeviceClass *dc = device->get_device_class();
-		vector<Tango::DeviceImpl *> dev_v = dc->get_device_list();
+		std::vector<Tango::DeviceImpl *> dev_v = dc->get_device_list();
 		unsigned int loop;
 		for (loop = 0;loop < dev_v.size();loop++)
 		{
@@ -313,7 +313,7 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 		o << "Init command failed!!";
 		o << "\nHINT: RESTART device with the Restart command of the device server adm. device";
 		o << "\nDevice server adm. device name = dserver/";
-		o << tg->get_ds_name().c_str() << ends;
+		o << tg->get_ds_name().c_str() << std::ends;
 
 		Except::re_throw_exception(e,(const char *)API_InitThrowsException,o.str(),
 				           (const char *)"DevInitCmd::execute()");
