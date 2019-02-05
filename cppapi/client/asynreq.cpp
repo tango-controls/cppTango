@@ -58,7 +58,7 @@ long AsynReq::store_request(CORBA::Request_ptr req,TgRequest::ReqType type)
 	omni_mutex_lock sync(*this);
 	if (cancelled_request.empty() == false)
 	{
-		vector<long>::iterator ite;
+		std::vector<long>::iterator ite;
 		bool ret;
 		for (ite = cancelled_request.begin();ite != cancelled_request.end();++ite)
 		{
@@ -89,7 +89,7 @@ long AsynReq::store_request(CORBA::Request_ptr req,TgRequest::ReqType type)
 
 	TgRequest tmp_req(req,type);
 
-	asyn_poll_req_table.insert(map<long,TgRequest>::value_type(req_id,tmp_req));
+	asyn_poll_req_table.insert(std::map<long,TgRequest>::value_type(req_id,tmp_req));
 
 	return req_id;
 }
@@ -121,8 +121,8 @@ void AsynReq::store_request(CORBA::Request_ptr req,
 	TgRequest tmp_req(dev,type,cb);
 
 	omni_mutex_lock sync(*this);
-	cb_dev_table.insert(map<Connection *,TgRequest>::value_type(dev,tmp_req_dev));
-	cb_req_table.insert(map<CORBA::Request_ptr,TgRequest>::value_type(req,tmp_req));
+	cb_dev_table.insert(std::map<Connection *,TgRequest>::value_type(dev,tmp_req_dev));
+	cb_req_table.insert(std::map<CORBA::Request_ptr,TgRequest>::value_type(req,tmp_req));
 
 }
 
@@ -142,7 +142,7 @@ void AsynReq::store_request(CORBA::Request_ptr req,
 
 Tango::TgRequest &AsynReq::get_request(long req_id)
 {
-	map<long,TgRequest>::iterator pos;
+	std::map<long,TgRequest>::iterator pos;
 
 	omni_mutex_lock sync(*this);
 	pos = asyn_poll_req_table.find(req_id);
@@ -151,7 +151,7 @@ Tango::TgRequest &AsynReq::get_request(long req_id)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to find a asynchronous polling request ";
-		desc << "with id = " << req_id << ends;
+		desc << "with id = " << req_id << std::ends;
                 ApiAsynExcept::throw_exception((const char*)"API_BadAsynPollId",
                         		       desc.str(),
 					       (const char*)"AsynReq::get_request()");
@@ -176,7 +176,7 @@ Tango::TgRequest &AsynReq::get_request(long req_id)
 
 Tango::TgRequest &AsynReq::get_request(CORBA::Request_ptr req)
 {
-	map<CORBA::Request_ptr,TgRequest>::iterator pos;
+	std::map<CORBA::Request_ptr,TgRequest>::iterator pos;
 
 	omni_mutex_lock sync(*this);
 	pos = cb_req_table.find(req);
@@ -210,7 +210,7 @@ Tango::TgRequest &AsynReq::get_request(CORBA::Request_ptr req)
 
 Tango::TgRequest *AsynReq::get_request(Tango::Connection *dev)
 {
-	multimap<Connection *,TgRequest>::iterator pos;
+	std::multimap<Connection *,TgRequest>::iterator pos;
 
 	bool found = false;
 	omni_mutex_lock sync(*this);
@@ -241,7 +241,7 @@ Tango::TgRequest *AsynReq::get_request(Tango::Connection *dev)
 
 void AsynReq::mark_as_arrived(CORBA::Request_ptr req)
 {
-	multimap<Connection *,TgRequest>::iterator pos;
+	std::multimap<Connection *,TgRequest>::iterator pos;
 
 	omni_mutex_lock sync(*this);
 	for (pos = cb_dev_table.begin();pos != cb_dev_table.end();++pos)
@@ -268,7 +268,7 @@ void AsynReq::mark_as_arrived(CORBA::Request_ptr req)
 
 void AsynReq::remove_request(long req_id)
 {
-	map<long,TgRequest>::iterator pos;
+	std::map<long,TgRequest>::iterator pos;
 
 	omni_mutex_lock sync(*this);
 	pos = asyn_poll_req_table.find(req_id);
@@ -277,7 +277,7 @@ void AsynReq::remove_request(long req_id)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to find a asynchronous polling request ";
-		desc << "with id = " << req_id << ends;
+		desc << "with id = " << req_id << std::ends;
                 ApiAsynExcept::throw_exception((const char*)"API_BadAsynPollId",
                         		       desc.str(),
 					       (const char*)"AsynReq::remove_request()");
@@ -305,7 +305,7 @@ void AsynReq::remove_request(long req_id)
 
 bool AsynReq::remove_cancelled_request(long req_id)
 {
-	map<long,TgRequest>::iterator pos;
+	std::map<long,TgRequest>::iterator pos;
 
 	pos = asyn_poll_req_table.find(req_id);
 
@@ -340,8 +340,8 @@ bool AsynReq::remove_cancelled_request(long req_id)
 
 void AsynReq::remove_request(Connection *dev,CORBA::Request_ptr req)
 {
-	multimap<Connection *,TgRequest>::iterator pos;
-	map<CORBA::Request_ptr,TgRequest>::iterator pos_req;
+	std::multimap<Connection *,TgRequest>::iterator pos;
+	std::map<CORBA::Request_ptr,TgRequest>::iterator pos_req;
 
 	omni_mutex_lock sync(*this);
 	for (pos = cb_dev_table.lower_bound(dev);pos != cb_dev_table.upper_bound(dev);++pos)
@@ -375,7 +375,7 @@ void AsynReq::remove_request(Connection *dev,CORBA::Request_ptr req)
 void AsynReq::mark_as_cancelled(long req_id)
 {
 	omni_mutex_lock sync(*this);
-	map<long,TgRequest>::iterator pos;
+	std::map<long,TgRequest>::iterator pos;
 
 	pos = asyn_poll_req_table.find(req_id);
 
@@ -388,7 +388,7 @@ void AsynReq::mark_as_cancelled(long req_id)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to find a asynchronous polling request ";
-		desc << "with id = " << req_id << ends;
+		desc << "with id = " << req_id << std::ends;
 		ApiAsynExcept::throw_exception((const char*)"API_BadAsynPollId",
                         		       desc.str(),
 									   (const char*)"AsynReq::mark_as_cancelled()");
@@ -405,7 +405,7 @@ void AsynReq::mark_as_cancelled(long req_id)
 
 void AsynReq::mark_all_polling_as_cancelled()
 {
-	map<long,TgRequest>::iterator pos;
+	std::map<long,TgRequest>::iterator pos;
 
 	omni_mutex_lock sync(*this);
 	for (pos = asyn_poll_req_table.begin();pos != asyn_poll_req_table.end();++pos)
