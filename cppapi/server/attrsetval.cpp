@@ -81,7 +81,7 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 	{
 		SAFE_DELETE(p_data);
 
-		stringstream ss;
+		std::stringstream ss;
 		ss << "Invalid data type for attribute " << name;
 
 		Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_value()");
@@ -95,7 +95,7 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 	{
 		SAFE_DELETE(p_data);
 
-		stringstream ss;
+		std::stringstream ss;
 		ss << "Data size for attribute " << name << " exceeds given limit";
 
 		Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_value()");
@@ -129,7 +129,7 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 		{
 			SAFE_DELETE(p_data);
 
-			stringstream ss;
+			std::stringstream ss;
 			ss << "Attribute " << name << " data type is enum but no enum labels are defined!";
 
 			Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_value()");
@@ -142,7 +142,7 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 			{
 				SAFE_DELETE(p_data);
 
-				stringstream ss;
+				std::stringstream ss;
 				ss << "Wrong value for attribute " << name;
 				ss << ". Element " << i << " (value = " << p_data[i] << ") is negative or above the limit defined by the enum (" << max_val << ").";
 
@@ -223,7 +223,7 @@ void Attribute::set_value(Tango::DevLong *p_data,long x,long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Invalid data type for attribute " << name << ends;
+		o << "Invalid data type for attribute " << name << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,
 				      o.str(),
 				      (const char *)"Attribute::set_value()");
@@ -239,7 +239,7 @@ void Attribute::set_value(Tango::DevLong *p_data,long x,long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
+		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -337,7 +337,7 @@ void Attribute::set_value(Tango::DevLong64 *p_data,long x,long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Invalid data type for attribute " << name << ends;
+		o << "Invalid data type for attribute " << name << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,
 				      o.str(),
 				      (const char *)"Attribute::set_value()");
@@ -353,7 +353,7 @@ void Attribute::set_value(Tango::DevLong64 *p_data,long x,long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
+		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -451,7 +451,7 @@ void Attribute::set_value(Tango::DevFloat *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Invalid data type for attribute " << name << ends;
+		o << "Invalid data type for attribute " << name << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -466,7 +466,7 @@ void Attribute::set_value(Tango::DevFloat *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
+		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -563,7 +563,7 @@ void Attribute::set_value(Tango::DevDouble *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Invalid data type for attribute " << name << ends;
+		o << "Invalid data type for attribute " << name << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -578,7 +578,7 @@ void Attribute::set_value(Tango::DevDouble *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
+		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -675,7 +675,7 @@ void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Invalid data type for attribute " << name << ends;
+		o << "Invalid data type for attribute " << name << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -690,7 +690,7 @@ void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
+		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -815,7 +815,7 @@ void Attribute::set_value(Tango::DevUShort *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Invalid data type for attribute " << name << ends;
+		o << "Invalid data type for attribute " << name << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -830,7 +830,7 @@ void Attribute::set_value(Tango::DevUShort *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
+		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -928,7 +928,7 @@ void Attribute::set_value(Tango::DevBoolean *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Invalid data type for attribute " << name << ends;
+		o << "Invalid data type for attribute " << name << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -943,7 +943,7 @@ void Attribute::set_value(Tango::DevBoolean *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
+		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -1042,7 +1042,7 @@ void Attribute::set_value(Tango::DevUChar *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Invalid data type for attribute " << name << ends;
+		o << "Invalid data type for attribute " << name << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -1057,7 +1057,7 @@ void Attribute::set_value(Tango::DevUChar *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
+		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -1153,7 +1153,7 @@ void Attribute::set_value(Tango::DevULong *p_data,long x,long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Invalid data type for attribute " << name << ends;
+		o << "Invalid data type for attribute " << name << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,
 				      o.str(),
 				      (const char *)"Attribute::set_value()");
@@ -1169,7 +1169,7 @@ void Attribute::set_value(Tango::DevULong *p_data,long x,long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
+		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -1266,7 +1266,7 @@ void Attribute::set_value(Tango::DevULong64 *p_data,long x,long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Invalid data type for attribute " << name << ends;
+		o << "Invalid data type for attribute " << name << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,
 				      o.str(),
 				      (const char *)"Attribute::set_value()");
@@ -1282,7 +1282,7 @@ void Attribute::set_value(Tango::DevULong64 *p_data,long x,long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
+		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -1379,7 +1379,7 @@ void Attribute::set_value(Tango::DevState *p_data,long x,long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Invalid data type for attribute " << name << ends;
+		o << "Invalid data type for attribute " << name << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,
 				      o.str(),
 				      (const char *)"Attribute::set_value()");
@@ -1395,7 +1395,7 @@ void Attribute::set_value(Tango::DevState *p_data,long x,long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
+		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -1493,7 +1493,7 @@ void Attribute::set_value(Tango::DevEncoded *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Invalid data type for attribute " << name << ends;
+		o << "Invalid data type for attribute " << name << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -1508,7 +1508,7 @@ void Attribute::set_value(Tango::DevEncoded *p_data,long x, long y,bool release)
 
 		TangoSys_OMemStream o;
 
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
+		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 				      (const char *)"Attribute::set_value()");
 	}
@@ -1588,7 +1588,7 @@ void Attribute::set_value(Tango::DevString *p_data_str,Tango::DevUChar *p_data,l
 	if (p_data_str == NULL || p_data == NULL)
 	{
 		TangoSys_OMemStream o;
-		o << "Data pointer for attribute " << name << " is NULL!" << ends;
+		o << "Data pointer for attribute " << name << " is NULL!" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
                             (const char *)"Attribute::set_value()");
 	}
@@ -1622,7 +1622,7 @@ void Attribute::set_value(Tango::EncodedAttribute *attr)
 	if( *f==NULL )
 	{
 		TangoSys_OMemStream o;
-		o << "DevEncoded format for attribute " << name << " not specified" << ends;
+		o << "DevEncoded format for attribute " << name << " not specified" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
                             (const char *)"Attribute::set_value()");
 	}
@@ -1630,7 +1630,7 @@ void Attribute::set_value(Tango::EncodedAttribute *attr)
 	if( size==0 || !d )
 	{
 		TangoSys_OMemStream o;
-		o << "DevEncoded data for attribute " << name << " not specified" << ends;
+		o << "DevEncoded data for attribute " << name << " not specified" << std::ends;
 		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
 								(const char *)"Attribute::set_value()");
 	}
