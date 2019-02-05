@@ -88,7 +88,7 @@ EventQueue::EventQueue(long max_size)
 
 EventQueue::~EventQueue()
 {
-	cout3 << "Entering EventQueue::~EventQueue nb_elt = " << nb_elt << endl;
+	cout3 << "Entering EventQueue::~EventQueue nb_elt = " << nb_elt << std::endl;
 
 //
 // lock the event queue
@@ -149,7 +149,7 @@ EventQueue::~EventQueue()
 
 void EventQueue::insert_event (EventData *new_event)
 {
-	cout3 << "Entering EventQueue::insert_event" << endl;
+	cout3 << "Entering EventQueue::insert_event" << std::endl;
 
 	// lock the event queue
 	omni_mutex_lock l(modification_mutex);
@@ -203,7 +203,7 @@ void EventQueue::insert_event (EventData *new_event)
 
 void EventQueue::insert_event (AttrConfEventData *new_event)
 {
-	cout3 << "Entering EventQueue::insert_event" << endl;
+	cout3 << "Entering EventQueue::insert_event" << std::endl;
 
 	// lock the event queue
 	omni_mutex_lock l(modification_mutex);
@@ -257,7 +257,7 @@ void EventQueue::insert_event (AttrConfEventData *new_event)
 
 void EventQueue::insert_event (DataReadyEventData *new_event)
 {
-	cout3 << "Entering EventQueue::insert_event" << endl;
+	cout3 << "Entering EventQueue::insert_event" << std::endl;
 
 	// lock the event queue
 	omni_mutex_lock l(modification_mutex);
@@ -312,7 +312,7 @@ void EventQueue::insert_event (DataReadyEventData *new_event)
 
 void EventQueue::insert_event (DevIntrChangeEventData *new_event)
 {
-	cout3 << "Entering EventQueue::insert_event" << endl;
+	cout3 << "Entering EventQueue::insert_event" << std::endl;
 
 //
 // lock the event queue
@@ -387,7 +387,7 @@ void EventQueue::insert_event (DevIntrChangeEventData *new_event)
 
 void EventQueue::insert_event (PipeEventData *new_event)
 {
-	cout3 << "Entering EventQueue::insert_event" << endl;
+	cout3 << "Entering EventQueue::insert_event" << std::endl;
 
 	// lock the event queue
 	omni_mutex_lock l(modification_mutex);
@@ -489,7 +489,7 @@ int EventQueue::size()
 
 TimeVal EventQueue::get_last_event_date()
 {
-	cout3 << "Entering EventQueue::get_last_insert_date" << endl;
+	cout3 << "Entering EventQueue::get_last_insert_date" << std::endl;
 
 	// lock the event queue
 	omni_mutex_lock l(modification_mutex);
@@ -531,7 +531,7 @@ TimeVal EventQueue::get_last_event_date()
 			{
 				TangoSys_OMemStream o;
 				o << "No new events available!\n";
-				o << "Cannot return any event date" << ends;
+				o << "Cannot return any event date" << std::ends;
 				EventSystemExcept::throw_exception((const char *)API_EventQueues,
 				        o.str(),
 				        (const char *)"EventQueue::get_last_event_date()");
@@ -564,7 +564,7 @@ TimeVal EventQueue::get_last_event_date()
 
 void EventQueue::get_events(EventDataList &event_list)
 {
-	cout3 << "Entering EventQueue::get_events" << endl;
+	cout3 << "Entering EventQueue::get_events" << std::endl;
 
 	// lock the event queue
 	omni_mutex_lock l(modification_mutex);
@@ -608,7 +608,7 @@ void EventQueue::get_events(EventDataList &event_list)
 	insert_elt  = 0;
 	nb_elt      = 0;
 
-	cout3 << "EventQueue::get_events() : size = " << event_list.size() << endl;
+	cout3 << "EventQueue::get_events() : size = " << event_list.size() << std::endl;
 	return;
 }
 
@@ -629,7 +629,7 @@ void EventQueue::get_events(EventDataList &event_list)
 
 void EventQueue::get_events(AttrConfEventDataList &event_list)
 {
-	cout3 << "Entering EventQueue::get_events" << endl;
+	cout3 << "Entering EventQueue::get_events" << std::endl;
 
 	// lock the event queue
 	omni_mutex_lock l(modification_mutex);
@@ -673,7 +673,7 @@ void EventQueue::get_events(AttrConfEventDataList &event_list)
 	insert_elt  = 0;
 	nb_elt      = 0;
 
-	cout3 << "EventQueue::get_events() : size = " << event_list.size() << endl;
+	cout3 << "EventQueue::get_events() : size = " << event_list.size() << std::endl;
 
 	return;
 }
@@ -696,7 +696,7 @@ void EventQueue::get_events(AttrConfEventDataList &event_list)
 
 void EventQueue::get_events(DataReadyEventDataList &event_list)
 {
-	cout3 << "Entering EventQueue::get_events" << endl;
+	cout3 << "Entering EventQueue::get_events" << std::endl;
 
 	// lock the event queue
 	omni_mutex_lock l(modification_mutex);
@@ -740,7 +740,7 @@ void EventQueue::get_events(DataReadyEventDataList &event_list)
 	insert_elt  = 0;
 	nb_elt      = 0;
 
-	cout3 << "EventQueue::get_events() : size = " << event_list.size() << endl;
+	cout3 << "EventQueue::get_events() : size = " << event_list.size() << std::endl;
 
 	return;
 }
@@ -762,7 +762,7 @@ void EventQueue::get_events(DataReadyEventDataList &event_list)
 
 void EventQueue::get_events(DevIntrChangeEventDataList &event_list)
 {
-	cout3 << "Entering EventQueue::get_events" << endl;
+	cout3 << "Entering EventQueue::get_events" << std::endl;
 
 //
 // lock the event queue
@@ -818,7 +818,7 @@ void EventQueue::get_events(DevIntrChangeEventDataList &event_list)
 	insert_elt  = 0;
 	nb_elt      = 0;
 
-	cout3 << "EventQueue::get_events() : size = " << event_list.size() << endl;
+	cout3 << "EventQueue::get_events() : size = " << event_list.size() << std::endl;
 
 	return;
 }
@@ -841,7 +841,7 @@ void EventQueue::get_events(DevIntrChangeEventDataList &event_list)
 
 void EventQueue::get_events(PipeEventDataList &event_list)
 {
-	cout3 << "Entering EventQueue::get_events" << endl;
+	cout3 << "Entering EventQueue::get_events" << std::endl;
 
 //
 // lock the event queue
@@ -897,7 +897,7 @@ void EventQueue::get_events(PipeEventDataList &event_list)
 	insert_elt  = 0;
 	nb_elt      = 0;
 
-	cout3 << "EventQueue::get_events() : size = " << event_list.size() << endl;
+	cout3 << "EventQueue::get_events() : size = " << event_list.size() << std::endl;
 
 	return;
 }
@@ -920,13 +920,13 @@ void EventQueue::get_events(PipeEventDataList &event_list)
 
 void EventQueue::get_events(CallBack *cb)
 {
-	cout3 << "Entering EventQueue::get_events" << endl;
+	cout3 << "Entering EventQueue::get_events" << std::endl;
 
 	if ( cb == NULL )
 	{
 		TangoSys_OMemStream o;
 		o << "No callback object given!\n";
-		o << "Cannot return any event data" << ends;
+		o << "Cannot return any event data" << std::ends;
 		EventSystemExcept::throw_exception((const char *)API_EventQueues,
 				        o.str(),
 				        (const char *)"EventQueue::get_events()");
@@ -963,8 +963,8 @@ void EventQueue::get_events(CallBack *cb)
 			}
 			catch (...)
 			{
-				cerr << "Tango::EventQueue::get_events() exception in callback method \nfor attribute " <<
-			            (*vpos)->attr_name << "with event type " << (*vpos)->event << endl;
+				std::cerr << "Tango::EventQueue::get_events() exception in callback method \nfor attribute " <<
+			            (*vpos)->attr_name << "with event type " << (*vpos)->event << std::endl;
 			}
 		}
 	}
@@ -995,8 +995,8 @@ void EventQueue::get_events(CallBack *cb)
 			}
 			catch (...)
 			{
-				cerr << "Tango::EventQueue::get_events() exception in callback method \nfor attribute " <<
-			            (*vpos)->attr_name << "with event type " << (*vpos)->event << endl;
+				std::cerr << "Tango::EventQueue::get_events() exception in callback method \nfor attribute " <<
+			            (*vpos)->attr_name << "with event type " << (*vpos)->event << std::endl;
 			}
 		}
 
@@ -1028,8 +1028,8 @@ void EventQueue::get_events(CallBack *cb)
 			}
 			catch (...)
 			{
-				cerr << "Tango::EventQueue::get_events() exception in callback method \nfor device " <<
-			            (*vpos)->device_name << "with event type " << (*vpos)->event << endl;
+				std::cerr << "Tango::EventQueue::get_events() exception in callback method \nfor device " <<
+			            (*vpos)->device_name << "with event type " << (*vpos)->event << std::endl;
 			}
 		}
 
@@ -1060,8 +1060,8 @@ void EventQueue::get_events(CallBack *cb)
 			}
 			catch (...)
 			{
-				cerr << "Tango::EventQueue::get_events() exception in callback method \nfor attribute " <<
-			            (*vpos)->attr_name << "with event type " << (*vpos)->event << endl;
+				std::cerr << "Tango::EventQueue::get_events() exception in callback method \nfor attribute " <<
+			            (*vpos)->attr_name << "with event type " << (*vpos)->event << std::endl;
 			}
 		}
 
