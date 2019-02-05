@@ -277,7 +277,7 @@ void Util::effective_job(int argc,char *argv[])
 		int err = WSAStartup(rel,&dat);
 		if (err != 0)
 		{
-			stringstream ss;
+			std::stringstream ss;
 			ss << "WSAStartup function failed with error " << err;
 			print_err_message(ss.str());
 		}
@@ -417,9 +417,9 @@ void Util::effective_job(int argc,char *argv[])
 		Logging::init(ds_name, (int)_tracelevel,  ((!_FileDb) && _UseDb), *db, this);
 #endif
 
-		cout4 << "Connected to database" << endl;
+		cout4 << "Connected to database" << std::endl;
 		if (get_db_cache() == NULL)
-			cout4 << "DbServerCache unavailable, will call db..." << endl;
+			cout4 << "DbServerCache unavailable, will call db..." << std::endl;
 
 //
 // Check if the server is not already running somewhere else
@@ -451,9 +451,9 @@ void Util::effective_job(int argc,char *argv[])
 		heartbeat_th = new PollThread(shared_data,poll_mon,true);
 		heartbeat_th->start();
 		heartbeat_th_id = heartbeat_th->id();
-		cout4 << "Heartbeat thread Id = " << heartbeat_th_id << endl;
+		cout4 << "Heartbeat thread Id = " << heartbeat_th_id << std::endl;
 
-		cout4 << "Tango object singleton constructed" << endl;
+		cout4 << "Tango object singleton constructed" << std::endl;
 
 	}
 	catch (CORBA::Exception &)
@@ -614,7 +614,7 @@ void Util::check_args(int argc,char *argv[])
 // Check command line argument
 //
 
-	string first_arg(argv[1]);
+	std::string first_arg(argv[1]);
 	display_help = false;
 
 	if ((argc == 2) && (_UseDb == true))
@@ -664,8 +664,8 @@ void Util::check_args(int argc,char *argv[])
 //
 
 #ifdef _TG_WINDOWS_
-	string::size_type pos;
-	if ((pos = ds_exec_name.find('.')) != string::npos)
+	std::string::size_type pos;
+	if ((pos = ds_exec_name.find('.')) != std::string::npos)
 	{
 		ds_exec_name.erase(pos,ds_exec_name.size());
 	}
@@ -674,7 +674,7 @@ void Util::check_args(int argc,char *argv[])
 	if (argc > 2)
 	{
 		long ind = 2;
-		string dlist;
+		std::string dlist;
 		while (ind < argc)
 		{
 			if (argv[ind][0] == '-')
@@ -695,7 +695,7 @@ void Util::check_args(int argc,char *argv[])
 								set_trace_level(4);
 							else
 							{
-								cerr << "Unknown option " << argv[ind] << endl;
+								std::cerr << "Unknown option " << argv[ind] << std::endl;
 								print_usage(argv[0]);
 							}
 						}
@@ -708,7 +708,7 @@ void Util::check_args(int argc,char *argv[])
 						long level = atol(&(argv[ind][2]));
 						if (level == 0)
 						{
-							cerr << "Unknown option " << argv[ind] << endl;
+							std::cerr << "Unknown option " << argv[ind] << std::endl;
 							print_usage(argv[0]);
 						}
 						else
@@ -726,7 +726,7 @@ void Util::check_args(int argc,char *argv[])
 				case 'n':
 					if (strcmp(argv[ind],"-nodb") != 0)
 					{
-						cerr << "Unknown option " << argv[ind] << endl;
+						std::cerr << "Unknown option " << argv[ind] << std::endl;
 						print_usage(argv[0]);
 					}
 					else
@@ -743,7 +743,7 @@ void Util::check_args(int argc,char *argv[])
 				case 'f':
 					if (strncmp(argv[ind],"-file=",6) != 0)
 					{
-						cerr << "Unknown option " << argv[ind] << endl;
+						std::cerr << "Unknown option " << argv[ind] << std::endl;
 						print_usage(argv[0]);
 					}
 					else
@@ -758,7 +758,7 @@ void Util::check_args(int argc,char *argv[])
 							database_file_name.end(),
 							'\\','/');
 #endif
-						cout4 << "File name = <" << database_file_name << ">" << endl;
+						cout4 << "File name = <" << database_file_name << ">" << std::endl;
 						ind++;
 
 //
@@ -782,7 +782,7 @@ void Util::check_args(int argc,char *argv[])
 
 					if (strcmp(argv[ind],"-dlist") != 0)
 					{
-						cerr << "Unknown option " << argv[ind] << endl;
+						std::cerr << "Unknown option " << argv[ind] << std::endl;
 						print_usage(argv[0]);
 					}
 					else
@@ -801,13 +801,13 @@ void Util::check_args(int argc,char *argv[])
 // Extract each device name
 //
 
-							string::size_type start = 0;
-							string str;
-							string::size_type pos;
-//vector<string> &list = get_cmd_line_name_list();
-							vector<string>	dev_list;
+							std::string::size_type start = 0;
+							std::string str;
+							std::string::size_type pos;
+//vector<std::string> &list = get_cmd_line_name_list();
+							std::vector<std::string>	dev_list;
 
-							while ((pos = dlist.find(',',start)) != string::npos)
+							while ((pos = dlist.find(',',start)) != std::string::npos)
 							{
 								str = dlist.substr(start,pos - start);
 								start = pos + 1;
@@ -846,9 +846,9 @@ void Util::check_args(int argc,char *argv[])
 
 //	long ctr;
 //	for (ctr = 0;ctr < ds_exec_name.size();ctr++)
-//		ds_exec_name[ctr] = tolower(ds_exec_name[ctr]);
+//		ds_exec_name[ctr] = std::tolower(ds_exec_name[ctr]);
 //	for (ctr = 0;ctr < ds_instance_name.size();ctr++)
-//		ds_instance_name[ctr] = tolower(ds_instance_name[ctr]);
+//		ds_instance_name[ctr] = std::tolower(ds_instance_name[ctr]);
 	ds_name = ds_exec_name;
 	ds_name.append("/");
 	ds_name.append(ds_instance_name);
@@ -861,7 +861,7 @@ void Util::check_args(int argc,char *argv[])
 	{
 		TangoSys_OMemStream o;
 
-		o << "The device server name is too long! Max length is " << MaxServerNameLength << " characters" << ends;
+		o << "The device server name is too long! Max length is " << MaxServerNameLength << " characters" << std::ends;
 		print_err_message(o.str(),Tango::INFO);
 	}
 
@@ -890,11 +890,11 @@ void Util::check_args(int argc,char *argv[])
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Util::validate_sort(vector<string> &dev_list)
+void Util::validate_sort(std::vector<std::string> &dev_list)
 {
 
 	unsigned long i,j;
-	vector<string> dev_no_class;
+	std::vector<std::string> dev_no_class;
 
 //
 //  First, create a vector with device name in lower case letters without class name
@@ -902,17 +902,17 @@ void Util::validate_sort(vector<string> &dev_list)
 
 	for (i = 0;i < dev_list.size();i++)
 	{
-		string tmp(dev_list[i]);
-		transform(tmp.begin(),tmp.end(),tmp.begin(),::tolower);
+		std::string tmp(dev_list[i]);
+		std::transform(tmp.begin(),tmp.end(),tmp.begin(),::tolower);
 
-		string::size_type pos = tmp.find("::");
-		if (pos == string::npos)
+		std::string::size_type pos = tmp.find("::");
+		if (pos == std::string::npos)
 		{
 			dev_no_class.push_back(tmp);
 		}
 		else
 		{
-			string tmp_no_class = tmp.substr(pos + 2);
+			std::string tmp_no_class = tmp.substr(pos + 2);
 			dev_no_class.push_back(tmp_no_class);
 		}
 	}
@@ -926,7 +926,7 @@ void Util::validate_sort(vector<string> &dev_list)
 		int nb_char = count(dev_no_class[i].begin(),dev_no_class[i].end(),'/');
 		if (nb_char != 2)
 		{
-			stringstream ss;
+			std::stringstream ss;
 			ss << "Device name " << dev_list[i] << " does not have the correct syntax (domain/family/member or ClassName::domain/family/member)";
 			print_err_message(ss.str());
 		}
@@ -949,20 +949,20 @@ void Util::validate_sort(vector<string> &dev_list)
 // syntax is "ClassName::device_name" eg: MyClass::my/device/name
 //
 
-	map<string,vector<string> > &the_map = get_cmd_line_name_list();
-	string::size_type pos;
+	std::map<std::string,std::vector<std::string> > &the_map = get_cmd_line_name_list();
+	std::string::size_type pos;
 
 	for (i = 0;i < dev_list.size();i++)
 	{
 		pos = dev_list[i].find("::");
-		if (pos == string::npos)
+		if (pos == std::string::npos)
 		{
-			map<string,vector<string> >::iterator ite = the_map.find(NoClass);
+			std::map<std::string,std::vector<std::string> >::iterator ite = the_map.find(NoClass);
 			if (ite == the_map.end())
 			{
-				vector<string> v_s;
+				std::vector<std::string> v_s;
 				v_s.push_back(dev_list[i]);
-				the_map.insert(pair<string,vector<string> >(NoClass,v_s));
+				the_map.insert(std::pair<std::string,std::vector<std::string> >(NoClass,v_s));
 			}
 			else
 			{
@@ -971,20 +971,20 @@ void Util::validate_sort(vector<string> &dev_list)
 		}
 		else
 		{
-			string cl_name = dev_list[i].substr(0,pos);
-			transform(cl_name.begin(),cl_name.end(),cl_name.begin(),::tolower);
+			std::string cl_name = dev_list[i].substr(0,pos);
+			std::transform(cl_name.begin(),cl_name.end(),cl_name.begin(),::tolower);
 
-			map<string,vector<string> >::iterator ite = the_map.find(cl_name);
+			std::map<std::string,std::vector<std::string> >::iterator ite = the_map.find(cl_name);
 			if (ite == the_map.end())
 			{
-				vector<string> v_s;
-				string d_name = dev_list[i].substr(pos + 2);
+				std::vector<std::string> v_s;
+				std::string d_name = dev_list[i].substr(pos + 2);
 				v_s.push_back(d_name);
-				the_map.insert(pair<string,vector<string> >(cl_name,v_s));
+				the_map.insert(std::pair<std::string,std::vector<std::string> >(cl_name,v_s));
 			}
 			else
 			{
-				string d_name = dev_list[i].substr(pos + 2);
+				std::string d_name = dev_list[i].substr(pos + 2);
 				ite->second.push_back(d_name);
 			}
 		}
@@ -1018,11 +1018,11 @@ void Util::display_help_message()
 // Try to get instance name from db
 //
 
-	string str("dserver/");
+	std::string str("dserver/");
 	str.append(ds_exec_name);
 	str.append("/*");
 
-	vector<string> db_inst;
+	std::vector<std::string> db_inst;
 
 	try
 	{
@@ -1031,10 +1031,10 @@ void Util::display_help_message()
 	}
 	catch (Tango::DevFailed &e)
 	{
-		string reason(e.errors[0].reason.in());
+		std::string reason(e.errors[0].reason.in());
 		if (reason == API_ReadOnlyMode)
 			o << "\n\nWarning: Control System configured with AccessControl but can't communicate with AccessControl server";
-		o << ends;
+		o << std::ends;
 		print_err_message(o.str(),Tango::INFO);
 	}
 
@@ -1047,7 +1047,7 @@ void Util::display_help_message()
 	{
 		o << "\n\t" << db_inst[i];
 	}
-	o << ends;
+	o << std::ends;
 
 //
 // Display message
@@ -1076,7 +1076,7 @@ void Util::print_usage(char *serv_name)
 	TangoSys_OMemStream o;
 
 	o << "usage :  " << serv_name << " instance_name [-v[trace level]]";
-	o << " [-file=<file_name> | -nodb [-dlist <device name list>] ]" << ends;
+	o << " [-file=<file_name> | -nodb [-dlist <device name list>] ]" << std::ends;
 
 	print_err_message(o.str(),Tango::INFO);
 }
@@ -1135,13 +1135,13 @@ void Util::connect_db()
 				}
 				else
 				{
-					cout4 << "Can't contact db server, will try later" << endl;
+					cout4 << "Can't contact db server, will try later" << std::endl;
 					Tango_sleep(_sleep_between_connect);
 				}
 			}
 			catch (CORBA::Exception &)
 			{
-				cout4 << "Can't contact db server, will try later" << endl;
+				cout4 << "Can't contact db server, will try later" << std::endl;
 				Tango_sleep(_sleep_between_connect);
 			}
 
@@ -1202,7 +1202,7 @@ void Util::connect_db()
 	{
 		TangoSys_OMemStream o;
 
-		o << "Can't build connection to TANGO database server, exiting" << ends;
+		o << "Can't build connection to TANGO database server, exiting" << std::ends;
 		print_err_message(o.str());
 	}
 
@@ -1235,7 +1235,7 @@ void Util::connect_db()
 
 	if (_FileDb == false)
 	{
-		string &inst_name = get_ds_inst_name();
+		std::string &inst_name = get_ds_inst_name();
 		if (inst_name != "-?")
 		{
 			db->set_timeout_millis(DB_TIMEOUT * 4);
@@ -1246,13 +1246,13 @@ void Util::connect_db()
 			}
 			catch (Tango::DevFailed &e)
 			{
-				string base_desc(e.errors[0].desc.in());
-				if (base_desc.find("TRANSIENT_CallTimedout") != string::npos)
-					cerr << "DB timeout while trying to fill the DB server cache. Will use traditional way" << endl;
+				std::string base_desc(e.errors[0].desc.in());
+				if (base_desc.find("TRANSIENT_CallTimedout") != std::string::npos)
+					std::cerr << "DB timeout while trying to fill the DB server cache. Will use traditional way" << std::endl;
 			}
 			catch (...)
 			{
-				cerr << "Unknown exception while trying to fill database cache..." << endl;
+				std::cerr << "Unknown exception while trying to fill database cache..." << std::endl;
 			}
 			db->set_timeout_millis(DB_TIMEOUT);
 			set_svr_starting(true);
@@ -1295,16 +1295,16 @@ void Util::misc_init()
 	pid = DServerSignal::instance()->get_sig_thread_pid();
 #endif
 
-	o << pid << ends;
+	o << pid << std::ends;
 	pid_str = o.str();
 
 //
 // Convert Tango version number to string (for device export)
 //
 
-	o.seekp(0,ios_base::beg);
+	o.seekp(0,std::ios_base::beg);
 	o.clear();
-	o << DevVersion << ends;
+	o << DevVersion << std::ends;
 	version_str = o.str();
 
 //
@@ -1326,11 +1326,11 @@ void Util::misc_init()
 // Check if the user has defined his own publisher hwm (for zmq event tuning)
 //
 
-	string var;
+	std::string var;
 	if (ApiUtil::get_env_var("TANGO_DS_EVENT_BUFFER_HWM",var) == 0)
 	{
 		int pub_hwm = -1;
-		istringstream iss(var);
+		std::istringstream iss(var);
 		iss >> pub_hwm;
 		if (iss)
 			user_pub_hwm = pub_hwm;
@@ -1363,11 +1363,11 @@ void Util::init_host_name()
 	if (gethostname(buffer,80) == 0)
 	{
 		hostname = buffer;
-		transform(hostname.begin(), hostname.end(), hostname.begin(), ::tolower);	// to retain consistency with getnameinfo() which always returns lowercase
+		std::transform(hostname.begin(), hostname.end(), hostname.begin(), ::tolower);	// to retain consistency with getnameinfo() which always returns lowercase
 
-		string::size_type pos = hostname.find('.');
+		std::string::size_type pos = hostname.find('.');
 
-		if (pos == string::npos)
+		if (pos == std::string::npos)
 		{
 			struct addrinfo hints;
 
@@ -1381,11 +1381,11 @@ void Util::init_host_name()
 			struct addrinfo	*info, *ptr;
 			char tmp_host[NI_MAXHOST];
 			bool host_found = false;
-			vector<string>  host_names;
+			std::vector<std::string>  host_names;
 
 			ApiUtil *au = ApiUtil::instance();
-			vector<string> ip_list;
-			au->get_ip_from_if(ip_list);	// returns a list of numeric network addresses
+			std::vector<std::string> ip_list;
+			au->get_ip_from_if(ip_list);	// returns a std::list of numeric network addresses
 
 			for(size_t i = 0; i < ip_list.size() && !host_found; i++)
 			{
@@ -1396,15 +1396,15 @@ void Util::init_host_name()
 					{
 						if(getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,NI_MAXHOST,NULL,0,NI_NAMEREQD) == 0)
 						{
-							string myhost(tmp_host);
+							std::string myhost(tmp_host);
 #ifdef _TG_WINDOWS_
 //
 // On windows, getnameinfo may return name in uppercase letters
 //
-							transform(myhost.begin(),myhost.end(),myhost.begin(),::tolower);
+							std::transform(myhost.begin(),myhost.end(),myhost.begin(),::tolower);
 #endif
-							string::size_type pos = myhost.find('.');
-							if (pos != string::npos)
+							std::string::size_type pos = myhost.find('.');
+							if (pos != std::string::npos)
 							{
                                 host_names.push_back(myhost);
 							}
@@ -1436,8 +1436,8 @@ void Util::init_host_name()
                     bool found = false;
                     for (size_t loop = 0;loop < host_names.size();loop++)
                     {
-                        string::size_type pos = host_names[loop].find('.');
-                        string canon = host_names[loop].substr(0,pos);
+                        std::string::size_type pos = host_names[loop].find('.');
+                        std::string canon = host_names[loop].substr(0,pos);
                         if (hostname == canon)
                         {
                             found = true;
@@ -1451,14 +1451,14 @@ void Util::init_host_name()
                 }
                 else
                 {
-                    string &spec_ip = get_specified_ip();
+                    std::string &spec_ip = get_specified_ip();
                     if (spec_ip.empty() == true)
                     {
                         bool found = false;
                         for (size_t loop = 0;loop < host_names.size();loop++)
                         {
-                            string::size_type pos = host_names[loop].find('.');
-                            string canon = host_names[loop].substr(0,pos);
+                            std::string::size_type pos = host_names[loop].find('.');
+                            std::string canon = host_names[loop].substr(0,pos);
                             if (hostname == canon)
                             {
                                 found = true;
@@ -1490,17 +1490,17 @@ void Util::init_host_name()
                         }
                         else
                         {
-                            string::size_type pos = spec_ip.find('.');
-                            string canon_spec;
-                            if (pos != string::npos)
+                            std::string::size_type pos = spec_ip.find('.');
+                            std::string canon_spec;
+                            if (pos != std::string::npos)
                                 canon_spec = spec_ip.substr(0,pos);
                             else
                                 canon_spec = spec_ip;
 
                             for (size_t loop = 0;loop < host_names.size();loop++)
                             {
-                                string::size_type pos = host_names[loop].find('.');
-                                string canon = host_names[loop].substr(0,pos);
+                                std::string::size_type pos = host_names[loop].find('.');
+                                std::string canon = host_names[loop].substr(0,pos);
                                 if (canon_spec == canon)
                                 {
                                     hostname = host_names[loop];
@@ -1542,7 +1542,7 @@ void Util::create_notifd_event_supplier()
 		{
 			nd_event_supplier = NULL;
 			if (_FileDb == true)
-				cerr << "Can't create notifd event supplier. Notifd event not available" << endl;
+				std::cerr << "Can't create notifd event supplier. Notifd event not available" << std::endl;
 		}
 	}
 	else
@@ -1571,7 +1571,7 @@ void Util::create_zmq_event_supplier()
 	{
 		zmq_event_supplier = NULL;
 		if (_FileDb == true)
-			cerr << "Can't create zmq event supplier. Zmq event not available" << endl;
+			std::cerr << "Can't create zmq event supplier. Zmq event not available" << std::endl;
 	}
 }
 
@@ -1635,13 +1635,13 @@ Util::~Util()
 void Util::server_already_running()
 {
 
-	cout4 << "Entering Util::server_already_running method" << endl;
+	cout4 << "Entering Util::server_already_running method" << std::endl;
 
 //
 // Build device name and try to import it from database or from cache if available
 //
 
-	string dev_name(DSDeviceDomain);
+	std::string dev_name(DSDeviceDomain);
 	dev_name.append(1,'/');
 	dev_name.append(ds_name);
 
@@ -1664,7 +1664,7 @@ void Util::server_already_running()
 			if ((received.inout() >>= db_dev) == false)
 			{
 				TangoSys_OMemStream o;
-				o << "Database error while trying to import " << dev_name << ends;
+				o << "Database error while trying to import " << dev_name << std::ends;
 
 				Except::throw_exception((const char *)API_DatabaseAccess,
 				                o.str(),
@@ -1678,7 +1678,7 @@ void Util::server_already_running()
 
 		if ((db_dev->lvalue)[0] == 0)
 		{
-			cout4 << "Leaving Util::server_already_running method" << endl;
+			cout4 << "Leaving Util::server_already_running method" << std::endl;
 			return;
 		}
 
@@ -1694,17 +1694,17 @@ void Util::server_already_running()
 	{
 		TangoSys_OMemStream o;
 
-		o << "The device server " << ds_name << " is not defined in database. Exiting!" << ends;
+		o << "The device server " << ds_name << " is not defined in database. Exiting!" << std::ends;
 		print_err_message(o.str());
 	}
 	catch (CORBA::TRANSIENT &)
 	{
-		cout4 << "Leaving Util::server_already_running method" << endl;
+		cout4 << "Leaving Util::server_already_running method" << std::endl;
 		return;
 	}
 	catch (CORBA::OBJECT_NOT_EXIST &)
 	{
-		cout4 << "Leaving Util::server_already_running method" << endl;
+		cout4 << "Leaving Util::server_already_running method" << std::endl;
 		return;
 	}
 	catch (CORBA::NO_RESPONSE &)
@@ -1713,13 +1713,13 @@ void Util::server_already_running()
 	}
 	catch (CORBA::COMM_FAILURE &)
 	{
-		cout4 << "Leaving Util::server_already_running method" << endl;
+		cout4 << "Leaving Util::server_already_running method" << std::endl;
 		return;
 	}
 
 	if (CORBA::is_nil(dev))
 	{
-		cout4 << "Leaving Util::server_already_running method" << endl;
+		cout4 << "Leaving Util::server_already_running method" << std::endl;
 		return;
 	}
 
@@ -1764,7 +1764,7 @@ void Util::server_already_running()
 	catch (CORBA::SystemException &) {}
 	catch (CORBA::Exception &) {}
 
-	cout4 << "Leaving Util::server_already_running method" << endl;
+	cout4 << "Leaving Util::server_already_running method" << std::endl;
 
 }
 
@@ -2036,7 +2036,7 @@ void Util::server_run()
 		}
 		else
 		{
-			cout << "Ready to accept request" << endl;
+			cout << "Ready to accept request" << std::endl;
 
 			if (th_id == 0)
 			{
@@ -2066,7 +2066,7 @@ void Util::server_run()
 		}
 	}
 #else
-	cout << "Ready to accept request" << endl;
+	cout << "Ready to accept request" << std::endl;
 
 	if (th_id == 0)
 	{
@@ -2151,7 +2151,7 @@ void Util::server_cleanup()
 //
 //------------------------------------------------------------------------------------------------------------------
 
-vector<DeviceImpl *> &Util::get_device_list_by_class(const string &class_name)
+std::vector<DeviceImpl *> &Util::get_device_list_by_class(const std::string &class_name)
 {
 
 	if (cl_list_ptr == NULL)
@@ -2169,7 +2169,7 @@ vector<DeviceImpl *> &Util::get_device_list_by_class(const string &class_name)
 // end of the last server device creation.
 //
 
-	const vector<DeviceClass *> &tmp_cl_list = *cl_list_ptr;
+	const std::vector<DeviceClass *> &tmp_cl_list = *cl_list_ptr;
 
 //
 // Check if the wanted class really exists
@@ -2199,7 +2199,7 @@ vector<DeviceImpl *> &Util::get_device_list_by_class(const string &class_name)
 	if (i == nb_class)
 	{
 		TangoSys_OMemStream o;
-		o << "Class " << class_name << " not found" << ends;
+		o << "Class " << class_name << " not found" << std::ends;
 		Except::throw_exception((const char *)API_ClassNotFound,
 				        o.str(),
 				        (const char *)"Util::get_device_list_by_class()");
@@ -2208,9 +2208,9 @@ vector<DeviceImpl *> &Util::get_device_list_by_class(const string &class_name)
 	return tmp_cl_list[i]->get_device_list();
 }
 
-vector<DeviceImpl *> &Util::get_device_list_by_class(const char *class_name)
+std::vector<DeviceImpl *> &Util::get_device_list_by_class(const char *class_name)
 {
-	string class_str(class_name);
+	std::string class_str(class_name);
 
 	return get_device_list_by_class(class_str);
 }
@@ -2232,11 +2232,11 @@ vector<DeviceImpl *> &Util::get_device_list_by_class(const char *class_name)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-DeviceImpl *Util::get_device_by_name(const string &dev_name)
+DeviceImpl *Util::get_device_by_name(const std::string &dev_name)
 {
 
-	string dev_name_lower(dev_name);
-	transform(dev_name_lower.begin(),dev_name_lower.end(),dev_name_lower.begin(),::tolower);
+	std::string dev_name_lower(dev_name);
+	std::transform(dev_name_lower.begin(),dev_name_lower.end(),dev_name_lower.begin(),::tolower);
 
 	DeviceImpl *ret_ptr = find_device_name_core(dev_name_lower);
 
@@ -2246,7 +2246,7 @@ DeviceImpl *Util::get_device_by_name(const string &dev_name)
 
 	if (ret_ptr == NULL)
 	{
-		string d_name;
+		std::string d_name;
 
 		if (_UseDb == true)
 		{
@@ -2259,7 +2259,7 @@ DeviceImpl *Util::get_device_by_name(const string &dev_name)
 
 		if (d_name.size() != 0)
 		{
-			transform(d_name.begin(),d_name.end(),d_name.begin(),::tolower);
+			std::transform(d_name.begin(),d_name.end(),d_name.begin(),::tolower);
 
 			ret_ptr = find_device_name_core(d_name);
 
@@ -2283,7 +2283,7 @@ DeviceImpl *Util::get_device_by_name(const string &dev_name)
 	if (ret_ptr == NULL)
 	{
 		TangoSys_OMemStream o;
-		o << "Device " << dev_name << " not found" << ends;
+		o << "Device " << dev_name << " not found" << std::ends;
 		Except::throw_exception((const char *)API_DeviceNotFound,
 				        o.str(),
 				        (const char *)"Util::get_device_by_name()");
@@ -2293,7 +2293,7 @@ DeviceImpl *Util::get_device_by_name(const string &dev_name)
 }
 
 
-DeviceImpl *Util::find_device_name_core(string &dev_name)
+DeviceImpl *Util::find_device_name_core(std::string &dev_name)
 {
 //
 // Retrieve class list. Don't use the get_dserver_device() method followed by the get_class_list(). In case of several
@@ -2301,7 +2301,7 @@ DeviceImpl *Util::find_device_name_core(string &dev_name)
 // end of the dserver object creation is after the end of the last server device creation.
 //
 
-	const vector<DeviceClass *> &tmp_cl_list = *cl_list_ptr;
+	const std::vector<DeviceClass *> &tmp_cl_list = *cl_list_ptr;
 	DeviceImpl *ret_ptr = NULL;
 
 //
@@ -2314,13 +2314,13 @@ DeviceImpl *Util::find_device_name_core(string &dev_name)
 
 	for (i = 0;i < nb_class;i++)
 	{
-		vector<DeviceImpl *> &dev_list = get_device_list_by_class(tmp_cl_list[i]->get_name());
+		std::vector<DeviceImpl *> &dev_list = get_device_list_by_class(tmp_cl_list[i]->get_name());
 		nb_dev = dev_list.size();
 
 		for (j = 0;j < nb_dev;j++)
 		{
-			string name(dev_list[j]->get_name());
-			transform(name.begin(),name.end(),name.begin(),::tolower);
+			std::string name(dev_list[j]->get_name());
+			std::transform(name.begin(),name.end(),name.begin(),::tolower);
 
 			if (name == dev_name)
 			{
@@ -2328,7 +2328,7 @@ DeviceImpl *Util::find_device_name_core(string &dev_name)
 				ret_ptr = dev_list[j];
 				break;
 			}
-			string &alias_name = dev_list[j]->get_alias_name_lower();
+			std::string &alias_name = dev_list[j]->get_alias_name_lower();
 			if (alias_name.size() != 0)
 			{
 				if (alias_name == dev_name)
@@ -2350,9 +2350,9 @@ DeviceImpl *Util::find_device_name_core(string &dev_name)
 	if (found == false && dev_name.find("dserver/") == 0)
 	{
 		DServerClass *ds_class = DServerClass::instance();
-		vector<DeviceImpl *> &devlist = ds_class->get_device_list();
-		string name(devlist[0]->get_name());
-		transform(name.begin(),name.end(),name.begin(),::tolower);
+		std::vector<DeviceImpl *> &devlist = ds_class->get_device_list();
+		std::string name(devlist[0]->get_name());
+		std::transform(name.begin(),name.end(),name.begin(),::tolower);
 		if (name == dev_name)
 		{
 			ret_ptr = devlist[0];
@@ -2369,7 +2369,7 @@ DeviceImpl *Util::find_device_name_core(string &dev_name)
 
 DeviceImpl *Util::get_device_by_name(const char *dev_name)
 {
-	string name_str(dev_name);
+	std::string name_str(dev_name);
 
 	return get_device_by_name(name_str);
 }
@@ -2410,7 +2410,7 @@ DServer *Util::get_dserver_device()
 
 std::vector<DeviceImpl *> Util::get_device_list (const std::string& pattern)
 {
-	cout4 << "In Util::get_device_list" << endl;
+	cout4 << "In Util::get_device_list" << std::endl;
 
 // the returned list
 	std::vector<DeviceImpl*> dl(0);
@@ -2491,7 +2491,7 @@ std::vector<DeviceImpl *> Util::get_device_list (const std::string& pattern)
 				done = 1;
 			}
 			token.assign(pattern.begin() + last_pos, pattern.begin() + pos);
-			cout4 << "Found pattern " << token << endl;
+			cout4 << "Found pattern " << token << std::endl;
 			tokens.push_back(token);
 		}
 		last_pos = pos + 1;
@@ -2524,13 +2524,13 @@ std::vector<DeviceImpl *> Util::get_device_list (const std::string& pattern)
 // if dev_name matches the pattern, add the device to the list
 			if (k == tokens.size())
 			{
-				cout4 << "Device "  << temp_dl[j]->get_name() << " match pattern" << endl;
+				cout4 << "Device "  << temp_dl[j]->get_name() << " match pattern" << std::endl;
 				dl.push_back(temp_dl[j]);
 			}
 		}
 	}
 
-	cout4 << "Returning a device list containing " << dl.size() << " items" << endl;
+	cout4 << "Returning a device list containing " << dl.size() << " items" << std::endl;
 	return dl;
 }
 
@@ -2549,7 +2549,7 @@ std::vector<DeviceImpl *> Util::get_device_list (const std::string& pattern)
 void Util::unregister_server()
 {
 
-	cout4 << "Entering Util::unregister_server method" << endl;
+	cout4 << "Entering Util::unregister_server method" << std::endl;
 
 //
 // Mark all the devices belonging to this server as unexported
@@ -2572,7 +2572,7 @@ void Util::unregister_server()
 			throw;
 		}
 	}
-	cout4 << "Leaving Util::unregister_server method" << endl;
+	cout4 << "Leaving Util::unregister_server method" << std::endl;
 }
 
 
@@ -2613,11 +2613,11 @@ void Util::print_err_message(const char *err_mess,TANGO_UNUSED(Tango::MessBoxTyp
 	}
 	else
 	{
-		cerr << err_mess << endl;
+		std::cerr << err_mess << std::endl;
 		exit(-1);
 	}
 #else
-	cerr << err_mess << endl;
+	std::cerr << err_mess << std::endl;
 	_exit(-1);
 #endif
 }
@@ -2679,9 +2679,9 @@ void Util::clean_dyn_attr_prop()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Util::delete_restarting_device(string &d_name)
+void Util::delete_restarting_device(std::string &d_name)
 {
-    vector<string>::iterator pos;
+    std::vector<std::string>::iterator pos;
     pos = remove(restarting_devices.begin(),restarting_devices.end(),d_name);
     restarting_devices.erase(pos,restarting_devices.end());
 }
@@ -2702,12 +2702,12 @@ void Util::delete_restarting_device(string &d_name)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Util::get_cmd_line_name_list(const string &cl_name,vector<string> &name_list)
+void Util::get_cmd_line_name_list(const std::string &cl_name,std::vector<std::string> &name_list)
 {
-	string  local_cl_name(cl_name);
-	transform(local_cl_name.begin(),local_cl_name.end(),local_cl_name.begin(),::tolower);
+	std::string  local_cl_name(cl_name);
+	std::transform(local_cl_name.begin(),local_cl_name.end(),local_cl_name.begin(),::tolower);
 
-	map<string,vector<string> >::iterator pos = cmd_line_name_list.find(local_cl_name);
+	std::map<std::string,std::vector<std::string> >::iterator pos = cmd_line_name_list.find(local_cl_name);
 	if (pos != cmd_line_name_list.end())
 		name_list.insert(name_list.end(),pos->second.begin(),pos->second.end());
 }
@@ -2724,7 +2724,7 @@ void Util::get_cmd_line_name_list(const string &cl_name,vector<string> &name_lis
 
 void Util::validate_cmd_line_classes()
 {
-	map<string,vector<string> >::iterator pos;
+	std::map<std::string,std::vector<std::string> >::iterator pos;
 
 	for(pos = cmd_line_name_list.begin();pos != cmd_line_name_list.end();++pos)
 	{
@@ -2734,8 +2734,8 @@ void Util::validate_cmd_line_classes()
 		bool found = false;
 		for (size_t loop = 0;loop < cl_list.size();loop++)
 		{
-			string cl_name = cl_list[loop]->get_name();
-			transform(cl_name.begin(),cl_name.end(),cl_name.begin(),::tolower);
+			std::string cl_name = cl_list[loop]->get_name();
+			std::transform(cl_name.begin(),cl_name.end(),cl_name.begin(),::tolower);
 
 			if (cl_name == pos->first)
 			{
@@ -2746,7 +2746,7 @@ void Util::validate_cmd_line_classes()
 
 		if (found == false)
 		{
-			stringstream ss;
+			std::stringstream ss;
 			ss << "Class name " << pos->first << " used on command line device declaration but this class is not embedded in DS process";
 			Except::throw_exception(API_WrongCmdLineArgs,ss.str(),"Util::validate_cmd_line_classes");
 		}
@@ -2770,20 +2770,20 @@ void Util::validate_cmd_line_classes()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Util::tango_host_from_fqan(string &fqan,string &tg_host)
+void Util::tango_host_from_fqan(std::string &fqan,std::string &tg_host)
 {
-	string lower_fqan(fqan);
-	transform(lower_fqan.begin(),lower_fqan.end(),lower_fqan.begin(),::tolower);
+	std::string lower_fqan(fqan);
+	std::transform(lower_fqan.begin(),lower_fqan.end(),lower_fqan.begin(),::tolower);
 
-	string start = lower_fqan.substr(0,5);
+	std::string start = lower_fqan.substr(0,5);
 	if (start != "tango")
 	{
-		stringstream ss;
-		ss << "The provided fqan (" << fqan << ") is not a valid Tango attribute name" << endl;
+		std::stringstream ss;
+		ss << "The provided fqan (" << fqan << ") is not a valid Tango attribute name" << std::endl;
 		Except::throw_exception(API_InvalidArgs,ss.str(),"Util::tango_host_from_fqan");
 	}
 
-	string::size_type pos = lower_fqan.find('/',8);
+	std::string::size_type pos = lower_fqan.find('/',8);
 	tg_host = fqan.substr(8,pos - 8);
 }
 
@@ -2805,16 +2805,16 @@ void Util::tango_host_from_fqan(string &fqan,string &tg_host)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Util::tango_host_from_fqan(string &fqan,string &host,int &port)
+void Util::tango_host_from_fqan(std::string &fqan,std::string &host,int &port)
 {
-	string tmp_tg_host;
+	std::string tmp_tg_host;
 	tango_host_from_fqan(fqan,tmp_tg_host);
 
-	string::size_type pos = tmp_tg_host.find(':');
+	std::string::size_type pos = tmp_tg_host.find(':');
 	host = tmp_tg_host.substr(0,pos);
 
-	string tmp_port = tmp_tg_host.substr(pos + 1);
-	stringstream ss;
+	std::string tmp_port = tmp_tg_host.substr(pos + 1);
+	std::stringstream ss;
 	ss << tmp_port;
 	ss >> port;
 }
@@ -2846,14 +2846,14 @@ void Util::check_end_point_specified(int argc,char *argv[])
         {
             set_endpoint_specified(true);
 
-            string endPoint(argv[i + 1]);
-            string::size_type start,stop;
+            std::string endPoint(argv[i + 1]);
+            std::string::size_type start,stop;
             start = endPoint.find(':');
             ++start;
             start = endPoint.find(':',start);
             stop = endPoint.find(':',start + 1);
             ++start;
-            string ip = endPoint.substr(start,stop - start);
+            std::string ip = endPoint.substr(start,stop - start);
 
             set_specified_ip(ip);
             break;
@@ -2868,18 +2868,18 @@ void Util::check_end_point_specified(int argc,char *argv[])
     if (get_endpoint_specified() == false)
     {
         DummyDeviceProxy d;
-        string env_var;
+        std::string env_var;
         if (d.get_env_var("ORBendPoint",env_var) == 0)
         {
             set_endpoint_specified(true);
 
-            string::size_type start,stop;
+            std::string::size_type start,stop;
             start = env_var.find(':');
             ++start;
             start = env_var.find(':',start);
             stop = env_var.find(':',start + 1);
             ++start;
-            string ip = env_var.substr(start,stop - start);
+            std::string ip = env_var.substr(start,stop - start);
 
             set_specified_ip(ip);
         }
@@ -2896,7 +2896,7 @@ void Util::check_end_point_specified(int argc,char *argv[])
 // First get file name
 //
 
-        string fname;
+        std::string fname;
         bool found = false;
         for (int i = 2;i < argc;i++)
         {
@@ -2911,7 +2911,7 @@ void Util::check_end_point_specified(int argc,char *argv[])
         if (found == false)
         {
             DummyDeviceProxy d;
-            string env_var;
+            std::string env_var;
             if (d.get_env_var("ORBconfigFile",env_var) == 0)
             {
                 fname = env_var;
@@ -2926,8 +2926,8 @@ void Util::check_end_point_specified(int argc,char *argv[])
 // Now, look into the file if it exist
 //
 
-        string line;
-        ifstream conf_file(fname.c_str());
+        std::string line;
+        std::ifstream conf_file(fname.c_str());
 
         if (conf_file.is_open())
         {
@@ -2936,17 +2936,17 @@ void Util::check_end_point_specified(int argc,char *argv[])
                 if (line[0] == '#')
                     continue;
 
-                string::size_type pos = line.find("endPoint");
-                if (pos != string::npos)
+                std::string::size_type pos = line.find("endPoint");
+                if (pos != std::string::npos)
                 {
-                    string::iterator ite = remove(line.begin(),line.end(),' ');
+                    std::string::iterator ite = remove(line.begin(),line.end(),' ');
                     line.erase(ite,line.end());
 
                     pos = line.find('=');
-                    if (pos != string::npos)
+                    if (pos != std::string::npos)
                     {
-                        string value = line.substr(pos+1);
-                        if ((pos = value.find('#')) != string::npos)
+                        std::string value = line.substr(pos+1);
+                        if ((pos = value.find('#')) != std::string::npos)
                             value.erase(pos);
 
                         set_endpoint_specified(true);
@@ -2955,13 +2955,13 @@ void Util::check_end_point_specified(int argc,char *argv[])
 // Option found in file, extract host ip
 //
 
-                        string::size_type start,stop;
+                        std::string::size_type start,stop;
                         start = value.find(':');
                         ++start;
                         start = value.find(':',start);
                         stop = value.find(':',start + 1);
                         ++start;
-                        string ip = value.substr(start,stop - start);
+                        std::string ip = value.substr(start,stop - start);
 
                         set_specified_ip(ip);
                     }
@@ -2973,8 +2973,8 @@ void Util::check_end_point_specified(int argc,char *argv[])
         {
             if (fname != DEFAULT_OMNI_CONF_FILE)
             {
-                 stringstream ss;
-                ss << "Can't open omniORB configuration file (" << fname << ") to check endPoint option" << endl;
+                 std::stringstream ss;
+                ss << "Can't open omniORB configuration file (" << fname << ") to check endPoint option" << std::endl;
                 Except::throw_exception(API_InvalidArgs,ss.str(),"Util::check_end_point_specified");
             }
         }
@@ -3122,14 +3122,14 @@ void *Util::ORBWin32Loop::run_undetached(void *ptr)
 	{
 		DServerClass::init();
 	}
-	catch (bad_alloc)
+	catch (std::bad_alloc)
 	{
 		MessageBox((HWND)NULL,"Memory error","Device creation failed",MB_ICONSTOP);
 		::exit(-1);
 	}
 	catch (Tango::DevFailed &e)
 	{
-		string str(e.errors[0].desc.in());
+		std::string str(e.errors[0].desc.in());
 		str = str + '\n';
 		str = str + e.errors[0].origin.in();
 		MessageBox((HWND)NULL,str.c_str(),"Device creation failed",MB_ICONSTOP);
