@@ -64,7 +64,7 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-DbHistory::DbHistory(string _propname,string _date,vector<string> &svalues) {
+DbHistory::DbHistory(std::string _propname,std::string _date,std::vector<std::string> &svalues) {
 
   propname = _propname;
   date = format_mysql_date(_date);
@@ -79,7 +79,7 @@ DbHistory::DbHistory(string _propname,string _date,vector<string> &svalues) {
 //
 //-----------------------------------------------------------------------------
 
-DbHistory::DbHistory(string _propname,string _attname,string _date,vector<string> &svalues) {
+DbHistory::DbHistory(std::string _propname,std::string _attname,std::string _date,std::vector<std::string> &svalues) {
 
   propname = _propname;
   attname = _attname;
@@ -95,7 +95,7 @@ DbHistory::DbHistory(string _propname,string _attname,string _date,vector<string
 //
 //-----------------------------------------------------------------------------
 
-string DbHistory::get_name() {
+std::string DbHistory::get_name() {
 
   return propname;
 
@@ -108,7 +108,7 @@ string DbHistory::get_name() {
 //
 //-----------------------------------------------------------------------------
 
-string DbHistory::get_attribute_name() {
+std::string DbHistory::get_attribute_name() {
 
   return attname;
 
@@ -120,7 +120,7 @@ string DbHistory::get_attribute_name() {
 //
 //-----------------------------------------------------------------------------
 
-string DbHistory::get_date() {
+std::string DbHistory::get_date() {
 
   return date;
 
@@ -157,10 +157,10 @@ bool DbHistory::is_deleted() {
 //
 //-----------------------------------------------------------------------------
 
-string DbHistory::format_mysql_date(string _date) {
+std::string DbHistory::format_mysql_date(std::string _date) {
 
     // Handle MySQL date formating
-    if( _date.find("-")!=string::npos )
+    if( _date.find("-") != std::string::npos )
       return _date.substr(8,2) + "/" + _date.substr(5,2) + "/" + _date.substr(0,4) + " " +
              _date.substr(11,2) + ":" + _date.substr(14,2) + ":" + _date.substr(17,2);
     else
@@ -175,7 +175,7 @@ string DbHistory::format_mysql_date(string _date) {
 //
 //-----------------------------------------------------------------------------
 
-void DbHistory::make_db_datum(vector<string> &values) {
+void DbHistory::make_db_datum(std::vector<std::string> &values) {
 
   value.name = propname;
   value.value_string.resize(values.size());
