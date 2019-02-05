@@ -83,7 +83,7 @@ static bool WantedProp_f(AttrProperty a,const char *n)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-Attribute::Attribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string &dev_name,long idx)
+Attribute::Attribute(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::string &dev_name,long idx)
 :date(true),quality(Tango::ATTR_VALID),check_min_value(false),check_max_value(false),
  enum_nb(0),loc_enum_ptr(Tango_nullptr),poll_period(0),event_period(0),archive_period(0),last_periodic(0.0),
  archive_last_periodic(0.0),periodic_counter(0),archive_periodic_counter(0),
@@ -113,7 +113,7 @@ Attribute::Attribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string &dev_
 	name = tmp_attr.get_name();
 	name_size = name.size();
 	name_lower = name;
-	transform(name_lower.begin(),name_lower.end(),name_lower.begin(),::tolower);
+	std::transform(name_lower.begin(),name_lower.end(),name_lower.begin(),::tolower);
 
 //
 // Clear alarm data
@@ -220,7 +220,7 @@ Attribute::~Attribute()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &dev_name,Attr &att)
+void Attribute::init_event_prop(std::vector<AttrProperty> &prop_list,const std::string &dev_name,Attr &att)
 {
 	rel_change[0] = INT_MAX;			// default for relative change is none
 	rel_change[1] = INT_MAX;			// default for relative change is none
@@ -234,7 +234,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
     notifd_event = false;
 	zmq_event = false;
 
-	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
+	std::vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
 	size_t nb_user = def_user_prop.size();
 
 //
@@ -243,7 +243,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 
 	try
 	{
-		string rel_change_str;
+		std::string rel_change_str;
 		bool rel_change_defined = false;
 		try
 		{
@@ -258,9 +258,9 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 				(data_type != Tango::DEV_BOOLEAN) &&
 				(data_type != Tango::DEV_STATE))
 			{
-				vector<double> rel_change_tmp;
-				vector<bool> rel_change_set_usr_def;
-				vector<bool> unused;
+				std::vector<double> rel_change_tmp;
+				std::vector<bool> rel_change_set_usr_def;
+				std::vector<bool> unused;
 				validate_change_properties(dev_name,"rel_change",rel_change_str,rel_change_tmp,rel_change_set_usr_def,unused);
 				rel_change[0] = rel_change_tmp[0];
 				rel_change[1] = rel_change_tmp[1];
@@ -277,7 +277,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 						}
 						if (i != nb_user)
 						{
-							vector<double> rel_change_usr_def;
+							std::vector<double> rel_change_usr_def;
 							validate_change_properties(dev_name,"rel_change",def_user_prop[i].get_value(),rel_change_usr_def);
 							if(rel_change_set_usr_def[0])
 								rel_change[0] = rel_change_usr_def[0];
@@ -286,7 +286,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 						}
 					}
 				}
-				cout1 << "Attribute::Attribute(): rel_change = " << rel_change[0] << " " << rel_change[1] << endl;
+				cout1 << "Attribute::Attribute(): rel_change = " << rel_change[0] << " " << rel_change[1] << std::endl;
 			}
 			else
 				throw_err_data_type("rel_change",dev_name,"Attribute::init_event_prop()");
@@ -303,7 +303,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 
 	try
 	{
-		string abs_change_str;
+		std::string abs_change_str;
 		bool abs_change_defined = false;
 		try
 		{
@@ -318,9 +318,9 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 				(data_type != Tango::DEV_BOOLEAN) &&
 				(data_type != Tango::DEV_STATE))
 			{
-				vector<double> abs_change_tmp;
-				vector<bool> abs_change_set_usr_def;
-				vector<bool> unused;
+				std::vector<double> abs_change_tmp;
+				std::vector<bool> abs_change_set_usr_def;
+				std::vector<bool> unused;
 				validate_change_properties(dev_name,"abs_change",abs_change_str,abs_change_tmp,abs_change_set_usr_def,unused);
 				abs_change[0] = abs_change_tmp[0];
 				abs_change[1] = abs_change_tmp[1];
@@ -337,7 +337,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 						}
 						if (i != nb_user)
 						{
-							vector<double> abs_change_usr_def;
+							std::vector<double> abs_change_usr_def;
 							validate_change_properties(dev_name,"abs_change",def_user_prop[i].get_value(),abs_change_usr_def);
 							if(abs_change_set_usr_def[0])
 								abs_change[0] = abs_change_usr_def[0];
@@ -346,7 +346,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 						}
 					}
 				}
-				cout1 << "Attribute::Attribute(): abs_change = " << abs_change[0] << " " << abs_change[1] << endl;
+				cout1 << "Attribute::Attribute(): abs_change = " << abs_change[0] << " " << abs_change[1] << std::endl;
 			}
 			else
 				throw_err_data_type("abs_change",dev_name,"Attribute::init_event_prop()");
@@ -363,7 +363,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 
 	try
 	{
-		string archive_rel_change_str;
+		std::string archive_rel_change_str;
 		bool archive_rel_change_defined = false;
 		try
 		{
@@ -378,9 +378,9 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 				(data_type != Tango::DEV_BOOLEAN) &&
 				(data_type != Tango::DEV_STATE))
 			{
-				vector<double> archive_rel_change_tmp;
-				vector<bool> archive_rel_change_set_usr_def;
-				vector<bool> unused;
+				std::vector<double> archive_rel_change_tmp;
+				std::vector<bool> archive_rel_change_set_usr_def;
+				std::vector<bool> unused;
 				validate_change_properties(dev_name,"archive_rel_change",archive_rel_change_str,archive_rel_change_tmp,archive_rel_change_set_usr_def,unused);
 				archive_rel_change[0] = archive_rel_change_tmp[0];
 				archive_rel_change[1] = archive_rel_change_tmp[1];
@@ -397,7 +397,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 						}
 						if (i != nb_user)
 						{
-							vector<double> archive_rel_change_usr_def;
+							std::vector<double> archive_rel_change_usr_def;
 							validate_change_properties(dev_name,"archive_rel_change",def_user_prop[i].get_value(),archive_rel_change_usr_def);
 							if(archive_rel_change_set_usr_def[0])
 								archive_rel_change[0] = archive_rel_change_usr_def[0];
@@ -406,7 +406,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 						}
 					}
 				}
-				cout1 << "Attribute::Attribute(): archive_rel_change = " << archive_rel_change[0] << " " << archive_rel_change[1] << endl;
+				cout1 << "Attribute::Attribute(): archive_rel_change = " << archive_rel_change[0] << " " << archive_rel_change[1] << std::endl;
 			}
 			else
 				throw_err_data_type("archive_rel_change",dev_name,"Attribute::init_event_prop()");
@@ -423,7 +423,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 
 	try
 	{
-		string archive_abs_change_str;
+		std::string archive_abs_change_str;
 		bool archive_abs_change_defined = false;
 		try
 		{
@@ -438,9 +438,9 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 				(data_type != Tango::DEV_BOOLEAN) &&
 				(data_type != Tango::DEV_STATE))
 			{
-				vector<double> archive_abs_change_tmp;
-				vector<bool> archive_abs_change_set_usr_def;
-				vector<bool> unused;
+				std::vector<double> archive_abs_change_tmp;
+				std::vector<bool> archive_abs_change_set_usr_def;
+				std::vector<bool> unused;
 				validate_change_properties(dev_name,"archive_abs_change",archive_abs_change_str,archive_abs_change_tmp,archive_abs_change_set_usr_def,unused);
 				archive_abs_change[0] = archive_abs_change_tmp[0];
 				archive_abs_change[1] = archive_abs_change_tmp[1];
@@ -457,7 +457,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 						}
 						if (i != nb_user)
 						{
-							vector<double> archive_abs_change_usr_def;
+							std::vector<double> archive_abs_change_usr_def;
 							validate_change_properties(dev_name,"archive_abs_change",def_user_prop[i].get_value(),archive_abs_change_usr_def);
 							if(archive_abs_change_set_usr_def[0])
 								archive_abs_change[0] = archive_abs_change_usr_def[0];
@@ -466,7 +466,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 						}
 					}
 				}
-				cout1 << "Attribute::Attribute(): archive_abs_change = " << archive_abs_change[0] << " " << archive_abs_change[1] << endl;
+				cout1 << "Attribute::Attribute(): archive_abs_change = " << archive_abs_change[0] << " " << archive_abs_change[1] << std::endl;
 			}
 			else
 				throw_err_data_type("archive_abs_change",dev_name,"Attribute::init_event_prop()");
@@ -485,7 +485,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 	{
 		event_period = (int)(DEFAULT_EVENT_PERIOD);  	// default for event period is 1 second
 
-		string event_period_str;
+		std::string event_period_str;
 		bool event_period_defined = false;
 		try
 		{
@@ -503,7 +503,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 			{
 				if (event_period_tmp > 0)
 					event_period = event_period_tmp;
-				cout1 << "Attribute::Attribute(): event_period_str " << event_period_str << " event_period = " << event_period << endl;
+				cout1 << "Attribute::Attribute(): event_period_str " << event_period_str << " event_period = " << event_period << std::endl;
 			}
 			else
 				throw_err_format("event_period",dev_name,"Attribute::init_event_prop()");
@@ -522,7 +522,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 	{
 		archive_period = (int)(INT_MAX);
 
-		string archive_period_str;
+		std::string archive_period_str;
 		bool archive_period_defined = false;
 		try
 		{
@@ -542,7 +542,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 				{
 					archive_period = archive_period_tmp;
 				}
-				cout1 << "Attribute::Attribute(): archive_period_str " << archive_period_str << " archive_period = " << archive_period << endl;
+				cout1 << "Attribute::Attribute(): archive_period_str " << archive_period_str << " archive_period = " << archive_period << std::endl;
 			}
 			else
 				throw_err_format("archive_period",dev_name,"Attribute::init_event_prop()");
@@ -626,8 +626,8 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-bool Attribute::init_check_val_prop (vector<AttrProperty> &prop_list,string &dev_name,const char* prop_name,
-                                    string& prop_str,Tango::Attr_CheckVal &prop,Tango::Attr_CheckVal &prop_comp)
+bool Attribute::init_check_val_prop (std::vector<AttrProperty> &prop_list,std::string &dev_name,const char* prop_name,
+                                    std::string& prop_str,Tango::Attr_CheckVal &prop,Tango::Attr_CheckVal &prop_comp)
 {
     prop_str = get_attr_value(prop_list, prop_name);
 
@@ -860,7 +860,7 @@ bool Attribute::init_check_val_prop (vector<AttrProperty> &prop_list,string &dev
         throw_err_format(prop_name, dev_name, "Attribute::init_opt_prop()");
     else if (is_incoherent_val_err)
     {
-        string opp_prop_name(prop_name);
+        std::string opp_prop_name(prop_name);
         opp_prop_name[1] = (opp_prop_name[1] == 'a') ? ('i') : ('a'); // max_... ->  mix_... || min_... ->  man_...
         opp_prop_name[2] = (opp_prop_name[2] == 'x') ? ('n') : ('x'); // mix_... ->  min_... || man_... ->  max_...
 
@@ -888,7 +888,7 @@ bool Attribute::init_check_val_prop (vector<AttrProperty> &prop_list,string &dev
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::init_opt_prop(vector<AttrProperty> &prop_list,string &dev_name)
+void Attribute::init_opt_prop(std::vector<AttrProperty> &prop_list,std::string &dev_name)
 {
 
 //
@@ -1116,7 +1116,7 @@ void Attribute::init_opt_prop(vector<AttrProperty> &prop_list,string &dev_name)
 			TangoSys_OMemStream o;
 
 			o << "RDS alarm properties (delta_t and delta_val) are not correctly defined for attribute " << name;
-			o << " in device " << dev_name << ends;
+			o << " in device " << dev_name << std::ends;
 			Except::throw_exception((const char *)API_AttrOptProp,
 						  o.str(),
 						  (const char *)"Attribute::init_opt_prop()");
@@ -1142,19 +1142,19 @@ void Attribute::init_opt_prop(vector<AttrProperty> &prop_list,string &dev_name)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::init_enum_prop(vector<AttrProperty> &prop_list)
+void Attribute::init_enum_prop(std::vector<AttrProperty> &prop_list)
 {
 	try
 	{
-		string tmp_enum_label = get_attr_value(prop_list,"enum_labels");
+		std::string tmp_enum_label = get_attr_value(prop_list,"enum_labels");
 		build_check_enum_labels(tmp_enum_label);
 	}
 	catch(DevFailed &e)
 	{
-		string desc(e.errors[0].desc.in());
-		if (desc.find("Property enum_labels is missing") != string::npos)
+		std::string desc(e.errors[0].desc.in());
+		if (desc.find("Property enum_labels is missing") != std::string::npos)
 		{
-			stringstream ss;
+			std::stringstream ss;
 			ss << "The attribute " << name << " has the DEV_ENUM data type but there is no enumeration label(s) defined";
 
 			e.errors[0].desc = Tango::string_dup(ss.str().c_str());
@@ -1177,10 +1177,10 @@ void Attribute::init_enum_prop(vector<AttrProperty> &prop_list)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::build_check_enum_labels(string &labs)
+void Attribute::build_check_enum_labels(std::string &labs)
 {
-	string::size_type pos = 0;
-	string::size_type start = 0;
+	std::string::size_type pos = 0;
+	std::string::size_type start = 0;
 	bool exit = false;
 
 	enum_labels.clear();
@@ -1192,15 +1192,15 @@ void Attribute::build_check_enum_labels(string &labs)
 	while(exit == false)
 	{
 		pos = labs.find(',',start);
-		if (pos == string::npos)
+		if (pos == std::string::npos)
 		{
-			string tmp = labs.substr(start);
+			std::string tmp = labs.substr(start);
 			enum_labels.push_back(tmp);
 			exit = true;
 		}
 		else
 		{
-			string tmp = labs.substr(start,pos - start);
+			std::string tmp = labs.substr(start,pos - start);
 			enum_labels.push_back(tmp);
 			start = pos + 1;
 		}
@@ -1210,13 +1210,13 @@ void Attribute::build_check_enum_labels(string &labs)
 // Check that all labels are different
 //
 
-	vector<string> v_s = enum_labels;
+	std::vector<std::string> v_s = enum_labels;
 	sort(v_s.begin(),v_s.end());
 	for (size_t loop = 1;loop < v_s.size();loop++)
 	{
 		if (v_s[loop - 1] == v_s[loop])
 		{
-			stringstream ss;
+			std::stringstream ss;
 			ss << "Enumeration for attribute " << name << " has two similar labels (";
 			ss << v_s[loop - 1] << ", " << v_s[loop] << ")";
 
@@ -1240,9 +1240,9 @@ void Attribute::build_check_enum_labels(string &labs)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::add_startup_exception(string prop_name,const DevFailed &except)
+void Attribute::add_startup_exception(std::string prop_name,const DevFailed &except)
 {
-	startup_exceptions.insert(pair<string,const DevFailed>(prop_name,except));
+	startup_exceptions.insert(std::pair<std::string,const DevFailed>(prop_name,except));
 	check_startup_exceptions = true;
 }
 
@@ -1262,11 +1262,11 @@ void Attribute::add_startup_exception(string prop_name,const DevFailed &except)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::delete_startup_exception(string prop_name,string dev_name)
+void Attribute::delete_startup_exception(std::string prop_name,std::string dev_name)
 {
 	if(check_startup_exceptions == true)
 	{
-		map<string,const DevFailed>::iterator it = startup_exceptions.find(prop_name);
+		std::map<std::string,const DevFailed>::iterator it = startup_exceptions.find(prop_name);
 		if(it != startup_exceptions.end())
 			startup_exceptions.erase(it);
 		if(startup_exceptions.empty() == true)
@@ -1303,12 +1303,12 @@ void Attribute::delete_startup_exception(string prop_name,string dev_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::throw_err_format(const char *prop_name,const string &dev_name,const char *origin)
+void Attribute::throw_err_format(const char *prop_name,const std::string &dev_name,const char *origin)
 {
 	TangoSys_OMemStream o;
 
 	o << "Device " << dev_name << "-> Attribute : " << name;
-	o << "\nThe property " << prop_name << " is defined in an unsupported format" << ends;
+	o << "\nThe property " << prop_name << " is defined in an unsupported format" << std::ends;
 	Except::throw_exception((const char *)API_AttrOptProp,
 			      o.str(),
 			      (const char *)origin);
@@ -1329,12 +1329,12 @@ void Attribute::throw_err_format(const char *prop_name,const string &dev_name,co
 //
 //--------------------------------------------------------------------------
 
-void Attribute::throw_incoherent_val_err(const char *min_prop,const char *max_prop,const string &dev_name,const char *origin)
+void Attribute::throw_incoherent_val_err(const char *min_prop,const char *max_prop,const std::string &dev_name,const char *origin)
 {
 	TangoSys_OMemStream o;
 
 	o << "Device " << dev_name << "-> Attribute : " << name;
-	o << "\nValue of " << min_prop << " is greater than or equal to " << max_prop << ends;
+	o << "\nValue of " << min_prop << " is greater than or equal to " << max_prop << std::ends;
 	Except::throw_exception((const char *)API_IncoherentValues,
 			      o.str(),
 			      (const char *)origin);
@@ -1353,12 +1353,12 @@ void Attribute::throw_incoherent_val_err(const char *min_prop,const char *max_pr
 //
 //--------------------------------------------------------------------------
 
-void Attribute::throw_err_data_type(const char *prop_name,const string &dev_name,const char *origin)
+void Attribute::throw_err_data_type(const char *prop_name,const std::string &dev_name,const char *origin)
 {
 	TangoSys_OMemStream o;
 
 	o << "Device " << dev_name << "-> Attribute : " << name;
-	o << "\nThe property " << prop_name << " is not settable for the attribute data type" << ends;
+	o << "\nThe property " << prop_name << " is not settable for the attribute data type" << std::ends;
 	Except::throw_exception((const char *)API_AttrOptProp,
 			      o.str(),
 			      (const char *)origin);
@@ -1377,7 +1377,7 @@ void Attribute::throw_err_data_type(const char *prop_name,const string &dev_name
 //
 //--------------------------------------------------------------------------
 
-void Attribute::throw_min_max_value(string &dev_name,string &memorized_value,MinMaxValueCheck check_type)
+void Attribute::throw_min_max_value(std::string &dev_name,std::string &memorized_value,MinMaxValueCheck check_type)
 {
 	TangoSys_OMemStream o;
 
@@ -1387,7 +1387,7 @@ void Attribute::throw_min_max_value(string &dev_name,string &memorized_value,Min
         o << "below";
     else
         o << "above";
-    o << " the new limit!!" << ends;
+    o << " the new limit!!" << std::ends;
 	Except::throw_exception((const char *)API_AttrOptProp,
 			      o.str(),
 			      (const char *)"Attribute::throw_min_max_value()");
@@ -1411,9 +1411,9 @@ bool Attribute::is_polled()
         dev = tg->get_device_by_name(d_name);
     }
 
-	string &att_name = get_name_lower();
+	std::string &att_name = get_name_lower();
 
-	vector<string> &attr_list = dev->get_polled_attr();
+	std::vector<std::string> &attr_list = dev->get_polled_attr();
 
 	for (unsigned int i = 0;i < attr_list.size();i = i+2)
 	{
@@ -1422,8 +1422,8 @@ bool Attribute::is_polled()
 //	Convert to lower case before comparison
 //
 
-		string	name_lowercase(attr_list[i]);
-		transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
+		std::string	name_lowercase(attr_list[i]);
+		std::transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
 		if ( att_name == name_lowercase )
 		{
 
@@ -1453,7 +1453,7 @@ bool Attribute::is_polled()
 // the polling was disabled
 //
 
-		vector<string> &napa = dev->get_non_auto_polled_attr();
+		std::vector<std::string> &napa = dev->get_non_auto_polled_attr();
 		for (unsigned int j = 0;j < napa.size();j++)
 		{
 #ifdef _TG_WINDOWS_
@@ -1519,19 +1519,19 @@ bool Attribute::is_writ_associated()
 //-------------------------------------------------------------------------------------------------------------------
 
 
-string &Attribute::get_attr_value(vector <AttrProperty> &prop_list,const char *prop_name)
+std::string &Attribute::get_attr_value(std::vector <AttrProperty> &prop_list,const char *prop_name)
 {
-	vector<AttrProperty>::iterator pos;
+	std::vector<AttrProperty>::iterator pos;
 
 //
 // Get the property value
 //
 
-	pos = find_if(prop_list.begin(),prop_list.end(),bind2nd(ptr_fun(WantedProp_f),prop_name));
+	pos = find_if(prop_list.begin(),prop_list.end(),std::bind2nd(std::ptr_fun(WantedProp_f),prop_name));
 	if (pos == prop_list.end())
 	{
 		TangoSys_OMemStream o;
-		o << "Property " << prop_name << " is missing for attribute " << name << ends;
+		o << "Property " << prop_name << " is missing for attribute " << name << std::ends;
 
 		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::get_attr_value()");
 	}
@@ -1555,19 +1555,19 @@ string &Attribute::get_attr_value(vector <AttrProperty> &prop_list,const char *p
 //------------------------------------------------------------------------------------------------------------------
 
 
-long Attribute::get_lg_attr_value(vector <AttrProperty> &prop_list,const char *prop_name)
+long Attribute::get_lg_attr_value(std::vector <AttrProperty> &prop_list,const char *prop_name)
 {
-	vector<AttrProperty>::iterator pos;
+	std::vector<AttrProperty>::iterator pos;
 
 //
 // Get the property value
 //
 
-	pos = find_if(prop_list.begin(),prop_list.end(),bind2nd(ptr_fun(WantedProp_f),prop_name));
+	pos = find_if(prop_list.begin(),prop_list.end(),std::bind2nd(std::ptr_fun(WantedProp_f),prop_name));
 	if (pos == prop_list.end())
 	{
 		TangoSys_OMemStream o;
-		o << "Property " << prop_name << " is missing for attribute " << name << ends;
+		o << "Property " << prop_name << " is missing for attribute " << name << std::ends;
 
 		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::get_attr_value()");
 	}
@@ -1664,7 +1664,7 @@ bool Attribute::check_alarm()
 	{
 		TangoSys_OMemStream o;
 
-		o << "No alarm defined for attribute " << name << ends;
+		o << "No alarm defined for attribute " << name << std::ends;
 		Except::throw_exception((const char *)API_AttrNoAlarm,o.str(),
 				      (const char *)"Attribute::check_alarm()");
 	}
@@ -1692,7 +1692,7 @@ bool Attribute::check_alarm()
 // If some alarm are defined on level, check attribute level
 //
 
-	bitset<numFlags> &bs = is_alarmed();
+	std::bitset<numFlags> &bs = is_alarmed();
 
 	if ((bs.test(Attribute::min_level) == true) ||
 	    (bs.test(Attribute::max_level) == true))
@@ -3753,7 +3753,7 @@ void Attribute::AttributeConfig_3_2_AttributeConfig_5(const Tango::AttributeConf
 
 void Attribute::fire_change_event(DevFailed *except)
 {
-	cout4 << "Attribute::fire_change_event() entering ..." << endl;
+	cout4 << "Attribute::fire_change_event() entering ..." << std::endl;
 
 	if ( except != NULL )
 	{
@@ -3800,36 +3800,36 @@ void Attribute::fire_change_event(DevFailed *except)
 // Get client lib and if it's possible to send event (ZMQ socket created)
 //
 
-        vector<int> client_libs;
+        std::vector<int> client_libs;
         {
             omni_mutex_lock oml(EventSupplier::get_event_mutex());
             client_libs = get_client_lib(CHANGE_EVENT); 	// We want a copy
             if (use_zmq_event() == true && event_supplier_zmq != NULL)
             {
-                string &sock_endpoint = static_cast<ZmqEventSupplier *>(event_supplier_zmq)->get_event_endpoint();
+                std::string &sock_endpoint = static_cast<ZmqEventSupplier *>(event_supplier_zmq)->get_event_endpoint();
                 if (sock_endpoint.empty() == false)
                     pub_socket_created = true;
             }
         }
 
-		vector<int>::iterator ite;
+		std::vector<int>::iterator ite;
 		for (ite = client_libs.begin();ite != client_libs.end();++ite)
 		{
 			switch (*ite)
 			{
 				case 5:
 				if (change5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(5,string(EventName[CHANGE_EVENT]));
+					remove_client_lib(5,std::string(EventName[CHANGE_EVENT]));
 				break;
 
 				case 4:
 				if (change4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(4,string(EventName[CHANGE_EVENT]));
+					remove_client_lib(4,std::string(EventName[CHANGE_EVENT]));
 				break;
 
 				default:
 				if (change3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(3,string(EventName[CHANGE_EVENT]));
+					remove_client_lib(3,std::string(EventName[CHANGE_EVENT]));
 				break;
 			}
 		}
@@ -3906,7 +3906,7 @@ void Attribute::fire_change_event(DevFailed *except)
 						o << "Value for attribute ";
 						o << name;
 						o << " has not been updated. Can't send change event\n";
-						o << "Set the attribute value (using set_value(...) method) before!" << ends;
+						o << "Set the attribute value (using set_value(...) method) before!" << std::ends;
 
 						Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_change_event()");
 					}
@@ -3928,7 +3928,7 @@ void Attribute::fire_change_event(DevFailed *except)
 			else
 				send_attr = new Tango::AttributeValue_3;
 		}
-		catch (bad_alloc &)
+		catch (std::bad_alloc &)
 		{
 			Except::throw_exception(API_MemoryAllocation,
 									"Can't allocate memory in server","Attribute::fire_change_event()");
@@ -3986,10 +3986,10 @@ void Attribute::fire_change_event(DevFailed *except)
                     if (send_event == true && pub_socket_created == true)
                     {
 
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
+                        std::vector<std::string> f_names;
+                        std::vector<double> f_data;
+                        std::vector<std::string> f_names_lg;
+                        std::vector<long> f_data_lg;
 
 						event_supplier_zmq->push_event_loop(dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,*this,except);
                     }
@@ -4026,10 +4026,10 @@ void Attribute::fire_change_event(DevFailed *except)
 				force_change = true;
 			}
 
-			vector<string> filterable_names;
-			vector<double> filterable_data;
-			vector<string> filterable_names_lg;
-			vector<long> filterable_data_lg;
+			std::vector<std::string> filterable_names;
+			std::vector<double> filterable_data;
+			std::vector<std::string> filterable_names_lg;
+			std::vector<long> filterable_data_lg;
 
 			if (except != NULL)
 			{
@@ -4177,7 +4177,7 @@ void Attribute::fire_change_event(DevFailed *except)
 
 void Attribute::fire_archive_event(DevFailed *except)
 {
-	cout4 << "Attribute::fire_archive_event() entering ..." << endl;
+	cout4 << "Attribute::fire_archive_event() entering ..." << std::endl;
 
 	if ( except != NULL )
 	{
@@ -4224,36 +4224,36 @@ void Attribute::fire_archive_event(DevFailed *except)
 // Get client lib and if it's possible to send event (ZMQ socket created)
 //
 
-        vector<int> client_libs;
+        std::vector<int> client_libs;
         {
             omni_mutex_lock oml(EventSupplier::get_event_mutex());
             client_libs = get_client_lib(ARCHIVE_EVENT);        // We want a copy
             if (use_zmq_event() == true && event_supplier_zmq != NULL)
             {
-                string &sock_endpoint = static_cast<ZmqEventSupplier *>(event_supplier_zmq)->get_event_endpoint();
+                std::string &sock_endpoint = static_cast<ZmqEventSupplier *>(event_supplier_zmq)->get_event_endpoint();
                 if (sock_endpoint.empty() == false)
                     pub_socket_created = true;
             }
         }
 
-		vector<int>::iterator ite;
+		std::vector<int>::iterator ite;
 		for (ite = client_libs.begin();ite != client_libs.end();++ite)
 		{
 			switch (*ite)
 			{
 				case 5:
 				if (archive5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(5,string(EventName[ARCHIVE_EVENT]));
+					remove_client_lib(5,std::string(EventName[ARCHIVE_EVENT]));
 				break;
 
 				case 4:
 				if (archive4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(4,string(EventName[ARCHIVE_EVENT]));
+					remove_client_lib(4,std::string(EventName[ARCHIVE_EVENT]));
 				break;
 
 				default:
 				if (archive3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(3,string(EventName[ARCHIVE_EVENT]));
+					remove_client_lib(3,std::string(EventName[ARCHIVE_EVENT]));
 				break;
 			}
 		}
@@ -4347,7 +4347,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 						o << "Value for attribute ";
 						o << name;
 						o << " has not been updated. Can't send archive event\n";
-						o << "Set the attribute value (using set_value(...) method) before!" << ends;
+						o << "Set the attribute value (using set_value(...) method) before!" << std::ends;
 
 						Except::throw_exception((const char *)API_AttrValueNotSet,o.str(),
 				        		(const char *)"Attribute::fire_archive_event()");
@@ -4369,7 +4369,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 			else
 				send_attr = new Tango::AttributeValue_3;
 		}
-		catch (bad_alloc &)
+		catch (std::bad_alloc &)
 		{
 			Except::throw_exception(API_MemoryAllocation,
 									"Can't allocate memory in server","Attribute::fire_archive_event()");
@@ -4438,10 +4438,10 @@ void Attribute::fire_archive_event(DevFailed *except)
                 {
                     if (send_event == true && pub_socket_created == true)
                     {
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
+                        std::vector<std::string> f_names;
+                        std::vector<double> f_data;
+                        std::vector<std::string> f_names_lg;
+                        std::vector<long> f_data_lg;
 
 						event_supplier_zmq->push_event_loop(dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,*this,except);
                     }
@@ -4473,10 +4473,10 @@ void Attribute::fire_archive_event(DevFailed *except)
                 event_supplier_zmq->detect_change(*this, ad,true,delta_change_rel,delta_change_abs,except,force_change,dev);
 
 
-			vector<string> filterable_names;
-			vector<double> filterable_data;
-			vector<string> filterable_names_lg;
-			vector<long> filterable_data_lg;
+			std::vector<std::string> filterable_names;
+			std::vector<double> filterable_data;
+			std::vector<std::string> filterable_names_lg;
+			std::vector<long> filterable_data_lg;
 
 			if (except != NULL)
 			{
@@ -4619,9 +4619,9 @@ void Attribute::fire_archive_event(DevFailed *except)
 //--------------------------------------------------------------------------------------------------------------------
 
 
-void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,DevFailed *except)
+void Attribute::fire_event(std::vector<std::string> &filt_names,std::vector<double> &filt_vals,DevFailed *except)
 {
-	cout4 << "Attribute::fire_event() entring ..." << endl;
+	cout4 << "Attribute::fire_event() entring ..." << std::endl;
 
 	if (except != NULL)
 		set_value_flag(false);
@@ -4667,36 +4667,36 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 // Get client lib and if it's possible to send event (ZMQ socket created)
 //
 
-        vector<int> client_libs;
+        std::vector<int> client_libs;
         {
             omni_mutex_lock oml(EventSupplier::get_event_mutex());
             client_libs = get_client_lib(USER_EVENT);        // We want a copy
             if (use_zmq_event() == true && event_supplier_zmq != NULL)
             {
-                string &sock_endpoint = static_cast<ZmqEventSupplier *>(event_supplier_zmq)->get_event_endpoint();
+                std::string &sock_endpoint = static_cast<ZmqEventSupplier *>(event_supplier_zmq)->get_event_endpoint();
                 if (sock_endpoint.empty() == false)
                     pub_socket_created = true;
             }
         }
 
-		vector<int>::iterator ite;
+		std::vector<int>::iterator ite;
 		for (ite = client_libs.begin();ite != client_libs.end();++ite)
 		{
 			switch (*ite)
 			{
 				case 5:
 				if (user5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(5,string(EventName[USER_EVENT]));
+					remove_client_lib(5,std::string(EventName[USER_EVENT]));
 				break;
 
 				case 4:
 				if (user4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(4,string(EventName[USER_EVENT]));
+					remove_client_lib(4,std::string(EventName[USER_EVENT]));
 				break;
 
 				default:
 				if (user3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(3,string(EventName[USER_EVENT]));
+					remove_client_lib(3,std::string(EventName[USER_EVENT]));
 				break;
 			}
 		}
@@ -4760,7 +4760,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 						o << "Value for attribute ";
 						o << name;
 						o << " has not been updated. Can't send user event\n";
-						o << "Set the attribute value (using set_value(...) method) before!" << ends;
+						o << "Set the attribute value (using set_value(...) method) before!" << std::ends;
 
 						Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_event()");
 					}
@@ -4781,7 +4781,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 			else
 				send_attr = new Tango::AttributeValue_3;
 		}
-		catch (bad_alloc &)
+		catch (std::bad_alloc &)
 		{
 			Except::throw_exception(API_MemoryAllocation,"Can't allocate memory in server","Attribute::fire_event()");
 		}
@@ -4818,8 +4818,8 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 // Fire event
 //
 
-		vector<string> filterable_names_lg;
-		vector<long> filterable_data_lg;
+		std::vector<std::string> filterable_names_lg;
+		std::vector<long> filterable_data_lg;
 
         if (event_supplier_nd != NULL)
             event_supplier_nd->push_event(dev,
@@ -4903,7 +4903,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 
 void Attribute::fire_error_periodic_event(DevFailed *except)
 {
-	cout4 << "Attribute::fire_error_periodic_event() entring ..." << endl;
+	cout4 << "Attribute::fire_error_periodic_event() entring ..." << std::endl;
 
 //
 // Check if it is needed to send an event
@@ -4918,26 +4918,26 @@ void Attribute::fire_error_periodic_event(DevFailed *except)
 	periodic4_subscription = now - event_periodic4_subscription;
 	periodic5_subscription = now - event_periodic5_subscription;
 
-	vector<int> client_libs = get_client_lib(PERIODIC_EVENT); 	// We want a copy
+	std::vector<int> client_libs = get_client_lib(PERIODIC_EVENT); 	// We want a copy
 
-	vector<int>::iterator ite;
+	std::vector<int>::iterator ite;
 	for (ite = client_libs.begin();ite != client_libs.end();++ite)
 	{
 		switch (*ite)
 		{
 			case 5:
 			if (periodic5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-				remove_client_lib(5,string(EventName[PERIODIC_EVENT]));
+				remove_client_lib(5,std::string(EventName[PERIODIC_EVENT]));
 			break;
 
 			case 4:
 			if (periodic4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-				remove_client_lib(4,string(EventName[PERIODIC_EVENT]));
+				remove_client_lib(4,std::string(EventName[PERIODIC_EVENT]));
 			break;
 
 			default:
 			if (periodic3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-				remove_client_lib(3,string(EventName[PERIODIC_EVENT]));
+				remove_client_lib(3,std::string(EventName[PERIODIC_EVENT]));
 			break;
 		}
 	}
@@ -4978,9 +4978,9 @@ void Attribute::fire_error_periodic_event(DevFailed *except)
 // Fire event
 //
 
-	vector<string> filterable_names_lg,filt_names;
-	vector<long> filterable_data_lg;
-	vector<double> filt_vals;
+	std::vector<std::string> filterable_names_lg,filt_names;
+	std::vector<long> filterable_data_lg;
+	std::vector<double> filt_vals;
 
 	if (event_supplier_nd != NULL)
 		event_supplier_nd->push_event(dev,
@@ -5028,7 +5028,7 @@ void Attribute::set_quality(Tango::AttrQuality qua,bool send_event)
 void Attribute::upd_att_prop_db(Tango::Attr_CheckVal &new_value,
 				const char *prop_name)
 {
-	cout4 << "Entering upd_att_prop_db method for attribute " << name <<", property = " << prop_name << endl;
+	cout4 << "Entering upd_att_prop_db method for attribute " << name <<", property = " << prop_name << std::endl;
 
 //
 // Build the data sent to database
@@ -5125,7 +5125,7 @@ void Attribute::upd_att_prop_db(Tango::Attr_CheckVal &new_value,
 
 void Attribute::remove_configuration()
 {
-	cout4 << "Entering remove_configuration() method for attribute " << name << endl;
+	cout4 << "Entering remove_configuration() method for attribute " << name << std::endl;
 
 	Tango::Util *tg = Tango::Util::instance();
 
@@ -5166,7 +5166,7 @@ void Attribute::remove_configuration()
 
     for (int k=1; k<(nb_prop + 1); k++)
     {
-    	string &prop_name = db_read_data[k].name;
+    	std::string &prop_name = db_read_data[k].name;
 		db_delete_data.push_back(DbDatum(prop_name));
     }
 
@@ -5251,7 +5251,7 @@ void Attribute::set_attr_serial_model(AttrSerialModel ser_model)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-DeviceClass *Attribute::get_att_device_class(string &dev_name)
+DeviceClass *Attribute::get_att_device_class(std::string &dev_name)
 {
 
 //
@@ -5270,7 +5270,7 @@ DeviceClass *Attribute::get_att_device_class(string &dev_name)
     }
     else
     {
-        const vector<DeviceClass *> &tmp_cl_list = *tg->get_class_list();
+        const std::vector<DeviceClass *> &tmp_cl_list = *tg->get_class_list();
         size_t loop;
         for (loop = 0;loop < tmp_cl_list.size();++loop)
         {
@@ -5280,7 +5280,7 @@ DeviceClass *Attribute::get_att_device_class(string &dev_name)
             {
                 // If a server wants to set attribute properties during a "write memorized attribute value at init"
                 // phase, we might be in this case...
-                vector< DeviceImpl * > & dev_list = tmp_cl_list[loop]->get_device_list();
+                std::vector< DeviceImpl * > & dev_list = tmp_cl_list[loop]->get_device_list();
                 // Check whether our device is listed in this class
                 for (size_t i = 0; i < dev_list.size(); ++i)
                 {
@@ -5299,9 +5299,9 @@ DeviceClass *Attribute::get_att_device_class(string &dev_name)
         }
         else
         {
-			stringstream o;
+			std::stringstream o;
 			o << "Device " << dev_name << "-> Attribute : " << name;
-			o << "\nCan't retrieve device class!" << ends;
+			o << "\nCan't retrieve device class!" << std::ends;
 
 			Except::throw_exception(API_CantRetrieveClass,o.str(),"Attribute::set_properties()");
         }
@@ -5349,17 +5349,17 @@ void Attribute::log_quality()
             {
                 case ATTR_INVALID:
                 if (dev->get_logger()->is_error_enabled())
-                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "INVALID quality for attribute " << name << endl;
+                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "INVALID quality for attribute " << name << std::endl;
                 break;
 
                 case ATTR_CHANGING:
                 if (dev->get_logger()->is_info_enabled())
-                    dev->get_logger()->info_stream() << log4tango::LogInitiator::_begin_log << "CHANGING quality for attribute " << name << endl;
+                    dev->get_logger()->info_stream() << log4tango::LogInitiator::_begin_log << "CHANGING quality for attribute " << name << std::endl;
                 break;
 
                 case ATTR_VALID:
                 if (dev->get_logger()->is_info_enabled())
-                    dev->get_logger()->info_stream() << log4tango::LogInitiator::_begin_log << "VALID quality for attribute " << name << endl;
+                    dev->get_logger()->info_stream() << log4tango::LogInitiator::_begin_log << "VALID quality for attribute " << name << std::endl;
                 break;
 
                 default:
@@ -5376,27 +5376,27 @@ void Attribute::log_quality()
             if (alarm[min_level] == true)
             {
                 if (dev->get_logger()->is_error_enabled())
-                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "MIN ALARM for attribute " << name << endl;
+                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "MIN ALARM for attribute " << name << std::endl;
             }
             else if (alarm[max_level] == true)
             {
                 if (dev->get_logger()->is_error_enabled())
-                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "MAX ALARM for attribute " << name << endl;
+                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "MAX ALARM for attribute " << name << std::endl;
             }
             else if (alarm[rds] == true)
             {
                 if (dev->get_logger()->is_warn_enabled())
-                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "RDS (Read Different Set) ALARM for attribute " << name << endl;
+                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "RDS (Read Different Set) ALARM for attribute " << name << std::endl;
             }
             else if (alarm[min_warn] == true)
             {
                if (dev->get_logger()->is_warn_enabled())
-                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "MIN WARNING for attribute " << name << endl;
+                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "MIN WARNING for attribute " << name << std::endl;
             }
             else if (alarm[max_warn] == true)
             {
                if (dev->get_logger()->is_warn_enabled())
-                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "MAX WARNING for attribute " << name << endl;
+                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "MAX WARNING for attribute " << name << std::endl;
             }
         }
     }
@@ -5412,27 +5412,27 @@ void Attribute::log_quality()
             if (alarm[min_level] == true)
             {
                 if (dev->get_logger()->is_error_enabled())
-                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "MIN ALARM for attribute " << name << endl;
+                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "MIN ALARM for attribute " << name << std::endl;
             }
             else if (alarm[max_level] == true)
             {
                 if (dev->get_logger()->is_error_enabled())
-                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "MAX ALARM for attribute " << name << endl;
+                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "MAX ALARM for attribute " << name << std::endl;
             }
             else if (alarm[rds] == true)
             {
                 if (dev->get_logger()->is_warn_enabled())
-                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "RDS (Read Different Set) ALARM for attribute " << name << endl;
+                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "RDS (Read Different Set) ALARM for attribute " << name << std::endl;
             }
             else if (alarm[min_warn] == true)
             {
                if (dev->get_logger()->is_warn_enabled())
-                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "MIN WARNING for attribute " << name << endl;
+                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "MIN WARNING for attribute " << name << std::endl;
             }
             else if (alarm[max_warn] == true)
             {
                if (dev->get_logger()->is_warn_enabled())
-                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "MAX WARNING for attribute " << name << endl;
+                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "MAX WARNING for attribute " << name << std::endl;
             }
         }
     }
@@ -5449,7 +5449,7 @@ void Attribute::log_quality()
 //
 //--------------------------------------------------------------------------
 
-void Attribute::avns_in_db(const char *prop_name,string &dev_name)
+void Attribute::avns_in_db(const char *prop_name,std::string &dev_name)
 {
     Tango::Util *tg = Tango::Util::instance();
 
@@ -5928,9 +5928,9 @@ bool Attribute::data_ready_event_subscribed()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::set_client_lib(int _l,string &ev_name)
+void Attribute::set_client_lib(int _l,std::string &ev_name)
 {
-	cout4 << "Attribute::set_client_lib(" << _l << "," << ev_name << ")" << endl;
+	cout4 << "Attribute::set_client_lib(" << _l << "," << ev_name << ")" << std::endl;
 	int i;
 	for (i = 0; i < numEventType; i++)
 	{
@@ -5961,7 +5961,7 @@ void Attribute::set_client_lib(int _l,string &ev_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::remove_client_lib(int _l,const string &ev_name)
+void Attribute::remove_client_lib(int _l,const std::string &ev_name)
 {
 	int i;
 	for (i = 0;i < numEventType;i++)
@@ -5970,7 +5970,7 @@ void Attribute::remove_client_lib(int _l,const string &ev_name)
 			break;
 	}
 
-	vector<int>::iterator pos = find(client_lib[i].begin(),client_lib[i].end(),_l);
+	std::vector<int>::iterator pos = find(client_lib[i].begin(),client_lib[i].end(),_l);
 	if (pos != client_lib[i].end())
 		client_lib[i].erase(pos);
 }
@@ -5984,7 +5984,7 @@ void Attribute::remove_client_lib(int _l,const string &ev_name)
 //-------------------------------------------------------------------------------------------------------------------
 
 #ifndef TANGO_HAS_LOG4TANGO
-ostream &operator<<(ostream &o_str,Attribute &p)
+std::ostream &operator<<(std::ostream &o_str,Attribute &p)
 {
 	Tango::AttributeConfig conf;
 
@@ -5999,68 +5999,68 @@ ostream &operator<<(ostream &o_str,Attribute &p)
 //
 
 
-	o_str << "Attribute name = " << conf.name.in() << endl;
+	o_str << "Attribute name = " << conf.name.in() << std::endl;
 	o_str << "Attribute data_type = ";
 	switch (conf.data_type)
 	{
 	case Tango::DEV_SHORT :
-		o_str << "Tango::DevShort" << endl;
+		o_str << "Tango::DevShort" << std::endl;
 		break;
 
 	case Tango::DEV_LONG :
-		o_str << "Tango::DevLong" << endl;
+		o_str << "Tango::DevLong" << std::endl;
 		break;
 
 	case Tango::DEV_LONG64 :
-		o_str << "Tango::DevLong64" << endl;
+		o_str << "Tango::DevLong64" << std::endl;
 		break;
 
 	case Tango::DEV_DOUBLE :
-		o_str << "Tango::DevDouble" << endl;
+		o_str << "Tango::DevDouble" << std::endl;
 		break;
 
 	case Tango::DEV_STRING :
-		o_str << "Tango::DevString" << endl;
+		o_str << "Tango::DevString" << std::endl;
 		break;
 
 	case Tango::DEV_FLOAT :
-		o_str << "Tango::DevFloat" << endl;
+		o_str << "Tango::DevFloat" << std::endl;
 		break;
 
 	case Tango::DEV_USHORT :
-		o_str << "Tango::DevUShort" << endl;
+		o_str << "Tango::DevUShort" << std::endl;
 		break;
 
 	case Tango::DEV_UCHAR :
-		o_str << "Tango::DevUChar" << endl;
+		o_str << "Tango::DevUChar" << std::endl;
 		break;
 
 	case Tango::DEV_BOOLEAN :
-		o_str << "Tango::DevBoolean" << endl;
+		o_str << "Tango::DevBoolean" << std::endl;
 		break;
 
 	case Tango::DEV_STATE :
-		o_str << "Tango::DevState" << endl;
+		o_str << "Tango::DevState" << std::endl;
 		break;
 
 	case Tango::DEV_ULONG :
-		o_str << "Tango::DevULong" << endl;
+		o_str << "Tango::DevULong" << std::endl;
 		break;
 
 	case Tango::DEV_ULONG64 :
-		o_str << "Tango::DevULong64" << endl;
+		o_str << "Tango::DevULong64" << std::endl;
 		break;
 
 	case Tango::Dev_ENCODED :
-		o_str << "Tango::DevEncoded" << endl;
+		o_str << "Tango::DevEncoded" << std::endl;
 		break;
 
 	case Tango::DEV_ENUM :
-		o_str << "Tango::DevEnum" << endl;
+		o_str << "Tango::DevEnum" << std::endl;
 		break;
 
 	case Tango::DATA_TYPE_UNKNOWN :
-		o_str << "Unknown" << endl;
+		o_str << "Unknown" << std::endl;
 		break;
 	}
 
@@ -6068,37 +6068,37 @@ ostream &operator<<(ostream &o_str,Attribute &p)
 	switch (conf.data_format)
 	{
 	case Tango::SCALAR :
-		o_str << "scalar" << endl;
+		o_str << "scalar" << std::endl;
 		break;
 
 	case Tango::SPECTRUM :
-		o_str << "spectrum, max_dim_x = " << conf.max_dim_x << endl;
+		o_str << "spectrum, max_dim_x = " << conf.max_dim_x << std::endl;
 		break;
 
 	case Tango::IMAGE :
-		o_str << "image, max_dim_x = " << conf.max_dim_x << ", max_dim_y = " << conf.max_dim_y << endl;
+		o_str << "image, max_dim_x = " << conf.max_dim_x << ", max_dim_y = " << conf.max_dim_y << std::endl;
 		break;
 
 	case Tango::FMT_UNKNOWN :
-		o_str << "Unknown" << endl;
+		o_str << "Unknown" << std::endl;
 		break;
 	}
 
 	if ((conf.writable == Tango::WRITE) || (conf.writable == Tango::READ_WRITE))
-		o_str << "Attribute is writable" << endl;
+		o_str << "Attribute is writable" << std::endl;
 	else
-		o_str << "Attribute is not writable" << endl;
-	o_str << "Attribute label = " << conf.label.in() << endl;
-	o_str << "Attribute description = " << conf.description.in() << endl;
+		o_str << "Attribute is not writable" << std::endl;
+	o_str << "Attribute label = " << conf.label.in() << std::endl;
+	o_str << "Attribute description = " << conf.description.in() << std::endl;
 	o_str << "Attribute unit = " << conf.unit.in();
 	o_str << ", standard unit = " << conf.standard_unit.in();
-	o_str << ", display unit = " << conf.display_unit.in() << endl;
-	o_str << "Attribute format = " << conf.format.in() << endl;
-	o_str << "Attribute min value = " << conf.min_value.in() << endl;
-	o_str << "Attribute max value = " << conf.max_value.in() << endl;
-	o_str << "Attribute min alarm = " << conf.min_alarm.in() << endl;
-	o_str << "Attribute max alarm = " << conf.max_alarm.in() << endl;
-	o_str << "Attribute writable_attr_name = " << conf.writable_attr_name.in() << endl;
+	o_str << ", display unit = " << conf.display_unit.in() << std::endl;
+	o_str << "Attribute format = " << conf.format.in() << std::endl;
+	o_str << "Attribute min value = " << conf.min_value.in() << std::endl;
+	o_str << "Attribute max value = " << conf.max_value.in() << std::endl;
+	o_str << "Attribute min alarm = " << conf.min_alarm.in() << std::endl;
+	o_str << "Attribute max alarm = " << conf.max_alarm.in() << std::endl;
+	o_str << "Attribute writable_attr_name = " << conf.writable_attr_name.in() << std::endl;
 
 	return o_str;
 }
