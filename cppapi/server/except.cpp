@@ -68,7 +68,7 @@ void Except::print_exception(const CORBA::Exception &e)
 	if ((se = dynamic_cast<const CORBA::SystemException *>(&e)) != NULL)
 	{
 		Tango::Except::the_mutex.lock();
-		cerr << print_CORBA_SystemException(se) << endl;
+		std::cerr << print_CORBA_SystemException(se) << std::endl;
 		Tango::Except::the_mutex.unlock();
 	}
 
@@ -87,65 +87,65 @@ void Except::print_exception(const CORBA::Exception &e)
 
 		if ((mdf = dynamic_cast<const Tango::NamedDevFailedList *>(&e)) != NULL)
 		{
-			cerr << "Tango NamedDevFailedList exception" << endl;
+			std::cerr << "Tango NamedDevFailedList exception" << std::endl;
 			for (unsigned long i = 0;i < mdf->err_list.size();i++)
 			{
-				cerr << "   Exception for object " << mdf->err_list[i].name << endl;
-				cerr << "   Index of object in call (starting at 0) = " << mdf->err_list[i].idx_in_call << endl;
+				std::cerr << "   Exception for object " << mdf->err_list[i].name << std::endl;
+				std::cerr << "   Index of object in call (starting at 0) = " << mdf->err_list[i].idx_in_call << std::endl;
 				for (unsigned long j =0;j < mdf->err_list[i].err_stack.length();j++)
 				{
-					cerr << "       Severity = ";
+					std::cerr << "       Severity = ";
 					switch (mdf->err_list[i].err_stack[j].severity)
 					{
 						case Tango::WARN :
-							cerr << "WARNING ";
+							std::cerr << "WARNING ";
 							break;
 
 						case Tango::ERR :
-							cerr << "ERROR ";
+							std::cerr << "ERROR ";
 							break;
 
 						case Tango::PANIC :
-							cerr << "PANIC ";
+							std::cerr << "PANIC ";
 							break;
 
 						default :
-							cerr << "Unknown severity code";
+							std::cerr << "Unknown severity code";
 							break;
 					}
-					cerr << endl;
-					cerr << "       Error reason = " << mdf->err_list[i].err_stack[j].reason.in() << endl;
-					cerr << "       Desc : " << mdf->err_list[i].err_stack[j].desc.in() << endl;
-					cerr << "       Origin : " << mdf->err_list[i].err_stack[j].origin.in() << endl;
+					std::cerr << std::endl;
+					std::cerr << "       Error reason = " << mdf->err_list[i].err_stack[j].reason.in() << std::endl;
+					std::cerr << "       Desc : " << mdf->err_list[i].err_stack[j].desc.in() << std::endl;
+					std::cerr << "       Origin : " << mdf->err_list[i].err_stack[j].origin.in() << std::endl;
 				}
 			}
-			cerr << "   Summary exception" << endl;
+			std::cerr << "   Summary exception" << std::endl;
 			for (unsigned long j =0;j < mdf->errors.length();j++)
 			{
-				cerr << "       Severity = ";
+				std::cerr << "       Severity = ";
 				switch (mdf->errors[j].severity)
 				{
 					case Tango::WARN :
-						cerr << "WARNING ";
+						std::cerr << "WARNING ";
 						break;
 
 					case Tango::ERR :
-						cerr << "ERROR ";
+						std::cerr << "ERROR ";
 						break;
 
 					case Tango::PANIC :
-						cerr << "PANIC ";
+						std::cerr << "PANIC ";
 						break;
 
 					default :
-						cerr << "Unknown severity code";
+						std::cerr << "Unknown severity code";
 						break;
 				}
-				cerr << endl;
-				cerr << "       Error reason = " << mdf->errors[j].reason.in() << endl;
-				cerr << "       Desc : " << mdf->errors[j].desc.in() << endl;
-				cerr << "       Origin : " << mdf->errors[j].origin.in() << endl;
-				cerr << endl;
+				std::cerr << std::endl;
+				std::cerr << "       Error reason = " << mdf->errors[j].reason.in() << std::endl;
+				std::cerr << "       Desc : " << mdf->errors[j].desc.in() << std::endl;
+				std::cerr << "       Origin : " << mdf->errors[j].origin.in() << std::endl;
+				std::cerr << std::endl;
 			}
 
 		}
@@ -158,31 +158,31 @@ void Except::print_exception(const CORBA::Exception &e)
 		{
 			for (unsigned long i =0;i < te->errors.length();i++)
 			{
-				cerr << "Tango exception" << endl;
-				cerr << "Severity = ";
+				std::cerr << "Tango exception" << std::endl;
+				std::cerr << "Severity = ";
 				switch (te->errors[i].severity)
 				{
 					case Tango::WARN :
-						cerr << "WARNING ";
+						std::cerr << "WARNING ";
 						break;
 
 					case Tango::ERR :
-						cerr << "ERROR ";
+						std::cerr << "ERROR ";
 						break;
 
 					case Tango::PANIC :
-						cerr << "PANIC ";
+						std::cerr << "PANIC ";
 						break;
 
 					default :
-						cerr << "Unknown severity code";
+						std::cerr << "Unknown severity code";
 						break;
 				}
-				cerr << endl;
-				cerr << "Error reason = " << te->errors[i].reason.in() << endl;
-				cerr << "Desc : " << te->errors[i].desc.in() << endl;
-				cerr << "Origin : " << te->errors[i].origin.in() << endl;
-				cerr << endl;
+				std::cerr << std::endl;
+				std::cerr << "Error reason = " << te->errors[i].reason.in() << std::endl;
+				std::cerr << "Desc : " << te->errors[i].desc.in() << std::endl;
+				std::cerr << "Origin : " << te->errors[i].origin.in() << std::endl;
+				std::cerr << std::endl;
 			}
 		}
 
@@ -192,7 +192,7 @@ void Except::print_exception(const CORBA::Exception &e)
 
 		else
 		{
-			cerr << "Unknown CORBA user exception" << endl;
+			std::cerr << "Unknown CORBA user exception" << std::endl;
 		}
 	}
 
@@ -202,7 +202,7 @@ void Except::print_exception(const CORBA::Exception &e)
 
 	else
 	{
-		cerr << "Unknown exception type !!!!!!" << endl;
+		std::cerr << "Unknown exception type !!!!!!" << std::endl;
 	}
 
 }
@@ -276,8 +276,8 @@ char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 		{
 			::strcat(mess,"Unknown minor code: ");
 			TangoSys_MemStream st;
-			st << hex << lim->minor() << dec << ends;
-			string s = st.str();
+			st << std::hex << lim->minor() << std::dec << std::ends;
+			std::string s = st.str();
 			::strcat(mess,s.c_str());
 		}
 		else
@@ -291,9 +291,9 @@ char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 		{
 			::strcat(mess,"Unknown minor code: ");
 			TangoSys_MemStream st;
-			st << hex << comm->minor() << dec << ends;
+			st << std::hex << comm->minor() << std::dec << std::ends;
 
-			string s = st.str();
+			std::string s = st.str();
 			::strcat(mess,s.c_str());
 		}
 		else
@@ -406,9 +406,9 @@ char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 		{
 			::strcat(mess,"Unknown minor code: ");
 			TangoSys_MemStream st;
-			st << hex << tra->minor() << dec << ends;
+			st << std::hex << tra->minor() << std::dec << std::ends;
 
-			string s = st.str();
+			std::string s = st.str();
 			::strcat(mess,s.c_str());
 		}
 		else
@@ -452,12 +452,12 @@ char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 // method : 		print_CORBA_SystemException_r
 //
 // description : 	This method prints the information embedded in
-//			a CORBA system exception. This is the reentrant version of 
+//			a CORBA system exception. This is the reentrant version of
 //          print_CORBA_SystemException method
 //
 // in :			e           : Pointer to the exception object
 //              error_msg   : Pointer to an already allocated char * buffer
-//              buffer_size : Size of error_msg buffer 
+//              buffer_size : Size of error_msg buffer
 //
 //-----------------------------------------------------------------------------
 
@@ -520,8 +520,8 @@ char *Except::print_CORBA_SystemException_r(const CORBA::SystemException *e,
 		{
 			::strcat(error_msg,"Unknown minor code: ");
 			TangoSys_MemStream st;
-			st << hex << lim->minor() << dec << ends;
-			string s = st.str();
+			st << std::hex << lim->minor() << std::dec << std::ends;
+			std::string s = st.str();
 			::strcat(error_msg,s.c_str());
 		}
 		else
@@ -535,9 +535,9 @@ char *Except::print_CORBA_SystemException_r(const CORBA::SystemException *e,
 		{
 			::strcat(error_msg,"Unknown minor code: ");
 			TangoSys_MemStream st;
-			st << hex << comm->minor() << dec << ends;
+			st << std::hex << comm->minor() << std::dec << std::ends;
 
-			string s = st.str();
+			std::string s = st.str();
 			::strcat(error_msg,s.c_str());
 		}
 		else
@@ -650,9 +650,9 @@ char *Except::print_CORBA_SystemException_r(const CORBA::SystemException *e,
 		{
 			::strcat(error_msg,"Unknown minor code: ");
 			TangoSys_MemStream st;
-			st << hex << tra->minor() << dec << ends;
+			st << std::hex << tra->minor() << std::dec << std::ends;
 
-			string s = st.str();
+			std::string s = st.str();
 			::strcat(error_msg,s.c_str());
 		}
 		else
@@ -706,31 +706,31 @@ void Except::print_error_stack(const Tango::DevErrorList &e)
 
 	for (unsigned long i = 0;i < e.length();i++)
 	{
-		cerr << "Tango error stack" << endl;
-		cerr << "Severity = ";
+		std::cerr << "Tango error stack" << std::endl;
+		std::cerr << "Severity = ";
 		switch (e[i].severity)
 		{
 			case Tango::WARN :
-				cerr << "WARNING ";
+				std::cerr << "WARNING ";
 				break;
 
 			case Tango::ERR :
-				cerr << "ERROR ";
+				std::cerr << "ERROR ";
 				break;
 
 			case Tango::PANIC :
-				cerr << "PANIC ";
+				std::cerr << "PANIC ";
 				break;
 
 			default :
-				cerr << "Unknown severity code";
+				std::cerr << "Unknown severity code";
 				break;
 		}
-		cerr << endl;
-		cerr << "Error reason = " << e[i].reason.in() << endl;
-		cerr << "Desc : " << e[i].desc.in() << endl;
-		cerr << "Origin : " << e[i].origin.in() << endl;
-		cerr << endl;
+		std::cerr << std::endl;
+		std::cerr << "Error reason = " << e[i].reason.in() << std::endl;
+		std::cerr << "Desc : " << e[i].desc.in() << std::endl;
+		std::cerr << "Origin : " << e[i].origin.in() << std::endl;
+		std::cerr << std::endl;
 	}
 }
 
@@ -778,7 +778,7 @@ void Except::throw_exception(const CORBA::SystemException &c_ex,char *origin)
 	throw Tango::DevFailed(errors);
 }
 
-void Except::throw_exception(const CORBA::SystemException &c_ex,const string &origin)
+void Except::throw_exception(const CORBA::SystemException &c_ex,const std::string &origin)
 {
 	Tango::DevErrorList errors(1);
 
@@ -801,12 +801,12 @@ void Except::throw_named_exception(Tango::DeviceImpl *d,long ind,const char *rea
 						  reason,desc,origin,sever);
 }
 
-void Except::throw_named_exception(Tango::DeviceImpl *d,vector<long> &ind_atts,const char *reason,
+void Except::throw_named_exception(Tango::DeviceImpl *d,std::vector<long> &ind_atts,const char *reason,
 				   const char *desc,const char *origin,Tango::ErrSeverity sever)
 {
-	vector<string> vs;
+	std::vector<std::string> vs;
 
-	vector<long>::iterator ite;
+	std::vector<long>::iterator ite;
 	for (ite = ind_atts.begin();ite != ind_atts.end();++ite)
 	{
 		vs.push_back(d->get_device_attr()->get_attr_by_ind(*ite).get_name());
@@ -850,24 +850,24 @@ bool Except::compare_exception(Tango::DevFailed &ex1, Tango::DevFailed &ex2)
 		}
 
 		// check the origin
-		string org1 = ex1.errors[i].origin.in();
-		string org2 = ex2.errors[i].origin.in();
+		std::string org1 = ex1.errors[i].origin.in();
+		std::string org2 = ex2.errors[i].origin.in();
 		if ( org1 != org2 )
 		{
 			return false;
 		}
 
 		// check the reason
-		string re1 = ex1.errors[i].reason.in();
-		string re2 = ex2.errors[i].reason.in();
+		std::string re1 = ex1.errors[i].reason.in();
+		std::string re2 = ex2.errors[i].reason.in();
 		if ( re1 != re2 )
 		{
 			return false;
 		}
 
 		// check the description
-		string desc1 = ex1.errors[i].desc.in();
-		string desc2 = ex2.errors[i].desc.in();
+		std::string desc1 = ex1.errors[i].desc.in();
+		std::string desc2 = ex2.errors[i].desc.in();
 		if ( desc1 != desc2 )
 		{
 			return false;
