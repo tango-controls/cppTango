@@ -51,11 +51,11 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-Pipe::Pipe(const string &_name,Tango::DispLevel _level,PipeWriteType _pwt)
+Pipe::Pipe(const std::string &_name,Tango::DispLevel _level,PipeWriteType _pwt)
 :name(_name),disp_level(_level),writable(_pwt),ext(new PipeExt)
 {
 	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
+	std::transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 
 	pipe_serial_model = PIPE_BY_KERNEL;
 
@@ -150,7 +150,7 @@ void Pipe::set_upd_properties(const PipeConfig &new_conf,DeviceImpl *dev)
 // Set properties locally. In case of exception bring the backed-up values
 //
 
-		vector<Attribute::AttPropDb> v_db;
+		std::vector<Attribute::AttPropDb> v_db;
 		set_properties(new_conf,dev,v_db);
 
 //
@@ -184,7 +184,7 @@ void Pipe::set_upd_properties(const PipeConfig &new_conf,DeviceImpl *dev)
 				TangoSys_OMemStream o;
 
 				o << "Device " << dev->get_name() << "-> Pipe : " << name;
-				o << "\nDatabase error occurred whilst setting pipe properties. The database may be corrupted." << ends;
+				o << "\nDatabase error occurred whilst setting pipe properties. The database may be corrupted." << std::ends;
 				Except::throw_exception(API_CorruptedDatabase,o.str(),"Pipe::set_upd_properties()");
 			}
 
@@ -193,7 +193,7 @@ void Pipe::set_upd_properties(const PipeConfig &new_conf,DeviceImpl *dev)
 	}
 	catch(DevFailed &)
 	{
-		vector<Attribute::AttPropDb> v_db;
+		std::vector<Attribute::AttPropDb> v_db;
 		set_properties(old_conf,dev,v_db);
 
 		throw;
@@ -216,7 +216,7 @@ void Pipe::set_upd_properties(const PipeConfig &new_conf,DeviceImpl *dev)
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-void Pipe::upd_database(vector<Attribute::AttPropDb> &v_db,string &dev_name)
+void Pipe::upd_database(std::vector<Attribute::AttPropDb> &v_db,std::string &dev_name)
 {
 
 //
@@ -232,7 +232,7 @@ void Pipe::upd_database(vector<Attribute::AttPropDb> &v_db,string &dev_name)
 	db_d.push_back(DbDatum(name));
 	db_del.push_back(DbDatum(name));
 
-	vector<Attribute::AttPropDb>::iterator ite;
+	std::vector<Attribute::AttPropDb>::iterator ite;
 
 //
 // A loop for each db action
@@ -295,10 +295,10 @@ void Pipe::upd_database(vector<Attribute::AttPropDb> &v_db,string &dev_name)
 
 	if (*cosp.prop_to_update != 0)
 	{
-		cout4 << *cosp.prop_to_update << " properties to update in db" << endl;
+		cout4 << *cosp.prop_to_update << " properties to update in db" << std::endl;
 		(*cosp.db_d)[0] << *cosp.prop_to_update;
 //for (const auto &elem: *cosp.db_d)
-//	cout << "prop_to_update name = " << elem.name << endl;
+//	cout << "prop_to_update name = " << elem.name << std::endl;
 
 		Tango::Util *tg = Tango::Util::instance();
 
@@ -324,10 +324,10 @@ void Pipe::upd_database(vector<Attribute::AttPropDb> &v_db,string &dev_name)
 
 	if (*cosp.prop_to_delete != 0)
 	{
-		cout4 << *cosp.prop_to_delete << " properties to delete in db" << endl;
+		cout4 << *cosp.prop_to_delete << " properties to delete in db" << std::endl;
 		(*cosp.db_del)[0] << *cosp.prop_to_delete;
 //for (const auto &elem: *cosp.db_del)
-//	cout << "prop_to_delete name = " << elem.name << endl;
+//	cout << "prop_to_delete name = " << elem.name << std::endl;
 
 		Tango::Util *tg = Tango::Util::instance();
 
@@ -369,15 +369,15 @@ void Pipe::upd_database(vector<Attribute::AttPropDb> &v_db,string &dev_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Pipe::set_properties(const Tango::PipeConfig &conf,DeviceImpl *dev,vector<Attribute::AttPropDb> &v_db)
+void Pipe::set_properties(const Tango::PipeConfig &conf,DeviceImpl *dev,std::vector<Attribute::AttPropDb> &v_db)
 {
 
 //
 // Check if the caller try to change "hard coded"properties. Throw exception in case of
 //
 
-	string user_pipe_name(conf.name.in());
-	transform(user_pipe_name.begin(),user_pipe_name.end(),user_pipe_name.begin(),::tolower);
+	std::string user_pipe_name(conf.name.in());
+	std::transform(user_pipe_name.begin(),user_pipe_name.end(),user_pipe_name.begin(),::tolower);
 	if (user_pipe_name != lower_name)
 	{
 		Except::throw_exception(API_AttrNotAllowed,"Pipe name is not changeable at run time","Pipe::set_properties()");
@@ -396,8 +396,8 @@ void Pipe::set_properties(const Tango::PipeConfig &conf,DeviceImpl *dev,vector<A
 
 	Tango::DeviceClass *dev_class = dev->get_device_class();
 
-	vector<PipeProperty> &def_user_prop = get_user_default_properties();
-	vector<PipeProperty> def_class_prop;
+	std::vector<PipeProperty> &def_user_prop = get_user_default_properties();
+	std::vector<PipeProperty> def_class_prop;
 	try
 	{
 		def_class_prop = dev_class->get_class_pipe()->get_prop_list(name);
@@ -436,14 +436,14 @@ void Pipe::set_properties(const Tango::PipeConfig &conf,DeviceImpl *dev,vector<A
 //--------------------------------------------------------------------------------------------------------------------
 
 void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &conf_val,
-								 string &pipe_conf,vector<Attribute::AttPropDb> &v_db,vector<PipeProperty> &def_user_prop,
-								vector<PipeProperty> &def_class_prop,const char *lib_def)
+								 std::string &pipe_conf,std::vector<Attribute::AttPropDb> &v_db,std::vector<PipeProperty> &def_user_prop,
+								std::vector<PipeProperty> &def_class_prop,const char *lib_def)
 {
 	Attribute::AttPropDb apd;
 	apd.name = prop_name;
 
 	bool user_defaults, class_defaults;
-	string usr_def_val, class_def_val;
+	std::string usr_def_val, class_def_val;
 	size_t nb_user = def_user_prop.size();
 	size_t nb_class = def_class_prop.size();
 
@@ -458,7 +458,7 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 // these defaults
 //
 
-		string old_val = pipe_conf;
+		std::string old_val = pipe_conf;
 		pipe_conf = lib_def;
 
 		if (old_val != pipe_conf)
@@ -484,7 +484,7 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 // overwrite this default value.
 //
 
-		string old_val = pipe_conf;
+		std::string old_val = pipe_conf;
 
         if (user_defaults == true)
 			pipe_conf = usr_def_val;
@@ -515,7 +515,7 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 // Return to class default or user default or lib default
 //
 
-		string old_val = pipe_conf;
+		std::string old_val = pipe_conf;
 
 		if (class_defaults == true)
 			pipe_conf = class_def_val;
@@ -539,7 +539,7 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 // Set property
 //
 
-		string old_val = pipe_conf;
+		std::string old_val = pipe_conf;
 		pipe_conf = conf_val;
 
 		if (user_defaults == true && pipe_conf == usr_def_val)
@@ -678,7 +678,7 @@ void Pipe::set_pipe_serial_model(PipeSerialModel ser_model)
 	pipe_serial_model=ser_model;
 }
 
-Pipe &Pipe::operator[](const string &_na)
+Pipe &Pipe::operator[](const std::string &_na)
 {
 	the_blob.operator[](_na);
 	return *this;
@@ -702,7 +702,7 @@ Pipe &Pipe::operator[](const string &_na)
 
 void Pipe::fire_event(DeviceImpl *dev,DevFailed *except)
 {
-	cout4 << "Pipe::fire_event() entering ..." << endl;
+	cout4 << "Pipe::fire_event() entering ..." << std::endl;
 
 //
 // Check if it is needed to send an event
@@ -750,12 +750,12 @@ void Pipe::fire_event(DeviceImpl *dev,DevFailed *except)
 // Fire event
 //
 
-	vector<string> f_names;
-	vector<double> f_data;
-	vector<string> f_names_lg;
-	vector<long> f_data_lg;
+	std::vector<std::string> f_names;
+	std::vector<double> f_data;
+	std::vector<std::string> f_names_lg;
+	std::vector<long> f_data_lg;
 
-	string event_type("pipe");
+	std::string event_type("pipe");
 	event_supplier_zmq->push_event(dev, event_type, f_names, f_data, f_names_lg, f_data_lg, ad, name, except, true);
 }
 
@@ -776,7 +776,7 @@ void Pipe::fire_event(DeviceImpl *_dev,DevicePipeBlob *_dat,bool reuse_it)
 
 void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,bool reuse_it)
 {
-	cout4 << "Pipe::fire_event() entering ..." << endl;
+	cout4 << "Pipe::fire_event() entering ..." << std::endl;
 
 //
 // Check if it is needed to send an event
@@ -832,7 +832,7 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 	ad.pipe_val->time.tv_usec = t.tv_usec;
 
 
-	const string &bl_name = p_data->get_name();
+	const std::string &bl_name = p_data->get_name();
 	if (bl_name.size() != 0)
 		ad.pipe_val->data_blob.name = bl_name.c_str();
 
@@ -851,12 +851,12 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 // Fire event
 //
 
-	vector<string> f_names;
-	vector<double> f_data;
-	vector<string> f_names_lg;
-	vector<long> f_data_lg;
+	std::vector<std::string> f_names;
+	std::vector<double> f_data;
+	std::vector<std::string> f_names_lg;
+	std::vector<long> f_data_lg;
 
-	string event_type("pipe");
+	std::string event_type("pipe");
 	event_supplier_zmq->push_event(dev, event_type, f_names, f_data, f_names_lg, f_data_lg, ad, name, NULL, true);
 
 	if (reuse_it == false)
