@@ -158,7 +158,7 @@ init:
   - cmd: cd "C:\projects\"
   - cmd: md omniorb
   - cmd: cd "C:\projects\"
-  - appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_%PYVER%.zip
+  - appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1-2/omniorb-4.2.1_%ARCH%_%PYVER%.zip
   - cmd: 7z -y x omniorb-4.2.1_%ARCH%_%PYVER%.zip -oC:\projects\omniorb\
   #Pthread-Win32
   - cmd: cd "C:\projects\"
