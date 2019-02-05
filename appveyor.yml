@@ -178,6 +178,8 @@ init:
 install:
   #copy tree for debug build
   - cmd: cd c:/projects/
+  # in case of wrong directory for cloning
+  - cmd: rename %APPVEYOR_BUILD_FOLDER% cppTango
   - cmd: md debug_build
   - cmd: xcopy "C:/projects/cppTango" "c:/projects/debug_build" /c /g /d /i /e /r /h /y
   # Setting Visual Compiler
