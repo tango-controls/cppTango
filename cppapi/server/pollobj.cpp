@@ -70,7 +70,7 @@ namespace Tango
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-PollObj::PollObj(DeviceImpl *d,PollObjType ty,const string &na,int user_upd)
+PollObj::PollObj(DeviceImpl *d,PollObjType ty,const std::string &na,int user_upd)
 :dev(d),type(ty),name(na),ring(),fwd(false)
 {
 	needed_time.tv_sec = 0;
@@ -88,7 +88,7 @@ PollObj::PollObj(DeviceImpl *d,PollObjType ty,const string &na,int user_upd)
 	max_delta_t = (double)(user_upd / 1000.0) * dev->get_poll_old_factor();
 }
 
-PollObj::PollObj(DeviceImpl *d,PollObjType ty,const string &na,int user_upd,long r_depth)
+PollObj::PollObj(DeviceImpl *d,PollObjType ty,const std::string &na,int user_upd,long r_depth)
 :dev(d),type(ty),name(na),ring(r_depth),fwd(false)
 {
 	needed_time.tv_sec = 0;
