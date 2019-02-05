@@ -60,7 +60,7 @@ namespace Tango
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-FwdAttribute::FwdAttribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string &dev_name,long idx)
+FwdAttribute::FwdAttribute(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::string &dev_name,long idx)
 :WAttribute(prop_list,tmp_attr,dev_name,idx)
 {
 	FwdAttr &attr = static_cast<FwdAttr &>(tmp_attr);
@@ -252,8 +252,8 @@ void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
 //
 
 	bool delta_t_defined = true;
-	stringstream ss;
-	string tmp_prop = conf.att_alarm.delta_t.in();
+	std::stringstream ss;
+	std::string tmp_prop = conf.att_alarm.delta_t.in();
 	if (tmp_prop == AlrmValueNotSpec || tmp_prop == NotANumber)
 	{
 		delta_t_str = "0";
@@ -483,7 +483,7 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 //
 
 	bool delta_t_defined = false;
-	string tmp_prop = aie_ptr->alarms.delta_t;
+	std::string tmp_prop = aie_ptr->alarms.delta_t;
 	if (tmp_prop == AlrmValueNotSpec)
 	{
 		delta_t_str = "0";
@@ -491,7 +491,7 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 	}
 	else
 	{
-		stringstream ss1;
+		std::stringstream ss1;
 		ss1 << tmp_prop;
 		ss1 >> delta_t;
 		delta_t_str = tmp_prop;
@@ -507,7 +507,7 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 // Set event related properties (not stored as strings)
 //
 
-	stringstream ss;
+	std::stringstream ss;
 
 	tmp_prop = aie_ptr->events.ch_event.rel_change;
 	convert_event_prop(tmp_prop,rel_change);
@@ -556,14 +556,14 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttribute::convert_event_prop(string &prop_str,double *ptr)
+void FwdAttribute::convert_event_prop(std::string &prop_str,double *ptr)
 {
-	stringstream ss;
+	std::stringstream ss;
 
 	if (prop_str != AlrmValueNotSpec)
 	{
-		string::size_type pos = prop_str.find(',');
-		if (pos == string::npos)
+		std::string::size_type pos = prop_str.find(',');
+		if (pos == std::string::npos)
 		{
 			double tmp_db;
 			ss << prop_str;
@@ -573,8 +573,8 @@ void FwdAttribute::convert_event_prop(string &prop_str,double *ptr)
 		}
 		else
 		{
-			string first = prop_str.substr(0,pos);
-			string second = prop_str.substr(pos + 1);
+			std::string first = prop_str.substr(0,pos);
+			std::string second = prop_str.substr(pos + 1);
 
 			ss << first;
 			ss >> ptr[0];
@@ -604,7 +604,7 @@ void FwdAttribute::convert_event_prop(string &prop_str,double *ptr)
 
 void FwdAttribute::upd_att_config_base(const char *new_label)
 {
-	cout4 << "Entering FwdAttribute::upd_att_config_base" << endl;
+	cout4 << "Entering FwdAttribute::upd_att_config_base" << std::endl;
 
 //
 // Throw exception in case of fwd att wrongly configured or if the root device is not yet accessible
@@ -612,7 +612,7 @@ void FwdAttribute::upd_att_config_base(const char *new_label)
 
 	if (get_data_type() == DATA_TYPE_UNKNOWN)
 	{
-		string desc("Attribute ");
+		std::string desc("Attribute ");
 		desc = desc + name + " is a forwarded attribute and its root device (";
 		desc = desc + fwd_dev_name;
 		desc = desc + ") is not yet available";
@@ -623,7 +623,7 @@ void FwdAttribute::upd_att_config_base(const char *new_label)
 // A new label (the only att property stored locally)
 //
 
-	if (string(new_label) != label)
+	if (std::string(new_label) != label)
 		upd_att_label(new_label);
 
 }
@@ -665,7 +665,7 @@ void FwdAttribute::upd_att_config(const Tango::AttributeConfig_5 &conf)
 			aie.writable_attr_name = fwd_att_name;
 		aile.push_back(aie);
 
-		cout4 << "Sending att conf to root device " << fwd_dev_name << endl;
+		cout4 << "Sending att conf to root device " << fwd_dev_name << std::endl;
 		dev->set_attribute_config(aile);
 	}
 }
@@ -690,7 +690,7 @@ void FwdAttribute::upd_att_config(const Tango::AttributeConfig_3 &conf)
 		aie.name = fwd_att_name;
 		aile.push_back(aie);
 
-		cout4 << "Sending att conf to root device " << fwd_dev_name << endl;
+		cout4 << "Sending att conf to root device " << fwd_dev_name << std::endl;
 		dev->set_attribute_config(aile);
 	}
 }
@@ -754,8 +754,8 @@ bool FwdAttribute::new_att_conf(const Tango::AttributeConfig_3 *conf3,const Tang
 
 void FwdAttribute::upd_att_label(const char *new_label)
 {
-	cout4 << "Entering FwdAttribute::upd_att_label() for att " << name << " with label set to " << new_label << endl;
-	string old_label = label;
+	cout4 << "Entering FwdAttribute::upd_att_label() for att " << name << " with label set to " << new_label << std::endl;
+	std::string old_label = label;
 
 //
 // Change label according to att property changing rule:
@@ -772,9 +772,9 @@ void FwdAttribute::upd_att_label(const char *new_label)
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 
-	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
+	std::vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
 	size_t nb_user = def_user_prop.size();
-	vector<AttrProperty> &def_class_prop = att.get_class_properties();
+	std::vector<AttrProperty> &def_class_prop = att.get_class_properties();
 	size_t nb_class = def_class_prop.size();
 
 	if(TG_strcasecmp(new_label,AlrmValueNotSpec) == 0 ||
@@ -937,7 +937,7 @@ DevAttrHistory_5 *FwdAttribute::read_root_att_history(long n)
 			{
 				dp->set_connection_state(CONNECTION_NOTOK);
 				TangoSys_OMemStream desc;
-				desc << "Attribute_history failed on device " << get_fwd_dev_name() << ends;
+				desc << "Attribute_history failed on device " << get_fwd_dev_name() << std::ends;
 				ApiCommExcept::re_throw_exception(one,"API_CommunicationFailed",
 								         desc.str(),"FwdAttribute::read_root_att_history()");
 			}
@@ -952,7 +952,7 @@ DevAttrHistory_5 *FwdAttribute::read_root_att_history(long n)
 			{
 				dp->set_connection_state(CONNECTION_NOTOK);
 				TangoSys_OMemStream desc;
-				desc << "Attribute_history failed on device " << get_fwd_dev_name() << ends;
+				desc << "Attribute_history failed on device " << get_fwd_dev_name() << std::ends;
 				ApiCommExcept::re_throw_exception(comm,"API_CommunicationFailed",
 											desc.str(),"FwdAttribute::read_root_att_history()");
 			}
@@ -961,7 +961,7 @@ DevAttrHistory_5 *FwdAttribute::read_root_att_history(long n)
         {
 			dp->set_connection_state(CONNECTION_NOTOK);
 			TangoSys_OMemStream desc;
-			desc << "Attribute_history failed on device " << get_fwd_dev_name() << ends;
+			desc << "Attribute_history failed on device " << get_fwd_dev_name() << std::ends;
 			ApiCommExcept::re_throw_exception(ce,"API_CommunicationFailed",
                         			      desc.str(),"FwdAttribute::read_root_att_history()");
 		}
@@ -1041,7 +1041,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 				}
 
 				TangoSys_OMemStream desc;
-				desc << "Writing attribute(s) on device " << get_fwd_dev_name() << " is not authorized" << ends;
+				desc << "Writing attribute(s) on device " << get_fwd_dev_name() << " is not authorized" << std::ends;
 
 				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 											  	  (const char *)"FwdAttribute::write_read_root_att()");
@@ -1072,7 +1072,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 			desc << "Failed to write_read_attribute on device " << get_fwd_dev_name();
 			desc << ", attribute ";
 			desc << values[0].name.in();
-			desc << ends;
+			desc << std::ends;
 			Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
                         	desc.str(), (const char*)"FwdAttribute::write_read_root_att()");
 
@@ -1083,7 +1083,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 			desc << "Failed to write_read_attribute on device " << get_fwd_dev_name();
 			desc << ", attribute ";
 			desc << values[0].name.in();
-			desc << ends;
+			desc << std::ends;
 
 			if (::strcmp(e.errors[0].reason,DEVICE_UNLOCKED_REASON) == 0)
 				DeviceUnlockedExcept::re_throw_exception(e,(const char*)DEVICE_UNLOCKED_REASON,
@@ -1106,7 +1106,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 			{
 				dp->set_connection_state(CONNECTION_NOTOK);
 				TangoSys_OMemStream desc;
-				desc << "Failed to execute write_read_attribute on device " << get_fwd_dev_name() << ends;
+				desc << "Failed to execute write_read_attribute on device " << get_fwd_dev_name() << std::ends;
 				ApiCommExcept::re_throw_exception(one,
 							      (const char*)"API_CommunicationFailed",
                         				      desc.str(),
@@ -1123,7 +1123,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 			{
 				dp->set_connection_state(CONNECTION_NOTOK);
 				TangoSys_OMemStream desc;
-				desc << "Failed to execute write_attribute on device " << get_fwd_dev_name() << ends;
+				desc << "Failed to execute write_attribute on device " << get_fwd_dev_name() << std::ends;
 				ApiCommExcept::re_throw_exception(comm,
 							      (const char*)"API_CommunicationFailed",
                         				      desc.str(),
@@ -1135,7 +1135,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 			dp->set_connection_state(CONNECTION_NOTOK);
 
 			TangoSys_OMemStream desc;
-			desc << "Failed to execute write_attributes on device " << get_fwd_dev_name() << ends;
+			desc << "Failed to execute write_attributes on device " << get_fwd_dev_name() << std::ends;
 			ApiCommExcept::re_throw_exception(ce,
 						      (const char*)"API_CommunicationFailed",
                         			      desc.str(),
