@@ -1,4 +1,4 @@
-/* 
+/*
  * example of a client using the TANGO device api.
  */
 
@@ -22,15 +22,15 @@ bool verbose = false;
 class EventCallBack : public Tango::CallBack
 {
 	void push_event(Tango::DataReadyEventData*);
-	
+
 public:
 	int cb_executed;
 	int cb_err;
 	int old_sec,old_usec;
 	int delta_msec;
-	
+
 	int user_ctr;
-	
+
 };
 
 void EventCallBack::push_event(Tango::DataReadyEventData* event_data)
@@ -46,14 +46,14 @@ void EventCallBack::push_event(Tango::DataReadyEventData* event_data)
 	gettimeofday(&now_timeval,NULL);
 #endif
 	coutv << "date : tv_sec = " << now_timeval.tv_sec;
-	coutv << ", tv_usec = " << now_timeval.tv_usec << endl;
+	coutv << ", tv_usec = " << now_timeval.tv_usec << std::endl;
 
-	delta_msec = ((now_timeval.tv_sec - old_sec) * 1000) + ((now_timeval.tv_usec - old_usec) / 1000);		
+	delta_msec = ((now_timeval.tv_sec - old_sec) * 1000) + ((now_timeval.tv_usec - old_usec) / 1000);
 
 	old_sec = now_timeval.tv_sec;
 	old_usec = now_timeval.tv_usec;
-	
-	coutv << "delta_msec = " << delta_msec << endl;
+
+	coutv << "delta_msec = " << delta_msec << std::endl;
 
 	cb_executed++;
 
@@ -62,12 +62,12 @@ void EventCallBack::push_event(Tango::DataReadyEventData* event_data)
 		coutv << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
 		if (!event_data->err)
 		{
-			coutv << "Event data: Attribute data type = " << event_data->attr_data_type << ", User ctr = " << event_data->ctr << endl;
+			coutv << "Event data: Attribute data type = " << event_data->attr_data_type << ", User ctr = " << event_data->ctr << std::endl;
 			user_ctr = event_data->ctr;
 		}
 		else
 		{
-			coutv << "Error send to callback" << endl;
+			coutv << "Error send to callback" << std::endl;
 			Tango::Except::print_error_stack(event_data->errors);
 		}
 	}
@@ -81,22 +81,22 @@ void EventCallBack::push_event(Tango::DataReadyEventData* event_data)
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
-	
+
 	if (argc == 1)
 	{
-		cout << "usage: %s device [-v]" << endl;
+		cout << "usage: %s device [-v]" << std::endl;
 		exit(-1);
 	}
 
-	string device_name = argv[1];
+	std::string device_name = argv[1];
 
 	if (argc == 3)
 	{
 		if (strcmp(argv[2],"-v") == 0)
 			verbose = true;
 	}
-	
-	try 
+
+	try
 	{
 		device = new DeviceProxy(device_name);
 	}
@@ -106,7 +106,7 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+	coutv << std::endl << "new DeviceProxy(" << device->name() << ") returned" << std::endl << std::endl;
 
 	try
 	{
@@ -114,10 +114,10 @@ int main(int argc, char **argv)
 // Subscribe to an attribute which is not data ready event enabled should fail
 //
 
-		string att_name("Short_attr");
+		std::string att_name("Short_attr");
 
 		int eve_id1,eve_id2;
-		vector<string> filters;
+		std::vector<std::string> filters;
 		EventCallBack cb;
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
@@ -125,7 +125,7 @@ int main(int argc, char **argv)
 		cb.user_ctr = 0;
 
 		bool except = true;
-						
+
 		try
 		{
 			eve_id1 = device->subscribe_event(att_name,Tango::DATA_READY_EVENT,&cb,filters);
@@ -135,16 +135,16 @@ int main(int argc, char **argv)
 		{
 //			Tango::Except::print_exception(e);
 		}
-		
+
 		assert (except == true);
-				
+
 		att_name = "Long_attr";
-				
+
 
 //
 // subscribe to a data ready event
 //
-		
+
 		eve_id1 = device->subscribe_event(att_name,Tango::DATA_READY_EVENT,&cb,filters);
 		eve_id2 = device->subscribe_event(att_name,Tango::DATA_READY_EVENT,&cb,filters);
 
@@ -153,17 +153,17 @@ int main(int argc, char **argv)
 //
 
 		bool po = device->is_attribute_polled(att_name);
-		coutv << "attribute polled : " << po << endl;
-		assert( po == false);	
+		coutv << "attribute polled : " << po << std::endl;
+		assert( po == false);
 
 //
 // The callback should not have been executed once
 //
 
 		assert (cb.cb_executed == 0);
-						
-		cout << "   subscribe_event --> OK" << endl;
-		
+
+		cout << "   subscribe_event --> OK" << std::endl;
+
 //
 // Execute the command which will fire an attribute
 // data ready event
@@ -177,12 +177,12 @@ int main(int argc, char **argv)
 		DeviceData d_in;
 		d_in << dvlsa;
 		device->command_inout("PushDataReady",d_in);
-				
+
 		Tango_sleep(1);
-		
+
 		assert (cb.cb_executed == 2);
 		assert (cb.user_ctr == 10);
-		
+
 //
 // Redo the command several times
 //
@@ -190,34 +190,34 @@ int main(int argc, char **argv)
 		dvlsa.lvalue[0] = 15;
 		d_in << dvlsa;
 		device->command_inout("PushDataReady",d_in);
-		
+
 		dvlsa.lvalue[0] = 16;
 		d_in << dvlsa;
 		device->command_inout("PushDataReady",d_in);
-		
+
 		dvlsa.lvalue[0] = 17;
 		d_in << dvlsa;
 		device->command_inout("PushDataReady",d_in);
-		
+
 		Tango_sleep(1);
-		
+
 		assert (cb.cb_executed == 8);
-		assert (cb.user_ctr == 17);		
-		
-		cout << "   data_ready_event --> OK" << endl;
-		
+		assert (cb.user_ctr == 17);
+
+		cout << "   data_ready_event --> OK" << std::endl;
+
 //
 // Server push event on a non-exiting attribute
 //
 
 		bool received_err = false;
-		string err_reason;
-		
+		std::string err_reason;
+
 		dvlsa.svalue[0] = Tango::string_dup("bidon");
 		d_in << dvlsa;
-		
+
 		try
-		{		
+		{
 			device->command_inout("PushDataReady",d_in);
 		}
 		catch (Tango::DevFailed &e)
@@ -225,18 +225,18 @@ int main(int argc, char **argv)
 			received_err = true;
 			err_reason = e.errors[0].reason;
 		}
-		
+
 		assert (received_err == true);
 		assert (err_reason == "API_AttrNotFound");
-			
+
 //
 // unsubscribe to the event
 //
 
 		device->unsubscribe_event(eve_id1);
 		device->unsubscribe_event(eve_id2);
-		
-		cout << "   unsubscribe_event --> OK" << endl;							
+
+		cout << "   unsubscribe_event --> OK" << std::endl;
 	}
 	catch (Tango::DevFailed &e)
 	{
@@ -250,6 +250,6 @@ int main(int argc, char **argv)
 	}
 
 	delete device;
-	
+
 	return 0;
 }
