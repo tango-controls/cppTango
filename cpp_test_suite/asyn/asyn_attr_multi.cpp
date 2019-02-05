@@ -1,4 +1,4 @@
-/* 
+/*
  * example of a client using the TANGO device api.
  */
 
@@ -13,22 +13,22 @@ int main(int argc, char **argv)
 {
 	DeviceProxy *device;
 	bool verbose = false;
-	
+
 	if (argc == 1)
 	{
-		cout << "usage: %s device [-v]" << endl;
+		cout << "usage: %s device [-v]" << std::endl;
 		exit(-1);
 	}
 
-	string device_name = argv[1];
+	std::string device_name = argv[1];
 
 	if (argc == 3)
 	{
 		if (strcmp(argv[2],"-v") == 0)
 			verbose = true;
 	}
-	
-	try 
+
+	try
 	{
 		device = new DeviceProxy(device_name);
 	}
@@ -38,24 +38,24 @@ int main(int argc, char **argv)
 		exit(1);
         }
 
-	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+	coutv << std::endl << "new DeviceProxy(" << device->name() << ") returned" << std::endl << std::endl;
 
 	try
 	{
-	
+
 // Change timeout (with a useless name as a workaround for ORBacus bug)
 
 //		device->set_timeout_millis(6000);
-				
+
 // Read one attribute
 
 		long id;
-		vector<DeviceAttribute> *received;
-		vector<string> names;
+		std::vector<DeviceAttribute> *received;
+		std::vector<std::string> names;
 		names.push_back("attr_asyn");
 		names.push_back("Short_attr");
 		id = device->read_attributes_asynch(names);
-		
+
 // Check if attribute returned
 
 		bool finish = false;
@@ -76,23 +76,23 @@ int main(int argc, char **argv)
 			catch (AsynReplyNotArrived )
 			{
 				finish = false;
-				coutv << "Attribute not yet read" << endl;
+				coutv << "Attribute not yet read" << std::endl;
 				nb_not_arrived++;
 			}
 			if (finish == false)
 				Tango_sleep(1);
 		}
 		delete received;
-		
+
 		assert ( nb_not_arrived >= 2);
-		
-		cout << "   Asynchronous read_attributes in polling mode --> OK" << endl;
+
+		cout << "   Asynchronous read_attributes in polling mode --> OK" << std::endl;
 
 // Read attribute to check polling with blocking with timeout
 
 		id = device->read_attributes_asynch(names);
 //		assert( id == 2);
-		
+
 // Check if attribute returned
 
 		finish = false;
@@ -112,21 +112,21 @@ int main(int argc, char **argv)
 			}
 			catch (AsynReplyNotArrived )
 			{
-				coutv << "Attribute not yet read" << endl;
+				coutv << "Attribute not yet read" << std::endl;
 				nb_not_arrived++;
 			}
 		}
 		delete received;
-		
+
 		assert ( nb_not_arrived >= 4);
 
-		cout << "   Asynchronous read_attributes in blocking mode with call timeout --> OK" << endl;
-		
+		cout << "   Asynchronous read_attributes in blocking mode with call timeout --> OK" << std::endl;
+
 // Send a command to check polling with blocking
 
 		id = device->read_attributes_asynch(names);
 //		assert( id == 3);
-		
+
 // Check if command returned
 
 		received = device->read_attributes_reply(id,0);
@@ -135,18 +135,18 @@ int main(int argc, char **argv)
 		short s1;
 		(*received)[1] >> s1;
 		delete received;
-		
+
 		assert( l == 5.55 );
 		assert( s1 == 12 );
 
-		cout << "   Asynchronous read_attributes in blocking mode --> OK" << endl;
+		cout << "   Asynchronous read_attributes in blocking mode --> OK" << std::endl;
 
 //---------------------------------------------------------------------------
 //
 //			Now test Timeout exception and asynchronous calls
 //
 //---------------------------------------------------------------------------
-		
+
 // Change timeout in order to test asynchronous calls and timeout
 
 //		device->set_timeout_millis(2000);
@@ -155,7 +155,7 @@ int main(int argc, char **argv)
 
 		names[0] = "attr_asyn_to";
 		id = device->read_attributes_asynch(names);
-		
+
 // Check if attribute returned
 
 		finish = false;
@@ -173,7 +173,7 @@ int main(int argc, char **argv)
 			{
 				finish = false;
 				nb_not_arrived++;
-				coutv << "Attributes not yet read" << endl;
+				coutv << "Attributes not yet read" << std::endl;
 			}
 			catch (CommunicationFailed &e)
 			{
@@ -181,23 +181,23 @@ int main(int argc, char **argv)
 				if (strcmp(e.errors[1].reason,"API_DeviceTimedOut") == 0)
 				{
 					to = true;
-					coutv << "Timeout exception" << endl;
+					coutv << "Timeout exception" << std::endl;
 				}
 				else
-					coutv << "Comm exception" << endl;
+					coutv << "Comm exception" << std::endl;
 			}
 			if (finish == false)
 				Tango_sleep(1);
 		}
 		assert ( to == true );
 		assert ( nb_not_arrived >= 2 );
-		
-		cout << "   Device timeout exception with non blocking read_attributes_reply --> OK" << endl;
-		
+
+		cout << "   Device timeout exception with non blocking read_attributes_reply --> OK" << std::endl;
+
 // Read an attribute to check timeout with polling and blocking with timeout
 
 		id = device->read_attributes_asynch(names);
-		
+
 // Check if command returned
 
 		finish = false;
@@ -213,7 +213,7 @@ int main(int argc, char **argv)
 			}
 			catch (AsynReplyNotArrived )
 			{
-				coutv << "Attributes not yet read" << endl;
+				coutv << "Attributes not yet read" << std::endl;
 				nb_not_arrived++;
 			}
 			catch (CommunicationFailed &e)
@@ -222,21 +222,21 @@ int main(int argc, char **argv)
 				if (strcmp(e.errors[1].reason,"API_DeviceTimedOut") == 0)
 				{
 					to = true;
-					coutv << "Timeout exception" << endl;
+					coutv << "Timeout exception" << std::endl;
 				}
 				else
-					coutv << "Comm exception" << endl;
+					coutv << "Comm exception" << std::endl;
 			}
 		}
 		assert( to == true );
 		assert( nb_not_arrived >= 2);
-		
-		cout << "   Device timeout with blocking read_attributes_reply with call timeout --> OK" << endl;
-		
+
+		cout << "   Device timeout with blocking read_attributes_reply with call timeout --> OK" << std::endl;
+
 // Read an attribute to check polling with blocking
 
 		id = device->read_attributes_asynch(names);
-		
+
 // Check if attribute returned
 
 		to = false;
@@ -251,14 +251,14 @@ int main(int argc, char **argv)
 			if (strcmp(e.errors[1].reason,"API_DeviceTimedOut") == 0)
 			{
 				to = true;
-				coutv << "Timeout exception" << endl;
+				coutv << "Timeout exception" << std::endl;
 			}
 			else
-				coutv << "Comm exception" << endl;
+				coutv << "Comm exception" << std::endl;
 		}
 		assert(to == true );
-		
-		cout << "   Device timeout with blocking read_attributes_reply --> OK" << endl;
+
+		cout << "   Device timeout with blocking read_attributes_reply --> OK" << std::endl;
 
 //---------------------------------------------------------------------------
 //
@@ -266,7 +266,7 @@ int main(int argc, char **argv)
 //
 //---------------------------------------------------------------------------
 
-		cout << "   Waiting for server to execute all previous requests" << endl;
+		cout << "   Waiting for server to execute all previous requests" << std::endl;
 		Tango_sleep(5);
 
 // Change timeout in order to test asynchronous calls and DevFailed exception
@@ -277,7 +277,7 @@ int main(int argc, char **argv)
 
 		names[0] = "attr_asyn_except";
 		id = device->read_attributes_asynch(names);
-		
+
 // Check if attribute returned
 
 		finish = false;
@@ -297,24 +297,24 @@ int main(int argc, char **argv)
 					if (strcmp(err[0].reason,"aaa") == 0)
 					{
 						failed = true;
-						coutv << "Server exception" << endl;
+						coutv << "Server exception" << std::endl;
 					}
 				}
 				if ((*received)[1].has_failed() == true)
 					strange_err = true;
 				else
-					(*received)[1] >> sh;					
+					(*received)[1] >> sh;
 				delete received;
 			}
 			catch (AsynReplyNotArrived )
 			{
 				finish = false;
 				nb_not_arrived++;
-				coutv << "Attributes not yet read" << endl;
+				coutv << "Attributes not yet read" << std::endl;
 			}
 			catch (DevFailed &e)
 			{
-				coutv << "Comm exception" << endl;
+				coutv << "Comm exception" << std::endl;
 			}
 			if (finish == false)
 				Tango_sleep(1);
@@ -323,13 +323,13 @@ int main(int argc, char **argv)
 		assert ( sh == 12 );
 		assert (strange_err == false );
 		assert ( nb_not_arrived >= 2 );
-		
-		cout << "   Device exception with non blocking read_attributes_reply --> OK" << endl;
-		
+
+		cout << "   Device exception with non blocking read_attributes_reply --> OK" << std::endl;
+
 // Read an attribute to check timeout with polling and blocking with timeout
 
 		id = device->read_attributes_asynch(names);
-		
+
 // Check if attribute returned
 
 		finish = false;
@@ -343,18 +343,18 @@ int main(int argc, char **argv)
 			}
 			catch (AsynReplyNotArrived )
 			{
-				coutv << "Attributes not yet read" << endl;
+				coutv << "Attributes not yet read" << std::endl;
 			}
 			catch (DevFailed &e)
 			{
-				coutv << "Comm exception" << endl;
+				coutv << "Comm exception" << std::endl;
 			}
 		}
 		bool all_extracted = false;
 		int i;
 		long nb_extracted;
 		sh = 0;
-		
+
 		while (all_extracted == false)
 		{
 			nb_extracted = 0;
@@ -375,22 +375,22 @@ int main(int argc, char **argv)
 				if (strcmp(e.errors[0].reason,"aaa") == 0)
 				{
 					failed = true;
-					coutv << "Server exception" << endl;
+					coutv << "Server exception" << std::endl;
 				}
 				else
-					coutv << "Comm exception" << endl;
+					coutv << "Comm exception" << std::endl;
 			}
 		}
-		
+
 		assert( failed == true );
 		assert( sh == 12 );
-		
-		cout << "   Device exception with blocking read_attributes_reply with call timeout --> OK" << endl;
-		
+
+		cout << "   Device exception with blocking read_attributes_reply with call timeout --> OK" << std::endl;
+
 // Read an attribute to check polling with blocking
 
 		id = device->read_attributes_asynch(names);
-		
+
 // Check if attribute returned
 
 		failed = false;
@@ -401,7 +401,7 @@ int main(int argc, char **argv)
 			finish = true;
 			for (unsigned int j = 0;j < received->size();j++)
 				(*received)[j].reset_exceptions(DeviceAttribute::failed_flag);
-			
+
 			double db;
 			if (((*received)[0] >> db) == false)
 			{
@@ -409,7 +409,7 @@ int main(int argc, char **argv)
 				if (strcmp(err[0].reason,"aaa") == 0)
 				{
 					failed = true;
-					coutv << "Server exception" << endl;
+					coutv << "Server exception" << std::endl;
 				}
 			}
 			if (((*received)[1] >> sh) == false)
@@ -419,15 +419,15 @@ int main(int argc, char **argv)
 		}
 		catch (DevFailed &e)
 		{
-			coutv << "Comm exception" << endl;
+			coutv << "Comm exception" << std::endl;
 		}
-		
+
 
 		assert( failed == true );
 		assert( sh == 12 );
-		
-		cout << "   Device exception with blocking read_attributes_reply --> OK" << endl;
-						
+
+		cout << "   Device exception with blocking read_attributes_reply --> OK" << std::endl;
+
 	}
 	catch (Tango::DevFailed &e)
 	{
@@ -439,8 +439,8 @@ int main(int argc, char **argv)
 		Except::print_exception(ex);
 		exit(-1);
 	}
-		
+
 	delete device;
-	
+
 	return 0;
 }
