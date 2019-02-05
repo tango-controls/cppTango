@@ -52,7 +52,7 @@ bool GroupReply::exception_enabled = false;
 GroupElements GroupElementFactory::instanciate (const std::string& p, int tmo_ms)
 {
 #if defined(_LOCAL_DEBUGGING)
-  cout << "GroupElementFactory::instanciate::pattern [" << p << "]" << endl;
+  cout << "GroupElementFactory::instanciate::pattern [" << p << "]" << std::endl;
 #endif
   //- a vector to store device names
   std::vector<std::string> dnl(0);
@@ -60,7 +60,7 @@ GroupElements GroupElementFactory::instanciate (const std::string& p, int tmo_ms
   if (p.find('*', 0) == std::string::npos)
   {
 #if defined(_LOCAL_DEBUGGING)
-    cout << "\t|- pattern is pure device name" << endl;
+    cout << "\t|- pattern is pure device name" << std::endl;
 #endif
     dnl.push_back(p);
   }
@@ -86,9 +86,9 @@ GroupElements GroupElementFactory::instanciate (const std::string& p, int tmo_ms
     dbd >> dnl;
 #if defined(_LOCAL_DEBUGGING)
     cout << "\t|- db.get_device_exported::found ";
-    cout << dnl.size() << " device names matching pattern" << endl;
+    cout << dnl.size() << " device names matching pattern" << std::endl;
     for (unsigned int dn = 0; dn < dnl.size(); dn++) {
-      cout << "\t\t|- " << dnl[dn] << endl;
+      cout << "\t\t|- " << dnl[dn] << std::endl;
     }
 #endif
   }
@@ -102,22 +102,22 @@ GroupElements GroupElementFactory::instanciate (const std::string& p, int tmo_ms
     }
   }
 #if defined(_LOCAL_DEBUGGING)
-    cout << "\t|- GroupElementList contains " << tel.size() << " elements" << endl;
+    cout << "\t|- GroupElementList contains " << tel.size() << " elements" << std::endl;
 #endif
   //- return the list to the caller
   return tel;
 }
 
-void GroupElementFactory::parse_name (const std::string& p, string &db_host,int &db_port,string &dev_pattern)
+void GroupElementFactory::parse_name (const std::string& p, std::string &db_host,int &db_port,std::string &dev_pattern)
 {
-	string pattern_name_low(p);
-	transform(pattern_name_low.begin(),pattern_name_low.end(),pattern_name_low.begin(),::tolower);
+	std::string pattern_name_low(p);
+	std::transform(pattern_name_low.begin(),pattern_name_low.end(),pattern_name_low.begin(),::tolower);
 
 // Try to find protocol specification in device pattern and analyse it
 
-	string name_wo_prot;
-	string::size_type pos = pattern_name_low.find(PROT_SEP);
-	if (pos == string::npos)
+	std::string name_wo_prot;
+	std::string::size_type pos = pattern_name_low.find(PROT_SEP);
+	if (pos == std::string::npos)
 	{
 		if (pattern_name_low.size() > 2)
 		{
@@ -131,7 +131,7 @@ void GroupElementFactory::parse_name (const std::string& p, string &db_host,int 
 	}
 	else
 	{
-		string protocol = pattern_name_low.substr(0,pos);
+		std::string protocol = pattern_name_low.substr(0,pos);
 
 		if (protocol == TANGO_PROTOCOL)
 		{
@@ -141,7 +141,7 @@ void GroupElementFactory::parse_name (const std::string& p, string &db_host,int 
 		{
 			TangoSys_OMemStream desc;
 			desc << protocol;
-			desc << " protocol is an unsupported protocol" << ends;
+			desc << " protocol is an unsupported protocol" << std::ends;
 			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedProtocol",
 						desc.str(),
 						(const char*)"GroupElementFactory::parse_name()");
@@ -151,36 +151,36 @@ void GroupElementFactory::parse_name (const std::string& p, string &db_host,int 
 // Search if host and port are specified
 
 	pos = name_wo_prot.find(PORT_SEP);
-	if (pos == string::npos)
+	if (pos == std::string::npos)
 	{
 		TangoSys_OMemStream desc;
-		desc << "Wrong device name syntax in " << p << ends;
+		desc << "Wrong device name syntax in " << p << std::ends;
 
 		ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 				desc.str(),
 				(const char *)"GroupElementFactory::parse_name()");
 	}
 
-	string bef_sep = name_wo_prot.substr(0,pos);
-	string::size_type tmp = bef_sep.find(HOST_SEP);
-	if (tmp != string::npos)
+	std::string bef_sep = name_wo_prot.substr(0,pos);
+	std::string::size_type tmp = bef_sep.find(HOST_SEP);
+	if (tmp != std::string::npos)
 	{
-		string tmp_host(bef_sep.substr(0,tmp));
-		if (tmp_host.find('.') == string::npos)
+		std::string tmp_host(bef_sep.substr(0,tmp));
+		if (tmp_host.find('.') == std::string::npos)
 			DeviceProxy::get_fqdn(tmp_host);
 		db_host = tmp_host;
-		string db_port_str = bef_sep.substr(tmp + 1);
+		std::string db_port_str = bef_sep.substr(tmp + 1);
 		if (db_port_str.size() == 0)
 		{
 			TangoSys_OMemStream desc;
-			desc << "Wrong device name syntax in " << p << ends;
+			desc << "Wrong device name syntax in " << p << std::ends;
 
 			ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 					desc.str(),
 					(const char *)"GroupElementFactory::parse_name()");
 		}
 		TangoSys_MemStream s;
-		s << db_port_str << ends;
+		s << db_port_str << std::ends;
 		s >> db_port;
 		dev_pattern = name_wo_prot.substr(pos + 1);
 	}
@@ -564,7 +564,7 @@ GroupElement* GroupElement::find_i (const std::string& n, TANGO_UNUSED(bool fwd)
 TokenList GroupElement::tokenize_i (const std::string& p)
 {
 #if defined(_LOCAL_DEBUGGING)
-  cout << "\t|- Group::tokenize::pattern [" << p << "]" << endl;
+  cout << "\t|- Group::tokenize::pattern [" << p << "]" << std::endl;
 #endif
 	int done = 0;
   std::string token;
@@ -591,7 +591,7 @@ TokenList GroupElement::tokenize_i (const std::string& p)
     cout << tokens[t];
     cout << ((t == tokens.size() - 1) ? "]" : ";");
   }
-  cout << endl;
+  cout << std::endl;
 #endif
   return tokens;
 }
@@ -602,13 +602,13 @@ bool GroupElement::match_i (const std::string& _p, const TokenList& tokens)
   std::string p(_p);
   std::transform(p.begin(),p.end(),p.begin(),::tolower);
 #if defined(_LOCAL_DEBUGGING)
-  cout << "\t|- Group::match::pattern " << _p << endl;
+  cout << "\t|- Group::match::pattern " << _p << std::endl;
 #endif
   bool result = false;
   std::string::size_type pos;
   for (t = 0, pos = 0; t < tokens.size(); t++)
   {
-    string token(tokens[t]);
+    std::string token(tokens[t]);
     std::transform(token.begin(),token.end(),token.begin(),::tolower);
 	  pos = p.find(token, pos);
 	  if (pos == std::string::npos)
@@ -619,9 +619,9 @@ bool GroupElement::match_i (const std::string& _p, const TokenList& tokens)
   }
 #if defined(_LOCAL_DEBUGGING)
   if (result == true) {
-    cout << "\t\t|- Group::match::pattern matches tokens" << endl;
+    cout << "\t\t|- Group::match::pattern matches tokens" << std::endl;
   } else {
-    cout << "\t\t|- Group::match::pattern does NOT match tokens" << endl;
+    cout << "\t\t|- Group::match::pattern does NOT match tokens" << std::endl;
   }
 #endif
   return result;
@@ -756,11 +756,11 @@ void Group::add (Group* g, int tmo_ms)
   omni_mutex_lock guard(elements_mutex);
 #endif
 #if defined(_LOCAL_DEBUGGING)
-  cout << "Group::add::adding sub-group " << (g ? g->get_name() : "NULL") << endl;
+  cout << "Group::add::adding sub-group " << (g ? g->get_name() : "NULL") << std::endl;
 #endif
   if (g == 0 || get_group_i(g->get_name()) == g || g->get_group_i(get_name()) == this) {
 #if defined(_LOCAL_DEBUGGING)
-    cout << "Group::add::failed to add group" << (g ? (g->get_name() + " (self ref. or already in group)") : "NULL") << endl;
+    cout << "Group::add::failed to add group" << (g ? (g->get_name() + " (self ref. or already in group)") : "NULL") << std::endl;
 #endif
     if(g != 0) {
       g->set_timeout_millis(tmo_ms);
@@ -817,14 +817,14 @@ bool Group::add_i (GroupElement* e, bool fwd)
 {
   if (e == 0 || e == this) {
 #if defined(_LOCAL_DEBUGGING)
-    cout << "Group::add_i::failed to add " << (e ? (e->get_name() + " (null or self ref)") : "NULL") << endl;
+    cout << "Group::add_i::failed to add " << (e ? (e->get_name() + " (null or self ref)") : "NULL") << std::endl;
 #endif
     return false;
   }
   GroupElement* te = find_i(e->get_name(), fwd);
   if (te != 0 && te != this) {
 #if defined(_LOCAL_DEBUGGING)
-    cout << "Group::add_i::failed to add " << e->get_name() << " (already in group)" << endl;
+    cout << "Group::add_i::failed to add " << e->get_name() << " (already in group)" << std::endl;
 #endif
     return false;
   }
@@ -839,7 +839,7 @@ void Group::remove (const std::string& p, bool fwd)
   omni_mutex_lock guard(elements_mutex);
 #endif
 #if defined(_LOCAL_DEBUGGING)
-  cout << "Group::remove::pattern [" << p << "]" << endl;
+  cout << "Group::remove::pattern [" << p << "]" << std::endl;
 #endif
   remove_i(p, fwd);
 }
@@ -850,7 +850,7 @@ void Group::remove (const std::vector<std::string>& pl, bool fwd)
   omni_mutex_lock guard(elements_mutex);
 #endif
 #if defined(_LOCAL_DEBUGGING)
-  cout << "Group::remove::pattern list" << endl;
+  cout << "Group::remove::pattern list" << std::endl;
 #endif
   for (unsigned int p = 0; p < pl.size(); p++) {
     remove_i(pl[p], fwd);
@@ -860,11 +860,11 @@ void Group::remove (const std::vector<std::string>& pl, bool fwd)
 void Group::remove_i (const std::string& p, bool fwd)
 {
 #if defined(_LOCAL_DEBUGGING)
-  cout << "\t|- Group::remove_i" << endl;
+  cout << "\t|- Group::remove_i" << std::endl;
 #endif
   if (name_equals(p)) {
 #if defined(_LOCAL_DEBUGGING)
-    cout << "Group::remove_i::failed to remove " << _p << " (can't remove self)" << endl;
+    cout << "Group::remove_i::failed to remove " << _p << " (can't remove self)" << std::endl;
 #endif
     return;
   }
@@ -889,7 +889,7 @@ void Group::remove_i (const std::string& p, bool fwd)
       it = std::find(elements.begin(), elements.end(), remove_list[i]);
       if (it != elements.end()) {
 # if defined(_LOCAL_DEBUGGING)
-        cout << "\t|- Group::remove_i::removing " << (*it)->get_name() << endl;
+        cout << "\t|- Group::remove_i::removing " << (*it)->get_name() << std::endl;
 # endif // _LOCAL_DEBUGGING
         delete remove_list[i];
         elements.erase(it);
@@ -911,7 +911,7 @@ void Group::remove_all ()
   omni_mutex_lock guard(elements_mutex);
 #endif
 #if defined(_LOCAL_DEBUGGING)
-  cout << "Group::remove_all::" << get_name() << endl;
+  cout << "Group::remove_all::" << get_name() << std::endl;
 #endif
   GroupElementsIterator it = elements.begin();
   GroupElementsIterator end = elements.end();
@@ -1154,7 +1154,7 @@ long Group::command_inout_asynch_i (const std::string& c, const std::vector<Devi
          << " - got:"
          << d.size()
          << "]"
-         << ends;
+         << std::ends;
     ApiDataExcept::throw_exception((const char*)API_MethodArgument,
                                    (const char*)desc.str().c_str(),
                                    (const char*)"Group::command_inout_asynch");
@@ -1433,7 +1433,7 @@ long Group::write_attribute_asynch_i (const std::vector<DeviceAttribute>& d, boo
          << " - got:"
          << d.size()
          << "]"
-         << ends;
+         << std::ends;
     ApiDataExcept::throw_exception((const char*)API_MethodArgument,
                                    (const char*)desc.str().c_str(),
                                    (const char*)"Group::write_attribute_asynch");
@@ -1521,7 +1521,7 @@ void Group::dump (int indent_level)
        << ":"
        << get_size_i(true)
        << "]"
-       << endl;
+       << std::endl;
   for (; it != end ; ++it) {
     (*it)->dump(indent_level + 1);
   }
@@ -1542,14 +1542,14 @@ void Group::dump (TangoSys_OMemStream& oms, int indent_level)
        << ":"
        << get_size_i(true)
        << "]"
-       << endl;
+       << std::endl;
   GroupElementsIterator it = elements.begin();
   GroupElementsIterator end = elements.end();
   for (; it != end ; ++it) {
     (*it)->dump(oms, indent_level + 1);
   }
   if (indent_level == 0) {
-    oms << ends;
+    oms << std::ends;
   }
 }
 //-----------------------------------------------------------------------------
@@ -2197,7 +2197,7 @@ void GroupDeviceElement::dump (TANGO_UNUSED(int indent_level))
   for (int i = 0; i < indent_level ; i++) {
     cout << "\t";
   }
-  cout << "|- DEVICE: " << get_name() << endl;
+  cout << "|- DEVICE: " << get_name() << std::endl;
 #endif
 }
 //-----------------------------------------------------------------------------
@@ -2206,7 +2206,7 @@ void GroupDeviceElement::dump (TangoSys_OMemStream& oms, int indent_level)
   for (int i = 0; i < indent_level ; i++) {
     oms << "\t";
   }
-  oms << "|- DEVICE: " << get_name() << endl;
+  oms << "|- DEVICE: " << get_name() << std::endl;
 }
 //-----------------------------------------------------------------------------
 bool GroupDeviceElement::is_connected ()
