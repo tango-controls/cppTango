@@ -74,7 +74,7 @@ NotifdEventSupplier::NotifdEventSupplier(CORBA::ORB_var _orb,
 	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var _structuredProxyPushConsumer,
 	CosNotifyChannelAdmin::EventChannelFactory_var _eventChannelFactory,
 	CosNotifyChannelAdmin::EventChannel_var _eventChannel,
-	string &event_ior,
+	std::string &event_ior,
 	Util *tg): EventSupplier(tg)
 {
 	orb_ = _orb;
@@ -90,7 +90,7 @@ NotifdEventSupplier::NotifdEventSupplier(CORBA::ORB_var _orb,
 }
 
 NotifdEventSupplier *NotifdEventSupplier::create(CORBA::ORB_var _orb,
-				     string server_name,
+				     std::string server_name,
 				     Util *tg)
 {
 	cout4 << "calling Tango::NotifdEventSupplier::create() \n";
@@ -132,7 +132,7 @@ void NotifdEventSupplier::connect()
 	}
 	catch(const CosEventChannelAdmin::AlreadyConnected&)
 	{
-		cerr << "Tango::NotifdEventSupplier::connect() caught AlreadyConnected exception" << endl;
+		std::cerr << "Tango::NotifdEventSupplier::connect() caught AlreadyConnected exception" << std::endl;
 	}
 
 }
@@ -159,7 +159,7 @@ void NotifdEventSupplier::subscription_change(TANGO_UNUSED(const CosNotification
 //-----------------------------------------------------------------------------
 
 void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
-				      string &server_name,
+				      std::string &server_name,
 				      Util *tg)
 {
 	CosNotifyChannelAdmin::EventChannelFactory_var _eventChannelFactory;
@@ -171,13 +171,13 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 // started with the -file option
 //
 
-    string &host_name = tg->get_host_name();
+    std::string &host_name = tg->get_host_name();
 
-	string factory_ior;
-	string factory_name;
+	std::string factory_ior;
+	std::string factory_name;
 	factory_name = "notifd/factory/" + host_name;
 	CORBA::Any_var received;
-	string d_name = "DServer/";
+	std::string d_name = "DServer/";
 	d_name = d_name + server_name;
 	const DevVarLongStringArray *dev_import_list;
 
@@ -206,13 +206,13 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
                 }
                 catch (Tango::DevFailed &e)
                 {
-                    string reason(e.errors[0].reason.in());
+                    std::string reason(e.errors[0].reason.in());
                     if (reason == "DB_DeviceNotDefined")
                     {
-                        string::size_type pos = factory_name.find('.');
-                        if (pos != string::npos)
+                        std::string::size_type pos = factory_name.find('.');
+                        if (pos != std::string::npos)
                         {
-                            string factory_name_canon = factory_name.substr(0,pos);
+                            std::string factory_name_canon = factory_name.substr(0,pos);
                             received = db->import_event(factory_name_canon);
                         }
                         else
@@ -245,7 +245,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 // compiled with -D_TANGO_LIB)
 //
 
-				cout4 << "Failed to import EventChannelFactory " << factory_name << " from the Tango database" << endl;
+				cout4 << "Failed to import EventChannelFactory " << factory_name << " from the Tango database" << std::endl;
 			}
 
 			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
@@ -255,13 +255,13 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 
 		if (tg->get_db_cache() == NULL)
 			received.inout() >>= dev_import_list;
-		factory_ior = string((dev_import_list->svalue)[1]);
+		factory_ior = std::string((dev_import_list->svalue)[1]);
 	}
 	else
 	{
 		Tango::DbDatum na;
 
-		string cl_name("notifd");
+		std::string cl_name("notifd");
 		try
 		{
 			na = db->get_device_name(server_name,cl_name);
@@ -270,8 +270,8 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 		{
 			if (tg->is_svr_starting() == true)
 			{
-				cout4 << "Failed to import EventChannelFactory from the Device Server property file" << endl;
-				cout4 << "Notifd event will not be generated" << endl;
+				cout4 << "Failed to import EventChannelFactory from the Device Server property file" << std::endl;
+				cout4 << "Notifd event will not be generated" << std::endl;
 			}
 
 			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
@@ -314,7 +314,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 
 		if(CORBA::is_nil(_eventChannelFactory))
 		{
-			cerr << factory_name << " is not an EventChannelFactory " << endl;
+			std::cerr << factory_name << " is not an EventChannelFactory " << std::endl;
 			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
 				(const char*)"Failed to import the EventChannelFactory from the Tango database",
 				(const char*)"NotifdEventSupplier::create()");
@@ -347,7 +347,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 
 		if (tg->is_svr_starting() == true)
 		{
-			cout4 << "Failed to narrow the EventChannelFactory - Notifd events will not be generated (hint: start the notifd daemon on this host)" << endl;
+			cout4 << "Failed to narrow the EventChannelFactory - Notifd events will not be generated (hint: start the notifd daemon on this host)" << std::endl;
 		}
 
 		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
@@ -361,7 +361,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 //
 
 	int channel_exported=-1;
-	string channel_ior, channel_host;
+	std::string channel_ior, channel_host;
 
 	if (Util::_FileDb == false)
 	{
@@ -384,8 +384,8 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 // compiled with -D_TANGO_LIB)
 //
 
-			cerr << d_name << " has no event channel defined in the database - creating it " << endl;
-			cout << d_name << " has no event channel defined in the database - creating it " << endl;
+			std::cerr << d_name << " has no event channel defined in the database - creating it " << std::endl;
+			cout << d_name << " has no event channel defined in the database - creating it " << std::endl;
 
 			channel_exported = 0;
 		}
@@ -394,7 +394,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 		{
 			if (tg->get_db_cache() == NULL)
 				received.inout() >>= dev_import_list;
-        	channel_ior = string((dev_import_list->svalue)[1]);
+        	channel_ior = std::string((dev_import_list->svalue)[1]);
         	channel_exported = dev_import_list->lvalue[0];
 
 //
@@ -402,7 +402,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 // is an old channel and we need to recreate it on the local host
 //
 
-        	channel_host = string((dev_import_list->svalue)[3]);
+        	channel_host = std::string((dev_import_list->svalue)[3]);
 			if (channel_host !=  host_name)
 				channel_exported = 0;
 		}
@@ -413,7 +413,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 		{
 			Tango::DbDatum na;
 
-			string cl_name(NOTIFD_CHANNEL);
+			std::string cl_name(NOTIFD_CHANNEL);
 			na = db->get_device_name(server_name,cl_name);
 			channel_ior = na.value_string[0];
 			channel_exported = 1;
@@ -466,7 +466,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 						      channelId);
 			cout4 << "Tango::NotifdEventSupplier::create() channel for server " << d_name << " created\n";
 			char *_ior = _orb->object_to_string(_eventChannel);
-			string ior_string(_ior);
+			std::string ior_string(_ior);
 
 			if (Util::_FileDb == false)
 			{
@@ -475,8 +475,8 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
         		(*eve_export_list)[0] = Tango::string_dup(d_name.c_str());
     			(*eve_export_list)[1] = Tango::string_dup(ior_string.c_str());
     			(*eve_export_list)[2] = Tango::string_dup(host_name.c_str());
-    			ostringstream ostream;
-    			ostream << getpid() << ends;
+    			std::ostringstream ostream;
+    			ostream << getpid() << std::ends;
     			(*eve_export_list)[3] = Tango::string_dup(ostream.str().c_str());
     			(*eve_export_list)[4] = Tango::string_dup("1");
 
@@ -520,14 +520,14 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 		}
 		catch(const CosNotification::UnsupportedQoS&)
 		{
-			cerr << "Failed to create event channel - events will not be generated (hint: start the notifd daemon on this host)" << endl;
+			std::cerr << "Failed to create event channel - events will not be generated (hint: start the notifd daemon on this host)" << std::endl;
 			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
 				(const char*)"Failed to create a new EventChannel, make sure the notifd process is running on this host",
 				(const char*)"NotifdEventSupplier::create()");
 		}
 		catch(const CosNotification::UnsupportedAdmin&)
 		{
-			cerr << "Failed to create event channel - events will not be generated (hint: start the notifd daemon on this host)" << endl;
+			std::cerr << "Failed to create event channel - events will not be generated (hint: start the notifd daemon on this host)" << std::endl;
 			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
 				(const char*)"Failed to create a new EventChannel, make sure the notifd process is running on this host",
 				(const char*)"NotifdEventSupplier::create()");
@@ -551,7 +551,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 	CosNotifyChannelAdmin::SupplierAdmin_var _supplierAdmin = _eventChannel -> default_supplier_admin();
 	if (CORBA::is_nil(_supplierAdmin))
 	{
-        cerr << "Could not get CosNotifyChannelAdmin::SupplierAdmin" << endl;
+        std::cerr << "Could not get CosNotifyChannelAdmin::SupplierAdmin" << std::endl;
 		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
 			(const char*)"Failed to get the default supplier admin from the notification daemon (hint: make sure the notifd process is running on this host)",
 			(const char*)"NotifdEventSupplier::create()");
@@ -606,7 +606,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 	    _proxyConsumer = _supplierAdmin -> obtain_notification_push_consumer(CosNotifyChannelAdmin::STRUCTURED_EVENT, _proxyId);
 		if (CORBA::is_nil(_proxyConsumer))
 		{
-        	cerr << "Could not get CosNotifyChannelAdmin::ProxyConsumer" << endl;
+        	std::cerr << "Could not get CosNotifyChannelAdmin::ProxyConsumer" << std::endl;
 			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
 				(const char*)"Failed to obtain a Notification push consumer, make sure the notifd process is running on this host",
 				(const char*)"NotifdEventSupplier::create()");
@@ -614,7 +614,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 	}
 	catch(const CosNotifyChannelAdmin::AdminLimitExceeded&)
 	{
-		cerr << "Failed to get push consumer from notification daemon - events will not be generated (hint: start the notifd daemon on this host)" << endl;
+		std::cerr << "Failed to get push consumer from notification daemon - events will not be generated (hint: start the notifd daemon on this host)" << std::endl;
 		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
 			(const char*)"Failed to get push consumer from notification daemon (hint: make sure the notifd process is running on this host)",
 			(const char*)"NotifdEventSupplier::create()");
@@ -625,7 +625,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 		CosNotifyChannelAdmin::StructuredProxyPushConsumer::_narrow(_proxyConsumer);
 	if (CORBA::is_nil(_structuredProxyPushConsumer))
 	{
-       	cerr << "Tango::NotifdEventSupplier::create() could not get CosNotifyChannelAdmin::StructuredProxyPushConsumer" << endl;
+       	std::cerr << "Tango::NotifdEventSupplier::create() could not get CosNotifyChannelAdmin::StructuredProxyPushConsumer" << std::endl;
     }
 
 //
@@ -653,7 +653,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 void NotifdEventSupplier::push_heartbeat_event()
 {
 	CosNotification::StructuredEvent struct_event;
-	string event, domain_name;
+	std::string event, domain_name;
 	time_t delta_time;
 	time_t now_time;
 	static int heartbeat_counter=0;
@@ -668,7 +668,7 @@ void NotifdEventSupplier::push_heartbeat_event()
 	DServer *adm_dev = tg->get_dserver_device();
 	now_time = time(NULL);
 	delta_time = now_time - adm_dev->last_heartbeat;
-	cout3 << "NotifdEventSupplier::push_heartbeat_event(): delta time since last heartbeat " << delta_time << endl;
+	cout3 << "NotifdEventSupplier::push_heartbeat_event(): delta time since last heartbeat " << delta_time << std::endl;
 
 //
 // We here compare delta_time to 8 and not to 10.
@@ -686,8 +686,8 @@ void NotifdEventSupplier::push_heartbeat_event()
  		struct_event.header.fixed_header.event_type.type_name   = Tango::string_dup(fqdn_prefix.c_str());
   		struct_event.header.variable_header.length( 0 );
 
-		cout3 << "NotifdEventSupplier::push_heartbeat_event(): detected heartbeat event for " << domain_name << endl;
-		cout3 << "NotifdEventSupplier::push_heartbeat_event(): delta _time " << delta_time << endl;
+		cout3 << "NotifdEventSupplier::push_heartbeat_event(): detected heartbeat event for " << domain_name << std::endl;
+		cout3 << "NotifdEventSupplier::push_heartbeat_event(): delta _time " << delta_time << std::endl;
   		struct_event.header.fixed_header.event_name  = Tango::string_dup("heartbeat");
   		struct_event.filterable_data.length(1);
   		struct_event.filterable_data[0].name = Tango::string_dup("heartbeat_counter");
@@ -712,17 +712,17 @@ void NotifdEventSupplier::push_heartbeat_event()
 		}
        	catch(const CORBA::TRANSIENT &)
        	{
-			cout3 << "NotifdEventSupplier::push_heartbeat_event() caught a CORBA::TRANSIENT ! " << endl;
+			cout3 << "NotifdEventSupplier::push_heartbeat_event() caught a CORBA::TRANSIENT ! " << std::endl;
 			fail = true;
 		}
 		catch(const CORBA::COMM_FAILURE &)
 		{
-			cout3 << "NotifdEventSupplier::push_heartbeat_event() caught a CORBA::COMM_FAILURE ! " << endl;
+			cout3 << "NotifdEventSupplier::push_heartbeat_event() caught a CORBA::COMM_FAILURE ! " << std::endl;
 			fail = true;
 		}
 		catch(const CORBA::SystemException &)
 		{
-			cout3 << "NotifdEventSupplier::push_heartbeat_event() caught a CORBA::SystemException ! " << endl;
+			cout3 << "NotifdEventSupplier::push_heartbeat_event() caught a CORBA::SystemException ! " << std::endl;
 			fail = true;
 		}
 
@@ -768,7 +768,7 @@ void NotifdEventSupplier::reconnect_notifd()
 	}
 	catch (...)
 	{
-		cout3 << "Notifd dead !!!!!!" << endl;
+		cout3 << "Notifd dead !!!!!!" << std::endl;
 	}
 
 //
@@ -798,7 +798,7 @@ void NotifdEventSupplier::reconnect_notifd()
 	}
 	catch (...)
 	{
-		cout3 << "Can't reconnect.............." << endl;
+		cout3 << "Can't reconnect.............." << std::endl;
 	}
 
 
@@ -838,15 +838,15 @@ void NotifdEventSupplier::disconnect_from_notifd()
 //
 //-----------------------------------------------------------------------------
 
-void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
-            vector<string> &filterable_names,vector<double> &filterable_data,vector<string> &filterable_names_lg,
-            vector<long> &filterable_data_lg,
-            struct SuppliedEventData &attr_value,string &attr_name,DevFailed *except,TANGO_UNUSED(bool inc_cptr))
+void NotifdEventSupplier::push_event(DeviceImpl *device_impl,std::string event_type,
+            std::vector<std::string> &filterable_names,std::vector<double> &filterable_data,std::vector<std::string> &filterable_names_lg,
+            std::vector<long> &filterable_data_lg,
+            struct SuppliedEventData &attr_value,std::string &attr_name,DevFailed *except,TANGO_UNUSED(bool inc_cptr))
 {
 	CosNotification::StructuredEvent struct_event;
-	string domain_name;
+	std::string domain_name;
 
-	cout3 << "NotifdEventSupplier::push_event(): called for attribute " << attr_name << endl;
+	cout3 << "NotifdEventSupplier::push_event(): called for attribute " << attr_name << std::endl;
 
 //
 // If we are called for IDL 5 (AttributeValue_5 or AttributeConfig_5), simply return. IDL 5 is only for ZMQ
@@ -858,12 +858,12 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 // get the mutex to synchronize the sending of events
 	omni_mutex_lock oml(push_mutex);
 
-	string loc_attr_name = attr_name;
-	transform(loc_attr_name.begin(),loc_attr_name.end(),loc_attr_name.begin(),::tolower);
+	std::string loc_attr_name = attr_name;
+	std::transform(loc_attr_name.begin(),loc_attr_name.end(),loc_attr_name.begin(),::tolower);
 	domain_name = device_impl->get_name_lower() + "/" + loc_attr_name;
 
-	string::size_type pos = event_type.find(EVENT_COMPAT);
-	if (pos != string::npos)
+	std::string::size_type pos = event_type.find(EVENT_COMPAT);
+	if (pos != std::string::npos)
 		event_type.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
 	struct_event.header.fixed_header.event_type.domain_name = Tango::string_dup(domain_name.c_str());
@@ -925,10 +925,10 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		}
 		else if (attr_value.attr_val_5 != NULL)
 		{
-			string str("Can't send event! Client is too old (Tango 7 or less).\n");
+			std::string str("Can't send event! Client is too old (Tango 7 or less).\n");
 			str = str + ("Please, re-compile your client with at least Tango 8");
 
-			cerr << str << endl;
+			std::cerr << str << std::endl;
 			Except::throw_exception(API_NotSupported,str,"NotifdEventSupplier::push_event");
 		}
 	    else if (attr_value.attr_conf_2 != NULL)
@@ -942,7 +942,7 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		struct_event.remainder_of_body <<= except->errors;
 	struct_event.header.fixed_header.event_name = Tango::string_dup(event_type.c_str());
 
-	cout3 << "EventSupplier::push_event(): push event " << event_type << " for " << device_impl->get_name() + "/" + attr_name << endl;
+	cout3 << "EventSupplier::push_event(): push event " << event_type << " for " << device_impl->get_name() + "/" + attr_name << std::endl;
 
 //
 // Push the event
@@ -960,17 +960,17 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 	}
    	catch(const CORBA::TRANSIENT &)
    	{
-   		cout3 << "EventSupplier::push_event() caught a CORBA::TRANSIENT ! " << endl;
+   		cout3 << "EventSupplier::push_event() caught a CORBA::TRANSIENT ! " << std::endl;
 		fail = true;
    	}
    	catch(const CORBA::COMM_FAILURE &)
    	{
-   		cout3 << "EventSupplier::push_event() caught a CORBA::COMM_FAILURE ! " << endl;
+   		cout3 << "EventSupplier::push_event() caught a CORBA::COMM_FAILURE ! " << std::endl;
 		fail = true;
 	}
 	catch(const CORBA::SystemException &)
 	{
-   		cout3 << "EventSupplier::push_event() caught a CORBA::SystemException ! " << endl;
+   		cout3 << "EventSupplier::push_event() caught a CORBA::SystemException ! " << std::endl;
 		fail = true;
 	}
 	catch(...)
