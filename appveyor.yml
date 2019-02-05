@@ -138,9 +138,9 @@ environment:
       
 init:
   # go to hell Xamarin (see http://help.appveyor.com/discussions/problems/4569)
-  - del "C:\Program Files (x86)\MSBuild\4.0\Microsoft.Common.Targets\ImportAfter\Xamarin.Common.targets"
-  - del "C:\Program Files (x86)\MSBuild\14.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
-  - del "C:\Program Files (x86)\MSBuild\12.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%" NEQ "Visual Studio 2017" del "C:\Program Files (x86)\MSBuild\4.0\Microsoft.Common.Targets\ImportAfter\Xamarin.Common.targets"
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%" NEQ "Visual Studio 2017" del "C:\Program Files (x86)\MSBuild\14.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%" NEQ "Visual Studio 2017" del "C:\Program Files (x86)\MSBuild\12.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
   #RDP from start
   #- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   # Tango IDL
