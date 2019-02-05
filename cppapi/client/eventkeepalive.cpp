@@ -84,14 +84,14 @@ bool EventConsumerKeepAliveThread::reconnect_to_channel(EvChanIte &ipos,EventCon
 	bool ret = true;
 	EvCbIte epos;
 
-	cout3 << "Entering KeepAliveThread::reconnect()" << endl;
+	cout3 << "Entering KeepAliveThread::reconnect()" << std::endl;
 
 	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
 	{
 		if (epos->second.channel_name == ipos->first)
 		{
 			bool need_reconnect = false;
-			vector<EventSubscribeStruct>:: iterator esspos;
+			std::vector<EventSubscribeStruct>:: iterator esspos;
 			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
 			{
 				if (esspos->callback != NULL || esspos->ev_queue != NULL)
@@ -106,7 +106,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_channel(EvChanIte &ipos,EventCon
 				try
 				{
 				    DeviceData dummy;
-					string adm_name = ipos->second.full_adm_name;
+					std::string adm_name = ipos->second.full_adm_name;
 					event_consumer->connect_event_channel(adm_name,
 									      epos->second.device->get_device_db(),
 									      true,dummy);
@@ -114,7 +114,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_channel(EvChanIte &ipos,EventCon
 					if (ipos->second.adm_device_proxy != NULL)
 						delete ipos->second.adm_device_proxy;
 					ipos->second.adm_device_proxy = new DeviceProxy(ipos->second.full_adm_name);
-					cout3 << "Reconnected to event channel" << endl;
+					cout3 << "Reconnected to event channel" << std::endl;
 				}
 				catch(...)
 				{
@@ -154,14 +154,14 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 	bool ret = true;
 	EvCbIte epos;
 
-	cout3 << "Entering KeepAliveThread::reconnect_to_zmq_channel()" << endl;
+	cout3 << "Entering KeepAliveThread::reconnect_to_zmq_channel()" << std::endl;
 
 	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
 	{
 		if (epos->second.channel_name == ipos->first)
 		{
 			bool need_reconnect = false;
-			vector<EventSubscribeStruct>:: iterator esspos;
+			std::vector<EventSubscribeStruct>:: iterator esspos;
 			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
 			{
 				if (esspos->callback != NULL || esspos->ev_queue != NULL)
@@ -176,7 +176,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 				try
 				{
                     DeviceData subscriber_in,subscriber_out;
-                    vector<string> subscriber_info;
+                    std::vector<std::string> subscriber_info;
                     subscriber_info.push_back(epos->second.device->dev_name());
                     subscriber_info.push_back(epos->second.obj_name);
                     subscriber_info.push_back("subscribe");
@@ -186,7 +186,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 
                     subscriber_out = ipos->second.adm_device_proxy->command_inout("ZmqEventSubscriptionChange",subscriber_in);
 
-					string adm_name = ipos->second.full_adm_name;
+					std::string adm_name = ipos->second.full_adm_name;
 
 #ifdef ZMQ_HAS_DISCONNECT
 //
@@ -206,7 +206,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 					if (ipos->second.adm_device_proxy != NULL)
 						delete ipos->second.adm_device_proxy;
 					ipos->second.adm_device_proxy = new DeviceProxy(ipos->second.full_adm_name);
-					cout3 << "Reconnected to zmq event channel" << endl;
+					cout3 << "Reconnected to zmq event channel" << std::endl;
 				}
 				catch(...)
 				{
@@ -240,14 +240,14 @@ void EventConsumerKeepAliveThread::reconnect_to_event(EvChanIte &ipos,EventConsu
 {
 	EvCbIte epos;
 
-	cout3 << "Entering KeepAliveThread::reconnect_to_event()" << endl;
+	cout3 << "Entering KeepAliveThread::reconnect_to_event()" << std::endl;
 
 	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
 	{
 		if (epos->second.channel_name == ipos->first)
 		{
 			bool need_reconnect = false;
-			vector<EventSubscribeStruct>:: iterator esspos;
+			std::vector<EventSubscribeStruct>:: iterator esspos;
 			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
 			{
 				if (esspos->callback != NULL || esspos->ev_queue != NULL)
@@ -267,7 +267,7 @@ void EventConsumerKeepAliveThread::reconnect_to_event(EvChanIte &ipos,EventConsu
 					{
 						re_subscribe_event(epos,ipos);
 						epos->second.filter_ok = true;
-						cout3 << "Reconnected to event" << endl;
+						cout3 << "Reconnected to event" << std::endl;
 					}
 					catch(...)
 					{
@@ -279,7 +279,7 @@ void EventConsumerKeepAliveThread::reconnect_to_event(EvChanIte &ipos,EventConsu
 				catch (...)
 				{
 					ApiUtil *au = ApiUtil::instance();
-					stringstream ss;
+					std::stringstream ss;
 
 					ss << "EventConsumerKeepAliveThread::reconnect_to_event() cannot get callback monitor for " << epos->first;
 					au->print_error_message(ss.str().c_str());
@@ -315,7 +315,7 @@ void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &i
 	CosNotifyFilter::Filter_var filter = CosNotifyFilter::Filter::_nil();
 	CosNotifyFilter::FilterID filter_id;
 
-	string channel_name = epos->second.channel_name;
+	std::string channel_name = epos->second.channel_name;
 
 	try
 	{
@@ -339,7 +339,7 @@ void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &i
 // Construct a simple constraint expression; add it to fadmin
 //
 
-	string constraint_expr = epos->second.filter_constraint;
+	std::string constraint_expr = epos->second.filter_constraint;
 
 	CosNotification::EventTypeSeq evs;
 	CosNotifyFilter::ConstraintExpSeq exp;
@@ -358,13 +358,13 @@ void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &i
 	catch(CosNotifyFilter::InvalidConstraint &)
 	{
 		//cerr << "Exception thrown : Invalid constraint given "
-		//     << (const char *)constraint_expr << endl;
+		//     << (const char *)constraint_expr << std::endl;
 		res = 1;
 	}
 	catch (...)
 	{
 		//cerr << "Exception thrown while adding constraint "
-	 	//     << (const char *)constraint_expr << endl;
+	 	//     << (const char *)constraint_expr << std::endl;
 		res = 1;
 	}
 
@@ -410,14 +410,14 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 	bool disconnect_called = false;
 #endif
 
-	cout3 << "Entering KeepAliveThread::reconnect_to_zmq_event()" << endl;
+	cout3 << "Entering KeepAliveThread::reconnect_to_zmq_event()" << std::endl;
 
 	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
 	{
 		if (epos->second.channel_name == ipos->first)
 		{
 			bool need_reconnect = false;
-			vector<EventSubscribeStruct>:: iterator esspos;
+			std::vector<EventSubscribeStruct>:: iterator esspos;
 			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
 			{
 				if (esspos->callback != NULL || esspos->ev_queue != NULL)
@@ -436,16 +436,16 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 					try
 					{
 						EventCallBackStruct ecbs;
-						vector<string> vs;
+						std::vector<std::string> vs;
 
-						vs.push_back(string("reconnect"));
+						vs.push_back(std::string("reconnect"));
 
-						string d_name = epos->second.device->dev_name();
-						string &fqen = epos->second.fully_qualified_event_name;
-						string::size_type pos = fqen.find('/');
+						std::string d_name = epos->second.device->dev_name();
+						std::string &fqen = epos->second.fully_qualified_event_name;
+						std::string::size_type pos = fqen.find('/');
 						pos = pos + 2;
 						pos = fqen.find('/',pos);
-						string prefix = fqen.substr(0,pos + 1);
+						std::string prefix = fqen.substr(0,pos + 1);
 						d_name.insert(0,prefix);
 
 #ifdef ZMQ_HAS_DISCONNECT
@@ -462,7 +462,7 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 						dd >> dvlsa;
 						epos->second.endpoint = dvlsa->svalue[(ipos->second.valid_endpoint << 1) + 1].in();
 
-						cout3 << "Reconnected to ZMQ event" << endl;
+						cout3 << "Reconnected to ZMQ event" << std::endl;
 					}
 					catch(...)
 					{
@@ -474,7 +474,7 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 				catch (...)
 				{
 					ApiUtil *au = ApiUtil::instance();
-					stringstream ss;
+					std::stringstream ss;
 
 					ss << "EventConsumerKeepAliveThread::reconnect_to_zmq_event() cannot get callback monitor for " << epos->first;
 					au->print_error_message(ss.str().c_str());
@@ -553,7 +553,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 // Re-subscribe
 //
 
-		cout4 << "KeepAliveThread at work" << endl;
+		cout4 << "KeepAliveThread at work" << std::endl;
 
 //
 // Be sure to have valid event consumer object (In case of long startup OS with some notifd event(s) subscribed at the
@@ -638,7 +638,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 				catch (...)
 				{
 					ApiUtil *au = ApiUtil::instance();
-					stringstream ss;
+					std::stringstream ss;
 
 					ss << "EventConsumerKeepAliveThread::run_undetached() timeout on callback monitor of " << epos->first;
 					au->print_error_message(ss.str().c_str());
@@ -710,7 +710,7 @@ void EventConsumerKeepAliveThread::not_conected_event(ZmqEventConsumer *event_co
 
 				catch (Tango::DevFailed &e)
 				{
-					string reason(e.errors[0].reason.in());
+					std::string reason(e.errors[0].reason.in());
 					if (reason == API_CommandNotFound)
 					{
 						try
@@ -859,10 +859,10 @@ void EventConsumerKeepAliveThread::fwd_not_conected_event(ZmqEventConsumer *even
 //--------------------------------------------------------------------------------------------------------------------
 
 void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_consumer,
-														map<string,EventChannelStruct>::iterator &ipos)
+														std::map<std::string,EventChannelStruct>::iterator &ipos)
 {
-	vector<string> cmd_params;
-	vector<map<string,EventCallBackStruct>::difference_type> vd;
+	std::vector<std::string> cmd_params;
+	std::vector<std::map<std::string,EventCallBackStruct>::difference_type> vd;
 	std::map<std::string,EventCallBackStruct>::iterator epos;
 
 	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
@@ -889,7 +889,7 @@ void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_
 				else
 				{
 					DeviceData subscriber_in;
-					vector<string> subscriber_info;
+					std::vector<std::string> subscriber_info;
 					subscriber_info.push_back(epos->second.device->dev_name());
 					subscriber_info.push_back(epos->second.obj_name);
 					subscriber_info.push_back("subscribe");
@@ -934,7 +934,7 @@ void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_
 		}
 		catch (Tango::DevFailed &e)
 		{
-			string reason(e.errors[0].reason.in());
+			std::string reason(e.errors[0].reason.in());
 			if (reason == API_CommandNotFound)
 			{
 
@@ -949,7 +949,7 @@ void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_
 				for (unsigned int loop = 0;loop < vd.size();++loop)
 				{
 					DeviceData subscriber_in;
-					vector<string> subscriber_info;
+					std::vector<std::string> subscriber_info;
 					subscriber_info.push_back(cmd_params[(loop * 3)]);
 					subscriber_info.push_back(cmd_params[(loop * 3) + 1]);
 					subscriber_info.push_back("subscribe");
@@ -997,8 +997,8 @@ void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_
 
 void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consumer,
 												  NotifdEventConsumer *notifd_event_consumer,
-													map<string,EventCallBackStruct>::iterator &epos,
-													map<string,EventChannelStruct>::iterator &ipos)
+													std::map<std::string,EventCallBackStruct>::iterator &epos,
+													std::map<std::string,EventChannelStruct>::iterator &ipos)
 {
 
 //
@@ -1036,14 +1036,14 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 			else
 			{
 				CosNotifyChannelAdmin::EventChannelFactory_var ecf = ipos->second.eventChannel->MyFactory();
-				if (ipos->second.full_adm_name.find(MODIFIER_DBASE_NO) != string::npos)
+				if (ipos->second.full_adm_name.find(MODIFIER_DBASE_NO) != std::string::npos)
 					ipos->second.event_system_failed = true;
 			}
 		}
 		catch (...)
 		{
 			ipos->second.event_system_failed = true;
-			cout3 << "Notifd is dead !!!" << endl;
+			cout3 << "Notifd is dead !!!" << std::endl;
 		}
 
 //
@@ -1108,7 +1108,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 		if (epos->second.channel_name == ipos->first)
 		{
 			bool need_reconnect = false;
-			vector<EventSubscribeStruct>:: iterator esspos;
+			std::vector<EventSubscribeStruct>:: iterator esspos;
 			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
 			{
 				if (esspos->callback != NULL || esspos->ev_queue != NULL)
@@ -1135,11 +1135,11 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 					}
 				}
 
-				string domain_name;
-				string event_name;
+				std::string domain_name;
+				std::string event_name;
 
-				string::size_type pos = epos->first.rfind('.');
-				if (pos == string::npos)
+				std::string::size_type pos = epos->first.rfind('.');
+				if (pos == std::string::npos)
 				{
 					domain_name = "domain_name";
 					event_name = "event_name";
@@ -1149,8 +1149,8 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 					domain_name = epos->second.get_client_attribute_name();
 					event_name = epos->first.substr(pos + 1);
 
-					string::size_type pos = event_name.find(EVENT_COMPAT);
-					if (pos != string::npos)
+					std::string::size_type pos = event_name.find(EVENT_COMPAT);
+					if (pos != std::string::npos)
 					{
 						event_name.erase(0, EVENT_COMPAT_IDL5_SIZE);
 					}
@@ -1182,7 +1182,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 							catch (...)
 							{
 								ApiUtil *au = ApiUtil::instance();
-								stringstream ss;
+								std::stringstream ss;
 
 								ss << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of  " << epos->first;
 								au->print_error_message(ss.str().c_str());
@@ -1212,7 +1212,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 							catch (...)
 							{
 								ApiUtil *au = ApiUtil::instance();
-								stringstream ss;
+								std::stringstream ss;
 
 								ss << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first;
 								au->print_error_message(ss.str().c_str());
@@ -1245,7 +1245,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 							catch (...)
 							{
 								ApiUtil *au = ApiUtil::instance();
-								stringstream ss;
+								std::stringstream ss;
 
 								ss << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first;
 								au->print_error_message(ss.str().c_str());
@@ -1280,7 +1280,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 							catch (...)
 							{
 								ApiUtil *au = ApiUtil::instance();
-								stringstream ss;
+								std::stringstream ss;
 
 								ss << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first;
 								au->print_error_message(ss.str().c_str());
@@ -1315,7 +1315,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 							catch (...)
 							{
 								ApiUtil *au = ApiUtil::instance();
-								stringstream ss;
+								std::stringstream ss;
 
 								ss << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first;
 								au->print_error_message(ss.str().c_str());
@@ -1343,7 +1343,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 			catch (...)
 			{
 				ApiUtil *au = ApiUtil::instance();
-				stringstream ss;
+				std::stringstream ss;
 
 				ss << "EventConsumerKeepAliveThread::run_undetached() timeout on callback monitor of " << epos->first;
 				au->print_error_message(ss.str().c_str());
@@ -1372,12 +1372,12 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 
 void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer *event_consumer,
 												  				NotifdEventConsumer *notifd_event_consumer,
-												  				map<string,EventCallBackStruct>::iterator &epos,
-																map<string,EventChannelStruct>::iterator &ipos,
-																string &domain_name)
+												  				std::map<std::string,EventCallBackStruct>::iterator &epos,
+																std::map<std::string,EventChannelStruct>::iterator &ipos,
+																std::string &domain_name)
 {
 	DeviceData subscriber_in;
-	vector<string> subscriber_info;
+	std::vector<std::string> subscriber_info;
 	subscriber_info.push_back(epos->second.device->dev_name());
 	subscriber_info.push_back(epos->second.obj_name);
 	subscriber_info.push_back("subscribe");
@@ -1408,11 +1408,11 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 // NOT NEEDED for the Data Ready event
 //
 
-		vector<EventSubscribeStruct>:: iterator esspos;
+		std::vector<EventSubscribeStruct>:: iterator esspos;
 
-		string ev_name(epos->second.event_name);
-		string::size_type pos = ev_name.find(EVENT_COMPAT);
-		if (pos != string::npos)
+		std::string ev_name(epos->second.event_name);
+		std::string::size_type pos = ev_name.find(EVENT_COMPAT);
+		if (pos != std::string::npos)
 			ev_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
 		if ((ev_name == "change") ||
@@ -1494,7 +1494,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 					catch (...)
 					{
 						ApiUtil *au = ApiUtil::instance();
-						stringstream ss;
+						std::stringstream ss;
 
 						ss << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first;
 						au->print_error_message(ss.str().c_str());
@@ -1513,7 +1513,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			}
 		}
 
-		else if (epos->second.event_name.find(CONF_TYPE_EVENT) != string::npos)
+		else if (epos->second.event_name.find(CONF_TYPE_EVENT) != std::string::npos)
 		{
 
 //
@@ -1523,7 +1523,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			AttributeInfoEx *aie = NULL;
 			DevErrorList err;
 			err.length(0);
-			string prefix;
+			std::string prefix;
 			if (ipos->second.channel_type == NOTIFD)
 				prefix = notifd_event_consumer->env_var_fqdn_prefix[0];
 			else
@@ -1542,7 +1542,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
                 }
             }
 
-			string dom_name = prefix + epos->second.device->dev_name();
+			std::string dom_name = prefix + epos->second.device->dev_name();
             if (epos->second.device->is_dbase_used() == false)
                 dom_name = dom_name + MODIFIER_DBASE_NO;
 			dom_name = dom_name + "/" + epos->second.obj_name;
@@ -1577,9 +1577,9 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			{
 				cb_ctr++;
 				FwdAttrConfEventData *event_data;
-				string ev_name(epos->second.event_name);
-				string::size_type pos = ev_name.find(EVENT_COMPAT);
-				if (pos != string::npos)
+				std::string ev_name(epos->second.event_name);
+				std::string::size_type pos = ev_name.find(EVENT_COMPAT);
+				if (pos != std::string::npos)
 					ev_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
 				if (cb_ctr != cb_nb)
@@ -1614,7 +1614,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 					catch (...)
 					{
 						ApiUtil *au = ApiUtil::instance();
-						stringstream ss;
+						std::stringstream ss;
 
 						ss << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first;
 						au->print_error_message(ss.str().c_str());
@@ -1642,8 +1642,8 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			CommandInfoList *cil = Tango_nullptr;
 			DevErrorList err;
 			err.length(0);
-			string prefix = event_consumer->env_var_fqdn_prefix[0];
-			string dom_name = prefix + epos->second.device->dev_name();
+			std::string prefix = event_consumer->env_var_fqdn_prefix[0];
+			std::string dom_name = prefix + epos->second.device->dev_name();
 
 			bool old_transp = epos->second.device->get_transparency_reconnection();
 			epos->second.device->set_transparency_reconnection(true);
@@ -1673,7 +1673,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			{
 				cb_ctr++;
 				DevIntrChangeEventData *event_data;
-				string ev_name(epos->second.event_name);
+				std::string ev_name(epos->second.event_name);
 
 				if (cb_ctr != cb_nb)
 				{
@@ -1707,7 +1707,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 					catch (...)
 					{
 						ApiUtil *au = ApiUtil::instance();
-						stringstream ss;
+						std::stringstream ss;
 
 						ss << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first;
 						au->print_error_message(ss.str().c_str());
@@ -1801,7 +1801,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 					catch (...)
 					{
 						ApiUtil *au = ApiUtil::instance();
-						stringstream ss;
+						std::stringstream ss;
 
 						ss << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first;
 						au->print_error_message(ss.str().c_str());
@@ -1837,7 +1837,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNotConnected>::iterator &vpos,DevFailed &e,time_t &now)
+void EventConsumerKeepAliveThread::stateless_subscription_failed(std::vector<EventNotConnected>::iterator &vpos,DevFailed &e,time_t &now)
 {
 
 //
@@ -1853,7 +1853,7 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
 
     DevErrorList err;
     err.length(0);
-    string domain_name = vpos->prefix + vpos->device->dev_name();
+    std::string domain_name = vpos->prefix + vpos->device->dev_name();
     if (vpos->event_name != EventName[INTERFACE_CHANGE_EVENT])
 		domain_name = domain_name + "/" + vpos->attribute;
     err = e.errors;
@@ -1887,7 +1887,7 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
             catch (...)
             {
 				ApiUtil *au = ApiUtil::instance();
-				stringstream ss;
+				std::stringstream ss;
 
 				ss << "EventConsumerKeepAliveThread::stateless_subscription_failed() exception in callback method of " << domain_name;
 				au->print_error_message(ss.str().c_str());
@@ -1931,7 +1931,7 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
             catch (...)
             {
 				ApiUtil *au = ApiUtil::instance();
-				stringstream ss;
+				std::stringstream ss;
 
 				ss << "EventConsumerKeepAliveThread::stateless_subscription_failed() exception in callback method of " << domain_name;
 				au->print_error_message(ss.str().c_str());
@@ -1967,7 +1967,7 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
             catch (...)
             {
 				ApiUtil *au = ApiUtil::instance();
-				stringstream ss;
+				std::stringstream ss;
 
 				ss << "EventConsumerKeepAliveThread::stateless_subscription_failed() exception in callback method of " << domain_name;
 				au->print_error_message(ss.str().c_str());
@@ -2000,7 +2000,7 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
             catch (...)
             {
 				ApiUtil *au = ApiUtil::instance();
-				stringstream ss;
+				std::stringstream ss;
 
 				ss << "EventConsumerKeepAliveThread::stateless_subscription_failed() exception in callback method of " << domain_name;
 				au->print_error_message(ss.str().c_str());
@@ -2032,7 +2032,7 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
             catch (...)
             {
 				ApiUtil *au = ApiUtil::instance();
-				stringstream ss;
+				std::stringstream ss;
 
 				ss << "EventConsumerKeepAliveThread::stateless_subscription_failed() exception in callback method of " << domain_name;
 				au->print_error_message(ss.str().c_str());
