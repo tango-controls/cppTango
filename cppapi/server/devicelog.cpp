@@ -118,7 +118,7 @@ log4tango::Logger* DeviceImpl::get_logger_i (void)
 {
   try {
     // trace
-    cout4 << "Entering DeviceImpl::get_logger_i" << endl;
+    cout4 << "Entering DeviceImpl::get_logger_i" << std::endl;
     // instanciate the logger (
     // shame on me for a such huggly impl. but polymorphism
     // can't be used here !
@@ -146,7 +146,7 @@ log4tango::Logger* DeviceImpl::get_logger_i (void)
       }
     }
     // trace
-    cout4 << "Leaving DeviceImpl::get_logger_i" << endl;
+    cout4 << "Leaving DeviceImpl::get_logger_i" << std::endl;
   } catch (...) {
     // save our souls...
    logger = Logging::get_core_logger();
@@ -161,7 +161,7 @@ void DeviceImpl::init_logger (void)
 {
   try {
     // trace
-    cout4 << "Entering DeviceImpl::init_logger" << endl;
+    cout4 << "Entering DeviceImpl::init_logger" << std::endl;
     // get Tango::Util instance
     Tango::Util *tg = Tango::Util::instance();
     // get cmd line logging level then ...
@@ -194,7 +194,7 @@ void DeviceImpl::init_logger (void)
       // done if we are not using the database
       if (level_set_from_cmd_line)
         the_logger->set_level(cmd_line_level);
-      cout4 << "Leaving DeviceImpl::init_logger" << endl;
+      cout4 << "Leaving DeviceImpl::init_logger" << std::endl;
       return;
     }
     // get both logging level and targets from database
@@ -216,7 +216,7 @@ void DeviceImpl::init_logger (void)
       // avoid case sensitive troubles
       std::transform(log_level_property.begin(), log_level_property.end(),
                      log_level_property.begin(), ::toupper);
-      cout4 << "Initial logging level set to [" << log_level_property << "]" << endl;
+      cout4 << "Initial logging level set to [" << log_level_property << "]" << std::endl;
       // convert from string to log4tango level
       log4tango::Level::Value log4tango_level = log4tango::Level::WARN;
       try {
@@ -253,7 +253,7 @@ void DeviceImpl::init_logger (void)
     // set rolling file threshold for file targets
     Logging::set_rolling_file_threshold(the_logger, rft);
     // trace
-    cout4 << "Leaving DeviceImpl::init_logger" << endl;
+    cout4 << "Leaving DeviceImpl::init_logger" << std::endl;
   }
   catch (...) {
     // igore any exception
