@@ -48,6 +48,10 @@
       API_LOGGER->get_stream(log4tango::Level::INFO, false) \
         << log4tango::LogInitiator::_begin_log
 
+#else
+
+#define cout std::cout
+
 #endif //== compiling TANGO lib ===============================
 
 // Map. cout1..2 to INFO level --------------------------------
