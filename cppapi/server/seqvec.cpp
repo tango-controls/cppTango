@@ -54,36 +54,24 @@ namespace Tango
 //
 // description :	These methods allow an easy way to print all sequence
 //			element using the following syntax
-//				cout << seq << endl;
+//				cout << seq << std::endl;
 //
 //=============================================================================
 
 
-ostream &operator<<(ostream &o,const DevVarCharArray &v)
+std::ostream &operator<<(std::ostream &o,const DevVarCharArray &v)
 {
 	long nb_elt = v.length();
 	for (long i = 0;i < nb_elt;i++)
 	{
-		o << "Element number [" << i << "] = " << (short)v[i] << dec;
+		o << "Element number [" << i << "] = " << (short)v[i] << std::dec;
 		if (i < (nb_elt - 1))
 			o << '\n';
 	}
 	return o;
 }
 
-ostream &operator<<(ostream &o,const DevVarShortArray &v)
-{
-	long nb_elt = v.length();
-	for (long i = 0;i < nb_elt;i++)
-	{
-		o << "Element number [" << i << "] = " << v[i];
-		if (i < (nb_elt - 1))
-			o << '\n';
-	}
-	return o;
-}
-
-ostream &operator<<(ostream &o,const DevVarLongArray &v)
+std::ostream &operator<<(std::ostream &o,const DevVarShortArray &v)
 {
 	long nb_elt = v.length();
 	for (long i = 0;i < nb_elt;i++)
@@ -95,7 +83,7 @@ ostream &operator<<(ostream &o,const DevVarLongArray &v)
 	return o;
 }
 
-ostream &operator<<(ostream &o,const DevVarLong64Array &v)
+std::ostream &operator<<(std::ostream &o,const DevVarLongArray &v)
 {
 	long nb_elt = v.length();
 	for (long i = 0;i < nb_elt;i++)
@@ -107,7 +95,7 @@ ostream &operator<<(ostream &o,const DevVarLong64Array &v)
 	return o;
 }
 
-ostream &operator<<(ostream &o,const DevVarFloatArray &v)
+std::ostream &operator<<(std::ostream &o,const DevVarLong64Array &v)
 {
 	long nb_elt = v.length();
 	for (long i = 0;i < nb_elt;i++)
@@ -119,7 +107,7 @@ ostream &operator<<(ostream &o,const DevVarFloatArray &v)
 	return o;
 }
 
-ostream &operator<<(ostream &o,const DevVarDoubleArray &v)
+std::ostream &operator<<(std::ostream &o,const DevVarFloatArray &v)
 {
 	long nb_elt = v.length();
 	for (long i = 0;i < nb_elt;i++)
@@ -131,7 +119,19 @@ ostream &operator<<(ostream &o,const DevVarDoubleArray &v)
 	return o;
 }
 
-ostream &operator<<(ostream &o,const DevVarBooleanArray &v)
+std::ostream &operator<<(std::ostream &o,const DevVarDoubleArray &v)
+{
+	long nb_elt = v.length();
+	for (long i = 0;i < nb_elt;i++)
+	{
+		o << "Element number [" << i << "] = " << v[i];
+		if (i < (nb_elt - 1))
+			o << '\n';
+	}
+	return o;
+}
+
+std::ostream &operator<<(std::ostream &o,const DevVarBooleanArray &v)
 {
 	long nb_elt = v.length();
 	for (long i = 0;i < nb_elt;i++)
@@ -148,7 +148,7 @@ ostream &operator<<(ostream &o,const DevVarBooleanArray &v)
 	return o;
 }
 
-ostream &operator<<(ostream &o,const DevVarUShortArray &v)
+std::ostream &operator<<(std::ostream &o,const DevVarUShortArray &v)
 {
 	long nb_elt = v.length();
 	for (long i = 0;i < nb_elt;i++)
@@ -160,7 +160,7 @@ ostream &operator<<(ostream &o,const DevVarUShortArray &v)
 	return o;
 }
 
-ostream &operator<<(ostream &o,const DevVarULongArray &v)
+std::ostream &operator<<(std::ostream &o,const DevVarULongArray &v)
 {
 	long nb_elt = v.length();
 	for (long i = 0;i < nb_elt;i++)
@@ -172,7 +172,7 @@ ostream &operator<<(ostream &o,const DevVarULongArray &v)
 	return o;
 }
 
-ostream &operator<<(ostream &o,const DevVarULong64Array &v)
+std::ostream &operator<<(std::ostream &o,const DevVarULong64Array &v)
 {
 	long nb_elt = v.length();
 	for (long i = 0;i < nb_elt;i++)
@@ -184,7 +184,7 @@ ostream &operator<<(ostream &o,const DevVarULong64Array &v)
 	return o;
 }
 
-ostream &operator<<(ostream &o,const DevVarStringArray &v)
+std::ostream &operator<<(std::ostream &o,const DevVarStringArray &v)
 {
 	long nb_elt = v.length();
 	for (long i = 0;i < nb_elt;i++)
@@ -196,7 +196,7 @@ ostream &operator<<(ostream &o,const DevVarStringArray &v)
 	return o;
 }
 
-ostream &operator<<(ostream &o,const DevVarStateArray &v)
+std::ostream &operator<<(std::ostream &o,const DevVarStateArray &v)
 {
 	long nb_elt = v.length();
 	for (long i = 0;i < nb_elt;i++)
@@ -208,12 +208,12 @@ ostream &operator<<(ostream &o,const DevVarStateArray &v)
 	return o;
 }
 
-ostream &operator<<(ostream &o,const DevVarEncodedArray &v)
+std::ostream &operator<<(std::ostream &o,const DevVarEncodedArray &v)
 {
 	long nb_elt = v.length();
 	for (long loop = 0;loop < nb_elt;loop++)
 	{
-		o << "Encoding string: " << v[loop].encoded_format << endl;
+		o << "Encoding string: " << v[loop].encoded_format << std::endl;
 		long nb_data_elt = v[loop].encoded_data.length();
 		for (long i = 0;i < nb_data_elt;i++)
 		{
