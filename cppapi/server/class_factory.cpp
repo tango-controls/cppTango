@@ -93,7 +93,7 @@ void DServer::class_factory()
 {
 #ifdef _TG_WINDOWS_
 	Tango::Util *tg = Tango::Util::instance();
-	string exe_name = tg->get_ds_exec_name();
+	std::string exe_name = tg->get_ds_exec_name();
 	exe_name = exe_name + ".exe";
 	HMODULE mod;
 	FARPROC proc;
@@ -104,7 +104,7 @@ void DServer::class_factory()
 	{
 		if ((mod = GetModuleHandle(exe_name.c_str())) == NULL)
 		{
-			cerr << "Oops, no class defined in this server. Exiting ..." << endl;
+			std::cerr << "Oops, no class defined in this server. Exiting ..." << std::endl;
 			exit(-1);
 		}
 	}
@@ -112,7 +112,7 @@ void DServer::class_factory()
 	{
 		if ((mod = GetModuleHandle(TANGO_PY_MOD_NAME)) == NULL)
 		{
-			cerr << "Oops, no class defined in this server. Exiting ..." << endl;
+			std::cerr << "Oops, no class defined in this server. Exiting ..." << std::endl;
 			exit(-1);
 		}
 	}
@@ -130,7 +130,7 @@ void DServer::class_factory()
 	if ((proc = GetProcAddress(mod,"?class_factory@DServer@Tango@@AAEXXZ")) == NULL)
 #endif
 	{
-		cerr << "Oops, no class defined in this server. Exiting ..." << endl;
+		std::cerr << "Oops, no class defined in this server. Exiting ..." << std::endl;
 		exit(-1);
 	}
 	else
@@ -144,7 +144,7 @@ void DServer::class_factory()
 
 #elif __darwin__
 	Tango::Util *tg = Tango::Util::instance();
-	string exe_name = tg->get_ds_exec_name();
+	std::string exe_name = tg->get_ds_exec_name();
 	exe_name = exe_name;
 
 	void *mod;
@@ -156,7 +156,7 @@ void DServer::class_factory()
 	{
 		if ((mod = dlopen (exe_name.c_str(), RTLD_LAZY )) == NULL)
 		{
-			cerr << "Oops, no class defined in this server. Exiting ..." << endl;
+			std::cerr << "Oops, no class defined in this server. Exiting ..." << std::endl;
 			exit(-1);
 		}
 	}
@@ -165,7 +165,7 @@ void DServer::class_factory()
 		/*
 		if ((mod = GetModuleHandle(TANGO_PY_MOD_NAME)) == NULL)
 		{
-			cerr << "Oups, no class defined in this server. Exiting ..." << endl;
+			std::cerr << "Oups, no class defined in this server. Exiting ..." << std::endl;
 			exit(-1);
 		}
 		*/
@@ -180,8 +180,8 @@ void DServer::class_factory()
 
 	if ((proc = dlsym (mod,"_ZN5Tango7DServer13class_factoryEv")) == NULL)
 	{
-		cerr << "error : " << dlerror() << endl;
-		cerr << "Oops, no class defined in this server. Exiting ..." << endl;
+		std::cerr << "error : " << dlerror() << std::endl;
+		std::cerr << "Oops, no class defined in this server. Exiting ..." << std::endl;
 		exit(-1);
 	}
 	else
@@ -193,7 +193,7 @@ void DServer::class_factory()
 		(this->*tmp)();
 	}
 #else
-		cerr << "Oops, no class defined in this server. Exiting ..." << endl;
+		std::cerr << "Oops, no class defined in this server. Exiting ..." << std::endl;
 		exit(-1);
 #endif
 
