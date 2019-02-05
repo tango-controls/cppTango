@@ -173,7 +173,7 @@ DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_nullp
 #ifdef HAS_RVALUE
 DeviceAttribute::DeviceAttribute(DeviceAttribute &&source):ext(Tango_nullptr)
 {
-	name = move(source.name);
+	name = std::move(source.name);
 	exceptions_flags = source.exceptions_flags;
 	dim_x = source.dim_x;
 	dim_y = source.dim_y;
@@ -216,7 +216,7 @@ DeviceAttribute::DeviceAttribute(DeviceAttribute &&source):ext(Tango_nullptr)
 	d_state_filled = source.d_state_filled;
 
     if (source.ext.get() != NULL)
-        ext = move(source.ext);
+        ext = std::move(source.ext);
 }
 #endif
 
@@ -451,7 +451,7 @@ DeviceAttribute & DeviceAttribute::operator=(const DeviceAttribute &rval)
 #ifdef HAS_RVALUE
 DeviceAttribute & DeviceAttribute::operator=(DeviceAttribute &&rval)
 {
-	name = move(rval.name);
+	name = std::move(rval.name);
 	exceptions_flags = rval.exceptions_flags;
 	dim_x = rval.dim_x;
 	dim_y = rval.dim_y;
@@ -533,7 +533,7 @@ DeviceAttribute & DeviceAttribute::operator=(DeviceAttribute &&rval)
 
     if (rval.ext.get() != NULL)
     {
-        ext = move(rval.ext);
+        ext = std::move(rval.ext);
     }
     else
 		ext.reset();
@@ -562,7 +562,7 @@ void DeviceAttribute::init_common_class_members(const char * new_name, int x_dim
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, short datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, short datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -588,7 +588,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, short datum)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, DevLong datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, DevLong datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -612,7 +612,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, DevLong datum)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, DevLong64 datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, DevLong64 datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -636,7 +636,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, DevLong64 datum)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, double datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, double datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -660,7 +660,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, double datum)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, string &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::string &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -669,7 +669,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, string &datum)
     StringSeq[0] = string_dup(datum.c_str());
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, string &datum)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::string &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name);
@@ -678,7 +678,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, string &datum)
     StringSeq[0] = string_dup(datum.c_str());
 }
 
-DeviceAttribute::DeviceAttribute(string &new_name, const char *datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, const char *datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -702,7 +702,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, const char *datum)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, float datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, float datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -726,7 +726,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, float datum)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, bool datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, bool datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -750,7 +750,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, bool datum)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, unsigned short datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, unsigned short datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -774,7 +774,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, unsigned short datum)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, unsigned char datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, unsigned char datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -798,7 +798,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, unsigned char datum)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, DevULong datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, DevULong datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -822,7 +822,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, DevULong datum)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, DevULong64 datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, DevULong64 datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -846,7 +846,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, DevULong64 datum)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, DevState datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, DevState datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -870,7 +870,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, DevState datum)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, DevEncoded &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, DevEncoded &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str());
@@ -894,7 +894,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, DevEncoded &datum)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<short> &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<short> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), datum.size());
@@ -903,7 +903,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<short> &datum)
     data_type = DEV_SHORT;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<short> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, datum.size());
@@ -912,7 +912,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum)
     data_type = DEV_SHORT;
 }
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<short> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<short> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), x, y);
@@ -921,7 +921,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<short> &datum, int x, 
     data_type = DEV_SHORT;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<short> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, x, y);
@@ -936,7 +936,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<short> &datum, int
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<DevLong> &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<DevLong> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), datum.size());
@@ -944,7 +944,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<DevLong> &datum)
     LongSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong> &datum)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<DevLong> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, datum.size());
@@ -952,7 +952,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong> &datum)
     LongSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<DevLong> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<DevLong> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), x, y);
@@ -960,7 +960,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<DevLong> &datum, int x
     LongSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<DevLong> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, x, y);
@@ -974,7 +974,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong> &datum, i
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<DevLong64> &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<DevLong64> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), datum.size());
@@ -982,7 +982,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<DevLong64> &datum)
     Long64Seq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong64> &datum)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<DevLong64> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, datum.size());
@@ -990,7 +990,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong64> &datum)
     Long64Seq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<DevLong64> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<DevLong64> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), x, y);
@@ -998,7 +998,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<DevLong64> &datum, int
     Long64Seq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong64> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<DevLong64> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, x, y);
@@ -1012,7 +1012,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevLong64> &datum,
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<double> &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<double> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), datum.size());
@@ -1020,7 +1020,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<double> &datum)
     DoubleSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<double> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, datum.size());
@@ -1028,7 +1028,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum)
     DoubleSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<double> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<double> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), x, y);
@@ -1036,7 +1036,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<double> &datum, int x,
     DoubleSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<double> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, x, y);
@@ -1050,7 +1050,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum, in
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<string> &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<std::string> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), datum.size());
@@ -1058,7 +1058,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<string> &datum)
     StringSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<string> &datum)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<std::string> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, datum.size());
@@ -1066,7 +1066,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<string> &datum)
     StringSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<string> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<std::string> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), x, y);
@@ -1074,7 +1074,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<string> &datum, int x,
     StringSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<string> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<std::string> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, x, y);
@@ -1088,7 +1088,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<string> &datum, in
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<float> &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<float> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), datum.size());
@@ -1096,7 +1096,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<float> &datum)
     FloatSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<float> &datum)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<float> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, datum.size());
@@ -1104,7 +1104,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<float> &datum)
     FloatSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<float> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<float> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), x, y);
@@ -1112,7 +1112,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<float> &datum, int x, 
     FloatSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<float> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<float> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, x, y);
@@ -1126,7 +1126,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<float> &datum, int
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<bool> &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<bool> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), datum.size());
@@ -1134,7 +1134,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<bool> &datum)
     BooleanSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<bool> &datum)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<bool> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, datum.size());
@@ -1142,7 +1142,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<bool> &datum)
     BooleanSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<bool> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<bool> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), x, y);
@@ -1150,7 +1150,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<bool> &datum, int x, i
     BooleanSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<bool> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<bool> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, x, y);
@@ -1164,7 +1164,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<bool> &datum, int 
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<unsigned short> &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<unsigned short> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), datum.size());
@@ -1172,7 +1172,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<unsigned short> &datum
     UShortSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned short> &datum)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<unsigned short> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, datum.size());
@@ -1180,7 +1180,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned short> &d
     UShortSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<unsigned short> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<unsigned short> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), x, y);
@@ -1188,7 +1188,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<unsigned short> &datum
     UShortSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned short> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<unsigned short> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, x, y);
@@ -1202,7 +1202,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned short> &d
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<unsigned char> &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<unsigned char> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), datum.size());
@@ -1210,7 +1210,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<unsigned char> &datum)
     UCharSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned char> &datum)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<unsigned char> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, datum.size());
@@ -1218,7 +1218,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned char> &da
     UCharSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<unsigned char> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<unsigned char> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), x, y);
@@ -1226,7 +1226,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<unsigned char> &datum,
     UCharSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned char> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<unsigned char> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, x, y);
@@ -1240,7 +1240,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<unsigned char> &da
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<DevULong> &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<DevULong> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), datum.size());
@@ -1248,7 +1248,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<DevULong> &datum)
     ULongSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong> &datum)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<DevULong> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, datum.size());
@@ -1256,7 +1256,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong> &datum)
     ULongSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<DevULong> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<DevULong> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), x, y);
@@ -1264,7 +1264,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<DevULong> &datum, int 
     ULongSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<DevULong> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, x, y);
@@ -1278,7 +1278,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong> &datum, 
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<DevULong64> &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<DevULong64> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), datum.size());
@@ -1286,7 +1286,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<DevULong64> &datum)
     ULong64Seq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong64> &datum)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<DevULong64> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, datum.size());
@@ -1294,7 +1294,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong64> &datum
     ULong64Seq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<DevULong64> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<DevULong64> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), x, y);
@@ -1302,7 +1302,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<DevULong64> &datum, in
     ULong64Seq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong64> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<DevULong64> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, x, y);
@@ -1316,7 +1316,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevULong64> &datum
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<DevState> &datum)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<DevState> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), datum.size());
@@ -1324,7 +1324,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<DevState> &datum)
     StateSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevState> &datum)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<DevState> &datum)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, datum.size());
@@ -1332,7 +1332,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevState> &datum)
     StateSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(string &new_name, vector<DevState> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(std::string &new_name, std::vector<DevState> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name.c_str(), x, y);
@@ -1340,7 +1340,7 @@ DeviceAttribute::DeviceAttribute(string &new_name, vector<DevState> &datum, int 
     StateSeq.inout() << datum;
 }
 
-DeviceAttribute::DeviceAttribute(const char *new_name, vector<DevState> &datum, int x, int y)
+DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<DevState> &datum, int x, int y)
     : ext(new DeviceAttributeExt)
 {
     init_common_class_members(new_name, x, y);
@@ -1475,7 +1475,7 @@ int DeviceAttribute::get_type()
 
     // reset is_empty exception flag to avoid throwing an exception
     // during is_empty() call
-    bitset<DeviceAttribute::numFlags> bs = exceptions();
+    std::bitset<DeviceAttribute::numFlags> bs = exceptions();
     reset_exceptions(DeviceAttribute::isempty_flag);
     da_is_empty = is_empty();
     // restore is_empty exception flag
@@ -1775,11 +1775,11 @@ void DeviceAttribute::operator << (double datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator >>(string &) - extract a string from DeviceAttribute
+// DeviceAttribute::operator >>(std::string &) - extract a string from DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::operator >> (string& datum)
+bool DeviceAttribute::operator >> (std::string& datum)
 {
 	// check for available data
 
@@ -1804,11 +1804,11 @@ bool DeviceAttribute::operator >> (string& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator <<(string &) - insert a string into DeviceAttribute
+// DeviceAttribute::operator <<(std::string &) - insert a string into DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-void DeviceAttribute::operator << (string& datum)
+void DeviceAttribute::operator << (std::string& datum)
 {
 	dim_x = 1;
 	dim_y = 0;
@@ -2326,7 +2326,7 @@ void DeviceAttribute::insert(const char *str,unsigned char *ptr,unsigned int siz
 	del_mem(Tango::DEV_ENCODED);
 }
 
-void DeviceAttribute::insert(const string &str,vector<unsigned char> &array)
+void DeviceAttribute::insert(const std::string &str,std::vector<unsigned char> &array)
 {
 	dim_x = 1;
 	dim_y = 0;
@@ -2344,9 +2344,9 @@ void DeviceAttribute::insert(const string &str,vector<unsigned char> &array)
 	del_mem(Tango::DEV_ENCODED);
 }
 
-void DeviceAttribute::insert(string &str,vector<unsigned char> &array)
+void DeviceAttribute::insert(std::string &str,std::vector<unsigned char> &array)
 {
-    const string &tmp_str = str;
+    const std::string &tmp_str = str;
     insert(tmp_str,array);
 }
 
@@ -2370,12 +2370,12 @@ void DeviceAttribute::insert(const char *str,DevVarCharArray *array)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator <<(vector<string>) -
+// DeviceAttribute::operator <<(std::vector<std::string>) -
 // insert a vector of string into DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-void DeviceAttribute::operator << (vector<string> &datum)
+void DeviceAttribute::operator << (std::vector<std::string> &datum)
 {
 	dim_x = datum.size();
 	dim_y = 0;
@@ -2394,7 +2394,7 @@ void DeviceAttribute::operator << (vector<string> &datum)
 	del_mem(Tango::DEV_STRING);
 }
 
-void DeviceAttribute::insert(vector<string> &datum,int x,int y)
+void DeviceAttribute::insert(std::vector<std::string> &datum,int x,int y)
 {
 	*this << datum;
 	dim_x = x;
@@ -2403,11 +2403,11 @@ void DeviceAttribute::insert(vector<string> &datum,int x,int y)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator >>(vector<string> &) - extract a vector<string> from DeviceData
+// DeviceAttribute::operator >>(std::vector<std::string> &) - extract a vector<string> from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::operator >> (vector<string>& datum)
+bool DeviceAttribute::operator >> (std::vector<std::string>& datum)
 {
 	// check for available data
 
@@ -2440,12 +2440,12 @@ bool DeviceAttribute::operator >> (vector<string>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator <<(vector<short>) -
+// DeviceAttribute::operator <<(std::vector<short>) -
 // insert a vector of short into DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-void DeviceAttribute::operator << (vector<short> &datum)
+void DeviceAttribute::operator << (std::vector<short> &datum)
 {
 	dim_x = datum.size();
 	dim_y = 0;
@@ -2467,7 +2467,7 @@ void DeviceAttribute::operator << (vector<short> &datum)
 	del_mem(Tango::DEV_SHORT);
 }
 
-void DeviceAttribute::insert(vector<short> &datum,int x,int y)
+void DeviceAttribute::insert(std::vector<short> &datum,int x,int y)
 {
 	*this << datum;
 	dim_x = x;
@@ -2476,11 +2476,11 @@ void DeviceAttribute::insert(vector<short> &datum,int x,int y)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator >>(vector<short> &) - extract a vector<short> from DeviceAttribute
+// DeviceAttribute::operator >>(std::vector<short> &) - extract a vector<short> from DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::operator >> (vector<short>& datum)
+bool DeviceAttribute::operator >> (std::vector<short>& datum)
 {
 	// check for available data
 
@@ -2512,12 +2512,12 @@ bool DeviceAttribute::operator >> (vector<short>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator <<(vector<DevLong>) -
+// DeviceAttribute::operator <<(std::vector<DevLong>) -
 // insert a vector of DevLong into DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-void DeviceAttribute::operator << (vector<DevLong> &datum)
+void DeviceAttribute::operator << (std::vector<DevLong> &datum)
 {
 	dim_x = datum.size();
 	dim_y = 0;
@@ -2536,7 +2536,7 @@ void DeviceAttribute::operator << (vector<DevLong> &datum)
 	del_mem(Tango::DEV_LONG);
 }
 
-void DeviceAttribute::insert(vector<DevLong> &datum,int x,int y)
+void DeviceAttribute::insert(std::vector<DevLong> &datum,int x,int y)
 {
 	*this << datum;
 	dim_x = x;
@@ -2545,11 +2545,11 @@ void DeviceAttribute::insert(vector<DevLong> &datum,int x,int y)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator >>(vector<DevLong> &) - extract a vector<DevLong> from DeviceAttribute
+// DeviceAttribute::operator >>(std::vector<DevLong> &) - extract a vector<DevLong> from DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::operator >> (vector<DevLong>& datum)
+bool DeviceAttribute::operator >> (std::vector<DevLong>& datum)
 {
 	// check for available data
 
@@ -2582,12 +2582,12 @@ bool DeviceAttribute::operator >> (vector<DevLong>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator <<(vector<DevLong64>) -
+// DeviceAttribute::operator <<(std::vector<DevLong64>) -
 // insert a vector of DevLong64 into DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-void DeviceAttribute::operator << (vector<DevLong64> &datum)
+void DeviceAttribute::operator << (std::vector<DevLong64> &datum)
 {
 	dim_x = datum.size();
 	dim_y = 0;
@@ -2606,7 +2606,7 @@ void DeviceAttribute::operator << (vector<DevLong64> &datum)
 	del_mem(Tango::DEV_LONG64);
 }
 
-void DeviceAttribute::insert(vector<DevLong64> &datum,int x,int y)
+void DeviceAttribute::insert(std::vector<DevLong64> &datum,int x,int y)
 {
 	*this << datum;
 	dim_x = x;
@@ -2615,11 +2615,11 @@ void DeviceAttribute::insert(vector<DevLong64> &datum,int x,int y)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator >>(vector<DevLong64> &) - extract a vector<DevLong64> from DeviceAttribute
+// DeviceAttribute::operator >>(std::vector<DevLong64> &) - extract a vector<DevLong64> from DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::operator >> (vector<DevLong64>& datum)
+bool DeviceAttribute::operator >> (std::vector<DevLong64>& datum)
 {
 	// check for available data
 
@@ -2651,12 +2651,12 @@ bool DeviceAttribute::operator >> (vector<DevLong64>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator <<(vector<double>) -
+// DeviceAttribute::operator <<(std::vector<double>) -
 // insert a vector of double into DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-void DeviceAttribute::operator << (vector<double> &datum)
+void DeviceAttribute::operator << (std::vector<double> &datum)
 {
 	dim_x = datum.size();
 	dim_y = 0;
@@ -2675,7 +2675,7 @@ void DeviceAttribute::operator << (vector<double> &datum)
 	del_mem(Tango::DEV_DOUBLE);
 }
 
-void DeviceAttribute::insert(vector<double> &datum,int x,int y)
+void DeviceAttribute::insert(std::vector<double> &datum,int x,int y)
 {
 	*this << datum;
 	dim_x = x;
@@ -2684,11 +2684,11 @@ void DeviceAttribute::insert(vector<double> &datum,int x,int y)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator >>(vector<double> &) - extract a vector<double> from DeviceAttribute
+// DeviceAttribute::operator >>(std::vector<double> &) - extract a vector<double> from DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::operator >> (vector<double>& datum)
+bool DeviceAttribute::operator >> (std::vector<double>& datum)
 {
 	// check for available data
 
@@ -2721,12 +2721,12 @@ bool DeviceAttribute::operator >> (vector<double>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator <<(vector<float>) -
+// DeviceAttribute::operator <<(std::vector<float>) -
 // insert a vector of float into DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-void DeviceAttribute::operator << (vector<float> &datum)
+void DeviceAttribute::operator << (std::vector<float> &datum)
 {
 	dim_x = datum.size();
 	dim_y = 0;
@@ -2745,7 +2745,7 @@ void DeviceAttribute::operator << (vector<float> &datum)
 	del_mem(Tango::DEV_FLOAT);
 }
 
-void DeviceAttribute::insert(vector<float> &datum,int x,int y)
+void DeviceAttribute::insert(std::vector<float> &datum,int x,int y)
 {
 	*this << datum;
 	dim_x = x;
@@ -2754,11 +2754,11 @@ void DeviceAttribute::insert(vector<float> &datum,int x,int y)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator >>(vector<float> &) - extract a vector<float> from DeviceAttribute
+// DeviceAttribute::operator >>(std::vector<float> &) - extract a vector<float> from DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::operator >> (vector<float>& datum)
+bool DeviceAttribute::operator >> (std::vector<float>& datum)
 {
 	// check for available data
 
@@ -2791,12 +2791,12 @@ bool DeviceAttribute::operator >> (vector<float>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator <<(vector<bool>) -
+// DeviceAttribute::operator <<(std::vector<bool>) -
 // insert a vector of boolean into DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-void DeviceAttribute::operator << (vector<bool> &datum)
+void DeviceAttribute::operator << (std::vector<bool> &datum)
 {
 	dim_x = datum.size();
 	dim_y = 0;
@@ -2815,7 +2815,7 @@ void DeviceAttribute::operator << (vector<bool> &datum)
 	del_mem(Tango::DEV_BOOLEAN);
 }
 
-void DeviceAttribute::insert(vector<bool> &datum,int x,int y)
+void DeviceAttribute::insert(std::vector<bool> &datum,int x,int y)
 {
 	*this << datum;
 	dim_x = x;
@@ -2828,7 +2828,7 @@ void DeviceAttribute::insert(vector<bool> &datum,int x,int y)
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::operator >> (vector<bool>& datum)
+bool DeviceAttribute::operator >> (std::vector<bool>& datum)
 {
 	// check for available data
 
@@ -2861,12 +2861,12 @@ bool DeviceAttribute::operator >> (vector<bool>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator <<(vector<unsigned short>) -
+// DeviceAttribute::operator <<(std::vector<unsigned short>) -
 // insert a vector of unsigned short into DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-void DeviceAttribute::operator << (vector<unsigned short> &datum)
+void DeviceAttribute::operator << (std::vector<unsigned short> &datum)
 {
 	dim_x = datum.size();
 	dim_y = 0;
@@ -2885,7 +2885,7 @@ void DeviceAttribute::operator << (vector<unsigned short> &datum)
 	del_mem(Tango::DEV_USHORT);
 }
 
-void DeviceAttribute::insert(vector<unsigned short> &datum,int x,int y)
+void DeviceAttribute::insert(std::vector<unsigned short> &datum,int x,int y)
 {
 	*this << datum;
 	dim_x = x;
@@ -2894,11 +2894,11 @@ void DeviceAttribute::insert(vector<unsigned short> &datum,int x,int y)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator >>(vector<unsigned short> &) - extract a vector<unsigned short> from DeviceAttribute
+// DeviceAttribute::operator >>(std::vector<unsigned short> &) - extract a vector<unsigned short> from DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::operator >> (vector<unsigned short>& datum)
+bool DeviceAttribute::operator >> (std::vector<unsigned short>& datum)
 {
 	// check for available data
 
@@ -2930,12 +2930,12 @@ bool DeviceAttribute::operator >> (vector<unsigned short>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator <<(vector<unsigned char>) -
+// DeviceAttribute::operator <<(std::vector<unsigned char>) -
 // insert a vector of unsigned char into DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-void DeviceAttribute::operator << (vector<unsigned char> &datum)
+void DeviceAttribute::operator << (std::vector<unsigned char> &datum)
 {
 	dim_x = datum.size();
 	dim_y = 0;
@@ -2954,7 +2954,7 @@ void DeviceAttribute::operator << (vector<unsigned char> &datum)
 	del_mem(Tango::DEV_UCHAR);
 }
 
-void DeviceAttribute::insert(vector<unsigned char> &datum,int x,int y)
+void DeviceAttribute::insert(std::vector<unsigned char> &datum,int x,int y)
 {
 	*this << datum;
 	dim_x = x;
@@ -2963,11 +2963,11 @@ void DeviceAttribute::insert(vector<unsigned char> &datum,int x,int y)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator >>(vector<unsigned char> &) - extract a vector<unsigne char> from DeviceAttribute
+// DeviceAttribute::operator >>(std::vector<unsigned char> &) - extract a vector<unsigne char> from DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::operator >> (vector<unsigned char>& datum)
+bool DeviceAttribute::operator >> (std::vector<unsigned char>& datum)
 {
 	// check for available data
 
@@ -2999,12 +2999,12 @@ bool DeviceAttribute::operator >> (vector<unsigned char>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator <<(vector<DevULong>) -
+// DeviceAttribute::operator <<(std::vector<DevULong>) -
 // insert a vector of DevULong into DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-void DeviceAttribute::operator << (vector<DevULong> &datum)
+void DeviceAttribute::operator << (std::vector<DevULong> &datum)
 {
 	dim_x = datum.size();
 	dim_y = 0;
@@ -3023,7 +3023,7 @@ void DeviceAttribute::operator << (vector<DevULong> &datum)
 	del_mem(Tango::DEV_ULONG);
 }
 
-void DeviceAttribute::insert(vector<DevULong> &datum,int x,int y)
+void DeviceAttribute::insert(std::vector<DevULong> &datum,int x,int y)
 {
 	*this << datum;
 	dim_x = x;
@@ -3032,11 +3032,11 @@ void DeviceAttribute::insert(vector<DevULong> &datum,int x,int y)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator >>(vector<DevULong> &) - extract a vector<DevULong> from DeviceAttribute
+// DeviceAttribute::operator >>(std::vector<DevULong> &) - extract a vector<DevULong> from DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::operator >> (vector<DevULong>& datum)
+bool DeviceAttribute::operator >> (std::vector<DevULong>& datum)
 {
 	// check for available data
 
@@ -3068,12 +3068,12 @@ bool DeviceAttribute::operator >> (vector<DevULong>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator <<(vector<DevULong64>) -
+// DeviceAttribute::operator <<(std::vector<DevULong64>) -
 // insert a vector of DevULong64 into DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-void DeviceAttribute::operator << (vector<DevULong64> &datum)
+void DeviceAttribute::operator << (std::vector<DevULong64> &datum)
 {
 	dim_x = datum.size();
 	dim_y = 0;
@@ -3092,7 +3092,7 @@ void DeviceAttribute::operator << (vector<DevULong64> &datum)
 	del_mem(Tango::DEV_ULONG64);
 }
 
-void DeviceAttribute::insert(vector<DevULong64> &datum,int x,int y)
+void DeviceAttribute::insert(std::vector<DevULong64> &datum,int x,int y)
 {
 	*this << datum;
 	dim_x = x;
@@ -3101,11 +3101,11 @@ void DeviceAttribute::insert(vector<DevULong64> &datum,int x,int y)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator >>(vector<DevULong64> &) - extract a vector<DevULong64> from DeviceAttribute
+// DeviceAttribute::operator >>(std::vector<DevULong64> &) - extract a vector<DevULong64> from DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::operator >> (vector<DevULong64>& datum)
+bool DeviceAttribute::operator >> (std::vector<DevULong64>& datum)
 {
 	// check for available data
 
@@ -3137,12 +3137,12 @@ bool DeviceAttribute::operator >> (vector<DevULong64>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator <<(vector<DevState>) -
+// DeviceAttribute::operator <<(std::vector<DevState>) -
 // insert a vector of DevState into DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-void DeviceAttribute::operator << (vector<DevState> &datum)
+void DeviceAttribute::operator << (std::vector<DevState> &datum)
 {
 	dim_x = datum.size();
 	dim_y = 0;
@@ -3161,7 +3161,7 @@ void DeviceAttribute::operator << (vector<DevState> &datum)
 	del_mem(Tango::DEV_STATE);
 }
 
-void DeviceAttribute::insert(vector<DevState> &datum,int x,int y)
+void DeviceAttribute::insert(std::vector<DevState> &datum,int x,int y)
 {
 	*this << datum;
 	dim_x = x;
@@ -3170,11 +3170,11 @@ void DeviceAttribute::insert(vector<DevState> &datum,int x,int y)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::operator >>(vector<DevState> &) - extract a vector<DevState> from DeviceAttribute
+// DeviceAttribute::operator >>(std::vector<DevState> &) - extract a vector<DevState> from DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::operator >> (vector<DevState>& datum)
+bool DeviceAttribute::operator >> (std::vector<DevState>& datum)
 {
 	// check for available data
 
@@ -4407,28 +4407,28 @@ bool DeviceAttribute::extract(const char *&str,unsigned char *&data_ptr,unsigned
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract(string &,vector<unsigned char> &)
+// DeviceAttribute::extract(std::string &,std::vector<unsigned char> &)
 //
 // - extract the read value as pointers from the DeviceAttribute
 // for the DevEncoded data type
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract(string &str,vector<unsigned char> &dat)
+bool DeviceAttribute::extract(std::string &str,std::vector<unsigned char> &dat)
 {
 	return extract_read(str,dat);
 }
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_read(string &,vector<unsigned char> &)
+// DeviceAttribute::extract_read(std::string &,std::vector<unsigned char> &)
 //
-// - extract the read value as a string, vector<unsigned char> from the DeviceAttribute
+// - extract the read value as a string, std::vector<unsigned char> from the DeviceAttribute
 // for the DevEncoded data type
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_read (string &datum_str,vector<unsigned char> &datum)
+bool DeviceAttribute::extract_read (std::string &datum_str,std::vector<unsigned char> &datum)
 {
 // check for available data
 
@@ -4465,14 +4465,14 @@ bool DeviceAttribute::extract_read (string &datum_str,vector<unsigned char> &dat
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_set(string &,vector<unsigned char> &)
+// DeviceAttribute::extract_set(std::string &,std::vector<unsigned char> &)
 //
 // - extract the set value as a string,vector<unsigned char> from the DeviceAttribute
 // when the data type is DevEncoded
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_set (string &datum_str,vector<unsigned char> &datum)
+bool DeviceAttribute::extract_set (std::string &datum_str,std::vector<unsigned char> &datum)
 {
 // check for available data
 
@@ -4507,13 +4507,13 @@ bool DeviceAttribute::extract_set (string &datum_str,vector<unsigned char> &datu
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_read(vector<string> &)
+// DeviceAttribute::extract_read(std::vector<std::string> &)
 //
 // - extract the read value as a vector<string> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_read (vector<string>& datum)
+bool DeviceAttribute::extract_read (std::vector<std::string>& datum)
 {
 	// check for available data
 
@@ -4548,13 +4548,13 @@ bool DeviceAttribute::extract_read (vector<string>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_set(vector<string> &)
+// DeviceAttribute::extract_set(std::vector<std::string> &)
 //
 // - extract the set value as a vector<string> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_set (vector<string>& datum)
+bool DeviceAttribute::extract_set (std::vector<std::string>& datum)
 {
 	// check for available data
 
@@ -4591,13 +4591,13 @@ bool DeviceAttribute::extract_set (vector<string>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_read(vector<short> &)
+// DeviceAttribute::extract_read(std::vector<short> &)
 //
 // - extract the read value as a vector<short> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_read (vector<short>& datum)
+bool DeviceAttribute::extract_read (std::vector<short>& datum)
 {
 	// check for available data
 
@@ -4632,13 +4632,13 @@ bool DeviceAttribute::extract_read (vector<short>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_set(vector<short> &)
+// DeviceAttribute::extract_set(std::vector<short> &)
 //
 // - extract the set value as a vector<short> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_set (vector<short>& datum)
+bool DeviceAttribute::extract_set (std::vector<short>& datum)
 {
 	// check for available data
 
@@ -4675,13 +4675,13 @@ bool DeviceAttribute::extract_set (vector<short>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_read(vector<DevLong> &)
+// DeviceAttribute::extract_read(std::vector<DevLong> &)
 //
-// - extract the read value as a vector<DevLong> from the DeviceAttribute
+// - extract the read value as a std::vector<DevLong> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_read (vector<DevLong>& datum)
+bool DeviceAttribute::extract_read (std::vector<DevLong>& datum)
 {
 	// check for available data
 
@@ -4716,13 +4716,13 @@ bool DeviceAttribute::extract_read (vector<DevLong>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_set(vector<DevLong> &)
+// DeviceAttribute::extract_set(std::vector<DevLong> &)
 //
 // - extract the set value as a vector<DevLong> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_set (vector<DevLong>& datum)
+bool DeviceAttribute::extract_set (std::vector<DevLong>& datum)
 {
 	// check for available data
 
@@ -4758,13 +4758,13 @@ bool DeviceAttribute::extract_set (vector<DevLong>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_read(vector<double> &)
+// DeviceAttribute::extract_read(std::vector<double> &)
 //
 // - extract the read value as a vector<double> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_read (vector<double>& datum)
+bool DeviceAttribute::extract_read (std::vector<double>& datum)
 {
 	// check for available data
 
@@ -4799,13 +4799,13 @@ bool DeviceAttribute::extract_read (vector<double>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_set(vector<double> &)
+// DeviceAttribute::extract_set(std::vector<double> &)
 //
 // - extract the set value as a vector<double> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_set (vector<double>& datum)
+bool DeviceAttribute::extract_set (std::vector<double>& datum)
 {
 	// check for available data
 
@@ -4843,13 +4843,13 @@ bool DeviceAttribute::extract_set (vector<double>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_read(vector<float> &)
+// DeviceAttribute::extract_read(std::vector<float> &)
 //
 // - extract the read value as a vector<float> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_read (vector<float>& datum)
+bool DeviceAttribute::extract_read (std::vector<float>& datum)
 {
 	// check for available data
 
@@ -4884,13 +4884,13 @@ bool DeviceAttribute::extract_read (vector<float>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_set(vector<float> &)
+// DeviceAttribute::extract_set(std::vector<float> &)
 //
 // - extract the set value as a vector<float> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_set (vector<float>& datum)
+bool DeviceAttribute::extract_set (std::vector<float>& datum)
 {
 	// check for available data
 
@@ -4927,13 +4927,13 @@ bool DeviceAttribute::extract_set (vector<float>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_read(vector<bool> &)
+// DeviceAttribute::extract_read(std::vector<bool> &)
 //
 // - extract the read value as a vector<bool> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_read (vector<bool>& datum)
+bool DeviceAttribute::extract_read (std::vector<bool>& datum)
 {
 	// check for available data
 
@@ -4968,13 +4968,13 @@ bool DeviceAttribute::extract_read (vector<bool>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_set(vector<bool> &)
+// DeviceAttribute::extract_set(std::vector<bool> &)
 //
 // - extract the set value as a vector<bool> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_set (vector<bool>& datum)
+bool DeviceAttribute::extract_set (std::vector<bool>& datum)
 {
 	// check for available data
 
@@ -5011,13 +5011,13 @@ bool DeviceAttribute::extract_set (vector<bool>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_read(vector<unsigned short> &)
+// DeviceAttribute::extract_read(std::vector<unsigned short> &)
 //
 // - extract the read value as a vector<unsigned short> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_read (vector<unsigned short>& datum)
+bool DeviceAttribute::extract_read (std::vector<unsigned short>& datum)
 {
 	// check for available data
 
@@ -5052,13 +5052,13 @@ bool DeviceAttribute::extract_read (vector<unsigned short>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_set(vector<unsigned short> &)
+// DeviceAttribute::extract_set(std::vector<unsigned short> &)
 //
 // - extract the set value as a vector<unsigned short> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_set (vector<unsigned short>& datum)
+bool DeviceAttribute::extract_set (std::vector<unsigned short>& datum)
 {
 	// check for available data
 
@@ -5094,13 +5094,13 @@ bool DeviceAttribute::extract_set (vector<unsigned short>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_read(vector<unsigned char> &)
+// DeviceAttribute::extract_read(std::vector<unsigned char> &)
 //
 // - extract the read value as a vector<unsigned char> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_read (vector<unsigned char>& datum)
+bool DeviceAttribute::extract_read (std::vector<unsigned char>& datum)
 {
 	// check for available data
 
@@ -5135,13 +5135,13 @@ bool DeviceAttribute::extract_read (vector<unsigned char>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_set(vector<unsigned char> &)
+// DeviceAttribute::extract_set(std::vector<unsigned char> &)
 //
 // - extract the set value as a vector<unsigned char> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_set (vector<unsigned char>& datum)
+bool DeviceAttribute::extract_set (std::vector<unsigned char>& datum)
 {
 	// check for available data
 
@@ -5178,13 +5178,13 @@ bool DeviceAttribute::extract_set (vector<unsigned char>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_read(vector<DevLong64> &)
+// DeviceAttribute::extract_read(std::vector<DevLong64> &)
 //
 // - extract the read value as a vector<DevLong64> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_read (vector<DevLong64>& datum)
+bool DeviceAttribute::extract_read (std::vector<DevLong64>& datum)
 {
 	// check for available data
 
@@ -5219,13 +5219,13 @@ bool DeviceAttribute::extract_read (vector<DevLong64>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_set(vector<DevLong64> &)
+// DeviceAttribute::extract_set(std::vector<DevLong64> &)
 //
 // - extract the set value as a vector<DevLong64> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_set (vector<DevLong64>& datum)
+bool DeviceAttribute::extract_set (std::vector<DevLong64>& datum)
 {
 	// check for available data
 
@@ -5262,13 +5262,13 @@ bool DeviceAttribute::extract_set (vector<DevLong64>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_read(vector<DevULong64> &)
+// DeviceAttribute::extract_read(std::vector<DevULong64> &)
 //
 // - extract the read value as a vector<DevULong64> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_read (vector<DevULong64>& datum)
+bool DeviceAttribute::extract_read (std::vector<DevULong64>& datum)
 {
 	// check for available data
 
@@ -5303,13 +5303,13 @@ bool DeviceAttribute::extract_read (vector<DevULong64>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_set(vector<DevULong64> &)
+// DeviceAttribute::extract_set(std::vector<DevULong64> &)
 //
 // - extract the set value as a vector<DevULong64> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_set (vector<DevULong64>& datum)
+bool DeviceAttribute::extract_set (std::vector<DevULong64>& datum)
 {
 	// check for available data
 
@@ -5347,13 +5347,13 @@ bool DeviceAttribute::extract_set (vector<DevULong64>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_read(vector<DevULong> &)
+// DeviceAttribute::extract_read(std::vector<DevULong> &)
 //
 // - extract the read value as a vector<DevULong> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_read (vector<DevULong>& datum)
+bool DeviceAttribute::extract_read (std::vector<DevULong>& datum)
 {
 	// check for available data
 
@@ -5388,13 +5388,13 @@ bool DeviceAttribute::extract_read (vector<DevULong>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_set(vector<DevULong> &)
+// DeviceAttribute::extract_set(std::vector<DevULong> &)
 //
 // - extract the set value as a vector<DevULong> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_set (vector<DevULong>& datum)
+bool DeviceAttribute::extract_set (std::vector<DevULong>& datum)
 {
 	// check for available data
 
@@ -5432,13 +5432,13 @@ bool DeviceAttribute::extract_set (vector<DevULong>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_read(vector<DevState> &)
+// DeviceAttribute::extract_read(std::vector<DevState> &)
 //
 // - extract the read value as a vector<DevState> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_read (vector<DevState>& datum)
+bool DeviceAttribute::extract_read (std::vector<DevState>& datum)
 {
 	// check for available data
 
@@ -5473,13 +5473,13 @@ bool DeviceAttribute::extract_read (vector<DevState>& datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttribute::extract_set(vector<DevState> &)
+// DeviceAttribute::extract_set(std::vector<DevState> &)
 //
 // - extract the set value as a vector<DevState> from the DeviceAttribute
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceAttribute::extract_set (vector<DevState>& datum)
+bool DeviceAttribute::extract_set (std::vector<DevState>& datum)
 {
 	// check for available data
 
@@ -5680,17 +5680,17 @@ void DeviceAttribute::del_mem(int _data_type)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-ostream &operator<<(ostream &o_str,DeviceAttribute &da)
+std::ostream &operator<<(std::ostream &o_str,DeviceAttribute &da)
 {
 
 	if (da.has_failed() == true)
 	{
-		o_str << "Exception stored in DeviceAttribute object" << endl;
+		o_str << "Exception stored in DeviceAttribute object" << std::endl;
 		Except::print_error_stack(da.err_list);
 	}
 	else
 	{
-		bitset<DeviceAttribute::numFlags> bs = da.exceptions();
+		std::bitset<DeviceAttribute::numFlags> bs = da.exceptions();
 		da.reset_exceptions(DeviceAttribute::isempty_flag);
 		if (da.is_empty() == true)
 		{
@@ -5788,7 +5788,7 @@ ostream &operator<<(ostream &o_str,DeviceAttribute &da)
 //
 
 		if (da.get_type() != DATA_TYPE_UNKNOWN)
-			o_str << "Data type = " << CmdArgTypeName[da.get_type()] << ")" << endl;
+			o_str << "Data type = " << CmdArgTypeName[da.get_type()] << ")" << std::endl;
 
 //
 // Print data (if valid)
