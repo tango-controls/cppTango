@@ -1,4 +1,4 @@
-/* 
+/*
  * example of a client using the TANGO device api.
  */
 
@@ -22,7 +22,7 @@ bool verbose = false;
 class EventCallBack : public Tango::CallBack
 {
 	void push_event(Tango::EventData*);
-	
+
 public:
 	int cb_executed;
 	int cb_err;
@@ -34,7 +34,7 @@ public:
 
 void EventCallBack::push_event(Tango::EventData* event_data)
 {
-	vector<DevLong64> value;
+	std::vector<DevLong64> value;
         struct timeval now_timeval;
 
 #ifdef WIN32
@@ -46,14 +46,14 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 	gettimeofday(&now_timeval,NULL);
 #endif
 	coutv << "date : tv_sec = " << now_timeval.tv_sec;
-	coutv << ", tv_usec = " << now_timeval.tv_usec << endl;
+	coutv << ", tv_usec = " << now_timeval.tv_usec << std::endl;
 
-	delta_msec = ((now_timeval.tv_sec - old_sec) * 1000) + ((now_timeval.tv_usec - old_usec) / 1000);		
+	delta_msec = ((now_timeval.tv_sec - old_sec) * 1000) + ((now_timeval.tv_usec - old_usec) / 1000);
 
 	old_sec = now_timeval.tv_sec;
 	old_usec = now_timeval.tv_usec;
-	
-	coutv << "delta_msec = " << delta_msec << endl;
+
+	coutv << "delta_msec = " << delta_msec << std::endl;
 
 	cb_executed++;
 
@@ -64,14 +64,14 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 		{
 
 			*(event_data->attr_value) >> value;
-			coutv << "CallBack value size " << value.size() << endl;
+			coutv << "CallBack value size " << value.size() << std::endl;
 			val = value[0];
 			val_size = value.size();
-			coutv << "Callback value " << val << endl;
+			coutv << "Callback value " << val << std::endl;
 		}
 		else
 		{
-			coutv << "Error send to callback" << endl;
+			coutv << "Error send to callback" << std::endl;
 			cb_err++;
 		}
 	}
@@ -85,22 +85,22 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
-	
+
 	if (argc == 1)
 	{
-		cout << "usage: %s device [-v]" << endl;
+		cout << "usage: %s device [-v]" << std::endl;
 		exit(-1);
 	}
 
-	string device_name = argv[1];
+	std::string device_name = argv[1];
 
 	if (argc == 3)
 	{
 		if (strcmp(argv[2],"-v") == 0)
 			verbose = true;
 	}
-	
-	try 
+
+	try
 	{
 		device = new DeviceProxy(device_name);
 	}
@@ -110,13 +110,13 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+	coutv << std::endl << "new DeviceProxy(" << device->name() << ") returned" << std::endl << std::endl;
 
-	
+
 	try
 	{
-		string att_name("Event64_change_tst");
-				
+		std::string att_name("Event64_change_tst");
+
 //
 // Test set up (stop polling and clear abs_change and rel_change attribute
 // properties but restart device to take this into account)
@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 		dbd.push_back(DbDatum("abs_change"));
 		dbd.push_back(DbDatum("rel_change"));
 		dba.delete_property(dbd);
-		
+
 		dbd.clear();
 		a << (short)1;
 		dbd.push_back(a);
@@ -141,12 +141,12 @@ int main(int argc, char **argv)
 		ch << (short)1;
 		dbd.push_back(ch);
 		dba.put_property(dbd);
-		
+
 		DeviceProxy adm_dev(device->adm_name().c_str());
 		DeviceData di;
 		di << device_name;
 		adm_dev.command_inout("DevRestart",di);
-		
+
 		delete device;
 		device = new DeviceProxy(device_name);
 		Tango_sleep(1);
@@ -156,12 +156,12 @@ int main(int argc, char **argv)
 //
 
 		int eve_id;
-		vector<string> filters;
+		std::vector<std::string> filters;
 		EventCallBack cb;
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
-		
+
 		// switch on the polling first!
 		device->poll_attribute(att_name,1000);
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
@@ -171,14 +171,14 @@ int main(int argc, char **argv)
 //
 
 		bool po = device->is_attribute_polled(att_name);
-		coutv << "attribute polled : " << po << endl;
+		coutv << "attribute polled : " << po << std::endl;
 		assert( po == true);
-		
+
 		int poll_period = device->get_attribute_poll_period(att_name);
-		coutv << "att polling period : " << poll_period << endl;
-		assert( poll_period == 1000);		
-				
-		cout << "   subscribe_event --> OK" << endl;
+		coutv << "att polling period : " << poll_period << std::endl;
+		assert( poll_period == 1000);
+
+		cout << "   subscribe_event --> OK" << std::endl;
 
 //
 // Check that first point has been received
@@ -187,10 +187,10 @@ int main(int argc, char **argv)
 		assert (cb.cb_executed == 1);
 		assert (cb.val == 0x800000000LL);
 		assert (cb.val_size == 2);
-		cout << "   first point received --> OK" << endl;
-		
+		cout << "   first point received --> OK" << std::endl;
+
 //
-// Check that callback was called after a positive value change 
+// Check that callback was called after a positive value change
 //
 
 // A trick for gdb. The thread created by omniORB for the callback execution
@@ -199,14 +199,14 @@ int main(int argc, char **argv)
 // signal which interrupts the sleep.....
 //
 
-#ifndef WIN32		
+#ifndef WIN32
 		int rest = sleep(1);
 		if (rest != 0)
 			sleep(1);
 #else
 		Sleep(1000);
 #endif
-			
+
 		device->command_inout("IOIncValue");
 
 #ifndef WIN32
@@ -216,64 +216,64 @@ int main(int argc, char **argv)
 #else
 		Sleep(2000);
 #endif
-						
-		coutv << "cb excuted = " << cb.cb_executed << endl;
+
+		coutv << "cb excuted = " << cb.cb_executed << std::endl;
 		assert (cb.cb_executed == 3);
 		assert (cb.val == 0x800000001LL);
 		assert (cb.val_size == 2);
-				
-		cout << "   CallBack executed for positive absolute delta --> OK" << endl;
+
+		cout << "   CallBack executed for positive absolute delta --> OK" << std::endl;
 
 //
-// Check that callback was called after a negative value change 
+// Check that callback was called after a negative value change
 //
 
 		device->command_inout("IODecValue");
 
-#ifndef WIN32		
+#ifndef WIN32
 		rest = sleep(2);
 		if (rest != 0)
 			sleep(2);
 #else
 		Sleep(2000);
 #endif
-			
-		coutv << "cb excuted = " << cb.cb_executed << endl;
+
+		coutv << "cb excuted = " << cb.cb_executed << std::endl;
 		assert (cb.cb_executed == 4);
 		assert (cb.val == 0x800000000LL);
 		assert (cb.val_size == 2);
-				
-		cout << "   CallBack executed for negative absolute delta --> OK" << endl;
+
+		cout << "   CallBack executed for negative absolute delta --> OK" << std::endl;
 
 //
 // Check that callback was called after adding one elt to the spectrum
 //
 
 		device->command_inout("IOAddOneElt");
-		
+
 		Tango_sleep(2);
-			
-		coutv << "cb excuted = " << cb.cb_executed << endl;
+
+		coutv << "cb excuted = " << cb.cb_executed << std::endl;
 		assert (cb.cb_executed == 5);
 		assert (cb.val == 0x800000000LL);
 		assert (cb.val_size == 3);
-				
-		cout << "   CallBack executed when spectrum size increases --> OK" << endl;
+
+		cout << "   CallBack executed when spectrum size increases --> OK" << std::endl;
 
 //
 // Check that callback was called after removing one elt to the spectrum
 //
 
 		device->command_inout("IORemoveOneElt");
-		
+
 		Tango_sleep(2);
-			
-		coutv << "cb excuted = " << cb.cb_executed << endl;
+
+		coutv << "cb excuted = " << cb.cb_executed << std::endl;
 		assert (cb.cb_executed == 6);
 		assert (cb.val == 0x800000000LL);
 		assert (cb.val_size == 2);
-				
-		cout << "   CallBack executed when spectrum size decreases --> OK" << endl;
+
+		cout << "   CallBack executed when spectrum size decreases --> OK" << std::endl;
 
 //
 // Stop polling
@@ -287,19 +287,19 @@ int main(int argc, char **argv)
 
 		Tango_sleep(1);
 
-		coutv << "cb err = " << cb.cb_err << endl;
+		coutv << "cb err = " << cb.cb_err << std::endl;
 		assert (cb.cb_err == 1);
 
-		cout << "   Error received in callback if we stop polling --> OK" << endl;
-				
+		cout << "   Error received in callback if we stop polling --> OK" << std::endl;
+
 //
 // unsubscribe to the event
 //
 
 		device->unsubscribe_event(eve_id);
-		
-		cout << "   unsubscribe_event --> OK" << endl;
-				
+
+		cout << "   unsubscribe_event --> OK" << std::endl;
+
 	}
 	catch (Tango::DevFailed &e)
 	{
@@ -313,8 +313,8 @@ int main(int argc, char **argv)
 	}
 
 	delete device;
-	
+
 	Tango::ApiUtil::cleanup();
-	
+
 	return 0;
 }
