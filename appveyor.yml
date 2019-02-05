@@ -172,7 +172,7 @@ init:
   - cmd: 7z -y x vs2008_patch.zip -oC:\projects\vs2008_patch\
   - cmd: if %ARCH%==x64-msvc9 call C:\projects\vs2008_patch\setup_x64.bat
   - cmd: if %ARCH%==x32-msvc9 call C:\projects\vs2008_patch\setup_x86.bat
-  - cmd: copy "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\vcvars64.bat" "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\amd64\vcvarsamd64.bat"
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%" NEQ "Visual Studio 2017" copy "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\vcvars64.bat" "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\amd64\vcvarsamd64.bat"
   
   - cmd: cd "C:\projects\cppTango"
 install:
