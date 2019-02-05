@@ -218,7 +218,7 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 		try
 		{
 			zmq::poll(items,nb_poll_item,-1);
-//cout << "Awaken !!!!!!!!" << endl;
+//cout << "Awaken !!!!!!!!" << std::endl;
 		}
 		catch(zmq::error_t &e)
 		{
@@ -232,7 +232,7 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 
 		if (items[1].revents & ZMQ_POLLIN)
 		{
-//cout << "For the heartbeat socket" << endl;
+//cout << "For the heartbeat socket" << std::endl;
 			bool res;
 			try
 			{
@@ -265,7 +265,7 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 			catch (zmq::error_t &e)
 			{
 				print_error_message("Zmq exception while receiving heartbeat data!");
-				cerr << "Error number: " << e.num() << ", error message: " << e.what() << endl;
+				std::cerr << "Error number: " << e.num() << ", error message: " << e.what() << std::endl;
 				items[1].revents = 0;
 				continue;
 			}
@@ -279,7 +279,7 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 
 		if (items[2].revents & ZMQ_POLLIN)
 		{
-//cout << "For the event socket" << endl;
+//cout << "For the event socket" << std::endl;
 			bool res;
 			try
 			{
@@ -320,7 +320,7 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 			catch (zmq::error_t &e)
 			{
 				print_error_message("Zmq exception while receiving event data!");
-				cerr << "Error number: " << e.num() << ", error message: " << e.what() << endl;
+				std::cerr << "Error number: " << e.num() << ", error message: " << e.what() << std::endl;
 				items[2].revents = 0;
 				continue;
 			}
@@ -334,10 +334,10 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 
 		if (items[0].revents & ZMQ_POLLIN)
 		{
-//cout << "For the control socket" << endl;
+//cout << "For the control socket" << std::endl;
 			control_sock->recv(&received_ctrl);
 
-			string ret_str;
+			std::string ret_str;
 			bool ret = false;
 
 			try
@@ -463,7 +463,7 @@ void ZmqEventConsumer::process_heartbeat(zmq::message_t &received_event_name,zmq
 //
 
     unsigned char endian = ((char *)received_endian.data())[0];
-    string event_name((char *)received_event_name.data(),(size_t)received_event_name.size());
+    std::string event_name((char *)received_event_name.data(),(size_t)received_event_name.size());
 
     cdrMemoryStream call_info((char *)received_call.data(),(size_t)received_call.size());
     call_info.setByteSwapFlag(endian);
@@ -475,13 +475,13 @@ void ZmqEventConsumer::process_heartbeat(zmq::message_t &received_event_name,zmq
     }
     catch (...)
     {
-        string st("Received a malformed heartbeat event: ");
+        std::string st("Received a malformed heartbeat event: ");
 		st = st + event_name;
 		print_error_message(st.c_str());
         unsigned char *tmp = (unsigned char *)received_call.data();
         for (unsigned int loop = 0;loop < received_call.size();loop++)
         {
-           cerr << "Heartbeat event data[" << loop << "] = " << hex << (int)tmp[loop] << dec << endl;
+           std::cerr << "Heartbeat event data[" << loop << "] = " << std::hex << (int)tmp[loop] << std::dec << std::endl;
         }
         return;
     }
@@ -513,10 +513,10 @@ void ZmqEventConsumer::process_heartbeat(zmq::message_t &received_event_name,zmq
 
 void ZmqEventConsumer::process_event(zmq::message_t &received_event_name,zmq::message_t &received_endian,zmq::message_t &received_call,zmq::message_t &event_data)
 {
-//cout << "event name message adr = " << (void *)(&received_event_name) << " - size = " << received_event_name.size() << " - ptr = " << (void *)(received_event_name.data()) << endl;
-//cout << "endian message adr = " << (void *)(&received_endian) << " - size = " << received_endian.size() << " - ptr = " << (void *)(received_endian.data()) << endl;
-//cout << "call info message adr = " << (void *)(&received_call) << " - size = " << received_call.size() << " - ptr = " << (void *)(received_call.data()) << endl;
-//cout << "event data message adr = " << (void *)(&event_data) << " - size = " << event_data.size() << " - ptr = " << (void *)(event_data.data()) << endl;
+//cout << "event name message adr = " << (void *)(&received_event_name) << " - size = " << received_event_name.size() << " - ptr = " << (void *)(received_event_name.data()) << std::endl;
+//cout << "endian message adr = " << (void *)(&received_endian) << " - size = " << received_endian.size() << " - ptr = " << (void *)(received_endian.data()) << std::endl;
+//cout << "call info message adr = " << (void *)(&received_call) << " - size = " << received_call.size() << " - ptr = " << (void *)(received_call.data()) << std::endl;
+//cout << "event data message adr = " << (void *)(&event_data) << " - size = " << event_data.size() << " - ptr = " << (void *)(event_data.data()) << std::endl;
 
 //
 // For debug and logging purposes
@@ -561,7 +561,7 @@ void ZmqEventConsumer::process_event(zmq::message_t &received_event_name,zmq::me
     const ZmqCallInfo *receiv_call;
 
     unsigned char endian = ((char *)received_endian.data())[0];
-    string event_name((char *)received_event_name.data(),(size_t)received_event_name.size());
+    std::string event_name((char *)received_event_name.data(),(size_t)received_event_name.size());
 
     cdrMemoryStream call_info((char *)received_call.data(),(size_t)received_call.size());
     call_info.setByteSwapFlag(endian);
@@ -573,13 +573,13 @@ void ZmqEventConsumer::process_event(zmq::message_t &received_event_name,zmq::me
     }
     catch (...)
     {
-        string st("Received a malformed event call info data for event ");
+        std::string st("Received a malformed event call info data for event ");
 		st = st + event_name;
 		print_error_message(st.c_str());
         unsigned char *tmp = (unsigned char *)received_call.data();
         for (unsigned int loop = 0;loop < received_call.size();loop++)
         {
-           cerr << "Event data[" << loop << "] = " << hex << (int)tmp[loop] << dec << endl;
+           std::cerr << "Event data[" << loop << "] = " << std::hex << (int)tmp[loop] << std::dec << std::endl;
         }
         return;
     }
@@ -639,7 +639,7 @@ void ZmqEventConsumer::process_event(zmq_msg_t &received_event_name,zmq_msg_t &r
     const ZmqCallInfo *receiv_call;
 
     unsigned char endian = ((char *)zmq_msg_data(&received_endian))[0];
-    string event_name((char *)zmq_msg_data(&received_event_name),zmq_msg_size(&received_event_name));
+    std::string event_name((char *)zmq_msg_data(&received_event_name),zmq_msg_size(&received_event_name));
 
     cdrMemoryStream call_info((char *)zmq_msg_data(&received_call),zmq_msg_size(&received_call));
     call_info.setByteSwapFlag(endian);
@@ -651,13 +651,13 @@ void ZmqEventConsumer::process_event(zmq_msg_t &received_event_name,zmq_msg_t &r
     }
     catch (...)
     {
-        string st("Received a malformed event call info data for event ");
+        std::string st("Received a malformed event call info data for event ");
 		st = st + event_name;
 		print_error_message(st.c_str());
         unsigned char *tmp = (unsigned char *)zmq_msg_data(&received_call);
         for (unsigned int loop = 0;loop < zmq_msg_size(&received_call);loop++)
         {
-           cerr << "Event data[" << loop << "] = " << hex << (int)tmp[loop] << dec << endl;
+           std::cerr << "Event data[" << loop << "] = " << std::hex << (int)tmp[loop] << std::dec << std::endl;
         }
         return;
     }
@@ -758,7 +758,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 					connect_heart = true;
                 else
                 {
-                    vector<string>::iterator pos;
+                    std::vector<std::string>::iterator pos;
                     pos = find(connected_heartbeat.begin(),connected_heartbeat.end(),endpoint);
                     if (pos == connected_heartbeat.end())
                         connect_heart = true;
@@ -787,7 +787,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
             if (env_var_fqdn_prefix.size() > 1)
             {
-                string base_name(event_name);
+                std::string base_name(event_name);
                 multi_tango_host(heartbeat_sub_sock,SUBSCRIBE,base_name);
             }
         }
@@ -818,7 +818,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
             if (env_var_fqdn_prefix.size() > 1)
             {
-                string base_name(event_name);
+                std::string base_name(event_name);
                 multi_tango_host(heartbeat_sub_sock,UNSUBSCRIBE,base_name);
             }
 
@@ -827,8 +827,8 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 // Remove the endpoint in the vector of already connected heartbeat and disconnect the socket to this endpoint
 //
 
-			vector<string>::iterator pos;
-			string endpoint_str(endpoint);
+			std::vector<std::string>::iterator pos;
+			std::string endpoint_str(endpoint);
 			pos = find(connected_heartbeat.begin(),connected_heartbeat.end(),endpoint_str);
 			if (pos != connected_heartbeat.end())
 				connected_heartbeat.erase(pos);
@@ -839,7 +839,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 // Remove the event endpoint from the already connected event and disconnect the event socket
 //
 
-			pos = find(connected_pub.begin(),connected_pub.end(),string(endpoint_event));
+			pos = find(connected_pub.begin(),connected_pub.end(),std::string(endpoint_event));
 			if (pos != connected_pub.end())
 			{
 				connected_pub.erase(pos);
@@ -875,7 +875,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
                     connect_pub = true;
                 else
                 {
-                    vector<string>::iterator pos;
+                    std::vector<std::string>::iterator pos;
                     pos = find(connected_pub.begin(),connected_pub.end(),endpoint);
                     if (pos == connected_pub.end())
                         connect_pub = true;
@@ -906,7 +906,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
             if (env_var_fqdn_prefix.size() > 1)
             {
-                string base_name(event_name);
+                std::string base_name(event_name);
                 multi_tango_host(event_sub_sock,SUBSCRIBE,base_name);
             }
         }
@@ -919,10 +919,10 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 //
 
             const char *event_name = &(tmp_ptr[1]);
-            string ev_name(event_name);
+            std::string ev_name(event_name);
 
 			const char *endpoint = &(tmp_ptr[1 + ::strlen(event_name) + 1]);
-            string endpoint_str(endpoint);
+            std::string endpoint_str(endpoint);
 
 //
 // Check if it is a multicast event
@@ -930,7 +930,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
             bool mcast = false;
 
-            map<string,zmq::socket_t *>::iterator pos;
+            std::map<std::string,zmq::socket_t *>::iterator pos;
             if (event_mcast.empty() != true)
             {
                 pos = event_mcast.find(ev_name);
@@ -953,7 +953,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
                 if (env_var_fqdn_prefix.size() > 1)
                 {
-                    string base_name(event_name);
+                    std::string base_name(event_name);
                     multi_tango_host(event_sub_sock,UNSUBSCRIBE,base_name);
                 }
             }
@@ -988,8 +988,8 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 //
 
             bool created_sub = false;
-            string ev_name(event_name);
-            map<string,zmq::socket_t *>::iterator pos;
+            std::string ev_name(event_name);
+            std::map<std::string,zmq::socket_t *>::iterator pos;
 
             if (event_mcast.empty() == false)
             {
@@ -1111,18 +1111,18 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::multi_tango_host(zmq::socket_t *sock,SocketCmd cmd,string &event_name)
+void ZmqEventConsumer::multi_tango_host(zmq::socket_t *sock,SocketCmd cmd,std::string &event_name)
 {
     size_t pos = event_name.find('/',8);
-    string base_tango_host = event_name.substr(0,pos + 1);
-    string ev_name = event_name.substr(pos + 1);
+    std::string base_tango_host = event_name.substr(0,pos + 1);
+    std::string ev_name = event_name.substr(pos + 1);
     for (unsigned int loop = 0;loop < env_var_fqdn_prefix.size();loop++)
     {
         if (env_var_fqdn_prefix[loop] == base_tango_host)
             continue;
         else
         {
-            string new_tango_host = env_var_fqdn_prefix[loop] + ev_name;
+            std::string new_tango_host = env_var_fqdn_prefix[loop] + ev_name;
             const char * tmp_ev_name = new_tango_host.c_str();
             if (cmd == SUBSCRIBE)
                 sock->setsockopt(ZMQ_SUBSCRIBE,tmp_ev_name,::strlen(tmp_ev_name));
@@ -1227,7 +1227,7 @@ void ZmqEventConsumer::cleanup_EventChannel_map()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(Database *db),bool reconnect,DeviceData &dd)
+void ZmqEventConsumer::connect_event_channel(std::string &channel_name,TANGO_UNUSED(Database *db),bool reconnect,DeviceData &dd)
 {
 
 //
@@ -1241,7 +1241,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 // Do we have this tango host info in the vector of possible TANGO_HOST. If not get them
 //
 
-	string prefix = channel_name.substr(0,channel_name.find('/',8) + 1);
+	std::string prefix = channel_name.substr(0,channel_name.find('/',8) + 1);
 	bool found = false;
 #ifdef HAS_RANGE_BASE_FOR
 	for (const auto &elem:env_var_fqdn_prefix)
@@ -1253,7 +1253,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 		}
 	}
 #else
-	vector<string>::iterator ite;
+	std::vector<std::string>::iterator ite;
 	for (ite = env_var_fqdn_prefix.begin();ite != env_var_fqdn_prefix.end();++ite)
 	{
 		if (*ite == prefix)
@@ -1282,14 +1282,14 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
     {
         for (valid_endpoint = 0;valid_endpoint < nb_endpoint;valid_endpoint++)
         {
-            string endpoint(ev_svr_data->svalue[valid_endpoint << 1]);
+            std::string endpoint(ev_svr_data->svalue[valid_endpoint << 1]);
             if (check_zmq_endpoint(endpoint) == true)
                 break;
         }
 
         if (valid_endpoint == nb_endpoint)
         {
-            stringstream o;
+            std::stringstream o;
 
             o << "Failed to create connection to event channel!\n";
             o << "Impossible to create a network connection to any of the event endpoints returned by server";
@@ -1362,7 +1362,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
         ::strcpy(&(buffer[length]),ev_svr_data->svalue[valid_endpoint << 1].in());
         length = length + ::strlen(ev_svr_data->svalue[valid_endpoint << 1].in()) + 1;
 
-        string sub(channel_name);
+        std::string sub(channel_name);
         sub = sub + '.' + HEARTBEAT_EVENT_NAME;
 
         ::strcpy(&(buffer[length]),sub.c_str());
@@ -1381,12 +1381,12 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
     }
     catch(zmq::error_t &e)
     {
-        stringstream o;
+        std::stringstream o;
 
         o << "Failed to create connection to event channel!\n";
         o << "Error while communicating with the ZMQ main thread\n";
         o << "ZMQ error code = " << e.num() << "\n";
-        o << "ZMQ message: " << e.what() << ends;
+        o << "ZMQ message: " << e.what() << std::ends;
 
         Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_channel");
     }
@@ -1401,11 +1401,11 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
         ::memcpy(err_mess,reply.data(),reply.size());
         err_mess[reply.size()] = '\0';
 
-        stringstream o;
+        std::stringstream o;
 
         o << "Failed to create connection to event channel!\n";
         o << "Error while trying to connect or subscribe the heartbeat ZMQ socket to the new publisher\n";
-        o << "ZMQ message: " << err_mess << ends;
+        o << "ZMQ message: " << err_mess << std::ends;
 
         Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_channel");
     }
@@ -1463,9 +1463,9 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::disconnect_event_channel(string &channel_name,string &endpoint,string &endpoint_event)
+void ZmqEventConsumer::disconnect_event_channel(std::string &channel_name,std::string &endpoint,std::string &endpoint_event)
 {
-    string unsub(channel_name);
+    std::string unsub(channel_name);
     unsub = unsub + '.' + HEARTBEAT_EVENT_NAME;
 
 //
@@ -1515,7 +1515,7 @@ void ZmqEventConsumer::disconnect_event_channel(string &channel_name,string &end
 
         o << "Failed to disconnect from the event channel!\n";
         o << "Error while communicating with the ZMQ main thread\n";
-        o << "ZMQ message: " << e.what() << ends;
+        o << "ZMQ message: " << e.what() << std::ends;
 
         Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
@@ -1536,7 +1536,7 @@ void ZmqEventConsumer::disconnect_event_channel(string &channel_name,string &end
 
         o << "Failed to disconnect from event channel!\n";
         o << "Error while trying to unsubscribe the heartbeat ZMQ socket from the channel heartbeat publisher\n";
-        o << "ZMQ message: " << err_mess << ends;
+        o << "ZMQ message: " << err_mess << std::ends;
 
         Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
@@ -1561,7 +1561,7 @@ void ZmqEventConsumer::disconnect_event_channel(string &channel_name,string &end
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::disconnect_event(string &event_name,string &endpoint)
+void ZmqEventConsumer::disconnect_event(std::string &event_name,std::string &endpoint)
 {
 
 //
@@ -1608,7 +1608,7 @@ void ZmqEventConsumer::disconnect_event(string &event_name,string &endpoint)
 
         o << "Failed to disconnect from event!\n";
         o << "Error while communicating with the ZMQ main thread\n";
-        o << "ZMQ message: " << e.what() << ends;
+        o << "ZMQ message: " << e.what() << std::ends;
 
         Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
@@ -1629,7 +1629,7 @@ void ZmqEventConsumer::disconnect_event(string &event_name,string &endpoint)
 
         o << "Failed to disconnect from event!\n";
         o << "Error while trying to unsubscribe the heartbeat ZMQ socket from the channel heartbeat publisher\n";
-        o << "ZMQ message: " << err_mess << ends;
+        o << "ZMQ message: " << err_mess << std::ends;
 
         Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
@@ -1658,8 +1658,8 @@ void ZmqEventConsumer::disconnect_event(string &event_name,string &endpoint)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::connect_event_system(TANGO_UNUSED(string &device_name),TANGO_UNUSED(string &obj_name),
-                                            TANGO_UNUSED(string &event_name),TANGO_UNUSED(const vector<string> &filters),
+void ZmqEventConsumer::connect_event_system(TANGO_UNUSED(std::string &device_name),TANGO_UNUSED(std::string &obj_name),
+                                            TANGO_UNUSED(std::string &event_name),TANGO_UNUSED(const std::vector<std::string> &filters),
                                             TANGO_UNUSED(EvChanIte &eve_it),EventCallBackStruct &new_event_callback,
                                             DeviceData &dd,size_t valid_end)
 {
@@ -1687,12 +1687,12 @@ void ZmqEventConsumer::connect_event_system(TANGO_UNUSED(string &device_name),TA
         bool mcast_transport = false;
         ApiUtil *au = ApiUtil::instance();
 
-        string endpoint(ev_svr_data->svalue[(valid_end << 1) + 1].in());
-        if (endpoint.find(MCAST_PROT) != string::npos)
+        std::string endpoint(ev_svr_data->svalue[(valid_end << 1) + 1].in());
+        if (endpoint.find(MCAST_PROT) != std::string::npos)
         {
             mcast_transport = true;
 
-            vector<string> adrs;
+            std::vector<std::string> adrs;
             au->get_ip_from_if(adrs);
 
             for (unsigned int i = 0;i < adrs.size();++i)
@@ -1700,7 +1700,7 @@ void ZmqEventConsumer::connect_event_system(TANGO_UNUSED(string &device_name),TA
                 if (adrs[i].find("127.") == 0)
                     continue;
                 adrs[i] = adrs[i] + ';';
-                string::size_type pos = endpoint.find('/');
+                std::string::size_type pos = endpoint.find('/');
                 pos = pos + 2;
                 endpoint.insert(pos,adrs[i]);
                 break;
@@ -1770,11 +1770,11 @@ void ZmqEventConsumer::connect_event_system(TANGO_UNUSED(string &device_name),TA
     }
     catch(zmq::error_t &e)
     {
-        stringstream o;
+        std::stringstream o;
 
         o << "Failed to create connection to event!\n";
         o << "Error while communicating with the ZMQ main thread\n";
-        o << "ZMQ message: " << e.what() << ends;
+        o << "ZMQ message: " << e.what() << std::ends;
 
         Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_system");
     }
@@ -1789,11 +1789,11 @@ void ZmqEventConsumer::connect_event_system(TANGO_UNUSED(string &device_name),TA
         ::memcpy(err_mess,reply.data(),reply.size());
         err_mess[reply.size()] = '\0';
 
-        stringstream o;
+        std::stringstream o;
 
         o << "Failed to create connection to event!\n";
         o << "Error while trying to connect or subscribe the event ZMQ socket to the new publisher\n";
-        o << "ZMQ message: " << err_mess << ends;
+        o << "ZMQ message: " << err_mess << std::ends;
 
         Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_system");
     }
@@ -1814,15 +1814,15 @@ void ZmqEventConsumer::connect_event_system(TANGO_UNUSED(string &device_name),TA
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::push_heartbeat_event(string &ev_name)
+void ZmqEventConsumer::push_heartbeat_event(std::string &ev_name)
 {
 
 //
 // Remove ".heartbeat" at the end of event name
 //
 
-    string::size_type pos = ev_name.find(".heartbeat");
-    if (pos == string::npos)
+    std::string::size_type pos = ev_name.find(".heartbeat");
+    if (pos == std::string::npos)
     {
         return;
     }
@@ -1847,7 +1847,7 @@ void ZmqEventConsumer::push_heartbeat_event(string &ev_name)
         }
         catch (...)
         {
-            string st("Tango::ZmqEventConsumer::push_heartbeat_event() timeout on channel monitor of ");
+            std::string st("Tango::ZmqEventConsumer::push_heartbeat_event() timeout on channel monitor of ");
 			st = st + ipos->first;
 			print_error_message(st.c_str());
         }
@@ -1858,15 +1858,15 @@ void ZmqEventConsumer::push_heartbeat_event(string &ev_name)
         if (env_var_fqdn_prefix.size() > 1)
         {
             size_t pos = ev_name.find('/',8);
-            string base_tango_host = ev_name.substr(0,pos + 1);
-            string canon_ev_name = ev_name.substr(pos + 1);
+            std::string base_tango_host = ev_name.substr(0,pos + 1);
+            std::string canon_ev_name = ev_name.substr(pos + 1);
             for (loop = 0;loop < env_var_fqdn_prefix.size();loop++)
             {
                 if (env_var_fqdn_prefix[loop] == base_tango_host)
                     continue;
                 else
                 {
-                    string new_tango_host = env_var_fqdn_prefix[loop] + canon_ev_name;
+                    std::string new_tango_host = env_var_fqdn_prefix[loop] + canon_ev_name;
                     ipos = channel_map.find(new_tango_host);
 
                     if (ipos != channel_map.end())
@@ -1879,7 +1879,7 @@ void ZmqEventConsumer::push_heartbeat_event(string &ev_name)
                         }
                         catch (...)
                         {
-                            string st("Tango::ZmqEventConsumer::push_heartbeat_event() timeout on channel monitor of ");
+                            std::string st("Tango::ZmqEventConsumer::push_heartbeat_event() timeout on channel monitor of ");
 							st = st + ipos->first;
 							print_error_message(st.c_str());
                         }
@@ -1890,7 +1890,7 @@ void ZmqEventConsumer::push_heartbeat_event(string &ev_name)
         }
         if (loop == env_var_fqdn_prefix.size())
 		{
-            string st("No entry in channel map for heartbeat ");
+            std::string st("No entry in channel map for heartbeat ");
 			st = st + ev_name;
 			print_error_message(st.c_str());
 		}
@@ -1918,11 +1918,11 @@ void ZmqEventConsumer::push_heartbeat_event(string &ev_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::message_t &event_data,bool error,const DevULong &ds_ctr)
+void ZmqEventConsumer::push_zmq_event(std::string &ev_name,unsigned char endian,zmq::message_t &event_data,bool error,const DevULong &ds_ctr)
 {
     map_modification_lock.readerIn();
     bool map_lock = true;
-//    cout << "Lib: Received event for " << ev_name << endl;
+//    cout << "Lib: Received event for " << ev_name << std::endl;
 
     //debug info
 //    for (const auto &elem : event_callback_map)
@@ -1934,20 +1934,20 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 //        printf("Key in channel_map = %s\n", elem.first.c_str());
 //    }
 
-//    cout << "ds_ctr" << ds_ctr << endl;
+//    cout << "ds_ctr" << ds_ctr << std::endl;
 //
 // Search for entry within the event_callback map using the event name received in the event
 //
 
-    map<std::string,EventCallBackStruct>::iterator ipos;
+    std::map<std::string,EventCallBackStruct>::iterator ipos;
     size_t loop;
     bool no_db_dev = false;
 
     size_t pos = ev_name.find('/',8);
-    string base_tango_host = ev_name.substr(0,pos + 1);
-    string canon_ev_name = ev_name.substr(pos + 1);
+    std::string base_tango_host = ev_name.substr(0,pos + 1);
+    std::string canon_ev_name = ev_name.substr(pos + 1);
 
-    if (ev_name.find(MODIFIER_DBASE_NO) != string::npos)
+    if (ev_name.find(MODIFIER_DBASE_NO) != std::string::npos)
 		no_db_dev = true;
 
     for (loop = 0;loop < env_var_fqdn_prefix.size() + 1;loop++)
@@ -1957,7 +1957,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // Test different fully qualified event name depending on different TANGO_HOST defined for the control system
 //
 
-		string new_tango_host;
+		std::string new_tango_host;
 
 		if (loop == 0 || no_db_dev == true)
 			new_tango_host = ev_name;
@@ -1987,7 +1987,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             bool pipe_event = false;
 
             EventCallBackStruct &evt_cb = ipos->second;
-//            cout << "evt_cb.ctr" << evt_cb.ctr << endl;
+//            cout << "evt_cb.ctr" << evt_cb.ctr << std::endl;
 
 //
 // Miss some events?
@@ -2031,24 +2031,24 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // Get which type of event data has been received (from the event type)
 //
 
-            string::size_type pos = ev_name.rfind('.');
+            std::string::size_type pos = ev_name.rfind('.');
 
-            string event_name = ev_name.substr(pos + 1);
- 			string::size_type pos1 = event_name.find(EVENT_COMPAT);
-			if (pos1 != string::npos)
+            std::string event_name = ev_name.substr(pos + 1);
+ 			std::string::size_type pos1 = event_name.find(EVENT_COMPAT);
+			if (pos1 != std::string::npos)
 				event_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
 //
 // If the client TANGO_HOST is one alias, replace in the event name the host name by the alias
 //
 
-                    string full_att_name = evt_cb.get_client_attribute_name();
+                    std::string full_att_name = evt_cb.get_client_attribute_name();
 			pos = full_att_name.rfind('/');
-			string att_name = full_att_name.substr(pos + 1);
+			std::string att_name = full_att_name.substr(pos + 1);
 
             UserDataEventType data_type;
 
-            if (event_name.find(CONF_TYPE_EVENT) != string::npos)
+            if (event_name.find(CONF_TYPE_EVENT) != std::string::npos)
 				data_type = ATT_CONF;
             else if (event_name == DATA_READY_TYPE_EVENT)
                 data_type = ATT_READY;
@@ -2235,7 +2235,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 					{
 						TangoSys_OMemStream o;
 						o << "Received malformed data for event ";
-						o << ev_name << ends;
+						o << ev_name << std::ends;
 
 						errors.length(1);
 						errors[0].reason = API_WrongEventData;
@@ -2269,7 +2269,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							{
 								TangoSys_OMemStream o;
 								o << "Received malformed data for event ";
-								o << ev_name << ends;
+								o << ev_name << std::ends;
 
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
@@ -2293,7 +2293,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							{
 								TangoSys_OMemStream o;
 								o << "Received malformed data for event ";
-								o << ev_name << ends;
+								o << ev_name << std::ends;
 
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
@@ -2325,7 +2325,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						{
 							TangoSys_OMemStream o;
 							o << "Received malformed data for event ";
-							o << ev_name << ends;
+							o << ev_name << std::ends;
 
 							errors.length(1);
 							errors[0].reason = API_WrongEventData;
@@ -2346,7 +2346,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						{
 							TangoSys_OMemStream o;
 							o << "Received malformed data for event ";
-							o << ev_name << ends;
+							o << ev_name << std::ends;
 
 							errors.length(1);
 							errors[0].reason = API_WrongEventData;
@@ -2373,9 +2373,9 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // This happens in case of forwarded attribute but also in case of DS started with file as database
 //
 
-                                string::size_type pos = att_name.find(MODIFIER_DBASE_NO);
-                                string a_name;
-                                if (pos != string::npos)
+                                std::string::size_type pos = att_name.find(MODIFIER_DBASE_NO);
+                                std::string a_name;
+                                if (pos != std::string::npos)
                                     a_name = att_name.substr(0,pos);
                                 else
                                     a_name = att_name;
@@ -2386,7 +2386,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							{
 								TangoSys_OMemStream o;
 								o << "Received malformed data for event ";
-								o << ev_name << ends;
+								o << ev_name << std::ends;
 
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
@@ -2411,9 +2411,9 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // This happens in case of forwarded attribute but also in case of DS started with file as database
 //
 
-                                string::size_type pos = att_name.find(MODIFIER_DBASE_NO);
-                                string a_name;
-                                if (pos != string::npos)
+                                std::string::size_type pos = att_name.find(MODIFIER_DBASE_NO);
+                                std::string a_name;
+                                if (pos != std::string::npos)
                                     a_name = att_name.substr(0,pos);
                                 else
                                     a_name = att_name;
@@ -2424,7 +2424,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							{
 								TangoSys_OMemStream o;
 								o << "Received malformed data for event ";
-								o << ev_name << ends;
+								o << ev_name << std::ends;
 
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
@@ -2448,7 +2448,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							{
 								TangoSys_OMemStream o;
 								o << "Received malformed data for event (AttributeValue_3 -> Device_3Impl....) ";
-								o << ev_name << ends;
+								o << ev_name << std::ends;
 
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
@@ -2471,7 +2471,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							{
 								TangoSys_OMemStream o;
 								o << "Received malformed data for event (AttributeValue -> Device_2Impl....) ";
-								o << ev_name << ends;
+								o << ev_name << std::ends;
 
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
@@ -2489,8 +2489,8 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							pipe_event = true;
 							zdpd.operator<<=(event_data_cdr);
 
-							string pipe_name = zdpd.name.in();
-							string root_blob_name = zdpd.data_blob.name.in();
+							std::string pipe_name = zdpd.name.in();
+							std::string root_blob_name = zdpd.data_blob.name.in();
 
 							dev_pipe = new DevicePipe(pipe_name,root_blob_name);
 							dev_pipe->set_time(zdpd.time);
@@ -2508,7 +2508,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						{
 							TangoSys_OMemStream o;
 							o << "Received malformed data for event ";
-							o << ev_name << ends;
+							o << ev_name << std::ends;
 
 							errors.length(1);
 							errors[0].reason = API_WrongEventData;
@@ -2569,7 +2569,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // Fire the user callback
 //
 
-                vector<EventSubscribeStruct>::iterator esspos;
+                std::vector<EventSubscribeStruct>::iterator esspos;
 
                 unsigned int cb_nb = ipos->second.callback_list.size();
                 unsigned int cb_ctr = 0;
@@ -2959,10 +2959,10 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                     map_modification_lock.readerOut();
                 }
 
-                string reason = e.errors[0].reason.in();
+                std::string reason = e.errors[0].reason.in();
                 if (reason == API_CommandTimedOut)
 				{
-                    string st("Tango::ZmqEventConsumer::push_zmq_event() timeout on callback monitor of ");
+                    std::string st("Tango::ZmqEventConsumer::push_zmq_event() timeout on callback monitor of ");
 					st = st + ipos->first;
 					print_error_message(st.c_str());
 				}
@@ -2982,7 +2982,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                     map_modification_lock.readerOut();
                 }
 
-                string st("Tango::ZmqEventConsumer::push_zmq_event(): - ");
+                std::string st("Tango::ZmqEventConsumer::push_zmq_event(): - ");
 				st = st + ipos->first;
 				st = st + " - Unknown exception (Not a DevFailed) while calling Callback ";
 				print_error_message(st.c_str());
@@ -2998,7 +2998,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
     if (loop == env_var_fqdn_prefix.size() + 1)
     {
-        string st("Event ");
+        std::string st("Event ");
 		st = st + ev_name;
 		st = st + " not found in event callback map !!!";
 		print_error_message(st.c_str());
@@ -3008,10 +3008,10 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 }
 
 FwdEventData *ZmqEventConsumer::newFwdEventData(zmq::message_t &event_data,
-                                                const string &new_tango_host,
+                                                const std::string &new_tango_host,
                                                 DevErrorList &errors,
-                                                string &event_name,
-                                                string &full_att_name,
+                                                std::string &event_name,
+                                                std::string &full_att_name,
                                                 long vers,
                                                 const DeviceAttribute *dev_attr,
                                                 bool no_unmarshalling,
@@ -3024,7 +3024,7 @@ FwdEventData *ZmqEventConsumer::newFwdEventData(zmq::message_t &event_data,
 // the event data (Event data are in the ZMQ message)
 //
 
-    string actual_full_att_name;
+    std::string actual_full_att_name;
     actual_full_att_name = full_att_name;
 
     if (cb_ctr != cb_nb)
@@ -3121,7 +3121,7 @@ FwdEventData *ZmqEventConsumer::newFwdEventData(zmq::message_t &event_data,
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::zmq_specific(DeviceData &dd,string &adm_name,DeviceProxy *device,const string &obj_name)
+void ZmqEventConsumer::zmq_specific(DeviceData &dd,std::string &adm_name,DeviceProxy *device,const std::string &obj_name)
 {
 	const DevVarLongStringArray *ev_svr_data;
 	dd >> ev_svr_data;
@@ -3131,13 +3131,13 @@ void ZmqEventConsumer::zmq_specific(DeviceData &dd,string &adm_name,DeviceProxy 
 //
 
 	if (ev_svr_data->lvalue[0] >= 810)
-		transform(adm_name.begin(),adm_name.end(),adm_name.begin(),::tolower);
+		std::transform(adm_name.begin(),adm_name.end(),adm_name.begin(),::tolower);
 
 //
 // If the event is configured to use multicast, check ZMQ release
 //
 
-	string endpoint(ev_svr_data->svalue[1].in());
+	std::string endpoint(ev_svr_data->svalue[1].in());
 	int ds_zmq_release = 0;
 
 	if (ev_svr_data->lvalue.length() >= 6)
@@ -3174,7 +3174,7 @@ void ZmqEventConsumer::zmq_specific(DeviceData &dd,string &adm_name,DeviceProxy 
 // Check if multicasting is available (requires zmq 3.2.x)
 //
 
-	if (endpoint.find(MCAST_PROT) != string::npos)
+	if (endpoint.find(MCAST_PROT) != std::string::npos)
 	{
 		if (zmq_major == 3 && zmq_minor < 2)
 		{
@@ -3183,7 +3183,7 @@ void ZmqEventConsumer::zmq_specific(DeviceData &dd,string &adm_name,DeviceProxy 
 			o << zmq_major << "." << zmq_minor << "." << zmq_patch;
 			o << "\nThe event on attribute or pipe " << obj_name << " for device " << device->dev_name();
 			o << " is configured to use multicasting";
-			o << "\nMulticast event(s) not available with this ZMQ release" << ends;
+			o << "\nMulticast event(s) not available with this ZMQ release" << std::ends;
 
 			Except::throw_exception((const char *)API_UnsupportedFeature,
 											o.str(),
@@ -3210,16 +3210,16 @@ void ZmqEventConsumer::zmq_specific(DeviceData &dd,string &adm_name,DeviceProxy 
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool ZmqEventConsumer::check_zmq_endpoint(const string &endpoint)
+bool ZmqEventConsumer::check_zmq_endpoint(const std::string &endpoint)
 {
 
 //
 // Isolate IP address in endpoint
 //
 
-    string::size_type pos = endpoint.rfind(':');
-    string ip = endpoint.substr(6,pos - 6);
-    string port_str = endpoint.substr(pos + 1);
+    std::string::size_type pos = endpoint.rfind(':');
+    std::string ip = endpoint.substr(6,pos - 6);
+    std::string port_str = endpoint.substr(pos + 1);
     int port = atoi(port_str.c_str());
 
 //
@@ -3419,7 +3419,7 @@ bool ZmqEventConsumer::check_zmq_endpoint(const string &endpoint)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::get_subscribed_event_ids(DeviceProxy *_dev,vector<int> &_ids)
+void ZmqEventConsumer::get_subscribed_event_ids(DeviceProxy *_dev,std::vector<int> &_ids)
 {
 
     if (_ids.empty() == false)
@@ -3441,7 +3441,7 @@ void ZmqEventConsumer::get_subscribed_event_ids(DeviceProxy *_dev,vector<int> &_
 	{
 		if (epos->second.device == _dev)
 		{
-            vector<EventSubscribeStruct>::iterator ite;
+            std::vector<EventSubscribeStruct>::iterator ite;
             for (ite = epos->second.callback_list.begin();ite != epos->second.callback_list.end();++ite)
             {
                 _ids.push_back(ite->id);
@@ -3453,7 +3453,7 @@ void ZmqEventConsumer::get_subscribed_event_ids(DeviceProxy *_dev,vector<int> &_
 // Search as well in the not connected event(s) vector
 //
 
-    vector<EventNotConnected>::iterator ite;
+    std::vector<EventNotConnected>::iterator ite;
     for (ite = event_not_connected.begin();ite != event_not_connected.end();++ite)
     {
         if (ite->device == _dev)
@@ -3484,8 +3484,8 @@ void ZmqEventConsumer::set_socket_hwm(int hwm)
 }
 
 ReceivedFromAdmin ZmqEventConsumer::initialize_received_from_admin(const Tango::DevVarLongStringArray *dvlsa,
-                                                                   const string &local_callback_key,
-                                                                   const string &adm_name,
+                                                                   const std::string &local_callback_key,
+                                                                   const std::string &adm_name,
                                                                    bool device_from_env_var)
 {
     ReceivedFromAdmin result;
@@ -3511,12 +3511,12 @@ ReceivedFromAdmin ZmqEventConsumer::initialize_received_from_admin(const Tango::
 
         if(server_tango_lib_ver >= 810)
         {
-            string adm_name_lower(adm_name);
+            std::string adm_name_lower(adm_name);
             if (device_from_env_var)
             {
                 adm_name_lower.insert(0, env_var_fqdn_prefix[0]);
             }
-            transform(adm_name_lower.begin(), adm_name_lower.end(), adm_name_lower.begin(), ::tolower);
+            std::transform(adm_name_lower.begin(), adm_name_lower.end(), adm_name_lower.begin(), ::tolower);
             result.channel_name = adm_name_lower;
         }
         else
@@ -3535,14 +3535,14 @@ ReceivedFromAdmin ZmqEventConsumer::initialize_received_from_admin(const Tango::
 
     }
 
-    cout4 << "received_from_admin.event_name = " << result.event_name << endl;
+    cout4 << "received_from_admin.event_name = " << result.event_name << std::endl;
     if (result.channel_name.empty())
     {
         EventSystemExcept::throw_exception(API_NotSupported,
                                            "Server did not send the channel name. The server is possibly too old. The event system is not initialized!",
                                            "ZmqEventConsumer::initialize_received_from_admin()");
     }
-    cout4 << "received_from_admin.channel_name = " << result.channel_name << endl;
+    cout4 << "received_from_admin.channel_name = " << result.channel_name << std::endl;
     return result;
 }
 
@@ -3905,7 +3905,7 @@ void Tango::ZmqDevPipeDataElt::operator<<= (TangoCdrMemoryStream &_n)
 
 DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
 {
-    string str;
+    std::string str;
     ec->get_subscription_command_name(str);
 
 //
@@ -3999,7 +3999,7 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
 
             o << "Failed to delay event!\n";
             o << "Error while communicating with the ZMQ main thread\n";
-            o << "ZMQ message: " << e.what() << ends;
+            o << "ZMQ message: " << e.what() << std::ends;
 
             Except::throw_exception((const char *)API_ZmqFailed,
                             o.str(),
@@ -4022,7 +4022,7 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
 
             o << "Failed to delay events!\n";
             o << "Error while asking the ZMQ thread to delay events\n";
-            o << "ZMQ message: " << err_mess << ends;
+            o << "ZMQ message: " << err_mess << std::ends;
 
             Except::throw_exception((const char *)API_ZmqFailed,
                             o.str(),
@@ -4079,7 +4079,7 @@ void DelayEvent::release()
 
             o << "Failed to delay event!\n";
             o << "Error while communicating with the ZMQ main thread\n";
-            o << "ZMQ message: " << e.what() << ends;
+            o << "ZMQ message: " << e.what() << std::ends;
 
             Except::throw_exception((const char *)API_ZmqFailed,
                             o.str(),
@@ -4100,7 +4100,7 @@ void DelayEvent::release()
 
             o << "Failed to release event!\n";
             o << "Error while trying to ask the ZMQ thread to release events\n";
-            o << "ZMQ message: " << err_mess << ends;
+            o << "ZMQ message: " << err_mess << std::ends;
 
             Except::throw_exception((const char *)API_ZmqFailed,
                             o.str(),
