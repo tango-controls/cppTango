@@ -81,12 +81,12 @@ void *CallBackThread::run_undetached(TANGO_UNUSED(void *ptr))
 		}
 		catch (omni_thread_fatal &)
 		{
-			cerr << "OUPS !! A omni thread fatal exception !!!!!!!!" << endl;
+			std::cerr << "OUPS !! A omni thread fatal exception !!!!!!!!" << std::endl;
 #ifndef _TG_WINDOWS_
 			time_t t = time(NULL);
-			cerr << ctime(&t);
+			std::cerr << ctime(&t);
 #endif
-			cerr << "Trying to re-enter the main loop" << endl;
+			std::cerr << "Trying to re-enter the main loop" << std::endl;
 		}
 	}
 
