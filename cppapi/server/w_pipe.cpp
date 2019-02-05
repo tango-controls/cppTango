@@ -50,7 +50,7 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-WPipe::WPipe(const string &_name,Tango::DispLevel _level)
+WPipe::WPipe(const std::string &_name,Tango::DispLevel _level)
 :Pipe(_name,_level,PIPE_READ_WRITE),w_ext(new WPipeExt)
 {
 }
@@ -65,7 +65,7 @@ WPipe::WPipe(const string &_name,Tango::DispLevel _level)
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-WPipe &WPipe::operator[](const string &_na)
+WPipe &WPipe::operator[](const std::string &_na)
 {
 	get_blob().operator[](_na);
 	return *this;
