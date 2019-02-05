@@ -63,23 +63,23 @@ namespace Tango
 //
 //--------------------------------------------------------------------------
 
-Device_4Impl::Device_4Impl(DeviceClass *device_class,string &dev_name):
+Device_4Impl::Device_4Impl(DeviceClass *device_class,std::string &dev_name):
 Device_3Impl(device_class,dev_name),ext_4(Tango_nullptr)
 {
 	idl_version = 4;
 }
 
 Device_4Impl::Device_4Impl(DeviceClass *device_class,
-			   string &dev_name,
-			   string &desc):
+			   std::string &dev_name,
+			   std::string &desc):
 Device_3Impl(device_class,dev_name,desc),ext_4(Tango_nullptr)
 {
 	idl_version = 4;
 }
 
 Device_4Impl::Device_4Impl(DeviceClass *device_class,
-	           	   string &dev_name,string &desc,
-	           	   Tango::DevState dev_state,string &dev_status):
+	           	   std::string &dev_name,std::string &desc,
+	           	   Tango::DevState dev_state,std::string &dev_status):
 Device_3Impl(device_class,dev_name,desc,dev_state,dev_status),ext_4(Tango_nullptr)
 {
 	idl_version = 4;
@@ -115,7 +115,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
 
-	cout4 << "Device_4Impl::read_attribute_history_4 arrived, requested history depth = " << n << endl;
+	cout4 << "Device_4Impl::read_attribute_history_4 arrived, requested history depth = " << n << std::endl;
 
 //
 // Record operation request in black box
@@ -124,7 +124,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 	blackbox_ptr->insert_op(Op_Read_Attr_history_4);
 
 	Tango::DevAttrHistory_4 *back = NULL;
-	vector<PollObj *> &poll_list = get_poll_obj_list();
+	std::vector<PollObj *> &poll_list = get_poll_obj_list();
 	long nb_poll = poll_list.size();
 
 //
@@ -134,8 +134,8 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 
 	Attribute &att = dev_attr->get_attr_by_name(name);
 
-	string attr_str(name);
-	transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
+	std::string attr_str(name);
+	std::transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
 
 //
 // Check that the wanted attribute is polled
@@ -155,7 +155,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 	if (polled_attr == NULL)
 	{
 		TangoSys_OMemStream o;
-		o << "Attribute " << attr_str << " not polled" << ends;
+		o << "Attribute " << attr_str << " not polled" << std::ends;
 		Except::throw_exception(API_AttrNotPolled,o.str(),"Device_4Impl::read_attribute_history_4");
 	}
 
@@ -166,7 +166,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 	if (polled_attr->is_ring_empty() == true)
 	{
 		TangoSys_OMemStream o;
-		o << "No data available in cache for attribute " << attr_str << ends;
+		o << "No data available in cache for attribute " << attr_str << std::ends;
 		Except::throw_exception(API_NoDataYet,o.str(),"Device_4Impl::read_attribute_history_4");
 	}
 
@@ -187,7 +187,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 		back = new Tango::DevAttrHistory_4;
 		back->dates.length(n);
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception(API_MemoryAllocation,
 							"Can't allocate memory in server",
@@ -211,7 +211,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 	else
 		polled_attr->get_attr_history(n,back,att.get_data_type(),att.get_data_format());
 
-	cout4 << "Leaving Device_4Impl::read_attribute_history_4 method" << endl;
+	cout4 << "Leaving Device_4Impl::read_attribute_history_4 method" << std::endl;
 	return back;
 
 }
@@ -236,10 +236,10 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
 
-	cout4 << "Device_4Impl::command_inout_history_4 arrived" << endl;
+	cout4 << "Device_4Impl::command_inout_history_4 arrived" << std::endl;
 	Tango::DevCmdHistory_4 *back = NULL;
 
-	string cmd_str(command);
+	std::string cmd_str(command);
 
 //
 // Record operation request in black box
@@ -252,7 +252,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 // implements IDL >=3 when state or status history is requested
 //
 
-	transform(cmd_str.begin(),cmd_str.end(),cmd_str.begin(),::tolower);
+	std::transform(cmd_str.begin(),cmd_str.end(),cmd_str.begin(),::tolower);
 	check_command_exists(cmd_str);
 
 	bool status_cmd = false;
@@ -273,7 +273,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 //
 
 	PollObj *polled_cmd = NULL;
-	vector<PollObj *> &poll_list = get_poll_obj_list();
+	std::vector<PollObj *> &poll_list = get_poll_obj_list();
 	unsigned long i;
 	for (i = 0;i < poll_list.size();i++)
 	{
@@ -299,7 +299,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 	if (polled_cmd == NULL)
 	{
 		TangoSys_OMemStream o;
-		o << "Command " << cmd_str << " not polled" << ends;
+		o << "Command " << cmd_str << " not polled" << std::ends;
 		Except::throw_exception((const char *)API_CmdNotPolled,
 					o.str(),
 					(const char *)"Device_4Impl::command_inout_history_4");
@@ -312,7 +312,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 	if (polled_cmd->is_ring_empty() == true)
 	{
 		TangoSys_OMemStream o;
-		o << "No data available in cache for command " << cmd_str << ends;
+		o << "No data available in cache for command " << cmd_str << std::ends;
 		Except::throw_exception((const char *)API_NoDataYet,
 					o.str(),
 					(const char *)"Device_4Impl::command_inout_history_4");
@@ -335,7 +335,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 		back = new Tango::DevCmdHistory_4;
 		back->dates.length(n);
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -357,7 +357,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 			back_attr = new Tango::DevAttrHistory_4;
 			back_attr->dates.length(n);
 		}
-		catch (bad_alloc &)
+		catch (std::bad_alloc &)
 		{
 			Except::throw_exception((const char *)API_MemoryAllocation,
 				        	(const char *)"Can't allocate memory in server",
@@ -402,15 +402,15 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 // Get command output data type and fill returned structure
 //
 
-		string cmd(command);
-		transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
+		std::string cmd(command);
+		std::transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
 
 		Tango::CmdArgType cmd_type;
-		vector<Tango::Command *> &cmd_list = device_class->get_command_list();
+		std::vector<Tango::Command *> &cmd_list = device_class->get_command_list();
 		for (unsigned int loop = 0;loop < cmd_list.size();loop++)
 		{
-			string cmd_name(cmd_list[loop]->get_name());
-			transform(cmd_name.begin(),cmd_name.end(),cmd_name.begin(),::tolower);
+			std::string cmd_name(cmd_list[loop]->get_name());
+			std::transform(cmd_name.begin(),cmd_name.end(),cmd_name.begin(),::tolower);
 			if (cmd_name == cmd)
 			{
 				cmd_type = cmd_list[loop]->get_out_type();
@@ -420,7 +420,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 		polled_cmd->get_cmd_history(n,back,cmd_type);
 	}
 
-	cout4 << "Leaving Device_4Impl::command_inout_history_4 method" << endl;
+	cout4 << "Leaving Device_4Impl::command_inout_history_4 method" << std::endl;
 	return back;
 }
 
@@ -439,7 +439,7 @@ CORBA::Any *Device_4Impl::command_inout_4(const char *in_cmd,
 					  Tango::DevSource source,
 					  const Tango::ClntIdent &cl_id)
 {
-	cout4 << "Device_4Impl::command_inout_4 arrived, source = " << source << ", command = " << in_cmd << endl;
+	cout4 << "Device_4Impl::command_inout_4 arrived, source = " << source << ", command = " << in_cmd << std::endl;
 
 //
 // Record operation request in black box
@@ -486,7 +486,7 @@ CORBA::Any *Device_4Impl::command_inout_4(const char *in_cmd,
 Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVarStringArray& names,
 					     Tango::DevSource source,const Tango::ClntIdent &cl_id)
 {
-	cout4 << "Device_4Impl::read_attributes_4 arrived for dev " << get_name() << ", att[0] = " << names[0] << endl;
+	cout4 << "Device_4Impl::read_attributes_4 arrived for dev " << get_name() << ", att[0] = " << names[0] << std::endl;
 
 //
 // Record operation request in black box
@@ -509,7 +509,7 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 
 	if (nb_names == 1)
 	{
-		string att_name(names[0]);
+		std::string att_name(names[0]);
 		if (att_name == AllAttr)
 		{
 			real_names.length(nb_dev_attr);
@@ -543,7 +543,7 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 		for (unsigned long loop = 0;loop < nb_names;loop++)
 			(*aid.data_4)[loop].value.union_no_data(true);
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -562,7 +562,7 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 // memory,....)
 //
 
-	vector <long> idx_in_back;
+	std::vector <long> idx_in_back;
 
 	if (source == Tango::DEV)
 	{
@@ -750,7 +750,7 @@ void Device_4Impl::write_attributes_4(const Tango::AttributeValueList_4 & values
 									  const Tango::ClntIdent &cl_id)
 {
 	AutoTangoMonitor sync(this,true);
-	cout4 << "Device_4Impl::write_attributes_4 arrived" << endl;
+	cout4 << "Device_4Impl::write_attributes_4 arrived" << std::endl;
 
 //
 // Record operation request in black box
@@ -791,7 +791,7 @@ void Device_4Impl::set_attribute_config_4(const Tango::AttributeConfigList_3& ne
 										  const Tango::ClntIdent &cl_id)
 {
 	AutoTangoMonitor sync(this,true);
-	cout4 << "Device_4Impl::set_attribute_config_4 arrived" << endl;
+	cout4 << "Device_4Impl::set_attribute_config_4 arrived" << std::endl;
 
 //
 // The attribute conf. is protected by two monitors. One protects access between
@@ -839,7 +839,7 @@ Tango::AttributeValueList_4* Device_4Impl::write_read_attributes_4(const Tango::
 									  const Tango::ClntIdent &cl_id)
 {
 	AutoTangoMonitor sync(this,true);
-	cout4 << "Device_4Impl::write_read_attributes_4 arrived" << endl;
+	cout4 << "Device_4Impl::write_read_attributes_4 arrived" << std::endl;
 
 //
 // Record operation request in black box
@@ -866,7 +866,7 @@ Tango::AttributeValueList_4* Device_4Impl::write_read_attributes_4(const Tango::
 	if ((awt == Tango::READ) || (awt == Tango::WRITE))
 	{
 		TangoSys_OMemStream o;
-		o << "Attribute " << values[0].name << " is not a READ_WRITE or READ_WITH_WRITE attribute" << ends;
+		o << "Attribute " << values[0].name << " is not a READ_WRITE or READ_WITH_WRITE attribute" << std::ends;
 
 		Except::throw_exception((const char *)API_AttrNotWritable,o.str(),
 								(const char *)"Device_4Impl::write_read_attribute_4");
