@@ -73,7 +73,7 @@ void Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute command_inout on device " << dev_name();
-		desc << ", command " << command << ends;
+		desc << ", command " << command << std::ends;
                 ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"Connection::command_inout_asynch()");
 	}
@@ -140,7 +140,7 @@ void Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 //-----------------------------------------------------------------------------
 
 
-void Connection::command_inout_asynch(string &command, DeviceData &data_in, CallBack &cb)
+void Connection::command_inout_asynch(std::string &command, DeviceData &data_in, CallBack &cb)
 {
 	command_inout_asynch(command.c_str(),data_in,cb);
 }
@@ -151,7 +151,7 @@ void Connection::command_inout_asynch(const char *command,CallBack &cb)
 	command_inout_asynch(command,data_in,cb);
 }
 
-void Connection::command_inout_asynch(string &command,CallBack &cb)
+void Connection::command_inout_asynch(std::string &command,CallBack &cb)
 {
 	DeviceData data_in;
 	command_inout_asynch(command.c_str(),data_in,cb);
@@ -327,7 +327,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 
 				TangoSys_OMemStream desc;
 				desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
-				desc << ", command " << tmp << ends;
+				desc << ", command " << tmp << std::ends;
 				Tango::string_free(tmp);
 
 				errors.length(2);
@@ -336,7 +336,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 				errors[0].reason = Tango::string_dup("API_CorbaException");
 				errors[0].origin = Tango::string_dup("Connection::Cb_Cmd_Request()");
 
-				string st = desc.str();
+				std::string st = desc.str();
 				errors[1].desc = Tango::string_dup(st.c_str());
 				errors[1].severity = Tango::ERR;
 				errors[1].reason = Tango::string_dup("API_DeviceTimedOut");
@@ -361,14 +361,14 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
-			desc << ", command " << tmp << ends;
+			desc << ", command " << tmp << std::ends;
 			Tango::string_free(tmp);
 
 			long nb_err = errors.length();
 			errors.length(nb_err + 1);
 			errors[nb_err].severity = Tango::ERR;
 
-			string st = desc.str();
+			std::string st = desc.str();
 			errors[nb_err].desc = Tango::string_dup(st.c_str());
 			errors[nb_err].origin = Tango::string_dup("Connection::Cb_Cmd_Request()");
 			errors[nb_err].reason = Tango::string_dup(API_CommandFailed);
@@ -390,7 +390,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
-			desc << ", command " << cmd << ends;
+			desc << ", command " << cmd << std::ends;
 			Tango::string_free(tmp);
 
 			errors.length(2);
@@ -399,7 +399,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 			errors[0].reason = Tango::string_dup("API_CorbaException");
 			errors[0].origin = Tango::string_dup("Connection::Cb_Cmd_Request()");
 
-			string st = desc.str();
+			std::string st = desc.str();
 			errors[1].desc = Tango::string_dup(st.c_str());
 			errors[1].severity = Tango::ERR;
 			errors[1].reason = Tango::string_dup("API_CommunicationFailed");
@@ -411,13 +411,13 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 // Fire Callback
 //
 
-	string cmd_str(cmd);
+	std::string cmd_str(cmd);
 
 	DeviceProxy *local_dev = static_cast<DeviceProxy *>(this);
 	CmdDoneEvent *cb_data = new CmdDoneEvent(local_dev,cmd_str,data_out,errors);
 
 #ifdef HAS_UNIQUE_PTR
-	unique_ptr<CmdDoneEvent> auto_cb_data(cb_data);
+	std::unique_ptr<CmdDoneEvent> auto_cb_data(cb_data);
 #else
 	auto_ptr<CmdDoneEvent> auto_cb_data(cb_data);
 #endif
@@ -438,7 +438,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 
 void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 {
-	vector<DeviceAttribute> *dev_attr = NULL;
+	std::vector<DeviceAttribute> *dev_attr = NULL;
 	Tango::DevErrorList errors(2);
 	errors.length(0);
 
@@ -447,7 +447,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 	CORBA::NamedValue_ptr nv = req_arg->item(0);
 	*(nv->value()) >>= names;
 
-	vector<string> attr_names;
+	std::vector<std::string> attr_names;
 	attr_names.resize(names->length());
 	for (unsigned int i = 0;i < names->length();i++)
 		attr_names[i] = (*names)[i];
@@ -464,7 +464,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 // Get received value
 //
 
-		dev_attr = new(vector<DeviceAttribute>);
+		dev_attr = new(std::vector<DeviceAttribute>);
 
 		const Tango::AttributeValueList *received;
 		const Tango::AttributeValueList_3 *received_3;
@@ -521,12 +521,12 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 				{
 					TangoSys_OMemStream desc;
 					desc << "Failed to read_attributes on device " << dev_name();
-					desc << ", attribute " << (*dev_attr)[i].name << ends;
+					desc << ", attribute " << (*dev_attr)[i].name << std::ends;
 
 					err_list.inout().length(nb_except + 1);
 					err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
 					err_list[nb_except].origin = Tango::string_dup("Connection::Cb_ReadAttr_Request");
-					string st = desc.str();
+					std::string st = desc.str();
 					err_list[nb_except].desc = Tango::string_dup(st.c_str());
 					err_list[nb_except].severity = Tango::ERR;
 				}
@@ -571,7 +571,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 					if (i != (names->length() - 1))
 						desc << ", ";
 				}
-				desc << ends;
+				desc << std::ends;
 
 				errors.length(2);
 				errors[0].desc = Tango::string_dup(cb_excep_mess);
@@ -579,7 +579,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 				errors[0].reason = Tango::string_dup("API_CorbaException");
 				errors[0].origin = Tango::string_dup("Connection::Cb_ReadAttr_Request()");
 
-				string st = desc.str();
+				std::string st = desc.str();
 				errors[1].desc = Tango::string_dup(st.c_str());
 				errors[1].severity = Tango::ERR;
 				errors[1].reason = Tango::string_dup("API_DeviceTimedOut");
@@ -609,13 +609,13 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 				if (i != (names->length() - 1))
 					desc << ", ";
 			}
-			desc << ends;
+			desc << std::ends;
 
 			long nb_err = errors.length();
 			errors.length(nb_err + 1);
 			errors[nb_err].severity = Tango::ERR;
 
-			string st = desc.str();
+			std::string st = desc.str();
 			errors[nb_err].desc = Tango::string_dup(st.c_str());
 			errors[nb_err].origin = Tango::string_dup("Connection::Cb_ReadAttr_Request()");
 			errors[nb_err].reason = Tango::string_dup(API_AttributeFailed);
@@ -642,7 +642,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 				if (i != (names->length() - 1))
 					desc << ", ";
 			}
-			desc << ends;
+			desc << std::ends;
 
 			errors.length(2);
 			errors[0].desc = Tango::string_dup(cb_excep_mess);
@@ -650,7 +650,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 			errors[0].reason = Tango::string_dup("API_CorbaException");
 			errors[0].origin = Tango::string_dup("Connection::Cb_ReadAttr_Request()");
 
-			string st = desc.str();
+			std::string st = desc.str();
 			errors[1].desc = Tango::string_dup(st.c_str());
 			errors[1].severity = Tango::ERR;
 			errors[1].reason = Tango::string_dup("API_CommunicationFailed");
@@ -666,7 +666,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 	AttrReadEvent *cb_data = new AttrReadEvent(local_dev,attr_names,dev_attr,errors);
 
 #ifdef HAS_UNIQUE_PTR
-	unique_ptr<AttrReadEvent> auto_cb_data(cb_data);
+	std::unique_ptr<AttrReadEvent> auto_cb_data(cb_data);
 #else
 	auto_ptr<AttrReadEvent> auto_cb_data(cb_data);
 #endif
@@ -749,7 +749,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 							desc << ", ";
 					}
 				}
-				desc << ends;
+				desc << std::ends;
 
 				err_3.errors.length(2);
 				err_3.errors[0].desc = Tango::string_dup(cb_excep_mess);
@@ -757,7 +757,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 				err_3.errors[0].reason = Tango::string_dup("API_CorbaException");
 				err_3.errors[0].origin = Tango::string_dup("Connection::Cb_WriteAttr_Request()");
 
-				string st = desc.str();
+				std::string st = desc.str();
 				err_3.errors[1].desc = Tango::string_dup(st.c_str());
 				err_3.errors[1].severity = Tango::ERR;
 				err_3.errors[1].reason = Tango::string_dup("API_DeviceTimedOut");
@@ -793,11 +793,11 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 					if (i != (nb_attr - 1))
 						desc << ", ";
 				}
-				desc << ends;
+				desc << std::ends;
 
 				err_3.errors.length(1);
 				err_3.errors[0].severity = Tango::ERR;
-				string st = desc.str();
+				std::string st = desc.str();
 				err_3.errors[0].desc = Tango::string_dup(st.c_str());
 				err_3.errors[0].origin = Tango::string_dup("Connection::Cb_WriteAttr_Request()");
 				err_3.errors[0].reason = Tango::string_dup(API_AttributeFailed);
@@ -832,12 +832,12 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 						if (i != (nb_attr - 1))
 							desc << ", ";
 					}
-					desc << ends;
+					desc << std::ends;
 
 					err_3.errors.length(1);
 					err_3.errors[0].severity = Tango::ERR;
 
-					string st = desc.str();
+					std::string st = desc.str();
 					err_3.errors[0].desc = Tango::string_dup(st.c_str());
 					err_3.errors[0].origin = Tango::string_dup("Connection::Cb_WriteAttr_Request()");
 					err_3.errors[0].reason = Tango::string_dup(API_AttributeFailed);
@@ -873,7 +873,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 				if (i != (nb_attr - 1))
 					desc << ", ";
 			}
-			desc << ends;
+			desc << std::ends;
 
 			err_3.errors.length(2);
 			err_3.errors[0].desc = Tango::string_dup(cb_excep_mess);
@@ -881,7 +881,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 			err_3.errors[0].reason = Tango::string_dup("API_CorbaException");
 			err_3.errors[0].origin = Tango::string_dup("Connection::Cb_WriteAttr_Request()");
 
-			string st = desc.str();
+			std::string st = desc.str();
 			err_3.errors[1].desc = Tango::string_dup(st.c_str());
 			err_3.errors[1].severity = Tango::ERR;
 			err_3.errors[1].reason = Tango::string_dup("API_CommunicationFailed");
@@ -893,7 +893,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 // Fire Callback
 //
 
-	vector<string> att_name;
+	std::vector<std::string> att_name;
 	if (version >= 4)
 	{
 		for (int i = 0;i < nb_attr;i++)
@@ -909,7 +909,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 	AttrWrittenEvent *cb_data = new AttrWrittenEvent(local_dev,att_name,err_3);
 
 #ifdef HAS_UNIQUE_PTR
-	unique_ptr<AttrWrittenEvent> auto_cb_data(cb_data);
+	std::unique_ptr<AttrWrittenEvent> auto_cb_data(cb_data);
 #else
 	auto_ptr<AttrWrittenEvent> auto_cb_data(cb_data);
 #endif
@@ -1042,7 +1042,7 @@ void Connection::get_asynch_replies(long call_timeout)
 			if ((nb == 0) && (get_pasyn_cb_ctr() != 0))
 			{
 				TangoSys_OMemStream desc;
-				desc << "Still some reply(ies) for asynchronous callback call(s) to be received" << ends;
+				desc << "Still some reply(ies) for asynchronous callback call(s) to be received" << std::ends;
 				ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
 						       	       desc.str(),
 						               (const char *)"Connection::get_asynch_replies");
@@ -1112,7 +1112,7 @@ void Connection::get_asynch_replies(long call_timeout)
 //-----------------------------------------------------------------------------
 
 
-void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb)
+void DeviceProxy::read_attributes_asynch(std::vector<std::string> &attr_names,CallBack &cb)
 {
 
 //
@@ -1126,7 +1126,7 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 	catch (Tango::ConnectionFailed &e)
 	{
 		TangoSys_OMemStream desc;
-		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << ends;
+		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << std::ends;
                 ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"DeviceProxy::read_attributes_asynch()");
 	}
@@ -1209,9 +1209,9 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 		au->get_pasyn_table()->signal();
 }
 
-void DeviceProxy::read_attribute_asynch(string &attr_name,CallBack &cb)
+void DeviceProxy::read_attribute_asynch(std::string &attr_name,CallBack &cb)
 {
-	vector<string> tmp_att_names(1,attr_name);
+	std::vector<std::string> tmp_att_names(1,attr_name);
 	read_attributes_asynch(tmp_att_names,cb);
 }
 
@@ -1228,7 +1228,7 @@ void DeviceProxy::read_attribute_asynch(string &attr_name,CallBack &cb)
 //-----------------------------------------------------------------------------
 
 
-void DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list,
+void DeviceProxy::write_attributes_asynch(std::vector<DeviceAttribute> &attr_list,
 					  CallBack &cb)
 {
 
@@ -1243,7 +1243,7 @@ void DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list,
 	catch (Tango::ConnectionFailed &e)
 	{
 		TangoSys_OMemStream desc;
-		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << ends;
+		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << std::ends;
                 ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"DeviceProxy::write_attributes_asynch()");
 	}
@@ -1345,7 +1345,7 @@ void DeviceProxy::write_attribute_asynch(DeviceAttribute &attr,CallBack &cb)
 	catch (Tango::ConnectionFailed &e)
 	{
 		TangoSys_OMemStream desc;
-		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << ends;
+		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << std::ends;
                 ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"DeviceProxy::write_attributes_asynch()");
 	}
