@@ -62,7 +62,7 @@ namespace Tango
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-LockThread::LockThread(LockThCmd &cmd,TangoMonitor &m,DeviceProxy *adm,string &dev,DevLong per):
+LockThread::LockThread(LockThCmd &cmd,TangoMonitor &m,DeviceProxy *adm,std::string &dev,DevLong per):
 shared_cmd(cmd),p_mon(m),admin_proxy(adm)
 {
 	LockedDevice ld;
@@ -135,12 +135,12 @@ void LockThread::run(TANGO_UNUSED(void *ptr))
 		}
 		catch (omni_thread_fatal &)
 		{
-			cerr << "OUPS !! A omni thread fatal exception !!!!!!!!" << endl;
+			std::cerr << "OUPS !! A omni thread fatal exception !!!!!!!!" << std::endl;
 #ifndef _TG_WINDOWS_
 			time_t t = time(NULL);
-			cerr << ctime(&t);
+			std::cerr << ctime(&t);
 #endif
-			cerr << "Trying to re-enter the main loop" << endl;
+			std::cerr << "Trying to re-enter the main loop" << std::endl;
 		}
 	}
 
@@ -210,7 +210,7 @@ LockCmdType LockThread::get_command(DevLong tout)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-static bool LockThread_pred(LockedDevice lock_dev,string d_name)
+static bool LockThread_pred(LockedDevice lock_dev,std::string d_name)
 {
 	return (lock_dev.dev_name == d_name);
 }
@@ -234,7 +234,7 @@ void LockThread::execute_cmd()
 
 		if (locked_devices.empty() == false)
 		{
-			vector<LockedDevice>::iterator pos;
+			std::vector<LockedDevice>::iterator pos;
 
 			pos = find_if(locked_devices.begin(),locked_devices.end(),bind2nd(ptr_fun(LockThread_pred),local_cmd.dev_name));
 			if (pos == locked_devices.end())
@@ -255,7 +255,7 @@ void LockThread::execute_cmd()
 	case Tango::LOCK_REM_DEV :
 		if (locked_devices.empty() == false)
 		{
-			vector<LockedDevice>::iterator pos;
+			std::vector<LockedDevice>::iterator pos;
 
 			pos = find_if(locked_devices.begin(),locked_devices.end(),bind2nd(ptr_fun(LockThread_pred),local_cmd.dev_name));
 			if (pos != locked_devices.end())
@@ -338,12 +338,12 @@ void LockThread::one_more_lock()
 
 	try
 	{
-//		cout << "Locking Thread: I am re-locking devices (" << re_lock_cmd_args.size() << ")" << endl;
+//		cout << "Locking Thread: I am re-locking devices (" << re_lock_cmd_args.size() << ")" << std::endl;
 		admin_proxy->command_inout("ReLockDevices",d_in);
 	}
 	catch (Tango::DevFailed &e)
 	{
-//		cout << "LockThread: Gasp, an exception while sending command to admin device" << endl;
+//		cout << "LockThread: Gasp, an exception while sending command to admin device" << std::endl;
 
 //
 // If we had a locking error, retrieve device name and remove it from the locked devices list
@@ -355,12 +355,12 @@ void LockThread::one_more_lock()
 			    (::strcmp(e.errors[loop].reason.in(),API_DeviceNotLocked) == 0) ||
 			    (::strcmp(e.errors[loop].reason.in(),API_DeviceNotExported) == 0))
 			{
-				string error_message(e.errors[loop].desc.in());
-				string::size_type pos = error_message.find(':');
-				if (pos != string::npos)
+				std::string error_message(e.errors[loop].desc.in());
+				std::string::size_type pos = error_message.find(':');
+				if (pos != std::string::npos)
 				{
-					string local_dev_name = error_message.substr(0,pos);
-					vector<LockedDevice>::iterator ite;
+					std::string local_dev_name = error_message.substr(0,pos);
+					std::vector<LockedDevice>::iterator ite;
 					for (ite = locked_devices.begin();ite != locked_devices.end();++ite)
 					{
 						if (TG_strcasecmp(local_dev_name.c_str(),ite->dev_name.c_str()) == 0)
@@ -394,7 +394,7 @@ void LockThread::unlock_all_devs()
 {
 	if (locked_devices.empty() == false)
 	{
-	  	string cmd("UnLockDevice");
+	  	std::string cmd("UnLockDevice");
 	  	DeviceData din;
 	  	DevVarLongStringArray sent_data;
 	  	unsigned int locked_devices_nb = locked_devices.size();
@@ -439,7 +439,7 @@ void LockThread::update_th_period()
 // Find the smallest lock validity
 //
 
-	vector<LockedDevice>::iterator ite;
+	std::vector<LockedDevice>::iterator ite;
 	ite = min_element(locked_devices.begin(),locked_devices.end());
 
 //
