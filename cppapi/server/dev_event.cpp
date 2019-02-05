@@ -71,7 +71,7 @@ namespace Tango
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::push_event(string attr_name, vector<string> &filt_names,vector<double> &filt_vals,DevFailed *except)
+void DeviceImpl::push_event(std::string attr_name, std::vector<std::string> &filt_names,std::vector<double> &filt_vals,DevFailed *except)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -105,7 +105,7 @@ void DeviceImpl::push_event(string attr_name, vector<string> &filt_names,vector<
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevShort *p_data, long x,long y ,bool release)
 {
 	// get the tango synchroisation monitor
@@ -122,7 +122,7 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevLong *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
@@ -138,7 +138,7 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 	attr.fire_event(filt_names,filt_vals);
 }
 
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevLong64 *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
@@ -155,7 +155,7 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 
-void DeviceImpl::push_event(string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event(std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			    Tango::DevFloat *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
@@ -173,7 +173,7 @@ void DeviceImpl::push_event(string attr_name,vector<string> &filt_names,vector<d
 
 
 
-void DeviceImpl::push_event(string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event(std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			    Tango::DevDouble *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
@@ -191,7 +191,7 @@ void DeviceImpl::push_event(string attr_name,vector<string> &filt_names,vector<d
 
 
 
-void DeviceImpl::push_event(string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event(std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			    Tango::DevString *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
@@ -209,7 +209,7 @@ void DeviceImpl::push_event(string attr_name,vector<string> &filt_names,vector<d
 
 
 
-void DeviceImpl::push_event(string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event(std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			    Tango::DevBoolean *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
@@ -227,7 +227,7 @@ void DeviceImpl::push_event(string attr_name,vector<string> &filt_names,vector<d
 
 
 
-void DeviceImpl::push_event(string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event(std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			    Tango::DevUShort *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
@@ -245,7 +245,7 @@ void DeviceImpl::push_event(string attr_name,vector<string> &filt_names,vector<d
 
 
 
-void DeviceImpl::push_event(string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event(std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			    Tango::DevUChar *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
@@ -261,7 +261,7 @@ void DeviceImpl::push_event(string attr_name,vector<string> &filt_names,vector<d
 	attr.fire_event(filt_names,filt_vals);
 }
 
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevULong *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
@@ -277,7 +277,7 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 	attr.fire_event(filt_names,filt_vals);
 }
 
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevULong64 *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
@@ -293,7 +293,7 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 	attr.fire_event(filt_names,filt_vals);
 }
 
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevState *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
@@ -309,7 +309,7 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 	attr.fire_event(filt_names,filt_vals);
 }
 
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevEncoded *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
@@ -325,7 +325,7 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 	attr.fire_event(filt_names,filt_vals);
 }
 
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevString *p_str, Tango::DevUChar *p_data, long size , bool release)
 {
 	// get the tango synchroisation monitor
@@ -364,11 +364,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 //
 //----------------------------------------------------------------------------------------------------------------
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevShort *p_data,struct _timeb &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevShort *p_data,struct timeval &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #endif
@@ -387,11 +387,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevLong *p_data,struct _timeb &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevLong *p_data,struct timeval &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #endif
@@ -410,11 +410,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevLong64 *p_data,struct _timeb &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevLong64 *p_data,struct timeval &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #endif
@@ -433,11 +433,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevFloat *p_data,struct _timeb &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevFloat *p_data,struct timeval &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #endif
@@ -456,11 +456,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevDouble *p_data,struct _timeb &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevDouble *p_data,struct timeval &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #endif
@@ -479,11 +479,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevString *p_data,struct _timeb &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevString *p_data,struct timeval &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #endif
@@ -502,11 +502,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevBoolean *p_data,struct _timeb &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevBoolean *p_data,struct timeval &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #endif
@@ -525,11 +525,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevUShort *p_data,struct _timeb &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevUShort *p_data,struct timeval &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #endif
@@ -548,11 +548,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevUChar *p_data,struct _timeb &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevUChar *p_data,struct timeval &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #endif
@@ -571,11 +571,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevULong *p_data,struct _timeb &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevULong *p_data,struct timeval &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #endif
@@ -594,11 +594,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevULong64 *p_data,struct _timeb &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevULong64 *p_data,struct timeval &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #endif
@@ -617,11 +617,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevState *p_data,struct _timeb &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevState *p_data,struct timeval &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #endif
@@ -640,11 +640,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevEncoded *p_data,struct _timeb &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevEncoded *p_data,struct timeval &t, Tango::AttrQuality qual,
 			     long x,long y ,bool release)
 #endif
@@ -663,11 +663,11 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevString *p_str_data,Tango::DevUChar *p_data,long size, struct _timeb &t, Tango::AttrQuality qual,
 			     bool release)
 #else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
+void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &filt_names,std::vector<double> &filt_vals,
 			     Tango::DevString *p_str_data,Tango::DevUChar *p_data,long size, struct timeval &t, Tango::AttrQuality qual,
 			     bool release)
 #endif
@@ -707,7 +707,7 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::set_change_event  (string attr_name, bool implemented, bool detect)
+void DeviceImpl::set_change_event  (std::string attr_name, bool implemented, bool detect)
 {
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
@@ -733,7 +733,7 @@ void DeviceImpl::set_change_event  (string attr_name, bool implemented, bool det
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::push_change_event(string attr_name, DevFailed *except)
+void DeviceImpl::push_change_event(std::string attr_name, DevFailed *except)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -765,7 +765,7 @@ void DeviceImpl::push_change_event(string attr_name, DevFailed *except)
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::push_change_event (string attr_name, Tango::DevShort *p_data, long x,long y ,bool release)
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevShort *p_data, long x,long y ,bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -781,7 +781,7 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevShort *p_data, l
 }
 
 
-void DeviceImpl::push_change_event (string attr_name, Tango::DevLong *p_data, long x, long y , bool release)
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevLong *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -796,7 +796,7 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevLong *p_data, lo
 	attr.fire_change_event();
 }
 
-void DeviceImpl::push_change_event (string attr_name, Tango::DevLong64 *p_data, long x, long y , bool release)
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevLong64 *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -811,24 +811,7 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevLong64 *p_data, 
 	attr.fire_change_event();
 }
 
-void DeviceImpl::push_change_event(string attr_name, Tango::DevFloat *p_data, long x, long y , bool release)
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-
-	// search the attribute from the attribute list
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value (p_data, x, y, release);
-	// push the event
-	attr.fire_change_event();
-}
-
-
-
-void DeviceImpl::push_change_event(string attr_name, Tango::DevDouble *p_data, long x, long y , bool release)
+void DeviceImpl::push_change_event(std::string attr_name, Tango::DevFloat *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -845,7 +828,7 @@ void DeviceImpl::push_change_event(string attr_name, Tango::DevDouble *p_data, l
 
 
 
-void DeviceImpl::push_change_event(string attr_name, Tango::DevString *p_data, long x, long y , bool release)
+void DeviceImpl::push_change_event(std::string attr_name, Tango::DevDouble *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -862,7 +845,7 @@ void DeviceImpl::push_change_event(string attr_name, Tango::DevString *p_data, l
 
 
 
-void DeviceImpl::push_change_event(string attr_name, Tango::DevBoolean *p_data, long x, long y , bool release)
+void DeviceImpl::push_change_event(std::string attr_name, Tango::DevString *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -879,7 +862,7 @@ void DeviceImpl::push_change_event(string attr_name, Tango::DevBoolean *p_data, 
 
 
 
-void DeviceImpl::push_change_event(string attr_name, Tango::DevUShort *p_data, long x, long y , bool release)
+void DeviceImpl::push_change_event(std::string attr_name, Tango::DevBoolean *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -896,7 +879,7 @@ void DeviceImpl::push_change_event(string attr_name, Tango::DevUShort *p_data, l
 
 
 
-void DeviceImpl::push_change_event(string attr_name, Tango::DevUChar *p_data, long x, long y , bool release)
+void DeviceImpl::push_change_event(std::string attr_name, Tango::DevUShort *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -911,7 +894,9 @@ void DeviceImpl::push_change_event(string attr_name, Tango::DevUChar *p_data, lo
 	attr.fire_change_event();
 }
 
-void DeviceImpl::push_change_event (string attr_name, Tango::DevULong *p_data, long x, long y , bool release)
+
+
+void DeviceImpl::push_change_event(std::string attr_name, Tango::DevUChar *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -926,7 +911,7 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevULong *p_data, l
 	attr.fire_change_event();
 }
 
-void DeviceImpl::push_change_event (string attr_name, Tango::DevULong64 *p_data, long x, long y , bool release)
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevULong *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -941,7 +926,7 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevULong64 *p_data,
 	attr.fire_change_event();
 }
 
-void DeviceImpl::push_change_event (string attr_name, Tango::DevState *p_data, long x, long y , bool release)
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevULong64 *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -956,7 +941,7 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevState *p_data, l
 	attr.fire_change_event();
 }
 
-void DeviceImpl::push_change_event (string attr_name, Tango::DevEncoded *p_data, long x, long y , bool release)
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevState *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -971,7 +956,22 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevEncoded *p_data,
 	attr.fire_change_event();
 }
 
-void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_str_data, Tango::DevUChar *p_data, long size, bool release)
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevEncoded *p_data, long x, long y , bool release)
+{
+	// get the tango synchroisation monitor
+	Tango::AutoTangoMonitor synch(this);
+
+	// search the attribute from the attribute list
+	Tango::MultiAttribute *attr_list = get_device_attr();
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+
+	// set the attribute value
+	attr.set_value (p_data, x, y, release);
+	// push the event
+	attr.fire_change_event();
+}
+
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevString *p_str_data, Tango::DevUChar *p_data, long size, bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -1006,11 +1006,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_str_da
 //
 //-----------------------------------------------------------------------------------------------------------------
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevShort *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevShort *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevShort *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevShort *p_data,
 											  struct timeval &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #endif
@@ -1029,11 +1029,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevShort *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevLong *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevLong *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevLong *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevLong *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1053,11 +1053,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevLong *p_data,
 
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevLong64 *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevLong64 *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevLong64 *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevLong64 *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1076,11 +1076,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevLong64 *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevFloat *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevFloat *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevFloat *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevFloat *p_data,
 											  struct timeval &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #endif
@@ -1099,11 +1099,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevFloat *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevDouble *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevDouble *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevDouble *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevDouble *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1122,11 +1122,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevDouble *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevString *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevString *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1145,11 +1145,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevBoolean *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevBoolean *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevBoolean *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevBoolean *p_data,
 											  struct timeval &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #endif
@@ -1168,11 +1168,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevBoolean *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevUShort *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevUShort *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevUShort *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevUShort *p_data,
 											  struct timeval &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #endif
@@ -1191,11 +1191,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevUShort *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevUChar *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevUChar *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevUChar *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevUChar *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1214,11 +1214,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevUChar *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevULong *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevULong *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevULong *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevULong *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1237,11 +1237,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevULong *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevULong64 *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevULong64 *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevULong64 *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevULong64 *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1260,11 +1260,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevULong64 *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevState *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevState *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevState *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevState *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1283,11 +1283,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevState *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevEncoded *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevEncoded *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevEncoded *p_data,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevEncoded *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1306,11 +1306,11 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevEncoded *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_str_data,Tango::DevUChar *p_data,long size,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevString *p_str_data,Tango::DevUChar *p_data,long size,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  bool release)
 #else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_str_data,Tango::DevUChar *p_data,long size,
+void DeviceImpl::push_change_event (std::string attr_name, Tango::DevString *p_str_data,Tango::DevUChar *p_data,long size,
 												struct timeval &t, Tango::AttrQuality qual,
 												bool release)
 #endif
@@ -1351,7 +1351,7 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_str_da
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::set_archive_event  (string attr_name, bool implemented, bool detect)
+void DeviceImpl::set_archive_event  (std::string attr_name, bool implemented, bool detect)
 {
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
@@ -1377,7 +1377,7 @@ void DeviceImpl::set_archive_event  (string attr_name, bool implemented, bool de
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::push_archive_event(string attr_name, DevFailed *except)
+void DeviceImpl::push_archive_event(std::string attr_name, DevFailed *except)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -1409,7 +1409,7 @@ void DeviceImpl::push_archive_event(string attr_name, DevFailed *except)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevShort *p_data, long x,long y ,bool release)
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevShort *p_data, long x,long y ,bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -1425,7 +1425,7 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevShort *p_data, 
 }
 
 
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevLong *p_data, long x, long y , bool release)
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevLong *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -1440,23 +1440,7 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevLong *p_data, l
 	attr.fire_archive_event();
 }
 
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevLong64 *p_data, long x, long y , bool release)
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-
-	// search the attribute from the attribute list
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value (p_data, x, y, release);
-	// push the event
-	attr.fire_archive_event();
-}
-
-
-void DeviceImpl::push_archive_event(string attr_name, Tango::DevFloat *p_data, long x, long y , bool release)
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevLong64 *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -1472,8 +1456,7 @@ void DeviceImpl::push_archive_event(string attr_name, Tango::DevFloat *p_data, l
 }
 
 
-
-void DeviceImpl::push_archive_event(string attr_name, Tango::DevDouble *p_data, long x, long y , bool release)
+void DeviceImpl::push_archive_event(std::string attr_name, Tango::DevFloat *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -1490,7 +1473,7 @@ void DeviceImpl::push_archive_event(string attr_name, Tango::DevDouble *p_data, 
 
 
 
-void DeviceImpl::push_archive_event(string attr_name, Tango::DevString *p_data, long x, long y , bool release)
+void DeviceImpl::push_archive_event(std::string attr_name, Tango::DevDouble *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -1507,7 +1490,7 @@ void DeviceImpl::push_archive_event(string attr_name, Tango::DevString *p_data, 
 
 
 
-void DeviceImpl::push_archive_event(string attr_name, Tango::DevBoolean *p_data, long x, long y , bool release)
+void DeviceImpl::push_archive_event(std::string attr_name, Tango::DevString *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -1524,7 +1507,7 @@ void DeviceImpl::push_archive_event(string attr_name, Tango::DevBoolean *p_data,
 
 
 
-void DeviceImpl::push_archive_event(string attr_name, Tango::DevUShort *p_data, long x, long y , bool release)
+void DeviceImpl::push_archive_event(std::string attr_name, Tango::DevBoolean *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -1541,7 +1524,7 @@ void DeviceImpl::push_archive_event(string attr_name, Tango::DevUShort *p_data, 
 
 
 
-void DeviceImpl::push_archive_event(string attr_name, Tango::DevUChar *p_data, long x, long y , bool release)
+void DeviceImpl::push_archive_event(std::string attr_name, Tango::DevUShort *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -1556,35 +1539,9 @@ void DeviceImpl::push_archive_event(string attr_name, Tango::DevUChar *p_data, l
 	attr.fire_archive_event();
 }
 
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevULong *p_data, long x, long y , bool release)
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
 
-	// search the attribute from the attribute list
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
-	// set the attribute value
-	attr.set_value (p_data, x, y, release);
-	// push the event
-	attr.fire_archive_event();
-}
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevULong64 *p_data, long x, long y , bool release)
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-
-	// search the attribute from the attribute list
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value (p_data, x, y, release);
-	// push the event
-	attr.fire_archive_event();
-}
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevState *p_data, long x, long y , bool release)
+void DeviceImpl::push_archive_event(std::string attr_name, Tango::DevUChar *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -1599,7 +1556,35 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevState *p_data, 
 	attr.fire_archive_event();
 }
 
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevEncoded *p_data, long x, long y , bool release)
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevULong *p_data, long x, long y , bool release)
+{
+	// get the tango synchroisation monitor
+	Tango::AutoTangoMonitor synch(this);
+
+	// search the attribute from the attribute list
+	Tango::MultiAttribute *attr_list = get_device_attr();
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+
+	// set the attribute value
+	attr.set_value (p_data, x, y, release);
+	// push the event
+	attr.fire_archive_event();
+}
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevULong64 *p_data, long x, long y , bool release)
+{
+	// get the tango synchroisation monitor
+	Tango::AutoTangoMonitor synch(this);
+
+	// search the attribute from the attribute list
+	Tango::MultiAttribute *attr_list = get_device_attr();
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+
+	// set the attribute value
+	attr.set_value (p_data, x, y, release);
+	// push the event
+	attr.fire_archive_event();
+}
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevState *p_data, long x, long y , bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -1614,7 +1599,22 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevEncoded *p_data
 	attr.fire_archive_event();
 }
 
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_str_data, Tango::DevUChar *p_data, long size, bool release)
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevEncoded *p_data, long x, long y , bool release)
+{
+	// get the tango synchroisation monitor
+	Tango::AutoTangoMonitor synch(this);
+
+	// search the attribute from the attribute list
+	Tango::MultiAttribute *attr_list = get_device_attr();
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+
+	// set the attribute value
+	attr.set_value (p_data, x, y, release);
+	// push the event
+	attr.fire_archive_event();
+}
+
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevString *p_str_data, Tango::DevUChar *p_data, long size, bool release)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -1650,11 +1650,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_str_d
 //
 //-----------------------------------------------------------------------------------------------------------------
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevShort *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevShort *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevShort *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevShort *p_data,
 											  struct timeval &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #endif
@@ -1673,11 +1673,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevShort *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevLong *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevLong *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevLong *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevLong *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1696,11 +1696,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevLong *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevLong64 *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevLong64 *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevLong64 *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevLong64 *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1720,11 +1720,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevLong64 *p_data,
 
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevFloat *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevFloat *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevFloat *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevFloat *p_data,
 											  struct timeval &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #endif
@@ -1743,11 +1743,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevFloat *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevDouble *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevDouble *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevDouble *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevDouble *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1766,11 +1766,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevDouble *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevString *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevString *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1789,11 +1789,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevBoolean *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevBoolean *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevBoolean *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevBoolean *p_data,
 											  struct timeval &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #endif
@@ -1812,11 +1812,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevBoolean *p_data
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevUShort *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevUShort *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevUShort *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevUShort *p_data,
 											  struct timeval &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #endif
@@ -1835,11 +1835,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevUShort *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevUChar *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevUChar *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevUChar *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevUChar *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1858,11 +1858,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevUChar *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevULong *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevULong *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevULong *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevULong *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1881,11 +1881,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevULong *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevULong64 *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevULong64 *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevULong64 *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevULong64 *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1904,11 +1904,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevULong64 *p_data
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevState *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevState *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevState *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevState *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1927,11 +1927,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevState *p_data,
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevEncoded *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevEncoded *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  long x,long y ,bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevEncoded *p_data,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevEncoded *p_data,
 												struct timeval &t, Tango::AttrQuality qual,
 												long x,long y ,bool release)
 #endif
@@ -1950,11 +1950,11 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevEncoded *p_data
 }
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_str_data, Tango::DevUChar *p_data,long size,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevString *p_str_data, Tango::DevUChar *p_data,long size,
 											  struct _timeb &t, Tango::AttrQuality qual,
 											  bool release)
 #else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_str_data, Tango::DevUChar *p_data,long size,
+void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevString *p_str_data, Tango::DevUChar *p_data,long size,
 												struct timeval &t, Tango::AttrQuality qual,
 												bool release)
 #endif
@@ -1988,7 +1988,7 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_str_d
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::set_data_ready_event  (string attr_name, bool implemented)
+void DeviceImpl::set_data_ready_event  (std::string attr_name, bool implemented)
 {
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
@@ -2012,7 +2012,7 @@ void DeviceImpl::set_data_ready_event  (string attr_name, bool implemented)
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::push_data_ready_event (const string &attr_name, Tango::DevLong ctr)
+void DeviceImpl::push_data_ready_event (const std::string &attr_name, Tango::DevLong ctr)
 {
 
 	Tango::Util *tg = Tango::Util::instance();
@@ -2071,7 +2071,7 @@ void DeviceImpl::push_data_ready_event (const string &attr_name, Tango::DevLong 
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::push_pipe_event(const string &pipe_name, DevFailed *except)
+void DeviceImpl::push_pipe_event(const std::string &pipe_name, DevFailed *except)
 {
 	// get the tango synchronisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -2098,7 +2098,7 @@ void DeviceImpl::push_pipe_event(const string &pipe_name, DevFailed *except)
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::push_pipe_event (const string &pipe_name,Tango::DevicePipeBlob *p_data,bool reuse_it)
+void DeviceImpl::push_pipe_event (const std::string &pipe_name,Tango::DevicePipeBlob *p_data,bool reuse_it)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -2127,9 +2127,9 @@ void DeviceImpl::push_pipe_event (const string &pipe_name,Tango::DevicePipeBlob 
 //-----------------------------------------------------------------------------------------------------------------
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data,struct _timeb &t,bool reuse_it)
+void DeviceImpl::push_pipe_event (const std::string &pipe_name, Tango::DevicePipeBlob *p_data,struct _timeb &t,bool reuse_it)
 #else
-void DeviceImpl::push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data,struct timeval &tv,bool reuse_it)
+void DeviceImpl::push_pipe_event (const std::string &pipe_name, Tango::DevicePipeBlob *p_data,struct timeval &tv,bool reuse_it)
 #endif
 {
 	// get the tango synchroisation monitor
