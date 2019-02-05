@@ -52,7 +52,7 @@ namespace Tango
 {
 
 DeviceImpl *PollThread::dev_to_del = NULL;
-string PollThread::name_to_del = "";
+std::string PollThread::name_to_del = "";
 PollObjType PollThread::type_to_del = Tango::POLL_CMD;
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -135,7 +135,7 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 		wo.poll_list = NULL;
 		wo.type = STORE_SUBDEV;
 		wo.update = 30*60*1000;			// check ervery 30 minutes
-		wo.name.push_back(string("Sub device property storage"));
+		wo.name.push_back(std::string("Sub device property storage"));
 		wo.needed_time.tv_sec  = 0;
 		wo.needed_time.tv_usec = 0;
 
@@ -224,22 +224,22 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 		}
 		catch (omni_thread_fatal &)
 		{
-			cerr << "OUPS !! A omni thread fatal exception received by a polling thread !!!!!!!!" << endl;
+			std::cerr << "OUPS !! A omni thread fatal exception received by a polling thread !!!!!!!!" << std::endl;
 #ifndef _TG_WINDOWS_
 			time_t t = time(NULL);
-			cerr << ctime(&t);
+			std::cerr << ctime(&t);
 #endif
-			cerr << "Trying to re-enter the main loop" << endl;
+			std::cerr << "Trying to re-enter the main loop" << std::endl;
 		}
 		catch (const std::exception &ex)
 		{
-			cerr << "OUPS !! An unforeseen standard exception has been received by a polling thread !!!!!!" << endl;
-			cerr << ex.what() << endl;
+			std::cerr << "OUPS !! An unforeseen standard exception has been received by a polling thread !!!!!!" << std::endl;
+			std::cerr << ex.what() << std::endl;
 #ifndef _TG_WINDOWS_
 			time_t t = time(NULL);
-			cerr << ctime(&t);
+			std::cerr << ctime(&t);
 #endif
-			cerr << "Trying to re-enter the main loop" << endl;
+			std::cerr << "Trying to re-enter the main loop" << std::endl;
 		}
 	}
 
@@ -328,8 +328,8 @@ bool pred_dev(const WorkItem &w)
 void PollThread::execute_cmd()
 {
 	WorkItem wo;
-	list<WorkItem>::iterator ite;
-	vector<WorkItem>::iterator et_ite;
+	std::list<WorkItem>::iterator ite;
+	std::vector<WorkItem>::iterator et_ite;
 
 	switch (local_cmd.cmd_code)
 	{
@@ -340,7 +340,7 @@ void PollThread::execute_cmd()
 
 	case Tango::POLL_ADD_OBJ :
     {
-		cout5 << "Received a Add object command" << endl;
+		cout5 << "Received a Add object command" << std::endl;
 
         wo.dev = local_cmd.dev;
         wo.poll_list = &(wo.dev->get_poll_obj_list());
@@ -380,7 +380,7 @@ void PollThread::execute_cmd()
                 wo.wake_up_date = now;
                 if (local_cmd.new_upd != 0)
                 {
-                    cout5 << "Received a delta from now of " << local_cmd.new_upd << endl;
+                    cout5 << "Received a delta from now of " << local_cmd.new_upd << std::endl;
                     T_ADD(wo.wake_up_date,local_cmd.new_upd * 1000);
                 }
                 insert_in_list(wo);
@@ -403,7 +403,7 @@ void PollThread::execute_cmd()
 //
 
 	case Tango::POLL_REM_OBJ :
-		cout5 << "Received a Rem object command" << endl;
+		cout5 << "Received a Rem object command" << std::endl;
 
 		dev_to_del = local_cmd.dev;
 		name_to_del = local_cmd.name;
@@ -418,7 +418,7 @@ void PollThread::execute_cmd()
 			{
 				if (ite->type == PollThread::type_to_del)
 				{
-				    vector<string>::iterator ite_str;
+				    std::vector<std::string>::iterator ite_str;
 				    bool found = false;
 				    for (ite_str = ite->name.begin();ite_str != ite->name.end();++ite_str)
                     {
@@ -444,7 +444,7 @@ void PollThread::execute_cmd()
 //
 
 	case Tango::POLL_REM_EXT_TRIG_OBJ :
-		cout5 << "Received a Ext Trig Rem object command" << endl;
+		cout5 << "Received a Ext Trig Rem object command" << std::endl;
 
 		for (et_ite = ext_trig_works.begin();
 		     et_ite != ext_trig_works.end();++et_ite)
@@ -469,7 +469,7 @@ void PollThread::execute_cmd()
 //
 
 	case Tango::POLL_REM_DEV :
-		cout5 << "Received a Rem device command" << endl;
+		cout5 << "Received a Rem device command" << std::endl;
 
 		dev_to_del = local_cmd.dev;
 #ifdef _TG_WINDOWS_
@@ -527,7 +527,7 @@ void PollThread::execute_cmd()
 
 	case Tango::POLL_UPD_PERIOD :
     {
-		cout5 << "Received a update polling period command" << endl;
+		cout5 << "Received a update polling period command" << std::endl;
 
 		dev_to_del = local_cmd.dev;
 		name_to_del = local_cmd.name;
@@ -553,7 +553,7 @@ void PollThread::execute_cmd()
                         if (ite->type == PollThread::type_to_del)
                         {
 
-                            vector<string>::iterator ite_str;
+                            std::vector<std::string>::iterator ite_str;
                             for (ite_str = ite->name.begin();ite_str != ite->name.end();++ite_str)
                             {
                                 if (*ite_str == PollThread::name_to_del)
@@ -615,7 +615,7 @@ void PollThread::execute_cmd()
                     if (ite->type == PollThread::type_to_del)
                     {
                         bool found = false;
-                        vector<string>::iterator ite_str;
+                        std::vector<std::string>::iterator ite_str;
                         for (ite_str = ite->name.begin();ite_str != ite->name.end();++ite_str)
                         {
                             if (*ite_str == PollThread::name_to_del)
@@ -696,12 +696,12 @@ void PollThread::execute_cmd()
 //
 
 	case Tango::POLL_ADD_HEARTBEAT:
-		cout5 << "Received a add heartbeat command" << endl;
+		cout5 << "Received a add heartbeat command" << std::endl;
 		wo.dev = NULL;
 		wo.poll_list = NULL;
 		wo.type = EVENT_HEARTBEAT;
 		wo.update = 9000;
-		wo.name.push_back(string("Event heartbeat"));
+		wo.name.push_back(std::string("Event heartbeat"));
 		wo.needed_time.tv_sec = 0;
 		wo.needed_time.tv_usec = TIME_HEARTBEAT;
 
@@ -714,7 +714,7 @@ void PollThread::execute_cmd()
 //
 
 	case Tango::POLL_REM_HEARTBEAT:
-		cout5 << "Received a remove heartbeat command" << endl;
+		cout5 << "Received a remove heartbeat command" << std::endl;
 		unsigned int ii,nb_elem;
 		nb_elem = works.size();
 		ite = works.begin();
@@ -735,7 +735,7 @@ void PollThread::execute_cmd()
 //
 
 	case Tango::POLL_START :
-		cout5 << "Received a Start polling command" << endl;
+		cout5 << "Received a Start polling command" << std::endl;
 		polling_stop = false;
 		break;
 
@@ -744,7 +744,7 @@ void PollThread::execute_cmd()
 //
 
 	case Tango::POLL_STOP :
-		cout5 << "Received a Stop polling command" << endl;
+		cout5 << "Received a Stop polling command" << std::endl;
 		polling_stop = true;
 		break;
 
@@ -753,7 +753,7 @@ void PollThread::execute_cmd()
 //
 
 	case Tango::POLL_EXIT :
-		cout5 << "Received an exit command" << endl;
+		cout5 << "Received an exit command" << std::endl;
 		omni_thread::exit();
 		break;
 	}
@@ -821,7 +821,7 @@ void PollThread::one_more_poll()
 	{
         for (size_t loop = 0;loop < auto_upd.size();loop++)
         {
-            vector<string>::iterator pos = remove(tmp.name.begin(),tmp.name.end(),auto_name[loop]);
+            std::vector<std::string>::iterator pos = remove(tmp.name.begin(),tmp.name.end(),auto_name[loop]);
             tmp.name.erase(pos,tmp.name.end());
         }
 
@@ -831,8 +831,8 @@ void PollThread::one_more_poll()
             insert_in_list(tmp);
         }
 
-        list<WorkItem>::iterator ite;
-        vector<WorkItem>::iterator et_ite;
+        std::list<WorkItem>::iterator ite;
+        std::vector<WorkItem>::iterator et_ite;
 
         for (size_t loop = 0;loop < auto_upd.size();loop++)
         {
@@ -884,7 +884,7 @@ void PollThread::one_more_poll()
         {
             for (size_t loop = 0;loop < rem_upd.size();loop++)
             {
-                vector<string>::iterator pos = remove(tmp.name.begin(),tmp.name.end(),rem_name[loop]);
+                std::vector<std::string>::iterator pos = remove(tmp.name.begin(),tmp.name.end(),rem_name[loop]);
                 tmp.name.erase(pos,tmp.name.end());
             }
 
@@ -920,7 +920,7 @@ void PollThread::one_more_poll()
 
 void PollThread::one_more_trigg()
 {
-	cout5 << "Polling thread has received a trigger" << endl;
+	cout5 << "Polling thread has received a trigger" << std::endl;
 
 //
 // Check that the object is registered
@@ -930,7 +930,7 @@ void PollThread::one_more_trigg()
 	name_to_del = local_cmd.name;
 	type_to_del = local_cmd.type;
 
-	vector<WorkItem>::iterator et_ite;
+	std::vector<WorkItem>::iterator et_ite;
 	for (et_ite = ext_trig_works.begin();et_ite != ext_trig_works.end();++et_ite)
     {
         if (et_ite->dev == PollThread::dev_to_del)
@@ -950,7 +950,7 @@ void PollThread::one_more_trigg()
 
 	if (et_ite == ext_trig_works.end())
 	{
-		cout5 << "Object externally triggered not found !!!" << endl;
+		cout5 << "Object externally triggered not found !!!" << std::endl;
 		{
 			omni_mutex_lock sync(p_mon);
 			shared_cmd.trigger = false;
@@ -996,7 +996,7 @@ void PollThread::one_more_trigg()
 
 void PollThread::print_list()
 {
-	list<WorkItem>::iterator ite;
+	std::list<WorkItem>::iterator ite;
 	long nb_elt,i;
 
 	nb_elt = works.size();
@@ -1007,7 +1007,7 @@ void PollThread::print_list()
 		{
 			if ( ite->type != STORE_SUBDEV)
 			{
-			    string obj_list;
+			    std::string obj_list;
 				for (size_t ctr = 0;ctr < ite->name.size();ctr++)
 				{
                     obj_list = obj_list + ite->name[ctr];
@@ -1017,22 +1017,22 @@ void PollThread::print_list()
 
 				cout5 << "Dev name = " << ite->dev->get_name() << ", obj name = " << obj_list
                      << ", next wake_up at " << + ite->wake_up_date.tv_sec
-					<< "," << setw(6) << setfill('0')
-					<< ite->wake_up_date.tv_usec << endl;
+					<< "," << std::setw(6) << std::setfill('0')
+					<< ite->wake_up_date.tv_usec << std::endl;
 			}
 			else
 			{
 				cout5 <<  ite->name[0]
 					<< ", next wake_up at " << + ite->wake_up_date.tv_sec
-					<< "," << setw(6) << setfill('0')
-					<< ite->wake_up_date.tv_usec << endl;
+					<< "," << std::setw(6) << std::setfill('0')
+					<< ite->wake_up_date.tv_usec << std::endl;
 			}
 		}
 		else
 		{
 			cout5 << "Event heartbeat, next wake_up at " << + ite->wake_up_date.tv_sec
-          		<< "," << setw(6) << setfill('0')
-          		<< ite->wake_up_date.tv_usec << endl;
+          		<< "," << std::setw(6) << std::setfill('0')
+          		<< ite->wake_up_date.tv_usec << std::endl;
 		}
 		++ite;
 	}
@@ -1055,7 +1055,7 @@ void PollThread::print_list()
 
 void PollThread::insert_in_list(WorkItem &new_work)
 {
-	list<WorkItem>::iterator ite;
+	std::list<WorkItem>::iterator ite;
 	for (ite = works.begin();ite != works.end();++ite)
 	{
 		if (ite->wake_up_date.tv_sec < new_work.wake_up_date.tv_sec)
@@ -1100,7 +1100,7 @@ void PollThread::add_insert_in_list(WorkItem &new_work)
 {
     if (new_work.type == POLL_ATTR && new_work.dev->get_dev_idl_version() >= 4 && polling_bef_9 == false)
     {
-        list<WorkItem>::iterator ite;
+        std::list<WorkItem>::iterator ite;
 #ifdef HAS_LAMBDA_FUNC
         ite = find_if(works.begin(),works.end(),
                 [&] (const WorkItem &wi) {return wi.dev == new_work.dev && wi.update == new_work.update && wi.type == new_work.type;});
@@ -1141,10 +1141,10 @@ void PollThread::add_insert_in_list(WorkItem &new_work)
 
 void PollThread::tune_list(bool from_needed, long min_delta)
 {
-	list<WorkItem>::iterator ite,ite_next,ite_prev;
+	std::list<WorkItem>::iterator ite,ite_next,ite_prev;
 
 	unsigned long nb_works = works.size();
-	cout4 << "Entering tuning list. The list has " << nb_works << " item(s)" << endl;
+	cout4 << "Entering tuning list. The list has " << nb_works << " item(s)" << std::endl;
 
 //
 // Nothing to do if only one let in list
@@ -1212,7 +1212,7 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 		Tango::DevULong64 now_us = ((Tango::DevULong64)now.tv_sec * 1000000LL) + (Tango::DevULong64)now.tv_usec;
 		Tango::DevULong64 next_tuning = now_us + (POLL_LOOP_NB * (Tango::DevULong64)min_upd);
 
-		list<WorkItem> new_works;
+		std::list<WorkItem> new_works;
 		new_works.push_front(works.front());
 
 		ite = works.begin();
@@ -1273,7 +1273,7 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 		}
 	}
 
-	cout4 << "Tuning list done" << endl;
+	cout4 << "Tuning list done" << std::endl;
 	print_list();
 }
 
@@ -1343,7 +1343,7 @@ void PollThread::compute_sleep_time()
 // Compute for how many items the polling thread is late
 //
 
-            list<WorkItem>::iterator ite;
+            std::list<WorkItem>::iterator ite;
 
             for (ite = works.begin();ite != works.end();++ite)
             {
@@ -1364,7 +1364,7 @@ void PollThread::compute_sleep_time()
             {
                 if (nb_late == works.size())
                 {
-                    cout5 << "Setting discard to true because nb_late == works.size() --> " << nb_late << endl;
+                    cout5 << "Setting discard to true because nb_late == works.size() --> " << nb_late << std::endl;
                     discard = true;
                 }
                 else
@@ -1374,7 +1374,7 @@ void PollThread::compute_sleep_time()
                         if (nb_late < previous_nb_late)
                         {
                             previous_nb_late = nb_late;
-                            cout5 << "Late but trying to catch up"  << endl;
+                            cout5 << "Late but trying to catch up"  << std::endl;
                         }
                         else
                         {
@@ -1395,7 +1395,7 @@ void PollThread::compute_sleep_time()
 // Analyse work list
 //
 
-//        cout5 << "discard = " << boolalpha << discard << endl;
+//        cout5 << "discard = " << boolalpha << discard << std::endl;
         if (nb_late == 0 || discard == true)
         {
             previous_nb_late = 0;
@@ -1411,7 +1411,7 @@ void PollThread::compute_sleep_time()
                 {
                     while((diff < 0) && (fabs(diff) > DISCARD_THRESHOLD))
                     {
-                        cout5 << "Discard one elt !!!!!!!!!!!!!" << endl;
+                        cout5 << "Discard one elt !!!!!!!!!!!!!" << std::endl;
                         WorkItem tmp = works.front();
                         if (tmp.type == POLL_ATTR)
                             err_out_of_sync(tmp);
@@ -1435,7 +1435,7 @@ void PollThread::compute_sleep_time()
                 sleep = (long)(diff * 1000);
         }
 
-		cout5 << "Sleep for : " << sleep << endl;
+		cout5 << "Sleep for : " << sleep << std::endl;
 	}
 }
 
@@ -1509,10 +1509,10 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
             {
                 if (event_supplier_nd != NULL)
                 {
-                    vector<string> f_names;
-                    vector<double> f_data;
-                    vector<string> f_names_lg;
-                    vector<long> f_data_lg;
+                    std::vector<std::string> f_names;
+                    std::vector<double> f_data;
+                    std::vector<std::string> f_names_lg;
+                    std::vector<long> f_data_lg;
 
                     if (send_event.change == true)
                         event_supplier_zmq->push_event_loop(to_do.dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,&except);
@@ -1546,9 +1546,9 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 void PollThread::poll_cmd(WorkItem &to_do)
 {
 	cout5 << "----------> Time = " << now.tv_sec << ","
-        << setw(6) << setfill('0') << now.tv_usec
+        << std::setw(6) << std::setfill('0') << now.tv_usec
         << " Dev name = " << to_do.dev->get_name()
-        << ", Cmd name = " << to_do.name[0] << endl;
+        << ", Cmd name = " << to_do.name[0] << std::endl;
 
 	CORBA::Any *argout = NULL;
 	Tango::DevFailed *save_except = NULL;
@@ -1558,7 +1558,7 @@ void PollThread::poll_cmd(WorkItem &to_do)
 	LARGE_INTEGER before,after;
 #endif
 
-	vector<PollObj *>::iterator ite;
+	std::vector<PollObj *>::iterator ite;
 	bool cmd_failed = false;
 	try
 	{
@@ -1678,7 +1678,7 @@ void PollThread::poll_cmd(WorkItem &to_do)
 void PollThread::poll_attr(WorkItem &to_do)
 {
     size_t nb_obj = to_do.name.size();
-    string att_list;
+    std::string att_list;
     for (size_t ctr = 0;ctr < nb_obj;ctr++)
     {
         att_list =  att_list + to_do.name[ctr];
@@ -1687,9 +1687,9 @@ void PollThread::poll_attr(WorkItem &to_do)
     }
 
 	cout5 << "----------> Time = " << now.tv_sec << ","
-	      << setw(6) << setfill('0') << now.tv_usec
+	      << std::setw(6) << std::setfill('0') << now.tv_usec
 	      << " Dev name = " << to_do.dev->get_name()
-        << ", Attr name = " << att_list << endl;
+        << ", Attr name = " << att_list << std::endl;
 
 	struct timeval before_cmd,after_cmd,needed_time;
 #ifdef _TG_WINDOWS_
@@ -1702,8 +1702,8 @@ void PollThread::poll_attr(WorkItem &to_do)
 	Tango::AttributeValueList_5 *argout_5 = NULL;
 	Tango::DevFailed *save_except = NULL;
 	bool attr_failed = false;
-	vector<PollObj *>::iterator ite;
-	map<size_t,Tango::DevFailed *> map_except;
+	std::vector<PollObj *>::iterator ite;
+	std::map<size_t,Tango::DevFailed *> map_except;
 
 	long idl_vers = to_do.dev->get_dev_idl_version();
 	try
@@ -1819,7 +1819,7 @@ void PollThread::poll_attr(WorkItem &to_do)
                     if ((attr_failed == false) && ((*argout_5)[ctr].err_list.length() != 0))
                     {
                         Tango::DevFailed *tmp_except = new Tango::DevFailed((*argout_5)[ctr].err_list);
-                        map_except.insert(pair<size_t,Tango::DevFailed *>(ctr,tmp_except));
+                        map_except.insert(std::pair<size_t,Tango::DevFailed *>(ctr,tmp_except));
                     }
                 }
             }
@@ -1842,7 +1842,7 @@ void PollThread::poll_attr(WorkItem &to_do)
                     if ((attr_failed == false) && ((*argout_4)[ctr].err_list.length() != 0))
                     {
                         Tango::DevFailed *tmp_except = new Tango::DevFailed((*argout_4)[ctr].err_list);
-                        map_except.insert(pair<size_t,Tango::DevFailed *>(ctr,tmp_except));
+                        map_except.insert(std::pair<size_t,Tango::DevFailed *>(ctr,tmp_except));
                     }
                 }
             }
@@ -1904,10 +1904,10 @@ void PollThread::poll_attr(WorkItem &to_do)
                 {
                     if (event_supplier_nd != NULL)
                     {
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
+                        std::vector<std::string> f_names;
+                        std::vector<double> f_data;
+                        std::vector<std::string> f_names_lg;
+                        std::vector<long> f_data_lg;
 
                         if (send_event.change == true)
                             event_supplier_zmq->push_event_loop(to_do.dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
@@ -1941,7 +1941,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 
                 SendEventType send_event;
 
-                map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
+                std::map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
                 Tango::DevFailed *tmp_except;
                 if (ite2 == map_except.end())
                     tmp_except = save_except;
@@ -1954,10 +1954,10 @@ void PollThread::poll_attr(WorkItem &to_do)
                 {
                     if (event_supplier_nd != NULL)
                     {
-                        vector<string> f_names;
-                        vector<double> f_data;
-                        vector<string> f_names_lg;
-                        vector<long> f_data_lg;
+                        std::vector<std::string> f_names;
+                        std::vector<double> f_data;
+                        std::vector<std::string> f_names_lg;
+                        std::vector<long> f_data_lg;
 
                         if (send_event.change == true)
                             event_supplier_zmq->push_event_loop(to_do.dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,tmp_except);
@@ -2008,7 +2008,7 @@ void PollThread::poll_attr(WorkItem &to_do)
                 {
                     if (idl_vers >= 5)
                     {
-                        map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
+                        std::map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
                         if (ite2 == map_except.end())
                         {
                             Tango::AttributeValueList_5 *new_argout_5 = new Tango::AttributeValueList_5(1);
@@ -2024,7 +2024,7 @@ void PollThread::poll_attr(WorkItem &to_do)
                     }
                     else
                     {
-                        map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
+                        std::map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
                         if (ite2 == map_except.end())
                         {
                             Tango::AttributeValueList_4 *new_argout_4 = new Tango::AttributeValueList_4(1);
@@ -2099,8 +2099,8 @@ void PollThread::poll_attr(WorkItem &to_do)
 void PollThread::eve_heartbeat()
 {
 	cout5 << "----------> Time = " << now.tv_sec << ","
-	      << setw(6) << setfill('0') << now.tv_usec
-	      << " Sending event heartbeat" << endl;
+	      << std::setw(6) << std::setfill('0') << now.tv_usec
+	      << " Sending event heartbeat" << std::endl;
 
 	EventSupplier *event_supplier;
 	event_supplier = Util::instance()->get_zmq_event_supplier();
@@ -2131,8 +2131,8 @@ void PollThread::store_subdev()
 	static bool ignore_call = true;
 
 	cout5 << "----------> Time = " << now.tv_sec << ","
-	      << setw(6) << setfill('0') << now.tv_usec
-	      << " Store sub device property data if needed!" << endl;
+	      << std::setw(6) << std::setfill('0') << now.tv_usec
+	      << " Store sub device property data if needed!" << std::endl;
 
 
 	if ( !ignore_call )
