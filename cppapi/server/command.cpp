@@ -59,16 +59,16 @@ namespace Tango {
             : name(s), in_type(in), out_type(out), ext(new CommandExt), poll_period(0) {
         cmd_disp_level = Tango::OPERATOR;
         lower_name = name;
-        transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+        std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
     }
 
-    Command::Command(string &s,
+    Command::Command(std::string &s,
                      Tango::CmdArgType in,
                      Tango::CmdArgType out)
             : name(s), in_type(in), out_type(out), ext(new CommandExt), poll_period(0) {
         cmd_disp_level = Tango::OPERATOR;
         lower_name = name;
-        transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+        std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
     }
 
     Command::Command(const char *s,
@@ -83,19 +83,19 @@ namespace Tango {
         if (out_desc != NULL)
             out_type_desc = out_desc;
         lower_name = name;
-        transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+        std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
     }
 
-    Command::Command(string &s,
+    Command::Command(std::string &s,
                      Tango::CmdArgType in,
                      Tango::CmdArgType out,
-                     string &in_desc,
-                     string &out_desc)
+                     std::string &in_desc,
+                     std::string &out_desc)
             : name(s), in_type(in), out_type(out),
               in_type_desc(in_desc), out_type_desc(out_desc), ext(new CommandExt), poll_period(0) {
         cmd_disp_level = Tango::OPERATOR;
         lower_name = name;
-        transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+        std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
     }
 
     Command::Command(const char *s,
@@ -105,17 +105,17 @@ namespace Tango {
             : name(s), in_type(in), out_type(out), ext(new CommandExt), poll_period(0) {
         cmd_disp_level = level;
         lower_name = name;
-        transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+        std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
     }
 
-    Command::Command(string &s,
+    Command::Command(std::string &s,
                      Tango::CmdArgType in,
                      Tango::CmdArgType out,
                      Tango::DispLevel level)
             : name(s), in_type(in), out_type(out), ext(new CommandExt), poll_period(0) {
         cmd_disp_level = level;
         lower_name = name;
-        transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+        std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
     }
 
     Command::Command(const char *s,
@@ -131,20 +131,20 @@ namespace Tango {
         if (out_desc != NULL)
             out_type_desc = out_desc;
         lower_name = name;
-        transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+        std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
     }
 
-    Command::Command(string &s,
+    Command::Command(std::string &s,
                      Tango::CmdArgType in,
                      Tango::CmdArgType out,
-                     string &in_desc,
-                     string &out_desc,
+                     std::string &in_desc,
+                     std::string &out_desc,
                      Tango::DispLevel level)
             : name(s), in_type(in), out_type(out),
               in_type_desc(in_desc), out_type_desc(out_desc), ext(new CommandExt), poll_period(0) {
         cmd_disp_level = level;
         lower_name = name;
-        transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
+        std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(), ::tolower);
     }
 
 //+----------------------------------------------------------------------------
@@ -159,7 +159,7 @@ namespace Tango {
     void Command::throw_bad_type(const char *type) {
         TangoSys_OMemStream o;
 
-        o << "Incompatible command argument type, expected type is : Tango::" << type << ends;
+        o << "Incompatible command argument type, expected type is : Tango::" << type << std::ends;
         Except::throw_exception((const char *) API_IncompatibleCmdArgumentType,
                                 o.str(),
                                 (const char *) "Command::extract()");
@@ -308,7 +308,7 @@ namespace Tango {
         try {
             any_ptr = new CORBA::Any();
         }
-        catch (bad_alloc &) {
+        catch (std::bad_alloc &) {
             Except::throw_exception((const char *) API_MemoryAllocation,
                                     (const char *) "Can't allocate memory in server",
                                     (const char *) "Command::alloc_any()");
@@ -682,12 +682,12 @@ namespace Tango {
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID), exe_ptr(f), ext(Tango_nullptr), allowed_ptr(a) {
     }
 
-    TemplCommand::TemplCommand(string &s, void (DeviceImpl::*f)())
+    TemplCommand::TemplCommand(std::string &s, void (DeviceImpl::*f)())
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID), exe_ptr(f), ext(Tango_nullptr) {
         allowed_ptr = NULL;
     }
 
-    TemplCommand::TemplCommand(string &s, void (DeviceImpl::*f)(), bool (DeviceImpl::*a)(const CORBA::Any &))
+    TemplCommand::TemplCommand(std::string &s, void (DeviceImpl::*f)(), bool (DeviceImpl::*a)(const CORBA::Any &))
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID), exe_ptr(f), ext(Tango_nullptr), allowed_ptr(a) {
     }
 
@@ -702,13 +702,13 @@ namespace Tango {
               allowed_ptr(a) {
     }
 
-    TemplCommand::TemplCommand(string &s, void (DeviceImpl::*f)(), bool (DeviceImpl::*a)(const CORBA::Any &),
-                               string &in_desc, string &out_desc)
+    TemplCommand::TemplCommand(std::string &s, void (DeviceImpl::*f)(), bool (DeviceImpl::*a)(const CORBA::Any &),
+                               std::string &in_desc, std::string &out_desc)
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID, in_desc, out_desc), exe_ptr(f), ext(Tango_nullptr),
               allowed_ptr(a) {
     }
 
-    TemplCommand::TemplCommand(string &s, void (DeviceImpl::*f)(), string &in_desc, string &out_desc)
+    TemplCommand::TemplCommand(std::string &s, void (DeviceImpl::*f)(), std::string &in_desc, std::string &out_desc)
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID, in_desc, out_desc), exe_ptr(f), ext(Tango_nullptr) {
         allowed_ptr = NULL;
     }
@@ -723,12 +723,12 @@ namespace Tango {
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID, level), exe_ptr(f), ext(Tango_nullptr), allowed_ptr(a) {
     }
 
-    TemplCommand::TemplCommand(string &s, void (DeviceImpl::*f)(), Tango::DispLevel level)
+    TemplCommand::TemplCommand(std::string &s, void (DeviceImpl::*f)(), Tango::DispLevel level)
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID, level), exe_ptr(f), ext(Tango_nullptr) {
         allowed_ptr = NULL;
     }
 
-    TemplCommand::TemplCommand(string &s, void (DeviceImpl::*f)(), bool (DeviceImpl::*a)(const CORBA::Any &),
+    TemplCommand::TemplCommand(std::string &s, void (DeviceImpl::*f)(), bool (DeviceImpl::*a)(const CORBA::Any &),
                                Tango::DispLevel level)
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID, level), exe_ptr(f), ext(Tango_nullptr), allowed_ptr(a) {
     }
@@ -745,13 +745,13 @@ namespace Tango {
               allowed_ptr(a) {
     }
 
-    TemplCommand::TemplCommand(string &s, void (DeviceImpl::*f)(), bool (DeviceImpl::*a)(const CORBA::Any &),
-                               string &in_desc, string &out_desc, Tango::DispLevel level)
+    TemplCommand::TemplCommand(std::string &s, void (DeviceImpl::*f)(), bool (DeviceImpl::*a)(const CORBA::Any &),
+                               std::string &in_desc, std::string &out_desc, Tango::DispLevel level)
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID, in_desc, out_desc, level), exe_ptr(f), ext(Tango_nullptr),
               allowed_ptr(a) {
     }
 
-    TemplCommand::TemplCommand(string &s, void (DeviceImpl::*f)(), string &in_desc, string &out_desc,
+    TemplCommand::TemplCommand(std::string &s, void (DeviceImpl::*f)(), std::string &in_desc, std::string &out_desc,
                                Tango::DispLevel level)
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID, in_desc, out_desc, level), exe_ptr(f), ext(Tango_nullptr) {
         allowed_ptr = NULL;
@@ -761,7 +761,7 @@ namespace Tango {
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID) {
     }
 
-    TemplCommand::TemplCommand(string &s)
+    TemplCommand::TemplCommand(std::string &s)
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID) {
     }
 
@@ -769,7 +769,7 @@ namespace Tango {
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID, level) {
     }
 
-    TemplCommand::TemplCommand(string &s, Tango::DispLevel level)
+    TemplCommand::TemplCommand(std::string &s, Tango::DispLevel level)
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID, level) {
     }
 
@@ -777,7 +777,7 @@ namespace Tango {
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID, in_desc, out_desc) {
     }
 
-    TemplCommand::TemplCommand(string &s, string &in_desc, string &out_desc)
+    TemplCommand::TemplCommand(std::string &s, std::string &in_desc, std::string &out_desc)
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID, in_desc, out_desc) {
     }
 
@@ -786,7 +786,7 @@ namespace Tango {
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID, in_desc, out_desc, level) {
     }
 
-    TemplCommand::TemplCommand(string &s, string &in_desc, string &out_desc, DispLevel level)
+    TemplCommand::TemplCommand(std::string &s, std::string &in_desc, std::string &out_desc, DispLevel level)
             : Command(s, Tango::DEV_VOID, Tango::DEV_VOID, in_desc, out_desc, level) {
     }
 
@@ -802,108 +802,108 @@ namespace Tango {
 //
 //--------------------------------------------------------------------------
 
-    void TemplCommand::set_type(const type_info &data_type, Tango::CmdArgType &type) {
+    void TemplCommand::set_type(const std::type_info &data_type, Tango::CmdArgType &type) {
         if (data_type == typeid(void)) {
-            cout4 << "Command : " << name << ", Type is void" << endl;
+            cout4 << "Command : " << name << ", Type is void" << std::endl;
             type = Tango::DEV_VOID;
         } else if (data_type == typeid(Tango::DevBoolean)) {
-            cout4 << "Command : " << name << ", Type is a boolean" << endl;
+            cout4 << "Command : " << name << ", Type is a boolean" << std::endl;
             type = Tango::DEV_BOOLEAN;
         } else if (data_type == typeid(Tango::DevShort)) {
-            cout4 << "Command : " << name << ", Type is a short" << endl;
+            cout4 << "Command : " << name << ", Type is a short" << std::endl;
             type = Tango::DEV_SHORT;
         } else if (data_type == typeid(Tango::DevLong)) {
-            cout4 << "Command : " << name << ", Type is a long" << endl;
+            cout4 << "Command : " << name << ", Type is a long" << std::endl;
             type = Tango::DEV_LONG;
         } else if (data_type == typeid(Tango::DevLong64)) {
-            cout4 << "Command : " << name << ", Type is a long64" << endl;
+            cout4 << "Command : " << name << ", Type is a long64" << std::endl;
             type = Tango::DEV_LONG64;
         } else if (data_type == typeid(Tango::DevFloat)) {
-            cout4 << "Command : " << name << ", Type is a float" << endl;
+            cout4 << "Command : " << name << ", Type is a float" << std::endl;
             type = Tango::DEV_FLOAT;
         } else if (data_type == typeid(Tango::DevDouble)) {
-            cout4 << "Command : " << name << ", Type is a double" << endl;
+            cout4 << "Command : " << name << ", Type is a double" << std::endl;
             type = Tango::DEV_DOUBLE;
         } else if (data_type == typeid(Tango::DevUShort)) {
-            cout4 << "Command : " << name << ", Type is an unsigned short" << endl;
+            cout4 << "Command : " << name << ", Type is an unsigned short" << std::endl;
             type = Tango::DEV_USHORT;
         } else if (data_type == typeid(Tango::DevULong)) {
-            cout4 << "Command : " << name << ", Type is an unsigned long" << endl;
+            cout4 << "Command : " << name << ", Type is an unsigned long" << std::endl;
             type = Tango::DEV_ULONG;
         } else if (data_type == typeid(Tango::DevULong64)) {
-            cout4 << "Command : " << name << ", Type is an unsigned long64" << endl;
+            cout4 << "Command : " << name << ", Type is an unsigned long64" << std::endl;
             type = Tango::DEV_ULONG64;
         } else if (data_type == typeid(Tango::DevString)) {
-            cout4 << "Command : " << name << ", Type is a string" << endl;
+            cout4 << "Command : " << name << ", Type is a string" << std::endl;
             type = Tango::DEV_STRING;
         } else if ((data_type == typeid(Tango::DevVarCharArray)) ||
                    (data_type == typeid(const Tango::DevVarCharArray *)) ||
                    (data_type == typeid(Tango::DevVarCharArray *))) {
-            cout4 << "Command : " << name << ", Type is a char array" << endl;
+            cout4 << "Command : " << name << ", Type is a char array" << std::endl;
             type = Tango::DEVVAR_CHARARRAY;
         } else if ((data_type == typeid(Tango::DevVarShortArray)) ||
                    (data_type == typeid(const Tango::DevVarShortArray *)) ||
                    (data_type == typeid(Tango::DevVarShortArray *))) {
-            cout4 << "Command : " << name << ", Type is a short array" << endl;
+            cout4 << "Command : " << name << ", Type is a short array" << std::endl;
             type = Tango::DEVVAR_SHORTARRAY;
         } else if ((data_type == typeid(Tango::DevVarLongArray)) ||
                    (data_type == typeid(const Tango::DevVarLongArray *)) ||
                    (data_type == typeid(Tango::DevVarLongArray *))) {
-            cout4 << "Command : " << name << ", Type is a long array" << endl;
+            cout4 << "Command : " << name << ", Type is a long array" << std::endl;
             type = Tango::DEVVAR_LONGARRAY;
         } else if ((data_type == typeid(Tango::DevVarLong64Array)) ||
                    (data_type == typeid(const Tango::DevVarLong64Array *)) ||
                    (data_type == typeid(Tango::DevVarLong64Array *))) {
-            cout4 << "Command : " << name << ", Type is a long64 array" << endl;
+            cout4 << "Command : " << name << ", Type is a long64 array" << std::endl;
             type = Tango::DEVVAR_LONG64ARRAY;
         } else if ((data_type == typeid(Tango::DevVarFloatArray)) ||
                    (data_type == typeid(const Tango::DevVarFloatArray *)) ||
                    (data_type == typeid(Tango::DevVarFloatArray *))) {
-            cout4 << "Command : " << name << ", Type is a float array" << endl;
+            cout4 << "Command : " << name << ", Type is a float array" << std::endl;
             type = Tango::DEVVAR_FLOATARRAY;
         } else if ((data_type == typeid(Tango::DevVarDoubleArray)) ||
                    (data_type == typeid(const Tango::DevVarDoubleArray *)) ||
                    (data_type == typeid(Tango::DevVarDoubleArray *))) {
-            cout4 << "Command : " << name << ", Type is a double array" << endl;
+            cout4 << "Command : " << name << ", Type is a double array" << std::endl;
             type = Tango::DEVVAR_DOUBLEARRAY;
         } else if ((data_type == typeid(Tango::DevVarUShortArray)) ||
                    (data_type == typeid(const Tango::DevVarUShortArray *)) ||
                    (data_type == typeid(Tango::DevVarUShortArray *))) {
-            cout4 << "Command : " << name << ", Type is a unsigned short array" << endl;
+            cout4 << "Command : " << name << ", Type is a unsigned short array" << std::endl;
             type = Tango::DEVVAR_USHORTARRAY;
         } else if ((data_type == typeid(Tango::DevVarULongArray)) ||
                    (data_type == typeid(const Tango::DevVarULongArray *)) ||
                    (data_type == typeid(Tango::DevVarULongArray *))) {
-            cout4 << "Command : " << name << ", Type is a unsigned long array" << endl;
+            cout4 << "Command : " << name << ", Type is a unsigned long array" << std::endl;
             type = Tango::DEVVAR_ULONGARRAY;
         } else if ((data_type == typeid(Tango::DevVarULong64Array)) ||
                    (data_type == typeid(const Tango::DevVarULong64Array *)) ||
                    (data_type == typeid(Tango::DevVarULong64Array *))) {
-            cout4 << "Command : " << name << ", Type is a unsigned long64 array" << endl;
+            cout4 << "Command : " << name << ", Type is a unsigned long64 array" << std::endl;
             type = Tango::DEVVAR_ULONG64ARRAY;
         } else if ((data_type == typeid(Tango::DevVarStringArray)) ||
                    (data_type == typeid(const Tango::DevVarStringArray *)) ||
                    (data_type == typeid(Tango::DevVarStringArray *))) {
-            cout4 << "Command : " << name << ", Type is a string array" << endl;
+            cout4 << "Command : " << name << ", Type is a string array" << std::endl;
             type = Tango::DEVVAR_STRINGARRAY;
         } else if ((data_type == typeid(Tango::DevVarLongStringArray)) ||
                    (data_type == typeid(const Tango::DevVarLongStringArray *)) ||
                    (data_type == typeid(Tango::DevVarLongStringArray *))) {
-            cout4 << "Command : " << name << ", Type is a long + string array" << endl;
+            cout4 << "Command : " << name << ", Type is a long + string array" << std::endl;
             type = Tango::DEVVAR_LONGSTRINGARRAY;
         } else if ((data_type == typeid(Tango::DevVarDoubleStringArray)) ||
                    (data_type == typeid(const Tango::DevVarDoubleStringArray *)) ||
                    (data_type == typeid(Tango::DevVarDoubleStringArray *))) {
-            cout4 << "Command : " << name << ", Type is a double + string array" << endl;
+            cout4 << "Command : " << name << ", Type is a double + string array" << std::endl;
             type = Tango::DEVVAR_DOUBLESTRINGARRAY;
         } else if (data_type == typeid(Tango::DevState)) {
-            cout4 << "Command : " << name << ", Type is a DevState" << endl;
+            cout4 << "Command : " << name << ", Type is a DevState" << std::endl;
             type = Tango::DEV_STATE;
         } else {
-            cout4 << "Command : " << name << ", Unknown type" << endl;
+            cout4 << "Command : " << name << ", Unknown type" << std::endl;
             TangoSys_OMemStream o;
 
-            o << "Command " << name << " defined with an unsupported type" << ends;
+            o << "Command " << name << " defined with an unsupported type" << std::ends;
             Except::throw_exception((const char *) API_CmdArgumentTypeNotSupported,
                                     o.str(), (const char *) "TemplCommand::set_type");
         }
