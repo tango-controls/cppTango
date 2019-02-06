@@ -1,21 +1,32 @@
-[DRAFT]
-
 # Prerequisites
 
 * [tango-idl](https://github.com/tango-controls/tango-idl)
+* Other required packages can be installed on apt-based linux systems via
+  * add deb-src entries for main and contrib (debian) or main, restricted and universe (ubuntu) into /etc/apt/sources.list
+  * `sudo apt-get update`
+  * `sudo apt-get build-dep libtango9`
 * docker and docker-engine (for tests)
 
-# How to build and install using cmake
+# How to build and install
 
-- clone
-- cd into cloned repo
-- mkdir build
-- cd build
-- cmake .. 
-- make [-j NUMBER_OF_CPUS]
-- sudo make install
+- `git clone https://github.com/tango-controls/cppTango`
+- `cd cppTango`
+- `mkdir build`
+- `cd build`
+- `cmake ..`
+- `make [-j NUMBER_OF_CPUS]`
+- `sudo make install`
 
-cmake options are: `[-DCMAKE_INSTALL_PREFIX=<desired installation path>] [-DOMNI_BASE=<omniORB4 home folder>] [-DCPPZMQ_BASE=<cppzmq home folder>] [-DZMQ_BASE=<zmq home folder>] [-DIDL_BASE=<tango-idl installation folder>] [-DCMAKE_BUILD_TYPE=Release|Debug] [-DCMAKE_VERBOSE_MAKEFILE=true]`
+## Available are the following cmake options:
+
+- `-DCMAKE_INSTALL_PREFIX=<desired installation path>`
+- `-DIDL_BASE=<tango-idl installation folder>`
+- `-DOMNI_BASE=<omniORB4 home folder>`
+- `-DCPPZMQ_BASE=<cppzmq home folder>`
+- `-DZMQ_BASE=<zmq home folder>`
+- `-DCMAKE_BUILD_TYPE=<Release|Debug>`
+- `-DCMAKE_VERBOSE_MAKEFILE=true`
+- `-DTANGO_USE_USING_NAMESPACE=<ON|OFF>` choose `OFF` for modern builds
 
 Typical output:
 
@@ -54,17 +65,49 @@ When compiling on Ubuntu 16.04 or on Debian stretch, the following error can occ
                  poll_list[old_poll_nb].socket = *tmp_sock;
 ```
 
-This is due to incompatibility of zmq.hpp file provided in libzmq3-dev:4.1.7 (ubuntu 16.04), i.e. it is not possible to compile cppTango using zmq.hpp file provided by libzmq3-dev:4.1.7 (ubuntu 16.04).
+This is due to incompatibility of zmq.hpp file provided in libzmq3-dev:4.1.7
+(ubuntu 16.04), i.e. it is not possible to compile cppTango using zmq.hpp file
+provided by libzmq3-dev:4.1.7 (ubuntu 16.04).
 
-The following workaround can be applied:
+This requires installing [cppzmq](https://github.com/zeromq/cppzmq) via:
 
-Download and install [cppzmq](https://github.com/zeromq/cppzmq) (version 4.2.2 for instance). Install it in some folder.
+```
+git clone https://github.com/zeromq/cppzmq
+cd cppzmq
+mkdir build
+cd build
+cmake -DENABLE_DRAFTS=OFF -DCPPZMQ_BUILD_TESTS=OFF ..
+sudo make install
+```
 
-Build cppTango using installed cppzmq, using the following cmake command during the build process:
+# Using pkg-config
 
-`cmake .. -DCPPZMQ_BASE=<cppzmq_install_folder>`
+Once installed cppTango provides [pkg-config](https://en.wikipedia.org/wiki/Pkg-config) file `tango.pc`
 
-This problem is addressed in issue #273 and Pull Request #421.
+One can use it to resolve libtango dependencies in his project, for instance using cmake:
+
+```cmake
+include(FindPkgConfig)
+pkg_search_module(TANGO_PKG REQUIRED tango)
+
+#...
+
+link_directories(${TANGO_PKG_LIBRARY_DIRS})
+
+#note TANGO_PKG_XXX usage
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${TANGO_PKG_INCLUDE_DIRS})
+target_compile_options(${PROJECT_NAME} PUBLIC -std=c++11)
+target_compile_definitions(${PROJECT_NAME} PUBLIC ${TANGO_PKG_CFLAGS_OTHER})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${TANGO_PKG_LIBRARIES})
+```
+
+`tango.pc` provides default installation directory for all Tango devices linked against this libtango:
+
+```bash
+pkg-config --variable=tangodsdir tango
+/usr/bin
+```
 
 # How to setup tests
 
@@ -117,14 +160,14 @@ Checking test dependency graph...
 Checking test dependency graph end
 test 1
       Start  1: log4tango_test
-      
+
 <snip>
-      
+
 100% tests passed, 0 tests failed out of 59
 
 Total Test time (real) = 843.30 sec
 
-Run command: /home/tango/src/build/cpp_test_suite/environment/post_test.sh      
+Run command: /home/tango/src/build/cpp_test_suite/environment/post_test.sh
 ```
 
 The whole test suite takes ~ 15 min
@@ -171,9 +214,9 @@ test 12
 
 12: Test command: /storage/Projects/org.tango/git/cppTango/build/cpp_test_suite/old_tests/attr_misc "test/debian8/10"
 12: Test timeout computed to be: 1500
-12: 
+12:
 12: new DeviceProxy(test/debian8/10) returned
-12: 
+12:
 12:    Setting/Getting attribute info --> OK
 12:    Writing outside attribute limits --> OK
 12:    Min alarm detection (on a float spectrum) --> OK

@@ -32,7 +32,7 @@
 
 TANGO is an object-oriented distributed control system. In TANGO all objects are representations of devices, which can be on the same computer or distributed over a network. Communication between devices can be synchronous, asynchronous or event driven.
 
-The object model in TANGO supports methods, attributes and properties. TANGO provides an API which hides all the details of network access and provides object browsing, discovery, and security features. 
+The object model in TANGO supports methods, attributes and properties. TANGO provides an API which hides all the details of network access and provides object browsing, discovery, and security features.
 
 For more information please visit [www.tango-controls.org](http://www.tango-controls.org).
 
@@ -50,72 +50,9 @@ API reference: [tango-controls.github.io/cppTango-docs](https://tango-controls.g
 Old Manuals: [tango-controls.org/documentation/kernel](http://www.tango-controls.org/documentation/kernel/)
 
 
-# How to build and install using cmake
+# How to build and install
 
-`mkdir build; cd build; cmake .. [-DCMAKE_INSTALL_PREFIX=<desired installation path>] [-DIDL_BASE=<tango-idl installation folder>] [-DOMNI_BASE=<omniORB4 home folder>] [-DCPPZMQ_BASE=<cppzmq home folder][-DZMQ_BASE=<zmq home folder>] [-DCMAKE_BUILD_TYPE=Release|Debug] [-DCMAKE_VERBOSE_MAKEFILE=true]; make; make install`
-
-More information is in [INSTALL file](https://github.com/tango-controls/cppTango/blob/tango-9-lts/INSTALL.md) 
-
-# Using pkg-config
-
-Once installed cppTango provides [pkg-config](https://en.wikipedia.org/wiki/Pkg-config) file `tango.pc`
-
-One can use it to resolve libtango dependencies in his project, for instance using cmake:
- 
-```cmake
-include(FindPkgConfig)
-pkg_search_module(TANGO_PKG REQUIRED tango)
-
-#...
-
-link_directories(${TANGO_PKG_LIBRARY_DIRS})
-
-#note TANGO_PKG_XXX usage
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${TANGO_PKG_INCLUDE_DIRS})
-target_compile_options(${PROJECT_NAME} PUBLIC -std=c++11)
-target_compile_definitions(${PROJECT_NAME} PUBLIC ${TANGO_PKG_CFLAGS_OTHER})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${TANGO_PKG_LIBRARIES})
-``` 
-
-`tango.pc` provides default installation directory for all Tango devices linked against this libtango:
-
-```bash
-pkg-config --variable=tangodsdir tango
-/usr/bin
-```
-
-# How to test
-
-### 1. First build everything
-
- `mkdir build; cd build; cmake ..; make`
-
-### 2. Start TANGO environment
-
- `make start-tango`
- 
- Typical output:
-Note env.TANGO_HOST value: this is normal TANGO_HOST that can be used, for instance, in Jive
-
-```
-Setup test environment
- 174fda8cad89ac457a6129c599368d2842547575eac05f1d9b4ad60966cf0018
- CONTAINER=6130013cf55d420552df9dddd488b7564d58f49d10831d4880774443faf1a22b
- TANGO_HOST=172.17.0.3:10000
- Create tango_host file
- Wait till tango-cs is online
-```
-
-### 3. Run tests
- `make run-tests`
-
- Before running tests CTest runs conf_devtest (located in cpp_test_suite/new_tests) and starts DevTest and FwdTest device servers (located in cpp_test_ds)
-
-### 4. Shutdown TANGO environment
- `make stop-tango`
-
-For information on how to run individual tests see [INSTALL file](https://github.com/tango-controls/cppTango/blob/master/INSTALL.md)
+See [INSTALL file](INSTALL.md).
 
 # How to contribute
 
@@ -130,7 +67,7 @@ See [corresponding wiki page](https://github.com/tango-controls/cppTango/wiki/Co
 4. Code review: most projects (all except single-developer ones) should only allow commits to the master branch after peer review. This can be enforced by the convention that all commits to master must be done via a Pull request and the pull request approved by a person different from the author of the commit.
 5. Releases (named versions):
   * Simple projects may be ok with just tagging certain (ideally, all) commits done to the master branch with a version number. With this system, only one release is actively maintained simultaneously.
-        
+
   * More complex projects may require to simultaneously maintain more than one release (e.g. Tango may choose to support bugfixes in Tango9 even after Tango10 is released). In this case, releases may be done on release branches starting from master (see APPENDIX I for an example)
 6. Semantic versioning is recommended.
 7. Public automatic testing/continuous integration (e.g., via Travis) is recommended
