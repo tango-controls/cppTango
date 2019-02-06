@@ -13,6 +13,7 @@ environment:
       MSVCYEAR: "vs2017"
       MSVCABR: "15"
       VC_VER: 15.0
+      PYTHONPATH: c:\Python37\
       PYTHONPATHOMNI: "/cygdrive/c/Python37/python"
       BOOST_ROOT: C:\Libraries\boost_1_63_0
       ZMQ_BASE: C:\projects\libzmq
@@ -29,6 +30,7 @@ environment:
       MSVCYEAR: "vs2017"
       MSVCABR: "15"
       VC_VER: 15.0
+      PYTHONPATH: c:\Python37-x64\
       PYTHONPATHOMNI: "/cygdrive/c/Python37-x64/python"
       BOOST_ROOT: C:\Libraries\boost_1_63_0
       ZMQ_BASE: C:\projects\libzmq
@@ -45,6 +47,7 @@ environment:
       MSVCYEAR: "vs2008"
       MSVCABR: "9"
       VC_VER: 9.0
+      PYTHONPATH: c:\Python27\
       PYTHONPATHOMNI: "/cygdrive/c/Python27/python"
       BOOST_ROOT: C:\Libraries\boost_1_63_0
       ZMQ_BASE: C:\projects\libzmq
@@ -61,6 +64,7 @@ environment:
       MSVCYEAR: "vs2008"
       MSVCABR: "9"
       VC_VER: 9.0
+      PYTHONPATH: c:\Python27-x64\
       PYTHONPATHOMNI: "/cygdrive/c/Python27-x64/python"
       BOOST_ROOT: C:\Libraries\boost_1_63_0
       ZMQ_BASE: C:\projects\libzmq
@@ -111,6 +115,7 @@ environment:
       MSVCYEAR: "vs2013"
       MSVCABR: "13"
       VC_VER: 13.0
+      PYTHONPATH: c:\Python33-x64\
       PYTHONPATHOMNI: "/cygdrive/c/Python33-x64/python"
       BOOST_ROOT: C:\Libraries\boost_1_63_0
       ZMQ_BASE: C:\projects\libzmq
