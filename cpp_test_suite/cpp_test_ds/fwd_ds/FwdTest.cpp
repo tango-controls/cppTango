@@ -9,23 +9,23 @@
 //               network. All commands which can be executed on the
 //               FwdTest are implemented in this file.
 //
-// project :     
+// project :
 //
 // This file is part of Tango device class.
-// 
+//
 // Tango is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 // $Author$
 //
 // $Revision$
@@ -46,7 +46,7 @@
 
 /**
  *  FwdTest class description:
- *    
+ *
  */
 
 //================================================================
@@ -79,12 +79,12 @@ namespace FwdTest_ns
  *                implementing the classFwdTest
  */
 //--------------------------------------------------------
-FwdTest::FwdTest(Tango::DeviceClass *cl, string &s)
+FwdTest::FwdTest(Tango::DeviceClass *cl, std::string &s)
  : Tango::Device_5Impl(cl, s.c_str())
 {
 	/*----- PROTECTED REGION ID(FwdTest::constructor_1) ENABLED START -----*/
 	init_device();
-	
+
 	/*----- PROTECTED REGION END -----*/	//	FwdTest::constructor_1
 }
 //--------------------------------------------------------
@@ -93,7 +93,7 @@ FwdTest::FwdTest(Tango::DeviceClass *cl, const char *s)
 {
 	/*----- PROTECTED REGION ID(FwdTest::constructor_2) ENABLED START -----*/
 	init_device();
-	
+
 	/*----- PROTECTED REGION END -----*/	//	FwdTest::constructor_2
 }
 //--------------------------------------------------------
@@ -102,7 +102,7 @@ FwdTest::FwdTest(Tango::DeviceClass *cl, const char *s, const char *d)
 {
 	/*----- PROTECTED REGION ID(FwdTest::constructor_3) ENABLED START -----*/
 	init_device();
-	
+
 	/*----- PROTECTED REGION END -----*/	//	FwdTest::constructor_3
 }
 
@@ -114,11 +114,11 @@ FwdTest::FwdTest(Tango::DeviceClass *cl, const char *s, const char *d)
 //--------------------------------------------------------
 void FwdTest::delete_device()
 {
-	DEBUG_STREAM << "FwdTest::delete_device() " << device_name << endl;
+	DEBUG_STREAM << "FwdTest::delete_device() " << device_name << std::endl;
 	/*----- PROTECTED REGION ID(FwdTest::delete_device) ENABLED START -----*/
-	
+
 	//	Delete device allocated objects
-	
+
 	/*----- PROTECTED REGION END -----*/	//	FwdTest::delete_device
 }
 
@@ -130,20 +130,20 @@ void FwdTest::delete_device()
 //--------------------------------------------------------
 void FwdTest::init_device()
 {
-	DEBUG_STREAM << "FwdTest::init_device() create device " << device_name << endl;
+	DEBUG_STREAM << "FwdTest::init_device() create device " << device_name << std::endl;
 	/*----- PROTECTED REGION ID(FwdTest::init_device_before) ENABLED START -----*/
-	
+
 	//	Initialization before get_device_property() call
-	
+
 	/*----- PROTECTED REGION END -----*/	//	FwdTest::init_device_before
-	
+
 	//	No device property to be read from database
-	
+
 
 	/*----- PROTECTED REGION ID(FwdTest::init_device) ENABLED START -----*/
-	
+
 	set_state(Tango::ON);
-	
+
 	/*----- PROTECTED REGION END -----*/	//	FwdTest::init_device
 }
 
@@ -156,11 +156,11 @@ void FwdTest::init_device()
 //--------------------------------------------------------
 void FwdTest::always_executed_hook()
 {
-	INFO_STREAM << "FwdTest::always_executed_hook()  " << device_name << endl;
+	INFO_STREAM << "FwdTest::always_executed_hook()  " << device_name << std::endl;
 	/*----- PROTECTED REGION ID(FwdTest::always_executed_hook) ENABLED START -----*/
-	
+
 	//	code always executed before all requests
-	
+
 	/*----- PROTECTED REGION END -----*/	//	FwdTest::always_executed_hook
 }
 
@@ -170,13 +170,13 @@ void FwdTest::always_executed_hook()
  *	Description : Hardware acquisition for attributes
  */
 //--------------------------------------------------------
-void FwdTest::read_attr_hardware(TANGO_UNUSED(vector<long> &attr_list))
+void FwdTest::read_attr_hardware(TANGO_UNUSED(std::vector<long> &attr_list))
 {
-	DEBUG_STREAM << "FwdTest::read_attr_hardware(vector<long> &attr_list) entering... " << endl;
+	DEBUG_STREAM << "FwdTest::read_attr_hardware(vector<long> &attr_list) entering... " << std::endl;
 	/*----- PROTECTED REGION ID(FwdTest::read_attr_hardware) ENABLED START -----*/
-	
+
 	//	Add your own code
-	
+
 	/*----- PROTECTED REGION END -----*/	//	FwdTest::read_attr_hardware
 }
 
@@ -191,9 +191,9 @@ void FwdTest::read_attr_hardware(TANGO_UNUSED(vector<long> &attr_list))
 void FwdTest::add_dynamic_attributes()
 {
 	/*----- PROTECTED REGION ID(FwdTest::add_dynamic_attributes) ENABLED START -----*/
-	
+
 	//	Add your own code to create and add dynamic attributes if any
-	
+
 	/*----- PROTECTED REGION END -----*/	//	FwdTest::add_dynamic_attributes
 }
 
