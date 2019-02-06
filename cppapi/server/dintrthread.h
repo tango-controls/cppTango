@@ -60,15 +60,11 @@ struct _ShDevIntrTh
 	DevIntrCmdCode	cmd_code;		// The command code
 	bool			th_running;		// Thread running flag
 	#if _MSC_VER > 1900
-	#define INTERFACE_SAVED interface
+	#ifdef interface
 	#undef interface
-	       DevIntr                 interface;              // Device interface
-	#define interface INTERFACE_SAVED
-	#undef INTERFACE_SAVED
-	#else
-		DevIntr                 interface;              // Device interface
 	#endif
-
+	#endif
+		DevIntr                 interface;              // Device interface
 };
 typedef struct _ShDevIntrTh	ShDevIntrTh;
 
