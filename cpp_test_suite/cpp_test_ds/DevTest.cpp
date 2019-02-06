@@ -18,15 +18,15 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 	try
 	{
 		cout << "EventCallBack::push_event(): called attribute " << event_data->attr_name;
-		cout << " event " << event_data->event << endl;
+		cout << " event " << event_data->event << std::endl;
 		if (!event_data->err)
 		{
 			*(event_data->attr_value) >> value;
-			cout << "CallBack vector value : " << value << endl;
+			cout << "CallBack vector value : " << value << std::endl;
 		}
 		else
 		{
-			cout << "Error sent to callback" << endl;
+			cout << "Error sent to callback" << std::endl;
 //			Tango::Except::print_error_stack(event_data->errors);
 			cb_err++;
 		}
@@ -51,7 +51,7 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 //-----------------------------------------------------------------------------
 
 #ifndef COMPAT
-DevTest::DevTest(Tango::DeviceClass *cl,string &s):TANGO_BASE_CLASS(cl,s.c_str())
+DevTest::DevTest(Tango::DeviceClass *cl,std::string &s):TANGO_BASE_CLASS(cl,s.c_str())
 {
 	init_device();
 }
@@ -73,7 +73,7 @@ DevTest::DevTest(Tango::DeviceClass *cl,const char *s,const char *d, Tango::DevS
 	init_device();
 }
 #else
-DevTest::DevTest(Tango::DeviceClass *cl,string &s):Tango::Device_3Impl(cl,s.c_str())
+DevTest::DevTest(Tango::DeviceClass *cl,std::string &s):Tango::Device_3Impl(cl,s.c_str())
 {
 	init_device();
 }
@@ -98,8 +98,8 @@ DevTest::DevTest(Tango::DeviceClass *cl,const char *s,const char *d, Tango::DevS
 
 void DevTest::init_device()
 {
-	cout << "DevTest::DevTest() create  " << device_name << endl;
-	DEBUG_STREAM << "Creating " << device_name << endl;
+	cout << "DevTest::DevTest() create  " << device_name << std::endl;
+	DEBUG_STREAM << "Creating " << device_name << std::endl;
 
 	Tango::Util *tg = Tango::Util::instance();
 
@@ -197,7 +197,7 @@ void DevTest::init_device()
     Reynald_ctr = 0;
     Reynald_val = 9.9;
 
-	cout << "DevTest::DevTest(): End of init_device() method for device " << device_name << endl;
+	cout << "DevTest::DevTest(): End of init_device() method for device " << device_name << std::endl;
 
 }
 
@@ -213,7 +213,7 @@ void DevTest::init_device()
 void DevTest::always_executed_hook()
 {
 
-	cout2 << "In always_executed_hook method" << endl;
+	cout2 << "In always_executed_hook method" << std::endl;
 
 }
 
@@ -230,7 +230,7 @@ void DevTest::always_executed_hook()
 Tango::ConstDevString DevTest::dev_status()
 {
 
-	cout2 << "In DayOfWeek state command" << endl;
+	cout2 << "In DayOfWeek state command" << std::endl;
 #ifdef WIN32
 	Tango::ConstDevString stat = DeviceImpl::dev_status();
 #else
@@ -261,12 +261,12 @@ bool DevTest::templ_state(const CORBA::Any &)
 
 void DevTest::IOTempl()
 {
-    	cout << "[DevTest::IOTempl]" << endl;
+    	cout << "[DevTest::IOTempl]" << std::endl;
 }
 
 Tango::DevVarLongArray *DevTest::IOTemplOut()
 {
-	cout << "[DevTest::IOTemplOut]" << endl;
+	cout << "[DevTest::IOTemplOut]" << std::endl;
 
 	Tango::DevVarLongArray *argout;
 	argout = new Tango::DevVarLongArray();
@@ -282,15 +282,15 @@ Tango::DevVarLongArray *DevTest::IOTemplOut()
 
 void DevTest::IOTemplIn(Tango::DevLong received)
 {
-	cout << "[DevTest::IOTemplIn] received " << received << endl;
+	cout << "[DevTest::IOTemplIn] received " << received << std::endl;
 }
 
 void DevTest::IOPushEvent()
 {
-	cout << "[DevTest::IOPushEvent] received " << endl;
+	cout << "[DevTest::IOPushEvent] received " << std::endl;
 
-	vector<string> f_names;
-	vector<double> f_val;
+	std::vector<std::string> f_names;
+	std::vector<double> f_val;
 
 	push_event("event_change_tst",f_names,f_val,attr_event,attr_event_size);
 
@@ -298,11 +298,11 @@ void DevTest::IOPushEvent()
 
 void DevTest::IOPushDevEncodedEvent()
 {
-	cout << "[DevTest::IOPushDevEncodedEvent] received " << endl;
+	cout << "[DevTest::IOPushDevEncodedEvent] received " << std::endl;
 
 #ifndef COMPAT
-	vector<string> f_names;
-	vector<double> f_val;
+	std::vector<std::string> f_names;
+	std::vector<double> f_val;
 
 	push_event("encoded_attr",f_names,f_val,&enc_attr);
 #endif
@@ -311,7 +311,7 @@ void DevTest::IOPushDevEncodedEvent()
 
 Tango::DevLong DevTest::IOSubscribeEvent(const Tango::DevVarStringArray *in_data)
 {
-	cout << "[DevTest::IOSubscribeEvent] received " << endl;
+	cout << "[DevTest::IOSubscribeEvent] received " << std::endl;
 
 //TODO: modify conf_devtest.cpp to automatically create a remote device based on the instance name
 
@@ -330,7 +330,7 @@ Tango::DevLong DevTest::IOSubscribeEvent(const Tango::DevVarStringArray *in_data
 //			remote_dev = new Tango::DeviceProxy(devices[1]);
 //		}
 //		else
-//			cout << "EXCEPTION: at least 2 devices have to be defined" << endl;
+//			cout << "EXCEPTION: at least 2 devices have to be defined" << std::endl;
 //	}
 //	string att_name("short_attr");
 //	cb.cb_executed = 0;
@@ -340,20 +340,20 @@ Tango::DevLong DevTest::IOSubscribeEvent(const Tango::DevVarStringArray *in_data
 //	eve_id = remote_dev->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb,filters);
 
 
-	vector<string> filters;
+	std::vector<std::string> filters;
 
 	if (remote_dev == NULL)
 	{
 		remote_dev = new Tango::DeviceProxy((*in_data)[0]);
 	}
-	string att_name((*in_data)[1]);
+	std::string att_name((*in_data)[1]);
 	cb.cb_executed = 0;
 
 	// start the polling first!
 	remote_dev->poll_attribute(att_name,1000);
 
-	string eve_type((*in_data)[2]);
-	transform(eve_type.begin(),eve_type.end(),eve_type.begin(),::tolower);
+	std::string eve_type((*in_data)[2]);
+	std::transform(eve_type.begin(),eve_type.end(),eve_type.begin(),::tolower);
 	Tango::EventType eve;
 	if (eve_type == "change")
 		eve = Tango::CHANGE_EVENT;
@@ -363,7 +363,7 @@ Tango::DevLong DevTest::IOSubscribeEvent(const Tango::DevVarStringArray *in_data
 		eve = Tango::ARCHIVE_EVENT;
 	else
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << "Event type " << (*in_data)[2] << " not recognized as a valid event type";
 		Tango::Except::throw_exception("DevTest_WrongEventType",ss.str(),"DevTest::IOSubscribeEvent");
 	}
@@ -377,11 +377,11 @@ Tango::DevLong DevTest::IOSubscribeEvent(const Tango::DevVarStringArray *in_data
 
 void DevTest::IOUnSubscribeEvent(Tango::DevLong &in_data)
 {
-	cout << "[DevTest::IOUnSubscribeEvent] received " << endl;
+	cout << "[DevTest::IOUnSubscribeEvent] received " << std::endl;
 
 	if (in_data != 0)
 	{
-		map<int,string>::iterator ite = event_atts.find(in_data);
+		std::map<int,std::string>::iterator ite = event_atts.find(in_data);
 		if (ite == event_atts.end())
 		{
 			Tango::Except::throw_exception("DevTest_WrongEventID",
@@ -397,13 +397,13 @@ void DevTest::IOUnSubscribeEvent(Tango::DevLong &in_data)
 
 void DevTest::IOFillPollBuffAttr()
 {
-    cout << "[DevTest::IOFillPollBuffAttr] received " << endl;
+    cout << "[DevTest::IOFillPollBuffAttr] received " << std::endl;
 
 	Tango::AttrHistoryStack<Tango::DevString> ahs;
 	ahs.length(3);
 	Tango::Util *tg = Tango::Util::instance();
 	Tango::DevString *main_array[3];
-	string att_name("Poll_buff");
+	std::string att_name("Poll_buff");
 
 	Tango::DevString *array_1 = new Tango::DevString [4];
 //     	array_1[0] = Tango::string_dup("One_1");
@@ -488,17 +488,17 @@ void DevTest::IOFillPollBuffAttr()
 
 	tg->fill_attr_polling_buffer(this,att_name,ahs);
 
-	cout << "Attribute Polling buffer filled" << endl;
+	cout << "Attribute Polling buffer filled" << std::endl;
 }
 
 void DevTest::IOFillPollBuffEncodedAttr()
 {
-    cout << "[DevTest::IOFillPollBuffEncodedAttr] received " << endl;
+    cout << "[DevTest::IOFillPollBuffEncodedAttr] received " << std::endl;
 
 #ifndef COMPAT
 	Tango::AttrHistoryStack<Tango::DevEncoded> ahs;
 	ahs.length(3);
-	string att_name("Encoded_attr");
+	std::string att_name("Encoded_attr");
 	Tango::Util *tg = Tango::Util::instance();
 	Tango::DevEncoded the_enc;
 	Tango::DevEncoded the_enc1;
@@ -532,21 +532,21 @@ void DevTest::IOFillPollBuffEncodedAttr()
 	ahs.push(tad2);
 
 	tg->fill_attr_polling_buffer(this,att_name,ahs);
-	cout << "Attribute (DevEncoded data type) polling buffer filled" << endl;
+	cout << "Attribute (DevEncoded data type) polling buffer filled" << std::endl;
 #endif
 }
 
 
 void DevTest::IOFillPollBuffCmd()
 {
-    cout << "[DevTest::IOFillPollBuffCmd] received " << endl;
+    cout << "[DevTest::IOFillPollBuffCmd] received " << std::endl;
 
 	Tango::CmdHistoryStack<Tango::DevVarLongArray> chs;
 	chs.length(3);
 	Tango::Util *tg = Tango::Util::instance();
 
 	Tango::DevVarLongArray dvla_array[10];
-	string cmd_name("IOArray1");
+	std::string cmd_name("IOArray1");
 
 	for (int j = 0;j < 10;j++)
 	{
@@ -566,13 +566,13 @@ void DevTest::IOFillPollBuffCmd()
 
 	tg->fill_cmd_polling_buffer(this,cmd_name,chs);
 
-	cout << "Command Polling buffer filled" << endl;
+	cout << "Command Polling buffer filled" << std::endl;
 }
 
 
 Tango::DevVarDoubleArray *DevTest::IOTemplInOut(Tango::DevDouble db)
 {
-	cout << "[DevTest::IOTemplInOut] received " << db << endl;
+	cout << "[DevTest::IOTemplInOut] received " << db << std::endl;
 
     	Tango::DevVarDoubleArray *argout;
     	argout = new Tango::DevVarDoubleArray();
@@ -601,7 +601,7 @@ void DevTest::IOSetWAttrLimit(const Tango::DevVarDoubleArray *in)
 
 void DevTest::push_data_ready(const Tango::DevVarLongStringArray *in)
 {
-	cout << "Pushing Data Ready event for attribute " << in->svalue[0].in() << endl;
+	cout << "Pushing Data Ready event for attribute " << in->svalue[0].in() << std::endl;
 	push_data_ready_event(in->svalue[0].in(),in->lvalue[0]);
 }
 
@@ -609,9 +609,9 @@ Tango::DevVarStringArray *DevTest::IOPollingInDevice()
 {
     Tango::DevVarStringArray *ret = new Tango::DevVarStringArray();
     ret->length(12);
-    stringstream ss;
-    string att_name("Double_spec_attr");
-    string cmd_name("OULong");
+    std::stringstream ss;
+    std::string att_name("Double_spec_attr");
+    std::string cmd_name("OULong");
 
 // is_xxx_polled
 
@@ -726,9 +726,9 @@ Tango::DevVarStringArray *DevTest::IOPollingInDevice()
 
 void DevTest::IOSophisticatedPollInDevice()
 {
-    string att1_name("Double_spec_attr");
-    string att2_name("Short_attr");
-    string att3_name("ReynaldPollAttr");
+    std::string att1_name("Double_spec_attr");
+    std::string att2_name("Short_attr");
+    std::string att3_name("ReynaldPollAttr");
 
 // poll the 3 atts
 
@@ -756,7 +756,7 @@ void DevTest::set_enum_labels()
 	Tango::MultiAttrProp<Tango::DevEnum> multi_prop;
 	att.get_properties(multi_prop);
 
-	vector<string> v_s;
+	std::vector<std::string> v_s;
 	v_s.push_back("Zero");
 	v_s.push_back("One");
 	v_s.push_back("Two");
@@ -787,13 +787,13 @@ void DevTest::add_enum_label(Tango::DevString new_label)
 void DevTest::signal_handler(long signo)
 {
 	cout << "[Device signal handler] received signal number " << signo;
-	cout << " for device " << device_name << endl;
+	cout << " for device " << device_name << std::endl;
 
 	DEBUG_STREAM << "[Device signal handler] received signal number "
 		     << signo
 	 	     << " for device "
 		     << device_name
-		     << endl;
+		     << std::endl;
 }
 
 
@@ -807,96 +807,96 @@ void DevTest::signal_handler(long signo)
 
 void DevTest::write_Short_attr_w(Tango::WAttribute &att)
 {
-//	cout << "In write_Short_attr_w for attribute " << att.get_name() << endl;
+//	cout << "In write_Short_attr_w for attribute " << att.get_name() << std::endl;
 
 	Tango::DevShort sh;
 	att.get_write_value(sh);
-//	cout << "Attribute value = " << sh << endl;
+//	cout << "Attribute value = " << sh << std::endl;
 	if (Short_attr_w_except == true)
 		Tango::Except::throw_exception("Aaaa","Bbbb","Cccc");
 }
 
 void DevTest::write_Short_attr_w2(Tango::WAttribute &att)
 {
-	cout << "In write_Short_attr_w2 for attribute " << att.get_name() << endl;
+	cout << "In write_Short_attr_w2 for attribute " << att.get_name() << std::endl;
 
 	Tango::DevShort sh;
 	att.get_write_value(sh);
-	cout << "Attribute value = " << sh << endl;
+	cout << "Attribute value = " << sh << std::endl;
 }
 
 void DevTest::write_Long_attr_w(Tango::WAttribute &att)
 {
-	cout << "In write_Long_attr_w for attribute " << att.get_name() << endl;
+	cout << "In write_Long_attr_w for attribute " << att.get_name() << std::endl;
 
 	Tango::DevLong lg;
 	att.get_write_value(lg);
-	cout << "Attribute value = " << lg << endl;
+	cout << "Attribute value = " << lg << std::endl;
 }
 
 void DevTest::write_Double_attr_w(Tango::WAttribute &att)
 {
-	cout << "In write_Double_attr_w for attribute " << att.get_name() << endl;
+	cout << "In write_Double_attr_w for attribute " << att.get_name() << std::endl;
 
 	Tango::DevDouble db;
 	att.get_write_value(db);
-	cout << "Attribute value = " << db << endl;
+	cout << "Attribute value = " << db << std::endl;
 }
 
 void DevTest::write_String_attr_w(Tango::WAttribute &att)
 {
-//	cout << "In write_String_attr_w for attribute " << att.get_name() << endl;
+//	cout << "In write_String_attr_w for attribute " << att.get_name() << std::endl;
 
 	Tango::DevString str;
 	att.get_write_value(str);
-//	cout << "Attribute value = " << str << endl;
+//	cout << "Attribute value = " << str << std::endl;
 }
 
 void DevTest::write_String_attr_w2(Tango::WAttribute &att)
 {
-	cout << "In write_String_attr_w2 for attribute " << att.get_name() << endl;
+	cout << "In write_String_attr_w2 for attribute " << att.get_name() << std::endl;
 
 	Tango::DevString str;
 	att.get_write_value(str);
-	cout << "Attribute value = " << str << endl;
+	cout << "Attribute value = " << str << std::endl;
 }
 
 
 void DevTest::write_attr_asyn_write(Tango::WAttribute &att)
 {
-	cout << "In write_attr_asyn_write for attribute " << att.get_name() << endl;
+	cout << "In write_attr_asyn_write for attribute " << att.get_name() << std::endl;
 
 	Tango::DevLong lg;
 	att.get_write_value(lg);
 	attr_asyn_write_val = lg;
-	cout << "Attribute value = " << lg << endl;
+	cout << "Attribute value = " << lg << std::endl;
 	Tango_sleep(2);
 }
 
 void DevTest::read_attr_asyn_write(Tango::Attribute &att)
 {
-	cout << "In read_attr_asyn_write for attribute " << att.get_name() << endl;
+	cout << "In read_attr_asyn_write for attribute " << att.get_name() << std::endl;
 	Tango_sleep(2);
 	att.set_value(&attr_asyn_write_val);
 }
 
 void DevTest::write_attr_asyn_write_to(Tango::WAttribute &att)
 {
-	cout << "In write_attr_asyn_write_to for attribute " << att.get_name() << endl;
+	cout << "In write_attr_asyn_write_to for attribute " << att.get_name() << std::endl;
 
 	Tango::DevLong lg;
 	att.get_write_value(lg);
-	cout << "Attribute value = " << lg << endl;
+	cout << "Attribute value = " << lg << std::endl;
 	Tango_sleep(4);
 }
 
 void DevTest::write_attr_asyn_write_except(Tango::WAttribute &att)
 {
-	cout << "In write_attr_asyn_write_except for attribute " << att.get_name() << endl;
+	cout << "In write_attr_asyn_write_except for attribute " << att.get_name() << std::endl;
 
 	Tango::DevLong lg;
 	att.get_write_value(lg);
-	cout << "Attribute value = " << lg << endl;
+	cout << "Attribute value = " << lg << std::endl;
 	Tango_sleep(2);
 	Tango::Except::throw_exception((const char *)"aaa",
 					(const char *)"This is a test",
@@ -905,31 +905,31 @@ void DevTest::write_attr_asyn_write_except(Tango::WAttribute &att)
 
 void DevTest::write_String_spec_attr_w(Tango::WAttribute &att)
 {
-	cout << "In write_String_spec_attr_w for attribute " << att.get_name() << endl;
+	cout << "In write_String_spec_attr_w for attribute " << att.get_name() << std::endl;
 
 	const Tango::ConstDevString *ptr;
 	att.get_write_value(ptr);
 	long nb_str = att.get_write_value_length();
-	cout << ", Elt nb = " << nb_str << endl;
+	cout << ", Elt nb = " << nb_str << std::endl;
 	for (int k = 0;k < nb_str;k++)
-		cout << ptr[k] << endl;
+		cout << ptr[k] << std::endl;
 }
 
 void DevTest::write_Short_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_Short_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_Short_attr_rw for attribute " << att.get_name() << std::endl;
 	att.get_write_value(attr_short_rw);
 }
 
 void DevTest::write_Long64_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_Long64_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_Long64_attr_rw for attribute " << att.get_name() << std::endl;
 	att.get_write_value(attr_long64_rw);
 }
 
 void DevTest::write_ULong_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_ULong_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_ULong_attr_rw for attribute " << att.get_name() << std::endl;
 	att.get_write_value(attr_ulong_rw);
 
 	if (attr_ulong_rw > 1000)
@@ -938,188 +938,188 @@ void DevTest::write_ULong_attr_rw(Tango::WAttribute &att)
 
 void DevTest::write_ULong64_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_ULong64_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_ULong64_attr_rw for attribute " << att.get_name() << std::endl;
 	att.get_write_value(attr_ulong64_rw);
 }
 
 void DevTest::write_State_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_State_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_State_attr_rw for attribute " << att.get_name() << std::endl;
 	att.get_write_value(attr_state_rw);
 }
 
 void DevTest::write_Float_attr_w(Tango::WAttribute &att)
 {
-	cout << "In write_Float_attr_w for attribute " << att.get_name() << endl;
+	cout << "In write_Float_attr_w for attribute " << att.get_name() << std::endl;
 
 	Tango::DevFloat fl;
 	att.get_write_value(fl);
-	cout << "Attribute value = " << fl << endl;
+	cout << "Attribute value = " << fl << std::endl;
 }
 
 void DevTest::write_Boolean_attr_w(Tango::WAttribute &att)
 {
-	cout << "In write_Boolean_attr_w for attribute " << att.get_name() << endl;
+	cout << "In write_Boolean_attr_w for attribute " << att.get_name() << std::endl;
 
 	Tango::DevBoolean bo;
 	att.get_write_value(bo);
-	cout << "Attribute value = " << bo << endl;
+	cout << "Attribute value = " << bo << std::endl;
 }
 
 void DevTest::write_UShort_attr_w(Tango::WAttribute &att)
 {
-	cout << "In write_UShort_attr_w for attribute " << att.get_name() << endl;
+	cout << "In write_UShort_attr_w for attribute " << att.get_name() << std::endl;
 
 	Tango::DevUShort ush;
 	att.get_write_value(ush);
-	cout << "Attribute value = " << ush << endl;
+	cout << "Attribute value = " << ush << std::endl;
 }
 
 void DevTest::write_UChar_attr_w(Tango::WAttribute &att)
 {
-	cout << "In write_UChar_attr_w for attribute " << att.get_name() << endl;
+	cout << "In write_UChar_attr_w for attribute " << att.get_name() << std::endl;
 
 	Tango::DevUChar uch;
 	att.get_write_value(uch);
-	cout << "Attribute value = " << uch << endl;
+	cout << "Attribute value = " << uch << std::endl;
 }
 
 void DevTest::write_Float_spec_attr_w(Tango::WAttribute &att)
 {
-	cout << "In write_Float_spec_attr_w for attribute " << att.get_name() << endl;
+	cout << "In write_Float_spec_attr_w for attribute " << att.get_name() << std::endl;
 
 	const Tango::DevFloat *fl;
 	att.get_write_value(fl);
 	long nb_fl = att.get_write_value_length();
-	cout << ", Elt nb = " << nb_fl << endl;
+	cout << ", Elt nb = " << nb_fl << std::endl;
 	for (int k = 0;k < nb_fl;k++)
-		cout << fl[k] << endl;
+		cout << fl[k] << std::endl;
 }
 
 void DevTest::write_Boolean_spec_attr_w(Tango::WAttribute &att)
 {
-	cout << "In write_Boolean_spec_attr_w for attribute " << att.get_name() << endl;
+	cout << "In write_Boolean_spec_attr_w for attribute " << att.get_name() << std::endl;
 
 	const Tango::DevBoolean *bo;
 	att.get_write_value(bo);
 	long nb_bo = att.get_write_value_length();
-	cout << ", Elt nb = " << nb_bo << endl;
+	cout << ", Elt nb = " << nb_bo << std::endl;
 	for (int k = 0;k < nb_bo;k++)
-		cout << bo[k] << endl;
+		cout << bo[k] << std::endl;
 }
 
 void DevTest::write_UShort_spec_attr_w(Tango::WAttribute &att)
 {
-	cout << "In write_UShort_spec_attr_w for attribute " << att.get_name() << endl;
+	cout << "In write_UShort_spec_attr_w for attribute " << att.get_name() << std::endl;
 
 	const Tango::DevUShort *ush;
 	att.get_write_value(ush);
 	long nb_ush = att.get_write_value_length();
-	cout << ", Elt nb = " << nb_ush << endl;
+	cout << ", Elt nb = " << nb_ush << std::endl;
 	for (int k = 0;k < nb_ush;k++)
-		cout << ush[k] << endl;
+		cout << ush[k] << std::endl;
 }
 
 void DevTest::write_UChar_spec_attr_w(Tango::WAttribute &att)
 {
-	cout << "In write_UChar_spec_attr_w for attribute " << att.get_name() << endl;
+	cout << "In write_UChar_spec_attr_w for attribute " << att.get_name() << std::endl;
 
 	const Tango::DevUChar *uch;
 	att.get_write_value(uch);
 	long nb_uch = att.get_write_value_length();
-	cout << ", Elt nb = " << nb_uch << endl;
+	cout << ", Elt nb = " << nb_uch << std::endl;
 //	for (int k = 0;k < nb_uch;k++)
-//		cout << uch[k] << endl;
+//		cout << uch[k] << std::endl;
 }
 
 void DevTest::write_Float_ima_attr_w(Tango::WAttribute &att)
 {
-	cout << "In write_Float_ima_attr_w for attribute " << att.get_name() << endl;
+	cout << "In write_Float_ima_attr_w for attribute " << att.get_name() << std::endl;
 
 	const Tango::DevFloat *fl;
 	att.get_write_value(fl);
 	long nb_fl = att.get_write_value_length();
-	cout << ", Elt nb = " << nb_fl << endl;
+	cout << ", Elt nb = " << nb_fl << std::endl;
 //	for (int k = 0;k < nb_fl;k++)
-//		cout << fl[k] << endl;
+//		cout << fl[k] << std::endl;
 }
 
 void DevTest::write_UShort_ima_attr_w(Tango::WAttribute &att)
 {
-	cout << "In write_UShort_ima_attr_w for attribute " << att.get_name() << endl;
+	cout << "In write_UShort_ima_attr_w for attribute " << att.get_name() << std::endl;
 
 	const Tango::DevUShort *ush;
 	att.get_write_value(ush);
 	long nb_ush = att.get_write_value_length();
-	cout << ", Elt nb = " << nb_ush << endl;
+	cout << ", Elt nb = " << nb_ush << std::endl;
 //	for (int k = 0;k < nb_ush;k++)
-//		cout << ush[k] << endl;
+//		cout << ush[k] << std::endl;
 }
 
 void DevTest::write_Float_spec_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_Float_spec_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_Float_spec_attr_rw for attribute " << att.get_name() << std::endl;
 
 	const Tango::DevFloat *fl;
 	att.get_write_value(fl);
 	long nb_fl = att.get_write_value_length();
-	cout << ", Elt nb = " << nb_fl << endl;
+	cout << ", Elt nb = " << nb_fl << std::endl;
 //	for (int k = 0;k < nb_fl;k++)
-//		cout << fl[k] << endl;
+//		cout << fl[k] << std::endl;
 }
 
 void DevTest::write_Long_spec_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_Long_spec_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_Long_spec_attr_rw for attribute " << att.get_name() << std::endl;
 
 	const Tango::DevLong *fl;
 	att.get_write_value(fl);
 	long nb_fl = att.get_write_value_length();
-	cout << ", Elt nb = " << nb_fl << endl;
+	cout << ", Elt nb = " << nb_fl << std::endl;
 	for (int k = 0;k < nb_fl;k++)
-		cout << fl[k] << endl;
+		cout << fl[k] << std::endl;
 }
 
 void DevTest::write_UChar_spec_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_UShort_spec_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_UShort_spec_attr_rw for attribute " << att.get_name() << std::endl;
 
 	const Tango::DevUChar *uch;
 	att.get_write_value(uch);
 	long nb_uch = att.get_write_value_length();
-	cout << ", Elt nb = " << nb_uch << endl;
+	cout << ", Elt nb = " << nb_uch << std::endl;
 //	for (int k = 0;k < nb_uch;k++)
-//		cout << uch[k] << endl;
+//		cout << uch[k] << std::endl;
 }
 
 void DevTest::write_Boolean_ima_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_Boolean_ima_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_Boolean_ima_attr_rw for attribute " << att.get_name() << std::endl;
 
 	const Tango::DevBoolean *bo;
 	att.get_write_value(bo);
 	long nb_bo = att.get_write_value_length();
-	cout << ", Elt nb = " << nb_bo << endl;
+	cout << ", Elt nb = " << nb_bo << std::endl;
 //	for (int k = 0;k < nb_bo;k++)
-//		cout << bo[k] << endl;
+//		cout << bo[k] << std::endl;
 }
 
 void DevTest::write_UShort_ima_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_UShort_ima_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_UShort_ima_attr_rw for attribute " << att.get_name() << std::endl;
 
 	const Tango::DevUShort *ush;
 	att.get_write_value(ush);
 	long nb_ush = att.get_write_value_length();
-	cout << ", Elt nb = " << nb_ush << endl;
+	cout << ", Elt nb = " << nb_ush << std::endl;
 //	for (int k = 0;k < nb_ush;k++)
-//		cout << ush[k] << endl;
+//		cout << ush[k] << std::endl;
 }
 
 
 void DevTest::write_slow_actuator(Tango::WAttribute &att)
 {
-	cout << "In write_slow_actuator for attribute " << att.get_name() << endl;
+	cout << "In write_slow_actuator for attribute " << att.get_name() << std::endl;
 
 	att.get_write_value(slow_actua);
 #ifdef WIN32
@@ -1135,7 +1135,7 @@ void DevTest::write_slow_actuator(Tango::WAttribute &att)
 
 void DevTest::write_fast_actuator(Tango::WAttribute &att)
 {
-	cout << "In write_fast_actuator for attribute " << att.get_name() << endl;
+	cout << "In write_fast_actuator for attribute " << att.get_name() << std::endl;
 
 	att.get_write_value(fast_actua);
 
@@ -1148,89 +1148,89 @@ void DevTest::write_fast_actuator(Tango::WAttribute &att)
 
 void DevTest::write_Long64_spec_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_Long64_spec_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_Long64_spec_attr_rw for attribute " << att.get_name() << std::endl;
 	const Tango::DevLong64 *lg64;
 	long nb_data = att.get_write_value_length();
 	att.get_write_value(lg64);
-	cout << "Received " << nb_data << " for attribute " << att.get_name() << endl;
+	cout << "Received " << nb_data << " for attribute " << att.get_name() << std::endl;
 }
 
 void DevTest::write_ULong_spec_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_ULong_spec_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_ULong_spec_attr_rw for attribute " << att.get_name() << std::endl;
 	const Tango::DevULong *ulg;
 	long nb_data = att.get_write_value_length();
 	att.get_write_value(ulg);
-	cout << "Received " << nb_data << " for attribute " << att.get_name() << endl;
+	cout << "Received " << nb_data << " for attribute " << att.get_name() << std::endl;
 }
 
 void DevTest::write_ULong64_spec_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_ULong64_spec_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_ULong64_spec_attr_rw for attribute " << att.get_name() << std::endl;
 	const Tango::DevULong64 *ulg64;
 	long nb_data = att.get_write_value_length();
 	att.get_write_value(ulg64);
-	cout << "Received " << nb_data << " for attribute " << att.get_name() << endl;
+	cout << "Received " << nb_data << " for attribute " << att.get_name() << std::endl;
 }
 
 void DevTest::write_State_spec_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_State_aspec_ttr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_State_aspec_ttr_rw for attribute " << att.get_name() << std::endl;
 	const Tango::DevState *sta;
 	long nb_data = att.get_write_value_length();
 	att.get_write_value(sta);
-	cout << "Received " << nb_data << " for attribute " << att.get_name() << endl;
+	cout << "Received " << nb_data << " for attribute " << att.get_name() << std::endl;
 }
 
 void DevTest::write_Encoded_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_Encoded_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_Encoded_attr_rw for attribute " << att.get_name() << std::endl;
 #ifndef COMPAT
 	const Tango::DevEncoded *enc;
 	att.get_write_value(enc);
-	cout << "\tReceived string = " << enc->encoded_format << endl;
-	cout << "\tReceived data nb = " << enc->encoded_data.length() << endl;
+	cout << "\tReceived string = " << enc->encoded_format << std::endl;
+	cout << "\tReceived data nb = " << enc->encoded_data.length() << std::endl;
 	for (unsigned int i = 0;i < enc->encoded_data.length();i++)
-		cout << "\t\tdata[" << i << "] = " << (unsigned long)enc->encoded_data[i] << endl;
+		cout << "\t\tdata[" << i << "] = " << (unsigned long)enc->encoded_data[i] << std::endl;
 #endif
 }
 
 void DevTest::write_Poll_buffRW(Tango::WAttribute &att)
 {
-	cout << "In write_Poll_buffRW for attribute " << att.get_name() << endl;
+	cout << "In write_Poll_buffRW for attribute " << att.get_name() << std::endl;
 }
 
 void DevTest::write_Def_attr(Tango::WAttribute &att)
 {
-	cout << "In write_Def_attr for attribute " << att.get_name() << endl;
+	cout << "In write_Def_attr for attribute " << att.get_name() << std::endl;
 }
 
 void DevTest::write_DefUser_attr(Tango::WAttribute &att)
 {
-	cout << "In write_DefUser_attr for attribute " << att.get_name() << endl;
+	cout << "In write_DefUser_attr for attribute " << att.get_name() << std::endl;
 }
 
 void DevTest::write_DefClass_attr(Tango::WAttribute &att)
 {
-	cout << "In write_DefClass_attr for attribute " << att.get_name() << endl;
+	cout << "In write_DefClass_attr for attribute " << att.get_name() << std::endl;
 }
 
 void DevTest::write_DefClassUser_attr(Tango::WAttribute &att)
 {
-	cout << "In write_DefClassUser_attr for attribute " << att.get_name() << endl;
+	cout << "In write_DefClassUser_attr for attribute " << att.get_name() << std::endl;
 }
 
 void DevTest::write_Enum_attr(Tango::WAttribute &att)
 {
-	cout << "In write_Enum_attr for attribute " << att.get_name() << endl;
+	cout << "In write_Enum_attr for attribute " << att.get_name() << std::endl;
 }
 
 void DevTest::write_Enum_spec_attr_rw(Tango::WAttribute &att)
 {
-	cout << "In write_Enum_spec_attr_rw for attribute " << att.get_name() << endl;
+	cout << "In write_Enum_spec_attr_rw for attribute " << att.get_name() << std::endl;
 }
 
-void DevTest::write_attr_hardware(vector<long> &att_idx)
+void DevTest::write_attr_hardware(std::vector<long> &att_idx)
 {
 	switch (wattr_throw)
 	{
@@ -1265,7 +1265,7 @@ void DevTest::write_attr_hardware(vector<long> &att_idx)
 
 void DevTest::read_Short_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Short_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name Short_attr" << std::endl;
       	attr_short = 12;
       	if (Short_attr_except == false)
 		{
@@ -1281,20 +1281,20 @@ void DevTest::read_Short_attr(Tango::Attribute &att)
 
 void DevTest::read_Long_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Long_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name Long_attr" << std::endl;
       	att.set_value(&attr_long);
 }
 
 void DevTest::read_Long64_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Long64_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name Long64_attr" << std::endl;
       	attr_long64 = 300;
       	att.set_value(&attr_long64);
 }
 
 void DevTest::read_Double_attr(Tango::Attribute &att)
 {
-    	cout << "[DevTest::read_attr] attribute name Double_attr" << endl;
+    	cout << "[DevTest::read_attr] attribute name Double_attr" << std::endl;
     	attr_double = 3.2;
     	att.set_value(&attr_double);
 }
@@ -1303,7 +1303,7 @@ void DevTest::read_String_attr(Tango::Attribute &att)
 {
   	static Tango::DevString s = NULL;
 
-      	cout << "[DevTest::read_attr] attribute name String_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name String_attr" << std::endl;
       	if (s == NULL)
 		s = Tango::string_dup("test_string");
 
@@ -1314,7 +1314,7 @@ void DevTest::read_Short_spec_attr(Tango::Attribute &att)
 {
   	static short attr_short_array[20];
 
-     	cout << "[DevTest::read_attr] attribute name Short_spec_attr" << endl;
+     	cout << "[DevTest::read_attr] attribute name Short_spec_attr" << std::endl;
       	attr_short_array[0] = 10;
       	attr_short_array[1] = 20;
       	attr_short_array[2] = 30;
@@ -1325,7 +1325,7 @@ void DevTest::read_Short_spec_attr(Tango::Attribute &att)
 
 void DevTest::read_Long_spec_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Long_spec_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name Long_spec_attr" << std::endl;
       	attr_long_array[0] = 0;
       	attr_long_array[1] = 1;
       	attr_long_array[2] = 2;
@@ -1342,7 +1342,7 @@ void DevTest::read_Long_spec_attr(Tango::Attribute &att)
 
 void DevTest::read_Double_spec_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Double_spec_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name Double_spec_attr" << std::endl;
       	attr_db_array[0] = 1.11;
       	attr_db_array[1] = 2.22;
 
@@ -1351,7 +1351,7 @@ void DevTest::read_Double_spec_attr(Tango::Attribute &att)
 
 void DevTest::read_String_spec_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name String_spec_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name String_spec_attr" << std::endl;
       	attr_str_array[0] = (char *)"Hello world";
       	attr_str_array[1] = (char *)"Hello universe";
 
@@ -1362,7 +1362,7 @@ void DevTest::read_Short_ima_attr(Tango::Attribute &att)
 {
   	static short attr_short_array_1[20];
 
-      	cout << "[DevTest::read_attr] attribute name Short_ima_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name Short_ima_attr" << std::endl;
       	attr_short_array_1[0] = 40;
       	attr_short_array_1[1] = 60;
       	attr_short_array_1[2] = 80;
@@ -1373,7 +1373,7 @@ void DevTest::read_Short_ima_attr(Tango::Attribute &att)
 
 void DevTest::read_Long_ima_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Long_ima_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name Long_ima_attr" << std::endl;
       	attr_long_array[0] = 0;
       	attr_long_array[1] = 1;
       	attr_long_array[2] = 2;
@@ -1386,7 +1386,7 @@ void DevTest::read_Long_ima_attr(Tango::Attribute &att)
 
 void DevTest::read_Double_ima_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Double_ima_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name Double_ima_attr" << std::endl;
       	attr_db_array[0] = 5.55;
       	attr_db_array[1] = 6.66;
 
@@ -1395,7 +1395,7 @@ void DevTest::read_Double_ima_attr(Tango::Attribute &att)
 
 void DevTest::read_String_ima_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name String_ima_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name String_ima_attr" << std::endl;
       	attr_str_array[0] = (char *)"Hello milky way";
       	attr_str_array[1] = (char *)"Hello moon";
 
@@ -1404,26 +1404,26 @@ void DevTest::read_String_ima_attr(Tango::Attribute &att)
 
 void DevTest::read_attr_no_data(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name attr_no_data" << endl;
+      	cout << "[DevTest::read_attr] attribute name attr_no_data" << std::endl;
       	att.set_quality(Tango::ATTR_VALID);
 }
 
 void DevTest::read_attr_wrong_type(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name attr_wrong_type" << endl;
+      	cout << "[DevTest::read_attr] attribute name attr_wrong_type" << std::endl;
       	attr_long = 1246;
       	att.set_value(&attr_long);
 }
 
 void DevTest::read_attr_wrong_size(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name attr_wrong_size" << endl;
+      	cout << "[DevTest::read_attr] attribute name attr_wrong_size" << std::endl;
       	att.set_value(&attr_long,1000,1000);
 }
 
 void DevTest::read_attr_no_alarm(Tango::Attribute &att)
 {
-     	cout << "[DevTest::read_attr] attribute name attr_no_alarm" << endl;
+     	cout << "[DevTest::read_attr] attribute name attr_no_alarm" << std::endl;
       	attr_long = 1246;
       	att.check_alarm();
       	att.set_value(&attr_long);
@@ -1431,71 +1431,71 @@ void DevTest::read_attr_no_alarm(Tango::Attribute &att)
 
 void DevTest::read_Short_attr_with_w(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Short_attr_with_w" << endl;
+      	cout << "[DevTest::read_attr] attribute name Short_attr_with_w" << std::endl;
       	attr_short = 44;
       	att.set_value(&attr_short);
 }
 
 void DevTest::read_Long_attr_with_w(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Long_attr_with_w" << endl;
+      	cout << "[DevTest::read_attr] attribute name Long_attr_with_w" << std::endl;
       	attr_long = 1246;
       	att.set_value(&attr_long);
 }
 
 void DevTest::read_Short_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Short_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name Short_attr_rw" << std::endl;
       	att.set_value(&attr_short_rw);
 }
 
 void DevTest::read_Long64_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Long64_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name Long64_attr_rw" << std::endl;
       	att.set_value(&attr_long64_rw);
 }
 
 void DevTest::read_ULong_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name ULong_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name ULong_attr_rw" << std::endl;
       	att.set_value(&attr_ulong_rw);
 }
 
 void DevTest::read_ULong64_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name ULong64_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name ULong64_attr_rw" << std::endl;
       	att.set_value(&attr_ulong64_rw);
 }
 
 void DevTest::read_State_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name State_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name State_attr_rw" << std::endl;
       	att.set_value(&attr_state_rw);
 }
 
 void DevTest::read_attr_asyn(Tango::Attribute &att)
 {
-     	 cout << "[DevTest::read_attr] attribute attr_asyn" << endl;
+     	 cout << "[DevTest::read_attr] attribute attr_asyn" << std::endl;
       	Tango_sleep(2);
       	attr_double = 5.55;
       	att.set_value(&attr_double);
-      	cout << "Leaving reading attr_asyn attribute" << endl;
+      	cout << "Leaving reading attr_asyn attribute" << std::endl;
 }
 
 void DevTest::read_attr_asyn_to(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute attr_asyn_to" << endl;
+      	cout << "[DevTest::read_attr] attribute attr_asyn_to" << std::endl;
       	Tango_sleep(4);
       	attr_double = 5.55;
       	att.set_value(&attr_double);
-      	cout << "Leaving reading attr_asyn_to attribute" << endl;
+      	cout << "Leaving reading attr_asyn_to attribute" << std::endl;
 }
 
 void DevTest::read_attr_asyn_except(TANGO_UNUSED(Tango::Attribute &att))
 {
-       	cout << "[DevTest::read_attr] attribute attr_asyn_except" << endl;
+       	cout << "[DevTest::read_attr] attribute attr_asyn_except" << std::endl;
        	Tango_sleep(2);
-       	cout << "Leaving reading attr_asyn_except attribute" << endl;
+       	cout << "Leaving reading attr_asyn_except attribute" << std::endl;
 
        	Tango::Except::throw_exception((const char *)"aaa",
        			       (const char *)"This is a test",
@@ -1504,7 +1504,7 @@ void DevTest::read_attr_asyn_except(TANGO_UNUSED(Tango::Attribute &att))
 
 void DevTest::read_PollLong_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name PollLong_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name PollLong_attr" << std::endl;
       	PollLong_attr_num++;
       	if ((PollLong_attr_num % 2) == 0)
       		Poll_attr_long = 5555;
@@ -1515,7 +1515,7 @@ void DevTest::read_PollLong_attr(Tango::Attribute &att)
 
 void DevTest::read_PollString_spec_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name PollString_spec_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name PollString_spec_attr" << std::endl;
       	PollString_spec_attr_num++;
       	if ((PollString_spec_attr_num % 4) == 0)
       	{
@@ -1543,7 +1543,7 @@ void DevTest::read_PollString_spec_attr(Tango::Attribute &att)
 
 void DevTest::read_attr_dq_sh(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name attr_dq_sh" << endl;
+      	cout << "[DevTest::read_attr] attribute name attr_dq_sh" << std::endl;
       	attr_dq_short = 77;
 #ifndef WIN32
       	struct timeval tv;
@@ -1559,7 +1559,7 @@ void DevTest::read_attr_dq_sh(Tango::Attribute &att)
 
 void DevTest::read_attr_dq_lo(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name attr_dq_lo" << endl;
+      	cout << "[DevTest::read_attr] attribute name attr_dq_lo" << std::endl;
       	attr_dq_long = 7777;
       	time_t da;
       	time(&da);
@@ -1568,7 +1568,7 @@ void DevTest::read_attr_dq_lo(Tango::Attribute &att)
 
 void DevTest::read_attr_dq_db(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name attr_dq_db" << endl;
+      	cout << "[DevTest::read_attr] attribute name attr_dq_db" << std::endl;
       	attr_dq_double = 8.888;
 #ifndef WIN32
       	struct timeval tv;
@@ -1586,7 +1586,7 @@ void DevTest::read_attr_dq_str(Tango::Attribute &att)
 {
   	static Tango::DevString s = NULL;
 
-      	cout << "[DevTest::read_attr] attribute name attr_dq_str" << endl;
+      	cout << "[DevTest::read_attr] attribute name attr_dq_str" << std::endl;
       	s = attr_dq_str;
       	strcpy(attr_dq_str,"Setting value date and quality");
       	time_t da;
@@ -1596,7 +1596,7 @@ void DevTest::read_attr_dq_str(Tango::Attribute &att)
 
 void DevTest::read_Short_spec_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Short_spec_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name Short_spec_attr_rw" << std::endl;
       	short_spec_attr[0] = 8;
       	short_spec_attr[1] = 9;
 
@@ -1605,7 +1605,7 @@ void DevTest::read_Short_spec_attr_rw(Tango::Attribute &att)
 
 void DevTest::read_String_spec_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name String_spec_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name String_spec_attr_rw" << std::endl;
       	string_spec_attr[0] = "Thank's god";
       	string_spec_attr[1] = "It's friday";
 
@@ -1614,7 +1614,7 @@ void DevTest::read_String_spec_attr_rw(Tango::Attribute &att)
 
 void DevTest::read_Long_spec_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Long_spec_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name Long_spec_attr_rw" << std::endl;
       	long_spec_attr[0] = 88;
       	long_spec_attr[1] = 99;
       	long_spec_attr[2] = 111;
@@ -1624,7 +1624,7 @@ void DevTest::read_Long_spec_attr_rw(Tango::Attribute &att)
 
 void DevTest::read_Short_ima_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Short_ima_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name Short_ima_attr_rw" << std::endl;
       	short_ima_attr[0] = 6;
       	short_ima_attr[1] = 7;
       	short_ima_attr[2] = 8;
@@ -1635,7 +1635,7 @@ void DevTest::read_Short_ima_attr_rw(Tango::Attribute &att)
 
 void DevTest::read_String_ima_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name String_ima_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name String_ima_attr_rw" << std::endl;
       	string_ima_attr[0] = "Alors la, pour une surprise";
       	string_ima_attr[1] = "c'est une surprise";
 
@@ -1644,7 +1644,7 @@ void DevTest::read_String_ima_attr_rw(Tango::Attribute &att)
 
 void DevTest::read_Event_change_tst(Tango::Attribute &att)
 {
-	cout << "[DevTest::read_attr] attribute name event_change_tst" << endl;
+	cout << "[DevTest::read_attr] attribute name event_change_tst" << std::endl;
 	if (event_change_attr_except == false)
 	{
 		if (event_throw_out_of_sync == true)
@@ -1670,7 +1670,7 @@ void DevTest::read_Event_change_tst(Tango::Attribute &att)
 
 void DevTest::read_Event64_change_tst(Tango::Attribute &att)
 {
-	cout << "[DevTest::read_attr] attribute name event64_change_tst" << endl;
+	cout << "[DevTest::read_attr] attribute name event64_change_tst" << std::endl;
 	if (event_change_attr_except == false)
 	{
 		att.set_value(attr_event64,attr_event64_size);
@@ -1684,7 +1684,7 @@ void DevTest::read_Event64_change_tst(Tango::Attribute &att)
 }
 void DevTest::read_Event_quality_tst(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name event_quality_tst" << endl;
+      	cout << "[DevTest::read_attr] attribute name event_quality_tst" << std::endl;
       	if (event_quality_attr_except == false)
       	{
         	if (attr_event_qua != Tango::ATTR_INVALID)
@@ -1702,59 +1702,59 @@ void DevTest::read_Event_quality_tst(Tango::Attribute &att)
 
 void DevTest::read_Poll_buff(TANGO_UNUSED(Tango::Attribute &att))
 {
-      	cout << "[DevTest::read_attr] attribute name Poll_buff" << endl;
+      	cout << "[DevTest::read_attr] attribute name Poll_buff" << std::endl;
 }
 
 void DevTest::read_Poll_buffRW(TANGO_UNUSED(Tango::Attribute &att))
 {
-      	cout << "[DevTest::read_attr] attribute name Poll_buffRW" << endl;
+      	cout << "[DevTest::read_attr] attribute name Poll_buffRW" << std::endl;
 }
 
 void DevTest::read_Float_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Float_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name Float_attr" << std::endl;
       	attr_float = 4.5;
       	att.set_value(&attr_float);
 }
 
 void DevTest::read_Boolean_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Boolean_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name Boolean_attr" << std::endl;
       	attr_boolean = true;
 	att.set_value(&attr_boolean);
 }
 
 void DevTest::read_UShort_attr(Tango::Attribute &att)
 {
-    	cout << "[DevTest::read_attr] attribute name UShort_attr" << endl;
+    	cout << "[DevTest::read_attr] attribute name UShort_attr" << std::endl;
     	attr_ushort = 111;
     	att.set_value(&attr_ushort);
 }
 
 void DevTest::read_UChar_attr(Tango::Attribute &att)
 {
-    	cout << "[DevTest::read_attr] attribute name UChar_attr" << endl;
+    	cout << "[DevTest::read_attr] attribute name UChar_attr" << std::endl;
     	attr_uchar = 88;
     	att.set_value(&attr_uchar);
 }
 
 void DevTest::read_ULong_attr(Tango::Attribute &att)
 {
-    	cout << "[DevTest::read_attr] attribute name ULong_attr" << endl;
+    	cout << "[DevTest::read_attr] attribute name ULong_attr" << std::endl;
     	attr_ulong = 100;
     	att.set_value(&attr_ulong);
 }
 
 void DevTest::read_ULong64_attr(Tango::Attribute &att)
 {
-    	cout << "[DevTest::read_attr] attribute name ULong64_attr" << endl;
+    	cout << "[DevTest::read_attr] attribute name ULong64_attr" << std::endl;
     	attr_ulong64 = 200;
     	att.set_value(&attr_ulong64);
 }
 
 void DevTest::read_Float_spec_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Float_spec_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name Float_spec_attr" << std::endl;
       	attr_spec_float[0] = 4.5;
        	attr_spec_float[1] = 8.5;
       	attr_spec_float[2] = 16.5;
@@ -1763,7 +1763,7 @@ void DevTest::read_Float_spec_attr(Tango::Attribute &att)
 
 void DevTest::read_Boolean_spec_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Boolean_spec_attr" << endl;
+      	cout << "[DevTest::read_attr] attribute name Boolean_spec_attr" << std::endl;
       	attr_spec_boolean[0] = true;
       	attr_spec_boolean[1] = true;
       	attr_spec_boolean[2] = false;
@@ -1774,7 +1774,7 @@ void DevTest::read_Boolean_spec_attr(Tango::Attribute &att)
 
 void DevTest::read_UShort_spec_attr(Tango::Attribute &att)
 {
-    	cout << "[DevTest::read_attr] attribute name UShort_spec_attr" << endl;
+    	cout << "[DevTest::read_attr] attribute name UShort_spec_attr" << std::endl;
     	attr_spec_ushort[0] = 333;
     	attr_spec_ushort[1] = 444;
     	att.set_value(attr_spec_ushort,2);
@@ -1782,7 +1782,7 @@ void DevTest::read_UShort_spec_attr(Tango::Attribute &att)
 
 void DevTest::read_UChar_spec_attr(Tango::Attribute &att)
 {
-    	cout << "[DevTest::read_attr] attribute name UChar_spec_attr" << endl;
+    	cout << "[DevTest::read_attr] attribute name UChar_spec_attr" << std::endl;
     	attr_spec_uchar[0] = 28;
     	attr_spec_uchar[1] = 45;
     	attr_spec_uchar[2] = 156;
@@ -1794,7 +1794,7 @@ void DevTest::read_UChar_spec_attr(Tango::Attribute &att)
 
 void DevTest::read_Float_spec_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Float_spec_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name Float_spec_attr_rw" << std::endl;
       	attr_spec_float[0] = 5.5;
       	attr_spec_float[1] = 11.5;
 
@@ -1803,7 +1803,7 @@ void DevTest::read_Float_spec_attr_rw(Tango::Attribute &att)
 
 void DevTest::read_UChar_spec_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name UChar_spec_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name UChar_spec_attr_rw" << std::endl;
       	attr_spec_uchar[0] = 22;
       	attr_spec_uchar[1] = 44;
       	attr_spec_uchar[2] = 66;
@@ -1813,7 +1813,7 @@ void DevTest::read_UChar_spec_attr_rw(Tango::Attribute &att)
 
 void DevTest::read_Boolean_ima_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Boolean_ima_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name Boolean_ima_attr_rw" << std::endl;
       	attr_spec_boolean[0] = true;
       	attr_spec_boolean[1] = false;
 
@@ -1822,7 +1822,7 @@ void DevTest::read_Boolean_ima_attr_rw(Tango::Attribute &att)
 
 void DevTest::read_UShort_ima_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name UShort_ima_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name UShort_ima_attr_rw" << std::endl;
       	attr_spec_ushort[0] = 2;
       	attr_spec_ushort[1] = 3;
 
@@ -1831,7 +1831,7 @@ void DevTest::read_UShort_ima_attr_rw(Tango::Attribute &att)
 
 void DevTest::read_slow_actuator(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name slow_actuator" << endl;
+      	cout << "[DevTest::read_attr] attribute name slow_actuator" << std::endl;
 	slow_actua++;
 	att.set_value(&slow_actua);
 
@@ -1848,7 +1848,7 @@ void DevTest::read_slow_actuator(Tango::Attribute &att)
 	if (slow_actua_write.tv_sec != 0)
 	{
 		COMPUTE_TIME_DIFF(delta,slow_actua_write,now);
-		cout << "Delta time = " << delta << endl;
+		cout << "Delta time = " << delta << std::endl;
 		if (delta > 3000)
 		{
 			att.set_quality(Tango::ATTR_VALID);
@@ -1863,37 +1863,37 @@ void DevTest::read_slow_actuator(Tango::Attribute &att)
 
 void DevTest::read_fast_actuator(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name fast_actuator" << endl;
+      	cout << "[DevTest::read_attr] attribute name fast_actuator" << std::endl;
 	att.set_value(&fast_actua);
 }
 
 void DevTest::read_Long64_spec_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Long64_spec_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name Long64_spec_attr_rw" << std::endl;
       	att.set_value(attr_spec_long64_rw,3);
 }
 
 void DevTest::read_ULong_spec_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name ULong_spec_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name ULong_spec_attr_rw" << std::endl;
       	att.set_value(attr_spec_ulong_rw,3);
 }
 
 void DevTest::read_ULong64_spec_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name ULong64_spec_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name ULong64_spec_attr_rw" << std::endl;
       	att.set_value(attr_spec_ulong64_rw,3);
 }
 
 void DevTest::read_State_spec_attr_rw(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name State_spec_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name State_spec_attr_rw" << std::endl;
       	att.set_value(attr_spec_state_rw,2);
 }
 
 void DevTest::read_Sub_device_tst(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Sub_device_tst" << endl;
+      	cout << "[DevTest::read_attr] attribute name Sub_device_tst" << std::endl;
 
 		Tango::Util *tg = Tango::Util::instance();
 
@@ -1901,8 +1901,8 @@ void DevTest::read_Sub_device_tst(Tango::Attribute &att)
 // sort the devices in the ascending name order
 //
 
-		vector<Tango::DeviceImpl *> &dev_list = tg->get_device_list_by_class("DevTest");
-		vector<Tango::DeviceImpl *> dev_list_sorted = dev_list;
+		std::vector<Tango::DeviceImpl *> &dev_list = tg->get_device_list_by_class("DevTest");
+		std::vector<Tango::DeviceImpl *> dev_list_sorted = dev_list;
 
 		size_t n = dev_list_sorted.size();
 		// the second device on the list is selected to be the sub device, so the list has to comprise of 2 or more elements
@@ -1944,7 +1944,7 @@ void DevTest::read_Sub_device_tst(Tango::Attribute &att)
 void DevTest::read_Encoded_attr_rw(Tango::Attribute &att)
 {
 //		static int count = 0;
-      	cout << "[DevTest::read_attr] attribute name Encoded_attr_rw" << endl;
+      	cout << "[DevTest::read_attr] attribute name Encoded_attr_rw" << std::endl;
 #ifndef COMPAT
 
 /*		if ((count % 2) == 0)
@@ -1988,7 +1988,7 @@ void DevTest::read_Encoded_attr_rw(Tango::Attribute &att)
 
 void DevTest::read_Encoded_attr_image(Tango::Attribute &att)
 {
-	cout << "[DevTest::read_attr] attribute name Encoded_attr_image" << endl;
+	cout << "[DevTest::read_attr] attribute name Encoded_attr_image" << std::endl;
 #ifndef COMPAT
 
   // Build a dummy image
@@ -2023,38 +2023,38 @@ void DevTest::read_Slow_attr(Tango::Attribute &att)
 
 void DevTest::read_Def_attr(Tango::Attribute &att)
 {
-	cout << "[DevTest::read_attr] attribute name DefAttr" << endl;
+	cout << "[DevTest::read_attr] attribute name DefAttr" << std::endl;
 	att.set_value(&att_conf);
 }
 
 void DevTest::read_DefUser_attr(Tango::Attribute &att)
 {
-	cout << "[DevTest::read_attr] attribute name DefUserAttr" << endl;
+	cout << "[DevTest::read_attr] attribute name DefUserAttr" << std::endl;
 	att.set_value(&att_conf);
 }
 
 void DevTest::read_DefClass_attr(Tango::Attribute &att)
 {
-	cout << "[DevTest::read_attr] attribute name DefClassAttr" << endl;
+	cout << "[DevTest::read_attr] attribute name DefClassAttr" << std::endl;
 	att.set_value(&att_conf);
 }
 
 void DevTest::read_DefClassUser_attr(Tango::Attribute &att)
 {
-	cout << "[DevTest::read_attr] attribute name DefClassUserAttr" << endl;
+	cout << "[DevTest::read_attr] attribute name DefClassUserAttr" << std::endl;
 	att.set_value(&att_conf);
 }
 
 void DevTest::read_Enum_attr(Tango::Attribute &att)
 {
-	cout << "[DevTest::read_attr] attribute name EnumAttr" << endl;
+	cout << "[DevTest::read_attr] attribute name EnumAttr" << std::endl;
 	cp = SOUTH;
 	att.set_value(&cp);
 }
 
 void DevTest::read_Enum_spec_attr_rw(Tango::Attribute &att)
 {
-	cout << "[DevTest::read_attr] attribute name Enum_spec_attr_rw" << endl;
+	cout << "[DevTest::read_attr] attribute name Enum_spec_attr_rw" << std::endl;
 	cp_array[0] = SOUTH;
 	cp_array[1] = NORTH;
 	cp_array[2] = WEST;
@@ -2063,13 +2063,13 @@ void DevTest::read_Enum_spec_attr_rw(Tango::Attribute &att)
 
 void DevTest::read_DynEnum_attr(Tango::Attribute &att)
 {
-	cout << "[DevTest::read_attr] attribute name DynEnum_attr" << endl;
+	cout << "[DevTest::read_attr] attribute name DynEnum_attr" << std::endl;
 	att.set_value(&enum_value);
 }
 
 void DevTest::read_ReynaldPoll_attr(TANGO_UNUSED(Tango::Attribute &att))
 {
-	cout << "[DevTest::read_attr] attribute name ReynaldPoll_attr" << endl;
+	cout << "[DevTest::read_attr] attribute name ReynaldPoll_attr" << std::endl;
 
 	Reynald_ctr++;
 	if ((Reynald_ctr % 3) == 0)
@@ -2077,13 +2077,13 @@ void DevTest::read_ReynaldPoll_attr(TANGO_UNUSED(Tango::Attribute &att))
         int poll_period = get_attribute_poll_period("Short_attr");
         if (poll_period == 250)
         {
-cout << "ReynaldPollAttr: Setting period to 500" << endl;
+cout << "ReynaldPollAttr: Setting period to 500" << std::endl;
             poll_attribute("Short_attr",500);
             poll_attribute("ReynaldPollAttr",500);
         }
         else
         {
-cout << "ReynaldPollAttr: Setting period to 250" << endl;
+cout << "ReynaldPollAttr: Setting period to 250" << std::endl;
             poll_attribute("Short_attr",250);
             poll_attribute("ReynaldPollAttr",250);
         }
@@ -2114,11 +2114,11 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		{
 			pipe.set_root_blob_name("BlobCase0");
 
-			vector<string> de_names;
-			de_names.push_back(string("FirstDE"));
-			de_names.push_back(string("SecondDE"));
-			de_names.push_back(string("ThirdDE"));
-			de_names.push_back(string("ForthDE"));
+			std::vector<std::string> de_names;
+			de_names.push_back(std::string("FirstDE"));
+			de_names.push_back(std::string("SecondDE"));
+			de_names.push_back(std::string("ThirdDE"));
+			de_names.push_back(std::string("ForthDE"));
 
 			pipe.set_data_elt_names(de_names);
 
@@ -2139,7 +2139,7 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 			try
 			{
 				pipe << dl << v_db << dvush << dvsa;
-				cout << "Data type 0 inserted in pipe" << endl;
+				cout << "Data type 0 inserted in pipe" << std::endl;
 			}
 			catch (Tango::DevFailed &e)
 			{
@@ -2169,9 +2169,9 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 
 			pipe_v_str.name = "VectorStringDE";
 			pipe_v_str.value.clear();
-			pipe_v_str.value.push_back(string("Bonjour"));
-			pipe_v_str.value.push_back(string("le"));
-			pipe_v_str.value.push_back(string("monde"));
+			pipe_v_str.value.push_back(std::string("Bonjour"));
+			pipe_v_str.value.push_back(std::string("le"));
+			pipe_v_str.value.push_back(std::string("monde"));
 
 			pipe_dvsa.name = "DevVarStringArrayDE";
 			pipe_dvsa.value.length(1);
@@ -2180,7 +2180,7 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 			try
 			{
 				pipe << pipe_str << pipe_devstr << pipe_enc << pipe_v_str << pipe_dvsa;
-				cout << "Data type 1 inserted in pipe" << endl;
+				cout << "Data type 1 inserted in pipe" << std::endl;
 			}
 			catch (Tango::DevFailed &e)
 			{
@@ -2194,9 +2194,9 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		{
 			pipe.set_root_blob_name("BlobCase2");
 
-			vector<string> de_names;
-			de_names.push_back(string("FirstDE"));
-			de_names.push_back(string("SecondDE"));
+			std::vector<std::string> de_names;
+			de_names.push_back(std::string("FirstDE"));
+			de_names.push_back(std::string("SecondDE"));
 			pipe.set_data_elt_names(de_names);
 
 			dl = 999;
@@ -2208,7 +2208,7 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 			pipe["SecondDE"] << v_db;
 			pipe["FirstDE"] << dl;
 
-			cout << "Data type 2 inserted in pipe" << endl;
+			cout << "Data type 2 inserted in pipe" << std::endl;
 		}
 		break;
 
@@ -2216,8 +2216,8 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		{
 			pipe.set_root_blob_name("BlobCase3");
 
-			vector<string> de_inner_inner_names;
-			de_inner_inner_names.push_back(string("InnerInnerFirstDE"));
+			std::vector<std::string> de_inner_inner_names;
+			de_inner_inner_names.push_back(std::string("InnerInnerFirstDE"));
 			de_inner_inner_names.push_back("InnerInnerSecondDE");
 			inner_inner_blob.set_data_elt_names(de_inner_inner_names);
 			inner_inner_blob.set_name("InnerInner");
@@ -2229,7 +2229,7 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 			inner_inner_blob["InnerInnerSecondDE"] << v_db;
 			inner_inner_blob["InnerInnerFirstDE"] << dl;
 
-			vector<string> de_inner_names;
+			std::vector<std::string> de_inner_names;
 			de_inner_names.push_back("InnerFirstDE");
 			de_inner_names.push_back("InnerSecondDE");
 			de_inner_names.push_back("InnerThirdDE");
@@ -2241,7 +2241,7 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 
 			inner_blob << inner_str << inner_inner_blob << inner_bool;
 
-			vector<string> de_names;
+			std::vector<std::string> de_names;
 			de_names.push_back("1DE");
 			de_names.push_back("2DE");
 			pipe.set_data_elt_names(de_names);
@@ -2254,39 +2254,39 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 
 			pipe << inner_blob << v_dl;
 
-			cout << "Data type 3 inserted in pipe" << endl;
+			cout << "Data type 3 inserted in pipe" << std::endl;
 		}
 		break;
 
 		case 4:
 		{
 			pipe.set_root_blob_name("BlobCase4");
-			vector<string> de_names;
+			std::vector<std::string> de_names;
 			de_names.push_back("1DE");
 			de_names.push_back("2DE");
 			pipe.set_data_elt_names(de_names);
 
 			pipe << dl;
 
-			cout << "Data type 4 inserted in pipe" << endl;
+			cout << "Data type 4 inserted in pipe" << std::endl;
 		}
 		break;
 
 		case 5:
 		{
 			pipe.set_root_blob_name("BlobCase5");
-			vector<string> de_names;
+			std::vector<std::string> de_names;
 			de_names.push_back("1DE");
 			pipe.set_data_elt_names(de_names);
 
-			cout << "Data type 5 inserted in pipe" << endl;
+			cout << "Data type 5 inserted in pipe" << std::endl;
 		}
 		break;
 
 		case 6:
 		{
 			pipe.set_root_blob_name("BlobCase6");
-			vector<string> de_names;
+			std::vector<std::string> de_names;
 			de_names.push_back("1DE");
 			de_names.push_back("2DE");
 			de_names.push_back("1de");
@@ -2305,7 +2305,7 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		{
 			pipe.set_root_blob_name("BlobCase8");
 
-			vector<string> de_names;
+			std::vector<std::string> de_names;
 			de_names.push_back("1DE");
 			de_names.push_back("2DE");
 			de_names.push_back("3de");
@@ -2318,13 +2318,13 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 
 		case 9:
 		{
-			vector<string> de_names;
+			std::vector<std::string> de_names;
 			de_names.push_back("Another_1DE");
 			de_names.push_back("Another_2DE");
 
 			v_dl.clear();
 			v_dl.push_back(2);
-			string str("Barcelona");
+			std::string str("Barcelona");
 
 			pipe.set_root_blob_name("BlobCase9");
 			pipe.set_data_elt_names(de_names);
@@ -2339,13 +2339,13 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		{
 			pipe.set_root_blob_name("BlobCase10");
 
-			vector<string> de_names;
+			std::vector<std::string> de_names;
 			de_names.push_back("1DE");
 			pipe.set_data_elt_names(de_names);
 
 			v_dl.clear();
 			v_dl.push_back(22);
-			string str("Barcelona");
+			std::string str("Barcelona");
 
 			pipe << v_dl << str;
 		}
@@ -2355,7 +2355,7 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		{
 			pipe.set_root_blob_name("BlobCase11");
 
-			vector<string> de_names;
+			std::vector<std::string> de_names;
 			de_names.push_back("1DE");
 			de_names.push_back("2DE");
 			pipe.set_data_elt_names(de_names);
@@ -2374,7 +2374,7 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		{
 			pipe.set_root_blob_name("BlobCase12");
 
-			vector<string> de_names;
+			std::vector<std::string> de_names;
 			de_names.push_back("1DE_Array");
 			de_names.push_back("2DE_Array");
 			pipe.set_data_elt_names(de_names);
@@ -2404,7 +2404,7 @@ void DevTest::read_RWPipe(Tango::Pipe &pipe)
 
 	pipe.set_root_blob_name("RWPipeBlob");
 
-	vector<string> de_names;
+	std::vector<std::string> de_names;
 	de_names.push_back("RW_1DE");
 	de_names.push_back("RW_2DE");
 	pipe.set_data_elt_names(de_names);
@@ -2427,12 +2427,12 @@ void DevTest::read_RWPipe(Tango::Pipe &pipe)
 
 void DevTest::write_RWPipe(Tango::WPipe &w_pipe)
 {
-	string str;
-	vector<float> v_fl;
+	std::string str;
+	std::vector<float> v_fl;
 
-	vector<string> de_names = w_pipe.get_data_elt_names();
+	std::vector<std::string> de_names = w_pipe.get_data_elt_names();
 	for (size_t loop = 0;loop < de_names.size();loop++)
-		cout << "RWPipe: Received data element name = " << de_names[loop] << endl;
+		cout << "RWPipe: Received data element name = " << de_names[loop] << std::endl;
 
 	w_pipe >> str >> v_fl;
 }
@@ -2451,11 +2451,11 @@ void DevTest::read_RPipeDE(Tango::Pipe &pipe)
 {
 	pipe.set_root_blob_name("BlobDE");
 
-	vector<string> de_names;
-	de_names.push_back(string("FirstDE"));
-	de_names.push_back(string("SecondDE"));
-	de_names.push_back(string("ThirdDE"));
-	de_names.push_back(string("ForthDE"));
+	std::vector<std::string> de_names;
+	de_names.push_back(std::string("FirstDE"));
+	de_names.push_back(std::string("SecondDE"));
+	de_names.push_back(std::string("ThirdDE"));
+	de_names.push_back(std::string("ForthDE"));
 
 	pipe.set_data_elt_names(de_names);
 
@@ -2476,7 +2476,7 @@ void DevTest::read_RPipeDE(Tango::Pipe &pipe)
 	try
 	{
 		pipe << dl << v_db << dvush << dvsa;
-		cout << "Data inserted in pipe (using DataElement classes)" << endl;
+		cout << "Data inserted in pipe (using DataElement classes)" << std::endl;
 	}
 	catch (Tango::DevFailed &e)
 	{
@@ -2491,7 +2491,7 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 	{
 		Tango::DevicePipeBlob dpb("PipeEventCase0");
 
-		vector<string> de_inner_inner_names;
+		std::vector<std::string> de_inner_inner_names;
 		de_inner_inner_names.push_back("InnerInnerFirstDE");
 		de_inner_inner_names.push_back("InneraaaaaaaInnerSecondDE");
 		inner_inner_blob.set_data_elt_names(de_inner_inner_names);
@@ -2505,7 +2505,7 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 		inner_inner_blob["InneraaaaaaaInnerSecondDE"] << v_db;
 		inner_inner_blob["InnerInnerFirstDE"] << dl;
 
-		vector<string> de_inner_names;
+		std::vector<std::string> de_inner_names;
 		de_inner_names.push_back("InnerFirstDE");
 		de_inner_names.push_back("InnerSecondDE");
 		de_inner_names.push_back("InnerThirdDE");
@@ -2517,7 +2517,7 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 
 		inner_blob << inner_str << inner_inner_blob << inner_bool;
 
-		vector<string> de_names;
+		std::vector<std::string> de_names;
 		de_names.push_back("1DE");
 		de_names.push_back("2DE");
 		dpb.set_data_elt_names(de_names);
@@ -2534,14 +2534,14 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 	else if (in == 1)
 	{
 		Tango::DevicePipeBlob dpb("PipeEventCase1");
-		vector<string> de_names;
+		std::vector<std::string> de_names;
 		de_names.push_back("Another_1DE");
 		de_names.push_back("Another_2DE");
 		dpb.set_data_elt_names(de_names);
 
 		v_dl.clear();
 		v_dl.push_back(2);
-		string str("Barcelona");
+		std::string str("Barcelona");
 
 		dpb << v_dl << str;
 
@@ -2550,12 +2550,12 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 	else if (in == 2)
 	{
 		Tango::DevicePipeBlob dpb("PipeEventCase2");
-		vector<string> de_names;
+		std::vector<std::string> de_names;
 		de_names.push_back("Qwerty_1DE");
 		de_names.push_back("Azerty_2DE");
 		dpb.set_data_elt_names(de_names);
 
-		string str("Barcelona");
+		std::string str("Barcelona");
 
 		dpb << str << v_dl;
 
@@ -2584,12 +2584,12 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 	else if (in == 4)
 	{
 		Tango::DevicePipeBlob dpb("PipeEventCase4");
-		vector<string> de_names;
+		std::vector<std::string> de_names;
 		de_names.push_back("Lunes");
 		de_names.push_back("Martes");
 		dpb.set_data_elt_names(de_names);
 
-		string str("Girona");
+		std::string str("Girona");
 
 		v_dl.clear();
 		for (int loop = 0;loop < 3000;loop++)
