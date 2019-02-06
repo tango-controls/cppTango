@@ -35,7 +35,7 @@ environment:
       BOOST_ROOT: C:\Libraries\boost_1_63_0
       ZMQ_BASE: C:\projects\libzmq
       IDL_BASE: C:\projects\tangoidl
-      IDL_BIN: C:\Program Files (x86)\tangoidl
+      IDL_BIN: C:\Program Files\tangoidl
       OMNI_BASE: C:\projects\omniORB-4.2.1
       PYVER: "py37"
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
