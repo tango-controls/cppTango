@@ -3362,7 +3362,11 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 
             if (th_running == false)
             {
+		#if _MSC_VER > 1900
+                devintr_shared.dev_interface.get_interface(this);
+		#else
                 devintr_shared.interface.get_interface(this);
+		#endif
             }
         }
     }
@@ -3527,7 +3531,11 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it, bool clea
 
             if (th_running == false)
             {
+                #if _MSC_VER > 1900
+                devintr_shared.dev_interface.get_interface(this);
+		#else
                 devintr_shared.interface.get_interface(this);
+		#endif
             }
         }
     }
@@ -3820,7 +3828,11 @@ void DeviceImpl::add_command(Tango::Command *new_cmd, bool device_level)
 
             if (th_running == false)
             {
+                #if _MSC_VER > 1900
+                devintr_shared.dev_interface.get_interface(this);
+		#else
                 devintr_shared.interface.get_interface(this);
+		#endif
             }
         }
     }
@@ -3921,7 +3933,11 @@ void DeviceImpl::remove_command(Tango::Command *rem_cmd, bool free_it, bool clea
 
             if (th_running == false)
             {
+                #if _MSC_VER > 1900
+                devintr_shared.dev_interface.get_interface(this);
+		#else
                 devintr_shared.interface.get_interface(this);
+		#endif
             }
         }
     }
