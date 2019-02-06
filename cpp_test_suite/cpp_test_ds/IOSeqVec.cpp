@@ -7,7 +7,7 @@ using namespace Tango;
 //+----------------------------------------------------------------------------
 //
 // command : 		IOSeqVecChar
-// 
+//
 // description : 	Test the seq to vect and vect to seq for char type
 //
 //-----------------------------------------------------------------------------
@@ -30,13 +30,13 @@ bool IOSeqVecChar::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORB
 
 
 CORBA::Any *IOSeqVecChar::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
-{	
+{
     const Tango::DevVarCharArray *theInputArray;
     extract(in_any,theInputArray);
-    
-    vector<unsigned char> v1;
+
+    std::vector<unsigned char> v1;
     v1 << (*theInputArray);
-    cout << "[IOSeqVecChar::execute] " << v1.size() << " elt(s) in temp vector" << endl;
+    cout << "[IOSeqVecChar::execute] " << v1.size() << " elt(s) in temp vector" << std::endl;
     Tango::DevVarCharArray *theOutputArray = new Tango::DevVarCharArray();
     (*theOutputArray) << v1;
     return insert(theOutputArray);
@@ -45,7 +45,7 @@ CORBA::Any *IOSeqVecChar::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const 
 //+----------------------------------------------------------------------------
 //
 // command : 		IOSeqVecShort
-// 
+//
 // description : 	Test the seq to vect and vect to seq for short type
 //
 //-----------------------------------------------------------------------------
@@ -68,13 +68,13 @@ bool IOSeqVecShort::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const COR
 
 
 CORBA::Any *IOSeqVecShort::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
-{	
+{
     const Tango::DevVarShortArray *theInputArray;
     extract(in_any,theInputArray);
-    
-    vector<short> v1;
+
+    std::vector<short> v1;
     v1 << (*theInputArray);
-    cout << "[IOSeqVecShort::execute] " << v1.size() << " elt(s) in temp vector" << endl;
+    cout << "[IOSeqVecShort::execute] " << v1.size() << " elt(s) in temp vector" << std::endl;
     Tango::DevVarShortArray *theOutputArray = new Tango::DevVarShortArray();
     (*theOutputArray) << v1;
     return insert(theOutputArray);
@@ -83,7 +83,7 @@ CORBA::Any *IOSeqVecShort::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const
 //+----------------------------------------------------------------------------
 //
 // command : 		IOSeqVecLong
-// 
+//
 // description : 	Test the seq to vect and vect to seq for long type
 //
 //-----------------------------------------------------------------------------
@@ -106,14 +106,14 @@ bool IOSeqVecLong::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORB
 
 
 CORBA::Any *IOSeqVecLong::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
-{	
+{
     const Tango::DevVarLongArray *theInputArray;
     extract(in_any,theInputArray);
-    
+
 //    vector<long> v1;
-    vector<Tango::DevLong> v1;
+    std::vector<Tango::DevLong> v1;
     v1 << (*theInputArray);
-    cout << "[IOSeqVecLong::execute] " << v1.size() << " elt(s) in temp vector" << endl;
+    cout << "[IOSeqVecLong::execute] " << v1.size() << " elt(s) in temp vector" << std::endl;
     Tango::DevVarLongArray *theOutputArray = new Tango::DevVarLongArray();
     (*theOutputArray) << v1;
     return insert(theOutputArray);
@@ -122,7 +122,7 @@ CORBA::Any *IOSeqVecLong::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const 
 //+----------------------------------------------------------------------------
 //
 // command : 		IOSeqVecFloat
-// 
+//
 // description : 	Test the seq to vect and vect to seq for float type
 //
 //-----------------------------------------------------------------------------
@@ -145,13 +145,13 @@ bool IOSeqVecFloat::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const COR
 
 
 CORBA::Any *IOSeqVecFloat::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
-{	
+{
     const Tango::DevVarFloatArray *theInputArray;
     extract(in_any,theInputArray);
-    
-    vector<float> v1;
+
+    std::vector<float> v1;
     v1 << (*theInputArray);
-    cout << "[IOSeqVecFloat::execute] " << v1.size() << " elt(s) in temp vector" << endl;
+    cout << "[IOSeqVecFloat::execute] " << v1.size() << " elt(s) in temp vector" << std::endl;
     Tango::DevVarFloatArray *theOutputArray = new Tango::DevVarFloatArray();
     (*theOutputArray) << v1;
     return insert(theOutputArray);
@@ -160,7 +160,7 @@ CORBA::Any *IOSeqVecFloat::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const
 //+----------------------------------------------------------------------------
 //
 // command : 		IOSeqVecDouble
-// 
+//
 // description : 	Test the seq to vect and vect to seq for double type
 //
 //-----------------------------------------------------------------------------
@@ -183,13 +183,13 @@ bool IOSeqVecDouble::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CO
 
 
 CORBA::Any *IOSeqVecDouble::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
-{	
+{
     const Tango::DevVarDoubleArray *theInputArray;
     extract(in_any,theInputArray);
-    
-    vector<double> v1;
+
+    std::vector<double> v1;
     v1 << (*theInputArray);
-    cout << "[IOSeqVecDouble::execute] " << v1.size() << " elt(s) in temp vector" << endl;
+    cout << "[IOSeqVecDouble::execute] " << v1.size() << " elt(s) in temp vector" << std::endl;
     Tango::DevVarDoubleArray *theOutputArray = new Tango::DevVarDoubleArray();
     (*theOutputArray) << v1;
     return insert(theOutputArray);
@@ -198,7 +198,7 @@ CORBA::Any *IOSeqVecDouble::execute(TANGO_UNUSED(Tango::DeviceImpl *device),cons
 //+----------------------------------------------------------------------------
 //
 // command : 		IOSeqVecUShort
-// 
+//
 // description : 	Test the seq to vect and vect to seq for unsigned short type
 //
 //-----------------------------------------------------------------------------
@@ -221,13 +221,13 @@ bool IOSeqVecUShort::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CO
 
 
 CORBA::Any *IOSeqVecUShort::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
-{	
+{
     const Tango::DevVarUShortArray *theInputArray;
     extract(in_any,theInputArray);
-    
-    vector<unsigned short> v1;
+
+    std::vector<unsigned short> v1;
     v1 << (*theInputArray);
-    cout << "[IOSeqVecUShort::execute] " << v1.size() << " elt(s) in temp vector" << endl;
+    cout << "[IOSeqVecUShort::execute] " << v1.size() << " elt(s) in temp vector" << std::endl;
     Tango::DevVarUShortArray *theOutputArray = new Tango::DevVarUShortArray();
     (*theOutputArray) << v1;
     return insert(theOutputArray);
@@ -236,7 +236,7 @@ CORBA::Any *IOSeqVecUShort::execute(TANGO_UNUSED(Tango::DeviceImpl *device),cons
 //+----------------------------------------------------------------------------
 //
 // command : 		IOSeqVecULong
-// 
+//
 // description : 	Test the seq to vect and vect to seq for unsigned long type
 //
 //-----------------------------------------------------------------------------
@@ -259,14 +259,14 @@ bool IOSeqVecULong::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const COR
 
 
 CORBA::Any *IOSeqVecULong::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
-{	
+{
     const Tango::DevVarULongArray *theInputArray;
     extract(in_any,theInputArray);
-    
+
 //    vector<unsigned long> v1;
-    vector<Tango::DevULong> v1;
+    std::vector<Tango::DevULong> v1;
     v1 << (*theInputArray);
-    cout << "[IOSeqVecULong::execute] " << v1.size() << " elt(s) in temp vector" << endl;
+    cout << "[IOSeqVecULong::execute] " << v1.size() << " elt(s) in temp vector" << std::endl;
     Tango::DevVarULongArray *theOutputArray = new Tango::DevVarULongArray();
     (*theOutputArray) << v1;
     return insert(theOutputArray);
@@ -275,7 +275,7 @@ CORBA::Any *IOSeqVecULong::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const
 //+----------------------------------------------------------------------------
 //
 // command : 		IOSeqVecString
-// 
+//
 // description : 	Test the seq to vect and vect to seq for string type
 //
 //-----------------------------------------------------------------------------
@@ -298,13 +298,13 @@ bool IOSeqVecString::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CO
 
 
 CORBA::Any *IOSeqVecString::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
-{	
+{
     const Tango::DevVarStringArray *theInputArray;
     extract(in_any,theInputArray);
-    
-    vector<string> v1;
+
+    std::vector<std::string> v1;
     v1 << (*theInputArray);
-    cout << "[IOSeqVecString::execute] " << v1.size() << " elt(s) in temp vector" << endl;
+    cout << "[IOSeqVecString::execute] " << v1.size() << " elt(s) in temp vector" << std::endl;
     Tango::DevVarStringArray *theOutputArray = new Tango::DevVarStringArray();
     (*theOutputArray) << v1;
     return insert(theOutputArray);
