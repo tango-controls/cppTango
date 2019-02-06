@@ -347,7 +347,7 @@ public:
 	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
 
-	void set_vect(vector<Tango::DevDouble> &,double,double);
+	void set_vect(std::vector<Tango::DevDouble> &,double,double);
 };
 
 class PollingInDeviceTst : public Tango::Command {
