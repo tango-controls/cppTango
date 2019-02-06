@@ -197,6 +197,7 @@ install:
   - cmd: echo "Generator='%CMAKE_GENERATOR%'"
   - cmd: echo "Platform='%Platform%'"
   - cmd: set PYTHONPATH=%PYTHONPATH%
+  - cmd: set PATH=%PATH%;PYTHONPATH
   # Tango IDL
   - cmd: cd "C:\projects\tangoidl"
   - cmd: cmake -G "%CMAKE_GENERATOR%"
@@ -210,7 +211,6 @@ install:
   - cmd: set IDL_BASE=%IDL_BIN%
   - cmd: set OMNI_BASE=C:/projects/omniorb/
   - cmd: set PTHREAD_WIN=C:/projects/pthreads-win32/
-  - cmd: if %ARCH%==x64-msvc14 set path=%PYTHONPATH%;%path%
   #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE
   #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE
   - cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DIDL_BASE="%IDL_BASE%" -DOMNI_BASE="%OMNI_BASE%" -DZMQ_BASE="%ZMQ_BASE%" -DPTHREAD_WIN=%PTHREAD_WIN%
