@@ -151,6 +151,16 @@ Please install cppzmq (https://github.com/zeromq/cppzmq) on your system and/or u
 <OMNI_BASE>/include and system include directories).")
 endif()
 
+TRY_COMPILE(HAS_COMPATIBLE_ZMQ_HPP_VERSION
+  ${CMAKE_BINARY_DIR}/configure
+  SOURCES ${CMAKE_SOURCE_DIR}/configure/test_zmq_hpp.cpp
+  CMAKE_FLAGS "-I ${CPPZMQ_BASE}/include -I ${ZMQ_PKG_INCLUDE_DIRS}/include"
+  LINK_LIBRARIES ${ZMQ_PKG_LIBRARIES})
+
+IF(NOT HAS_COMPATIBLE_ZMQ_HPP_VERSION)
+  message(FATAL_ERROR "Please use a compatible version of cppzmq")
+ENDIF()
+
 message("Verifying ${OMNIIDL_PATH}omniidl")
 if(WIN32)
     execute_process(COMMAND ${OMNIIDL_PATH}omniidl.exe -V RESULT_VARIABLE FAILED)
