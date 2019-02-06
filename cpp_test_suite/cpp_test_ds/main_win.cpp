@@ -47,10 +47,10 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 // Run the endless loop
 //
 
-      cout << "Ready to accept request" << endl;
+      cout << "Ready to accept request" << std::endl;
       tg->server_run();
     }
-  catch (bad_alloc)
+  catch (std::bad_alloc)
     {
 	MessageBox((HWND)NULL,"Memory error","Command line",MB_ICONSTOP);
 	return (FALSE);
@@ -65,7 +65,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	MessageBox((HWND)NULL,"CORBA Exception","Command line",MB_ICONSTOP);
 	return (FALSE);
     }
-	
+
    while(GetMessage(&msg,NULL,0,0))
    {
 	TranslateMessage(&msg);
