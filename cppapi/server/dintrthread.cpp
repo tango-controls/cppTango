@@ -242,8 +242,11 @@ void DevIntrThread::push_event()
 	cout4 << "Device interface change event thread pushing event!" << endl;
 
 	AutoTangoMonitor sync(dev,true);
-
+	#if _MSC_VER > 1900
+	if (shared_data.dev_interface.has_changed(dev) == true)
+	#else
 	if (shared_data.interface.has_changed(dev) == true)
+	#endif
 	{
 		cout4 << "Device interface has changed" << endl;
 
