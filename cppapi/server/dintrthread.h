@@ -59,7 +59,11 @@ struct _ShDevIntrTh
 	bool			cmd_pending;	// The new command flag
 	DevIntrCmdCode	cmd_code;		// The command code
 	bool			th_running;		// Thread running flag
+	#if _MSC_VER > 1900
+	DevIntr			dev_interface;		// Device interface
+	#else
 	DevIntr			interface;		// Device interface
+	#endif
 };
 typedef struct _ShDevIntrTh	ShDevIntrTh;
 
