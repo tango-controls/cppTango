@@ -197,7 +197,7 @@ install:
   - cmd: echo "Generator='%CMAKE_GENERATOR%'"
   - cmd: echo "Platform='%Platform%'"
   - cmd: set PYTHONPATH=%PYTHONPATH%
-  - cmd: set PATH=%PATH%;PYTHONPATH
+  - cmd: set PATH=PYTHONPATH;%PATH%
   # Tango IDL
   - cmd: cd "C:\projects\tangoidl"
   - cmd: cmake -G "%CMAKE_GENERATOR%"
