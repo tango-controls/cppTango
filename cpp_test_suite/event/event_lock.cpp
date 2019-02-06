@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
     if (argc != 2)
     {
-        cout << "usage: event_lock <device>" << endl;
+        cout << "usage: event_lock <device>" << std::endl;
         exit(-1);
     }
 
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 
         dev->lock();
 
-        cout << "   Device locked and subscribed to one change event --> OK" << endl;
+        cout << "   Device locked and subscribed to one change event --> OK" << std::endl;
 
         int cnt = 0;
         while (cnt < 3)
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
         }
 
         dev->unlock();
-        cout << "   Device unlocked --> OK" << endl;
+        cout << "   Device unlocked --> OK" << std::endl;
 
         if (eventID != NODATA)
         {
@@ -97,12 +97,12 @@ int main(int argc, char *argv[])
     }
     catch (...)
     {
-        cout << "Unknown exception....." << endl;
+        cout << "Unknown exception....." << std::endl;
     }
 
     delete dev;
 
-    cout << "   Memory corruption at process exit--> ??" << endl;
+    cout << "   Memory corruption at process exit--> ??" << std::endl;
 
     return 0;
 }
