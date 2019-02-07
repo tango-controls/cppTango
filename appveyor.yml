@@ -144,7 +144,7 @@ environment:
       platform: win32
       ARCH: win32-msvc12
       configuration: Release
-      CMAKE_GENERATOR: "Visual Studio 12 2013 Win64"
+      CMAKE_GENERATOR: "Visual Studio 12 2013"
       MSVCVERSION: v120
       MSVCYEAR: "vs2013"
       MSVCABR: "13"
@@ -161,7 +161,7 @@ environment:
       platform: win32
       ARCH: win32-msvc14
       configuration: Release
-      CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
+      CMAKE_GENERATOR: "Visual Studio 14 2015"
       MSVCVERSION: v140
       MSVCYEAR: "vs2015"
       MSVCABR: "14"
