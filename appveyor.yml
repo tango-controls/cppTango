@@ -1,7 +1,7 @@
 version: 0.0.{build}
 branches:
   only:
-    - new-appveyor
+    - tango-9-lts
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
