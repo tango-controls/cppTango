@@ -85,9 +85,11 @@
 			#define WIN32_VC11
 		#elif ((_MSC_VER >= 1800) && (_MSC_VER < 1900))
 			#define WIN32_VC12
-		#elif (_MSC_VER >= 1900)
+		#elif ((_MSC_VER >= 1900) && (_MSC_VER < 1920))
 			#define WIN32_VC14
-		#endif	 // VC8+/VC9/VC10/VC11/VC12/VC14
+		#elif (_MSC_VER >= 1920)
+			#define WIN32_VC16
+		#endif // VC8+/VC9/VC10/VC11/VC12/VC14/VC16
 	#endif
 #endif
 
@@ -233,7 +235,7 @@
         #define HAS_MAP_AT
         #define HAS_OVERRIDE
     #endif
-    #ifdef WIN32_VC14
+    #if (defined(WIN32_VC14) || defined(WIN32_VC16))
         #define HAS_UNIQUE_PTR
         #define HAS_LAMBDA_FUNC
         #define HAS_NULLPTR
