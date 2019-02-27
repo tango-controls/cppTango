@@ -756,7 +756,6 @@ void Pipe::fire_event(DeviceImpl *dev,DevFailed *except)
 	vector<long> f_data_lg;
 
 	string event_type("pipe");
-	event_type = EVENT_COMPAT_IDL5 + event_type;
 	event_supplier_zmq->push_event(dev, event_type, f_names, f_data, f_names_lg, f_data_lg, ad, name, except, true);
 }
 
@@ -858,7 +857,6 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 	vector<long> f_data_lg;
 
 	string event_type("pipe");
-	event_type = EVENT_COMPAT_IDL5 + event_type;
 	event_supplier_zmq->push_event(dev, event_type, f_names, f_data, f_names_lg, f_data_lg, ad, name, NULL, true);
 
 	if (reuse_it == false)
