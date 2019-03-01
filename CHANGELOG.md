@@ -18,6 +18,7 @@ from the device list ([#518][pr-518])
 - Switch to Travis Xenial infrastructure ([#516][pr-516])
 - Catch exceptions from unsubscribe_event() in DeviceProxy destructor ([#521][pr-521])
 - Improve install documentation ([#529][pr-529])
+- Install log4tango include files under *<install_prefix>*/include/tango/log4tango ([#517][pr-517])
 
 ### Fixed
 - Fix memory leak on get_device_property() on Windows when code compiled with Visual Studio 10 or older ([#439][i-439], [#488][pr-488])
@@ -256,6 +257,7 @@ Device Interface Change events. Fix event channel name issues in these different
 [i-510]: https://github.com/tango-controls/cppTango/issues/510
 [i-514]: https://github.com/tango-controls/cppTango/issues/514
 [pr-516]: https://github.com/tango-controls/cppTango/pull/516
+[pr-517]: https://github.com/tango-controls/cppTango/pull/517
 [pr-518]: https://github.com/tango-controls/cppTango/pull/518
 [pr-520]: https://github.com/tango-controls/cppTango/pull/520
 [pr-521]: https://github.com/tango-controls/cppTango/pull/521
