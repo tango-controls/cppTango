@@ -6,9 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ## [UNRELEASED]
 ### Added
 - Add asyn_reconnection test ([#502][pr-502])
+- Add .gitignore ([#522][pr-522])
+- Add Visual Studio 2017 compatibility. Appveyor now builds for Visual Studio 2017 in addition to all the previously 
+supported versions ([#533][pr-533])
 
 ### Changed
 - Replace CORBA::string_dup with Tango::string_dup ([#474][pr-474])
+- Make it possible to remove dynamic attributes from delete_device() by moving the location where the device is removed 
+from the device list ([#518][pr-518])
+- Use python2 (if available) to run cxxtestgen ([#523][pr-523])
+- Switch to Travis Xenial infrastructure ([#516][pr-516])
+- Catch exceptions from unsubscribe_event() in DeviceProxy destructor ([#521][pr-521])
+- Improve install documentation ([#529][pr-529])
 
 ### Fixed
 - Fix memory leak on get_device_property() on Windows when code compiled with Visual Studio 10 or older ([#439][i-439], [#488][pr-488])
@@ -17,6 +26,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 **This bug fix may trigger the reception of 2 consecutive events having possibly the same attribute value (but different
  timestamps) during the Device Server startup phase.**
 - Fix client crash in case of asynchronous write_attribute executed immediately after reconnection ([#502][pr-502])
+- Fix issue with dynamic attributes when a device is restarted on a device server exporting several devices which are 
+creating dynamic attributes ([#458][i-458], [#508][pr-508])
+- Fix uncaught DevFailed exception in DeviceProxy destructor in cxx_stateless_subscription test case when using 
+ZMQ 4.2.3 ([#514][i-514]). Since [zeromq/libzmq@edb4ca1][libzmq-c-edb4ca1], peer disconnection triggers zmq_disconnect on a zmq socket. 
+Further zmq_disconnect calls for such socket and endpoint will fail with errno set to ENOENT. 
+The patch provided in [#520][pr-520] ignores such failure.
+- Fixed a broken dependency on generated Debian package ([5c74e8d][c-5c74e8d])
+- Fix appveyor.yml after appveyor windows image update ([#537][pr-537])
+- Fix event compatibility issues with device servers exporting Device_4 devices. Fix bug with Pipe, Data Ready and 
+Device Interface Change events. Fix event channel name issues in these different cases. ([#492][i-492], [#531][pr-531])
 
 ## [9.3.2] - 2018-09-12 [unstable]
 ### Added
@@ -149,7 +168,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 [c-4a00c8e]: https://github.com/tango-controls/cppTango/commit/4a00c8e4203668c247a2ada6e309470cd53744d3
 [c-36aca17]: https://github.com/tango-controls/cppTango/commit/36aca17d43a97ebe09fdc825941cb39f6c48289e
 [c-355da96]: https://github.com/tango-controls/cppTango/commit/355da96ac7d82d4a7727f68f3b093c98f087fd98
+[c-5c74e8d]: https://github.com/tango-controls/cppTango/commit/5c74e8d33ce85036c9348a09b894e05ac3e8cdf9
+
 [libzmq-c-edc770d]: https://github.com/zeromq/libzmq/commit/edc770d680b2be5a633526bd2c724d66406c8360
+[libzmq-c-edb4ca1]: https://github.com/zeromq/libzmq/commit/edb4ca1
 
 [tt-i3]: https://github.com/tango-controls/TangoTickets/issues/3
 
@@ -225,8 +247,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 [pr-485]: https://github.com/tango-controls/cppTango/pull/485
 [pr-486]: https://github.com/tango-controls/cppTango/pull/486
 [pr-488]: https://github.com/tango-controls/cppTango/pull/488
+[i-492]: https://github.com/tango-controls/cppTango/issues/492
 [pr-493]: https://github.com/tango-controls/cppTango/pull/493
 [pr-502]: https://github.com/tango-controls/cppTango/pull/502
 [pr-503]: https://github.com/tango-controls/cppTango/pull/503
+[pr-508]: https://github.com/tango-controls/cppTango/pull/508
 [i-509]: https://github.com/tango-controls/cppTango/issues/509
 [i-510]: https://github.com/tango-controls/cppTango/issues/510
+[i-514]: https://github.com/tango-controls/cppTango/issues/514
+[pr-516]: https://github.com/tango-controls/cppTango/pull/516
+[pr-518]: https://github.com/tango-controls/cppTango/pull/518
+[pr-520]: https://github.com/tango-controls/cppTango/pull/520
+[pr-521]: https://github.com/tango-controls/cppTango/pull/521
+[pr-522]: https://github.com/tango-controls/cppTango/pull/522
+[pr-523]: https://github.com/tango-controls/cppTango/pull/523
+[pr-529]: https://github.com/tango-controls/cppTango/pull/529
+[pr-531]: https://github.com/tango-controls/cppTango/pull/531
+[pr-533]: https://github.com/tango-controls/cppTango/pull/533
+[pr-537]: https://github.com/tango-controls/cppTango/pull/537
