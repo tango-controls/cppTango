@@ -5,4 +5,4 @@ set(HEADER_FILES
                 Threading.hh)
 
 install(FILES ${HEADER_FILES}
-        DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/log4tango/threading)
+        DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/log4tango/threading)
