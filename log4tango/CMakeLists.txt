@@ -5,7 +5,7 @@
 #  ? :+1 : ?   == just some internal changes, nothing breaks but might work
 #                 better
 # CURRENT : REVISION : AGE
-set (LOG4TANGO_PACKAGE_URL "https://github.com/tango-controls/cppTango/log4tango")
+set (LOG4TANGO_PACKAGE_URL "https://github.com/tango-controls/cppTango")
 set (LOG4TANGO_PACKAGE_BUGREPORT "https://github.com/tango-controls/cppTango/issues")
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/config/config.cmake)
