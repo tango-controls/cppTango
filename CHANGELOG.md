@@ -147,7 +147,7 @@ Device Interface Change events. Fix event channel name issues in these different
 - Fix "unused parameter" warnings ([#379][pr-379])
 - Fix shift-negative-value compilation warnings reported by g++ 6.3 ([#383][pr-383])
 - Fix DeviceAttribute constructor for short and enum data types ([#392][i-392], [#393][pr-393])
-- Tango 9 LTS fix#395 (Inserting const C string in DeviceData) ([#396][pr-396])
+- Tango 9 LTS fix[#395](i-395) (Inserting const C string in DeviceData) ([#396][pr-396])
 - Fix bug leading occasionally to segmentation faults of Tango 9 device servers ([#398][pr-398])
 - Fix bug in event name when pushing an error event to IDL5 clients ([#400][pr-400])
 - Attribute: Don't treat an integer as an char* ([#403][pr-403], [#406][pr-406])
@@ -200,6 +200,7 @@ Device Interface Change events. Fix event channel name issues in these different
 [i-392]: https://github.com/tango-controls/cppTango/issues/392
 [pr-393]: https://github.com/tango-controls/cppTango/pull/393
 [pr-394]: https://github.com/tango-controls/cppTango/pull/394
+[i-395]: https://github.com/tango-controls/cppTango/issues/395
 [pr-396]: https://github.com/tango-controls/cppTango/pull/396
 [pr-398]: https://github.com/tango-controls/cppTango/pull/398
 [pr-400]: https://github.com/tango-controls/cppTango/pull/400
