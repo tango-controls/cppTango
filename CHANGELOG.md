@@ -21,7 +21,7 @@ from the device list ([#518][pr-518])
 - Install log4tango include files under *<install_prefix>*/include/tango/log4tango ([#517][pr-517])
 
 ### Fixed
-- Fix memory leak on get_device_property() on Windows when code compiled with Visual Studio 10 or older ([#439][i-439], [#488][pr-488])
+- Fix memory leak in get_device_property() on Windows when code compiled with Visual Studio 10 or older ([#439][i-439], [#488][pr-488])
 - Fix cxx_fwd_att occasional failure ([#384][i-384], [#428][i-428], [#493][pr-493])
 - Fix "Change event subscription blind to change events right after device server restart" issue ([#359][i-359], [#503][pr-503]). 
 **This bug fix may trigger the reception of 2 consecutive events having possibly the same attribute value (but different
@@ -130,6 +130,13 @@ Device Interface Change events. Fix event channel name issues in these different
 - Get exception message from event callback ([#431][pr-431])
 - Add a map in MultiAttribute object to improve performances ([#424][i-424], [#430][pr-430])
 - A small Doxygen improvement - take version from cmake ([#436][pr-436])
+- Reduce event subscription sleeps on linux ([#415][pr-415]).
+
+**Warning**: There is no guarantee that after a successful call to subscribe_event() that a subscriber will receive all 
+the events it is interested in. In some situations, some important events might be missed if they occur between the 
+subscribe_event() call and the ZMQ subscription reception on the ZMQ publisher side, potentially leading to situations 
+where a client application might show out of date/incorrect values.
+- Tango 9 LTS fix[#395][i-395] (Inserting const C string in DeviceData) ([#396][pr-396])
 
 ### Removed
 - Remove zmq.hpp ([#266][i-266], [#421][pr-421]). **Add a dependency to https://github.com/zeromq/cppzmq**
@@ -147,13 +154,11 @@ Device Interface Change events. Fix event channel name issues in these different
 - Fix "unused parameter" warnings ([#379][pr-379])
 - Fix shift-negative-value compilation warnings reported by g++ 6.3 ([#383][pr-383])
 - Fix DeviceAttribute constructor for short and enum data types ([#392][i-392], [#393][pr-393])
-- Tango 9 LTS fix[#395](i-395) (Inserting const C string in DeviceData) ([#396][pr-396])
 - Fix bug leading occasionally to segmentation faults of Tango 9 device servers ([#398][pr-398])
 - Fix bug in event name when pushing an error event to IDL5 clients ([#400][pr-400])
 - Attribute: Don't treat an integer as an char* ([#403][pr-403], [#406][pr-406])
 - pointer-cast-size-mismatch attrgetsetprop.cpp:200 ([#339][i-339], [#406][pr-406])
 - Fix build errors when using C++17 ([#405][pr-405], [#425][pr-425])
-- Remove event subscription sleeps on linux ([#415][pr-415])
 - Fix issue with polling not starting automatically on dynamic attributes ([#427][pr-427])
 - Add noreturn to remove some compilation warnings ([#435][pr-435])
 - CPU load when device has large number of attributes ([#404][pr-404]) 
