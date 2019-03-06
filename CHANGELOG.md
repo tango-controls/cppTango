@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [UNRELEASED]
+## [9.3.3] - 2019-03
 ### Added
 - Add asyn_reconnection test ([#502][pr-502])
 - Add .gitignore ([#522][pr-522])
@@ -11,7 +11,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 supported versions ([#533][pr-533])
 
 ### Changed
-- Replace CORBA::string_dup with Tango::string_dup ([#474][pr-474])
+- Replace CORBA::string_dup calls with Tango::string_dup ([#474][pr-474])
+- Replace CORBA::string_free calls with Tango::string_free ([#539][pr-539])
 - Make it possible to remove dynamic attributes from delete_device() by moving the location where the device is removed 
 from the device list ([#518][pr-518])
 - Use python2 (if available) to run cxxtestgen ([#523][pr-523])
@@ -21,16 +22,19 @@ from the device list ([#518][pr-518])
 - Install log4tango include files under *<install_prefix>*/include/tango/log4tango ([#517][pr-517])
 
 ### Fixed
-- Fix memory leak in get_device_property() on Windows when code compiled with Visual Studio 10 or older ([#439][i-439], [#488][pr-488])
+- Fix memory leak in get_device_property() on Windows when code compiled with Visual Studio 10 or older 
+([#439][i-439], [#488][pr-488])
 - Fix cxx_fwd_att occasional failure ([#384][i-384], [#428][i-428], [#493][pr-493])
-- Fix "Change event subscription blind to change events right after device server restart" issue ([#359][i-359], [#503][pr-503]). 
-**This bug fix may trigger the reception of 2 consecutive events having possibly the same attribute value (but different
- timestamps) during the Device Server startup phase.**
+- Fix "Change event subscription blind to change events right after device server restart" issue 
+([#359][i-359], [#503][pr-503]). 
+**This bug fix may trigger the reception of 2 consecutive events having possibly the same attribute value 
+(but different timestamps) during the Device Server startup phase.**
 - Fix client crash in case of asynchronous write_attribute executed immediately after reconnection ([#502][pr-502])
 - Fix issue with dynamic attributes when a device is restarted on a device server exporting several devices which are 
 creating dynamic attributes ([#458][i-458], [#508][pr-508])
 - Fix uncaught DevFailed exception in DeviceProxy destructor in cxx_stateless_subscription test case when using 
-ZMQ 4.2.3 ([#514][i-514]). Since [zeromq/libzmq@edb4ca1][libzmq-c-edb4ca1], peer disconnection triggers zmq_disconnect on a zmq socket. 
+ZMQ 4.2.3 ([#514][i-514]). Since [zeromq/libzmq@edb4ca1][libzmq-c-edb4ca1], peer disconnection triggers zmq_disconnect 
+on a zmq socket. 
 Further zmq_disconnect calls for such socket and endpoint will fail with errno set to ENOENT. 
 The patch provided in [#520][pr-520] ignores such failure.
 - Fixed a broken dependency on generated Debian package ([5c74e8d][c-5c74e8d])
@@ -57,7 +61,8 @@ Device Interface Change events. Fix event channel name issues in these different
 - Fix some event compatibility issues with device server <= Tango 8 ([#456][i-456])
 - Fix event field in EventData structure passed to user's callback (broken in Tango 9.3.0 and 9.3.1)
 - Fix attribute name in EventData structure passed to user's callback for Attribute Config events
-- Fix a bug occurring when an event is pushed at the same time as an event (re)subscription occurs ([#484][i-484], [#485][pr-485])
+- Fix a bug occurring when an event is pushed at the same time as an event (re)subscription occurs 
+([#484][i-484], [#485][pr-485])
 - Fix event name (EventData.event) passed to client's Callback after Tango 9 attribute reconnection ([#486][pr-486])
 - Fix some doxygen warnings
 
@@ -164,7 +169,7 @@ where a client application might show out of date/incorrect values.
 - CPU load when device has large number of attributes ([#404][pr-404]) 
 - push event performance issue ([#244][i-244])
 
-[Unreleased]: https://github.com/tango-controls/cppTango/compare/9.3.2...HEAD
+[9.3.3]: https://github.com/tango-controls/cppTango/compare/9.3.2...9.3.3
 [9.3.2]: https://github.com/tango-controls/cppTango/compare/9.3.1...9.3.2
 [9.3.1]: https://github.com/tango-controls/cppTango/compare/9.3.0...9.3.1
 [9.3.0]: https://github.com/tango-controls/cppTango/compare/test-auto-deploy...9.3.0
@@ -273,3 +278,4 @@ where a client application might show out of date/incorrect values.
 [pr-531]: https://github.com/tango-controls/cppTango/pull/531
 [pr-533]: https://github.com/tango-controls/cppTango/pull/533
 [pr-537]: https://github.com/tango-controls/cppTango/pull/537
+[pr-539]: https://github.com/tango-controls/cppTango/pull/539
