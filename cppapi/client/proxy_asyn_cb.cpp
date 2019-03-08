@@ -328,7 +328,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 				TangoSys_OMemStream desc;
 				desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
 				desc << ", command " << tmp << ends;
-				CORBA::string_free(tmp);
+				Tango::string_free(tmp);
 
 				errors.length(2);
 				errors[0].desc = Tango::string_dup(cb_excep_mess);
@@ -362,7 +362,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
 			desc << ", command " << tmp << ends;
-			CORBA::string_free(tmp);
+			Tango::string_free(tmp);
 
 			long nb_err = errors.length();
 			errors.length(nb_err + 1);
@@ -391,7 +391,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
 			desc << ", command " << cmd << ends;
-			CORBA::string_free(tmp);
+			Tango::string_free(tmp);
 
 			errors.length(2);
 			errors[0].desc = Tango::string_dup(cb_excep_mess);

@@ -516,7 +516,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 				}
 				catch (Tango::DevFailed &e) {}
 			}
-			CORBA::string_free(_ior);
+			Tango::string_free(_ior);
 		}
 		catch(const CosNotification::UnsupportedQoS&)
 		{

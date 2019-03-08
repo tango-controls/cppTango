@@ -184,7 +184,7 @@ public:
 		da_out = device1->read_attribute("Encoded_attr");
 		da_out.extract(att_read_ptr,att_read_data_ptr,att_data_length);
 
-		CORBA::string_free(att_read_ptr);
+		Tango::string_free(att_read_ptr);
 		delete [] att_read_data_ptr;
 
 //-------

@@ -363,7 +363,7 @@ DeviceData Connection::command_inout_reply(long id)
                     TangoSys_OMemStream desc;
                     desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
                     desc << ", command " << tmp << ends;
-                    CORBA::string_free(tmp);
+                    Tango::string_free(tmp);
 
                     remove_asyn_request(id);
 
@@ -409,7 +409,7 @@ DeviceData Connection::command_inout_reply(long id)
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
 			desc << ", command " << tmp << ends;
-			CORBA::string_free(tmp);
+			Tango::string_free(tmp);
 
 			remove_asyn_request(id);
 
@@ -459,7 +459,7 @@ DeviceData Connection::command_inout_reply(long id)
 // Remove request from request global table.
 //
 
-					CORBA::string_free(tmp);
+					Tango::string_free(tmp);
 
 					remove_asyn_request(id);
 
@@ -472,7 +472,7 @@ DeviceData Connection::command_inout_reply(long id)
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
 			desc << ", command " << tmp << ends;
-			CORBA::string_free(tmp);
+			Tango::string_free(tmp);
 
 			remove_asyn_request(id);
 
@@ -689,7 +689,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
                     TangoSys_OMemStream desc;
                     desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
                     desc << ", command " << tmp << ends;
-                    CORBA::string_free(tmp);
+                    Tango::string_free(tmp);
 
                     remove_asyn_request(id);
 
@@ -735,7 +735,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
 			desc << ", command " << tmp << ends;
-			CORBA::string_free(tmp);
+			Tango::string_free(tmp);
 
 			remove_asyn_request(id);;
 
@@ -783,7 +783,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 // Remove request from request global table.
 //
 
-					CORBA::string_free(tmp);
+					Tango::string_free(tmp);
 
 					remove_asyn_request(id);
 
@@ -796,7 +796,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
 			desc << ", command " << tmp << ends;
-			CORBA::string_free(tmp);
+			Tango::string_free(tmp);
 
 			remove_asyn_request(id);
 

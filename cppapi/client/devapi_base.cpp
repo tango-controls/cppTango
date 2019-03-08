@@ -10126,7 +10126,7 @@ void DeviceProxy::local_import(string &local_ior)
                 local_ior = s;
 
                 CORBA::release(orb_ptr);
-                CORBA::string_free(s);
+                Tango::string_free(s);
 
                 return;
             }

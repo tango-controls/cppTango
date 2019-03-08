@@ -1098,12 +1098,12 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 		{
 			cerr << "CommunicationFailed while exporting device " << dev->get_name() << endl;
 			CORBA::release(orb_ptr);
-			CORBA::string_free(s);
+			Tango::string_free(s);
 			throw;
 		}
 
 		CORBA::release(orb_ptr);
-		CORBA::string_free(s);
+		Tango::string_free(s);
 	}
 
 //
