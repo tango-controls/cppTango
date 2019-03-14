@@ -7,7 +7,7 @@
 [![Build Status](https://travis-ci.org/tango-controls/cppTango.svg?branch=tango-9-lts)](https://travis-ci.org/tango-controls/cppTango)
 [![Build status](https://ci.appveyor.com/api/projects/status/avaox4tnjm7vff13/branch/tango-9-lts?svg=true)](https://ci.appveyor.com/project/bourtemb/cpptango-tt3w8/branch/tango-9-lts)
 
-[![release](https://img.shields.io/github/release/tango-controls/cppTango.svg?style=flat)](https://github.com/tango-controls/cppTango/releases/9.3.0)
+[![release](https://img.shields.io/github/release/tango-controls/cppTango.svg?style=flat)](https://github.com/tango-controls/cppTango/releases/latest)
 
 [![License](https://img.shields.io/badge/license-LGPL--3.0-orange.svg)](https://github.com/tango-controls/cppTango/blob/master/LICENSE)
 
