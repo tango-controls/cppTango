@@ -2644,7 +2644,7 @@ void WAttribute::rollback()
             break;
 
         case Tango::DEV_USHORT :
-            double_val = old_double_val;
+            ushort_val = old_ushort_val;
             break;
 
         case Tango::DEV_UCHAR :
