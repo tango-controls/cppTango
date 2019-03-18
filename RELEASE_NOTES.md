@@ -187,6 +187,12 @@ phase (write hardware at init feature).
 If you didn't understand anything to this explanation, you were probably not affected by this bug.
 * We fixed a memory leak in get_device_property() which was occurring only on Windows and only when using Visual Studio 
 10 compiler or an older MSVC compiler version.
+* If you are not using DevUShort WRITE only attributes, you can skip to the next item.
+Still reading? So you are really using DevUShort WRITE only attributes?
+The DevUShort WRITE attribute value was not rolled back correctly to the previous valid value in some specific cases 
+(exception thrown in the device server write method associated to this attribute, exception thrown by 
+read_attr_hardware() method or exception thrown because it is not allowed to read this attribute in the current state).
+Now it is!
 * We fixed many compilation warnings and build errors with recent compilers and with Doxygen
 
 ## Changelog

@@ -41,6 +41,7 @@ The patch provided in [#520][pr-520] ignores such failure.
 - Fix appveyor.yml after appveyor windows image update ([#537][pr-537])
 - Fix event compatibility issues with device servers exporting Device_4 devices. Fix bug with Pipe, Data Ready and 
 Device Interface Change events. Fix event channel name issues in these different cases. ([#492][i-492], [#531][pr-531])
+- Fix WAttribute::rollback() for DevUshort WRITE attributes ([#541][i-541], [#542][pr-542])
 
 ## [9.3.2] - 2018-09-12 [unstable]
 ### Added
@@ -279,3 +280,5 @@ where a client application might show out of date/incorrect values.
 [pr-533]: https://github.com/tango-controls/cppTango/pull/533
 [pr-537]: https://github.com/tango-controls/cppTango/pull/537
 [pr-539]: https://github.com/tango-controls/cppTango/pull/539
+[i-541]: https://github.com/tango-controls/cppTango/issues/541
+[pr-542]: https://github.com/tango-controls/cppTango/pull/542
