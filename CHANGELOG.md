@@ -120,7 +120,7 @@ Device Interface Change events. Fix event channel name issues in these different
 - Doxygen: Add searchbar ([#432][pr-432])
 
 ### Changed
-- DeviceAttribute::get_type() no longer returns API_EmptyDeviceAttribute exception when the DeviceAttribute is empty.
+- DeviceAttribute::get_type() no longer throws an API_EmptyDeviceAttribute exception when the DeviceAttribute is empty.
   It returns DATA_TYPE_UNKNOWN instead ([#393][pr-393], [#509][i-509]).
    
   **Warning! This change could lead to Segmentation fault** in code doing things like:

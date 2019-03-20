@@ -90,7 +90,7 @@ is updated to no longer link with log4tango library.
 You may have to update your Makefiles in order to match this new include install location.
 * log4tango include files are now installed under _<install_prefix>_/include/tango/log4tango. 
 You may have to update your Makefiles in order to match this new include install location.
-* `DeviceAttribute::get_type()` no longer returns `API_EmptyDeviceAttribute` exception when the DeviceAttribute is empty.
+* `DeviceAttribute::get_type()` no longer throws an `API_EmptyDeviceAttribute` exception when the DeviceAttribute is empty.
   It returns `DATA_TYPE_UNKNOWN` instead.
    
   **Warning! This change could lead to Segmentation fault** in code doing something like:
