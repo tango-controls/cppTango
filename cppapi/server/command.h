@@ -2217,8 +2217,8 @@ CORBA::Any *TemplCommandInOut<INARG,OUTARG>::execute(DeviceImpl *dev_ptr,const C
  * This class is a class representing a command in the template command model
  * with input parameter but without output parameter. The class template
  * parameter (called INARG) is the command input parameter type.
- *<p>Synopsis : template <typename INARG> class TemplCommandIn:public TemplCommand;</p>
- *<p>Usage : new TemplCommandIn<Tango::DevLong>(...);</p>
+ *<p>Synopsis : template typename &lt;INARG&gt; class TemplCommandIn:public TemplCommand;</p>
+ *<p>Usage : new TemplCommandIn&lt;Tango::DevLong&gt;(...);</p>
  *
  * $Author$
  * $Revision$
@@ -2757,8 +2757,8 @@ CORBA::Any *TemplCommandIn<INARG>::execute(DeviceImpl *dev_ptr,const CORBA::Any 
 // description :	This class is a derived class of the Command class.
 //			It is used to create a command from a pointer to a
 //			object method which will execute the command.
-//			This class is for command without inout  nor output
-//			paremeters.
+//			This class is for command without inout nor output
+//			parameters.
 //			This class is also a base class for the template Command
 //			class
 //
@@ -2769,8 +2769,8 @@ CORBA::Any *TemplCommandIn<INARG>::execute(DeviceImpl *dev_ptr,const CORBA::Any 
  * This class is a class representing a command in the template command model
  * with output parameter but without input parameter. The class template
  * parameter (called OUTARG) is the command output parameter type.
- *<p>Synopsis : template <typename OUTARG> class TemplCommandOut:public TemplCommand;</p>
- *<p>Usage : new TemplCommandOut<Tango::DevLong>(...);</p>
+ *<p>Synopsis : template &lt;typename OUTARG&gt; class TemplCommandOut:public TemplCommand;</p>
+ *<p>Usage : new TemplCommandOut&lt;Tango::DevLong&gt;(...);</p>
  *
  * $Author$
  * $Revision$
