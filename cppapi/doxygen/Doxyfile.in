@@ -788,7 +788,7 @@ INPUT                  = @PROJECT_SOURCE_DIR@/cppapi/server/device.h \
                         @PROJECT_SOURCE_DIR@/cppapi/server/attrdesc.h \
                         @PROJECT_SOURCE_DIR@/cppapi/server/fwdattrdesc.h \
                         @PROJECT_SOURCE_DIR@/cppapi/server/pipedesc.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/tango_const.h \
+                        @PROJECT_BINARY_DIR@/cppapi/server/tango_const.h \
                         @PROJECT_SOURCE_DIR@/cppapi/server/attribute.h \
                         @PROJECT_SOURCE_DIR@/cppapi/server/multiattribute.h \
                         @PROJECT_SOURCE_DIR@/cppapi/server/pollext.h \
