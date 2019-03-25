@@ -174,10 +174,10 @@ public:
  * It allows device locking feature implemented in Tango V7
  * @return A sequence of AttributeValue_5 structure. One structure is initialised
  * for each wanted attribute with the attribute value, the date and the attribute
- * value quality. Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue_5">here</a>
+ * value quality. Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeValue</b> structure definition.
  * @exception DevFailed Thrown if the attribute does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::AttributeValueList_5 *read_attributes_5(const Tango::DevVarStringArray& names,
@@ -193,17 +193,17 @@ public:
  * @param values The attribute(s) new value(s). One structure is initialised
  * for each wanted attribute with the attribute value. The attribute quality and
  * date are not used by this method.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue_5">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeValue</b> structure definition.
  * @param r_names Names of the attribute(s) to be read
  * @param cl_ident The client identificator. This parameter is new in release 4.
  * It allows device locking feature implemented in Tango V7
  * @return A sequence of AttributeValue_5 structure. One structure is initialised
  * for each wanted attribute with the attribute value, the date and the attribute
- * value quality. Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue_5">here</a>
+ * value quality. Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeValue_5</b> structure definition.
  * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -223,11 +223,11 @@ public:
  *
  * @param names The attribute(s) name list
  * @return A sequence of AttributeConfig_5 structure. One structure is initialised
- * for each wanted attribute. Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeConfig_5">here</a>
+ * for each wanted attribute. Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeConfig_5</b> structure specification.
  *
  * @exception DevFailed Thrown if the attribute does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::AttributeConfigList_5 *get_attribute_config_5(const Tango::DevVarStringArray& names);
@@ -239,14 +239,14 @@ public:
  * It updates the device attribute configuration actually used by the device but
  * this method also updates the Tango database. One structure of the
  * AttributeConfig_3 type is needed for each attribute to update configuration.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeConfig_5">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeConfig_5</b> structure specification.
  *
  * @param new_conf The attribute(s) new configuration structure sequence
  * @param cl_ident The client identificator. This parameter is new in release 4.
  * It allows device locking feature implemented in Tango V7
  * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual void set_attribute_config_5(const Tango::AttributeConfigList_5& new_conf,
@@ -267,10 +267,10 @@ public:
  * allowing a client to retrieve for each history record the attribute value,
  * the date and in case of the attribute
  * returns an error when it was read, the DevErrors data.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevAttrHistory_5">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>DevAttrHistory</b> structure definition.
  * @exception DevFailed Thrown if the attribute does not exist or is not polled.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::DevAttrHistory_5 *read_attribute_history_5(const char* name,CORBA::Long n);
@@ -284,12 +284,12 @@ public:
  * PipeConfig_5 structure.
  *
  * @param names The pipe(s) name list
- * @return A sequence of PipeConfig_5 structure. One structure is initialised
- * for each wanted pipe. Click <a href="../../../tango_idl/idl_html/_Tango.html#PipeConfig_5">here</a>
- * to read <b>PipeConfig_5</b> structure specification.
+ * @return A sequence of PipeConfig structures. One structure is initialised
+ * for each wanted pipe. Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
+ * to read <b>PipeConfig</b> structure specification.
  *
  * @exception DevFailed Thrown if the pipe does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::PipeConfigList *get_pipe_config_5(const Tango::DevVarStringArray& names);
@@ -301,14 +301,14 @@ public:
  * It updates the device pipe configuration actually used by the device but
  * this method also updates the Tango database. One structure of the
  * PipeConfig type is needed for each pipe to update configuration.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#PipeConfig">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>PipeConfig</b> structure specification.
  *
  * @param new_conf The pipe(s) new configuration structure sequence
  * @param cl_ident The client identificator. This parameter is new in release 4.
  * It allows device locking feature implemented in Tango V7
  * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
     	virtual void set_pipe_config_5(const Tango::PipeConfigList& new_conf,
@@ -323,10 +323,10 @@ public:
  * @param name The pipe name
  * @param cl_ident The client identificator. This parameter is new in release 4.
  * It allows device locking feature implemented in Tango V7
- * @return A DevPipeData structure. Click <a href="../../../tango_idl/idl_html/_Tango.html#DevPipeData">here</a>
+ * @return A DevPipeData structure. Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>DevPipeData</b> structure definition.
  * @exception DevFailed Thrown if the attribute does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::DevPipeData *read_pipe_5(const char *name,const Tango::ClntIdent &cl_ident);
@@ -341,7 +341,7 @@ public:
  * @param cl_ident The client identificator. This parameter is new in release 4.
  * It allows device locking feature implemented in Tango V7
  * @exception DevFailed Thrown if the attribute does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual void write_pipe_5(const Tango::DevPipeData &pipe_value,const Tango::ClntIdent& cl_ident);
@@ -356,10 +356,10 @@ public:
  * @param pipe_value The new pipe value
  * @param cl_ident The client identificator. This parameter is new in release 4.
  * It allows device locking feature implemented in Tango V7
- * @return A DevPipeData structure. Click <a href="../../../tango_idl/idl_html/_Tango.html#DevPipeData">here</a>
+ * @return A DevPipeData structure. Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>DevPipeData</b> structure definition.
  * @exception DevFailed Thrown if the attribute does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::DevPipeData *write_read_pipe_5(const Tango::DevPipeData &pipe_value,const Tango::ClntIdent& cl_ident);

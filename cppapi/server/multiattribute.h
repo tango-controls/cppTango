@@ -100,7 +100,7 @@ public:
  * @param dev_class Reference to the device DeviceClass object
  * @param dev The device pointer
  * @exception DevFailed If the command sent to the database failed.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	MultiAttribute(string &dev_name,DeviceClass *dev_class,DeviceImpl *dev);
@@ -126,7 +126,7 @@ public:
  * @param attr_name The attribute name
  * @return A reference to the Attribute object
  * @exception DevFailed If the attribute is not defined.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	Attribute &get_attr_by_name(const char *attr_name);
@@ -149,7 +149,7 @@ public:
  * @param attr_name The attribute name
  * @return A reference to the writable attribute object
  * @exception DevFailed If the attribute is not defined.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	WAttribute &get_w_attr_by_name(const char *attr_name);
@@ -173,7 +173,7 @@ public:
  * @param attr_name The attribute name
  * @return The index in the main attributes vector
  * @exception DevFailed If the attribute is not found in the vector.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	long get_attr_ind_by_name(const char *attr_name);
@@ -200,7 +200,7 @@ public:
  * @param  attr_name  The attribute name
  * @return A boolean set to true if the attribute is in alarm
  * @exception DevFailed If the attribute does not have any alarm level defined.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  */
@@ -214,7 +214,7 @@ public:
  * @param  ind  The attribute index
  * @return A boolean set to true if the attribute is in alarm
  * @exception DevFailed If the attribute does not have any alarm level defined.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  */
@@ -228,7 +228,7 @@ public:
  * @return A boolean set to true if one attribute is in alarm
  * @exception DevFailed If the alarm level are not defined for one of the
  * attribute in the list of alarmable one
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  */
