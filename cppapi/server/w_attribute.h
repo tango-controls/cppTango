@@ -114,7 +114,18 @@ public:
 	template <typename T>
 	void set_min_value(const T &min_value);
 
+/**
+ * Set attribute minimum value
+ *
+ * @param min_value The new min value
+ */
 	void set_min_value(char *min_value);
+
+/**
+ * Set attribute minimum value
+ *
+ * @param min_value The new min value
+ */
 	void set_min_value(const char *min_value);
 /**
  * Gets attribute minimum value or throws an exception if the
@@ -140,7 +151,17 @@ public:
 	template <typename T>
 	void set_max_value(const T &max_value);
 
+/**
+ * Set attribute maximum value
+ *
+ * @param max_value The new max value
+ */
 	void set_max_value(char *max_value);
+/**
+ * Set attribute maximum value
+ *
+ * @param max_value The new max value
+ */
 	void set_max_value(const char *max_value);
 /**
  * Get attribute maximum value or throws an exception if the

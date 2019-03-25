@@ -847,7 +847,7 @@ public:
  * Create a CORBA Any object and insert a Tango::DevVarCharArray data in it.
  *
  * This method <b>consumes</b> the memory used by the array.
- * When the CORBA layer will destroy the Any object, the memory alloacted
+ * When the CORBA layer will destroy the Any object, the memory allocated
  * for the array will also be freed. This is the recommended method to
  * insert Tango::DevVarCharArray data type into a CORBA Any object.
  *
@@ -874,7 +874,7 @@ public:
  * Create a CORBA Any object and insert a Tango::DevVarShortArray data in it.
  *
  * This method <b>consumes</b> the memory used by the array.
- * When the CORBA layer will destroy the Any object, the memory alloacted
+ * When the CORBA layer will destroy the Any object, the memory allocated
  * for the array will also be freed. This is the recommended method to
  * insert Tango::DevVarShortArray data type into a CORBA Any object.
  *
@@ -901,7 +901,7 @@ public:
  * Create a CORBA Any object and insert a Tango::DevVarLongArray data in it.
  *
  * This method <b>consumes</b> the memory used by the array.
- * When the CORBA layer will destroy the Any object, the memory alloacted
+ * When the CORBA layer will destroy the Any object, the memory allocated
  * for the array will also be freed. This is the recommended method to
  * insert Tango::DevVarLongArray data type into a CORBA Any object.
  *
@@ -928,7 +928,7 @@ public:
  * Create a CORBA Any object and insert a Tango::DevVarLong64Array data in it.
  *
  * This method <b>consumes</b> the memory used by the array.
- * When the CORBA layer will destroy the Any object, the memory alloacted
+ * When the CORBA layer will destroy the Any object, the memory allocated
  * for the array will also be freed. This is the recommended method to
  * insert Tango::DevVarLongArray data type into a CORBA Any object.
  *
@@ -955,7 +955,7 @@ public:
  * Create a CORBA Any object and insert a Tango::DevVarFloatArray data in it.
  *
  * This method <b>consumes</b> the memory used by the array.
- * When the CORBA layer will destroy the Any object, the memory alloacted
+ * When the CORBA layer will destroy the Any object, the memory allocated
  * for the array will also be freed. This is the recommended method to
  * insert Tango::DevVarFloatArray data type into a CORBA Any object.
  *
@@ -982,7 +982,7 @@ public:
  * Create a CORBA CORBA::Any object and insert a Tango::DevVarDoubleArray data in it.
  *
  * This method <b>consumes</b> the memory used by the array.
- * When the CORBA layer will destroy the Any object, the memory alloacted
+ * When the CORBA layer will destroy the Any object, the memory allocated
  * for the array will also be freed. This is the recommended method to
  * insert Tango::DevVarDoubleArray data type into a CORBA Any object.
  *
@@ -1009,7 +1009,7 @@ public:
  * Create a CORBA Any object and insert a Tango::DevVarUShortArray data in it.
  *
  * This method <b>consumes</b> the memory used by the array.
- * When the CORBA layer will destroy the Any object, the memory alloacted
+ * When the CORBA layer will destroy the Any object, the memory allocated
  * for the array will also be freed. This is the recommended method to
  * insert Tango::DevVarUShortArray data type into a CORBA Any object.
  *
@@ -1036,7 +1036,7 @@ public:
  * Create a CORBA Any object and insert a Tango::DevVarULongArray data in it.
  *
  * This method <b>consumes</b> the memory used by the array.
- * When the CORBA layer will destroy the Any object, the memory alloacted
+ * When the CORBA layer will destroy the Any object, the memory allocated
  * for the array will also be freed. This is the recommended method to
  * insert Tango::DevVarULongArray data type into a CORBA Any object.
  *
@@ -1063,7 +1063,7 @@ public:
  * Create a CORBA Any object and insert a Tango::DevVarULong64Array data in it.
  *
  * This method <b>consumes</b> the memory used by the array.
- * When the CORBA layer will destroy the Any object, the memory alloacted
+ * When the CORBA layer will destroy the Any object, the memory allocated
  * for the array will also be freed. This is the recommended method to
  * insert Tango::DevVarULongArray data type into a CORBA Any object.
  *
@@ -1090,7 +1090,7 @@ public:
  * Create a CORBA Any object and insert a Tango::DevVarStringArray data in it.
  *
  * This method <b>consumes</b> the memory used by the array.
- * When the CORBA layer will destroy the Any object, the memory alloacted
+ * When the CORBA layer will destroy the Any object, the memory allocated
  * for the array will also be freed. This is the recommended method to
  * insert Tango::DevVarStringArray data type into a CORBA Any object.
  *
@@ -1102,7 +1102,7 @@ public:
 	CORBA::Any *insert(Tango::DevVarStringArray *data);
 
         //TODO templates
-		/**
+/**
  * Create a CORBA Any object and insert a Tango::DevVarBooleanArray data in it.
  *
  * This method will do a <b>deep copy</b> of the array into the Any object.
@@ -1113,6 +1113,19 @@ public:
  * <b>DevFailed</b> exception specification
  */
 		CORBA::Any *insert(DevVarBooleanArray *data);
+/**
+ * Create a CORBA Any object and insert a Tango::DevVarBooleanArray data in it.
+ *
+ * This method <b>consumes</b> the memory used by the array.
+ * When the CORBA layer will destroy the Any object, the memory allocated
+ * for the array will also be freed. This is the recommended method to
+ * insert Tango::DevVarBooleanArray data type into a CORBA Any object.
+ *
+ * @param data The array to be inserted into the Any object
+ * @exception DevFailed If the Any object creation failed.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
         CORBA::Any *insert(DevVarBooleanArray &data);
 
 /**
@@ -1131,7 +1144,7 @@ public:
  * Create a CORBA Any object and insert a Tango::DevVarLongStringArray data in it.
  *
  * This method <b>consumes</b> the memory used by the array.
- * When the CORBA layer will destroy the Any object, the memory alloacted
+ * When the CORBA layer will destroy the Any object, the memory allocated
  * for the array will also be freed. This is the recommended method to
  * insert Tango::DevVarLongStringArray data type into a CORBA Any object.
  *
@@ -1158,7 +1171,7 @@ public:
  * Create a CORBA Any object and insert a Tango::DevVarDoubleStringArray data in it.
  *
  * This method <b>consumes</b> the memory used by the array.
- * When the CORBA layer will destroy the Any object, the memory alloacted
+ * When the CORBA layer will destroy the Any object, the memory allocated
  * for the array will also be freed. This is the recommended method to
  * insert Tango::DevVarDoubleStringArray data type into a CORBA Any object.
  *
@@ -1183,7 +1196,7 @@ public:
  * Create a CORBA Any object and insert a Tango::DevEncoded data in it.
  *
  * This method <b>consumes</b> the memory used by the array.
- * When the CORBA layer will destroy the Any object, the memory alloacted
+ * When the CORBA layer will destroy the Any object, the memory allocated
  * for the array will also be freed. This is the recommended method to
  * insert Tango::DevVarDoubleStringArray data type into a CORBA Any object.
  *

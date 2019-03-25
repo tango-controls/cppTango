@@ -1783,7 +1783,27 @@ public:
 	template <typename T>
 	void set_min_alarm(const T &new_min_alarm);
 
+/**
+ * Set attribute minimum alarm.
+ *
+ * This method sets the attribute minimum alarm.
+ *
+ * @param new_min_alarm The new attribute minimum alarm value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_min_alarm(char *new_min_alarm);
+/**
+ * Set attribute minimum alarm.
+ *
+ * This method sets the attribute minimum alarm.
+ *
+ * @param new_min_alarm The new attribute minimum alarm value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_min_alarm(const char *new_min_alarm);
 
 /**
@@ -1808,8 +1828,27 @@ public:
  */
 	template <typename T>
 	void set_max_alarm(const T &new_max_alarm);
-
+/**
+ * Set attribute maximum alarm.
+ *
+ * This method sets the attribute maximum alarm.
+ *
+ * @param new_max_alarm The new attribute maximum alarm value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_max_alarm(char *new_max_alarm);
+/**
+ * Set attribute maximum alarm.
+ *
+ * This method sets the attribute maximum alarm.
+ *
+ * @param new_max_alarm The new attribute maximum alarm value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_max_alarm(const char *new_max_alarm);
 
 /**
@@ -1834,8 +1873,27 @@ public:
  */
 	template <typename T>
 	void set_min_warning(const T &new_min_warning);
-
+/**
+ * Set attribute minimum warning.
+ *
+ * This method sets the attribute minimum warning.
+ *
+ * @param new_min_warning The new attribute minimum warning value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_min_warning(char *new_min_warning);
+/**
+ * Set attribute minimum warning.
+ *
+ * This method sets the attribute minimum warning.
+ *
+ * @param new_min_warning The new attribute minimum warning value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_min_warning(const char *new_min_warning);
 
 /**
@@ -1860,8 +1918,27 @@ public:
  */
 	template <typename T>
 	void set_max_warning(const T &new_max_warning);
-
+/**
+ * Set attribute maximum warning.
+ *
+ * This method sets the attribute maximum warning.
+ *
+ * @param new_max_warning The new attribute maximum warning value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_max_warning(char *new_max_warning);
+/**
+ * Set attribute maximum warning.
+ *
+ * This method sets the attribute maximum warning.
+ *
+ * @param new_max_warning The new attribute maximum warning value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_max_warning(const char *new_max_warning);
 
 /**
