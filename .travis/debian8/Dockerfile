@@ -6,6 +6,10 @@ ARG APP_GID=2000
 
 MAINTAINER TANGO Controls team <tango@esrf.fr>
 
+RUN echo "deb http://deb.debian.org/debian jessie main" > /etc/apt/sources.list
+
+RUN echo "deb http://security.debian.org/debian-security jessie/updates main" > /etc/apt/sources.list.d/security.list
+
 RUN apt-get update && apt-get install -y apt-utils
 
 RUN apt-get install -y build-essential cmake
@@ -13,8 +17,6 @@ RUN apt-get install -y build-essential cmake
 RUN apt-get install -y curl lsb-release
 
 RUN apt-get install -y omniidl libomniorb4-dev libcos4-dev libomnithread3-dev libzmq3-dev
-
-RUN apt-get update && apt-get install -y curl
 
 RUN groupadd -g "$APP_GID" tango
 
