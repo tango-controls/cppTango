@@ -6,9 +6,7 @@ ARG APP_GID=2000
 
 MAINTAINER TANGO Controls team <tango@esrf.fr>
 
-RUN echo "deb http://deb.debian.org/debian jessie main" > /etc/apt/sources.list
-
-RUN echo "deb http://security.debian.org/debian-security jessie/updates main" > /etc/apt/sources.list.d/security.list
+RUN sed -i '/jessie-updates/d' /etc/apt/sources.list  # Now archived
 
 RUN apt-get update && apt-get install -y apt-utils
 
