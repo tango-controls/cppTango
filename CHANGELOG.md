@@ -20,6 +20,9 @@ from the device list ([#518][pr-518])
 - Catch exceptions from unsubscribe_event() in DeviceProxy destructor ([#521][pr-521])
 - Improve install documentation ([#529][pr-529])
 - Install log4tango include files under *<install_prefix>*/include/tango/log4tango ([#517][pr-517])
+- Update doxygen HTML pages ([#544][pr-544])
+- Update Debian 7 and Debian 8 Travis Docker files after Debian Wheezy end of life and jessie-updates removal 
+  ([#546][i-546], [#549][pr-549])
 
 ### Fixed
 - Fix memory leak in get_device_property() on Windows when code compiled with Visual Studio 10 or older 
@@ -282,3 +285,6 @@ where a client application might show out of date/incorrect values.
 [pr-539]: https://github.com/tango-controls/cppTango/pull/539
 [i-541]: https://github.com/tango-controls/cppTango/issues/541
 [pr-542]: https://github.com/tango-controls/cppTango/pull/542
+[pr-544]: https://github.com/tango-controls/cppTango/pull/544
+[i-546]: https://github.com/tango-controls/cppTango/issues/546
+[pr-549]: https://github.com/tango-controls/cppTango/pull/549
