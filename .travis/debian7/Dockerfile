@@ -8,8 +8,6 @@ MAINTAINER TANGO Controls team <tango@esrf.fr>
 
 RUN echo "deb http://archive.debian.org/debian wheezy main" > /etc/apt/sources.list
 
-RUN echo "deb http://archive.debian.org/debian wheezy-lts main" >> /etc/apt/sources.list
-
 RUN echo 'deb http://archive.debian.org/debian wheezy-backports main' > /etc/apt/sources.list.d/backports.list
 
 RUN echo "Acquire::Check-Valid-Until false;" > /etc/apt/apt.conf
