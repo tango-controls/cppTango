@@ -180,10 +180,10 @@ public:
  * allowing a client to retrieve for each history record the attribute value,
  * the date and in case of the attribute
  * returns an error when it was read, the DevErrors data.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevAttrHistory_4">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>DevAttrHistory</b> structure definition.
  * @exception DevFailed Thrown if the attribute does not exist or is not polled.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::DevAttrHistory_4 *read_attribute_history_4(const char* name,
@@ -204,10 +204,10 @@ public:
  * allowing a client to retrieve for each history record the command return value
  * (in an Any), the date and in case of the command returns an error when it was read, the
  * DevErrors data.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevCmdHistory_4">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>DevCmdHistory</b> structure definition.
  * @exception DevFailed Thrown if the attribute does not exist or is not polled.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -231,7 +231,7 @@ public:
  * @return The command output data packed in a CORBA Any object
  * @exception DevFailed Re-throw of the exception thrown by the command_handler
  * method.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual CORBA::Any *command_inout_4(const char *in_cmd,
@@ -254,10 +254,10 @@ public:
  * It allows device locking feature implemented in Tango V7
  * @return A sequence of AttributeValue_4 structure. One structure is initialised
  * for each wanted attribute with the attribute value, the date and the attribute
- * value quality. Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue_4">here</a>
+ * value quality. Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeValue</b> structure definition.
  * @exception DevFailed Thrown if the attribute does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::AttributeValueList_4 *read_attributes_4(const Tango::DevVarStringArray& names,
@@ -273,12 +273,12 @@ public:
  * @param values The attribute(s) new value(s). One structure is initialised
  * for each wanted attribute with the attribute value. The attribute quality and
  * date are not used by this method.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue_4">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeValue_4</b> structure definition.
  * @param cl_ident The client identificator. This parameter is new in release 4.
  * It allows device locking feature implemented in Tango V7
  * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
     	virtual void write_attributes_4(const Tango::AttributeValueList_4 &values,
@@ -291,14 +291,14 @@ public:
  * It updates the device attribute configuration actually used by the device but
  * this method also updates the Tango database. One structure of the
  * AttributeConfig_3 type is needed for each attribute to update configuration.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeConfig_3">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeConfig_3</b> structure specification.
  *
  * @param new_conf The attribute(s) new configuration structure sequence
  * @param cl_ident The client identificator. This parameter is new in release 4.
  * It allows device locking feature implemented in Tango V7
  * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
     	virtual void set_attribute_config_4(const Tango::AttributeConfigList_3& new_conf,
@@ -314,16 +314,16 @@ public:
  * @param values The attribute(s) new value(s). One structure is initialised
  * for each wanted attribute with the attribute value. The attribute quality and
  * date are not used by this method.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue_4">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeValue</b> structure definition.
  * @param cl_ident The client identificator. This parameter is new in release 4.
  * It allows device locking feature implemented in Tango V7
  * @return A sequence of AttributeValue_4 structure. One structure is initialised
  * for each wanted attribute with the attribute value, the date and the attribute
- * value quality. Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue_4">here</a>
+ * value quality. Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeValue_4</b> structure definition.
  * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
     	virtual Tango::AttributeValueList_4* write_read_attributes_4(const Tango::AttributeValueList_4 &values,

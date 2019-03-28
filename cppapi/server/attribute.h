@@ -285,7 +285,7 @@ public:
  *
  * @return A boolean set to true if the attribute is in alarm condition.
  * @exception DevFailed If no alarm level is defined.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	bool check_alarm();
@@ -501,7 +501,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevShort *p_data,long x = 1,long y = 0,bool release = false);
@@ -518,7 +518,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevLong *p_data,long x = 1, long y = 0,bool release = false);
@@ -536,7 +536,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevLong64 *p_data,long x = 1,long y = 0,bool release = false);
@@ -554,7 +554,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevFloat *p_data,long x = 1,long y = 0,bool release = false);
@@ -572,7 +572,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevDouble *p_data,long x = 1,long y = 0,bool release = false);
@@ -589,7 +589,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevString *p_data,long x = 1,long y = 0,bool release = false);
@@ -606,7 +606,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevBoolean *p_data,long x = 1,long y = 0,bool release = false);
@@ -623,7 +623,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevUShort *p_data,long x = 1,long y = 0,bool release = false);
@@ -640,7 +640,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevUChar *p_data,long x = 1,long y = 0,bool release = false);
@@ -657,7 +657,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevULong *p_data,long x = 1,long y = 0,bool release = false);
@@ -674,7 +674,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevULong64 *p_data,long x = 1,long y = 0,bool release = false);
@@ -691,7 +691,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevState *p_data,long x = 1,long y = 0,bool release = false);
@@ -708,7 +708,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevEncoded *p_data,long x = 1, long y = 0,bool release = false);
@@ -725,7 +725,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::DevString *p_data_str,Tango::DevUChar *p_data,long size,bool release = false);
@@ -738,7 +738,7 @@ public:
  *
  * @param attr Handle to EncodedAttribute object
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value(Tango::EncodedAttribute *attr);
@@ -760,7 +760,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevShort *p_data,
@@ -794,7 +794,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevShort *p_data,
@@ -821,7 +821,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevLong *p_data,
@@ -854,7 +854,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevLong *p_data,
@@ -881,7 +881,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevLong64 *p_data,
@@ -914,7 +914,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevLong64 *p_data,
@@ -941,7 +941,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -975,7 +975,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevFloat *p_data,
@@ -1003,7 +1003,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1037,7 +1037,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevDouble *p_data,
@@ -1064,7 +1064,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevString *p_data,
@@ -1097,7 +1097,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevString *p_data,
@@ -1124,7 +1124,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1158,7 +1158,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevBoolean *p_data,
@@ -1185,7 +1185,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1219,7 +1219,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevUShort *p_data,
@@ -1246,7 +1246,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1280,7 +1280,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevUChar *p_data,
@@ -1307,7 +1307,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevULong *p_data,
@@ -1340,7 +1340,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevULong *p_data,
@@ -1367,7 +1367,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevULong64 *p_data,
@@ -1400,7 +1400,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevULong64 *p_data,
@@ -1427,7 +1427,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevState *p_data,
@@ -1460,7 +1460,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevState *p_data,
@@ -1487,7 +1487,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevEncoded *p_data,
@@ -1511,7 +1511,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevString *p_data_str,
@@ -1552,7 +1552,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevEncoded *p_data,
@@ -1579,7 +1579,7 @@ public:
  * @param release The release flag. If true, memory pointed to by p_data will be
  * 		  freed after being send to the client. Default value is false.
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void set_value_date_quality(Tango::DevString *p_data_str,
@@ -1757,7 +1757,7 @@ public:
  * list of polled attributes.
  *
  * @exception DevFailed In case of database access problems.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void remove_configuration();
@@ -1777,13 +1777,33 @@ public:
  *
  * @param new_min_alarm The new attribute minimum alarm value
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	template <typename T>
 	void set_min_alarm(const T &new_min_alarm);
 
+/**
+ * Set attribute minimum alarm.
+ *
+ * This method sets the attribute minimum alarm.
+ *
+ * @param new_min_alarm The new attribute minimum alarm value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_min_alarm(char *new_min_alarm);
+/**
+ * Set attribute minimum alarm.
+ *
+ * This method sets the attribute minimum alarm.
+ *
+ * @param new_min_alarm The new attribute minimum alarm value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_min_alarm(const char *new_min_alarm);
 
 /**
@@ -1803,13 +1823,32 @@ public:
  *
  * @param new_max_alarm The new attribute maximum alarm value
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	template <typename T>
 	void set_max_alarm(const T &new_max_alarm);
-
+/**
+ * Set attribute maximum alarm.
+ *
+ * This method sets the attribute maximum alarm.
+ *
+ * @param new_max_alarm The new attribute maximum alarm value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_max_alarm(char *new_max_alarm);
+/**
+ * Set attribute maximum alarm.
+ *
+ * This method sets the attribute maximum alarm.
+ *
+ * @param new_max_alarm The new attribute maximum alarm value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_max_alarm(const char *new_max_alarm);
 
 /**
@@ -1829,13 +1868,32 @@ public:
  *
  * @param new_min_warning The new attribute minimum warning value
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	template <typename T>
 	void set_min_warning(const T &new_min_warning);
-
+/**
+ * Set attribute minimum warning.
+ *
+ * This method sets the attribute minimum warning.
+ *
+ * @param new_min_warning The new attribute minimum warning value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_min_warning(char *new_min_warning);
+/**
+ * Set attribute minimum warning.
+ *
+ * This method sets the attribute minimum warning.
+ *
+ * @param new_min_warning The new attribute minimum warning value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_min_warning(const char *new_min_warning);
 
 /**
@@ -1855,13 +1913,32 @@ public:
  *
  * @param new_max_warning The new attribute maximum warning value
  * @exception DevFailed If the attribute data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	template <typename T>
 	void set_max_warning(const T &new_max_warning);
-
+/**
+ * Set attribute maximum warning.
+ *
+ * This method sets the attribute maximum warning.
+ *
+ * @param new_max_warning The new attribute maximum warning value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_max_warning(char *new_max_warning);
+/**
+ * Set attribute maximum warning.
+ *
+ * This method sets the attribute maximum warning.
+ *
+ * @param new_max_warning The new attribute maximum warning value
+ * @exception DevFailed If the attribute data type is not coherent.
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
 	void set_max_warning(const char *new_max_warning);
 
 /**

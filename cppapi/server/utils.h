@@ -426,7 +426,7 @@ public:
  * @param dev The TANGO device
  * @param name The command name which must be polled
  * @exception DevFailed If the call failed
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void trigger_cmd_polling(DeviceImpl *dev,const string &name);
@@ -440,7 +440,7 @@ public:
  * @param dev The TANGO device
  * @param name The attribute name which must be polled
  * @exception DevFailed If the call failed
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void trigger_attr_polling(DeviceImpl *dev,const string &name);
@@ -456,7 +456,7 @@ public:
  * @param att_name The attribute name which must be polled
  * @param data The data stack with one element for each history element
  * @exception DevFailed If the call failed
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -476,7 +476,7 @@ public:
  * @param cmd_name The command name which must be polled
  * @param data The data stack with one element for each history element
  * @exception DevFailed If the call failed
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -573,7 +573,7 @@ public:
  * @return The device reference list
  * @exception DevFailed If in the device server process there is no TANGO
  * device pattern implemented the TANGO device class given as parameter
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	vector<DeviceImpl *> &get_device_list_by_class(const string &class_name);
@@ -588,7 +588,7 @@ public:
  * @return The device reference list
  * @exception DevFailed If in the device server process there is no TANGO
  * device pattern implemented the TANGO device class given as parameter
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	vector<DeviceImpl *> &get_device_list_by_class(const char *class_name);
@@ -600,7 +600,7 @@ public:
  * @return The device reference
  * @exception DevFailed If in the device is not served by one device pattern
  * implemented in this process.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	DeviceImpl *get_device_by_name(const string &dev_name);
@@ -612,7 +612,7 @@ public:
  * @return The device reference
  * @exception DevFailed If in the device is not served by one device pattern
  * implemented in this process.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	DeviceImpl *get_device_by_name(const char *dev_name);
@@ -643,7 +643,7 @@ public:
  * process.
  *
  * @exception DevFailed If the device pattern initialisation failed
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void server_init(bool with_window = false);
@@ -1177,7 +1177,7 @@ inline void Util::event_name_2_event_type(string &event_name,EventType &et)
  * thrown exception (in case of) and in the displayed message
  * @return The empty CORBA Any
  * @exception DevFailed If the Any object creation failed.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 inline CORBA::Any *return_empty_any(const char *cmd)

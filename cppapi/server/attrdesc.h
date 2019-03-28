@@ -378,7 +378,7 @@ class Attr
 public:
 
 /**@name Constructors
- * Two constructor are defined for this class */
+ * Two constructors are defined for this class */
 //@{
 /**
  * Constructs a newly allocated Attr object.
@@ -410,14 +410,22 @@ public:
 	     Tango::AttrWriteType w_type = Tango::READ,
 	     const char *assoc = AssocWritNotSpec);
 
+/**
+ * Constructs a newly allocated Attr object.
+ *
+ * @param 	name	The attribute name
+ * @param	disp	The attribute display level
+ *
+ */
 	Attr(const char *name,Tango::DispLevel disp = Tango::OPERATOR);
+
 //@}
 
 /**@name Destructor
- * Only one desctructor is defined for this class */
+ * Only one destructor is defined for this class */
 //@{
 /**
- * The object desctructor.
+ * The object destructor.
  */
 	virtual ~Attr();
 //@}
@@ -678,14 +686,20 @@ public:
  */
 	SpectrumAttr(const char *name,long data_type,Tango::AttrWriteType w_type,long max_x,DispLevel level);
 
-	SpectrumAttr(const char *_n):Attr(_n) {}
+/**
+ * Constructs a newly allocated SpectrumAttr object.
+ *
+ * @param 	name	The attribute name
+ *
+ */
+	SpectrumAttr(const char *name):Attr(name) {}
 //@}
 
 /**@name Destructor
- * Only one desctructor is defined for this class */
+ * Only one destructor is defined for this class */
 //@{
 /**
- * The object desctructor.
+ * The object destructor.
  */
 	~SpectrumAttr() {}
 //@}
@@ -747,7 +761,6 @@ public:
 /**
  * Constructs a newly allocated ImageAttr object.
  * The attribute display level is set to OPERATOR.
- * The attribute write type is set to READ
  *
  * @param 	name	The attribute name
  * @param	data_type	The attribute data type
@@ -774,7 +787,6 @@ public:
 
 /**
  * Constructs a newly allocated ImageAttr object.
- * The attribute write type is set to READ
  *
  * @param 	name	The attribute name
  * @param	data_type	The attribute data type
@@ -787,14 +799,21 @@ public:
 	ImageAttr(const char *name,long data_type,Tango::AttrWriteType w_type,
 		  long max_x, long max_y, Tango::DispLevel level);
 
+/**
+ * Constructs a newly allocated ImageAttr object.
+ *
+ * @param 	name	The attribute name
+ *
+ */
+
 	ImageAttr(const char *name):SpectrumAttr(name) {}
 //@}
 
 /**@name Destructor
- * Only one desctructor is defined for this class */
+ * Only one destructor is defined for this class */
 //@{
 /**
- * The object desctructor.
+ * The object destructor.
  */
 	~ImageAttr() {}
 //@}

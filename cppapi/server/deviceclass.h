@@ -110,7 +110,7 @@ public:
  * @exception DevFailed If the command is not found, if the command is not allowed
  * in the actual device state and re-throws of all the exception thrown by the
  * <i>always_executed_hook</i>, <i>is_alloed</i> and <i>execute</i> methods.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  */
@@ -154,7 +154,7 @@ public:
  * @param dev_list The device name list
  * @exception DevFailed This method does not throw exception but a
  * redefined method can.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual void device_factory(const Tango::DevVarStringArray *dev_list) = 0;
@@ -302,7 +302,7 @@ public:
  * @param signo The signal number
  * @exception DevFailed Thrown if the signal number is out of range or if the
  * operating system failed to register a signal for the process.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void register_signal(long signo);
@@ -319,7 +319,7 @@ public:
  * thread. If this parameter is set to true, care should be taken on how the
  * handler is written. A default false value is provided * @exception DevFailed Thrown if the signal number is out of range or if the
  * operating system failed to register a signal for the process.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void register_signal(long signo,bool own_handler = false);
@@ -336,7 +336,7 @@ public:
  * operating system failed to unregister a signal for the process. Unregister
  * a device for a signal number for a device not previously registered is not
  * an error. This simply will do nothing.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void unregister_signal(long signo);
@@ -381,7 +381,7 @@ protected:
  * parameter does not need to be set in most of cases and has a default value.
  * It is used for special device server like the database device server.
  * @exception DevFailed If the command sent to the database failed.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	void export_device(DeviceImpl *dev,const char* corba_dev_name = "Unused");

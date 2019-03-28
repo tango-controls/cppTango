@@ -372,11 +372,11 @@ public :
  * Get services list from database
  *
  * Query database for specified services. The vector of strings returned in the DbDatum
- * object contains pair of strings <instance_name> followed by<device name>
+ * object contains pair of strings &lt;instance_name&gt; followed by &lt;device name&gt;.
  * @code
  * string servicename("HdbManager");
  *
- * DbDatum db_datum = db->get_services(servicename);
+ * DbDatum db_datum = db->get_device_service_list(servicename);
  *
  * vector<string> service_device_list;
  * db_datum >> service_device_list;
