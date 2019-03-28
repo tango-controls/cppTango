@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [9.3.3] - 2019-03
+## [9.3.3] - 2019-03-29
 ### Added
 - Add asyn_reconnection test ([#502][pr-502])
 - Add .gitignore ([#522][pr-522])
@@ -20,7 +20,7 @@ from the device list ([#518][pr-518])
 - Catch exceptions from unsubscribe_event() in DeviceProxy destructor ([#521][pr-521])
 - Improve install documentation ([#529][pr-529])
 - Install log4tango include files under *<install_prefix>*/include/tango/log4tango ([#517][pr-517])
-- Update doxygen HTML pages ([#544][pr-544])
+- Update Doxygen documentation ([#532][i-532], [#544][pr-544])
 - Update Debian 7 and Debian 8 Travis Docker files after Debian Wheezy end of life and jessie-updates removal 
   ([#546][i-546], [#549][pr-549])
 
@@ -280,6 +280,7 @@ where a client application might show out of date/incorrect values.
 [pr-523]: https://github.com/tango-controls/cppTango/pull/523
 [pr-529]: https://github.com/tango-controls/cppTango/pull/529
 [pr-531]: https://github.com/tango-controls/cppTango/pull/531
+[i-532]: https://github.com/tango-controls/cppTango/issues/532
 [pr-533]: https://github.com/tango-controls/cppTango/pull/533
 [pr-537]: https://github.com/tango-controls/cppTango/pull/537
 [pr-539]: https://github.com/tango-controls/cppTango/pull/539
