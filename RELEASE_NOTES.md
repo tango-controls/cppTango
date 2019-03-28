@@ -1,6 +1,6 @@
 
 # Tango C++ library 9.3.3 Release Notes
-March 2019
+March 29, 2019
 
 Table of Contents
 =================
