@@ -2865,54 +2865,67 @@ void Attribute::delete_seq()
 	case Tango::DEV_SHORT:
 	case Tango::DEV_ENUM:
 		delete value.sh_seq;
+		value.sh_seq = Tango_nullptr;
 		break;
 
 	case Tango::DEV_LONG:
 		delete value.lg_seq;
+		value.lg_seq = Tango_nullptr;
 		break;
 
 	case Tango::DEV_LONG64:
 		delete value.lg64_seq;
+		value.lg64_seq = Tango_nullptr;
 		break;
 
 	case Tango::DEV_DOUBLE:
 		delete value.db_seq;
+		value.db_seq = Tango_nullptr;
 		break;
 
 	case Tango::DEV_STRING:
 		delete value.str_seq;
+		value.str_seq = Tango_nullptr;
 		break;
 
 	case Tango::DEV_FLOAT:
 		delete value.fl_seq;
+		value.fl_seq = Tango_nullptr;
 		break;
 
 	case Tango::DEV_USHORT:
 		delete value.ush_seq;
+		value.ush_seq = Tango_nullptr;
 		break;
 
 	case Tango::DEV_UCHAR:
 		delete value.cha_seq;
+		value.cha_seq = Tango_nullptr;
 		break;
 
 	case Tango::DEV_BOOLEAN:
 		delete value.boo_seq;
+		value.boo_seq = Tango_nullptr;
 		break;
 
 	case Tango::DEV_ULONG:
 		delete value.ulg_seq;
+		value.ulg_seq = Tango_nullptr;
 		break;
 
 	case Tango::DEV_ULONG64:
 		delete value.ulg64_seq;
+		value.ulg64_seq = Tango_nullptr;
 		break;
 
 	case Tango::DEV_STATE:
 		delete value.state_seq;
+		value.state_seq = Tango_nullptr;
 		break;
 
 	case Tango::DEV_ENCODED:
 		delete value.enc_seq;
+		value.enc_seq = Tango_nullptr;
 		break;
 	}
 }
