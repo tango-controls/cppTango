@@ -665,41 +665,23 @@ CORBA::Any *IOAttrThrowEx::execute(Tango::DeviceImpl *device, const CORBA::Any &
 	const Tango::DevVarShortArray *in;
 	extract(in_any, in);
 
-	if ((*in)[0] == 0)
-	{
-		if ((*in)[1] == 0)
-			(static_cast<DevTest *>(device))->Short_attr_except = false;
-		else
-			(static_cast<DevTest *>(device))->Short_attr_except = true;
-	}
-	else if ((*in)[0] == 1)
-	{
-		if ((*in)[1] == 0)
-			(static_cast<DevTest *>(device))->event_change_attr_except = false;
-		else
-			(static_cast<DevTest *>(device))->event_change_attr_except = true;
-	}
-	else if ((*in)[0] == 2)
-	{
-		if ((*in)[1] == 0)
-			(static_cast<DevTest *>(device))->event_quality_attr_except = false;
-		else
-			(static_cast<DevTest *>(device))->event_quality_attr_except = true;
-	}
-	else if ((*in)[0] == 3)
-	{
-		if ((*in)[1] == 0)
-			(static_cast<DevTest *>(device))->event_throw_out_of_sync = false;
-		else
-			(static_cast<DevTest *>(device))->event_throw_out_of_sync = true;
-	}
-	else if ((*in)[0] == 4)
-	{
-		if ((*in)[1] == 0)
-			(static_cast<DevTest *>(device))->Short_attr_w_except = false;
-		else
-			(static_cast<DevTest *>(device))->Short_attr_w_except = true;
-	}
+	DevTest& dev = static_cast<DevTest&>(*device);
+
+	const int flag_disc = (*in)[0];
+	const bool flag_value = (*in)[1];
+	bool default_flag = false;
+
+	bool& flag =
+		(flag_disc == 0) ? dev.Short_attr_except :
+		(flag_disc == 1) ? dev.event_change_attr_except :
+		(flag_disc == 2) ? dev.event_quality_attr_except :
+		(flag_disc == 3) ? dev.event_throw_out_of_sync :
+		(flag_disc == 4) ? dev.Short_attr_w_except :
+		(flag_disc == 5) ? dev.Long_attr_except :
+		default_flag;
+
+	flag = flag_value;
+
 	return insert();
 }
 
