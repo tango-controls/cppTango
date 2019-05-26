@@ -117,6 +117,7 @@ void DevTest::init_device()
 	Short_attr_except = false;
 	if (tg->is_svr_starting() == true || tg->is_device_restarting(device_name) == true)
 		Short_attr_w_except = false;
+	Long_attr_except = false;
 	event_change_attr_except = false;
 	event_quality_attr_except = false;
 	event_throw_out_of_sync = false;
@@ -1281,8 +1282,15 @@ void DevTest::read_Short_attr(Tango::Attribute &att)
 
 void DevTest::read_Long_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name Long_attr" << endl;
-      	att.set_value(&attr_long);
+    cout << "[DevTest::read_attr] attribute name Long_attr" << std::endl;
+    if (Long_attr_except)
+    {
+        Tango::Except::throw_exception(
+            "Long_attr_except",
+            "Test exception is enabled for this attribute",
+            "DevTest::read_Long_attr");
+    }
+    att.set_value(&attr_long);
 }
 
 void DevTest::read_Long64_attr(Tango::Attribute &att)
