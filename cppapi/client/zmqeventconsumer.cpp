@@ -833,7 +833,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 			if (pos != connected_heartbeat.end())
 				connected_heartbeat.erase(pos);
 
-			heartbeat_sub_sock->disconnect(endpoint);
+			disconnect_socket(*heartbeat_sub_sock, endpoint);
 
 //
 // Remove the event endpoint from the already connected event and disconnect the event socket
@@ -843,7 +843,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 			if (pos != connected_pub.end())
 			{
 				connected_pub.erase(pos);
-				event_sub_sock->disconnect(endpoint_event);
+				disconnect_socket(*event_sub_sock, endpoint_event);
 			}
 #endif
         }
@@ -1658,41 +1658,11 @@ void ZmqEventConsumer::disconnect_event(string &event_name,string &endpoint)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name,string &event_name,TANGO_UNUSED(const vector<string> &filters),
-                                            TANGO_UNUSED(EvChanIte &eve_it),TANGO_UNUSED(EventCallBackStruct &new_event_callback),
+void ZmqEventConsumer::connect_event_system(TANGO_UNUSED(string &device_name),TANGO_UNUSED(string &obj_name),
+                                            TANGO_UNUSED(string &event_name),TANGO_UNUSED(const vector<string> &filters),
+                                            TANGO_UNUSED(EvChanIte &eve_it),EventCallBackStruct &new_event_callback,
                                             DeviceData &dd,size_t valid_end)
 {
-//
-// Build full event name
-// Don't forget case of device in a DS using file as database
-//
-
-    string full_event_name;
-    string::size_type pos;
-
-    bool inter_event = false;
-    if (event_name == EventName[INTERFACE_CHANGE_EVENT])
-		inter_event = true;
-
-    if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos)
-    {
-        full_event_name = device_name;
-        if (inter_event == false)
-		{
-			string tmp = '/' + obj_name;
-			full_event_name.insert(pos,tmp);
-		}
-        full_event_name = full_event_name + '.' + event_name;
-    }
-    else
-	{
-		if (inter_event == true)
-			full_event_name = device_name + '.' + event_name;
-		else
-			full_event_name = device_name + '/' + obj_name + '.' + event_name;
-	}
-
-
 //
 // Extract server command result
 //
@@ -1764,8 +1734,8 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
         ::strcpy(&(buffer[length]),endpoint.c_str());
         length = length + endpoint.size() + 1;
 
-        ::strcpy(&(buffer[length]), received_from_admin.event_name.c_str());
-        length = length + received_from_admin.event_name.size() + 1;
+        ::strcpy(&(buffer[length]), new_event_callback.received_from_admin.event_name.c_str());
+        length = length + new_event_callback.received_from_admin.event_name.size() + 1;
 
         DevLong user_hwm = au->get_user_sub_hwm();
         if (user_hwm != -1)
@@ -2270,7 +2240,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						errors.length(1);
 						errors[0].reason = API_WrongEventData;
 						errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-						errors[0].desc = CORBA::string_dup(o.str().c_str());
+						errors[0].desc = Tango::string_dup(o.str().c_str());
 						errors[0].severity = ERR;
 					}
 				}
@@ -2304,7 +2274,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
 								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].desc = Tango::string_dup(o.str().c_str());
 								errors[0].severity = ERR;
 							}
 						}
@@ -2328,7 +2298,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
 								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].desc = Tango::string_dup(o.str().c_str());
 								errors[0].severity = ERR;
 							}
 						}
@@ -2360,7 +2330,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							errors.length(1);
 							errors[0].reason = API_WrongEventData;
 							errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-							errors[0].desc = CORBA::string_dup(o.str().c_str());
+							errors[0].desc = Tango::string_dup(o.str().c_str());
 							errors[0].severity = ERR;
 						}
 						break;
@@ -2381,7 +2351,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							errors.length(1);
 							errors[0].reason = API_WrongEventData;
 							errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-							errors[0].desc = CORBA::string_dup(o.str().c_str());
+							errors[0].desc = Tango::string_dup(o.str().c_str());
 							errors[0].severity = ERR;
 						}
 						break;
@@ -2421,7 +2391,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
 								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].desc = Tango::string_dup(o.str().c_str());
 								errors[0].severity = ERR;
 							}
 						}
@@ -2459,7 +2429,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
 								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].desc = Tango::string_dup(o.str().c_str());
 								errors[0].severity = ERR;
 							}
 						}
@@ -2483,7 +2453,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
 								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].desc = Tango::string_dup(o.str().c_str());
 								errors[0].severity = ERR;
 							}
 						}
@@ -2506,7 +2476,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								errors.length(1);
 								errors[0].reason = API_WrongEventData;
 								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].desc = Tango::string_dup(o.str().c_str());
 								errors[0].severity = ERR;
 							}
 						}
@@ -2543,7 +2513,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							errors.length(1);
 							errors[0].reason = API_WrongEventData;
 							errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-							errors[0].desc = CORBA::string_dup(o.str().c_str());
+							errors[0].desc = Tango::string_dup(o.str().c_str());
 							errors[0].severity = ERR;
 						}
 						break;
@@ -3510,6 +3480,85 @@ void ZmqEventConsumer::set_socket_hwm(int hwm)
     if(hwm != current_sub_hwm)
     {
         event_sub_sock->setsockopt(ZMQ_RCVHWM, &hwm, sizeof(hwm));
+    }
+}
+
+ReceivedFromAdmin ZmqEventConsumer::initialize_received_from_admin(const Tango::DevVarLongStringArray *dvlsa,
+                                                                   const string &local_callback_key,
+                                                                   const string &adm_name,
+                                                                   bool device_from_env_var)
+{
+    ReceivedFromAdmin result;
+    if (dvlsa->lvalue.length() == 0)
+    {
+        EventSystemExcept::throw_exception(API_NotSupported,
+                                           "Server did not send its tango lib version. The server is possibly too old. The event system is not initialized!",
+                                           "ZmqEventConsumer::initialize_received_from_admin()");
+    }
+
+    long server_tango_lib_ver = dvlsa->lvalue[0];
+
+    //event name is used for zmq topics filtering
+    //channel name is used for heartbeat events
+    if (server_tango_lib_ver >= 930)
+    {
+        result.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
+        result.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
+    }
+    else
+    {
+        result.event_name = local_callback_key;
+
+        if(server_tango_lib_ver >= 810)
+        {
+            string adm_name_lower(adm_name);
+            if (device_from_env_var)
+            {
+                adm_name_lower.insert(0, env_var_fqdn_prefix[0]);
+            }
+            transform(adm_name_lower.begin(), adm_name_lower.end(), adm_name_lower.begin(), ::tolower);
+            result.channel_name = adm_name_lower;
+        }
+        else
+        {
+            // For event coming from server still using Tango 8.0.x or below, do not lowercase
+            // the adm_name in the channel name
+            result.channel_name = adm_name;
+        }
+    }
+
+    if (result.event_name.empty())
+    {
+        EventSystemExcept::throw_exception(API_NotSupported,
+                                           "Server did not send the event name. The server is possibly too old. The event system is not initialized!",
+                                           "ZmqEventConsumer::initialize_received_from_admin()");
+
+    }
+
+    cout4 << "received_from_admin.event_name = " << result.event_name << endl;
+    if (result.channel_name.empty())
+    {
+        EventSystemExcept::throw_exception(API_NotSupported,
+                                           "Server did not send the channel name. The server is possibly too old. The event system is not initialized!",
+                                           "ZmqEventConsumer::initialize_received_from_admin()");
+    }
+    cout4 << "received_from_admin.channel_name = " << result.channel_name << endl;
+    return result;
+}
+
+void ZmqEventConsumer::disconnect_socket(zmq::socket_t& socket, const char* endpoint)
+{
+    try
+    {
+        socket.disconnect(endpoint);
+    }
+    catch (const zmq::error_t& e)
+    {
+        // Silently ignore ENOENT as it indicates that endpoint is already disconnected.
+        if (e.num() != ENOENT)
+        {
+            throw;
+        }
     }
 }
 

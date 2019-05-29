@@ -80,6 +80,7 @@ private :
 	void write_attribute(const AttributeValueList_4 &);
 	void create_locking_thread(ApiUtil *,DevLong);
 	void local_import(string &);
+	void unsubscribe_all_events();
 
 	enum read_attr_type
 	{

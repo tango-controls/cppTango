@@ -1372,7 +1372,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 				   int event_id)
 {
 	int ret_event_id = event_id;
-	device_name = device->dev_name();
+	device_name = device->dev_name();//TODO convert to local
 	cout3 << "Tango::EventConsumer::connect_event(" << device_name << "," << obj_name <<"," << event << ")\n";
 
 	bool inter_event = false;
@@ -1496,6 +1496,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		{
 			AutoTangoMonitor _mon(evt_ch.channel_monitor);
 			adm_dev = evt_ch.adm_device_proxy;
+			adm_name = evt_ch.full_adm_name;
 		}
 	}
 
@@ -1580,7 +1581,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		local_callback_key.insert(pos + 1,EVENT_COMPAT_IDL5);
 	}
 
-	initialize_received_from_admin(dvlsa, local_callback_key, adm_name, device->get_from_env_var());
+	ReceivedFromAdmin received_from_admin = initialize_received_from_admin(dvlsa, local_callback_key, adm_name, device->get_from_env_var());
 
 	//
 	// Do we already have this event in the callback map? If yes, simply add this new callback to the event callback list
@@ -1696,6 +1697,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
     EventCallBackStruct new_event_callback;
     EventSubscribeStruct new_ess;
 
+    new_event_callback.received_from_admin = received_from_admin;
     new_event_callback.device = device;
     new_event_callback.obj_name = obj_name_lower;
     new_event_callback.event_name = event_name;
@@ -1830,59 +1832,6 @@ string EventConsumer::get_client_attribute_name(const string &local_callback_key
 
 	size_t pos = local_callback_key.rfind('.');//remove event_type e.g. .idl5_change
 	return local_callback_key.substr(0, pos);
-}
-
-void Tango::EventConsumer::initialize_received_from_admin(const Tango::DevVarLongStringArray *dvlsa,
-                                                          const string &local_callback_key,
-                                                          const string &adm_name,
-                                                          bool device_from_env_var)
-{
- 	if(dvlsa->lvalue.length() == 0)
-	{
-		EventSystemExcept::throw_exception(API_NotSupported,
-                                           "Server did not send its tango lib version. The server is possibly too old. The event system is not initialized!",
-                                           "EventConsumer::initialize_received_from_admin()");
-	}	
-	
-	long server_tango_lib_ver = dvlsa->lvalue[0];
-
-    //event name is used for zmq topics filtering
-    //channel name is used for heartbeat events
-	if (server_tango_lib_ver >= 930)
-	{
-		received_from_admin.event_name = (dvlsa->svalue[dvlsa->svalue.length() - 2]);
-                received_from_admin.channel_name = (dvlsa->svalue[dvlsa->svalue.length() - 1]);
-	}
-	else
-	{
-		received_from_admin.event_name = local_callback_key;
-
-		string adm_name_lower(adm_name);
-		if (device_from_env_var)
-		{
-			adm_name_lower.insert(0, env_var_fqdn_prefix[0]);
-		}
-
-		transform(adm_name_lower.begin(), adm_name_lower.end(), adm_name_lower.begin(), ::tolower);
-		received_from_admin.channel_name = adm_name_lower;
-	}
-
-        if (received_from_admin.event_name.empty())
-        {
-                EventSystemExcept::throw_exception(API_NotSupported,
-                                           "Server did not send the event name. The server is possibly too old. The event system is not initialized!",
-                                           "EventConsumer::initialize_received_from_admin()");
-        
-        }
-
-	cout4 << "received_from_admin.event_name = " << received_from_admin.event_name << endl;
-        if (received_from_admin.channel_name.empty())
-        {
-                EventSystemExcept::throw_exception(API_NotSupported,
-                                           "Server did not send the channel name. The server is possibly too old. The event system is not initialized!",
-                                           "EventConsumer::initialize_received_from_admin()");        
-        }
-	cout4 << "received_from_admin.channel_name = " << received_from_admin.channel_name << endl;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -3237,7 +3186,10 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 			err = e.errors;
 		}
 
-		string local_event_name = cb.get_client_attribute_name();
+		string local_event_name = event_name;
+		pos = local_event_name.find(EVENT_COMPAT);
+		if (pos != string::npos)
+			local_event_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
 		string local_domain_name = cb.get_client_attribute_name();
 
 		if (cb.fwd_att == true)
@@ -3286,7 +3238,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 	{
 		DevErrorList err;
 		err.length(0);
-		string domain_name = device_name + "/" + obj_name_lower;
+		string local_domain_name = cb.get_client_attribute_name();
 		AttributeInfoEx *aie = NULL;
 
 		string local_event_name = event_name;
@@ -3305,7 +3257,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		}
 
 		FwdAttrConfEventData *event_data = new FwdAttrConfEventData(device,
-						      domain_name,
+						      local_domain_name,
 						      local_event_name,
 						      aie,
 						      err);

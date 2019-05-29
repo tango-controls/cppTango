@@ -299,7 +299,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
 //--------------------------------------------------------------------------------------------------------------------
 
 bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct SuppliedEventData &attr_value,
-                                                 Attribute &attr, string &attr_name, DevFailed *except, bool user_push)
+                                                 Attribute &attr, string &attr_name, DevFailed *except, TANGO_UNUSED(bool user_push))
 {
     string event, domain_name;
     double delta_change_rel = 0.0;
@@ -370,10 +370,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
             attr.prev_change_event.err = false;
         }
         attr.prev_change_event.inited = true;
-        if (user_push == true)
-        {
-            is_change = true;
-        }
+        is_change = true;
     }
     else
     {
@@ -576,7 +573,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
                                                   string &attr_name,
                                                   DevFailed *except,
                                                   struct timeval *time_bef_attr,
-                                                  bool user_push)
+                                                  TANGO_UNUSED(bool user_push))
 {
     string event, domain_name;
     double delta_change_rel = 0.0;
@@ -734,10 +731,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         attr.archive_last_periodic = now_ms;
         attr.archive_last_event = now_ms;
         attr.prev_archive_event.inited = true;
-        if (user_push == true)
-        {
-            is_change = true;
-        }
+        is_change = true;
     }
     else
     {
@@ -2423,7 +2417,6 @@ EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl, const string &
     vector<long> filterable_data_lg;
 
     string ev_type(DATA_READY_TYPE_EVENT);
-    ev_type = EVENT_COMPAT_IDL5 + ev_type;
 
     AttDataReady dat_ready;
     dat_ready.name = attr_name.c_str();
@@ -2578,7 +2571,6 @@ void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,
     vector<long> filterable_data_lg;
 
     string ev_type(EventName[INTERFACE_CHANGE_EVENT]);
-    ev_type = EVENT_COMPAT_IDL5 + ev_type;
     time_t now, dev_intr_subscription;
 
 //

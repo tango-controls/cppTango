@@ -77,8 +77,8 @@ CORBA::Any *IOStruct::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUS
     argout->lvalue[1] = 2000;
 		
     argout->svalue.length(2);
-    argout->svalue[0] = CORBA::string_dup("First string from dev_struct");
-    argout->svalue[1] = CORBA::string_dup("Second string from dev_struct"); 
+    argout->svalue[0] = Tango::string_dup("First string from dev_struct");
+    argout->svalue[1] = Tango::string_dup("Second string from dev_struct");
      
     return insert(argout);
   }

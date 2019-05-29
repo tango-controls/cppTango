@@ -469,7 +469,7 @@ inline void operator<<(DevVarStringArray &lval,const vector<string> &rval)
 	size_t nb_elt = rval.size();
 	lval.length((CORBA::ULong)nb_elt);
 	for (unsigned long i = 0;i < nb_elt;i++)
-		lval[i] = CORBA::string_dup(rval[i].c_str());
+		lval[i] = Tango::string_dup(rval[i].c_str());
 }
 
 /**

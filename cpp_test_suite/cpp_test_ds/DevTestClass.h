@@ -580,11 +580,13 @@ public:
 class attr_asyn_writeAttr: public Tango::Attr
 {
 public:
-	attr_asyn_writeAttr():Attr("attr_asyn_write",Tango::DEV_LONG, Tango::WRITE) {};
+	attr_asyn_writeAttr():Attr("attr_asyn_write",Tango::DEV_LONG, Tango::READ_WRITE) {};
 	~attr_asyn_writeAttr() {};
 
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
 	{(static_cast<DevTest *>(dev))->write_attr_asyn_write(att);}
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<DevTest *>(dev))->read_attr_asyn_write(att);}
 };
 
 class attr_asyn_write_toAttr: public Tango::Attr

@@ -178,7 +178,7 @@ public:
  * @return The command output data packed in a CORBA Any object
  * @exception DevFailed Re-throw of the exception thrown by the command_handler
  * method.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual CORBA::Any *command_inout_2(const char *in_cmd,
@@ -211,7 +211,7 @@ public:
  * @exception DevFailed Thrown if the command does not exist.
  * Since Tango release 2, the command display level field has
  * been added to this structure.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::DevCmdInfo_2 *command_query_2(const char *command);
@@ -229,10 +229,10 @@ public:
  * data cache for polled attribute.
  * @return A sequence of AttributeValue structure. One structure is initialised
  * for each wanted attribute with the attribute value, the date and the attribute
- * value quality. Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue">here</a>
+ * value quality. Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeValue</b> structure definition.
  * @exception DevFailed Thrown if the attribute does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
     	virtual Tango::AttributeValueList *read_attributes_2(const Tango::DevVarStringArray& names,
@@ -249,11 +249,11 @@ public:
  *
  * @param names The attribute(s) name list
  * @return A sequence of AttributeConfig_2 structure. One structure is initialised
- * for each wanted attribute. Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeConfig_2">here</a>
+ * for each wanted attribute. Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeConfig_2</b> structure specification.
  *
  * @exception DevFailed Thrown if the attribute does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::AttributeConfigList_2 *get_attribute_config_2(const Tango::DevVarStringArray& names);
@@ -273,10 +273,10 @@ public:
  * @return A sequence of DevAttrHistory structure. One structure is initialised
  * for each record with the attribute value, the date and in case of the attribute
  * returns an error when it was read, the DevErrors data.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevAttrHistory">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>DevAttrHistory</b> structure definition.
  * @exception DevFailed Thrown if the attribute does not exist or is not polled.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::DevAttrHistoryList *read_attribute_history_2(const char* name,
@@ -297,10 +297,10 @@ public:
  * for each record with the command return value (in an Any), the date
  * and in case of the command returns an error when it was read, the
  * DevErrors data.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevCmdHistory">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>DevCmdHistory</b> structure definition.
  * @exception DevFailed Thrown if the attribute does not exist or is not polled.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 

@@ -140,8 +140,8 @@ void Pipe::set_upd_properties(const PipeConfig &new_conf,DeviceImpl *dev)
 //
 
 	PipeConfig old_conf = new_conf;
-	old_conf.label = CORBA::string_dup(label.c_str());
-	old_conf.description = CORBA::string_dup(desc.c_str());
+	old_conf.label = Tango::string_dup(label.c_str());
+	old_conf.description = Tango::string_dup(desc.c_str());
 
 	try
 	{
@@ -756,7 +756,6 @@ void Pipe::fire_event(DeviceImpl *dev,DevFailed *except)
 	vector<long> f_data_lg;
 
 	string event_type("pipe");
-	event_type = EVENT_COMPAT_IDL5 + event_type;
 	event_supplier_zmq->push_event(dev, event_type, f_names, f_data, f_names_lg, f_data_lg, ad, name, except, true);
 }
 
@@ -826,7 +825,7 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 //
 
 	ad.pipe_val = new DevPipeData();
-	ad.pipe_val->name = CORBA::string_dup(name.c_str());
+	ad.pipe_val->name = Tango::string_dup(name.c_str());
 
 	::memset(&(ad.pipe_val->time),0,sizeof(ad.pipe_val->time));
 	ad.pipe_val->time.tv_sec = t.tv_sec;
@@ -858,7 +857,6 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 	vector<long> f_data_lg;
 
 	string event_type("pipe");
-	event_type = EVENT_COMPAT_IDL5 + event_type;
 	event_supplier_zmq->push_event(dev, event_type, f_names, f_data, f_names_lg, f_data_lg, ad, name, NULL, true);
 
 	if (reuse_it == false)

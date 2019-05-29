@@ -270,7 +270,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 		o << ends;
 
 		string s = o.str();
-		e.errors[0].reason = CORBA::string_dup(s.c_str());
+		e.errors[0].reason = Tango::string_dup(s.c_str());
 		throw;
 	}
 
@@ -302,7 +302,7 @@ inline void Device_3Impl::error_from_devfailed(T &back,DevFailed &e,const char *
 {
 	back.err_list = e.errors;
 	back.quality = ATTR_INVALID;
-	back.name = CORBA::string_dup(na);
+	back.name = Tango::string_dup(na);
 	clear_att_dim(back);
 }
 
@@ -311,7 +311,7 @@ inline void Device_3Impl::error_from_errorlist(T &back,DevErrorList &e,const cha
 {
 	back.err_list = e;
 	back.quality = ATTR_INVALID;
-	back.name = CORBA::string_dup(na);
+	back.name = Tango::string_dup(na);
 	clear_att_dim(back);
 }
 
@@ -321,12 +321,12 @@ inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,str
 	back.err_list.length(1);
 
 	back.err_list[0].severity = Tango::ERR;
-	back.err_list[0].reason = CORBA::string_dup(reas);
-	back.err_list[0].origin = CORBA::string_dup(ori);
-	back.err_list[0].desc = CORBA::string_dup(mess.c_str());
+	back.err_list[0].reason = Tango::string_dup(reas);
+	back.err_list[0].origin = Tango::string_dup(ori);
+	back.err_list[0].desc = Tango::string_dup(mess.c_str());
 
 	back.quality = Tango::ATTR_INVALID;
-	back.name = CORBA::string_dup(att.get_name().c_str());
+	back.name = Tango::string_dup(att.get_name().c_str());
 	clear_att_dim(back);
 }
 
@@ -336,12 +336,12 @@ inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,str
 	back.err_list.length(1);
 
 	back.err_list[0].severity = Tango::ERR;
-	back.err_list[0].reason = CORBA::string_dup(reas);
-	back.err_list[0].origin = CORBA::string_dup(ori);
-	back.err_list[0].desc = CORBA::string_dup(mess.c_str());
+	back.err_list[0].reason = Tango::string_dup(reas);
+	back.err_list[0].origin = Tango::string_dup(ori);
+	back.err_list[0].desc = Tango::string_dup(mess.c_str());
 
 	back.quality = Tango::ATTR_INVALID;
-	back.name = CORBA::string_dup(na);
+	back.name = Tango::string_dup(na);
 	clear_att_dim(back);
 }
 
@@ -352,7 +352,7 @@ inline void Device_3Impl::init_polled_out_data(T &back,V &att_val)
 	back.time = att_val.time;
 	back.r_dim = att_val.r_dim;
 	back.w_dim = att_val.w_dim;
-	back.name = CORBA::string_dup(att_val.name);
+	back.name = Tango::string_dup(att_val.name);
 }
 
 template <typename T>
@@ -360,7 +360,7 @@ inline void Device_3Impl::init_out_data(T &back,Attribute &att,AttrWriteType &w_
 {
 	back.time = att.get_when();
 	back.quality = att.get_quality();
-	back.name = CORBA::string_dup(att.get_name().c_str());
+	back.name = Tango::string_dup(att.get_name().c_str());
 	back.r_dim.dim_x = att.get_x();
 	back.r_dim.dim_y = att.get_y();
 	if ((w_type == Tango::READ_WRITE) ||
@@ -392,7 +392,7 @@ inline void Device_3Impl::init_out_data_quality(T &back,Attribute &att,AttrQuali
 {
 	back.time = att.get_when();
 	back.quality = qual;
-	back.name = CORBA::string_dup(att.get_name().c_str());
+	back.name = Tango::string_dup(att.get_name().c_str());
 	back.r_dim.dim_x = att.get_x();
 	back.r_dim.dim_y = att.get_y();
 	back.r_dim.dim_x = 0;
@@ -421,7 +421,7 @@ inline void Device_3Impl::base_state2attr(T &back)
 	back.time.tv_nsec = 0;
 #endif
 	back.quality = Tango::ATTR_VALID;
-	back.name = CORBA::string_dup("State");
+	back.name = Tango::string_dup("State");
 	back.r_dim.dim_x = 1;
 	back.r_dim.dim_y = 0;
 	back.w_dim.dim_x = 0;
@@ -448,7 +448,7 @@ inline void Device_3Impl::base_status2attr(T &back)
 	back.time.tv_nsec = 0;
 #endif
 	back.quality = Tango::ATTR_VALID;
-	back.name = CORBA::string_dup("Status");
+	back.name = Tango::string_dup("Status");
 	back.r_dim.dim_x = 1;
 	back.r_dim.dim_y = 0;
 	back.w_dim.dim_x = 0;

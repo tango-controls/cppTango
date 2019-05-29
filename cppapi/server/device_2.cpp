@@ -275,7 +275,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 
 						send->lvalue[0] = poll_period;
 						send->svalue[0] = device_name.c_str();
-						send->svalue[1] = CORBA::string_dup("command");
+						send->svalue[1] = Tango::string_dup("command");
 						send->svalue[2] = in_cmd;
 
 						get_poll_monitor().rel_monitor();
@@ -643,7 +643,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 					send->lvalue.length(1);
 					send->svalue.length(3);
 					send->svalue[0] = device_name.c_str();
-					send->svalue[1] = CORBA::string_dup("attribute");
+					send->svalue[1] = Tango::string_dup("attribute");
 
 					for (i = 0;i < non_polled.size();i++)
 					{
@@ -846,7 +846,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 									(*back)[i].time = att_val_4.time;
 									(*back)[i].dim_x = att_val_4.r_dim.dim_x;
 									(*back)[i].dim_y = att_val_4.r_dim.dim_y;
-									(*back)[i].name = CORBA::string_dup(att_val_4.name);
+									(*back)[i].name = Tango::string_dup(att_val_4.name);
 								}
 							}
 							else if (vers == 3)
@@ -873,7 +873,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 									(*back)[i].time = att_val_3.time;
 									(*back)[i].dim_x = att_val_3.r_dim.dim_x;
 									(*back)[i].dim_y = att_val_3.r_dim.dim_y;
-									(*back)[i].name = CORBA::string_dup(att_val_3.name);
+									(*back)[i].name = Tango::string_dup(att_val_3.name);
 								}
 							}
 							else
@@ -901,7 +901,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 									(*back)[i].time = att_val.time;
 									(*back)[i].dim_x = att_val.dim_x;
 									(*back)[i].dim_y = att_val.dim_y;
-									(*back)[i].name = CORBA::string_dup(att_val.name);
+									(*back)[i].name = Tango::string_dup(att_val.name);
 								}
 
 							}
@@ -1016,21 +1016,21 @@ Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 		for (long i = 0;i < nb_cmd_class;i++)
 		{
 			Tango::DevCmdInfo_2 tmp;
-			tmp.cmd_name = CORBA::string_dup(((device_class->get_command_list())[i]->get_name()).c_str());
+			tmp.cmd_name = Tango::string_dup(((device_class->get_command_list())[i]->get_name()).c_str());
 			tmp.cmd_tag = 0;
 			tmp.level = (device_class->get_command_list())[i]->get_disp_level();
 			tmp.in_type = (long)((device_class->get_command_list())[i]->get_in_type());
 			tmp.out_type = (long)((device_class->get_command_list())[i]->get_out_type());
 			string &str_in = (device_class->get_command_list())[i]->get_in_type_desc();
 			if (str_in.size() != 0)
-				tmp.in_type_desc = CORBA::string_dup(str_in.c_str());
+				tmp.in_type_desc = Tango::string_dup(str_in.c_str());
 			else
-				tmp.in_type_desc = CORBA::string_dup(NotSet);
+				tmp.in_type_desc = Tango::string_dup(NotSet);
 			string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
 			if (str_out.size() != 0)
-				tmp.out_type_desc = CORBA::string_dup(str_out.c_str());
+				tmp.out_type_desc = Tango::string_dup(str_out.c_str());
 			else
-				tmp.out_type_desc = CORBA::string_dup(NotSet);
+				tmp.out_type_desc = Tango::string_dup(NotSet);
 
 			(*back)[i] = tmp;
 		}
@@ -1039,21 +1039,21 @@ Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 		{
 			Command *cmd_ptr = get_local_command_list()[i];
 			Tango::DevCmdInfo_2 tmp;
-			tmp.cmd_name = CORBA::string_dup(cmd_ptr->get_name().c_str());
+			tmp.cmd_name = Tango::string_dup(cmd_ptr->get_name().c_str());
 			tmp.cmd_tag = 0;
 			tmp.level = cmd_ptr->get_disp_level();
 			tmp.in_type = (long)(cmd_ptr->get_in_type());
 			tmp.out_type = (long)(cmd_ptr->get_out_type());
 			string &str_in = cmd_ptr->get_in_type_desc();
 			if (str_in.size() != 0)
-				tmp.in_type_desc = CORBA::string_dup(str_in.c_str());
+				tmp.in_type_desc = Tango::string_dup(str_in.c_str());
 			else
-				tmp.in_type_desc = CORBA::string_dup(NotSet);
+				tmp.in_type_desc = Tango::string_dup(NotSet);
 			string &str_out = cmd_ptr->get_out_type_desc();
 			if (str_out.size() != 0)
-				tmp.out_type_desc = CORBA::string_dup(str_out.c_str());
+				tmp.out_type_desc = Tango::string_dup(str_out.c_str());
 			else
-				tmp.out_type_desc = CORBA::string_dup(NotSet);
+				tmp.out_type_desc = Tango::string_dup(NotSet);
 
 			(*back)[i + nb_cmd_class] = tmp;
 		}
@@ -1127,7 +1127,7 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 
     if (cmd_ptr != Tango_nullptr)
     {
-        back->cmd_name = CORBA::string_dup(cmd_ptr->get_name().c_str());
+        back->cmd_name = Tango::string_dup(cmd_ptr->get_name().c_str());
         back->cmd_tag = 0;
         back->level = cmd_ptr->get_disp_level();
         back->in_type = (long) (cmd_ptr->get_in_type());
@@ -1135,20 +1135,20 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
         string &str_in = cmd_ptr->get_in_type_desc();
         if (str_in.size() != 0)
         {
-            back->in_type_desc = CORBA::string_dup(str_in.c_str());
+            back->in_type_desc = Tango::string_dup(str_in.c_str());
         }
         else
         {
-            back->in_type_desc = CORBA::string_dup(NotSet);
+            back->in_type_desc = Tango::string_dup(NotSet);
         }
         string &str_out = cmd_ptr->get_out_type_desc();
         if (str_out.size() != 0)
         {
-            back->out_type_desc = CORBA::string_dup(str_out.c_str());
+            back->out_type_desc = Tango::string_dup(str_out.c_str());
         }
         else
         {
-            back->out_type_desc = CORBA::string_dup(NotSet);
+            back->out_type_desc = Tango::string_dup(NotSet);
         }
     }
     else
@@ -1223,10 +1223,10 @@ Command *Device_2Impl::get_cmd_ptr(const string &cmd_name)
 //
 //--------------------------------------------------------------------------
 
-Tango::AttributeConfigList_2 *Device_2Impl::get_attribute_config_2(const Tango::DevVarStringArray &names)
+Tango::AttributeConfigList_2 *Device_2Impl::get_attribute_config_2(const Tango::DevVarStringArray& names)
 {
-    TangoMonitor &mon = get_att_conf_monitor();
-    AutoTangoMonitor sync(&mon);
+	TangoMonitor &mon = get_att_conf_monitor();
+	AutoTangoMonitor sync(&mon);
 
 	cout4 << "Device_2Impl::get_attribute_config_2 arrived" << endl;
 
@@ -1338,11 +1338,11 @@ Tango::AttributeConfigList_2 *Device_2Impl::get_attribute_config_2(const Tango::
 //
 //--------------------------------------------------------------------------
 
-Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char *command,
-                                                                CORBA::Long n)
+Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* command,
+								CORBA::Long n)
 {
-    TangoMonitor &mon = get_poll_monitor();
-    AutoTangoMonitor sync(&mon);
+	TangoMonitor &mon = get_poll_monitor();
+	AutoTangoMonitor sync(&mon);
 
 	cout4 << "Device_2Impl::command_inout_history_2 arrived" << endl;
 	Tango::DevCmdHistoryList *back = NULL;
@@ -1535,10 +1535,10 @@ Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char *comm
 //--------------------------------------------------------------------------
 
 Tango::DevAttrHistoryList *Device_2Impl::read_attribute_history_2(const char* name,
-                                                                  CORBA::Long n)
+								  CORBA::Long n)
 {
-    TangoMonitor &mon = get_poll_monitor();
-    AutoTangoMonitor sync(&mon);
+	TangoMonitor &mon = get_poll_monitor();
+	AutoTangoMonitor sync(&mon);
 
 	cout4 << "Device_2Impl::read_attribute_history_2 arrived" << endl;
 

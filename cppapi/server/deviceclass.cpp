@@ -417,12 +417,12 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 							{
 								att.set_write_value(mem_value);
 
-								str_seq[0] = CORBA::string_dup(mem_value.c_str());
+								str_seq[0] = Tango::string_dup(mem_value.c_str());
 							}
 							else
 							{
 								att.get_write_value(tmp_str);
-								str_seq[0] = CORBA::string_dup(tmp_str);
+								str_seq[0] = Tango::string_dup(tmp_str);
 							}
 							att_val[nb_wr - 1].value <<= str_seq;
 							break;
@@ -547,7 +547,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 // Init the AttributeValue structure
 //
 
-						att_val[nb_wr - 1].name = CORBA::string_dup(att.get_name().c_str());
+						att_val[nb_wr - 1].name = Tango::string_dup(att.get_name().c_str());
 						att_val[nb_wr - 1].dim_x = 1;
 						att_val[nb_wr - 1].dim_y = 0;
 						att_val[nb_wr - 1].quality = Tango::ATTR_VALID;
@@ -1098,12 +1098,12 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 		{
 			cerr << "CommunicationFailed while exporting device " << dev->get_name() << endl;
 			CORBA::release(orb_ptr);
-			CORBA::string_free(s);
+			Tango::string_free(s);
 			throw;
 		}
 
 		CORBA::release(orb_ptr);
-		CORBA::string_free(s);
+		Tango::string_free(s);
 	}
 
 //

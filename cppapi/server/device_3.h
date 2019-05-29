@@ -189,10 +189,10 @@ public:
  * data cache for polled attribute.
  * @return A sequence of AttributeValue structure. One structure is initialised
  * for each wanted attribute with the attribute value, the date and the attribute
- * value quality. Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue_3">here</a>
+ * value quality. Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeValue_3</b> structure definition.
  * @exception DevFailed Thrown if the attribute does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::AttributeValueList_3 *read_attributes_3(const Tango::DevVarStringArray& names,
@@ -207,10 +207,10 @@ public:
  * @param values The attribute(s) new value(s). One structure is initialised
  * for each wanted attribute with the attribute value. The attribute quality and
  * date are not used by this method.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeValue</b> structure definition.
  * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual void write_attributes_3(const Tango::AttributeValueList& values);
@@ -229,10 +229,10 @@ public:
  * @return A sequence of DevAttrHistory structure. One structure is initialised
  * for each record with the attribute value, the date and in case of the attribute
  * returns an error when it was read, the DevErrors data.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevAttrHistory_3">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>DevAttrHistory_3</b> structure definition.
  * @exception DevFailed Thrown if the attribute does not exist or is not polled.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::DevAttrHistoryList_3 *read_attribute_history_3(const char* name,
@@ -261,11 +261,11 @@ public:
  *
  * @param names The attribute(s) name list
  * @return A sequence of AttributeConfig_3 structure. One structure is initialised
- * for each wanted attribute. Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeConfig_3">here</a>
+ * for each wanted attribute. Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeConfig_3</b> structure specification.
  *
  * @exception DevFailed Thrown if the attribute does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::AttributeConfigList_3 *get_attribute_config_3(const Tango::DevVarStringArray& names);
@@ -277,12 +277,12 @@ public:
  * It updates the device attribute configuration actually used by the device but
  * this method also updates the Tango database. One structure of the
  * AttributeConfig_3 type is needed for each attribute to update configuration.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeConfig_3">here</a>
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#structs">here</a>
  * to read <b>AttributeConfig_3</b> structure specification.
  *
  * @param new_conf The attribute(s) new configuration structure sequence
  * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	virtual void set_attribute_config_3(const Tango::AttributeConfigList_3& new_conf);

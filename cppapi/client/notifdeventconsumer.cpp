@@ -307,7 +307,7 @@ void NotifdEventConsumer::connect_event_system(string &device_name,string &att_n
   	CosNotifyFilter::ConstraintExpSeq exp;
   	exp.length(1);
   	exp[0].event_types = evs;
-  	exp[0].constraint_expr = CORBA::string_dup(constraint_expr);
+  	exp[0].constraint_expr = Tango::string_dup(constraint_expr);
   	CORBA::Boolean res = 0; // OK
 
   	try
@@ -641,7 +641,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
     CosNotifyFilter::ConstraintExpSeq exp;
     exp.length(1);
     exp[0].event_types = evs;
-    exp[0].constraint_expr = CORBA::string_dup(constraint_expr);
+    exp[0].constraint_expr = Tango::string_dup(constraint_expr);
     CORBA::Boolean res = 0; // OK
     try
 	{
@@ -935,9 +935,9 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 						errors.length(1);
 
 						errors[0].severity = Tango::ERR;
-						errors[0].origin = CORBA::string_dup("NotifdEventConsumer::push_structured_event()");
-						errors[0].reason = CORBA::string_dup(API_IncompatibleAttrDataType);
-						errors[0].desc = CORBA::string_dup("Unknown structure used to pass attribute value (Need compilation ?)");
+						errors[0].origin = Tango::string_dup("NotifdEventConsumer::push_structured_event()");
+						errors[0].reason = Tango::string_dup(API_IncompatibleAttrDataType);
+						errors[0].desc = Tango::string_dup("Unknown structure used to pass attribute value (Need compilation ?)");
 						dev_attr = NULL;
 					}
 
@@ -1137,6 +1137,27 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 			map_modification_lock.readerOut();
 		}
 	}
+}
+
+ReceivedFromAdmin NotifdEventConsumer::initialize_received_from_admin(TANGO_UNUSED(const Tango::DevVarLongStringArray *dvlsa), 
+                                                                      const string &local_callback_key,
+                                                                      const string &adm_name,
+                                                                      bool device_from_env_var)
+{
+	ReceivedFromAdmin result;
+	result.event_name = local_callback_key;
+
+	string full_adm_name(adm_name);
+	if (device_from_env_var)
+	{
+		full_adm_name.insert(0, env_var_fqdn_prefix[0]);
+	}
+
+	result.channel_name = full_adm_name;
+
+	cout4 << "received_from_admin.event_name = " << result.event_name << endl;
+	cout4 << "received_from_admin.channel_name = " << result.channel_name << endl;
+	return result;
 }
 
 } /* End of Tango namespace */

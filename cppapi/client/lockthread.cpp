@@ -400,7 +400,7 @@ void LockThread::unlock_all_devs()
 	  	unsigned int locked_devices_nb = locked_devices.size();
 	  	sent_data.svalue.length(locked_devices_nb);
 	  	for (unsigned int loop = 0;loop < locked_devices_nb;loop++)
-	  		sent_data.svalue[loop] = CORBA::string_dup(locked_devices[loop].dev_name.c_str());
+	  		sent_data.svalue[loop] = Tango::string_dup(locked_devices[loop].dev_name.c_str());
 	  	sent_data.lvalue.length(1);
 	  	sent_data.lvalue[0] = 1;
 

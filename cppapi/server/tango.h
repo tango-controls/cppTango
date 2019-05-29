@@ -36,7 +36,7 @@
 //
 // Include the Tango config file
 //
-
+#include <string>
 #include <tango_config.h>
 
 //
@@ -45,6 +45,17 @@
 
 #include <idl/tango.h>
 
+//
+// A short inline function to hide the CORBA::string_dup function
+//
+namespace Tango {
+	inline char *string_dup(const std::string &s) { return CORBA::string_dup(s.c_str()); }
+
+	inline char *string_dup(const char *s) { return CORBA::string_dup(s); }
+
+	// A short inline function to hide the CORBA::string_free function
+	inline void string_free(char *s) {return CORBA::string_free(s);}
+}
 //
 // Some Windows specific include (necessary when used with MFC)
 //

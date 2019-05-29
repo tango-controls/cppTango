@@ -95,6 +95,7 @@ void DevTest::init_device()
     attr_state_rw = Tango::FAULT;
     PollLong_attr_num = 0;
     PollString_spec_attr_num = 0;
+	attr_asyn_write_val = 42;
 
     Short_attr_except = false;
     if (tg->is_svr_starting() == true || tg->is_device_restarting(device_name) == true)
@@ -147,7 +148,7 @@ void DevTest::init_device()
     attr_slow = 3.3;
 
 #ifndef COMPAT
-    enc_attr.encoded_format = CORBA::string_dup("Which format?");
+  	enc_attr.encoded_format = Tango::string_dup("Which format?");
 /*  	enc_attr.encoded_data.length(200 * 1024 * 1024);
   	for (int i = 0;i < (200 * 1024 * 1024);i++)
   		enc_attr.encoded_data[i] = (unsigned char)(i % 256);*/
@@ -432,10 +433,10 @@ void DevTest::IOFillPollBuffAttr()
     string att_name("Poll_buff");
 
     Tango::DevString *array_1 = new Tango::DevString[4];
-//     	array_1[0] = CORBA::string_dup("One_1");
-//      array_1[1] = CORBA::string_dup("Two_1");
-//      array_1[2] = CORBA::string_dup("Three_1");
-//      array_1[3] = CORBA::string_dup("Four_1");
+//     	array_1[0] = Tango::string_dup("One_1");
+//      array_1[1] = Tango::string_dup("Two_1");
+//      array_1[2] = Tango::string_dup("Three_1");
+//      array_1[3] = Tango::string_dup("Four_1");
     array_1[0] = Tango::string_dup("One_1");
     array_1[1] = Tango::string_dup("Two_1");
     array_1[2] = Tango::string_dup("Three_1");
@@ -443,17 +444,17 @@ void DevTest::IOFillPollBuffAttr()
     main_array[0] = array_1;
 
     Tango::DevString *array_2 = new Tango::DevString[4];
-    array_2[0] = CORBA::string_dup("One_2");
-    array_2[1] = CORBA::string_dup("Two_2");
-    array_2[2] = CORBA::string_dup("Three_2");
-    array_2[3] = CORBA::string_dup("Four_2");
+	array_2[0] = Tango::string_dup("One_2");
+	array_2[1] = Tango::string_dup("Two_2");
+	array_2[2] = Tango::string_dup("Three_2");
+	array_2[3] = Tango::string_dup("Four_2");
     main_array[1] = array_2;
 
     Tango::DevString *array_3 = new Tango::DevString[4];
-    array_3[0] = CORBA::string_dup("One_3");
-    array_3[1] = CORBA::string_dup("Two_3");
-    array_3[2] = CORBA::string_dup("Three_3");
-    array_3[3] = CORBA::string_dup("Four_3");
+	array_3[0] = Tango::string_dup("One_3");
+	array_3[1] = Tango::string_dup("Two_3");
+	array_3[2] = Tango::string_dup("Three_3");
+	array_3[3] = Tango::string_dup("Four_3");
     main_array[2] = array_3;
 
     ahs.clear();
@@ -473,13 +474,13 @@ void DevTest::IOFillPollBuffAttr()
     Tango::DevString *rd_array_1 = new Tango::DevString[4];
     Tango::DevString *wr_array_1 = new Tango::DevString[2];
 
-    rd_array_1[0] = CORBA::string_dup("One_rd_1");
-    rd_array_1[1] = CORBA::string_dup("Two_rd_1");
-    rd_array_1[2] = CORBA::string_dup("Three_rd_1");
-    rd_array_1[3] = CORBA::string_dup("Four_rd_1");
+	rd_array_1[0] = Tango::string_dup("One_rd_1");
+	rd_array_1[1] = Tango::string_dup("Two_rd_1");
+	rd_array_1[2] = Tango::string_dup("Three_rd_1");
+	rd_array_1[3] = Tango::string_dup("Four_rd_1");
 
-    wr_array_1[0] = CORBA::string_dup("One_wr_1");
-    wr_array_1[1] = CORBA::string_dup("Two_wr_1");
+	wr_array_1[0] = Tango::string_dup("One_wr_1");
+	wr_array_1[1] = Tango::string_dup("Two_wr_1");
 
     Tango::TimedAttrData<Tango::DevString> tad_1(rd_array_1, 2, 2, wr_array_1, 2, 1, Tango::ATTR_VALID, true, when);
     ahs.push(tad_1);
@@ -487,13 +488,13 @@ void DevTest::IOFillPollBuffAttr()
     Tango::DevString *rd_array_2 = new Tango::DevString[4];
     Tango::DevString *wr_array_2 = new Tango::DevString[2];
 
-    rd_array_2[0] = CORBA::string_dup("One_rd_2");
-    rd_array_2[1] = CORBA::string_dup("Two_rd_2");
-    rd_array_2[2] = CORBA::string_dup("Three_rd_2");
-    rd_array_2[3] = CORBA::string_dup("Four_rd_2");
+	rd_array_2[0] = Tango::string_dup("One_rd_2");
+	rd_array_2[1] = Tango::string_dup("Two_rd_2");
+	rd_array_2[2] = Tango::string_dup("Three_rd_2");
+	rd_array_2[3] = Tango::string_dup("Four_rd_2");
 
-    wr_array_2[0] = CORBA::string_dup("One_wr_2");
-    wr_array_2[1] = CORBA::string_dup("Two_wr_2");
+	wr_array_2[0] = Tango::string_dup("One_wr_2");
+	wr_array_2[1] = Tango::string_dup("Two_wr_2");
 
     Tango::TimedAttrData<Tango::DevString> tad_2(rd_array_2, 2, 2, wr_array_2, 2, 1, Tango::ATTR_VALID, true, when);
     ahs.push(tad_2);
@@ -501,13 +502,13 @@ void DevTest::IOFillPollBuffAttr()
     Tango::DevString *rd_array_3 = new Tango::DevString[4];
     Tango::DevString *wr_array_3 = new Tango::DevString[2];
 
-    rd_array_3[0] = CORBA::string_dup("One_rd_3");
-    rd_array_3[1] = CORBA::string_dup("Two_rd_3");
-    rd_array_3[2] = CORBA::string_dup("Three_rd_3");
-    rd_array_3[3] = CORBA::string_dup("Four_rd_3");
+	rd_array_3[0] = Tango::string_dup("One_rd_3");
+	rd_array_3[1] = Tango::string_dup("Two_rd_3");
+	rd_array_3[2] = Tango::string_dup("Three_rd_3");
+	rd_array_3[3] = Tango::string_dup("Four_rd_3");
 
-    wr_array_3[0] = CORBA::string_dup("One_wr_3");
-    wr_array_3[1] = CORBA::string_dup("Two_wr_3");
+	wr_array_3[0] = Tango::string_dup("One_wr_3");
+	wr_array_3[1] = Tango::string_dup("Two_wr_3");
 
     Tango::TimedAttrData<Tango::DevString> tad_3(rd_array_3, 2, 2, wr_array_3, 2, 1, Tango::ATTR_VALID, true, when);
     ahs.push(tad_3);
@@ -530,7 +531,7 @@ void DevTest::IOFillPollBuffEncodedAttr()
     Tango::DevEncoded the_enc1;
     Tango::DevEncoded the_enc2;
 
-    the_enc.encoded_format = CORBA::string_dup("First value");
+	the_enc.encoded_format = Tango::string_dup("First value");
     the_enc.encoded_data.length(2);
     the_enc.encoded_data[0] = 22;
     the_enc.encoded_data[1] = 33;
@@ -539,7 +540,7 @@ void DevTest::IOFillPollBuffEncodedAttr()
     Tango::TimedAttrData<Tango::DevEncoded> tad(&the_enc, when);
     ahs.push(tad);
 
-    the_enc1.encoded_format = CORBA::string_dup("Second value");
+	the_enc1.encoded_format = Tango::string_dup("Second value");
     the_enc1.encoded_data.length(2);
     the_enc1.encoded_data[0] = 33;
     the_enc1.encoded_data[1] = 44;
@@ -548,7 +549,7 @@ void DevTest::IOFillPollBuffEncodedAttr()
     Tango::TimedAttrData<Tango::DevEncoded> tad1(&the_enc1, when);
     ahs.push(tad1);
 
-    the_enc2.encoded_format = CORBA::string_dup("Third value");
+	the_enc2.encoded_format = Tango::string_dup("Third value");
     the_enc2.encoded_data.length(2);
     the_enc2.encoded_data[0] = 44;
     the_enc2.encoded_data[1] = 55;
@@ -892,8 +893,16 @@ void DevTest::write_attr_asyn_write(Tango::WAttribute &att)
 
     Tango::DevLong lg;
     att.get_write_value(lg);
+	attr_asyn_write_val = lg;
     cout << "Attribute value = " << lg << endl;
     Tango_sleep(2);
+}
+
+void DevTest::read_attr_asyn_write(Tango::Attribute &att)
+{
+	cout << "In read_attr_asyn_write for attribute " << att.get_name() << endl;
+	Tango_sleep(2);
+	att.set_value(&attr_asyn_write_val);
 }
 
 void DevTest::write_attr_asyn_write_to(Tango::WAttribute &att)
@@ -1345,7 +1354,7 @@ void DevTest::read_String_attr(Tango::Attribute &att)
     cout << "[DevTest::read_attr] attribute name String_attr" << endl;
     if (s == NULL)
     {
-        s = CORBA::string_dup("test_string");
+        s = Tango::string_dup("test_string");
     }
 
     att.set_value(&s);
@@ -1999,12 +2008,12 @@ void DevTest::read_Encoded_attr_rw(Tango::Attribute &att)
 
 /*		if ((count % 2) == 0)
 		{
-			enc_attr.encoded_format = CORBA::string_dup("First string");
+			enc_attr.encoded_format = Tango::string_dup("First string");
 			enc_attr.encoded_data[0] = 11;
 		}
 		else
 		{
-			enc_attr.encoded_format = CORBA::string_dup("Second string");
+			enc_attr.encoded_format = Tango::string_dup("Second string");
 			enc_attr.encoded_data[0] = 22;
 		}*/
 
@@ -2012,7 +2021,7 @@ void DevTest::read_Encoded_attr_rw(Tango::Attribute &att)
 //		count++;
 
 /*		enc_attr_ptr = new Tango::DevEncoded;
-		enc_attr_ptr->encoded_format = CORBA::string_dup("Which format?");
+		enc_attr_ptr->encoded_format = Tango::string_dup("Which format?");
 		enc_attr_ptr->encoded_data.length(4);
   		enc_attr_ptr->encoded_data[0] = (unsigned char)97;
   		enc_attr_ptr->encoded_data[1] = (unsigned char)98;
@@ -2641,9 +2650,9 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
     {
         Tango::DevErrorList del;
         del.length(1);
-        del[0].reason = CORBA::string_dup("aaa");
-        del[0].desc = CORBA::string_dup("bbb");
-        del[0].origin = CORBA::string_dup("ccc");
+		del[0].reason = Tango::string_dup("aaa");
+		del[0].desc = Tango::string_dup("bbb");
+		del[0].origin = Tango::string_dup("ccc");
         Tango::DevFailed df(del);
         this->push_pipe_event("RWPipe", &df);
     }

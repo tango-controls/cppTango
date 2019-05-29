@@ -170,10 +170,10 @@ WAttribute::~WAttribute()
 #ifndef HAS_UNIQUE_PTR
     delete w_ext;
 #endif
-    CORBA::string_free(str_val);
-    CORBA::string_free(old_str_val);
-//	CORBA::string_free(encoded_val.encoded_format);
-//	CORBA::string_free(old_encoded_val.encoded_format);
+    Tango::string_free(str_val);
+    Tango::string_free(old_str_val);
+//	Tango::string_free(encoded_val.encoded_format);
+//	Tango::string_free(old_encoded_val.encoded_format);
 }
 
 
@@ -713,9 +713,9 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
 
             if (data_format == Tango::SCALAR)
             {
-                CORBA::string_free(old_str_val);
+                Tango::string_free(old_str_val);
                 old_str_val = CORBA::string_dup(str_val);
-                CORBA::string_free(str_val);
+                Tango::string_free(str_val);
 
                 str_val = CORBA::string_dup((*string_ptr)[0]);
                 w_dim_x = 1;
@@ -1498,9 +1498,9 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
 
             if (data_format == Tango::SCALAR)
             {
-                CORBA::string_free(old_str_val);
+                Tango::string_free(old_str_val);
                 old_str_val = CORBA::string_dup(str_val);
-                CORBA::string_free(str_val);
+                Tango::string_free(str_val);
 
                 str_val = CORBA::string_dup(string_seq[0]);
                 w_dim_x = 1;
@@ -2631,7 +2631,7 @@ void WAttribute::rollback()
             break;
 
         case Tango::DEV_STRING :
-            CORBA::string_free(str_val);
+            Tango::string_free(str_val);
             str_val = CORBA::string_dup(old_str_val);
             break;
 
@@ -2644,11 +2644,11 @@ void WAttribute::rollback()
             break;
 
         case Tango::DEV_USHORT :
-            double_val = old_double_val;
+            ushort_val = old_ushort_val;
             break;
 
         case Tango::DEV_UCHAR :
-            CORBA::string_free(str_val);
+            Tango::string_free(str_val);
             break;
 
         case Tango::DEV_ULONG :

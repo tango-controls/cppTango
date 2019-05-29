@@ -1,11 +1,17 @@
 find_package (Threads REQUIRED)
+find_program(PYTHON_INTERPRETER NAMES python2 python)
 
 macro(CXX_GENERATE_TEST name)
     message("Generate ${name}.cpp")
-    execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
+    execute_process(COMMAND "${PYTHON_INTERPRETER}" cxxtestgen.py
+            --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
             -o ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cpp
             ../../new_tests/${name}.cpp
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+
+    if(${FAILED})
+        message(SEND_ERROR " Failed to generate ${name}.cpp. rv=${FAILED}")
+    endif()
 
     add_executable(${name} $<TARGET_OBJECTS:compare_test_object> ${name}.cpp)
     target_include_directories(${name} PRIVATE include ${CMAKE_CURRENT_BINARY_DIR}/include)
@@ -58,7 +64,6 @@ CXX_GENERATE_TEST(cxx_seq_vec)
 CXX_GENERATE_TEST(cxx_signal)#TODO Windows
 CXX_GENERATE_TEST(cxx_test_state_on)
 CXX_GENERATE_TEST(cxx_misc)
-CXX_GENERATE_TEST(cxx_misc_devproxy)
 CXX_GENERATE_TEST(cxx_cmd_types)
 CXX_GENERATE_TEST(cxx_group)
 CXX_GENERATE_TEST(cxx_encoded)
@@ -75,6 +80,7 @@ CXX_GENERATE_TEST(cxx_server_event)
 CXX_GENERATE_TEST(cxx_reconnection_zmq)
 CXX_GENERATE_TEST(cxx_stateless_subscription)
 CXX_GENERATE_TEST(cxx_nan_inf_in_prop)
+CXX_GENERATE_TEST(cxx_asyn_reconnection)
 CXX_GENERATE_TEST(cxx_cmd_inout_enum)
 
 #utilities

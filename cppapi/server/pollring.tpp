@@ -195,13 +195,13 @@ void PollRing::force_copy_data(T *attr_value)
 
 				union_seq.length(tmp_seq.length());
 
-				union_seq[0].encoded_format = CORBA::string_dup(tmp_seq[0].encoded_format);
+				union_seq[0].encoded_format = Tango::string_dup(tmp_seq[0].encoded_format);
 				unsigned long nb_data = tmp_seq[0].encoded_data.length();
 				union_seq[0].encoded_data.replace(nb_data,nb_data,tmp_seq[0].encoded_data.get_buffer(true),true);
 
 				if (tmp_seq.length() == 2)
 				{
-					union_seq[1].encoded_format = CORBA::string_dup(tmp_seq[1].encoded_format);
+					union_seq[1].encoded_format = Tango::string_dup(tmp_seq[1].encoded_format);
 					unsigned long nb_data = tmp_seq[1].encoded_data.length();
 					union_seq[1].encoded_data.replace(nb_data,nb_data,tmp_seq[1].encoded_data.get_buffer(true),true);
 				}

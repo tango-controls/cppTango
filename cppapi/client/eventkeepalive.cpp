@@ -345,7 +345,7 @@ void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &i
 	CosNotifyFilter::ConstraintExpSeq exp;
 	exp.length(1);
 	exp[0].event_types = evs;
-	exp[0].constraint_expr = CORBA::string_dup(constraint_expr.c_str());
+	exp[0].constraint_expr = Tango::string_dup(constraint_expr.c_str());
 	CORBA::Boolean res = 0; // OK
 	try
 	{
@@ -456,7 +456,7 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 						}
 #endif
 						event_consumer->connect_event_system(d_name,epos->second.obj_name,epos->second.event_name,
-                                                             vs,ipos,ecbs,dd,ipos->second.valid_endpoint);
+						                                     vs,ipos,epos->second,dd,ipos->second.valid_endpoint);
 
 						const DevVarLongStringArray *dvlsa;
 						dd >> dvlsa;
@@ -1096,9 +1096,9 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 
 	errors.length(1);
 	errors[0].severity = Tango::ERR;
-	errors[0].origin = CORBA::string_dup("EventConsumer::KeepAliveThread()");
-	errors[0].reason = CORBA::string_dup("API_EventTimeout");
-	errors[0].desc = CORBA::string_dup("Event channel is not responding anymore, maybe the server or event system is down");
+	errors[0].origin = Tango::string_dup("EventConsumer::KeepAliveThread()");
+	errors[0].reason = Tango::string_dup("API_EventTimeout");
+	errors[0].desc = Tango::string_dup("Event channel is not responding anymore, maybe the server or event system is down");
 	DeviceAttribute *dev_attr = NULL;
 	AttributeInfoEx *dev_attr_conf = NULL;
 	DevicePipe *dev_pipe = NULL;
@@ -1469,7 +1469,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 
 					event_data = new FwdEventData(epos->second.device,
 									domain_name,
-									epos->second.event_name,
+									ev_name,
 									da_copy,
 									err);
 				}
@@ -1477,7 +1477,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 				{
 					event_data = new FwdEventData(epos->second.device,
 									domain_name,
-									epos->second.event_name,
+									ev_name,
 									da,
 									err);
 				}

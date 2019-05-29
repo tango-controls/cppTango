@@ -707,14 +707,14 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         ret_data->svalue.length(2);
 
         ret_data->lvalue.length(1);
-        ret_data->lvalue[0] = (Tango::DevLong)tg->get_tango_lib_release();;
+        ret_data->lvalue[0] = (Tango::DevLong)tg->get_tango_lib_release();
 
         ZmqEventSupplier *ev;
         if ((ev = tg->get_zmq_event_supplier()) != NULL)
         {
             string tmp_str("Heartbeat: ");
             tmp_str = tmp_str + ev->get_heartbeat_endpoint();
-            ret_data->svalue[0] = CORBA::string_dup(tmp_str.c_str());
+            ret_data->svalue[0] = Tango::string_dup(tmp_str.c_str());
 
             tmp_str = "Event: ";
             string ev_end = ev->get_event_endpoint();
@@ -727,7 +727,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 					tmp_str = tmp_str + "\n";
 				tmp_str = tmp_str + "Some event(s) sent using multicast protocol";
 			}
-            ret_data->svalue[1] = CORBA::string_dup(tmp_str.c_str());
+            ret_data->svalue[1] = Tango::string_dup(tmp_str.c_str());
 
             size_t nb_alt = ev->get_alternate_heartbeat_endpoint().size();
             if (nb_alt != 0)
@@ -738,7 +738,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
                 {
                     string tmp_str("Alternate heartbeat: ");
                     tmp_str = tmp_str + ev->get_alternate_heartbeat_endpoint()[loop];
-                    ret_data->svalue[(loop + 1) << 1] = CORBA::string_dup(tmp_str.c_str());
+                    ret_data->svalue[(loop + 1) << 1] = Tango::string_dup(tmp_str.c_str());
 
                     tmp_str = "Alternate event: ";
                     if (ev->get_alternate_event_endpoint().size() != 0)
@@ -747,13 +747,13 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
                          if (ev_end.empty() == false)
                             tmp_str = "Alternate event: " + ev_end;
                     }
-                    ret_data->svalue[((loop + 1) << 1) + 1] = CORBA::string_dup(tmp_str.c_str());
+                    ret_data->svalue[((loop + 1) << 1) + 1] = Tango::string_dup(tmp_str.c_str());
                 }
             }
         }
         else
         {
-            ret_data->svalue[0] = CORBA::string_dup("No ZMQ event yet!");
+            ret_data->svalue[0] = Tango::string_dup("No ZMQ event yet!");
         }
     }
     else
@@ -1043,23 +1043,23 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         ret_data->lvalue[5] = ev->get_zmq_release();
 
         string &heartbeat_endpoint = ev->get_heartbeat_endpoint();
-        ret_data->svalue[0] = CORBA::string_dup(heartbeat_endpoint.c_str());
+        ret_data->svalue[0] = Tango::string_dup(heartbeat_endpoint.c_str());
         if (mcast.empty() == true)
         {
             string &event_endpoint = ev->get_event_endpoint();
-            ret_data->svalue[1] = CORBA::string_dup(event_endpoint.c_str());
+            ret_data->svalue[1] = Tango::string_dup(event_endpoint.c_str());
         }
         else
         {
             if (local_call == true)
             {
                 string &event_endpoint = ev->get_event_endpoint();
-                ret_data->svalue[1] = CORBA::string_dup(event_endpoint.c_str());
+                ret_data->svalue[1] = Tango::string_dup(event_endpoint.c_str());
             }
             else
             {
                 string &event_endpoint = ev->get_mcast_event_endpoint(ev_name);
-                ret_data->svalue[1] = CORBA::string_dup(event_endpoint.c_str());
+                ret_data->svalue[1] = Tango::string_dup(event_endpoint.c_str());
             }
         }
 
@@ -1071,10 +1071,10 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             for (size_t loop = 0;loop < nb_alt;loop++)
             {
                 string tmp_str = ev->get_alternate_heartbeat_endpoint()[loop];
-                ret_data->svalue[(loop + 1) << 1] = CORBA::string_dup(tmp_str.c_str());
+                ret_data->svalue[(loop + 1) << 1] = Tango::string_dup(tmp_str.c_str());
 
                 tmp_str = ev->get_alternate_event_endpoint()[loop];
-                ret_data->svalue[((loop + 1) << 1) + 1] = CORBA::string_dup(tmp_str.c_str());
+                ret_data->svalue[((loop + 1) << 1) + 1] = Tango::string_dup(tmp_str.c_str());
             }
         }
 
@@ -1082,8 +1082,22 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         size_t size = ret_data->svalue.length();
         ret_data->svalue.length(size + 2);
 
-        string event_topic =
-            ev->create_full_event_name(dev, EVENT_COMPAT_IDL5 + event, obj_name_lower, intr_change);
+        string event_topic = "";
+        bool add_compat_info = false;
+        if ((event != EventName[PIPE_EVENT]) &&
+            (event != EventName[INTERFACE_CHANGE_EVENT]) &&
+            (event != EventName[DATA_READY_EVENT]))
+        {
+            add_compat_info = true;
+        }
+        if(client_release >= 5 && add_compat_info) // client_release here is the minimum of the client release and dev IDL version
+        {
+            event_topic = ev->create_full_event_name(dev, EVENT_COMPAT_IDL5 + event, obj_name_lower, intr_change);
+        }
+        else
+        {
+            event_topic = ev->create_full_event_name(dev, event, obj_name_lower, intr_change);
+        }
         assert(!(event_topic.empty()));
         cout4 << "Sending event_topic = " << event_topic << endl;
         ret_data->svalue[size] = Tango::string_dup(event_topic.c_str());

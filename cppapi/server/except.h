@@ -108,7 +108,7 @@ public:
  * The exception is created with a single DevError
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -116,7 +116,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	TANGO_NORETURN static inline void throw_exception(const char *reason,
@@ -127,10 +127,10 @@ public:
 		Tango::DevErrorList errors(1);
 
 		errors.length(1);
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].reason = Tango::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -142,7 +142,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
  * The memory used by the origin parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -150,7 +150,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -162,10 +162,10 @@ public:
 		Tango::DevErrorList errors(1);
 
 		errors.length(1);
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].reason = Tango::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
 
 		throw Tango::DevFailed(errors);
@@ -178,7 +178,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
  * The memory used by the desc parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -186,7 +186,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -199,10 +199,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 		delete[] desc;
-		errors[0].origin = CORBA::string_dup(origin);
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin);
+		errors[0].reason = Tango::string_dup(reason);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -214,7 +214,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
  * The memory used by the origin and desc parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -222,7 +222,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	TANGO_NORETURN static inline void throw_exception(const char *reason,
@@ -234,10 +234,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].reason = Tango::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw Tango::DevFailed(errors);
@@ -250,7 +250,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
  * The memory used by the reason parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -258,7 +258,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -271,10 +271,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin);
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].origin = Tango::string_dup(origin);
+		errors[0].desc = Tango::string_dup(desc);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -286,7 +286,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
  * The memory used by the reason and origin parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -294,7 +294,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -307,11 +307,11 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -323,7 +323,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
  * The memory used by the reason and desc parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -331,7 +331,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -344,10 +344,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin);
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].origin = Tango::string_dup(origin);
+		errors[0].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw Tango::DevFailed(errors);
@@ -360,7 +360,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
  * The memory used by the origin, reason and desc parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -368,7 +368,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -381,11 +381,11 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw Tango::DevFailed(errors);
@@ -397,7 +397,7 @@ public:
  * The exception is created with a single DevError
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -405,7 +405,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -418,9 +418,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -431,7 +431,7 @@ public:
  * The exception is created with a single DevError
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -439,7 +439,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -452,9 +452,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin);
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin);
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -465,7 +465,7 @@ public:
  * The exception is created with a single DevError
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -473,7 +473,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -486,9 +486,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -499,7 +499,7 @@ public:
  * The exception is created with a single DevError
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -507,7 +507,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -520,9 +520,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin);
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin);
+		errors[0].desc = Tango::string_dup(desc);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -533,7 +533,7 @@ public:
  * The exception is created with a single DevError
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -541,7 +541,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -554,9 +554,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].reason = Tango::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -567,7 +567,7 @@ public:
  * The exception is created with a single DevError
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -575,7 +575,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -588,9 +588,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
-		errors[0].origin = CORBA::string_dup(origin);
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].reason = Tango::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin);
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -601,7 +601,7 @@ public:
  * The exception is created with a single DevError
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -609,7 +609,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -622,9 +622,9 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].reason = Tango::string_dup(reason);
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc);
 
 		throw Tango::DevFailed(errors);
 	}
@@ -636,7 +636,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
  * The memory used by the origin parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -644,7 +644,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -657,10 +657,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -672,7 +672,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
  * The memory used by the desc parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -680,7 +680,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -693,10 +693,12 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin);
+        errors[0].desc   = Tango::string_dup(desc);
 		delete[] desc;
+		errors[0].desc = Tango::string_dup(origin.c_str());
+
 		throw Tango::DevFailed(errors);
 	}
 
@@ -707,7 +709,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
  * The memory used by the origin and desc parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -715,7 +717,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -728,10 +730,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason.c_str());
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].reason = Tango::string_dup(reason.c_str());
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].desc = Tango::string_dup(desc);
 		delete desc;
 
 		throw Tango::DevFailed(errors);
@@ -744,7 +746,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
  * The memory used by the reason parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -752,7 +754,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -765,10 +767,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -780,7 +782,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
  * The memory used by the reason and origin parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -788,7 +790,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -801,11 +803,11 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin);
+		errors[0].origin = Tango::string_dup(origin);
 		delete[] origin;
-		errors[0].desc = CORBA::string_dup(desc.c_str());
+		errors[0].desc = Tango::string_dup(desc.c_str());
 
 		throw Tango::DevFailed(errors);
 	}
@@ -817,7 +819,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the DevError
  * severity field.
  * The memory used by the reason and desc parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param reason The exception DevError object reason field
@@ -825,7 +827,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -838,10 +840,10 @@ public:
 
 		errors.length(1);
 		errors[0].severity = sever;
-		errors[0].reason = CORBA::string_dup(reason);
+		errors[0].reason = Tango::string_dup(reason);
 		delete[] reason;
-		errors[0].origin = CORBA::string_dup(origin.c_str());
-		errors[0].desc = CORBA::string_dup(desc);
+		errors[0].origin = Tango::string_dup(origin.c_str());
+		errors[0].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw Tango::DevFailed(errors);
@@ -857,7 +859,7 @@ public:
  * The exception is re-thrown with one more DevError
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -866,7 +868,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
@@ -878,10 +880,10 @@ public:
 		long nb_err = ex.errors.length();
 		ex.errors.length(nb_err + 1);
 
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 
 		throw ex;
 	}
@@ -893,7 +895,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
  * The memory used by the origin parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -902,7 +904,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -915,10 +917,10 @@ public:
 		long nb_err = ex.errors.length();
 		ex.errors.length(nb_err + 1);
 
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
 
 		throw ex;
@@ -931,7 +933,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
  * The memory used by the desc parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -940,7 +942,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -954,10 +956,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 
 		throw ex;
 	}
@@ -969,7 +971,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
  * The memory used by the origin and desc parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -978,7 +980,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	TANGO_NORETURN static inline void re_throw_exception(Tango::DevFailed &ex,
@@ -991,10 +993,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw ex;
@@ -1007,7 +1009,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
  * The memory used by the reason parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1016,7 +1018,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1030,10 +1032,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 
 		throw ex;
 	}
@@ -1045,7 +1047,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
  * The memory used by the reason and origin parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1054,7 +1056,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1068,11 +1070,11 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 
 		throw ex;
 	}
@@ -1084,7 +1086,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
  * The memory used by the reason and desc parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1093,7 +1095,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1107,10 +1109,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw ex;
@@ -1123,7 +1125,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
  * The memory used by the origin, reason and desc parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1132,7 +1134,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1146,11 +1148,11 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw ex;
@@ -1162,7 +1164,7 @@ public:
  * The exception is re-thrown with one more DevError
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1171,7 +1173,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1185,9 +1187,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1198,7 +1200,7 @@ public:
  * The exception is re-thrown with one more DevError
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1207,7 +1209,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1221,9 +1223,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1234,7 +1236,7 @@ public:
  * The exception is re-thrown with one more DevError
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1243,7 +1245,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1257,9 +1259,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 
 		throw ex;
 	}
@@ -1270,7 +1272,7 @@ public:
  * The exception is re-thrown with one more DevError
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1279,7 +1281,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1293,9 +1295,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 
 		throw ex;
 	}
@@ -1306,7 +1308,7 @@ public:
  * The exception is re-thrown with one more DevError
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1315,7 +1317,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1329,9 +1331,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1342,7 +1344,7 @@ public:
  * The exception is re-thrown with one more DevError
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1351,7 +1353,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1365,9 +1367,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1378,7 +1380,7 @@ public:
  * The exception is re-thrown with one more DevError
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1387,7 +1389,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1401,9 +1403,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 
 		throw ex;
 	}
@@ -1415,7 +1417,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
  * The memory used by the origin parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1424,7 +1426,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1438,10 +1440,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1453,7 +1455,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
  * The memory used by the desc parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1462,7 +1464,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1476,9 +1478,9 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw ex;
@@ -1491,7 +1493,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
  * The memory used by the origin and desc parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1500,7 +1502,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1514,10 +1516,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason.c_str());
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].reason = Tango::string_dup(reason.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete desc;
 
 		throw ex;
@@ -1530,7 +1532,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
  * The memory used by the reason parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1539,7 +1541,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1553,10 +1555,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1568,7 +1570,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
  * The memory used by the reason and origin parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1577,7 +1579,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1591,11 +1593,11 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin);
+		ex.errors[nb_err].origin = Tango::string_dup(origin);
 		delete[] origin;
-		ex.errors[nb_err].desc = CORBA::string_dup(desc.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc.c_str());
 
 		throw ex;
 	}
@@ -1607,7 +1609,7 @@ public:
  * object. A default value "Tango::ERR" is defined for the new DevError
  * severity field.
  * The memory used by the reason and desc parameter will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex The DevFailed exception
@@ -1616,7 +1618,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 
@@ -1630,10 +1632,10 @@ public:
 		ex.errors.length(nb_err + 1);
 
 		ex.errors[nb_err].severity = sever;
-		ex.errors[nb_err].reason = CORBA::string_dup(reason);
+		ex.errors[nb_err].reason = Tango::string_dup(reason);
 		delete[] reason;
-		ex.errors[nb_err].origin = CORBA::string_dup(origin.c_str());
-		ex.errors[nb_err].desc = CORBA::string_dup(desc);
+		ex.errors[nb_err].origin = Tango::string_dup(origin.c_str());
+		ex.errors[nb_err].desc = Tango::string_dup(desc);
 		delete[] desc;
 
 		throw ex;
@@ -1648,7 +1650,7 @@ public:
  * The exception is created with a single DevError
  * object. A value "Tango::ERR" is defined for the DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex A CORBA System Exception. The reason and desc fields of the
@@ -1657,7 +1659,7 @@ public:
  * different depending on the exact type of the CORBA system exception.
  * @param origin The exception DevError object origin field
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	TANGO_NORETURN static void throw_exception(const CORBA::SystemException &ex,const char *origin);
@@ -1668,7 +1670,7 @@ public:
  * The exception is created with a single DevError
  * object. A value "Tango::ERR" is defined for the DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex A CORBA System Exception. The reason and desc fields of the
@@ -1678,7 +1680,7 @@ public:
  * @param origin The exception DevError object origin field. The memory
  * allocated for this parameter will be freed by this method.
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	TANGO_NORETURN static void throw_exception(const CORBA::SystemException &ex,char *origin);
@@ -1689,7 +1691,7 @@ public:
  * The exception is created with a single DevError
  * object. A value "Tango::ERR" is defined for the DevError
  * severity field.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex A CORBA System Exception. The reason and desc fields of the
@@ -1699,7 +1701,7 @@ public:
  * @param origin The exception DevError object origin field. The memory
  * allocated for this parameter will be freed by this method.
  * @exception DevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
 	TANGO_NORETURN static void throw_exception(const CORBA::SystemException &ex,const string &origin);
@@ -1714,7 +1716,7 @@ public:
  * severity field.
  * Note that throwing MultiDevFailed exception is allowed only in attribute writing methods.
  * The memory used by the origin and desc parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param att_name The attribute name
@@ -1723,7 +1725,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception MultiDevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>MultiDevFailed</b> exception specification
  */
 
@@ -1733,13 +1735,13 @@ public:
 		Tango::NamedDevErrorList errors(1);
 
 		errors.length(1);
-		errors[0].name = CORBA::string_dup(att_name);
+		errors[0].name = Tango::string_dup(att_name);
 		errors[0].index_in_call = 999;
 		errors[0].err_list.length(1);
-		errors[0].err_list[0].desc = CORBA::string_dup(desc);
+		errors[0].err_list[0].desc = Tango::string_dup(desc);
 		errors[0].err_list[0].severity = sever;
-		errors[0].err_list[0].reason = CORBA::string_dup(reason);
-		errors[0].err_list[0].origin = CORBA::string_dup(origin);
+		errors[0].err_list[0].reason = Tango::string_dup(reason);
+		errors[0].err_list[0].origin = Tango::string_dup(origin);
 
 		throw Tango::MultiDevFailed(errors);
 	}
@@ -1753,7 +1755,7 @@ public:
  * severity field.
  * Note that throwing MultiDevFailed exception is allowed only in attribute writing methods.
  * The memory used by the origin and desc parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param atts The attributes name vector
@@ -1762,7 +1764,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception MultiDevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>MultiDevFailed</b> exception specification
  */
 	TANGO_NORETURN static inline void throw_named_exception(vector<string> &atts,const char *reason,
@@ -1774,13 +1776,13 @@ public:
 		errors.length(a_size);
 		for (unsigned int loop = 0;loop < a_size;loop++)
 		{
-			errors[loop].name = CORBA::string_dup(atts[loop].c_str());
+			errors[loop].name = Tango::string_dup(atts[loop].c_str());
 			errors[loop].index_in_call = 999;
 			errors[loop].err_list.length(1);
-			errors[loop].err_list[0].desc = CORBA::string_dup(desc);
+			errors[loop].err_list[0].desc = Tango::string_dup(desc);
 			errors[loop].err_list[0].severity = sever;
-			errors[loop].err_list[0].reason = CORBA::string_dup(reason);
-			errors[loop].err_list[0].origin = CORBA::string_dup(origin);
+			errors[loop].err_list[0].reason = Tango::string_dup(reason);
+			errors[loop].err_list[0].origin = Tango::string_dup(origin);
 		}
 
 		throw Tango::MultiDevFailed(errors);
@@ -1797,7 +1799,7 @@ public:
  * Note that throwing MultiDevFailed exception is allowed only in attribute writing methods.
  *
  * The memory used by the origin and desc parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param d The device pointer
@@ -1807,7 +1809,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception MultiDevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>MultiDevFailed</b> exception specification
  */
 
@@ -1825,7 +1827,7 @@ public:
  * Note that throwing MultiDevFailed exception is allowed only in attribute writing methods.
  *
  * The memory used by the origin and desc parameters will be freed by this method
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param d The device pointer
@@ -1835,7 +1837,7 @@ public:
  * @param origin The exception DevError object origin field
  * @param sever The exception DevError object severity field
  * @exception MultiDevFailed The thrown exception.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>MultiDevFailed</b> exception specification
  */
 
@@ -1849,7 +1851,7 @@ public:
  * The two DevFailed exceptions are verified by comparing the
  * reason, origin, description and severity of all exceptions in the error stack.
  * The strings reason, origin and description are compared literally.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  *
  * @param ex1 The first DevFailed exception

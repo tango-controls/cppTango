@@ -2,12 +2,44 @@ version: 0.0.{build}
 branches:
   only:
     - tango-9-lts
-
-image: Visual Studio 2015
-
 environment:
   matrix:
-    - platform: win32
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      platform: x64
+      ARCH: x64-msvc15
+      configuration: Release
+      CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
+      MSVCVERSION: v141
+      MSVCYEAR: "vs2017"
+      MSVCABR: "15"
+      VC_VER: 15.0
+      PYTHONPATH: c:\Python37-x64\
+      PYTHONPATHOMNI: "/cygdrive/c/Python37-x64/python"
+      BOOST_ROOT: C:\Libraries\boost_1_63_0
+      ZMQ_BASE: C:\projects\libzmq
+      IDL_BASE: C:\projects\tangoidl
+      IDL_BIN: C:\Program Files\tangoidl
+      OMNI_BASE: C:\projects\omniORB-4.2.1
+      PYVER: "py37"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      platform: win32
+      ARCH: win32-msvc15
+      configuration: Release
+      CMAKE_GENERATOR: "Visual Studio 15 2017"
+      MSVCVERSION: v141
+      MSVCYEAR: "vs2017"
+      MSVCABR: "15"
+      VC_VER: 15.0
+      PYTHONPATH: c:\Python37\
+      PYTHONPATHOMNI: "/cygdrive/c/Python37/python"
+      BOOST_ROOT: C:\Libraries\boost_1_63_0
+      ZMQ_BASE: C:\projects\libzmq
+      IDL_BASE: C:\projects\tangoidl
+      IDL_BIN: C:\Program Files (x86)\tangoidl
+      OMNI_BASE: C:\projects\omniORB-4.2.1
+      PYVER: "py37"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      platform: win32
       ARCH: win32-msvc9
       configuration: Release
       CMAKE_GENERATOR: "Visual Studio 9 2008"
@@ -15,13 +47,16 @@ environment:
       MSVCYEAR: "vs2008"
       MSVCABR: "9"
       VC_VER: 9.0
+      PYTHONPATH: c:\Python27\
       PYTHONPATHOMNI: "/cygdrive/c/Python27/python"
       BOOST_ROOT: C:\Libraries\boost_1_63_0
       ZMQ_BASE: C:\projects\libzmq
       IDL_BASE: C:\projects\tangoidl
       IDL_BIN: C:\Program Files (x86)\tangoidl
       OMNI_BASE: C:\projects\omniORB-4.2.1
-    - platform: x64
+      PYVER: "py27"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      platform: x64
       ARCH: x64-msvc9
       configuration: Release
       CMAKE_GENERATOR: "Visual Studio 9 2008 Win64"
@@ -29,13 +64,16 @@ environment:
       MSVCYEAR: "vs2008"
       MSVCABR: "9"
       VC_VER: 9.0
-      PYTHONPATHOMNI: "/cygdrive/c/Python27/python"
+      PYTHONPATH: c:\Python27-x64\
+      PYTHONPATHOMNI: "/cygdrive/c/Python27-x64/python"
       BOOST_ROOT: C:\Libraries\boost_1_63_0
       ZMQ_BASE: C:\projects\libzmq
       IDL_BASE: C:\projects\tangoidl
       IDL_BIN: C:\Program Files\tangoidl
       OMNI_BASE: C:\projects\omniORB-4.2.1
-    - platform: win32
+      PYVER: "py27"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      platform: win32
       ARCH: win32-msvc10
       configuration: Release
       CMAKE_GENERATOR: "Visual Studio 10 2010"
@@ -50,7 +88,9 @@ environment:
       IDL_BASE: C:\projects\tangoidl
       IDL_BIN: C:\Program Files (x86)\tangoidl
       OMNI_BASE: C:\projects\omniORB-4.2.1
-    - platform: x64
+      PYVER: "py33"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      platform: x64
       ARCH: x64-msvc10
       configuration: Release
       CMAKE_GENERATOR: "Visual Studio 10 2010 Win64"
@@ -65,7 +105,9 @@ environment:
       IDL_BASE: C:\projects\tangoidl
       IDL_BIN: C:\Program Files\tangoidl
       OMNI_BASE: C:\projects\omniORB-4.2.1
-    - platform: x64
+      PYVER: "py33"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      platform: x64
       ARCH: x64-msvc12
       configuration: Release
       CMAKE_GENERATOR: "Visual Studio 12 2013 Win64"
@@ -73,13 +115,16 @@ environment:
       MSVCYEAR: "vs2013"
       MSVCABR: "13"
       VC_VER: 13.0
+      PYTHONPATH: c:\Python33-x64\
       PYTHONPATHOMNI: "/cygdrive/c/Python33-x64/python"
       BOOST_ROOT: C:\Libraries\boost_1_63_0
       ZMQ_BASE: C:\projects\libzmq
       IDL_BASE: C:\projects\tangoidl
       IDL_BIN: C:\Program Files\tangoidl
       OMNI_BASE: C:\projects\omniORB-4.2.1
-    - platform: x64
+      PYVER: "py33"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      platform: x64
       ARCH: x64-msvc14
       configuration: Release
       CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
@@ -94,12 +139,47 @@ environment:
       IDL_BASE: C:\projects\tangoidl
       IDL_BIN: C:\Program Files\tangoidl
       OMNI_BASE: C:\projects\omniORB-4.2.1
+      PYVER: "py36"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      platform: win32
+      ARCH: win32-msvc12
+      configuration: Release
+      CMAKE_GENERATOR: "Visual Studio 12 2013"
+      MSVCVERSION: v120
+      MSVCYEAR: "vs2013"
+      MSVCABR: "13"
+      VC_VER: 13.0
+      PYTHONPATH: c:\Python33\
+      PYTHONPATHOMNI: "/cygdrive/c/Python33/python"
+      BOOST_ROOT: C:\Libraries\boost_1_63_0
+      ZMQ_BASE: C:\projects\libzmq
+      IDL_BASE: C:\projects\tangoidl
+      IDL_BIN: C:\Program Files (x86)\tangoidl
+      OMNI_BASE: C:\projects\omniORB-4.2.1
+      PYVER: "py33"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      platform: win32
+      ARCH: win32-msvc14
+      configuration: Release
+      CMAKE_GENERATOR: "Visual Studio 14 2015"
+      MSVCVERSION: v140
+      MSVCYEAR: "vs2015"
+      MSVCABR: "14"
+      VC_VER: 14.0
+      PYTHONPATH: c:\Python36\
+      PYTHONPATHOMNI: "/cygdrive/c/Python36/python"
+      BOOST_ROOT: C:\Libraries\boost_1_63_0
+      ZMQ_BASE: C:\projects\libzmq
+      IDL_BASE: C:\projects\tangoidl
+      IDL_BIN: C:\Program Files (x86)\tangoidl
+      OMNI_BASE: C:\projects\omniORB-4.2.1
+      PYVER: "py36"
       
 init:
   # go to hell Xamarin (see http://help.appveyor.com/discussions/problems/4569)
-  - del "C:\Program Files (x86)\MSBuild\4.0\Microsoft.Common.Targets\ImportAfter\Xamarin.Common.targets"
-  - del "C:\Program Files (x86)\MSBuild\14.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
-  - del "C:\Program Files (x86)\MSBuild\12.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%" NEQ "Visual Studio 2017" del "C:\Program Files (x86)\MSBuild\4.0\Microsoft.Common.Targets\ImportAfter\Xamarin.Common.targets"
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%" NEQ "Visual Studio 2017" del "C:\Program Files (x86)\MSBuild\14.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%" NEQ "Visual Studio 2017" del "C:\Program Files (x86)\MSBuild\12.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
   #RDP from start
   #- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   # Tango IDL
@@ -117,18 +197,8 @@ init:
   - cmd: cd "C:\projects\"
   - cmd: md omniorb
   - cmd: cd "C:\projects\"
-  - if %ARCH%==win32-msvc9 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py27.zip
-  - if %ARCH%==x64-msvc9 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py27.zip
-  - if %ARCH%==win32-msvc10 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py33.zip
-  - if %ARCH%==x64-msvc10 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py33.zip
-  - if %ARCH%==x64-msvc12 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py33.zip
-  - if %ARCH%==x64-msvc14 appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1.2/omniorb-4.2.1_%ARCH%_py36.zip
-  - cmd: if %ARCH%==win32-msvc9 7z -y x omniorb-4.2.1_%ARCH%_py27.zip -oC:\projects\omniorb\
-  - cmd: if %ARCH%==x64-msvc9 7z -y x omniorb-4.2.1_%ARCH%_py27.zip -oC:\projects\omniorb\
-  - cmd: if %ARCH%==win32-msvc10 7z -y x omniorb-4.2.1_%ARCH%_py33.zip -oC:\projects\omniorb\
-  - cmd: if %ARCH%==x64-msvc10 7z -y x omniorb-4.2.1_%ARCH%_py33.zip -oC:\projects\omniorb\
-  - cmd: if %ARCH%==x64-msvc12 7z -y x omniorb-4.2.1_%ARCH%_py33.zip -oC:\projects\omniorb\
-  - cmd: if %ARCH%==x64-msvc14 7z -y x omniorb-4.2.1_%ARCH%_py36.zip -oC:\projects\omniorb\
+  - appveyor DownloadFile https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1-2/omniorb-4.2.1_%ARCH%_%PYVER%.zip
+  - cmd: 7z -y x omniorb-4.2.1_%ARCH%_%PYVER%.zip -oC:\projects\omniorb\
   #Pthread-Win32
   - cmd: cd "C:\projects\"
   - cmd: md pthreads-win32
@@ -141,12 +211,14 @@ init:
   - cmd: 7z -y x vs2008_patch.zip -oC:\projects\vs2008_patch\
   - cmd: if %ARCH%==x64-msvc9 call C:\projects\vs2008_patch\setup_x64.bat
   - cmd: if %ARCH%==x32-msvc9 call C:\projects\vs2008_patch\setup_x86.bat
-  - cmd: copy "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\vcvars64.bat" "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\amd64\vcvarsamd64.bat"
+  - cmd: if "%APPVEYOR_BUILD_WORKER_IMAGE%" NEQ "Visual Studio 2017" copy "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\vcvars64.bat" "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\amd64\vcvarsamd64.bat"
   
   - cmd: cd "C:\projects\cppTango"
 install:
   #copy tree for debug build
   - cmd: cd c:/projects/
+  # in case of wrong directory for cloning
+  - cmd: rename %APPVEYOR_BUILD_FOLDER% cppTango
   - cmd: md debug_build
   - cmd: xcopy "C:/projects/cppTango" "c:/projects/debug_build" /c /g /d /i /e /r /h /y
   # Setting Visual Compiler
@@ -157,17 +229,22 @@ install:
   - cmd: if %ARCH%==win32-msvc10 call "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"
   - cmd: if %ARCH%==win32-msvc10 set path=C:\Windows\Microsoft.NET\Framework\v4.0.30319;%path%
   - cmd: if %ARCH%==x64-msvc10 call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64 
+  - cmd: if %ARCH%==win32-msvc12 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"
+  - cmd: if %ARCH%==x64-msvc12 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x64 
   - cmd: if %ARCH%==win32-msvc14 call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
   - cmd: if %ARCH%==x64-msvc14 call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
+  - cmd: if %ARCH%==win32-msvc15 call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
+  - cmd: if %ARCH%==x64-msvc15 call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
   - cmd: echo "Generator='%CMAKE_GENERATOR%'"
   - cmd: echo "Platform='%Platform%'"
   - cmd: set PYTHONPATH=%PYTHONPATH%
+  - cmd: set PATH=%PYTHONPATH%;%PATH%
   # Tango IDL
   - cmd: cd "C:\projects\tangoidl"
-  - cmd: cmake -G "%CMAKE_GENERATOR%"
+  - cmd: cmake -G "%CMAKE_GENERATOR%" .
   - cmd: cmake --build ./ --target install --config Debug
   - cmd: if %ARCH%==x64-msvc10 call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64 /Release
-  - cmd: cmake --build ./ --target install --config Release  
+  - cmd: cmake --build ./ --target install --config Release
   # Tango API
   - cmd: cd "C:\projects\cppTango"
   - cmd: set BOOST_ROOT=%BOOST_ROOT%
@@ -175,13 +252,12 @@ install:
   - cmd: set IDL_BASE=%IDL_BIN%
   - cmd: set OMNI_BASE=C:/projects/omniorb/
   - cmd: set PTHREAD_WIN=C:/projects/pthreads-win32/
-  - cmd: if %ARCH%==x64-msvc14 set path=%PYTHONPATH%;%path%
-  #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE
-  #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE
-  - cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DIDL_BASE="%IDL_BASE%" -DOMNI_BASE="%OMNI_BASE%" -DZMQ_BASE="%ZMQ_BASE%" -DPTHREAD_WIN=%PTHREAD_WIN%
+  #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE .
+  #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE .
+  - cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DIDL_BASE="%IDL_BASE%" -DOMNI_BASE="%OMNI_BASE%" -DZMQ_BASE="%ZMQ_BASE%" -DPTHREAD_WIN=%PTHREAD_WIN% .
   - cmd: cd c:/projects/debug_build
-  #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE -DCMAKE_BUILD_TYPE=Debug
-  - cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DCMAKE_BUILD_TYPE=Debug -DIDL_BASE="%IDL_BASE%" -DOMNI_BASE="%OMNI_BASE%" -DZMQ_BASE="%ZMQ_BASE%" -DPTHREAD_WIN=%PTHREAD_WIN%
+  #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE -DCMAKE_BUILD_TYPE=Debug .
+  - cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DCMAKE_BUILD_TYPE=Debug -DIDL_BASE="%IDL_BASE%" -DOMNI_BASE="%OMNI_BASE%" -DZMQ_BASE="%ZMQ_BASE%" -DPTHREAD_WIN=%PTHREAD_WIN% .
 
 clone_folder: C:\projects\cppTango
 
@@ -225,10 +301,18 @@ after_build:
   - cmd: if %ARCH%==win32-msvc10 move libtango_%TANGO_LIB_VER%_v100_x86_debug.zip C:/projects/cppTango
   - cmd: if %ARCH%==x64-msvc10 move libtango_%TANGO_LIB_VER%_v100_x64_debug.msi C:/projects/cppTango
   - cmd: if %ARCH%==x64-msvc10 move libtango_%TANGO_LIB_VER%_v100_x64_debug.zip C:/projects/cppTango
+  - cmd: if %ARCH%==win32-msvc12 move libtango_%TANGO_LIB_VER%_v120_x86_debug.msi C:/projects/cppTango
+  - cmd: if %ARCH%==win32-msvc12 move libtango_%TANGO_LIB_VER%_v120_x86_debug.zip C:/projects/cppTango
+  - cmd: if %ARCH%==win32-msvc14 move libtango_%TANGO_LIB_VER%_v140_x86_debug.msi C:/projects/cppTango
+  - cmd: if %ARCH%==win32-msvc14 move libtango_%TANGO_LIB_VER%_v140_x86_debug.zip C:/projects/cppTango 
   - cmd: if %ARCH%==x64-msvc12 move libtango_%TANGO_LIB_VER%_v120_x64_debug.msi C:/projects/cppTango
   - cmd: if %ARCH%==x64-msvc12 move libtango_%TANGO_LIB_VER%_v120_x64_debug.zip C:/projects/cppTango
   - cmd: if %ARCH%==x64-msvc14 move libtango_%TANGO_LIB_VER%_v140_x64_debug.msi C:/projects/cppTango
-  - cmd: if %ARCH%==x64-msvc14 move libtango_%TANGO_LIB_VER%_v140_x64_debug.zip C:/projects/cppTango
+  - cmd: if %ARCH%==x64-msvc14 move libtango_%TANGO_LIB_VER%_v140_x64_debug.zip C:/projects/cppTango 
+  - cmd: if %ARCH%==win32-msvc15 move libtango_%TANGO_LIB_VER%_v141_x86_debug.msi C:/projects/cppTango
+  - cmd: if %ARCH%==win32-msvc15 move libtango_%TANGO_LIB_VER%_v141_x86_debug.zip C:/projects/cppTango
+  - cmd: if %ARCH%==x64-msvc15 move libtango_%TANGO_LIB_VER%_v141_x64_debug.msi C:/projects/cppTango
+  - cmd: if %ARCH%==x64-msvc15 move libtango_%TANGO_LIB_VER%_v141_x64_debug.zip C:/projects/cppTango
 
 
 on_finish:

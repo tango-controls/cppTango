@@ -9,9 +9,9 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2012,2013,2014,2015
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
+// Copyright (C) :      2012-2019
+//                      European Synchrotron Radiation Facility
+//                      CS 40220, Grenoble 38043 Cedex 9
 //                      FRANCE
 //
 // This file is part of Tango.
@@ -28,8 +28,6 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
-// $Revision: 1 $
 //
 //=============================================================================
 
@@ -91,13 +89,13 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * Client classes are mostly used in application(s) acting as clients and dealing with Tango devices.
  * Server classes are mostly used in Tango class or device server process main function.
  *
- * In order to develop Tango's related software, it's a good idea to have  a look at the
- * so-called "Tango book" (maily chapter 4 but not only)
- * \li <a href=http://ftp.esrf.fr/pub/cs/tango/tango_80.pdf>In PDF</a>
+ * In order to develop Tango's related software, it's a good idea to have a look at the
+ * <a href=https://tango-controls.readthedocs.io>Tango Controls documentation</a>, especially the
+ * <i>Developer's Guide</i> section.
  *
- * A look at the so-called "Related Pages" could also help the developper.
+ * A look at the so-called <a href=pages.html>"Related Pages"</a> could also help the developer.
  *
- * Many information are also available in the <a href=http://www.tango-controls.org target=new>Tango Web site</a>
+ * Useful information is also available on the <a href=http://www.tango-controls.org>Tango Web site</a>.
  *
  */
 
@@ -123,7 +121,7 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * This is a variable length array in order to transmit to the client what is the primary error reason. The
  * sequence element 0 describes the primary error. An exception class hierarchy has been implemented within
  * the API to ease API programmers task. All the exception classes inherits from the Tango::DevFailed class.
- * Except for the NamedDevFaildeList exception class, they don’t add any new fields to the exception, they
+ * Except for the NamedDevFailedList exception class, they don’t add any new fields to the exception, they
  * just allow easy "catching". Exception classes thrown only by the API layer are :
  * @li ConnectionFailed
  * @li CommunicationFailed
@@ -145,188 +143,188 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * exception except for cases described in the following table.
  * <TABLE>
  * <TR>
- *    <TH ALIGN="CENTER">Method name</TH>
- *    <TH ALIGN="CENTER">device type</TH>
- *    <TH ALIGN="CENTER">error type</TH>
- *    <TH ALIGN="CENTER">Level</TH>
- *    <TH ALIGN="CENTER">reason</TH>
+ *    <TH style="text-align:center">Method name</TH>
+ *    <TH style="text-align:center">device type</TH>
+ *    <TH style="text-align:center">error type</TH>
+ *    <TH style="text-align:center">Level</TH>
+ *    <TH style="text-align:center">reason</TH>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=8>DeviceProxy constructor</TD>
- *    <TD ALIGN="CENTER" ROWSPAN=4>with database</TD>
- *    <TD ALIGN="CENTER">TANGO_HOST not set</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_TangoHostNotSet</TD>
+ *    <TD style="text-align:center" ROWSPAN=8>DeviceProxy constructor</TD>
+ *    <TD style="text-align:center" ROWSPAN=4>with database</TD>
+ *    <TD style="text-align:center">TANGO_HOST not set</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_TangoHostNotSet</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=3>Device not defined in db or Alias not defined in db</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">DB_DeviceNotDefined</TD>
+ *    <TD style="text-align:center" ROWSPAN=3>Device not defined in db or Alias not defined in db</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">DB_DeviceNotDefined</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_CommandFailed</TD>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_CommandFailed</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">2</TD>
- *    <TD ALIGN="CENTER">API_DeviceNotDefined</TD>
+ *    <TD style="text-align:center">2</TD>
+ *    <TD style="text-align:center">API_DeviceNotDefined</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=2>with database specified in dev name</TD>
- *    <TD ALIGN="CENTER" ROWSPAN=2>database server not running</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_CorbaException</TD>
+ *    <TD style="text-align:center" ROWSPAN=2>with database specified in dev name</TD>
+ *    <TD style="text-align:center" ROWSPAN=2>database server not running</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_CorbaException</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_CantConnectToDatabase</TD>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_CantConnectToDatabase</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=2>without database</TD>
- *    <TD ALIGN="CENTER" ROWSPAN=2>Server running but device not defined in server</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_CorbaException</TD>
+ *    <TD style="text-align:center" ROWSPAN=2>without database</TD>
+ *    <TD style="text-align:center" ROWSPAN=2>Server running but device not defined in server</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_CorbaException</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_DeviceNotExported</TD>
- * </TR>
-
-
-
- * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=9>AttributeProxy constructor</TD>
- *    <TD ALIGN="CENTER" ROWSPAN=7>with database</TD>
- *    <TD ALIGN="CENTER">TANGO_HOST not set</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_TangoHostNotSet</TD>
- * </TR>
- * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=3>Device not defined in db</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">DB_DeviceNotDefined</TD>
- * </TR>
- * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_CommandFailed</TD>
- * </TR>
- * <TR>
- *    <TD ALIGN="CENTER">2</TD>
- *    <TD ALIGN="CENTER">API_DeviceNotDefined</TD>
- * </TR>
- * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=3>Alias not defined in db</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">DB_SQLError</TD>
- * </TR>
- * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_CommandFailed</TD>
- * </TR>
- * <TR>
- *    <TD ALIGN="CENTER">2</TD>
- *    <TD ALIGN="CENTER">API_AliasNotDefined</TD>
- * </TR>
- * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=2>with database specified in dev name</TD>
- *    <TD ALIGN="CENTER" ROWSPAN=2>database server not running</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_CorbaException</TD>
- * </TR>
- * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_CantConnectToDatabase</TD>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_DeviceNotExported</TD>
  * </TR>
 
 
 
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=7>DeviceProxy or AttributeProxy method call (except command_inout, read_attribute)</TD>
- *    <TD ALIGN="CENTER" ROWSPAN=2>without database</TD>
- *    <TD ALIGN="CENTER" ROWSPAN=2>Server not running</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_CorbaException</TD>
+ *    <TD style="text-align:center" ROWSPAN=9>AttributeProxy constructor</TD>
+ *    <TD style="text-align:center" ROWSPAN=7>with database</TD>
+ *    <TD style="text-align:center">TANGO_HOST not set</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_TangoHostNotSet</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_ServerNotRunning</TD>
+ *    <TD style="text-align:center" ROWSPAN=3>Device not defined in db</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">DB_DeviceNotDefined</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=5>with database</TD>
- *    <TD ALIGN="CENTER">Server ot running</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_DeviceNotExported</TD>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_CommandFailed</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=2>Dead server</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_CorbaException</TD>
+ *    <TD style="text-align:center">2</TD>
+ *    <TD style="text-align:center">API_DeviceNotDefined</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_CantConnectToDevice</TD>
+ *    <TD style="text-align:center" ROWSPAN=3>Alias not defined in db</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">DB_SQLError</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=2>Dead database server when reconnection needed</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_CorbaException</TD>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_CommandFailed</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_CantConnectToDatabase</TD>
+ *    <TD style="text-align:center">2</TD>
+ *    <TD style="text-align:center">API_AliasNotDefined</TD>
+ * </TR>
+ * <TR>
+ *    <TD style="text-align:center" ROWSPAN=2>with database specified in dev name</TD>
+ *    <TD style="text-align:center" ROWSPAN=2>database server not running</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_CorbaException</TD>
+ * </TR>
+ * <TR>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_CantConnectToDatabase</TD>
+ * </TR>
+
+
+
+ * <TR>
+ *    <TD style="text-align:center" ROWSPAN=7>DeviceProxy or AttributeProxy method call (except command_inout, read_attribute)</TD>
+ *    <TD style="text-align:center" ROWSPAN=2>without database</TD>
+ *    <TD style="text-align:center" ROWSPAN=2>Server not running</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_CorbaException</TD>
+ * </TR>
+ * <TR>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_ServerNotRunning</TD>
+ * </TR>
+ * <TR>
+ *    <TD style="text-align:center" ROWSPAN=5>with database</TD>
+ *    <TD style="text-align:center">Server ot running</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_DeviceNotExported</TD>
+ * </TR>
+ * <TR>
+ *    <TD style="text-align:center" ROWSPAN=2>Dead server</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_CorbaException</TD>
+ * </TR>
+ * <TR>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_CantConnectToDevice</TD>
+ * </TR>
+ * <TR>
+ *    <TD style="text-align:center" ROWSPAN=2>Dead database server when reconnection needed</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_CorbaException</TD>
+ * </TR>
+ * <TR>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_CantConnectToDatabase</TD>
  * </TR>
 
 
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=11>DeviceProxy command_inout and read_attribute or AttributeProxy read and write</TD>
- *    <TD ALIGN="CENTER" ROWSPAN=3>without database</TD>
- *    <TD ALIGN="CENTER" ROWSPAN=3>Server not running</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_DeviceNotExported</TD>
+ *    <TD style="text-align:center" ROWSPAN=11>DeviceProxy command_inout and read_attribute or AttributeProxy read and write</TD>
+ *    <TD style="text-align:center" ROWSPAN=3>without database</TD>
+ *    <TD style="text-align:center" ROWSPAN=3>Server not running</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_DeviceNotExported</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_ServerNotRunning</TD>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_ServerNotRunning</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">2</TD>
- *    <TD ALIGN="CENTER">API_CommandFailed</TD>
+ *    <TD style="text-align:center">2</TD>
+ *    <TD style="text-align:center">API_CommandFailed</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=8>with database</TD>
- *    <TD ALIGN="CENTER" ROWSPAN=2>Server not running</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_DeviceNotExported</TD>
+ *    <TD style="text-align:center" ROWSPAN=8>with database</TD>
+ *    <TD style="text-align:center" ROWSPAN=2>Server not running</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_DeviceNotExported</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_CommandFailed</TD>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_CommandFailed</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=3>Dead server</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_CorbaException</TD>
+ *    <TD style="text-align:center" ROWSPAN=3>Dead server</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_CorbaException</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_CantConnectToDevice</TD>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_CantConnectToDevice</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">2</TD>
- *    <TD ALIGN="CENTER">API_CommandFailed or API_AttributeFailed</TD>
+ *    <TD style="text-align:center">2</TD>
+ *    <TD style="text-align:center">API_CommandFailed or API_AttributeFailed</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=3>Dead database server when re-connection needed</TD>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_DeviceNotExported</TD>
+ *    <TD style="text-align:center" ROWSPAN=3>Dead database server when re-connection needed</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_DeviceNotExported</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_CantConnectToDatabase</TD>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_CantConnectToDatabase</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">2</TD>
- *    <TD ALIGN="CENTER">API_CommandFailed</TD>
+ *    <TD style="text-align:center">2</TD>
+ *    <TD style="text-align:center">API_CommandFailed</TD>
  * </TR>
  * </TABLE>
  * The desc DevError structure field allows a user to get more precise information. These informations
@@ -345,43 +343,43 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * the DevError structures fields are:
  * <TABLE>
  * <TR>
- *    <TH ALIGN="CENTER">Level</TH>
- *    <TH ALIGN="CENTER">Reason</TH>
- *    <TH ALIGN="CENTER">Desc</TH>
- *    <TH ALIGN="CENTER">Severity</TH>
+ *    <TH style="text-align:center">Level</TH>
+ *    <TH style="text-align:center">Reason</TH>
+ *    <TH style="text-align:center">Desc</TH>
+ *    <TH style="text-align:center">Severity</TH>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_CorbaException</TD>
- *    <TD ALIGN="CENTER">CORBA exception fields translated into a string</TD>
- *    <TD ALIGN="CENTER">ERR</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_CorbaException</TD>
+ *    <TD style="text-align:center">CORBA exception fields translated into a string</TD>
+ *    <TD style="text-align:center">ERR</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_DeviceTimedOut</TD>
- *    <TD ALIGN="CENTER">String with time-out value and device name</TD>
- *    <TD ALIGN="CENTER">ERR</TD>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_DeviceTimedOut</TD>
+ *    <TD style="text-align:center">String with time-out value and device name</TD>
+ *    <TD style="text-align:center">ERR</TD>
  * </TR>
  * </TABLE>
  * For all other communication errors, the DevError structures fields are:
  * <TABLE>
  * <TR>
- *    <TH ALIGN="CENTER">Level</TH>
- *    <TH ALIGN="CENTER">Reason</TH>
- *    <TH ALIGN="CENTER">Desc</TH>
- *    <TH ALIGN="CENTER">Severity</TH>
+ *    <TH style="text-align:center">Level</TH>
+ *    <TH style="text-align:center">Reason</TH>
+ *    <TH style="text-align:center">Desc</TH>
+ *    <TH style="text-align:center">Severity</TH>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">0</TD>
- *    <TD ALIGN="CENTER">API_CorbaException</TD>
- *    <TD ALIGN="CENTER">CORBA exception fields translated into a string</TD>
- *    <TD ALIGN="CENTER">ERR</TD>
+ *    <TD style="text-align:center">0</TD>
+ *    <TD style="text-align:center">API_CorbaException</TD>
+ *    <TD style="text-align:center">CORBA exception fields translated into a string</TD>
+ *    <TD style="text-align:center">ERR</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_CommunicationFailed</TD>
- *    <TD ALIGN="CENTER">String with device, method, command/attribute name</TD>
- *    <TD ALIGN="CENTER">ERR</TD>
+ *    <TD style="text-align:center">1</TD>
+ *    <TD style="text-align:center">API_CommunicationFailed</TD>
+ *    <TD style="text-align:center">String with device, method, command/attribute name</TD>
+ *    <TD style="text-align:center">ERR</TD>
  * </TR>
  * </TABLE>
  *
@@ -390,7 +388,7 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * @li @b API_UnsupportedProtocol This error occurs when trying to build a DeviceProxy or an AttributeProxy
  * instance for a device with an unsupported protocol. Refer to the appendix on device naming syntax
  * to get the list of supported database modifier
- * @li @b API_UnsupportedDBaseModifier This error occurswhen trying to build a DeviceProxy or an AttributeProxy
+ * @li @b API_UnsupportedDBaseModifier This error occurs when trying to build a DeviceProxy or an AttributeProxy
  * instance for a device/attribute with a database modifier unsupported. Refer to the appendix on device
  * naming syntax to get the list of supported database modifier
  * @li @b API_WrongDeviceNameSyntax This error occurs for all the other error in device name syntax. It is
@@ -409,7 +407,7 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * @li @b API_EmptyDbDatum This error occurs when trying to extract data from an empty DbDatum object
  * @li @b API_IncompatibleArgumentType This error occurs when trying to extract data with a type different than
  * the type used to send the data
- * @li @b API_EmptyDeviceAttribute This error occurswhen trying to extract data froman empty DeviceAttribute
+ * @li @b API_EmptyDeviceAttribute This error occurs when trying to extract data from an empty DeviceAttribute
  * object
  * @li @b API_IncompatibleAttrArgumentType This error occurs when trying to extract attribute data with a type
  * different than the type used to send the data
@@ -445,7 +443,7 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * exception has only one level of Tango::DevError structure. The possible value for the reason field are :
  * @li @b API_NotificationServiceFailed This error occurs when the subscribe_event() method failed trying to access
  * the CORBA notification service
- * @li @b API_EventNotFound This error occurswhen you are using an incorrect event_id in the unsubscribe_event()
+ * @li @b API_EventNotFound This error occurs when you are using an incorrect event_id in the unsubscribe_event()
  * method
  * @li @b API_InvalidArgs This error occurs when NULL pointers are passed to the subscribe or unsubscribe event
  * methods
@@ -461,7 +459,7 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * to have a new class of exception to transfer the error stack for several attribute(s) which failed during the
  * writing. Therefore, this exception class contains for each attributes which failed :
  * @li The name of the attribute
- * @li Its index in the vector passed as argumen tof the write_attributes() method
+ * @li Its index in the vector passed as argument tof the write_attributes() method
  * @li The error stack
  *
  * The following piece of code is an example of how to use this class exception
@@ -491,7 +489,7 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * @li @b API_DeviceUnlocked The device has been unlocked by another client (administration client)
  *
  * The first level is the message reported by the Tango kernel from the server side. The second layer is added
- * by the client API layer with informations on which API call generates the exception and device name.
+ * by the client API layer with information on which API call generates the exception and device name.
  */
 
 /*******************************************************
@@ -513,90 +511,90 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * possible. They are summarized in the following table:
  * <TABLE>
  * <TR>
- *    <TH ALIGN="CENTER">Case</TH>
- *    <TH ALIGN="CENTER">Server state</TH>
- *    <TH ALIGN="CENTER">Call nb</TH>
- *    <TH ALIGN="CENTER">Exception (transparency false)</TH>
- *    <TH ALIGN="CENTER">Exception (transparency true)</TH>
+ *    <TH style="text-align:center">Case</TH>
+ *    <TH style="text-align:center">Server state</TH>
+ *    <TH style="text-align:center">Call nb</TH>
+ *    <TH style="text-align:center">Exception (transparency false)</TH>
+ *    <TH style="text-align:center">Exception (transparency true)</TH>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=4>Server killed and re-started</TD>
- *    <TD ALIGN="CENTER">Server killed before call n</TD>
- *    <TD ALIGN="CENTER">n</TD>
- *    <TD ALIGN="CENTER">CommunicationFailed</TD>
- *    <TD ALIGN="CENTER">ConnectionFailed</TD>
+ *    <TD style="text-align:center" ROWSPAN=4>Server killed and re-started</TD>
+ *    <TD style="text-align:center">Server killed before call n</TD>
+ *    <TD style="text-align:center">n</TD>
+ *    <TD style="text-align:center">CommunicationFailed</TD>
+ *    <TD style="text-align:center">ConnectionFailed</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">Down</TD>
- *    <TD ALIGN="CENTER">n + 1</TD>
- *    <TD ALIGN="CENTER">ConnectionFailed (2 levels)</TD>
- *    <TD ALIGN="CENTER">idem</TD>
+ *    <TD style="text-align:center">Down</TD>
+ *    <TD style="text-align:center">n + 1</TD>
+ *    <TD style="text-align:center">ConnectionFailed (2 levels)</TD>
+ *    <TD style="text-align:center">idem</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">Down</TD>
- *    <TD ALIGN="CENTER">n + 2</TD>
- *    <TD ALIGN="CENTER">idem</TD>
- *    <TD ALIGN="CENTER">idem</TD>
+ *    <TD style="text-align:center">Down</TD>
+ *    <TD style="text-align:center">n + 2</TD>
+ *    <TD style="text-align:center">idem</TD>
+ *    <TD style="text-align:center">idem</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">Running</TD>
- *    <TD ALIGN="CENTER">n + x</TD>
- *    <TD ALIGN="CENTER">No exception</TD>
- *    <TD ALIGN="CENTER">No exception</TD>
- * </TR>
-
- * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=4>Server died and re-started</TD>
- *    <TD ALIGN="CENTER">Server died before call n</TD>
- *    <TD ALIGN="CENTER">n</TD>
- *    <TD ALIGN="CENTER">CommunicationFailed</TD>
- *    <TD ALIGN="CENTER">ConnectionFailed</TD>
- * </TR>
- * <TR>
- *    <TD ALIGN="CENTER">Died</TD>
- *    <TD ALIGN="CENTER">n + 1</TD>
- *    <TD ALIGN="CENTER">ConnectionFailed (3 levels)</TD>
- *    <TD ALIGN="CENTER">idem</TD>
- * </TR>
- * <TR>
- *    <TD ALIGN="CENTER">Died</TD>
- *    <TD ALIGN="CENTER">n + 2</TD>
- *    <TD ALIGN="CENTER">idem</TD>
- *    <TD ALIGN="CENTER">idem</TD>
- * </TR>
- * <TR>
- *    <TD ALIGN="CENTER">Running</TD>
- *    <TD ALIGN="CENTER">n + x</TD>
- *    <TD ALIGN="CENTER">No exception</TD>
- *    <TD ALIGN="CENTER">No exception</TD>
+ *    <TD style="text-align:center">Running</TD>
+ *    <TD style="text-align:center">n + x</TD>
+ *    <TD style="text-align:center">No exception</TD>
+ *    <TD style="text-align:center">No exception</TD>
  * </TR>
 
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=2>Server killed and re-started</TD>
- *    <TD ALIGN="CENTER">Server killed and re-started before call n</TD>
- *    <TD ALIGN="CENTER">n</TD>
- *    <TD ALIGN="CENTER">CommunicationFailed</TD>
- *    <TD ALIGN="CENTER">No exception</TD>
+ *    <TD style="text-align:center" ROWSPAN=4>Server died and re-started</TD>
+ *    <TD style="text-align:center">Server died before call n</TD>
+ *    <TD style="text-align:center">n</TD>
+ *    <TD style="text-align:center">CommunicationFailed</TD>
+ *    <TD style="text-align:center">ConnectionFailed</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">Running</TD>
- *    <TD ALIGN="CENTER">n + x</TD>
- *    <TD ALIGN="CENTER">No exception</TD>
- *    <TD ALIGN="CENTER">No exception</TD>
+ *    <TD style="text-align:center">Died</TD>
+ *    <TD style="text-align:center">n + 1</TD>
+ *    <TD style="text-align:center">ConnectionFailed (3 levels)</TD>
+ *    <TD style="text-align:center">idem</TD>
+ * </TR>
+ * <TR>
+ *    <TD style="text-align:center">Died</TD>
+ *    <TD style="text-align:center">n + 2</TD>
+ *    <TD style="text-align:center">idem</TD>
+ *    <TD style="text-align:center">idem</TD>
+ * </TR>
+ * <TR>
+ *    <TD style="text-align:center">Running</TD>
+ *    <TD style="text-align:center">n + x</TD>
+ *    <TD style="text-align:center">No exception</TD>
+ *    <TD style="text-align:center">No exception</TD>
  * </TR>
 
  * <TR>
- *    <TD ALIGN="CENTER" ROWSPAN=2>Server died and re-started</TD>
- *    <TD ALIGN="CENTER">Server died and re-started before call n</TD>
- *    <TD ALIGN="CENTER">n</TD>
- *    <TD ALIGN="CENTER">CommunicationFailed</TD>
- *    <TD ALIGN="CENTER">No exception</TD>
+ *    <TD style="text-align:center" ROWSPAN=2>Server killed and re-started</TD>
+ *    <TD style="text-align:center">Server killed and re-started before call n</TD>
+ *    <TD style="text-align:center">n</TD>
+ *    <TD style="text-align:center">CommunicationFailed</TD>
+ *    <TD style="text-align:center">No exception</TD>
  * </TR>
  * <TR>
- *    <TD ALIGN="CENTER">Running</TD>
- *    <TD ALIGN="CENTER">n + x</TD>
- *    <TD ALIGN="CENTER">No exception</TD>
- *    <TD ALIGN="CENTER">No exception</TD>
+ *    <TD style="text-align:center">Running</TD>
+ *    <TD style="text-align:center">n + x</TD>
+ *    <TD style="text-align:center">No exception</TD>
+ *    <TD style="text-align:center">No exception</TD>
+ * </TR>
+
+ * <TR>
+ *    <TD style="text-align:center" ROWSPAN=2>Server died and re-started</TD>
+ *    <TD style="text-align:center">Server died and re-started before call n</TD>
+ *    <TD style="text-align:center">n</TD>
+ *    <TD style="text-align:center">CommunicationFailed</TD>
+ *    <TD style="text-align:center">No exception</TD>
+ * </TR>
+ * <TR>
+ *    <TD style="text-align:center">Running</TD>
+ *    <TD style="text-align:center">n + x</TD>
+ *    <TD style="text-align:center">No exception</TD>
+ *    <TD style="text-align:center">No exception</TD>
  * </TR>
  * </TABLE>
 

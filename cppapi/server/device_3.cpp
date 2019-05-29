@@ -602,9 +602,9 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					del.length(1);
 
 					del[0].severity = Tango::ERR;
-					del[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
-					del[0].reason = CORBA::string_dup("API_CorbaSysException ");
-					del[0].desc = CORBA::string_dup("Unforseen exception when trying to read attribute. It was even not a Tango DevFailed exception");
+					del[0].origin = Tango::string_dup("Device_3Impl::read_attributes_no_except");
+					del[0].reason = Tango::string_dup("API_CorbaSysException ");
+					del[0].desc = Tango::string_dup("Unforseen exception when trying to read attribute. It was even not a Tango DevFailed exception");
 
 					if (aid.data_5 != Tango_nullptr)
 					{
@@ -1593,7 +1593,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 			{
 				nb_failed++;
 				errs.length(nb_failed);
-				errs[nb_failed - 1].name = CORBA::string_dup(single_att_name);
+				errs[nb_failed - 1].name = Tango::string_dup(single_att_name);
 				errs[nb_failed - 1].index_in_call = i;
 				errs[nb_failed - 1].err_list = e.errors;
 			}
@@ -1645,7 +1645,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 			{
 				nb_failed++;
 				errs.length(nb_failed);
-				errs[nb_failed - 1].name = CORBA::string_dup(single_att_name);
+				errs[nb_failed - 1].name = Tango::string_dup(single_att_name);
 				errs[nb_failed - 1].index_in_call = ctr->idx_in_names;
 				errs[nb_failed - 1].err_list = e.errors;
 				ctr = updated_attr.erase(ctr);
@@ -1716,9 +1716,9 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
                         att.rollback();
 					errs.length(nb_failed);
 					if (values_3 != NULL)
-						errs[nb_failed - 1].name = CORBA::string_dup((*values_3)[(*ite).idx_in_names].name);
+						errs[nb_failed - 1].name = Tango::string_dup((*values_3)[(*ite).idx_in_names].name);
 					else
-						errs[nb_failed - 1].name = CORBA::string_dup((*values_4)[(*ite).idx_in_names].name);
+						errs[nb_failed - 1].name = Tango::string_dup((*values_4)[(*ite).idx_in_names].name);
 					errs[nb_failed - 1].index_in_call = (*ite).idx_in_names;
 					errs[nb_failed - 1].err_list = e.errors[0].err_list;
 					ite = updated_attr.erase(ite);
@@ -1731,9 +1731,9 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
                         att.rollback();
 					errs.length(nb_failed);
 					if (values_3 != NULL)
-						errs[nb_failed - 1].name = CORBA::string_dup((*values_3)[(*ite).idx_in_names].name);
+						errs[nb_failed - 1].name = Tango::string_dup((*values_3)[(*ite).idx_in_names].name);
 					else
-						errs[nb_failed - 1].name = CORBA::string_dup((*values_4)[(*ite).idx_in_names].name);
+						errs[nb_failed - 1].name = Tango::string_dup((*values_4)[(*ite).idx_in_names].name);
 					errs[nb_failed - 1].index_in_call = (*ite).idx_in_names;
 					errs[nb_failed - 1].err_list = e.errors;
 					ite = updated_attr.erase(ite);
@@ -1768,7 +1768,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 							if (TG_strcasecmp(dev_attr->get_w_attr_by_ind(ite_att->idx_in_multi_attr).get_name().c_str(),e.errors[loop].name) == 0)
 							{
 								errs[nb_failed - 1].index_in_call = ite_att->idx_in_names;
-								errs[nb_failed - 1].name = CORBA::string_dup(e.errors[loop].name);
+								errs[nb_failed - 1].name = Tango::string_dup(e.errors[loop].name);
 								errs[nb_failed - 1].err_list = e.errors[loop].err_list;
 
 								WAttribute &att = dev_attr->get_w_attr_by_ind(ite_att->idx_in_multi_attr);
@@ -1790,7 +1790,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 						if (att.get_data_format() == SCALAR)
 							att.rollback();
 						errs.length(nb_failed);
-						errs[nb_failed - 1].name = CORBA::string_dup(att.get_name().c_str());
+						errs[nb_failed - 1].name = Tango::string_dup(att.get_name().c_str());
 
 						vector<AttIdx>::iterator ite_att;
 						for(ite_att = updated_attr.begin();ite_att != updated_attr.end();++ite_att)
@@ -1864,7 +1864,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 					else
 						single_att_name = (*values_4)[updated_attr[att_in_db[i]].idx_in_names].name;
 
-					errs[nb_failed + i].name = CORBA::string_dup(single_att_name);
+					errs[nb_failed + i].name = Tango::string_dup(single_att_name);
 					errs[nb_failed + i].index_in_call = updated_attr[att_in_db[i]].idx_in_names;
 					errs[nb_failed + i].err_list = e.errors;
 				}
@@ -2063,14 +2063,14 @@ Tango::DevInfo_3 *Device_3Impl::info_3()
 //
 
 	Tango::Util *tango_ptr = Tango::Util::instance();
-	back->server_host = CORBA::string_dup(tango_ptr->get_host_name().c_str());
+	back->server_host = Tango::string_dup(tango_ptr->get_host_name().c_str());
 
 //
 // Fill-in remaining structure fields
 //
 
-	back->dev_class = CORBA::string_dup(device_class->get_name().c_str());
-	back->server_id = CORBA::string_dup(tango_ptr->get_ds_name().c_str());
+	back->dev_class = Tango::string_dup(device_class->get_name().c_str());
+	back->server_id = Tango::string_dup(tango_ptr->get_ds_name().c_str());
 	back->server_version = DevVersion;
 
 //
@@ -2091,13 +2091,13 @@ Tango::DevInfo_3 *Device_3Impl::info_3()
 		doc_url = doc_url + "\nCVS Location = ";
 		doc_url = doc_url + cvs_location;
 	}
-	back->doc_url = CORBA::string_dup(doc_url.c_str());
+	back->doc_url = Tango::string_dup(doc_url.c_str());
 
 //
 // Set the device type
 //
 
-	back->dev_type = CORBA::string_dup(device_class->get_type().c_str());
+	back->dev_type = Tango::string_dup(device_class->get_type().c_str());
 
 //
 // Record operation request in black box
@@ -2709,7 +2709,7 @@ void Device_3Impl::status2attr(Tango::ConstDevString status,Tango::AttributeValu
 
 	Tango::DevVarStringArray str_seq(1);
 	str_seq.length(1);
-	str_seq[0] = CORBA::string_dup(status);
+	str_seq[0] = Tango::string_dup(status);
 	back.value <<= str_seq;
 }
 
@@ -2719,7 +2719,7 @@ void Device_3Impl::status2attr(Tango::ConstDevString status,Tango::AttributeValu
 
 	Tango::DevVarStringArray str_seq(1);
 	str_seq.length(1);
-	str_seq[0] = CORBA::string_dup(status);
+	str_seq[0] = Tango::string_dup(status);
 	back.value.string_att_value(str_seq);
 
 	back.data_format = Tango::SCALAR;
@@ -2731,7 +2731,7 @@ void Device_3Impl::status2attr(Tango::ConstDevString status,Tango::AttributeValu
 
 	Tango::DevVarStringArray str_seq(1);
 	str_seq.length(1);
-	str_seq[0] = CORBA::string_dup(status);
+	str_seq[0] = Tango::string_dup(status);
 	back.value.string_att_value(str_seq);
 
 	back.data_format = Tango::SCALAR;

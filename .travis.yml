@@ -1,5 +1,4 @@
-dist: trusty
-sudo: false
+dist: xenial
 
 language: cpp
 
@@ -21,6 +20,12 @@ services:
   - docker
 
 addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.9
+    update: true
   sonarcloud:
     organization: "tango-controls"
     token:

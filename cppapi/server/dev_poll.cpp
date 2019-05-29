@@ -531,15 +531,15 @@ void DeviceImpl::poll_object(const string &obj_name,int period,PollObjType type)
         send->lvalue.length(1);
         send->svalue.length(3);
 
-        send->svalue[0] = CORBA::string_dup(get_name().c_str());
+        send->svalue[0] = Tango::string_dup(get_name().c_str());
         string obj_type;
         if (type == POLL_ATTR)
             obj_type = "attribute";
         else
             obj_type = "command";
 		obj_type = obj_type + LOCAL_POLL_REQUEST;
-		send->svalue[1] = CORBA::string_dup(obj_type.c_str());
-        send->svalue[2] = CORBA::string_dup(obj_name.c_str());
+		send->svalue[1] = Tango::string_dup(obj_type.c_str());
+        send->svalue[2] = Tango::string_dup(obj_name.c_str());
         send->lvalue[0] = period;
 
         the_any <<= send;
@@ -687,15 +687,15 @@ void DeviceImpl::stop_poll_object(const string &obj_name,PollObjType type)
 			DevVarStringArray *send = new DevVarStringArray();
 			send->length(3);
 
-			(*send)[0] = CORBA::string_dup(get_name().c_str());
+			(*send)[0] = Tango::string_dup(get_name().c_str());
 			string str_type;
 			if (type == POLL_CMD)
 				str_type = "command";
 			else
 				str_type = "attribute";
 			str_type = str_type + LOCAL_POLL_REQUEST;
-			(*send)[1] = CORBA::string_dup(str_type.c_str());
-			(*send)[2] = CORBA::string_dup(obj_name.c_str());
+			(*send)[1] = Tango::string_dup(str_type.c_str());
+			(*send)[2] = Tango::string_dup(obj_name.c_str());
 
 			the_any <<= send;
 
