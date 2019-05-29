@@ -28,7 +28,8 @@ set(SOURCES dbapi_class.cpp
             eventkeepalive.cpp
             eventqueue.cpp
             notifdeventconsumer.cpp
-            zmqeventconsumer.cpp)
+        zmqeventconsumer.cpp
+        device_command_info.cpp)
 
 set(HEADERS accessproxy.h
             apiexcept.h
@@ -54,7 +55,8 @@ set(HEADERS accessproxy.h
             devapi_attr.tpp
             devapi_utils.tpp
             api_util.tpp
-            devapi_pipe.tpp)
+        devapi_pipe.tpp
+        device_command_info.h)
 
 add_subdirectory(helpers)
 if(WIN32)

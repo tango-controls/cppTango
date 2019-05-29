@@ -1189,7 +1189,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 				*(ev_value.attr_val_4) >>= data_call_cdr;
 
 				mess_ptr = data_call_cdr.bufPtr();
-				mess_ptr = (char *)mess_ptr + (sizeof(CORBA::Long) << 1);
+                mess_ptr = (char *) mess_ptr + (sizeof(DevLong) << 1);
 
 				int nb_data;
 				int data_discr = ((int *)mess_ptr)[0];
@@ -1717,7 +1717,7 @@ void ZmqEventSupplier::push_event_loop(DeviceImpl *device_impl,EventType event_t
 		struct SuppliedEventData sent_value;
 		::memset(&sent_value,0,sizeof(sent_value));
 
-        if (*ite == 5)
+        if (*ite >= 5)
         {
             ev_name = EVENT_COMPAT_IDL5 + ev_name;
             name_changed = true;
@@ -1727,9 +1727,11 @@ void ZmqEventSupplier::push_event_loop(DeviceImpl *device_impl,EventType event_t
         {
             switch (*ite)
             {
+                //TODO extract class hierarchy based on version
+                case 6:
                 case 5:
                 {
-                    convert_att_event_to_5(attr_value,sent_value,need_free,att);
+                    convert_att_event_to_5(attr_value, sent_value, need_free, att);
                 }
                 break;
 

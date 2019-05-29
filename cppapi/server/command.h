@@ -385,6 +385,23 @@ public:
 //@}
 
 
+//TODO unit tests
+/**
+ * Set in_enum_labels from vector ref
+ */
+    void set_in_enum_labels(std::vector<std::string> v)
+    {
+        this->get_ext()->in_enum_labels = std::move(v);
+    }
+
+/**
+* Set in_enum_labels from vector ref
+*/
+	void set_out_enum_labels(vector<string> v)
+	{
+		this->get_ext()->out_enum_labels = std::move(v);
+	}
+
 /**@name Extract methods.
  * All these methods extract data from the CORBA Any object received as
  * command input data
@@ -1241,17 +1258,20 @@ private:
     class CommandExt
     {
     public:
-        CommandExt() {}
+		CommandExt()
+			:
+			in_enum_labels(),
+			out_enum_labels()
+		{}
+
+		vector<string> in_enum_labels;
+		vector<string> out_enum_labels;
     };
 
 	void alloc_any(CORBA::Any *&);
 	void throw_bad_type(const char *);
 
-#ifdef HAS_UNIQUE_PTR
-    unique_ptr<CommandExt>          ext;           // Class extension
-#else
-	CommandExt		                *ext;
-#endif
+	shared_ptr<CommandExt> ext; //Class extension
 
 //
 // Ported from the extension class
@@ -1259,7 +1279,11 @@ private:
 
     Tango::DispLevel	cmd_disp_level;		    // Display  level
     long			    poll_period;		    // Polling period
-
+public:
+	shared_ptr<CommandExt> get_ext()
+	{
+		return ext;
+	}
 };
 
 //=============================================================================

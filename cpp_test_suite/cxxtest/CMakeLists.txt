@@ -28,7 +28,7 @@ macro(CXX_GENERATE_TEST name)
             --fulldsname=${SERV_NAME}/${INST_NAME}
             --serverhost=${HOST_NAME}
             --clienthost=${HOST_NAME}
-            --serverversion=5
+            --serverversion=6
             --docurl=http://www.tango-controls.org
             --devtype=TestDevice
             --dbserver=sys/database/2
@@ -81,6 +81,7 @@ CXX_GENERATE_TEST(cxx_reconnection_zmq)
 CXX_GENERATE_TEST(cxx_stateless_subscription)
 CXX_GENERATE_TEST(cxx_nan_inf_in_prop)
 CXX_GENERATE_TEST(cxx_asyn_reconnection)
+CXX_GENERATE_TEST(cxx_cmd_inout_enum)
 
 #utilities
 configure_file(bin/start_server.sh.cmake    ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/start_server.sh @ONLY)

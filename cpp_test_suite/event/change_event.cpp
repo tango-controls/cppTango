@@ -2,6 +2,7 @@
  * example of a client using the TANGO device api.
  */
 
+#include <thread>
 #include <tango.h>
 #include <assert.h>
 
@@ -13,7 +14,7 @@
 #include <unistd.h>
 #endif
 
-#define	coutv	if (verbose == true) cout
+#define    coutv    if (verbose == true) cout << "[" << std::this_thread::get_id()  << "] "
 
 using namespace Tango;
 
@@ -245,6 +246,8 @@ int main(int argc, char **argv)
 #endif
 						
 		coutv << "cb excuted = " << cb.cb_executed << endl;
+        coutv << "cb val = " << cb.val << endl;
+        coutv << "cb val_size = " << cb.val_size << endl;
 		assert (cb.cb_executed == 3);
 		assert (cb.val == 31);
 		assert (cb.val_size == 4);

@@ -271,6 +271,8 @@ Connection &Connection::operator=(const Connection &rval)
     tango_host_localhost = rval.tango_host_localhost;
 
     device_5 = rval.device_5;
+    device_6 = rval.device_6;
+
 
 #ifdef HAS_UNIQUE_PTR
     if (rval.ext.get() != NULL)
@@ -420,7 +422,8 @@ void Connection::connect(string &corba_name)
 
             Object_var obj;
             obj = ApiUtil::instance()->get_orb()->string_to_object(corba_name.c_str());
-
+//TODO this should be dramatically refactored
+// some thoughts: extract ConnectionFactory; make Connection interface implemented by Connection_V1, Connection_V2 etc; inject Connection (or Factory) into DeviceProxy
 //
 // Narrow CORBA string name to CORBA object
 // First, try as a Device_5, then as a Device_4, then as .... and finally as a Device
@@ -453,73 +456,7 @@ void Connection::connect(string &corba_name)
                 }
             }
 
-            device_5 = Device_5::_narrow(obj);
-
-            if (CORBA::is_nil(device_5))
-            {
-                device_4 = Device_4::_narrow(obj);
-
-                if (CORBA::is_nil(device_4))
-                {
-                    device_3 = Device_3::_narrow(obj);
-
-                    if (CORBA::is_nil(device_3))
-                    {
-                        device_2 = Device_2::_narrow(obj);
-                        if (CORBA::is_nil(device_2))
-                        {
-                            device = Device::_narrow(obj);
-                            if (CORBA::is_nil(device))
-                            {
-                                cerr << "Can't build connection to object " << corba_name << endl;
-                                connection_state = CONNECTION_NOTOK;
-
-                                TangoSys_OMemStream desc;
-                                desc << "Failed to connect to device " << dev_name();
-                                desc << " (device nil after _narrowing)" << ends;
-                                ApiConnExcept::throw_exception((const char *) API_CantConnectToDevice,
-                                                               desc.str(),
-                                                               (const char *) "Connection::connect()");
-                            }
-                            else
-                            {
-                                device->_non_existent();
-                                version = 1;
-                            }
-                        }
-                        else
-                        {
-                            device_2->_non_existent();
-                            version = 2;
-                            device = Device_2::_duplicate(device_2);
-                        }
-                    }
-                    else
-                    {
-                        device_3->_non_existent();
-                        version = 3;
-                        device_2 = Device_3::_duplicate(device_3);
-                        device = Device_3::_duplicate(device_3);
-                    }
-                }
-                else
-                {
-                    device_4->_non_existent();
-                    version = 4;
-                    device_3 = Device_4::_duplicate(device_4);
-                    device_2 = Device_4::_duplicate(device_4);
-                    device = Device_4::_duplicate(device_4);
-                }
-            }
-            else
-            {
-                device_5->_non_existent();
-                version = 5;
-                device_4 = Device_5::_duplicate(device_5);
-                device_3 = Device_5::_duplicate(device_5);
-                device_2 = Device_5::_duplicate(device_5);
-                device = Device_5::_duplicate(device_5);
-            }
+            resolve_obj_version(corba_name, obj);
 
 //
 // Warning! Some non standard code (omniORB specific).
@@ -534,9 +471,9 @@ void Connection::connect(string &corba_name)
                 IIOP::ProfileBody pBody;
                 IIOP::unmarshalProfile(ior.profiles[0], pBody);
 
-                CORBA::ULong total = pBody.components.length();
+                DevULong total = pBody.components.length();
 
-                for (CORBA::ULong index = 0; index < total; index++)
+                for (DevULong index = 0; index < total; index++)
                 {
                     IOP::TaggedComponent &c = pBody.components[index];
                     if (c.tag == 3)
@@ -643,6 +580,89 @@ void Connection::connect(string &corba_name)
     }
 }
 
+void Connection::resolve_obj_version(const string &corba_name, const Object_var &obj)
+{
+    //TODO extract template or Macro or class hierarchy, 'cauz this code clearly is a duplication
+    device_6 = Device_6::_narrow(obj);
+
+    if (not is_nil(device_6))
+    {
+        version = 6;
+        device_6->_non_existent();
+        device_5 = Device_6::_duplicate(device_6);
+        device_4 = Device_6::_duplicate(device_6);
+        device_3 = Device_6::_duplicate(device_6);
+        device_2 = Device_6::_duplicate(device_6);
+        device = Device_6::_duplicate(device_6);
+        return;
+    }
+
+    device_5 = Device_5::_narrow(obj);
+
+    if (not is_nil(device_5))
+    {
+        version = 5;
+        device_5->_non_existent();
+        device_4 = Device_5::_duplicate(device_5);
+        device_3 = Device_5::_duplicate(device_5);
+        device_2 = Device_5::_duplicate(device_5);
+        device = Device_5::_duplicate(device_5);
+        return;
+    }
+
+    device_4 = Device_4::_narrow(obj);
+
+    if (not is_nil(device_4))
+    {
+        version = 4;
+        device_4->_non_existent();
+        device_3 = Device_4::_duplicate(device_4);
+        device_2 = Device_4::_duplicate(device_4);
+        device = Device_4::_duplicate(device_4);
+        return;
+    }
+
+    device_3 = Device_3::_narrow(obj);
+
+    if (not is_nil(device_3))
+    {
+        version = 3;
+        device_3->_non_existent();
+        device_2 = Device_3::_duplicate(device_3);
+        device = Device_3::_duplicate(device_3);
+        return;
+    }
+
+    device_2 = Device_2::_narrow(obj);
+
+    if (not is_nil(device_2))
+    {
+        version = 2;
+        device_2->_non_existent();
+        device = Device_2::_duplicate(device_2);
+        return;
+    }
+
+    device = Device::_narrow(obj);
+
+    if (not is_nil(device))
+    {
+        version = 1;
+        device->_non_existent();
+        return;
+    }
+
+    cerr << "Can't build connection to object " << corba_name << endl;
+    connection_state = CONNECTION_NOTOK;
+
+    TangoSys_OMemStream desc;
+    desc << "Failed to connect to device " << dev_name();
+    desc << " (device nil after _narrowing)" << ends;
+    ApiConnExcept::throw_exception((const char *) API_CantConnectToDevice,
+                                   desc.str(),
+                                   (const char *) "Connection::resolve_obj_version()");
+}
+
 
 //-----------------------------------------------------------------------------
 //
@@ -671,12 +691,12 @@ void Connection::toIOR(const char *iorstr, IOP::IOR &ior)
     s = (s - 4) / 2;  // how many octets are there in the string
     p += 4;
 
-    cdrMemoryStream buf((CORBA::ULong) s, 0);
+    cdrMemoryStream buf((DevULong) s, 0);
 
     for (int i = 0; i < (int) s; i++)
     {
         int j = i * 2;
-        CORBA::Octet v;
+        DevUChar v;
 
         if (p[j] >= '0' && p[j] <= '9')
         {
@@ -716,7 +736,7 @@ void Connection::toIOR(const char *iorstr, IOP::IOR &ior)
     }
 
     buf.rewindInputPtr();
-    CORBA::Boolean b = buf.unmarshalBoolean();
+    DevBoolean b = buf.unmarshalBoolean();
     buf.setByteSwapFlag(b);
 
     ior.type_id = IOP::IOR::unmarshaltype_id(buf);
@@ -3408,12 +3428,12 @@ DeviceInfo const &DeviceProxy::info()
 //		command implemented for this TANGO device
 //
 //-----------------------------------------------------------------------------
-
+//TODO make cmd const &
 CommandInfo DeviceProxy::command_query(string cmd)
 {
-    CommandInfo command_info;
     DevCmdInfo_var cmd_info;
     DevCmdInfo_2_var cmd_info_2;
+    DevCmdInfo_6_var cmd_info_6;
     int ctr = 0;
 
     while (ctr < 2)
@@ -3422,31 +3442,31 @@ CommandInfo DeviceProxy::command_query(string cmd)
         {
             check_and_reconnect();
 
-            if (version == 1)
+
+            Device_var dev;
+            Device_2_var dev_2;
+            Device_6_var dev_6;
+            switch (version)
             {
-                Device_var dev = Device::_duplicate(device);
+                case 1:
+                    dev = Device::_duplicate(device);
                 cmd_info = dev->command_query(cmd.c_str());
 
-                command_info.cmd_name = cmd_info->cmd_name;
-                command_info.cmd_tag = cmd_info->cmd_tag;
-                command_info.in_type = cmd_info->in_type;
-                command_info.out_type = cmd_info->out_type;
-                command_info.in_type_desc = cmd_info->in_type_desc;
-                command_info.out_type_desc = cmd_info->out_type_desc;
-                command_info.disp_level = Tango::OPERATOR;
-            }
-            else
-            {
-                Device_2_var dev = Device_2::_duplicate(device_2);
-                cmd_info_2 = dev->command_query_2(cmd.c_str());
+                    return create_CommandInfo(cmd_info.in());
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    dev_2 = Device_2::_duplicate(device_2);
+                    cmd_info_2 = dev_2->command_query_2(cmd.c_str());
 
-                command_info.cmd_name = cmd_info_2->cmd_name;
-                command_info.cmd_tag = cmd_info_2->cmd_tag;
-                command_info.in_type = cmd_info_2->in_type;
-                command_info.out_type = cmd_info_2->out_type;
-                command_info.in_type_desc = cmd_info_2->in_type_desc;
-                command_info.out_type_desc = cmd_info_2->out_type_desc;
-                command_info.disp_level = cmd_info_2->level;
+                    return create_CommandInfo(cmd_info_2.in());
+                case 6:
+                default:
+                    dev_6 = Device_6::_duplicate(device_6);
+                    cmd_info_6 = dev_6->command_query_6(cmd.c_str());
+
+                    return create_CommandInfo(cmd_info_6.in());
             }
             ctr = 2;
         }
@@ -3501,7 +3521,7 @@ CommandInfo DeviceProxy::command_query(string cmd)
         }
     }
 
-    return (command_info);
+    assert(false);//should not reach this line
 }
 
 //-----------------------------------------------------------------------------
@@ -3560,9 +3580,9 @@ CommandInfoList *DeviceProxy::get_command_config(vector<string> &cmd_names)
 
 CommandInfoList *DeviceProxy::command_list_query()
 {
-    CommandInfoList *command_info_list = NULL;
     DevCmdInfoList_var cmd_info_list;
     DevCmdInfoList_2_var cmd_info_list_2;
+    DevCmdInfoList_6_var cmd_info_list_6;
     int ctr = 0;
 
     while (ctr < 2)
@@ -3571,44 +3591,31 @@ CommandInfoList *DeviceProxy::command_list_query()
         {
             check_and_reconnect();
 
-            if (version == 1)
+            Device_var dev;
+            Device_2_var dev_2;
+            Device_6_var dev_6;
+            switch (version)
             {
-                Device_var dev = Device::_duplicate(device);
-                cmd_info_list = dev->command_list_query();
+                case 1:
+                    dev = Device::_duplicate(device);
+                    cmd_info_list = dev->command_list_query();
 
-                command_info_list = new CommandInfoList(cmd_info_list->length());
-//				command_info_list->resize(cmd_info_list->length());
+                    return newCommandInfoList(cmd_info_list);
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    dev_2 = Device_2::_duplicate(device_2);
+                    cmd_info_list_2 = dev_2->command_list_query_2();
 
-                for (unsigned int i = 0; i < cmd_info_list->length(); i++)
-                {
-                    (*command_info_list)[i].cmd_name = cmd_info_list[i].cmd_name;
-                    (*command_info_list)[i].cmd_tag = cmd_info_list[i].cmd_tag;
-                    (*command_info_list)[i].in_type = cmd_info_list[i].in_type;
-                    (*command_info_list)[i].out_type = cmd_info_list[i].out_type;
-                    (*command_info_list)[i].in_type_desc = cmd_info_list[i].in_type_desc;
-                    (*command_info_list)[i].out_type_desc = cmd_info_list[i].out_type_desc;
-                    (*command_info_list)[i].disp_level = Tango::OPERATOR;
+                    return newCommandInfoList(cmd_info_list_2);
+                case 6:
+                default:
+                    dev_6 = Device_6::_duplicate(device_6);
+                    cmd_info_list_6 = dev_6->command_list_query_6();
+
+                    return newCommandInfoList(cmd_info_list_6);
                 }
-            }
-            else
-            {
-                Device_2_var dev = Device_2::_duplicate(device_2);
-                cmd_info_list_2 = dev->command_list_query_2();
-
-                command_info_list = new CommandInfoList(cmd_info_list_2->length());
-//				command_info_list->resize(cmd_info_list_2->length());
-
-                for (unsigned int i = 0; i < cmd_info_list_2->length(); i++)
-                {
-                    (*command_info_list)[i].cmd_name = cmd_info_list_2[i].cmd_name;
-                    (*command_info_list)[i].cmd_tag = cmd_info_list_2[i].cmd_tag;
-                    (*command_info_list)[i].in_type = cmd_info_list_2[i].in_type;
-                    (*command_info_list)[i].out_type = cmd_info_list_2[i].out_type;
-                    (*command_info_list)[i].in_type_desc = cmd_info_list_2[i].in_type_desc;
-                    (*command_info_list)[i].out_type_desc = cmd_info_list_2[i].out_type_desc;
-                    (*command_info_list)[i].disp_level = cmd_info_list_2[i].level;
-                }
-            }
             ctr = 2;
         }
         catch (CORBA::TRANSIENT &trans)
@@ -3662,7 +3669,7 @@ CommandInfoList *DeviceProxy::command_list_query()
         }
     }
 
-    return (command_info_list);
+    assert(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -4232,6 +4239,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string> &attr_s
                     break;
 
                 case 5:
+                case 6:
                 {
                     Device_5_var dev = Device_5::_duplicate(device_5);
                     attr_config_list_5 = dev->get_attribute_config_5(attr_list);
@@ -4280,6 +4288,8 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string> &attr_s
                     break;
 
                 default:
+                    //TODO an exception must be thrown here, but it produces segfault in ~AttributeProxy
+                    //Tango::Except::throw_exception("Unsupported TANGO protocol version=" + version,"Unsupported TANGO protocol version=" + version,"DeviceProxy::get_attribute_config_ex");
                     break;
             }
 
@@ -4876,7 +4886,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
                 ApiUtil *au = ApiUtil::instance();
                 ci.cpp_clnt(au->get_client_pid());
 
-                if (version == 5)
+                if (version >= 5)
                 {
                     Device_5_var dev = Device_5::_duplicate(device_5);
                     dev->set_attribute_config_5(attr_config_list_5, ci);
@@ -5713,7 +5723,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string> &attr_strin
             ApiUtil *au = ApiUtil::instance();
             ci.cpp_clnt(au->get_client_pid());
 
-            if (version == 5)
+            if (version >= 5)
             {
                 Device_5_var dev = Device_5::_duplicate(device_5);
                 attr_value_list_5 = dev->read_attributes_5(attr_list, local_source, ci);
@@ -5852,7 +5862,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string> &attr_strin
     {
         if (version >= 3)
         {
-            if (version == 5)
+            if (version >= 5)
             {
                 ApiUtil::attr_to_device(&(attr_value_list_5[i]), version, &(*dev_attr)[i]);
             }
@@ -10265,6 +10275,11 @@ int DeviceProxy::get_tango_lib_version()
 
         case 5:
             ret = 902;
+            break;
+
+            //TODO extract class hierarchy based on version!!!
+        case 6:
+            ret = 1001;
             break;
 
         default:

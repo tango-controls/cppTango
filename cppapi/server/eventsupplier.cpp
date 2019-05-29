@@ -150,10 +150,12 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
     {
         switch (*ite)
         {
+            //TODO extract class hierarchy based on version!!!
+            case 6:
             case 5:
                 if (change5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(5, string(EventName[CHANGE_EVENT]));
+                    attr.remove_client_lib(*ite, string(EventName[CHANGE_EVENT]));
                 }
                 break;
 
@@ -194,10 +196,12 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
     {
         switch (*ite)
         {
+            //TODO extract class hierarchy based on version!!!
+            case 6:
             case 5:
                 if (periodic5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(5, string(EventName[PERIODIC_EVENT]));
+                    attr.remove_client_lib(*ite, string(EventName[PERIODIC_EVENT]));
                 }
                 break;
 
@@ -238,10 +242,12 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
     {
         switch (*ite)
         {
+            //TODO extract class hierarchy based on version!!!
+            case 6:
             case 5:
                 if (archive5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(5, string(EventName[ARCHIVE_EVENT]));
+                    attr.remove_client_lib(*ite, string(EventName[ARCHIVE_EVENT]));
                 }
                 break;
 
@@ -474,6 +480,8 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
 
             switch (*ite)
             {
+                //TODO extract class hierarchy based on version
+                case 6:
                 case 5:
                 {
                     convert_att_event_to_5(attr_value, sent_value, need_free, attr);
@@ -851,6 +859,8 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 
             switch (*ite)
             {
+                //TODO extract class hierarchy based on version
+                case 6:
                 case 5:
                 {
                     convert_att_event_to_5(attr_value, sent_value, need_free, attr);
@@ -1065,6 +1075,8 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
 
             switch (*ite)
             {
+                //TODO extract class hierarchy based on version
+                case 6:
                 case 5:
                 {
                     convert_att_event_to_5(attr_value, sent_value, need_free, attr);

@@ -1095,8 +1095,6 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 	cout4 << "DeviceImpl::command_query_2 arrived" << endl;
 
 	Tango::DevCmdInfo_2 *back = NULL;
-	string cmd(command);
-	transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
 
 //
 // Record operation request in black box
@@ -1124,57 +1122,39 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 // (in case of dyn command instaleld at device level)
 //
 
-	long i;
-	bool found = false;
-	Command *cmd_ptr = Tango_nullptr;
-	long nb_cmd = device_class->get_command_list().size();
-	for (i = 0;i < nb_cmd;i++)
-	{
-		if (device_class->get_command_list()[i]->get_lower_name() == cmd)
-		{
-			found = true;
-			cmd_ptr = device_class->get_command_list()[i];
-			break;
-		}
-	}
+    string cmd(command);
+    Command *cmd_ptr = get_cmd_ptr(cmd);
 
-	if (found == false)
-	{
-		nb_cmd = get_local_command_list().size();
-		for (i = 0;i < nb_cmd;i++)
-		{
-			if (get_local_command_list()[i]->get_lower_name() == cmd)
-			{
-				found = true;
-				cmd_ptr = get_local_command_list()[i];
-				break;
-			}
-		}
-	}
-
-
-	if (found == true)
-	{
-		back->cmd_name = Tango::string_dup(cmd_ptr->get_name().c_str());
-		back->cmd_tag = 0;
-		back->level = cmd_ptr->get_disp_level();
-		back->in_type = (long)(cmd_ptr->get_in_type());
-		back->out_type = (long)(cmd_ptr->get_out_type());
-		string &str_in = cmd_ptr->get_in_type_desc();
-		if (str_in.size() != 0)
-			back->in_type_desc = Tango::string_dup(str_in.c_str());
-		else
-			back->in_type_desc = Tango::string_dup(NotSet);
-		string &str_out = cmd_ptr->get_out_type_desc();
-		if (str_out.size() != 0)
-			back->out_type_desc = Tango::string_dup(str_out.c_str());
-		else
-			back->out_type_desc = Tango::string_dup(NotSet);
-	}
-	else
-	{
-		delete back;
-		cout3 << "Device_2Impl::command_query_2(): command " << command << " not found" << endl;
+    if (cmd_ptr != Tango_nullptr)
+    {
+        back->cmd_name = Tango::string_dup(cmd_ptr->get_name().c_str());
+        back->cmd_tag = 0;
+        back->level = cmd_ptr->get_disp_level();
+        back->in_type = (long) (cmd_ptr->get_in_type());
+        back->out_type = (long) (cmd_ptr->get_out_type());
+        string &str_in = cmd_ptr->get_in_type_desc();
+        if (str_in.size() != 0)
+        {
+            back->in_type_desc = Tango::string_dup(str_in.c_str());
+        }
+        else
+        {
+            back->in_type_desc = Tango::string_dup(NotSet);
+        }
+        string &str_out = cmd_ptr->get_out_type_desc();
+        if (str_out.size() != 0)
+        {
+            back->out_type_desc = Tango::string_dup(str_out.c_str());
+        }
+        else
+        {
+            back->out_type_desc = Tango::string_dup(NotSet);
+        }
+    }
+    else
+    {
+        delete back;
+        cout3 << "Device_2Impl::command_query_2(): command " << command << " not found" << endl;
 
 //
 // throw an exception to client
@@ -1194,6 +1174,32 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 
 	cout4 << "Leaving Device_2Impl::command_query_2" << endl;
 	return back;
+}
+
+Command *Device_2Impl::get_cmd_ptr(const string &cmd_name)
+{
+    string cmd_name_lower{cmd_name};
+    transform(cmd_name.begin(), cmd_name.end(), cmd_name_lower.begin(), ::tolower);
+    //TODO
+//        auto found = find_if(device_class->get_command_list().begin(), device_class->get_command_list().end(),[](){device_class->get_command_list()[i]->get_lower_name() == cmd_name})
+//        if(found != device_class->get_command_list().end()) return *found;
+    for (size_t i = 0, size = device_class->get_command_list().size(); i < size; i++)
+    {
+        if (device_class->get_command_list()[i]->get_lower_name() == cmd_name_lower)
+        {
+            return device_class->get_command_list()[i];
+        }
+    }
+
+    for (size_t i = 0, size = get_local_command_list().size(); i < size; i++)
+    {
+        if (get_local_command_list()[i]->get_lower_name() == cmd_name_lower)
+        {
+            return get_local_command_list()[i];
+        }
+    }
+
+    return Tango_nullptr;
 }
 
 //+-------------------------------------------------------------------------
