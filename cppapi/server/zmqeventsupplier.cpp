@@ -686,7 +686,7 @@ void ZmqEventSupplier::create_mcast_socket(string &mcast_data,int rate,McastSock
 // Bind the publisher socket to the specified port
 //
 
-    if (zmq_bind(*(ms.pub_socket),ms.endpoint.c_str()) != 0)
+    if (zmq_bind(static_cast<void*>(*ms.pub_socket),ms.endpoint.c_str()) != 0)
     {
         TangoSys_OMemStream o;
         o << "Can't bind ZMQ socket with endpoint ";
