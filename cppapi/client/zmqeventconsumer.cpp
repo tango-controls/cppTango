@@ -181,9 +181,9 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 	zmq::pollitem_t *items = new zmq::pollitem_t [MAX_SOCKET_SUB];
 	int nb_poll_item = 3;
 
-	items[0].socket = *control_sock;
-	items[1].socket = *heartbeat_sub_sock;
-	items[2].socket = *event_sub_sock;
+	items[0].socket = static_cast<void*>(*control_sock);
+	items[1].socket = static_cast<void*>(*heartbeat_sub_sock);
+	items[2].socket = static_cast<void*>(*event_sub_sock);
 
 	for (int loop = 0;loop < nb_poll_item;loop++)
 	{
@@ -1063,7 +1063,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 // Update poll item list
 //
 
-                poll_list[old_poll_nb].socket = *tmp_sock;
+                poll_list[old_poll_nb].socket = static_cast<void*>(*tmp_sock);
                 poll_list[old_poll_nb].fd = 0;
                 poll_list[old_poll_nb].events = ZMQ_POLLIN;
                 poll_list[old_poll_nb].revents = 0;
