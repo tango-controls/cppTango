@@ -3400,12 +3400,13 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 
 //
 // An attribute with the same name is already defined within the class. Check if the data type, data format and
-// write type are the same
+// write type are the same (allow this only if attribute is forwarded)
 //
 
-        if ((attr_list[i]->get_type() != new_attr->get_type()) ||
-            (attr_list[i]->get_format() != new_attr->get_format()) ||
-            (attr_list[i]->get_writable() != new_attr->get_writable()))
+        if (((attr_list[i]->get_type() != new_attr->get_type()) ||
+             (attr_list[i]->get_format() != new_attr->get_format()) ||
+             (attr_list[i]->get_writable() != new_attr->get_writable())) &&
+            (new_attr->is_fwd() == false))
         {
             TangoSys_OMemStream o;
 
