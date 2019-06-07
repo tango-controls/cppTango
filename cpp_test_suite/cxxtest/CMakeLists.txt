@@ -1,6 +1,10 @@
 find_package (Threads REQUIRED)
 find_program(PYTHON_INTERPRETER NAMES python2 python)
 
+if(NOT PYTHON_INTERPRETER)
+  message(SEND_ERROR "Could not find python 2.")
+endif()
+
 macro(CXX_GENERATE_TEST name)
     message("Generate ${name}.cpp")
     execute_process(COMMAND "${PYTHON_INTERPRETER}" cxxtestgen.py
