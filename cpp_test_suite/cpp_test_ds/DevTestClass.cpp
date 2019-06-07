@@ -846,6 +846,7 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(new ULong_attr_rwAttr());
   att_list.push_back(new ULong64_attr_rwAttr());
   att_list.push_back(new State_attr_rwAttr());
+  att_list.push_back(new String_attr_rwAttr());
 
   att_list.push_back(new Long64_spec_attr_rwAttr());
   att_list.push_back(new ULong_spec_attr_rwAttr());
