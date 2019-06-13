@@ -90,7 +90,8 @@ public:
 
 	void test_One_memorized_attribute_failing_during_init_cmd(void)
 	{
-
+		DeviceAttribute short_attr_w("Short_attr_w", static_cast<DevShort>(10));
+		TS_ASSERT_THROWS_NOTHING(device1->write_attribute(short_attr_w));
 //
 // Ask the attribute to throw exception during any write call
 //
