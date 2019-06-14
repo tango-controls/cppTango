@@ -45,6 +45,30 @@ void EventCallback::push_event(Tango::EventData *ed)
     }
 }
 
+void set_abs_change(std::string device_name, std::string attribute_name)
+{
+    Tango::DbDatum attribute_datum(attribute_name);
+    attribute_datum << 1;
+
+    Tango::DbDatum change_datum("abs_change");
+    change_datum << 1;
+
+    Tango::DbData data;
+    data.push_back(attribute_datum);
+    data.push_back(change_datum);
+
+    Tango::DbAttribute attribute(attribute_name, device_name);
+    attribute.put_property(data);
+
+    Tango::DeviceProxy device(device_name);
+    Tango::DeviceProxy admin_device(device.adm_name().c_str());
+    Tango::DeviceData name_data;
+    name_data << device_name;
+    admin_device.command_inout("DevRestart", name_data);
+
+    Tango_sleep(1);
+}
+
 int main(int argc, char *argv[])
 {
     Tango::DeviceProxy *dev;
@@ -63,6 +87,8 @@ int main(int argc, char *argv[])
 
     try
     {
+        set_abs_change(devName, att_name);
+
         dev = new Tango::DeviceProxy(devName);
         dev->poll_attribute(att_name, 1000);
 
@@ -94,10 +120,12 @@ int main(int argc, char *argv[])
     catch (Tango::DevFailed &ex)
     {
         Tango::Except::print_exception(ex);
+        assert(false);
     }
     catch (...)
     {
         cout << "Unknown exception....." << endl;
+        assert(false);
     }
 
     delete dev;
