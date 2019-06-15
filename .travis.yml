@@ -75,13 +75,17 @@ before_script:
       tangocs/tango-cs:latest
   - TANGO_HOST_IP=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' tango_cs)
   - TANGO_HOST=${TANGO_HOST_IP}:10000
-  - docker build --build-arg APP_UID=$(id -u) --build-arg APP_GID=$(id -g) -t cpp_tango .travis/${OS_TYPE}
+  - >
+      docker build
+      --build-arg APP_UID=$(id -u)
+      --build-arg APP_GID=$(id -g)
+      -t cpp_tango
+      .travis/${OS_TYPE}
   - >
       docker run
       --rm
       --name cpp_tango
       -e TANGO_HOST=${TANGO_HOST}
-      -e TANGO_HOST2=${TANGO_HOST_IP2}:10000
       -e BINTRAY_USER_NAME=tango-ci
       -e BINTRAY_API_KEY=${CI_BINTRAY_API_KEY}
       -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN}
@@ -92,6 +96,7 @@ before_script:
       -v `pwd`/tango_admin:/home/tango/tango_admin
       -v `pwd`/coveralls-cmake:/home/tango/coveralls-cmake
       -v `pwd`/build-wrapper-linux-x86:/home/tango/build-wrapper-linux-x86
+      -v /var/run/docker.sock:/var/run/docker.sock
       -dit
       cpp_tango
   - .travis/install_tango_idl.sh
