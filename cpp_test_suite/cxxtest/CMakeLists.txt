@@ -27,7 +27,7 @@ macro(CXX_GENERATE_TEST name)
         tango_target_test_pch(${name})
     endif()
 
-    add_test(NAME "CXX::${name}" COMMAND $<TARGET_FILE:${name}>
+    tango_add_test(NAME "CXX::${name}" COMMAND $<TARGET_FILE:${name}>
             --device1=${DEV1}
             --device2=${DEV2}
             --device3=${DEV3}

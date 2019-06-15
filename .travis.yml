@@ -51,31 +51,6 @@ before_install:
 
 before_script:
   - >
-      docker run
-      --rm
-      --name mysql_db
-      -e MYSQL_ROOT_PASSWORD=root
-      -e MYSQL_INITDB_SKIP_TZINFO=1
-      -d
-      tangocs/mysql:9.2.2
-      --sql-mode=""
-      --innodb=OFF
-      --default-storage-engine=MyISAM
-  - >
-      docker run
-      --rm
-      --name tango_cs
-      -e TANGO_HOST=127.0.0.1:10000
-      -e MYSQL_HOST=mysql_db:3306
-      -e MYSQL_USER=tango
-      -e MYSQL_PASSWORD=tango
-      -e MYSQL_DATABASE=tango
-      --link mysql_db:mysq_db
-      -d
-      tangocs/tango-cs:latest
-  - TANGO_HOST_IP=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' tango_cs)
-  - TANGO_HOST=${TANGO_HOST_IP}:10000
-  - >
       docker build
       --build-arg APP_UID=$(id -u)
       --build-arg APP_GID=$(id -g)
@@ -89,7 +64,6 @@ before_script:
       -e BINTRAY_USER_NAME=tango-ci
       -e BINTRAY_API_KEY=${CI_BINTRAY_API_KEY}
       -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN}
-      --link tango_cs
       -v `pwd`:/home/tango/src
       -v `pwd`/idl:/home/tango/idl
       -v `pwd`/cppzmq:/home/tango/cppzmq
@@ -124,5 +98,3 @@ deploy:
 
 after-script:
   - docker stop cpp_tango
-  - docker stop tango_cs
-  - docker stop mysql_db
