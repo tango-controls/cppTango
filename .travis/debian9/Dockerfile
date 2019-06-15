@@ -14,9 +14,23 @@ RUN apt-get install -y curl lsb-release
 
 RUN apt-get install -y omniidl libomniorb4-dev libcos4-dev libomnithread3-dev libzmq3-dev
 
+RUN apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg2 \
+    software-properties-common \
+ && curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
+ && add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/debian stretch stable" \
+ && apt-get update \
+ && apt-get install -y docker-ce
+
 RUN groupadd -g "$APP_GID" tango
 
 RUN useradd -u "$APP_UID" -g "$APP_GID" -ms /bin/bash tango
+
+RUN usermod -a -G docker tango
 
 ENV PKG_CONFIG_PATH=/home/tango/lib/pkgconfig
 
