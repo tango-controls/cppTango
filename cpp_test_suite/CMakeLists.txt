@@ -2,8 +2,6 @@ project(test_suite)
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O0 -g")
 
-configure_file(CTestCustom.cmake CTestCustom.cmake)
-
 #TODO different OS
 set(SERV_NAME "DevTest")
 set(INST_NAME "test")
@@ -28,6 +26,13 @@ macro(TEST_SUITE_ADD_TEST test)
         #TODO generalize tests
 #    add_test(NAME "CPP::${test}"  COMMAND $<TARGET_FILE:${test}> ${DEV1} ${DEV2} ${DEV3} ${DEV1_ALIAS})
 endmacro()
+
+function(tango_add_test name_tag name command_tag command)
+    add_test(
+        NAME "${name}"
+        COMMAND "${CMAKE_BINARY_DIR}/cpp_test_suite/environment/run_with_fixture.sh" "${command}"
+        ${ARGN})
+endfunction()
 
 add_subdirectory(cxxtest)
 
