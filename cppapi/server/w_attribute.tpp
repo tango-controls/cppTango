@@ -448,7 +448,7 @@ void WAttribute::get_max_value(T &max_val)
 	if (check_max_value == false)
 	{
 		Except::throw_exception((const char *)API_AttrNotAllowed,
-					(const char *)"Minimum value not defined for this attribute",
+					(const char *)"Maximum value not defined for this attribute",
 					(const char *)"WAttribute::get_max_value()");
 	}
 
