@@ -32,6 +32,9 @@ addons:
       secure: ${SONAR_TOKEN}
 
 before_install:
+  - cat /proc/cpuinfo
+  - lscpu
+  - bash -c 'echo "CPUs nproc: $(nproc)"'
   - docker pull tangocs/mysql:9.2.2
   - docker pull tangocs/tango-cs:latest
   - git clone https://github.com/JoakimSoderberg/coveralls-cmake.git
