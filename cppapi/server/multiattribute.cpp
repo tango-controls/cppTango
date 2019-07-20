@@ -1562,24 +1562,17 @@ void MultiAttribute::get_event_param(AttributeEventSubscriptionStates& eve)
 		{
 			AttributeEventSubscriptionState ep;
 
-			if (attr_list[i]->use_notifd_event() == true)
-                ep.notifd = true;
-            else
-                ep.notifd = false;
+			ep.is_notifd_transport = attr_list[i]->use_notifd_event();
+			ep.is_zeromq_transport = attr_list[i]->use_zmq_event();
 
-            if (attr_list[i]->use_zmq_event() == true)
-                ep.zmq = true;
-            else
-                ep.zmq = false;
-
-			ep.attr_id = i;
+			ep.attribute_id = i;
 			ep.change = ch;
-			ep.quality = qu;
 			ep.archive = ar;
 			ep.periodic = pe;
 			ep.user = us;
 			ep.att_conf = ac;
-			ep.data_ready = dr;
+			ep.has_quality_event_clients = qu;
+			ep.has_data_ready_event_clients = dr;
 
 			eve.push_back(ep);
 		}
@@ -1604,9 +1597,7 @@ void MultiAttribute::set_event_param(const AttributeEventSubscriptionStates& eve
 {
 	for (size_t i = 0;i < eve.size();i++)
 	{
-		if (eve[i].attr_id != -1)
-		{
-			Tango::Attribute &att = get_attr_by_ind(eve[i].attr_id);
+			Tango::Attribute &att = get_attr_by_ind(eve[i].attribute_id);
 
 			{
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
@@ -1642,17 +1633,26 @@ void MultiAttribute::set_event_param(const AttributeEventSubscriptionStates& eve
 						att.set_user_event_sub(*ite);
 				}
 
-				if (eve[i].quality == true)
+				if (eve[i].has_quality_event_clients)
+				{
 					att.set_quality_event_sub();
-				if (eve[i].data_ready == true)
+				}
+
+				if (eve[i].has_data_ready_event_clients == true)
+				{
 					att.set_data_ready_event_sub();
+				}
 			}
 
-			if (eve[i].notifd == true)
+			if (eve[i].is_notifd_transport)
+			{
 				att.set_use_notifd_event();
-			if (eve[i].zmq == true)
+			}
+
+			if (eve[i].is_zeromq_transport)
+			{
 				att.set_use_zmq_event();
-		}
+			}
 	}
 }
 

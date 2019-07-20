@@ -14,16 +14,19 @@ typedef std::set<EventClientLibVersion> EventClientLibVersions;
 
 struct AttributeEventSubscriptionState
 {
-    long attr_id;
+    long attribute_id;
+
     EventClientLibVersions change;
     EventClientLibVersions archive;
-    bool quality;
     EventClientLibVersions periodic;
     EventClientLibVersions user;
     EventClientLibVersions att_conf;
-    bool data_ready;
-    bool notifd;
-    bool zmq;
+
+    bool has_quality_event_clients;
+    bool has_data_ready_event_clients;
+
+    bool is_notifd_transport;
+    bool is_zeromq_transport;
 };
 
 typedef std::vector<AttributeEventSubscriptionState> AttributeEventSubscriptionStates;
@@ -31,6 +34,7 @@ typedef std::vector<AttributeEventSubscriptionState> AttributeEventSubscriptionS
 struct DeviceEventSubscriptionState
 {
     bool has_interface_change_event_clients;
+
     AttributeEventSubscriptionStates attribute_events;
 };
 
