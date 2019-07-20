@@ -246,30 +246,14 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 				cout4 << "DServer::event_subscription(): update user_event subscription\n";
 
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				switch (client_lib)
-				{
-					case 5:
-					attribute.event_user5_subscription = time(NULL);
-					break;
-
-					case 4:
-					attribute.event_user4_subscription = time(NULL);
-					break;
-
-					default:
-					attribute.event_user3_subscription = time(NULL);
-					break;
-				}
+				attribute.set_user_event_sub(client_lib);
 			}
 			else if (event.find(CONF_TYPE_EVENT) != string::npos)
 			{
 				cout4 << "DServer::event_subscription(): update attr_conf subscription\n";
 
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				if (client_lib == 5)
-					attribute.event_attr_conf5_subscription = time(NULL);
-				else
-					attribute.event_attr_conf_subscription = time(NULL);
+				attribute.set_att_conf_event_sub(client_lib);
 			}
 			else if (event == "data_ready")
 			{
@@ -287,7 +271,7 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 				cout4 << "DServer::event_subscription(): update data_ready subscription\n";
 
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				attribute.event_data_ready_subscription = time(NULL);
+				attribute.set_data_ready_event_sub();
 			}
 			else
 			{
@@ -366,46 +350,19 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 					}
 
 					omni_mutex_lock oml(EventSupplier::get_event_mutex());
-
-					switch (client_lib)
-					{
-						case 5:
-						attribute.event_change5_subscription = time(NULL);
-						break;
-
-						case 4:
-						attribute.event_change4_subscription = time(NULL);
-						break;
-
-						default:
-						attribute.event_change3_subscription = time(NULL);
-						break;
-					}
+					attribute.set_change_event_sub(client_lib);
 				}
 				else if (event == "quality")
 				{
 					cout4 << "DServer::event_subscription(): update quality_change subscription\n";
-					attribute.event_quality_subscription = time(NULL);
+					attribute.set_quality_event_sub();
 				}
 				else if (event == "periodic")
 				{
 					cout4 << "DServer::event_subscription(): update periodic subscription\n";
 
 					omni_mutex_lock oml(EventSupplier::get_event_mutex());
-					switch (client_lib)
-					{
-						case 5:
-						attribute.event_periodic5_subscription = time(NULL);
-						break;
-
-						case 4:
-						attribute.event_periodic4_subscription = time(NULL);
-						break;
-
-						default:
-						attribute.event_periodic3_subscription = time(NULL);
-						break;
-					}
+					attribute.set_periodic_event_sub(client_lib);
 				}
 				else if (event == "archive")
 				{
@@ -445,20 +402,7 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 					cout4 << "DServer::event_subscription(): update archive subscription\n";
 
 					omni_mutex_lock oml(EventSupplier::get_event_mutex());
-					switch (client_lib)
-					{
-						case 5:
-						attribute.event_archive5_subscription = time(NULL);
-						break;
-
-						case 4:
-						attribute.event_archive4_subscription = time(NULL);
-						break;
-
-						default:
-						attribute.event_archive3_subscription = time(NULL);
-						break;
-					}
+					attribute.set_archive_event_sub(client_lib);
 				}
 			}
 
