@@ -1519,7 +1519,7 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 		if (attr_list[i]->change_event_subscribed() == true)
 		{
 			once_more = true;
-			ch = attr_list[i]->get_client_lib(CHANGE_EVENT);
+			ch = attr_list[i]->get_event_client_lib_versions(CHANGE_EVENT);
 		}
 
 		if (attr_list[i]->quality_event_subscribed() == true)
@@ -1531,25 +1531,25 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 		if (attr_list[i]->periodic_event_subscribed() == true)
 		{
 			once_more = true;
-			pe = attr_list[i]->get_client_lib(PERIODIC_EVENT);
+			pe = attr_list[i]->get_event_client_lib_versions(PERIODIC_EVENT);
 		}
 
 		if (attr_list[i]->archive_event_subscribed() == true)
 		{
 			once_more = true;
-			ar = attr_list[i]->get_client_lib(ARCHIVE_EVENT);
+			ar = attr_list[i]->get_event_client_lib_versions(ARCHIVE_EVENT);
 		}
 
 		if (attr_list[i]->user_event_subscribed() == true)
 		{
 			once_more = true;
-			us = attr_list[i]->get_client_lib(USER_EVENT);
+			us = attr_list[i]->get_event_client_lib_versions(USER_EVENT);
 		}
 
 		if (attr_list[i]->attr_conf_event_subscribed() == true)
 		{
 			once_more = true;
-			ac = attr_list[i]->get_client_lib(ATTR_CONF_EVENT);
+			ac = attr_list[i]->get_event_client_lib_versions(ATTR_CONF_EVENT);
 		}
 
 		if (attr_list[i]->data_ready_event_subscribed() == true)

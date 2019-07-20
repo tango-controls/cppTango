@@ -2308,9 +2308,9 @@ public:
 	bool is_mem_exception() {return att_mem_exception;}
 	virtual bool is_fwd_att() {return false;}
 
-	void set_client_lib(EventClientLibVersion, const string &);
-	EventClientLibVersions& get_client_lib(EventType);
-	void remove_client_lib(EventClientLibVersion, const string &);
+	EventClientLibVersions& get_event_client_lib_versions(EventType);
+	void add_event_client_lib_version(EventClientLibVersion, EventType);
+	void remove_event_client_lib_version(EventClientLibVersion, EventType);
 
 	void add_config_5_specific(AttributeConfig_5 &);
 	void add_startup_exception(string,const DevFailed &);

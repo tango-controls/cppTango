@@ -3805,7 +3805,7 @@ void Attribute::fire_change_event(DevFailed *except)
         vector<int> client_libs;
         {
             omni_mutex_lock oml(EventSupplier::get_event_mutex());
-            client_libs = get_client_lib(CHANGE_EVENT); 	// We want a copy
+            client_libs = get_event_client_lib_versions(CHANGE_EVENT); 	// We want a copy
             if (use_zmq_event() == true && event_supplier_zmq != NULL)
             {
                 string &sock_endpoint = static_cast<ZmqEventSupplier *>(event_supplier_zmq)->get_event_endpoint();
@@ -3821,17 +3821,17 @@ void Attribute::fire_change_event(DevFailed *except)
 			{
 				case 5:
 				if (change5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(5,string(EventName[CHANGE_EVENT]));
+					remove_event_client_lib_version(5, CHANGE_EVENT);
 				break;
 
 				case 4:
 				if (change4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(4,string(EventName[CHANGE_EVENT]));
+					remove_event_client_lib_version(4, CHANGE_EVENT);
 				break;
 
 				default:
 				if (change3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(3,string(EventName[CHANGE_EVENT]));
+					remove_event_client_lib_version(3, CHANGE_EVENT);
 				break;
 			}
 		}
@@ -4229,7 +4229,7 @@ void Attribute::fire_archive_event(DevFailed *except)
         vector<int> client_libs;
         {
             omni_mutex_lock oml(EventSupplier::get_event_mutex());
-            client_libs = get_client_lib(ARCHIVE_EVENT);        // We want a copy
+            client_libs = get_event_client_lib_versions(ARCHIVE_EVENT);        // We want a copy
             if (use_zmq_event() == true && event_supplier_zmq != NULL)
             {
                 string &sock_endpoint = static_cast<ZmqEventSupplier *>(event_supplier_zmq)->get_event_endpoint();
@@ -4245,17 +4245,17 @@ void Attribute::fire_archive_event(DevFailed *except)
 			{
 				case 5:
 				if (archive5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(5,string(EventName[ARCHIVE_EVENT]));
+					remove_event_client_lib_version(5, ARCHIVE_EVENT);
 				break;
 
 				case 4:
 				if (archive4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(4,string(EventName[ARCHIVE_EVENT]));
+					remove_event_client_lib_version(4, ARCHIVE_EVENT);
 				break;
 
 				default:
 				if (archive3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(3,string(EventName[ARCHIVE_EVENT]));
+					remove_event_client_lib_version(3, ARCHIVE_EVENT);
 				break;
 			}
 		}
@@ -4672,7 +4672,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
         vector<int> client_libs;
         {
             omni_mutex_lock oml(EventSupplier::get_event_mutex());
-            client_libs = get_client_lib(USER_EVENT);        // We want a copy
+            client_libs = get_event_client_lib_versions(USER_EVENT);        // We want a copy
             if (use_zmq_event() == true && event_supplier_zmq != NULL)
             {
                 string &sock_endpoint = static_cast<ZmqEventSupplier *>(event_supplier_zmq)->get_event_endpoint();
@@ -4688,17 +4688,17 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 			{
 				case 5:
 				if (user5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(5,string(EventName[USER_EVENT]));
+					remove_event_client_lib_version(5, USER_EVENT);
 				break;
 
 				case 4:
 				if (user4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(4,string(EventName[USER_EVENT]));
+					remove_event_client_lib_version(4, USER_EVENT);
 				break;
 
 				default:
 				if (user3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-					remove_client_lib(3,string(EventName[USER_EVENT]));
+					remove_event_client_lib_version(3, USER_EVENT);
 				break;
 			}
 		}
@@ -4920,7 +4920,7 @@ void Attribute::fire_error_periodic_event(DevFailed *except)
 	periodic4_subscription = now - event_periodic4_subscription;
 	periodic5_subscription = now - event_periodic5_subscription;
 
-	vector<int> client_libs = get_client_lib(PERIODIC_EVENT); 	// We want a copy
+	vector<int> client_libs = get_event_client_lib_versions(PERIODIC_EVENT); 	// We want a copy
 
 	vector<int>::iterator ite;
 	for (ite = client_libs.begin();ite != client_libs.end();++ite)
@@ -4929,17 +4929,17 @@ void Attribute::fire_error_periodic_event(DevFailed *except)
 		{
 			case 5:
 			if (periodic5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-				remove_client_lib(5,string(EventName[PERIODIC_EVENT]));
+				remove_event_client_lib_version(5, PERIODIC_EVENT);
 			break;
 
 			case 4:
 			if (periodic4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-				remove_client_lib(4,string(EventName[PERIODIC_EVENT]));
+				remove_event_client_lib_version(4, PERIODIC_EVENT);
 			break;
 
 			default:
 			if (periodic3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
-				remove_client_lib(3,string(EventName[PERIODIC_EVENT]));
+				remove_event_client_lib_version(3, PERIODIC_EVENT);
 			break;
 		}
 	}
@@ -5915,36 +5915,15 @@ bool Attribute::data_ready_event_subscribed()
 	return ret;
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		Attribute::set_client_lib()
-//
-// description :
-//		Set client lib (for event compatibility)
-//
-// argument :
-//		in :
-//			- _l : Client lib release
-//			- ev_name : Event name
-//
-//--------------------------------------------------------------------------------------------------------------------
-
-void Attribute::set_client_lib(
+void Attribute::add_event_client_lib_version(
     int client_lib_version,
-    const string& event_name)
+    EventType event_type)
 {
-	cout4 << "Attribute::set_client_lib(" << client_lib_version << "," << event_name << ")" << endl;
-	int i;
-	for (i = 0; i < numEventType; i++)
-	{
-		if (event_name == EventName[i])
-		{
-			break;
-		}
-	}
+	cout4 << "Attribute::add_event_client_lib_version("
+	    << client_lib_version << ","
+	    << EventName[event_type] << ")" << endl;
 
-	EventClientLibVersions& versions = subscribed_event_client_lib_versions[i];
+	EventClientLibVersions& versions = get_event_client_lib_versions(event_type);
 
 	if (0 == count(versions.begin(), versions.end(), client_lib_version))
 	{
@@ -5952,33 +5931,11 @@ void Attribute::set_client_lib(
 	}
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		Attribute::remove_client_lib()
-//
-// description :
-//		Remove a client lib (for event compatibility)
-//
-// argument :
-//		in :
-//			- _l : Client lib release
-//			- ev_name : Event name
-//
-//--------------------------------------------------------------------------------------------------------------------
-
-void Attribute::remove_client_lib(
+void Attribute::remove_event_client_lib_version(
     int client_lib_version,
-    const string &event_name)
+    EventType event_type)
 {
-	int i;
-	for (i = 0;i < numEventType;i++)
-	{
-		if (event_name == EventName[i])
-			break;
-	}
-
-	EventClientLibVersions& versions = subscribed_event_client_lib_versions[i];
+	EventClientLibVersions& versions = get_event_client_lib_versions(event_type);
 
 	EventClientLibVersions::iterator pos = find(
 	    versions.begin(),
@@ -5991,7 +5948,8 @@ void Attribute::remove_client_lib(
 	}
 }
 
-EventClientLibVersions& Attribute::get_client_lib(EventType event_type)
+EventClientLibVersions& Attribute::get_event_client_lib_versions(
+    EventType event_type)
 {
 	return subscribed_event_client_lib_versions[event_type];
 }

@@ -527,9 +527,12 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 //
 
 		if (client_lib != 0)
-        {
-            omni_mutex_lock oml(EventSupplier::get_event_mutex());
-			attribute.set_client_lib(client_lib,event);
+		{
+			EventType event_type = PERIODIC_EVENT;
+			tg->event_name_2_event_type(event, event_type);
+
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
+			attribute.add_event_client_lib_version(client_lib, event_type);
         }
 	}
 	else if (event == EventName[PIPE_EVENT])

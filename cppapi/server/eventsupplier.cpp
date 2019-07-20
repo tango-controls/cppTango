@@ -143,7 +143,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
 //
 
     ret.change = false;
-    vector<int> client_libs = attr.get_client_lib(CHANGE_EVENT);    // We want a copy
+    vector<int> client_libs = attr.get_event_client_lib_versions(CHANGE_EVENT);    // We want a copy
 
     vector<int>::iterator ite;
     for (ite = client_libs.begin(); ite != client_libs.end(); ++ite)
@@ -153,21 +153,21 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
             case 5:
                 if (change5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(5, string(EventName[CHANGE_EVENT]));
+                    attr.remove_event_client_lib_version(5, CHANGE_EVENT);
                 }
                 break;
 
             case 4:
                 if (change4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(4, string(EventName[CHANGE_EVENT]));
+                    attr.remove_event_client_lib_version(4, CHANGE_EVENT);
                 }
                 break;
 
             default:
                 if (change3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(3, string(EventName[CHANGE_EVENT]));
+                    attr.remove_event_client_lib_version(3, CHANGE_EVENT);
                 }
                 break;
         }
@@ -188,7 +188,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
 
     ret.periodic = false;
     client_libs.clear();
-    client_libs = attr.get_client_lib(PERIODIC_EVENT);    // We want a copy
+    client_libs = attr.get_event_client_lib_versions(PERIODIC_EVENT);    // We want a copy
 
     for (ite = client_libs.begin(); ite != client_libs.end(); ++ite)
     {
@@ -197,21 +197,21 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
             case 5:
                 if (periodic5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(5, string(EventName[PERIODIC_EVENT]));
+                    attr.remove_event_client_lib_version(5, PERIODIC_EVENT);
                 }
                 break;
 
             case 4:
                 if (periodic4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(4, string(EventName[PERIODIC_EVENT]));
+                    attr.remove_event_client_lib_version(4, PERIODIC_EVENT);
                 }
                 break;
 
             default:
                 if (periodic3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(3, string(EventName[PERIODIC_EVENT]));
+                    attr.remove_event_client_lib_version(3, PERIODIC_EVENT);
                 }
                 break;
         }
@@ -232,7 +232,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
 
     ret.archive = false;
     client_libs.clear();
-    client_libs = attr.get_client_lib(ARCHIVE_EVENT);    // We want a copy
+    client_libs = attr.get_event_client_lib_versions(ARCHIVE_EVENT);    // We want a copy
 
     for (ite = client_libs.begin(); ite != client_libs.end(); ++ite)
     {
@@ -241,21 +241,21 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
             case 5:
                 if (archive5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(5, string(EventName[ARCHIVE_EVENT]));
+                    attr.remove_event_client_lib_version(5, ARCHIVE_EVENT);
                 }
                 break;
 
             case 4:
                 if (archive4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(4, string(EventName[ARCHIVE_EVENT]));
+                    attr.remove_event_client_lib_version(4, ARCHIVE_EVENT);
                 }
                 break;
 
             default:
                 if (archive3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(3, string(EventName[ARCHIVE_EVENT]));
+                    attr.remove_event_client_lib_version(3, ARCHIVE_EVENT);
                 }
                 break;
         }
@@ -459,7 +459,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
             filterable_data.push_back((double) 0.0);
         }
 
-        vector<int> &client_libs = attr.get_client_lib(CHANGE_EVENT);
+        vector<int> &client_libs = attr.get_event_client_lib_versions(CHANGE_EVENT);
         vector<int>::iterator ite;
         string ev_name = EventName[CHANGE_EVENT];
         bool inc_ctr = true;
@@ -836,7 +836,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         filterable_data.push_back(now_ms - attr.archive_last_event);
         attr.archive_last_event = now_ms;
 
-        vector<int> &client_libs = attr.get_client_lib(ARCHIVE_EVENT);
+        vector<int> &client_libs = attr.get_event_client_lib_versions(ARCHIVE_EVENT);
         vector<int>::iterator ite;
         string ev_name = EventName[ARCHIVE_EVENT];
         bool inc_ctr = true;
@@ -1047,7 +1047,7 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
         filterable_names_lg.push_back("counter");
         filterable_data_lg.push_back(attr.periodic_counter);
 
-        vector<int> &client_libs = attr.get_client_lib(PERIODIC_EVENT);
+        vector<int> &client_libs = attr.get_event_client_lib_versions(PERIODIC_EVENT);
         vector<int>::iterator ite;
         string ev_name = EventName[PERIODIC_EVENT];
         bool inc_ctr = true;
@@ -2498,7 +2498,7 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,
 
     if (att_conf_subscription > EVENT_RESUBSCRIBE_PERIOD)
     {
-        attr.remove_client_lib(vers, string(EventName[ATTR_CONF_EVENT]));
+        attr.remove_event_client_lib_version(vers, ATTR_CONF_EVENT);
         return;
     }
 

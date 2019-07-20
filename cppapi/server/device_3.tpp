@@ -161,7 +161,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 
 				if (get_dev_idl_version() > 4)
 				{
-					vector<int> cl_lib = attr.get_client_lib(ATTR_CONF_EVENT);
+					vector<int> cl_lib = attr.get_event_client_lib_versions(ATTR_CONF_EVENT);
 
 					if (caller_idl <= 4)
 					{
