@@ -1501,7 +1501,7 @@ void MultiAttribute::read_alarm(string &status)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::get_event_param(DeviceEventSubscriptionState& eve)
+void MultiAttribute::get_event_param(AttributeEventSubscriptionStates& eve)
 {
 	unsigned int i;
 
@@ -1600,7 +1600,7 @@ void MultiAttribute::get_event_param(DeviceEventSubscriptionState& eve)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::set_event_param(const DeviceEventSubscriptionState& eve)
+void MultiAttribute::set_event_param(const AttributeEventSubscriptionStates& eve)
 {
 	for (size_t i = 0;i < eve.size();i++)
 	{

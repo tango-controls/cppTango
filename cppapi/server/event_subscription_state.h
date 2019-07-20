@@ -22,12 +22,17 @@ struct AttributeEventSubscriptionState
     EventClientLibVersions user;
     EventClientLibVersions att_conf;
     bool data_ready;
-    bool dev_intr_change;
     bool notifd;
     bool zmq;
 };
 
-typedef std::vector<AttributeEventSubscriptionState> DeviceEventSubscriptionState;
+typedef std::vector<AttributeEventSubscriptionState> AttributeEventSubscriptionStates;
+
+struct DeviceEventSubscriptionState
+{
+    bool has_interface_change_event_clients;
+    AttributeEventSubscriptionStates attribute_events;
+};
 
 typedef std::map<std::string, DeviceEventSubscriptionState> EventSubscriptionState;
 

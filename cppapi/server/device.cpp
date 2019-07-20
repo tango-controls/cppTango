@@ -6121,23 +6121,14 @@ void DeviceImpl::remove_local_command(const string &cmd_name)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::get_event_param(DeviceEventSubscriptionState& eve)
+void DeviceImpl::get_event_param(DeviceEventSubscriptionState& device_events_state)
 {
     ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
 
-    if (event_supplier_zmq->any_dev_intr_client(this) == true)
-    {
-        AttributeEventSubscriptionState ep;
+    device_events_state.has_interface_change_event_clients
+        = event_supplier_zmq->any_dev_intr_client(this);
 
-        ep.notifd = false;
-        ep.zmq = true;
-        ep.attr_id = -1;
-        ep.quality = false;
-        ep.data_ready = false;
-        ep.dev_intr_change = true;
-
-        eve.push_back(ep);
-    }
+    dev_attr->get_event_param(device_events_state.attribute_events);
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -6154,19 +6145,14 @@ void DeviceImpl::get_event_param(DeviceEventSubscriptionState& eve)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::set_event_param(const DeviceEventSubscriptionState& eve)
+void DeviceImpl::set_event_param(const DeviceEventSubscriptionState& device_events_state)
 {
-    for (size_t loop = 0; loop < eve.size(); loop++)
+    if (device_events_state.has_interface_change_event_clients)
     {
-        if (eve[loop].attr_id == -1)
-        {
-            if (eve[loop].dev_intr_change == true)
-            {
-                set_event_intr_change_subscription(time(NULL));
-            }
-            break;
-        }
+        set_event_intr_change_subscription(time(NULL));
     }
+
+    dev_attr->set_event_param(device_events_state.attribute_events);
 }
 
 //+-----------------------------------------------------------------------------------------------------------------

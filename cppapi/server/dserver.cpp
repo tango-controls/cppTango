@@ -872,7 +872,6 @@ void DServer::restart(string &d_name)
 		dev_pol.push_back(tmp);
 	}
 
-	dev_to_del->get_device_attr()->get_event_param(eve);
 	dev_to_del->get_event_param(eve);
 
 //
@@ -1044,8 +1043,6 @@ void DServer::restart(string &d_name)
 // Re-set classical event parameters (if needed)
 //
 
-	Tango::MultiAttribute *m_attr = new_dev->get_device_attr();
-	m_attr->set_event_param(eve);
 	new_dev->set_event_param(eve);
 
 //
@@ -1964,13 +1961,9 @@ void DServer::mem_event_par(EventSubscriptionState& _map)
 		for (size_t j = 0;j < dev_list.size();j++)
 		{
 			DeviceEventSubscriptionState eve;
-			dev_list[j]->get_device_attr()->get_event_param(eve);
 			dev_list[j]->get_event_param(eve);
 
-			if (eve.size() != 0)
-			{
-				_map.insert(make_pair(dev_list[j]->get_name(),eve));
-			}
+			_map.insert(make_pair(dev_list[j]->get_name(),eve));
 		}
 	}
 }
@@ -1997,12 +1990,11 @@ void DServer::apply_event_par(EventSubscriptionState& _map)
 		for (size_t j = 0;j < dev_list.size();j++)
 		{
 			string &dev_name = dev_list[j]->get_name();
-            EventSubscriptionState::iterator ite;
+			EventSubscriptionState::iterator ite;
 			ite = _map.find(dev_name);
 
 			if (ite != _map.end())
 			{
-				dev_list[j]->get_device_attr()->set_event_param(ite->second);
 				dev_list[j]->set_event_param(ite->second);
 			}
 		}
