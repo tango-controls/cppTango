@@ -125,6 +125,9 @@ typedef enum prop_type
 
 class EventSupplier;
 
+typedef int EventClientLibVersion;
+typedef std::vector<EventClientLibVersion> EventClientLibVersions;
+
 //=============================================================================
 //
 //			The Attribute class
@@ -2305,9 +2308,9 @@ public:
 	bool is_mem_exception() {return att_mem_exception;}
 	virtual bool is_fwd_att() {return false;}
 
-	void set_client_lib(int,string &);
-	vector<int> &get_client_lib(EventType _et) {return client_lib[_et];}
-	void remove_client_lib(int,const string &);
+	void set_client_lib(EventClientLibVersion, const string &);
+	EventClientLibVersions& get_client_lib(EventType);
+	void remove_client_lib(EventClientLibVersion, const string &);
 
 	void add_config_5_specific(AttributeConfig_5 &);
 	void add_startup_exception(string,const DevFailed &);
@@ -2515,7 +2518,7 @@ protected:
     bool 				startup_exceptions_clear;		// Flag set to true when the cause for the device startup exceptions has been fixed
 	bool				att_mem_exception;				// Flag set to true if the attribute is writable and
 														// memorized and if it failed at init
-	vector<int> 		client_lib[numEventType];		// Clients lib used (for event sending and compat)
+	EventClientLibVersions subscribed_event_client_lib_versions[numEventType];
 };
 
 //

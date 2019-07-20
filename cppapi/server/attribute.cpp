@@ -603,7 +603,9 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 //
 
 	for (int i = 0;i < numEventType;i++)
-		client_lib[i].clear();
+	{
+		subscribed_event_client_lib_versions[i].clear();
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -5928,21 +5930,25 @@ bool Attribute::data_ready_event_subscribed()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::set_client_lib(int _l,string &ev_name)
+void Attribute::set_client_lib(
+    int client_lib_version,
+    const string& event_name)
 {
-	cout4 << "Attribute::set_client_lib(" << _l << "," << ev_name << ")" << endl;
+	cout4 << "Attribute::set_client_lib(" << client_lib_version << "," << event_name << ")" << endl;
 	int i;
 	for (i = 0; i < numEventType; i++)
 	{
-		if (ev_name == EventName[i])
+		if (event_name == EventName[i])
 		{
 			break;
 		}
 	}
 
-	if (count(client_lib[i].begin(), client_lib[i].end(), _l) == 0)
+	EventClientLibVersions& versions = subscribed_event_client_lib_versions[i];
+
+	if (0 == count(versions.begin(), versions.end(), client_lib_version))
 	{
-		client_lib[i].push_back(_l);
+		versions.push_back(client_lib_version);
 	}
 }
 
@@ -5961,18 +5967,33 @@ void Attribute::set_client_lib(int _l,string &ev_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::remove_client_lib(int _l,const string &ev_name)
+void Attribute::remove_client_lib(
+    int client_lib_version,
+    const string &event_name)
 {
 	int i;
 	for (i = 0;i < numEventType;i++)
 	{
-		if (ev_name == EventName[i])
+		if (event_name == EventName[i])
 			break;
 	}
 
-	vector<int>::iterator pos = find(client_lib[i].begin(),client_lib[i].end(),_l);
-	if (pos != client_lib[i].end())
-		client_lib[i].erase(pos);
+	EventClientLibVersions& versions = subscribed_event_client_lib_versions[i];
+
+	EventClientLibVersions::iterator pos = find(
+	    versions.begin(),
+	    versions.end(),
+	    client_lib_version);
+
+	if (pos != versions.end())
+	{
+		versions.erase(pos);
+	}
+}
+
+EventClientLibVersions& Attribute::get_client_lib(EventType event_type)
+{
+	return subscribed_event_client_lib_versions[event_type];
 }
 
 //-------------------------------------------------------------------------------------------------------------------
