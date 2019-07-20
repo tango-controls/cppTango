@@ -16,11 +16,11 @@ struct AttributeEventSubscriptionState
 {
     long attribute_id;
 
-    EventClientLibVersions change;
-    EventClientLibVersions archive;
-    EventClientLibVersions periodic;
-    EventClientLibVersions user;
-    EventClientLibVersions att_conf;
+    EventClientLibVersions change_event_client_versions;
+    EventClientLibVersions periodic_event_client_versions;
+    EventClientLibVersions archive_event_client_versions;
+    EventClientLibVersions att_conf_event_client_versions;
+    EventClientLibVersions user_event_client_versions;
 
     bool has_quality_event_clients;
     bool has_data_ready_event_clients;

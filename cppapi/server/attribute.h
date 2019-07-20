@@ -2239,6 +2239,9 @@ public:
 
 	void store_event_subscription_state_if_needed(AttributeEventSubscriptionStates&);
 	void apply_event_subscription_state(const AttributeEventSubscriptionState&);
+    void apply_single_event_subscription_state(
+        const EventClientLibVersions&,
+        void (Attribute::*)(EventClientLibVersion));
 
 //
 // Warning, methods below are not protected !

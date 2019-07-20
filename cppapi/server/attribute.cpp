@@ -5942,74 +5942,71 @@ EventClientLibVersions& Attribute::get_event_client_lib_versions(
 void Attribute::store_event_subscription_state_if_needed(
     AttributeEventSubscriptionStates& subscription_states)
 {
-    bool once_more = false;
-    EventClientLibVersions ch;
-    EventClientLibVersions ar;
-    EventClientLibVersions pe;
-    EventClientLibVersions us;
-    EventClientLibVersions ac;
-    bool dr = false;
-    bool qu = false;
+    bool store_needed = false;
+
+    AttributeEventSubscriptionState state = AttributeEventSubscriptionState();
+
+    state.attribute_id = idx_in_attr;
+    state.is_notifd_transport = use_notifd_event();
+    state.is_zeromq_transport = use_zmq_event();
 
     if (change_event_subscribed())
     {
-        once_more = true;
-        ch = get_event_client_lib_versions(CHANGE_EVENT);
+        store_needed = true;
+        state.change_event_client_versions = get_event_client_lib_versions(CHANGE_EVENT);
     }
 
     if (quality_event_subscribed())
     {
-        once_more = true;
-        qu = true;
+        store_needed = true;
+        state.has_quality_event_clients = true;
     }
 
     if (periodic_event_subscribed())
     {
-        once_more = true;
-        pe = get_event_client_lib_versions(PERIODIC_EVENT);
+        store_needed = true;
+        state.periodic_event_client_versions = get_event_client_lib_versions(PERIODIC_EVENT);
     }
 
     if (archive_event_subscribed())
     {
-        once_more = true;
-        ar = get_event_client_lib_versions(ARCHIVE_EVENT);
+        store_needed = true;
+        state.archive_event_client_versions = get_event_client_lib_versions(ARCHIVE_EVENT);
     }
 
     if (user_event_subscribed())
     {
-        once_more = true;
-        us = get_event_client_lib_versions(USER_EVENT);
+        store_needed = true;
+        state.user_event_client_versions = get_event_client_lib_versions(USER_EVENT);
     }
 
     if (attr_conf_event_subscribed())
     {
-        once_more = true;
-        ac = get_event_client_lib_versions(ATTR_CONF_EVENT);
+        store_needed = true;
+        state.att_conf_event_client_versions = get_event_client_lib_versions(ATTR_CONF_EVENT);
     }
 
     if (data_ready_event_subscribed())
     {
-        once_more = true;
-        dr = true;
+        store_needed = true;
+        state.has_data_ready_event_clients = true;
     }
 
-    if (once_more)
+    if (store_needed)
     {
-        AttributeEventSubscriptionState ep;
+        subscription_states.push_back(state);
+    }
+}
 
-        ep.is_notifd_transport = use_notifd_event();
-        ep.is_zeromq_transport = use_zmq_event();
-
-        ep.attribute_id = idx_in_attr;
-        ep.change = ch;
-        ep.archive = ar;
-        ep.periodic = pe;
-        ep.user = us;
-        ep.att_conf = ac;
-        ep.has_quality_event_clients = qu;
-        ep.has_data_ready_event_clients = dr;
-
-        subscription_states.push_back(ep);
+void Attribute::apply_single_event_subscription_state(
+    const EventClientLibVersions& client_lib_versions,
+    void (Attribute::*update_subscription_timestamp)(EventClientLibVersion))
+{
+    for (EventClientLibVersions::iterator version = client_lib_versions.begin();
+        version != client_lib_versions.end();
+        ++version)
+    {
+        (this->*update_subscription_timestamp)(*version);
     }
 }
 
@@ -6018,37 +6015,25 @@ void Attribute::apply_event_subscription_state(
 {
     omni_mutex_lock oml(EventSupplier::get_event_mutex());
 
-    EventClientLibVersions::iterator ite;
+    apply_single_event_subscription_state(
+        events.change_event_client_versions,
+        &Attribute::set_change_event_sub);
 
-    if (! events.change.empty())
-    {
-        for (ite = events.change.begin();ite != events.change.end();++ite)
-            set_change_event_sub(*ite);
-    }
+    apply_single_event_subscription_state(
+        events.periodic_event_client_versions,
+        &Attribute::set_periodic_event_sub);
 
-    if (! events.periodic.empty())
-    {
-        for (ite = events.periodic.begin();ite != events.periodic.end();++ite)
-            set_periodic_event_sub(*ite);
-    }
+    apply_single_event_subscription_state(
+        events.archive_event_client_versions,
+        &Attribute::set_archive_event_sub);
 
-    if (! events.archive.empty())
-    {
-        for (ite = events.archive.begin();ite != events.archive.end();++ite)
-            set_archive_event_sub(*ite);
-    }
+    apply_single_event_subscription_state(
+        events.att_conf_event_client_versions,
+        &Attribute::set_att_conf_event_sub);
 
-    if (! events.att_conf.empty())
-    {
-        for (ite = events.att_conf.begin();ite != events.att_conf.end();++ite)
-            set_att_conf_event_sub(*ite);
-    }
-
-    if (! events.user.empty())
-    {
-        for (ite = events.user.begin();ite != events.user.end();++ite)
-            set_user_event_sub(*ite);
-    }
+    apply_single_event_subscription_state(
+        events.user_event_client_versions,
+        &Attribute::set_user_event_sub);
 
     if (events.has_quality_event_clients)
     {
