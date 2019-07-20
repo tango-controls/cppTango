@@ -6121,13 +6121,13 @@ void DeviceImpl::remove_local_command(const string &cmd_name)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::get_event_param(vector<EventPar> &eve)
+void DeviceImpl::get_event_param(DeviceEventSubscriptionState& eve)
 {
     ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
 
     if (event_supplier_zmq->any_dev_intr_client(this) == true)
     {
-        EventPar ep;
+        AttributeEventSubscriptionState ep;
 
         ep.notifd = false;
         ep.zmq = true;
@@ -6154,7 +6154,7 @@ void DeviceImpl::get_event_param(vector<EventPar> &eve)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::set_event_param(vector<EventPar> &eve)
+void DeviceImpl::set_event_param(const DeviceEventSubscriptionState& eve)
 {
     for (size_t loop = 0; loop < eve.size(); loop++)
     {

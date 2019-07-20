@@ -1501,7 +1501,7 @@ void MultiAttribute::read_alarm(string &status)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::get_event_param(vector<EventPar> &eve)
+void MultiAttribute::get_event_param(DeviceEventSubscriptionState& eve)
 {
 	unsigned int i;
 
@@ -1560,7 +1560,7 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 
 		if (once_more == true)
 		{
-			EventPar ep;
+			AttributeEventSubscriptionState ep;
 
 			if (attr_list[i]->use_notifd_event() == true)
                 ep.notifd = true;
@@ -1600,7 +1600,7 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::set_event_param(vector<EventPar> &eve)
+void MultiAttribute::set_event_param(const DeviceEventSubscriptionState& eve)
 {
 	for (size_t i = 0;i < eve.size();i++)
 	{

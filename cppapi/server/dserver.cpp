@@ -861,7 +861,7 @@ void DServer::restart(string &d_name)
 
 	vector<PollObj *> &p_obj = dev_to_del->get_poll_obj_list();
 	vector<Pol> dev_pol;
-	vector<EventPar> eve;
+	DeviceEventSubscriptionState eve;
 
 	for (i = 0;i < p_obj.size();i++)
 	{
@@ -1172,7 +1172,7 @@ void ServRestartThread::run(void *ptr)
 // Memorize event parameters and devices interface
 //
 
-	map<string,vector<EventPar> > map_events;
+	EventSubscriptionState map_events;
 	map<string,DevIntr> map_dev_inter;
 
 	dev->mem_event_par(map_events);
@@ -1956,14 +1956,14 @@ void DServer::mcast_event_for_att(string &dev_name,string &att_name,vector<strin
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::mem_event_par(map<string,vector<EventPar> > &_map)
+void DServer::mem_event_par(EventSubscriptionState& _map)
 {
 	for (size_t i = 0;i < class_list.size();i++)
 	{
 		vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
 		for (size_t j = 0;j < dev_list.size();j++)
 		{
-			vector<EventPar> eve;
+			DeviceEventSubscriptionState eve;
 			dev_list[j]->get_device_attr()->get_event_param(eve);
 			dev_list[j]->get_event_param(eve);
 
@@ -1989,7 +1989,7 @@ void DServer::mem_event_par(map<string,vector<EventPar> > &_map)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::apply_event_par(map<string,vector<EventPar> > &_map)
+void DServer::apply_event_par(EventSubscriptionState& _map)
 {
 	for (size_t i = 0;i < class_list.size();i++)
 	{
@@ -1997,7 +1997,7 @@ void DServer::apply_event_par(map<string,vector<EventPar> > &_map)
 		for (size_t j = 0;j < dev_list.size();j++)
 		{
 			string &dev_name = dev_list[j]->get_name();
-			map<string,vector<EventPar> >::iterator ite;
+            EventSubscriptionState::iterator ite;
 			ite = _map.find(dev_name);
 
 			if (ite != _map.end())

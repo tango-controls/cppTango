@@ -37,11 +37,11 @@
 #include <attrdesc.h>
 #include <fwdattrdesc.h>
 #include <encoded_attribute.h>
+#include "event_subscription_state.h"
 
 #include <functional>
 #include <time.h>
 #include <iterator>
-#include <set>
 
 #ifdef _TG_WINDOWS_
 	#include <sys/types.h>
@@ -125,9 +125,6 @@ typedef enum prop_type
 } PropType;
 
 class EventSupplier;
-
-typedef int EventClientLibVersion;
-typedef std::set<EventClientLibVersion> EventClientLibVersions;
 
 //=============================================================================
 //
