@@ -143,9 +143,9 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
 //
 
     ret.change = false;
-    vector<int> client_libs = attr.get_event_client_lib_versions(CHANGE_EVENT);    // We want a copy
+    EventClientLibVersions client_libs = attr.get_event_client_lib_versions(CHANGE_EVENT);    // We want a copy
 
-    vector<int>::iterator ite;
+    EventClientLibVersions::iterator ite;
     for (ite = client_libs.begin(); ite != client_libs.end(); ++ite)
     {
         switch (*ite)
@@ -459,8 +459,8 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
             filterable_data.push_back((double) 0.0);
         }
 
-        vector<int> &client_libs = attr.get_event_client_lib_versions(CHANGE_EVENT);
-        vector<int>::iterator ite;
+        EventClientLibVersions& client_libs = attr.get_event_client_lib_versions(CHANGE_EVENT);
+        EventClientLibVersions::iterator ite;
         string ev_name = EventName[CHANGE_EVENT];
         bool inc_ctr = true;
 
@@ -836,8 +836,8 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         filterable_data.push_back(now_ms - attr.archive_last_event);
         attr.archive_last_event = now_ms;
 
-        vector<int> &client_libs = attr.get_event_client_lib_versions(ARCHIVE_EVENT);
-        vector<int>::iterator ite;
+        EventClientLibVersions& client_libs = attr.get_event_client_lib_versions(ARCHIVE_EVENT);
+        EventClientLibVersions::iterator ite;
         string ev_name = EventName[ARCHIVE_EVENT];
         bool inc_ctr = true;
 
@@ -1047,8 +1047,8 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
         filterable_names_lg.push_back("counter");
         filterable_data_lg.push_back(attr.periodic_counter);
 
-        vector<int> &client_libs = attr.get_event_client_lib_versions(PERIODIC_EVENT);
-        vector<int>::iterator ite;
+        EventClientLibVersions& client_libs = attr.get_event_client_lib_versions(PERIODIC_EVENT);
+        EventClientLibVersions::iterator ite;
         string ev_name = EventName[PERIODIC_EVENT];
         bool inc_ctr = true;
 

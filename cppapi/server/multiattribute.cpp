@@ -1508,11 +1508,11 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 	for (i = 0;i < attr_list.size();i++)
 	{
 		bool once_more = false;
-		vector<int> ch;
-		vector<int> ar;
-		vector<int> pe;
-		vector<int> us;
-		vector<int> ac;
+		EventClientLibVersions ch;
+		EventClientLibVersions ar;
+		EventClientLibVersions pe;
+		EventClientLibVersions us;
+		EventClientLibVersions ac;
 		bool dr = false;
 		bool qu = false;
 
@@ -1610,7 +1610,7 @@ void MultiAttribute::set_event_param(vector<EventPar> &eve)
 
 			{
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				vector<int>::iterator ite;
+				EventClientLibVersions::iterator ite;
 
 				if (eve[i].change.empty() == false)
 				{

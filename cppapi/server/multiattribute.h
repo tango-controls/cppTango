@@ -49,12 +49,12 @@ class DeviceClass;
 struct EventPar
 {
 	long			attr_id;
-	vector<int>		change;
-	vector<int>		archive;
+	EventClientLibVersions		change;
+	EventClientLibVersions		archive;
 	bool			quality;
-	vector<int>		periodic;
-	vector<int>		user;
-	vector<int>		att_conf;
+	EventClientLibVersions		periodic;
+	EventClientLibVersions		user;
+	EventClientLibVersions		att_conf;
 	bool			data_ready;
 	bool			dev_intr_change;
 	bool        	notifd;

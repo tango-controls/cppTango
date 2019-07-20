@@ -161,7 +161,8 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 
 				if (get_dev_idl_version() > 4)
 				{
-					vector<int> cl_lib = attr.get_event_client_lib_versions(ATTR_CONF_EVENT);
+					EventClientLibVersions cl_lib = attr.get_event_client_lib_versions(ATTR_CONF_EVENT);
+					EventClientLibVersions::iterator client_lib_version;
 
 					if (caller_idl <= 4)
 					{
@@ -171,9 +172,9 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 // If a new client is listening to event, don't forget to send it.
 //
 
-						for (size_t i = 0;i < cl_lib.size();i++)
+						for (client_lib_version = cl_lib.begin(); client_lib_version != cl_lib.end(); ++client_lib_version)
 						{
-							if (cl_lib[i] == 5)
+							if (*client_lib_version == 5)
 							{
 								attr.AttributeConfig_3_2_AttributeConfig_5(mod_conf,conf5);
 								attr.add_config_5_specific(conf5);
@@ -191,7 +192,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 							if (event_supplier_zmq != NULL)
 								event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 
-							if (cl_lib[i] == 5)
+							if (*client_lib_version == 5)
 								ad.attr_conf_5 = NULL;
 							else
 								ad.attr_conf_3 = NULL;
@@ -199,9 +200,9 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 					}
 					else
 					{
-						for (size_t i = 0;i < cl_lib.size();i++)
+						for (client_lib_version = cl_lib.begin(); client_lib_version != cl_lib.end(); ++client_lib_version)
 						{
-							if (cl_lib[i] < 5)
+							if (*client_lib_version < 5)
 							{
 								attr.AttributeConfig_5_2_AttributeConfig_3(mod_conf,conf3);
 								tmp_conf_ptr = &conf3;
@@ -218,7 +219,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 							if (event_supplier_zmq != NULL)
 								event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 
-							if (cl_lib[i] == 5)
+							if (*client_lib_version == 5)
 								ad.attr_conf_5 = NULL;
 							else
 								ad.attr_conf_3 = NULL;

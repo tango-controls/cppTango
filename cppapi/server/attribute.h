@@ -41,6 +41,7 @@
 #include <functional>
 #include <time.h>
 #include <iterator>
+#include <set>
 
 #ifdef _TG_WINDOWS_
 	#include <sys/types.h>
@@ -126,7 +127,7 @@ typedef enum prop_type
 class EventSupplier;
 
 typedef int EventClientLibVersion;
-typedef std::vector<EventClientLibVersion> EventClientLibVersions;
+typedef std::set<EventClientLibVersion> EventClientLibVersions;
 
 //=============================================================================
 //

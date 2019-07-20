@@ -1704,8 +1704,8 @@ void ZmqEventSupplier::push_event_loop(DeviceImpl *device_impl,EventType event_t
 {
 	cout3 << "ZmqEventSupplier::push_event_loop(): called for attribute " << att.get_name() << endl;
 
-	vector<int> &client_libs = att.get_event_client_lib_versions(event_type);
-	vector<int>::iterator ite;
+	EventClientLibVersions& client_libs = att.get_event_client_lib_versions(event_type);
+	EventClientLibVersions::iterator ite;
 	string ev_name = EventName[event_type];
 	bool inc_ctr = true;
 
