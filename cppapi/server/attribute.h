@@ -2237,6 +2237,9 @@ public:
 	bool use_notifd_event() {return notifd_event;}
 	bool use_zmq_event() {return zmq_event;}
 
+	void store_event_subscription_state_if_needed(AttributeEventSubscriptionStates&);
+	void apply_event_subscription_state(const AttributeEventSubscriptionState&);
+
 //
 // Warning, methods below are not protected !
 //
