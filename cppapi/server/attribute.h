@@ -2302,9 +2302,9 @@ public:
 	bool is_mem_exception() {return att_mem_exception;}
 	virtual bool is_fwd_att() {return false;}
 
-	void set_client_lib(int,std::string &);
+	void set_client_lib(int, EventType);
 	std::vector<int> &get_client_lib(EventType _et) {return client_lib[_et];}
-	void remove_client_lib(int,const std::string &);
+	void remove_client_lib(int, const std::string &);
 
 	void add_config_5_specific(AttributeConfig_5 &);
 	void add_startup_exception(std::string,const DevFailed &);

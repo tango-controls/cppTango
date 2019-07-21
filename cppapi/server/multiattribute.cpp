@@ -1563,31 +1563,46 @@ void MultiAttribute::set_event_param(std::vector<EventPar> &eve)
 				if (eve[i].change.empty() == false)
 				{
 					for (ite = eve[i].change.begin();ite != eve[i].change.end();++ite)
+					{
 						att.set_change_event_sub(*ite);
+						att.set_client_lib(*ite, CHANGE_EVENT);
+					}
 				}
 
 				if (eve[i].periodic.empty() == false)
 				{
 					for (ite = eve[i].periodic.begin();ite != eve[i].periodic.end();++ite)
+					{
 						att.set_periodic_event_sub(*ite);
+						att.set_client_lib(*ite, PERIODIC_EVENT);
+					}
 				}
 
 				if (eve[i].archive.empty() == false)
 				{
 					for (ite = eve[i].archive.begin();ite != eve[i].archive.end();++ite)
+					{
 						att.set_archive_event_sub(*ite);
+						att.set_client_lib(*ite, ARCHIVE_EVENT);
+					}
 				}
 
 				if (eve[i].att_conf.empty() == false)
 				{
 					for (ite = eve[i].att_conf.begin();ite != eve[i].att_conf.end();++ite)
+					{
 						att.set_att_conf_event_sub(*ite);
+						att.set_client_lib(*ite, ATTR_CONF_EVENT);
+					}
 				}
 
 				if (eve[i].user.empty() == false)
 				{
 					for (ite = eve[i].user.begin();ite != eve[i].user.end();++ite)
+					{
 						att.set_user_event_sub(*ite);
+						att.set_client_lib(*ite, USER_EVENT);
+					}
 				}
 
 				if (eve[i].quality == true)
