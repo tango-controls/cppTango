@@ -1520,7 +1520,7 @@ void MultiAttribute::get_event_param(std::vector<EventPar> &eve)
             else
                 ep.zmq = false;
 
-			ep.attr_id = i;
+			ep.attribute_name = attr_list[i]->get_name();
 			ep.change = ch;
 			ep.quality = qu;
 			ep.archive = ar;
@@ -1552,9 +1552,9 @@ void MultiAttribute::set_event_param(std::vector<EventPar> &eve)
 {
 	for (size_t i = 0;i < eve.size();i++)
 	{
-		if (eve[i].attr_id != -1)
+		if (! eve[i].attribute_name.empty())
 		{
-			Tango::Attribute &att = get_attr_by_ind(eve[i].attr_id);
+			Tango::Attribute &att = get_attr_by_name(eve[i].attribute_name.c_str());
 
 			{
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());

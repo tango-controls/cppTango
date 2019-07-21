@@ -47,7 +47,7 @@ class DeviceClass;
 
 struct EventPar
 {
-	long			attr_id;
+	std::string attribute_name;
 	std::vector<int>		change;
 	std::vector<int>		archive;
 	bool			quality;
