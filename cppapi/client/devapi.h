@@ -134,7 +134,7 @@ typedef struct _CommandInfo : public DevCommandInfo
 	Tango::DispLevel disp_level;    ///< The command display level
 
 /// @privatesection
-	friend std::ostream &operator<<(std::ostream &,_CommandInfo &);
+	friend std::ostream &operator<<(std::ostream &, const _CommandInfo &);
 	bool operator==(const _CommandInfo &);
 }CommandInfo;
 
@@ -207,7 +207,7 @@ typedef struct _AttributeInfo : public DeviceAttributeConfig
 	Tango::DispLevel disp_level;        ///< Display level
 
 /// @privatesection
-	friend std::ostream &operator<<(std::ostream &,_AttributeInfo &);
+	friend std::ostream &operator<<(std::ostream &, const _AttributeInfo &);
 	bool operator==(const _AttributeInfo &);
 }AttributeInfo;
 
@@ -345,7 +345,7 @@ typedef struct _AttributeInfoEx : public AttributeInfo
 	_AttributeInfoEx & operator=(const AttributeConfig_3 *);
 	_AttributeInfoEx & operator=(const AttributeConfig_5 *);
 
-	friend std::ostream &operator<<(std::ostream &,_AttributeInfoEx &);
+	friend std::ostream &operator<<(std::ostream &, const _AttributeInfoEx &);
 	bool operator==(const _AttributeInfoEx &);
 }AttributeInfoEx;
 
@@ -378,7 +378,7 @@ typedef struct _PipeInfo
 	std::vector<std::string> 			extensions;         ///< For future extensions
 
 ///@privatesection
-	friend std::ostream &operator<<(std::ostream &,_PipeInfo &);
+	friend std::ostream &operator<<(std::ostream &, const _PipeInfo &);
 //	bool operator==(const _PipeInfo &);
 }PipeInfo;
 
@@ -573,7 +573,7 @@ public :
  * @param [in] str The printing stream
  * @param [in] ddh The instance to be printed
  */
-	friend std::ostream &operator<<(std::ostream &str,DeviceDataHistory &ddh);
+	friend std::ostream &operator<<(std::ostream &str, const DeviceDataHistory &ddh);
 
 ///@privatesection
 // Three following methods for compatibility with older release
@@ -671,7 +671,7 @@ public :
  * @param [in] str The printing stream
  * @param [in] dah The instance to be printed
  */
- 	friend std::ostream &operator<<(std::ostream &str,DeviceAttributeHistory &dah);
+	friend std::ostream &operator<<(std::ostream &str, const DeviceAttributeHistory &dah);
 
 ///@privatesection
 // Three following methods for compatibility with older release

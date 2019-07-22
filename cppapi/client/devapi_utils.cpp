@@ -558,7 +558,7 @@ bool _CommandInfo::operator==(const _CommandInfo &ci)
 	return _DevCommandInfo::operator==(ci) && disp_level == ci.disp_level;
 }
 
-std::ostream &operator<<(std::ostream &o_str,_CommandInfo &ci)
+std::ostream &operator<<(std::ostream &o_str, const _CommandInfo &ci)
 {
 	o_str << "Command name = " << ci.cmd_name << std::endl;
 

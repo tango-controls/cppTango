@@ -965,7 +965,10 @@ public :
  *
  * @return The exception flag
  */
-	std::bitset<numFlags> exceptions() {return exceptions_flags;}
+	std::bitset<numFlags> exceptions() const
+	{
+		return exceptions_flags;
+	}
 /**
  * Reset one exception flag
  *
@@ -1027,8 +1030,18 @@ public :
  *
  * @return A boolean set to true if the call failed
  */
-	bool has_failed() {DevErrorList *tmp;if ((tmp=err_list.operator->())==NULL)return false;
-	                   else{if (tmp->length() != 0)return true;else return false;}}
+	bool has_failed() const
+	{
+		const DevErrorList* errors = err_list.operator->();
+		if (errors)
+		{
+			return 0 != errors->length();
+		}
+		else
+		{
+			return false;
+		}
+	}
 /**
  * Get the error stack
  *
@@ -1137,7 +1150,7 @@ public :
  * @return Boolean set to true if the instance is empty
  * @exception WrongData if requested
  */
-	bool is_empty();
+	bool is_empty() const;
 /**
  * Returns the name of the attribute
  *
@@ -1269,7 +1282,7 @@ public :
  *
  * @return The attribute data type
  */
-	int get_type();
+	int get_type() const;
 /**
  * Get attribute data format
  *
@@ -1290,7 +1303,7 @@ public :
 	TimeVal &get_date() {return time;}
 //@}
 ///@privatesection
-	friend std::ostream &operator<<(std::ostream &,DeviceAttribute &);
+	friend std::ostream &operator<<(std::ostream &, const DeviceAttribute &);
 
 protected :
 ///@privatesection
@@ -1306,12 +1319,14 @@ protected :
         DeviceAttributeExt() {};
         DeviceAttributeExt & operator=(const DeviceAttributeExt &);
 
-        std::bitset<numFlags>    ext_state;
+        std::bitset<numFlags> ext_state;
 
         void deep_copy(const DeviceAttributeExt &);
     };
 
     std::unique_ptr<DeviceAttributeExt>  ext;
+
+    bool is_empty_noexcept() const;
 
 private:
     void init_common_class_members(const char * name,int dim_x,int dim_y);

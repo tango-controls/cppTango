@@ -732,8 +732,8 @@ public:
 	size_t get_insert_ind_from_name(const std::string &);
 
 	void reset_insert_ctr() {insert_ctr=0;}
-	DevVarPipeDataEltArray *get_insert_data() {return insert_elt_array;}
-	const DevVarPipeDataEltArray *get_extract_data() {return extract_elt_array;}
+	DevVarPipeDataEltArray *get_insert_data() const {return insert_elt_array;}
+	const DevVarPipeDataEltArray *get_extract_data() const {return extract_elt_array;}
 
 	void set_extract_data(const DevVarPipeDataEltArray *_ptr) {extract_elt_array=_ptr;}
 	void reset_insert_data_ptr() {insert_elt_array=nullptr;}
@@ -741,7 +741,7 @@ public:
 	void reset_extract_ctr() {extract_ctr=0;}
 	void set_extract_delete(bool _b) {extract_delete=_b;}
 
-	void print(std::ostream &,int,bool);
+	void print(std::ostream &, int, bool) const;
 
 protected:
 ///@privatesection
@@ -1070,7 +1070,7 @@ public :
  * @param [in] str The printing stream
  * @param [in] dd The instance to be printed
  */
-	friend std::ostream &operator<<(std::ostream &str,DevicePipe &dd);
+	friend std::ostream &operator<<(std::ostream &str, const DevicePipe &dd);
 
 public :
 ///@privatesection
@@ -1082,6 +1082,7 @@ public :
 
 	void set_time(TimeVal &_ti) {time=_ti;}
 	DevicePipeBlob &get_root_blob() {return the_root_blob;}
+	const DevicePipeBlob& get_root_blob() const {return the_root_blob;}
 
 	DevicePipe &operator[](const std::string &);
 
@@ -1113,13 +1114,13 @@ DevicePipe &operator>>(DevicePipe &_dp,char *&datum);
 //
 
 template <typename T>
-std::ostream &operator<<(std::ostream &,DataElement<T> &);
+std::ostream &operator<<(std::ostream &, const DataElement<T> &);
 
 template <typename T>
-std::ostream &operator<<(std::ostream &,DataElement<std::vector<T> > &);
+std::ostream &operator<<(std::ostream &, const DataElement<std::vector<T> > &);
 
 template <typename T>
-std::ostream &operator<<(std::ostream &,DataElement<T *> &);
+std::ostream &operator<<(std::ostream &, const DataElement<T *> &);
 
 //
 // For DevicePipe insertion

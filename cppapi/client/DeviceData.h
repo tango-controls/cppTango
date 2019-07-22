@@ -621,11 +621,11 @@ public :
  * @param [in] str The printing stream
  * @param [in] dd The instance to be printed
  */
-	friend std::ostream &operator<<(std::ostream &str,DeviceData &dd);
+	friend std::ostream &operator<<(std::ostream &str, const DeviceData &dd);
 
 protected :
 ///@privatesection
-	bool any_is_null();
+	bool any_is_null() const;
 
 	std::bitset<numFlags> 	exceptions_flags;
 
