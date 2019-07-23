@@ -255,8 +255,10 @@ void Util::effective_job(int argc,char *argv[])
 
 		ApiUtil *au = Tango::ApiUtil::instance();
 		CORBA::ORB_ptr orb_clnt  = au->get_orb();
+		bool log_client_orb_deleted = false;
 		if (CORBA::is_nil(orb_clnt) == false)
 		{
+			log_client_orb_deleted = true;
 			orb_clnt->destroy();
 			CORBA::release(orb_clnt);
 			au->set_orb(CORBA::ORB::_nil());
@@ -417,6 +419,10 @@ void Util::effective_job(int argc,char *argv[])
 		Logging::init(ds_name, (int)_tracelevel,  ((!_FileDb) && _UseDb), *db, this);
 #endif
 
+		if (log_client_orb_deleted)
+		{
+			cout1 << "Client ORB was initialized in before the server ORB, all proxies must be invalidated" << std::endl;
+		}
 		cout4 << "Connected to database" << endl;
 		if (get_db_cache() == NULL)
 			cout4 << "DbServerCache unavailable, will call db..." << endl;
