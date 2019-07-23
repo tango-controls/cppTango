@@ -114,8 +114,8 @@ void Logging::init (const std::string& ds_name, // dserver name
     // set default <rollover> threshold for RollingFileAppender
     Logging::_rft = kDefaultRollingThreshold;
     // try to get logging path from kTangoLogPathVar env. var.
-    char *ftg_path = ::getenv(kTangoLogPathVar);
-    if (ftg_path == 0 || ::strlen(ftg_path) == 0) {
+    const int log_path_lookup_status = ApiUtil::get_env_var(kTangoLogPathVar, Logging::_log_path);
+    if (log_path_lookup_status != 0 || Logging::_log_path.empty()) {
       // log path not set or empty, use default path
       Logging::_log_path = kDefaultTangoLogPath;
 #ifndef _TG_WINDOWS_
@@ -132,9 +132,6 @@ void Logging::init (const std::string& ds_name, // dserver name
           Logging::_log_path = Logging::_log_path + '-' + buffer;
       }
 #endif
-    }
-    else {
-      Logging::_log_path = ftg_path;
     }
     _VERBOSE(("\tTANGO_LOG_PATH is %s\n", Logging::_log_path.c_str()));
     // build logger name from dserver name
