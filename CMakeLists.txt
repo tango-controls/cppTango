@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 2.8.12)
 include(CTest)
 
+option(USE_PCH "Use precompiled header for server/tango.h" OFF)
+if (USE_PCH AND NOT (CMAKE_CXX_COMPILER_ID MATCHES "GNU|MSVC"))
+    message(WARNING "Precompiled headers are not supported for selected compiler.")
+    set(USE_PCH OFF)
+endif()
+
 enable_testing()
 #need to define the version of the library
 set(MAJOR_VERSION "9")
@@ -9,7 +15,10 @@ set(PATCH_VERSION "3")
 
 if(WIN32)
     include(configure/cmake_win_defs.cmake)
-endif(WIN32)
+    include(configure/cmake_pch_win.cmake)
+else()
+    include(configure/cmake_pch_linux.cmake)
+endif()
 
 #convenient versions
 set(LIBRARY_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
@@ -27,7 +36,6 @@ include_directories(log4tango/include)
 #required for generated config.h
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/cppapi/server)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
-
 
 #source code
 add_subdirectory("log4tango")

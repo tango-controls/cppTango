@@ -139,7 +139,7 @@ if(WIN32)
         coutbuf.cpp
         ntservice.cpp
         w32win.cpp)
-          
+
     add_library(server_objects_dyn OBJECT ${SOURCES} ${SOURCES_WIN})
     add_library(server_objects_sta OBJECT ${SOURCES} ${SOURCES_WIN})
     target_compile_definitions(server_objects_dyn PRIVATE "${dyn_defs}")
@@ -149,6 +149,10 @@ if(WIN32)
         target_compile_options(server_objects_sta PRIVATE "/MTd")
     else()
         target_compile_options(server_objects_sta PRIVATE "/MT")
+    endif()
+    if(USE_PCH)
+        tango_target_pch(server_objects_dyn)
+        tango_target_pch(server_objects_sta)
     endif()
 else(WIN32)
     add_library(server_objects OBJECT ${SOURCES})
@@ -161,6 +165,10 @@ else(WIN32)
         # A Linux Tango Device Server using the debug tango lib will display
         # twice "Ready to accept requests" at startup
         target_compile_definitions(server_objects PRIVATE _REENTRANT)
+    endif()
+    if(USE_PCH)
+        tango_add_pch(tango_pch server_objects "")
+        tango_target_pch(server_objects tango_pch)
     endif()
 endif(WIN32)
 
