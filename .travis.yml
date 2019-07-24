@@ -47,12 +47,74 @@ before_install:
   - wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip && unzip build-wrapper-linux-x86.zip
 
 before_script:
-  - docker run --name mysql_db -e MYSQL_ROOT_PASSWORD=root -d tangocs/mysql:9.2.2 --sql-mode=""
-  - CONTAINER=$(docker run --name tango_cs -e TANGO_HOST=127.0.0.1:10000 -e MYSQL_HOST=mysql_db:3306 -e MYSQL_USER=tango -e MYSQL_PASSWORD=tango -e MYSQL_DATABASE=tango --link mysql_db:mysql_db -d tangocs/tango-cs:latest)
-  - IPADDR=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' $CONTAINER)
-  - TANGO_HOST=${IPADDR}:10000
+  - >
+      docker run
+      --rm
+      --name mysql_db
+      -e MYSQL_ROOT_PASSWORD=root
+      -e MYSQL_INITDB_SKIP_TZINFO=1
+      -d
+      tangocs/mysql:9.2.2
+      --sql-mode=""
+      --innodb=OFF
+      --default-storage-engine=MyISAM
+  - >
+      docker run
+      --rm
+      --name mysql_db2
+      -e MYSQL_ROOT_PASSWORD=root
+      -e MYSQL_INITDB_SKIP_TZINFO=1
+      -d
+      tangocs/mysql:9.2.2
+      --sql-mode=""
+      --innodb=OFF
+      --default-storage-engine=MyISAM
+  - >
+      docker run
+      --rm
+      --name tango_cs
+      -e TANGO_HOST=127.0.0.1:10000
+      -e MYSQL_HOST=mysql_db:3306
+      -e MYSQL_USER=tango
+      -e MYSQL_PASSWORD=tango
+      -e MYSQL_DATABASE=tango
+      --link mysql_db:mysq_db
+      -d
+      tangocs/tango-cs:latest
+  - >
+      docker run
+      --rm
+      --name tango_cs2
+      -e TANGO_HOST=127.0.0.1:10000
+      -e MYSQL_HOST=mysql_db2:3306
+      -e MYSQL_USER=tango
+      -e MYSQL_PASSWORD=tango
+      -e MYSQL_DATABASE=tango
+      --link mysql_db2:mysq_db2
+      -d
+      tangocs/tango-cs:latest
+  - TANGO_HOST_IP=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' tango_cs)
+  - TANGO_HOST_IP2=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' tango_cs2)
+  - TANGO_HOST=${TANGO_HOST_IP}:10000
   - docker build --build-arg APP_UID=$(id -u) --build-arg APP_GID=$(id -g) -t cpp_tango .travis/${OS_TYPE}
-  - docker run --name cpp_tango -e TANGO_HOST=${TANGO_HOST} -e BINTRAY_USER_NAME=tango-ci -e BINTRAY_API_KEY=${CI_BINTRAY_API_KEY} -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} --link tango_cs:tango_cs -v `pwd`:/home/tango/src -v `pwd`/idl:/home/tango/idl -v `pwd`/cppzmq:/home/tango/cppzmq -v `pwd`/coveralls-cmake:/home/tango/coveralls-cmake -v `pwd`/build-wrapper-linux-x86:/home/tango/build-wrapper-linux-x86 -dit cpp_tango
+  - >
+      docker run
+      --rm
+      --name cpp_tango
+      -e TANGO_HOST=${TANGO_HOST}
+      -e TANGO_HOST2=${TANGO_HOST_IP2}:10000
+      -e BINTRAY_USER_NAME=tango-ci
+      -e BINTRAY_API_KEY=${CI_BINTRAY_API_KEY}
+      -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN}
+      --link tango_cs
+      --link tango_cs2
+      -v `pwd`:/home/tango/src
+      -v `pwd`/idl:/home/tango/idl
+      -v `pwd`/cppzmq:/home/tango/cppzmq
+      -v `pwd`/coveralls-cmake:/home/tango/coveralls-cmake
+      -v `pwd`/build-wrapper-linux-x86:/home/tango/build-wrapper-linux-x86
+      -dit
+      cpp_tango
   - .travis/install_tango_idl.sh
   - (test ${STOCK_CPPZMQ} = "OFF" && .travis/install_cppzmq.sh) || true
 #work around gcov ignored by sonar
@@ -76,8 +138,5 @@ deploy:
 
 after-script:
   - docker stop cpp_tango
-  - docker rm cpp_tango
-  - docker stop tango_cs
-  - docker rm tango_cs
-  - docker stop mysql_db
-  - docker rm mysql_db
+  - docker stop tango_cs tango_cs2
+  - docker stop mysql_db mysql_db2
