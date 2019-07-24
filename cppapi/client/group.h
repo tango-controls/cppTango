@@ -56,13 +56,11 @@ class GroupElement;
 //=============================================================================
 // Misc. Typedefs
 //=============================================================================
-//- group content (individual devices and/or sub-groups)
 typedef std::vector<GroupElement*> GroupElements;
-//- group content iterator
 typedef GroupElements::iterator GroupElementsIterator;
-//-----------------------------------------------------------------------------
-//- define what is a list of token (for name pattern management)
 typedef std::vector<std::string> TokenList;
+typedef std::vector<std::string> DeviceNames;
+
 //=============================================================================
 // class ExtRequestDesc : an asynch. request holder for groups
 //-----------------------------------------------------------------------------
@@ -585,13 +583,21 @@ private:
 //=============================================================================
 class GroupElementFactory
 {
-  friend class Group;
-
+public:
   //- instanciatethe GroupElement which name matches the specified pattern with the specified timeout
   //- timeout = -1 => do not change the timeout
   static GroupElements instanciate (const std::string& p, int tmo = -1);
 
+private:
   static void parse_name (const std::string& p, std::string &db_host, int &db_port, std::string &dev_pattern);
+
+  static GroupElements create_group_elements(const DeviceNames&, int timeout_millis);
+  static DeviceNames resolve_device_names(const std::string&);
+  static DeviceNames resolve_local_device_names(const std::string&);
+  static DeviceNames resolve_remote_device_names(
+    int db_port,
+    std::string& db_host,
+    std::string& name_or_pattern_without_host);
 
   //- forbidden methods
   GroupElementFactory();

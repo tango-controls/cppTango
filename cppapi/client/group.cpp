@@ -49,63 +49,83 @@ bool GroupReply::exception_enabled = false;
 //=============================================================================
 // class GroupElementFactory
 //=============================================================================
-GroupElements GroupElementFactory::instanciate (const std::string& p, int tmo_ms)
+GroupElements GroupElementFactory::instanciate(
+    const std::string& name_or_pattern,
+    int timeout_millis)
 {
-#if defined(_LOCAL_DEBUGGING)
-  cout << "GroupElementFactory::instanciate::pattern [" << p << "]" << endl;
-#endif
-  //- a vector to store device names
-  std::vector<std::string> dnl(0);
-  //- is <p> a device name or a device name pattern ?
-  if (p.find('*', 0) == std::string::npos)
-  {
-#if defined(_LOCAL_DEBUGGING)
-    cout << "\t|- pattern is pure device name" << endl;
-#endif
-    dnl.push_back(p);
-  }
-  else
-  {
- 	  int db_port = 0;
-    std::string db_host, new_pattern;
-	  DbDatum dbd;
-	  parse_name(p, db_host, db_port, new_pattern);
+    return create_group_elements(resolve_device_names(name_or_pattern), timeout_millis);
+}
 
-    if (db_host.size() == 0) {
-  	  Database db;
-      //- ask the db the list of device matching pattern p
-  	  dbd = db.get_device_exported(const_cast<std::string&>(p));
-    }
-	  else {
-		  ApiUtil *au = ApiUtil::instance();
-		  int db_ind = au->get_db_ind(db_host,db_port);
-		  dbd = ((au->get_db_vect())[db_ind])->get_device_exported(const_cast<std::string&>(new_pattern));
-	  }
+GroupElements GroupElementFactory::create_group_elements(const DeviceNames& names, int timeout_millis)
+{
+    GroupElements group_elements;
+    group_elements.reserve(names.size());
 
-    //- extract device names from dbd
-    dbd >> dnl;
-#if defined(_LOCAL_DEBUGGING)
-    cout << "\t|- db.get_device_exported::found ";
-    cout << dnl.size() << " device names matching pattern" << endl;
-    for (unsigned int dn = 0; dn < dnl.size(); dn++) {
-      cout << "\t\t|- " << dnl[dn] << endl;
+    for (DeviceNames::const_iterator name = names.begin(); name != names.end(); ++name)
+    {
+        group_elements.push_back(new GroupDeviceElement(*name, timeout_millis));
     }
-#endif
-  }
-  //- build the returned GroupElementList
-  GroupElements tel(0);
-  GroupDeviceElement* tde;
-  for (unsigned int i = 0; i < dnl.size(); i++) {
-    tde = new GroupDeviceElement(dnl[i],tmo_ms);
-    if (tde) {
-      tel.push_back(tde);
+
+    return group_elements;
+}
+
+DeviceNames GroupElementFactory::resolve_device_names(const std::string& name_or_pattern)
+{
+    const bool is_name = name_or_pattern.find('*') == std::string::npos;
+
+    if (is_name)
+    {
+        return DeviceNames(1, name_or_pattern);
     }
-  }
-#if defined(_LOCAL_DEBUGGING)
-    cout << "\t|- GroupElementList contains " << tel.size() << " elements" << endl;
-#endif
-  //- return the list to the caller
-  return tel;
+    else
+    {
+        int db_port = 0;
+        std::string db_host = "";
+        std::string name_or_pattern_without_host = "";
+        parse_name(name_or_pattern, db_host, db_port, name_or_pattern_without_host);
+
+        const bool is_local_device = db_host.empty();
+
+        if (is_local_device)
+        {
+            return resolve_local_device_names(name_or_pattern);
+        }
+        else
+        {
+            return resolve_remote_device_names(
+                db_port,
+                db_host,
+                name_or_pattern_without_host);
+        }
+    }
+}
+
+DeviceNames GroupElementFactory::resolve_local_device_names(const std::string& name_or_pattern)
+{
+    std::string& name_or_patern_non_const = const_cast<std::string&>(name_or_pattern);
+    Database db;
+    DbDatum db_data = db.get_device_exported(name_or_patern_non_const);
+
+    DeviceNames device_names;
+    device_names.reserve(db_data.size());
+    db_data >> device_names;
+    return device_names;
+}
+
+DeviceNames GroupElementFactory::resolve_remote_device_names(
+    int db_port,
+    std::string& db_host,
+    std::string& name_or_pattern_without_host)
+{
+    ApiUtil& api_util = *ApiUtil::instance();
+    const int db_index = api_util.get_db_ind(db_host, db_port);
+    Database& db = *(api_util.get_db_vect()[db_index]);
+    DbDatum db_data = db.get_device_exported(name_or_pattern_without_host);
+
+    DeviceNames device_names;
+    device_names.reserve(db_data.size());
+    db_data >> device_names;
+    return device_names;
 }
 
 void GroupElementFactory::parse_name (const std::string& p, string &db_host,int &db_port,string &dev_pattern)
@@ -864,7 +884,7 @@ void Group::remove_i (const std::string& p, bool fwd)
 #endif
   if (name_equals(p)) {
 #if defined(_LOCAL_DEBUGGING)
-    cout << "Group::remove_i::failed to remove " << _p << " (can't remove self)" << endl;
+    cout << "Group::remove_i::failed to remove " << p << " (can't remove self)" << endl;
 #endif
     return;
   }
