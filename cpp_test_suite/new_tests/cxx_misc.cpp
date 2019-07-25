@@ -1,15 +1,7 @@
 #ifndef MiscTestSuite_h
 #define MiscTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
-
-using namespace Tango;
-using namespace std;
-
-#define cout cout << "\t"
+#include "cxx_common.h"
 
 #undef SUITE_NAME
 #define SUITE_NAME MiscTestSuite

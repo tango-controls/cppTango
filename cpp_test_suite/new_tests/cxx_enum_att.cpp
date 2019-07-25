@@ -1,16 +1,9 @@
 #ifndef EnumTestSuite_h
 #define EnumTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
-
-using namespace Tango;
-using namespace std;
+#include "cxx_common.h"
 
 #define coutv_cb 	if (parent->verbose == true) cout << "\t"
-#define cout cout << "\t"
 
 #undef SUITE_NAME
 #define SUITE_NAME EnumAttTestSuite
@@ -252,7 +245,7 @@ public:
 // Scalar att
 
 		short sh_wr = 2;
-		DeviceAttribute da_wr("Enum_attr_rw",sh_wr);	
+		DeviceAttribute da_wr("Enum_attr_rw",sh_wr);
 		TS_ASSERT_THROWS_NOTHING(device1->write_attribute(da_wr));
 
 		DeviceAttribute da_read;
@@ -313,15 +306,15 @@ public:
 // Scalar att
 
 		short sh_wr = 2;
-		DeviceAttribute da_wr("Enum_attr_rw",sh_wr);	
+		DeviceAttribute da_wr("Enum_attr_rw",sh_wr);
 		TS_ASSERT_THROWS_NOTHING(device1->write_attribute(da_wr));
 
 // Restart the server
 
 		TS_ASSERT_THROWS_NOTHING(adm_dev->command_inout("RestartServer"));
-	
+
 		Tango_sleep(3);
-		
+
 		delete device1;
 		device1 = new DeviceProxy(device1_name);
 
@@ -343,7 +336,7 @@ public:
 		attr_poll.lvalue.length(1);
 		attr_poll.svalue.length(3);
 
-// Start polling 
+// Start polling
 
 		attr_poll.lvalue[0] = 300;
 		attr_poll.svalue[0] = device1_name.c_str();
@@ -477,8 +470,8 @@ public:
 
 		f_val = 2;
 		din << f_val;
-		TS_ASSERT_THROWS_NOTHING(device1->command_inout("ForbiddenEnumValue",din));	
-	}	
+		TS_ASSERT_THROWS_NOTHING(device1->command_inout("ForbiddenEnumValue",din));
+	}
 };
 
 #undef cout

@@ -1,16 +1,8 @@
 #ifndef GroupTestSuite_h
 #define GroupTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
 #include <ctime>
-
-using namespace Tango;
-using namespace std;
-
-#define cout cout << "\t"
+#include "cxx_common.h"
 
 #undef SUITE_NAME
 #define SUITE_NAME GroupTestSuite

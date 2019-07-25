@@ -1,16 +1,9 @@
 #ifndef FwdTestSuite_h
 #define FwdTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
-
-using namespace Tango;
-using namespace std;
+#include "cxx_common.h"
 
 #define coutv_cb 	if (parent->verbose == true) cout << "\t"
-#define cout cout << "\t"
 
 #undef SUITE_NAME
 #define SUITE_NAME FwdAttTestSuite
@@ -283,7 +276,7 @@ public:
 		TS_ASSERT(short_attr.name == "fwd_short_rw");
 		TS_ASSERT(short_attr.quality == Tango::ATTR_VALID);
 		TS_ASSERT(short_attr.dim_x == 1);
-		TS_ASSERT(short_attr.dim_y == 0);	
+		TS_ASSERT(short_attr.dim_y == 0);
 		TS_ASSERT(sh == 66);
 
 		TS_ASSERT_THROWS_NOTHING(string_attr = fwd_device->read_attribute("fwd_string_w"));
@@ -578,7 +571,7 @@ public:
 		confs_root = device1->get_attribute_config_ex(att_names_root);
 
 		(*confs_root)[0].label = "Ca marche?";
-		device1->set_attribute_config(*confs_root);	
+		device1->set_attribute_config(*confs_root);
 
 		confs = fwd_device->get_attribute_config_ex(att_names);
 		TS_ASSERT((*confs)[0].label == "Gasp a fwd attribute");
@@ -590,10 +583,10 @@ public:
 		TS_ASSERT((*confs)[0].label == "Hai Hai Hai");
 
 		confs_root = device1->get_attribute_config_ex(att_names_root);
-		TS_ASSERT((*confs_root)[0].label == "Ca marche?");	
+		TS_ASSERT((*confs_root)[0].label == "Ca marche?");
 
 		delete confs;
-		delete confs_root;			
+		delete confs_root;
 	}
 
 // Try a write_read on a fwd attribute
@@ -702,7 +695,7 @@ public:
 		TS_ASSERT_THROWS_ASSERT(da_fail >> ds, Tango::DevFailed &e,
 						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotPolled"
 								&& e.errors[0].severity == Tango::ERR));
-		
+
 	}
 
 // Events and forwarded attributes
@@ -723,9 +716,9 @@ public:
 		{
 			Tango::Except::print_exception(e);
 		}
-		
+
 		TS_ASSERT_THROWS_ASSERT(fwd_device->subscribe_event("fwd_short_rw",Tango::PERIODIC_EVENT,&cb),Tango::DevFailed &e,
-							TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttributePollingNotStarted" 
+							TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttributePollingNotStarted"
 										&& e.errors[0].severity == Tango::ERR));
 
 		// Start polling on root device and subscribe
@@ -755,7 +748,7 @@ public:
 		// unsubscribe from event
 
 		fwd_device->unsubscribe_event(eve_id);
-		
+
 		// Stop polling
 
 		DevVarStringArray rem_attr_poll;
@@ -774,7 +767,7 @@ public:
 	void test_locking_device_with_forwarded_attribute()
 	{
 		fwd_device->lock();
-		
+
 		bool lo = device1->is_locked();
 		TS_ASSERT(lo == true);
 

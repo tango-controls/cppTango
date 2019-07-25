@@ -1,15 +1,7 @@
 #ifndef PipeTestSuite_h
 #define PipeTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
-
-using namespace Tango;
-using namespace std;
-
-#define cout cout << "\t"
+#include "cxx_common.h"
 
 #undef SUITE_NAME
 #define SUITE_NAME PipeTestSuite
@@ -159,8 +151,8 @@ public:
 		TS_ASSERT(type == DEVVAR_DOUBLEARRAY);
 
 		type = pipe_data.get_data_elt_type(2);
-		TS_ASSERT(type == DEVVAR_USHORTARRAY);	
-	
+		TS_ASSERT(type == DEVVAR_USHORTARRAY);
+
 		type = pipe_data.get_data_elt_type(3);
 		TS_ASSERT(type == DEVVAR_STATEARRAY);
 
@@ -343,7 +335,7 @@ public:
 	}
 
 	void test_reading_pipe_initialized_with_data_elt(void)
-	{		
+	{
 		DevicePipe pipe_data = device1->read_pipe("rPipeDE");
 
 		size_t de_nb = pipe_data.get_data_elt_nb();
@@ -503,7 +495,7 @@ public:
 		TS_ASSERT_THROWS_ASSERT(pipe_data = device1->read_pipe("rpipe");, Tango::DevFailed &e,
 						TS_ASSERT(string(e.errors[0].reason.in()) == "API_PipeValueNotSet"
 								&& e.errors[0].severity == Tango::ERR));
-		
+
 // Error pipe not found
 
 		TS_ASSERT_THROWS_ASSERT(pipe_data = device1->read_pipe("pi");, Tango::DevFailed &e,

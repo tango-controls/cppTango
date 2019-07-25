@@ -1,16 +1,8 @@
 #ifndef EncodedTestSuite_h
 #define EncodedTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
 #include <ctime>
-
-using namespace Tango;
-using namespace std;
-
-#define cout cout << "\t"
+#include "cxx_common.h"
 
 #undef SUITE_NAME
 #define SUITE_NAME EncodedTestSuite
@@ -188,7 +180,7 @@ public:
 		delete [] att_read_data_ptr;
 
 //-------
-	
+
 		att_de.encoded_format = "Hola";
 		att_de.encoded_data.length(2);
 		att_de.encoded_data[0] = 0x10;

@@ -1,17 +1,9 @@
 #ifndef ClassSignalTestSuite_h
 #define ClassSignalTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
 #include <signal.h>
 #include "compare_test.h"
-
-using namespace Tango;
-using namespace std;
-
-#define cout cout << "\t"
+#include "cxx_common.h"
 
 #undef SUITE_NAME
 #define SUITE_NAME ClassSignalTestSuite

@@ -1,19 +1,11 @@
 #ifndef BlackboxTestSuite_h
 #define BlackboxTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
+#include "cxx_common.h"
 
 #ifdef _TG_WINDOWS_
 #include <process.h> // needed to obtain process id
 #endif 	// _TG_WINDOWS_
-
-using namespace Tango;
-using namespace std;
-
-#define cout cout << "\t"
 
 #undef SUITE_NAME
 #define SUITE_NAME BlackboxTestSuite

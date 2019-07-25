@@ -1,17 +1,10 @@
 #ifndef McastSimpleTestSuite_h
 #define McastSimpleTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
-
-using namespace Tango;
-using namespace std;
+#include "cxx_common.h"
 
 #define coutv	if (verbose == true) cout << "\t"
 #define coutv_cb 	if (parent->verbose == true) cout << "\t"
-#define cout cout << "\t"
 
 #undef SUITE_NAME
 #define SUITE_NAME McastSimpleTestSuite
@@ -121,7 +114,7 @@ public:
 
 	void test_Subscribe_multicast_event_locally(void)
 	{
-		
+
 // switch on the polling first!
 
 		local_device->poll_attribute(att_name,1000);
@@ -132,10 +125,10 @@ public:
 		bool po = local_device->is_attribute_polled(att_name);
 		coutv << "attribute polled : " << po << endl;
 		TS_ASSERT ( po == true);
-		
+
 		int poll_period = local_device->get_attribute_poll_period(att_name);
 		coutv << "att polling period : " << poll_period << endl;
-		TS_ASSERT( poll_period == 1000);	
+		TS_ASSERT( poll_period == 1000);
 	}
 
 	void test_Subscribe_multicast_event_remotely(void)
@@ -151,10 +144,10 @@ public:
 		bool po = remote_device->is_attribute_polled(att_name);
 		coutv << "attribute polled : " << po << endl;
 		TS_ASSERT ( po == true);
-		
+
 		int poll_period = remote_device->get_attribute_poll_period(att_name);
 		coutv << "att polling period : " << poll_period << endl;
-		TS_ASSERT( poll_period == 1000);		
+		TS_ASSERT( poll_period == 1000);
 	}
 
 // Check that first point has been received
@@ -172,14 +165,14 @@ public:
 
 	void test_Callback_executed_after_a_change_localy_and_remotely(void)
 	{
-#ifndef WIN32		
+#ifndef WIN32
 		int rest = sleep(1);
 		if (rest != 0)
 			sleep(1);
 #else
 		Sleep(1000);
 #endif
-			
+
 		local_device->command_inout("IOIncValue");
 		remote_device->command_inout("IOIncValue");
 
@@ -190,7 +183,7 @@ public:
 #else
 		Sleep(2000);
 #endif
-						
+
 		coutv << "local cb excuted = " << cb_local->cb_executed << endl;
 		coutv << "remote cb executed = " << cb_remote->cb_executed << endl;
 
@@ -218,7 +211,7 @@ public:
 		try
 		{
 			dev_ptr = new DeviceProxy(dev_name);
-				
+
 //
 // Test set up (stop polling and clear abs_change and rel_change attribute
 // properties but restart device to take this into account)
@@ -236,7 +229,7 @@ public:
 			dbd.push_back(DbDatum("abs_change"));
 			dbd.push_back(DbDatum("rel_change"));
 			dba.delete_property(dbd);
-		
+
 			dbd.clear();
 			a << (short)1;
 			dbd.push_back(a);
@@ -244,12 +237,12 @@ public:
 			ch << (short)1;
 			dbd.push_back(ch);
 			dba.put_property(dbd);
-		
+
 			DeviceProxy adm_dev(dev_ptr->adm_name().c_str());
 			DeviceData di;
 			di << dev_name;
 			adm_dev.command_inout("DevRestart",di);
-		
+
 			delete dev_ptr;
 
 			dev_ptr = new DeviceProxy(dev_name);

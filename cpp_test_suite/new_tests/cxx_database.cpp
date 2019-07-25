@@ -1,16 +1,8 @@
 #ifndef DatabaseTestSuite_h
 #define DatabaseTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
 #include <ctime>
-
-using namespace Tango;
-using namespace std;
-
-#define cout cout << "\t"
+#include "cxx_common.h"
 
 #undef SUITE_NAME
 #define SUITE_NAME DatabaseTestSuite
@@ -242,7 +234,7 @@ public:
 		del_all.push_back(DbDatum("_tst_pipe"));
 		TS_ASSERT_THROWS_NOTHING(db->delete_all_device_pipe_property("a/b/c",del_all));
 	}
-	    
+
 };
 #undef cout
 #endif // DatabaseTestSuite_h
