@@ -1017,10 +1017,9 @@ enum LogTarget {
 
 #endif // TANGO_HAS_LOG4TANGO
 
-//
-// The command argument name
-//
-
+/// List of command types
+///
+/// For converting a type from CmdArgType to a number use data_type_to_string().
 const char * const CmdArgTypeName[] = {
 	"DevVoid",
 	"DevBoolean",
@@ -1056,6 +1055,14 @@ const char * const CmdArgTypeName[] = {
 	"DevVarStateArray",
 	"Unknown"
 };
+
+/// Convert data types to strings
+inline TANGO_CONSTEXPR const char * data_type_to_string(int type)
+{
+    return (type >= DEV_VOID
+            && type < (static_cast<int>(sizeof(CmdArgTypeName) / sizeof(CmdArgTypeName[0]))))
+            ? CmdArgTypeName[type] : "Unknown";
+}
 
 //
 // The state name
