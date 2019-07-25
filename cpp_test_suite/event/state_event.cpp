@@ -216,7 +216,7 @@ int main(int argc, char **argv)
 
 		assert (cb.cb_executed >= 4);
 		assert (cb.cb_err == 0);
-		assert (cb.sta == Tango::ON);
+		assert (cb.sta == Tango::MOVING);
 
 		cout << "   Event on state manually pushed --> OK" << endl;
 				

@@ -3157,210 +3157,166 @@ void Attribute::add_write_value(Tango::DevEncoded &val_ref)
 
 void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::DeviceImpl *d)
 {
-	if ((name_lower == "state") || (name_lower == "status"))
+	if (quality != Tango::ATTR_INVALID)
 	{
-		ptr->quality = Tango::ATTR_VALID;
+		MultiAttribute *m_attr = d->get_device_attr();
+
+		// Add the attribute setpoint to the value sequence
+
+		if ((writable == Tango::READ_WRITE) ||
+			(writable == Tango::READ_WITH_WRITE))
+		{
+			m_attr->add_write_value(*this);
+		}
+
+		// check for alarms to position the data quality value.
+		if ( is_alarmed().any() == true )
+		{
+			check_alarm();
+		}
+
+		Tango::DevVarShortArray *sh_seq;
+		Tango::DevShort *sh_tmp_ptr;
+		Tango::DevVarLongArray *lo_seq;
+		Tango::DevLong *lo_tmp_ptr;
+		Tango::DevVarDoubleArray *db_seq;
+		Tango::DevDouble *db_tmp_ptr;
+		Tango::DevVarStringArray *str_seq;
+		Tango::DevString *str_tmp_ptr;
+		Tango::DevVarFloatArray *fl_seq;
+		Tango::DevFloat *fl_tmp_ptr;
+		Tango::DevVarBooleanArray *bo_seq;
+		Tango::DevBoolean *bo_tmp_ptr;
+		Tango::DevVarUShortArray *ush_seq;
+		Tango::DevUShort *ush_tmp_ptr;
+		Tango::DevVarUCharArray *uch_seq;
+		Tango::DevUChar *uch_tmp_ptr;
+		Tango::DevVarLong64Array *lo64_seq;
+		Tango::DevLong64 *lo64_tmp_ptr;
+		Tango::DevVarULongArray *ulo_seq;
+		Tango::DevULong *ulo_tmp_ptr;
+		Tango::DevVarULong64Array *ulo64_seq;
+		Tango::DevULong64 *ulo64_tmp_ptr;
+		Tango::DevVarStateArray *state_seq;
+		Tango::DevState *state_tmp_ptr;
+
 		CORBA::Any &a = ptr->value;
+		long	seq_length = value.sh_seq->length();
 
-		if (name_lower == "state")
+		switch (data_type)
 		{
-			a <<= d->get_state();
+		case Tango::DEV_SHORT :
+		case Tango::DEV_ENUM:
+			sh_tmp_ptr = get_short_value()->get_buffer();
+			sh_seq = new Tango::DevVarShortArray(seq_length,seq_length,sh_tmp_ptr,false);
+			a <<= *sh_seq;
+			delete sh_seq;
+			break;
+
+		case Tango::DEV_LONG :
+			lo_tmp_ptr = get_long_value()->get_buffer();
+			lo_seq = new Tango::DevVarLongArray(seq_length,seq_length,lo_tmp_ptr,false);
+			a <<= *lo_seq;
+			delete lo_seq;
+			break;
+
+		case Tango::DEV_LONG64 :
+			lo64_tmp_ptr = get_long64_value()->get_buffer();
+			lo64_seq = new Tango::DevVarLong64Array(seq_length,seq_length,lo64_tmp_ptr,false);
+			a <<= *lo64_seq;
+			delete lo64_seq;
+			break;
+
+		case Tango::DEV_DOUBLE :
+			db_tmp_ptr = get_double_value()->get_buffer();
+			db_seq = new Tango::DevVarDoubleArray(seq_length,seq_length,db_tmp_ptr,false);
+			a <<= *db_seq;
+			delete db_seq;
+			break;
+
+		case Tango::DEV_STRING :
+			str_tmp_ptr = get_string_value()->get_buffer();
+			str_seq = new Tango::DevVarStringArray(seq_length,seq_length,str_tmp_ptr,false);
+			a <<= *str_seq;
+			delete str_seq;
+			break;
+
+		case Tango::DEV_FLOAT :
+			fl_tmp_ptr = get_float_value()->get_buffer();
+			fl_seq = new Tango::DevVarFloatArray(seq_length,seq_length,fl_tmp_ptr,false);
+			a <<= *fl_seq;
+			delete fl_seq;
+			break;
+
+		case Tango::DEV_BOOLEAN :
+			bo_tmp_ptr = get_boolean_value()->get_buffer();
+			bo_seq = new Tango::DevVarBooleanArray(seq_length,seq_length,bo_tmp_ptr,false);
+			a <<= *bo_seq;
+			delete bo_seq;
+			break;
+
+		case Tango::DEV_USHORT :
+			ush_tmp_ptr = get_ushort_value()->get_buffer();
+			ush_seq = new Tango::DevVarUShortArray(seq_length,seq_length,ush_tmp_ptr,false);
+			a <<= *ush_seq;
+			delete ush_seq;
+			break;
+
+		case Tango::DEV_UCHAR :
+			uch_tmp_ptr = get_uchar_value()->get_buffer();
+			uch_seq = new Tango::DevVarUCharArray(seq_length,seq_length,uch_tmp_ptr,false);
+			a <<= *uch_seq;
+			delete uch_seq;
+			break;
+
+		case Tango::DEV_ULONG :
+			ulo_tmp_ptr = get_ulong_value()->get_buffer();
+			ulo_seq = new Tango::DevVarULongArray(seq_length,seq_length,ulo_tmp_ptr,false);
+			a <<= *ulo_seq;
+			delete ulo_seq;
+			break;
+
+		case Tango::DEV_ULONG64 :
+			ulo64_tmp_ptr = get_ulong64_value()->get_buffer();
+			ulo64_seq = new Tango::DevVarULong64Array(seq_length,seq_length,ulo64_tmp_ptr,false);
+			a <<= *ulo64_seq;
+			delete ulo64_seq;
+			break;
+
+		case Tango::DEV_STATE :
+			state_tmp_ptr = get_state_value()->get_buffer();
+			state_seq = new Tango::DevVarStateArray(seq_length,seq_length,state_tmp_ptr,false);
+			a <<= *state_seq;
+			delete state_seq;
+			break;
+		}
+
+		ptr->r_dim.dim_x = dim_x;
+		ptr->r_dim.dim_y = dim_y;
+		if ((writable == Tango::READ_WRITE) ||
+			 (writable == Tango::READ_WITH_WRITE))
+		{
+			WAttribute &assoc_att = m_attr->get_w_attr_by_ind(get_assoc_ind());
+			ptr->w_dim.dim_x = assoc_att.get_w_dim_x();
+			ptr->w_dim.dim_y = assoc_att.get_w_dim_y();
 		}
 		else
 		{
-			Tango::DevVarStringArray str_seq(1);
-			str_seq.length(1);
-			str_seq[0] = Tango::string_dup(d->get_status().c_str());
-
-			a <<= str_seq;
-		}
-
-#ifdef _TG_WINDOWS_
-		struct _timeb t;
-		_ftime(&t);
-
-		ptr->time.tv_sec = (long)t.time;
-		ptr->time.tv_usec = (long)(t.millitm * 1000);
-		ptr->time.tv_nsec = 0;
-#else
-		struct timeval after;
-
-		gettimeofday(&after,NULL);
-		ptr->time.tv_sec = after.tv_sec;
-		ptr->time.tv_usec = after.tv_usec;
-		ptr->time.tv_nsec = 0;
-#endif
-		ptr->r_dim.dim_x = 1;
-		ptr->r_dim.dim_y = 0;
-		ptr->w_dim.dim_x = 0;
-		ptr->w_dim.dim_y = 0;
-
-		ptr->name = Tango::string_dup(name.c_str());
-	}
-
-	else
-	{
-		if (quality != Tango::ATTR_INVALID)
-		{
-			MultiAttribute *m_attr = d->get_device_attr();
-
-			// Add the attribute setpoint to the value sequence
-
-			if ((writable == Tango::READ_WRITE) ||
-			    (writable == Tango::READ_WITH_WRITE))
-			{
-				m_attr->add_write_value(*this);
-			}
-
-			// check for alarms to position the data quality value.
-			if ( is_alarmed().any() == true )
-			{
-				check_alarm();
-			}
-
-			Tango::DevVarShortArray *sh_seq;
-			Tango::DevShort *sh_tmp_ptr;
-			Tango::DevVarLongArray *lo_seq;
-			Tango::DevLong *lo_tmp_ptr;
-			Tango::DevVarDoubleArray *db_seq;
-			Tango::DevDouble *db_tmp_ptr;
-			Tango::DevVarStringArray *str_seq;
-			Tango::DevString *str_tmp_ptr;
-			Tango::DevVarFloatArray *fl_seq;
-			Tango::DevFloat *fl_tmp_ptr;
-			Tango::DevVarBooleanArray *bo_seq;
-			Tango::DevBoolean *bo_tmp_ptr;
-			Tango::DevVarUShortArray *ush_seq;
-			Tango::DevUShort *ush_tmp_ptr;
-			Tango::DevVarUCharArray *uch_seq;
-			Tango::DevUChar *uch_tmp_ptr;
-			Tango::DevVarLong64Array *lo64_seq;
-			Tango::DevLong64 *lo64_tmp_ptr;
-			Tango::DevVarULongArray *ulo_seq;
-			Tango::DevULong *ulo_tmp_ptr;
-			Tango::DevVarULong64Array *ulo64_seq;
-			Tango::DevULong64 *ulo64_tmp_ptr;
-			Tango::DevVarStateArray *state_seq;
-			Tango::DevState *state_tmp_ptr;
-
-			CORBA::Any &a = ptr->value;
-			long	seq_length = value.sh_seq->length();
-
-			switch (data_type)
-			{
-			case Tango::DEV_SHORT :
-			case Tango::DEV_ENUM:
-				sh_tmp_ptr = get_short_value()->get_buffer();
-				sh_seq = new Tango::DevVarShortArray(seq_length,seq_length,sh_tmp_ptr,false);
-				a <<= *sh_seq;
-				delete sh_seq;
-				break;
-
-			case Tango::DEV_LONG :
-				lo_tmp_ptr = get_long_value()->get_buffer();
-				lo_seq = new Tango::DevVarLongArray(seq_length,seq_length,lo_tmp_ptr,false);
-				a <<= *lo_seq;
-				delete lo_seq;
-				break;
-
-			case Tango::DEV_LONG64 :
-				lo64_tmp_ptr = get_long64_value()->get_buffer();
-				lo64_seq = new Tango::DevVarLong64Array(seq_length,seq_length,lo64_tmp_ptr,false);
-				a <<= *lo64_seq;
-				delete lo64_seq;
-				break;
-
-			case Tango::DEV_DOUBLE :
-				db_tmp_ptr = get_double_value()->get_buffer();
-				db_seq = new Tango::DevVarDoubleArray(seq_length,seq_length,db_tmp_ptr,false);
-				a <<= *db_seq;
-				delete db_seq;
-				break;
-
-			case Tango::DEV_STRING :
-				str_tmp_ptr = get_string_value()->get_buffer();
-				str_seq = new Tango::DevVarStringArray(seq_length,seq_length,str_tmp_ptr,false);
-				a <<= *str_seq;
-				delete str_seq;
-				break;
-
-			case Tango::DEV_FLOAT :
-				fl_tmp_ptr = get_float_value()->get_buffer();
-				fl_seq = new Tango::DevVarFloatArray(seq_length,seq_length,fl_tmp_ptr,false);
-				a <<= *fl_seq;
-				delete fl_seq;
-				break;
-
-			case Tango::DEV_BOOLEAN :
-				bo_tmp_ptr = get_boolean_value()->get_buffer();
-				bo_seq = new Tango::DevVarBooleanArray(seq_length,seq_length,bo_tmp_ptr,false);
-				a <<= *bo_seq;
-				delete bo_seq;
-				break;
-
-			case Tango::DEV_USHORT :
-				ush_tmp_ptr = get_ushort_value()->get_buffer();
-				ush_seq = new Tango::DevVarUShortArray(seq_length,seq_length,ush_tmp_ptr,false);
-				a <<= *ush_seq;
-				delete ush_seq;
-				break;
-
-			case Tango::DEV_UCHAR :
-				uch_tmp_ptr = get_uchar_value()->get_buffer();
-				uch_seq = new Tango::DevVarUCharArray(seq_length,seq_length,uch_tmp_ptr,false);
-				a <<= *uch_seq;
-				delete uch_seq;
-				break;
-
-			case Tango::DEV_ULONG :
-				ulo_tmp_ptr = get_ulong_value()->get_buffer();
-				ulo_seq = new Tango::DevVarULongArray(seq_length,seq_length,ulo_tmp_ptr,false);
-				a <<= *ulo_seq;
-				delete ulo_seq;
-				break;
-
-			case Tango::DEV_ULONG64 :
-				ulo64_tmp_ptr = get_ulong64_value()->get_buffer();
-				ulo64_seq = new Tango::DevVarULong64Array(seq_length,seq_length,ulo64_tmp_ptr,false);
-				a <<= *ulo64_seq;
-				delete ulo64_seq;
-				break;
-
-			case Tango::DEV_STATE :
-				state_tmp_ptr = get_state_value()->get_buffer();
-				state_seq = new Tango::DevVarStateArray(seq_length,seq_length,state_tmp_ptr,false);
-				a <<= *state_seq;
-				delete state_seq;
-				break;
-			}
-
-			ptr->r_dim.dim_x = dim_x;
-			ptr->r_dim.dim_y = dim_y;
-			if ((writable == Tango::READ_WRITE) ||
-			     (writable == Tango::READ_WITH_WRITE))
-			{
-				WAttribute &assoc_att = m_attr->get_w_attr_by_ind(get_assoc_ind());
-				ptr->w_dim.dim_x = assoc_att.get_w_dim_x();
-				ptr->w_dim.dim_y = assoc_att.get_w_dim_y();
-			}
-			else
-			{
-				ptr->w_dim.dim_x = 0;
-				ptr->w_dim.dim_y = 0;
-			}
-		}
-		else
-		{
-			ptr->r_dim.dim_x = 0;
-			ptr->r_dim.dim_y = 0;
 			ptr->w_dim.dim_x = 0;
 			ptr->w_dim.dim_y = 0;
 		}
-
-		ptr->time = when;
-		ptr->quality = quality;
-		ptr->name = Tango::string_dup(name.c_str());
 	}
+	else
+	{
+		ptr->r_dim.dim_x = 0;
+		ptr->r_dim.dim_y = 0;
+		ptr->w_dim.dim_x = 0;
+		ptr->w_dim.dim_y = 0;
+	}
+
+	ptr->time = when;
+	ptr->quality = quality;
+	ptr->name = Tango::string_dup(name.c_str());
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -3387,7 +3343,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_4 *ptr_4,Tango:
 	Tango::AttributeValueList_4 dummy_list(1,1,ptr_4,false);
 	aid.data_4 = &dummy_list;
 
-	if ((name_lower != "state") && (name_lower != "status") && (quality != Tango::ATTR_INVALID))
+	if ((quality != Tango::ATTR_INVALID))
         d->data_into_net_object(*this,aid,0,writable,false);
 }
 
@@ -3415,7 +3371,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_5 *ptr_5,Tango:
 	Tango::AttributeValueList_5 dummy_list(1,1,ptr_5,false);
 	aid.data_5 = &dummy_list;
 
-	if ((name_lower != "state") && (name_lower != "status") && (quality != Tango::ATTR_INVALID))
+	if ((quality != Tango::ATTR_INVALID))
         d->data_into_net_object(*this,aid,0,writable,false);
 
 	ptr_5->data_type = data_type;
@@ -3836,23 +3792,20 @@ void Attribute::fire_change_event(DevFailed *except)
 
 		if (client_libs.empty() == true)
 		{
-			if ( (name_lower != "state") && (name_lower != "status"))
-			{
-				// delete the data values allocated in the attribute
-				bool data_flag = get_value_flag();
-				if ( data_flag == true )
-				{
-					// For writable scalar attributes the sequence for the
-					// attribute data is not yet allocated. This will happen
-					// only when adding the set point!
-					if ( !check_scalar_wattribute() )
-					{
-						if (quality != Tango::ATTR_INVALID)
-							delete_seq();
+            // delete the data values allocated in the attribute
+            bool data_flag = get_value_flag();
+            if ( data_flag == true )
+            {
+                // For writable scalar attributes the sequence for the
+                // attribute data is not yet allocated. This will happen
+                // only when adding the set point!
+                if ( !check_scalar_wattribute() )
+                {
+                    if (quality != Tango::ATTR_INVALID)
+                        delete_seq();
 //						set_value_flag (false);
-					}
-				}
-			}
+                }
+            }
 			return;
 		}
 
@@ -3862,23 +3815,20 @@ void Attribute::fire_change_event(DevFailed *except)
 
 		if ((event_supplier_nd == NULL) && (event_supplier_zmq == NULL))
 		{
-			if ( name_lower != "state" )
-			{
-				// delete the data values allocated in the attribute
-				bool data_flag = get_value_flag();
-				if ( data_flag == true )
-				{
-					// For writable scalar attributes the sequence for the
-					// attribute data is not yet allcoated. This will happen
-					// only when adding the set point!
-					if ( !check_scalar_wattribute() )
-					{
-						if (quality != Tango::ATTR_INVALID)
-							delete_seq();
+            // delete the data values allocated in the attribute
+            bool data_flag = get_value_flag();
+            if ( data_flag == true )
+            {
+                // For writable scalar attributes the sequence for the
+                // attribute data is not yet allcoated. This will happen
+                // only when adding the set point!
+                if ( !check_scalar_wattribute() )
+                {
+                    if (quality != Tango::ATTR_INVALID)
+                        delete_seq();
 //						set_value_flag (false);
-					}
-				}
-			}
+                }
+            }
 			return;
 		}
 
@@ -3895,23 +3845,20 @@ void Attribute::fire_change_event(DevFailed *except)
 // Check that the attribute value has been set
 //
 
-			if ((name_lower != "state") && (name_lower != "status"))
-			{
-				if (quality != Tango::ATTR_INVALID)
-				{
-					if (value_flag == false)
-					{
-						TangoSys_OMemStream o;
+            if (quality != Tango::ATTR_INVALID)
+            {
+                if (value_flag == false)
+                {
+                    TangoSys_OMemStream o;
 
-						o << "Value for attribute ";
-						o << name;
-						o << " has not been updated. Can't send change event\n";
-						o << "Set the attribute value (using set_value(...) method) before!" << ends;
+                    o << "Value for attribute ";
+                    o << name;
+                    o << " has not been updated. Can't send change event\n";
+                    o << "Set the attribute value (using set_value(...) method) before!" << ends;
 
-						Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_change_event()");
-					}
-				}
-			}
+                    Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_change_event()");
+                }
+            }
 		}
 
 //
@@ -4122,16 +4069,13 @@ void Attribute::fire_change_event(DevFailed *except)
 // Delete the data values allocated in the attribute
 //
 
-		if ( (name_lower != "state") && (name_lower != "status") )
-		{
-			bool data_flag = get_value_flag();
-			if ( data_flag == true )
-			{
-				if (quality != Tango::ATTR_INVALID)
-					delete_seq();
+        bool data_flag = get_value_flag();
+        if ( data_flag == true )
+        {
+            if (quality != Tango::ATTR_INVALID)
+                delete_seq();
 //				set_value_flag (false);
-			}
-		}
+        }
 	}
 	catch (...)
 	{
@@ -4142,19 +4086,15 @@ void Attribute::fire_change_event(DevFailed *except)
 		else
 			delete send_attr;
 
-		if ( (name_lower != "state") && (name_lower != "status"))
-		{
-
 // delete the data values allocated in the attribute
 
-			bool data_flag = get_value_flag();
-			if ( data_flag == true )
-			{
-				if (quality != Tango::ATTR_INVALID)
-					delete_seq();
+        bool data_flag = get_value_flag();
+        if ( data_flag == true )
+        {
+            if (quality != Tango::ATTR_INVALID)
+                delete_seq();
 //				set_value_flag (false);
-			}
-		}
+        }
 
 		throw;
 	}
@@ -4260,9 +4200,6 @@ void Attribute::fire_archive_event(DevFailed *except)
 
 		if (client_libs.empty() == true)
         {
-			if ( (name_lower != "state") && (name_lower != "status") )
-            {
-
 //
 // Delete the data values allocated in the attribute
 //
@@ -4284,7 +4221,6 @@ void Attribute::fire_archive_event(DevFailed *except)
 //						set_value_flag (false);
 					}
                 }
-            }
 			return;
         }
 
@@ -4294,9 +4230,6 @@ void Attribute::fire_archive_event(DevFailed *except)
 
 		if ((event_supplier_nd == NULL) && (event_supplier_zmq == NULL))
         {
-			if ( name_lower != "state" )
-            {
-
 //
 // Delete the data values allocated in the attribute
 //
@@ -4318,7 +4251,6 @@ void Attribute::fire_archive_event(DevFailed *except)
 //						set_value_flag (false);
 					}
                 }
-            }
 			return;
         }
 
@@ -4336,24 +4268,21 @@ void Attribute::fire_archive_event(DevFailed *except)
 // Check that the attribute value has been set
 //
 
-			if ((name_lower != "state") && (name_lower != "status"))
-			{
-				if (quality != Tango::ATTR_INVALID)
-				{
-					if (value_flag == false)
-					{
-						TangoSys_OMemStream o;
+            if (quality != Tango::ATTR_INVALID)
+            {
+                if (value_flag == false)
+                {
+                    TangoSys_OMemStream o;
 
-						o << "Value for attribute ";
-						o << name;
-						o << " has not been updated. Can't send archive event\n";
-						o << "Set the attribute value (using set_value(...) method) before!" << ends;
+                    o << "Value for attribute ";
+                    o << name;
+                    o << " has not been updated. Can't send archive event\n";
+                    o << "Set the attribute value (using set_value(...) method) before!" << ends;
 
-						Except::throw_exception((const char *)API_AttrValueNotSet,o.str(),
-				        		(const char *)"Attribute::fire_archive_event()");
-					}
-				}
-			}
+                    Except::throw_exception((const char *)API_AttrValueNotSet,o.str(),
+                            (const char *)"Attribute::fire_archive_event()");
+                }
+            }
 		}
 
 //
@@ -4562,16 +4491,13 @@ void Attribute::fire_archive_event(DevFailed *except)
 // Delete the data values allocated in the attribute
 //
 
-		if ((name_lower != "state") && (name_lower != "status"))
-		{
-			bool data_flag = get_value_flag();
-			if ( data_flag == true )
-			{
-				if (quality != Tango::ATTR_INVALID)
-					delete_seq();
+        bool data_flag = get_value_flag();
+        if ( data_flag == true )
+        {
+            if (quality != Tango::ATTR_INVALID)
+                delete_seq();
 //				set_value_flag (false);
-			}
-		}
+        }
 	}
 	catch (...)
 	{
@@ -4586,16 +4512,13 @@ void Attribute::fire_archive_event(DevFailed *except)
 // Delete the data values allocated in the attribute
 //
 
-		if ((name_lower != "state") && (name_lower != "status"))
-		{
-			bool data_flag = get_value_flag();
-			if ( data_flag == true )
-			{
-				if (quality != Tango::ATTR_INVALID)
-					delete_seq();
+        bool data_flag = get_value_flag();
+        if ( data_flag == true )
+        {
+            if (quality != Tango::ATTR_INVALID)
+                delete_seq();
 //				set_value_flag (false);
-			}
-		}
+        }
 
 		throw;
 	}
@@ -4707,9 +4630,6 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 
 		if (((event_supplier_nd == NULL) && (event_supplier_zmq == NULL)) || client_libs.empty() == true)
 		{
-			if (name_lower != "state")
-			{
-
 //
 // Delete the data values allocated in the attribute
 //
@@ -4731,7 +4651,6 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 //						set_value_flag (false);
 					}
 				}
-			}
 			return;
 		}
 
@@ -4749,23 +4668,20 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 // Check that the attribute value has been set
 //
 
-			if ((name_lower != "state") && (name_lower != "status"))
-			{
-				if (quality != Tango::ATTR_INVALID)
-				{
-					if (value_flag == false)
-					{
-						TangoSys_OMemStream o;
+            if (quality != Tango::ATTR_INVALID)
+            {
+                if (value_flag == false)
+                {
+                    TangoSys_OMemStream o;
 
-						o << "Value for attribute ";
-						o << name;
-						o << " has not been updated. Can't send user event\n";
-						o << "Set the attribute value (using set_value(...) method) before!" << ends;
+                    o << "Value for attribute ";
+                    o << name;
+                    o << " has not been updated. Can't send user event\n";
+                    o << "Set the attribute value (using set_value(...) method) before!" << ends;
 
-						Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_event()");
-					}
-				}
-			}
+                    Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_event()");
+                }
+            }
 		}
 
 //
@@ -4848,16 +4764,13 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 // delete the data values allocated in the attribute
 //
 
-		if ((name_lower != "state") && (name_lower != "status"))
-		{
-			bool data_flag = get_value_flag();
-			if ( data_flag == true )
-			{
-				if (quality != Tango::ATTR_INVALID)
-					delete_seq();
+        bool data_flag = get_value_flag();
+        if ( data_flag == true )
+        {
+            if (quality != Tango::ATTR_INVALID)
+                delete_seq();
 //				set_value_flag (false);
-			}
-		}
+        }
 	}
 	catch (...)
 	{
@@ -4872,16 +4785,13 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 // delete the data values allocated in the attribute
 //
 
-		if ((name_lower != "state") && (name_lower != "status"))
-		{
-			bool data_flag = get_value_flag();
-			if ( data_flag == true )
-			{
-				if (quality != Tango::ATTR_INVALID)
-					delete_seq();
+        bool data_flag = get_value_flag();
+        if ( data_flag == true )
+        {
+            if (quality != Tango::ATTR_INVALID)
+                delete_seq();
 //				set_value_flag (false);
-			}
-		}
+        }
 
 		throw;
 	}
