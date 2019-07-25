@@ -139,6 +139,7 @@
 // Lambda function -> gcc 4.5
 // nullptr -> gcc 4.6
 // attributes -> gcc 4.8
+// constexpr -> gcc 5.0 (C++14 style constexpr)
 
 #ifndef _TG_WINDOWS_
     #if defined(__GNUC__)
@@ -183,6 +184,7 @@
             #define HAS_VARIADIC_TEMPLATE
             #define HAS_MAP_AT
             #define HAS_ATTRIBUTE_SPECIFIERS
+            #define HAS_CONSTEXPR
         #endif
         #if defined(__clang__)
             #if __clang_major__ > 3
@@ -199,6 +201,7 @@
                 #define HAS_VARIADIC_TEMPLATE
                 #define HAS_MAP_AT
                 #define HAS_ATTRIBUTE_SPECIFIERS
+                #define HAS_CONSTEXPR
             #endif
         #endif
     #endif
@@ -245,6 +248,7 @@
         #define HAS_MAP_AT
         #define HAS_ATTRIBUTE_SPECIFIERS
         #define HAS_OVERRIDE
+        #define HAS_CONSTEXPR
     #endif
 #endif
 
@@ -406,6 +410,13 @@
   #define TANGO_NORETURN [[noreturn]]
 #else
   #define TANGO_NORETURN
+#endif
+
+// C++14 style constexpr
+#ifdef HAS_CONSTEXPR
+  #define TANGO_CONSTEXPR constexpr
+#else
+  #define TANGO_CONSTEXPR
 #endif
 
 #endif /* _TANGO_CONFIG_H */
