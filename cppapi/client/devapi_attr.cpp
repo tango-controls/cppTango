@@ -5786,8 +5786,7 @@ std::ostream &operator<<(std::ostream &o_str,DeviceAttribute &da)
 // Print data type
 //
 
-		if (da.get_type() != DATA_TYPE_UNKNOWN)
-			o_str << "Data type = " << CmdArgTypeName[da.get_type()] << ")" << std::endl;
+	    o_str << "Data type = " << data_type_to_string(da.get_type()) << ")" << std::endl;
 
 //
 // Print data (if valid)
