@@ -3546,6 +3546,7 @@ ReceivedFromAdmin ZmqEventConsumer::initialize_received_from_admin(const Tango::
     return result;
 }
 
+#ifdef ZMQ_HAS_DISCONNECT
 void ZmqEventConsumer::disconnect_socket(zmq::socket_t& socket, const char* endpoint)
 {
     try
@@ -3561,6 +3562,11 @@ void ZmqEventConsumer::disconnect_socket(zmq::socket_t& socket, const char* endp
         }
     }
 }
+#else
+void ZmqEventConsumer::disconnect_socket(zmq::socket_t& TANGO_UNUSED(socket), const char* TANGO_UNUSED(endpoint))
+{
+}
+#endif
 
 //--------------------------------------------------------------------------------------------------------------------
 //
