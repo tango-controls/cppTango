@@ -52,8 +52,8 @@
 class Database : public Tango::Connection
 {
 private :
-	virtual string get_corba_name(bool);
-	virtual string build_corba_name() {return string("nada");}
+	virtual std::string get_corba_name(bool);
+	virtual std::string build_corba_name() {return std::string("nada");}
 	virtual int get_lock_ctr() {return 0;}
 	virtual void set_lock_ctr(int) {}
 
@@ -62,39 +62,39 @@ private :
     public:
         DatabaseExt() {};
 
-		string	orig_tango_host;
+		std::string	orig_tango_host;
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DatabaseExt>     ext;
+    std::unique_ptr<DatabaseExt>     ext;
 #else
 	DatabaseExt			        *ext;
 #endif
 
 	bool				db_multi_svc;
-	vector<string>		multi_db_port;
-	vector<string>		multi_db_host;
+	std::vector<std::string>		multi_db_port;
+	std::vector<std::string>		multi_db_host;
 	FileDatabase 		*filedb;
-	string 				file_name;
+	std::string 				file_name;
 	int					serv_version;
 
 	AccessProxy			*access_proxy;
 	bool				access_checked;
 	DevErrorList		access_except_errors;
 
-	map<string,string>	dev_class_cache;
-	string				db_device_name;
+	std::map<std::string,std::string>	dev_class_cache;
+	std::string				db_device_name;
 
 	bool				access_service_defined;
 
     Tango::Util         *db_tg;
     omni_mutex          map_mutex;
 
-	DbDatum         make_string_array(string, CORBA::Any_var &);
-	vector<DbHistory> make_history_array(bool, CORBA::Any_var &);
+	DbDatum         make_string_array(std::string, CORBA::Any_var &);
+	std::vector<DbHistory> make_history_array(bool, CORBA::Any_var &);
 
 	void check_access();
-	inline string dev_name();
+	inline std::string dev_name();
 	void set_server_release();
 	void check_access_and_get();
 
@@ -125,7 +125,7 @@ public :
  * Query the database for some general info about the tables in the database.
  * Result is returned as a string. Example :
  * @code
- * cout << db->get_info() << endl;
+ * cout << db->get_info() << std::endl;
  * @endcode
  * will return information like this:
  * @code
@@ -144,7 +144,7 @@ public :
  *
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
-	string get_info();
+	std::string get_info();
 //@}
 
 /**@name Device oriented methods */
@@ -181,7 +181,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError, DB_DeviceNotDefined)
  */
-	void delete_device(string dev_name);
+	void delete_device(std::string dev_name);
 /**
  * Import a device from the database.
  *
@@ -196,7 +196,7 @@ public :
  * cout << “exported ” << my_device_import.exported;
  * cout << “ior ” << my_device_import.ior;
  * cout << “version ” << my_device_import.version;
- * cout << endl;
+ * cout << std::endl;
  * @endcode
  *
  * @param [in] dev_name The device name
@@ -204,7 +204,7 @@ public :
  *
  * @exception ConnectionFailed, CommunicationFailed, DevFailed
  */
-	DbDevImportInfo import_device(string &dev_name);
+	DbDevImportInfo import_device(std::string &dev_name);
 /**
  * Export a device into the database.
  *
@@ -239,7 +239,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError)
  */
-	void unexport_device(string dev_name);
+	void unexport_device(std::string dev_name);
 /**
  * Get device information
  *
@@ -250,14 +250,14 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDevFullInfo get_device_info(string &dev_name);
+	DbDevFullInfo get_device_info(std::string &dev_name);
 /**
  * Get class name for a device
  *
  * Return the class of the specified device.
  * @code
- * string devname("sr/rf-cavity/1");
- * string classname = db->get_class_for_device(devname);
+ * std::string devname("sr/rf-cavity/1");
+ * std::string classname = db->get_class_for_device(devname);
  * @endcode
  *
  * @param [in] dev_name The device name
@@ -265,17 +265,17 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	string get_class_for_device(string &dev_name);
+	std::string get_class_for_device(std::string &dev_name);
 /**
  * Get device inheritance scheme
  *
  * Return the class inheritance scheme of the specified device
  * @code
- * string devname("sr/rf-cavity/1");
+ * std::string devname("sr/rf-cavity/1");
  *
  * DbDatum db_datum = db->get_class_inheritance_for_device(devname);
  *
- * vector<string> class_list;
+ * std::vector<std::string> class_list;
  * db_datum >> class_list;
  * @endcode
  *
@@ -284,7 +284,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_class_inheritance_for_device(string &dev_name);
+	DbDatum get_class_inheritance_for_device(std::string &dev_name);
 //@}
 
 /**@name Server oriented methods */
@@ -300,7 +300,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError)
  */
-	void add_server(string &ds_name, DbDevInfos &devs);
+	void add_server(std::string &ds_name, DbDevInfos &devs);
 /**
  * Delete a device server process from the database.
  *
@@ -310,7 +310,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError)
  */
-	void delete_server(string &ds_name);
+	void delete_server(std::string &ds_name);
 /**
  * Delete a device server process from the database.
  *
@@ -331,7 +331,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError)
  */
-	void unexport_server(string &ds_name);
+	void unexport_server(std::string &ds_name);
 /**
  * Rename a device server in the database.
  *
@@ -342,7 +342,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError)
  */
-	void rename_server(const string &old_ds_name,const string &new_ds_name);
+	void rename_server(const std::string &old_ds_name,const std::string &new_ds_name);
 //@}
 
 /**@name Services oriented methods */
@@ -367,35 +367,35 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_services(string &service_name,string &inst_name);
+	DbDatum get_services(std::string &service_name,std::string &inst_name);
 /**
  * Get services list from database
  *
  * Query database for specified services. The vector of strings returned in the DbDatum
  * object contains pair of strings &lt;instance_name&gt; followed by &lt;device name&gt;.
  * @code
- * string servicename("HdbManager");
+ * std::string servicename("HdbManager");
  *
  * DbDatum db_datum = db->get_device_service_list(servicename);
  *
- * vector<string> service_device_list;
+ * std::vector<std::string> service_device_list;
  * db_datum >> service_device_list;
  * @endcode
  *
  * @param [in] service_name The service name
- * @return A service/device list matching the input parameter
+ * @return A service/device std::list matching the input parameter
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_service_list(string &service_name);
+	DbDatum get_device_service_list(std::string &service_name);
 /**
  * Register a service in the database
  *
  * Register the specified service wihtin the database.
  * @code
- * string servicename("HdbManager");
- * string instname("ctrm");
- * string devname("sys/hdb/1");
+ * std::string servicename("HdbManager");
+ * std::string instname("ctrm");
+ * std::string devname("sys/hdb/1");
  *
  * db->register_service(servicename,instname,devname);
  * @endcode
@@ -406,14 +406,14 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void register_service(string &service_name,string &inst_name,string &dev_name);
+	void register_service(std::string &service_name,std::string &inst_name,std::string &dev_name);
 /**
  * Unregister a service from the database
  *
  * Unregister the specified service from the database.
  * @code
- * string servicename("HdbManager");
- * string instname("ctrm");
+ * std::string servicename("HdbManager");
+ * std::string instname("ctrm");
  *
  * db->unregister_service(servicename,instname);
  * @endcode
@@ -423,7 +423,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void unregister_service(string &service_name,string &inst_name);
+	void unregister_service(std::string &service_name,std::string &inst_name);
 //@}
 
 /**@name Object property oriented methods */
@@ -452,7 +452,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_property(string obj_name, DbData &db) {get_property(obj_name,db,NULL);}
+	void get_property(std::string obj_name, DbData &db) {get_property(obj_name,db,NULL);}
 /**
  * Put object property value in database
  *
@@ -476,7 +476,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_property(string obj_name, DbData &db);
+	void put_property(std::string obj_name, DbData &db);
 /**
  * Delete object property from database
  *
@@ -495,34 +495,34 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_property(string obj_name, DbData &db);
+	void delete_property(std::string obj_name, DbData &db);
 /**
  * Get object property history from database
  *
  * Get the list of the last 10 modifications of the specifed object property. Note that propname can contain a
  * wildcard character (eg: "prop*").
  * @code
- * vector<DbHistory> hist;
+ * std::vector<DbHistory> hist;
  * DbDatum result;
- * string objname("jlptest");
- * string propname("test_prop");
+ * std::string objname("jlptest");
+ * std::string propname("test_prop");
  *
  * hist = db->get_property_history(objname,propname);
  *
  * // Print the modification history of the specified property
  * for(int i=0;i<hist.size();i++)
  * {
- *    cout << "Name:" << hist[i].get_name() << endl;
- *    cout << "Date:" << hist[i].get_date() << endl;
+ *    cout << "Name:" << hist[i].get_name() << std::endl;
+ *    cout << "Date:" << hist[i].get_date() << std::endl;
  *    if( hist[i].is_deleted() )
  *    {
- *        cout << "Deleted !" << endl;
+ *        cout << "Deleted !" << std::endl;
  *    }
  *    else
  *    {
  *        hist[i].get_value() >> result;
  *        for (int j=0; j<result.size(); j++)
- *           cout << "Value:" << result[j] << endl;
+ *           cout << "Value:" << result[j] << std::endl;
  *    }
  * }
  * @endcode
@@ -533,7 +533,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_property_history(string &obj_name,string &prop_name);
+	std::vector<DbHistory> get_property_history(std::string &obj_name,std::string &prop_name);
 //@}
 
 /**@name Device property oriented methods */
@@ -562,7 +562,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_property(string dev_name, DbData &db) {get_device_property(dev_name,db,NULL);}
+	void get_device_property(std::string dev_name, DbData &db) {get_device_property(dev_name,db,NULL);}
 /**
  * Put device property value in database
  *
@@ -586,7 +586,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_device_property(string dev_name, DbData &db);
+	void put_device_property(std::string dev_name, DbData &db);
 /**
  * Delete device property from database
  *
@@ -605,7 +605,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_device_property(string dev_name, DbData &db);
+	void delete_device_property(std::string dev_name, DbData &db);
 /**
  * Get device property history from database
  *
@@ -619,7 +619,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_device_property_history(string &dev_name,string &prop_name);
+	std::vector<DbHistory> get_device_property_history(std::string &dev_name,std::string &prop_name);
 //@}
 
 /**@name Device attribute property oriented methods */
@@ -646,12 +646,12 @@ public :
  * for (int i=0;i < db_data.size();i++)
  * {
  *    long nb_prop;
- *    string &att_name = db_data[i].name;
+ *    std::string &att_name = db_data[i].name;
  *    db_data[i] >> nb_prop;
  *    i++;
  *    for (int k=0;k < nb_prop;k++)
  *    {
- *        string &prop_name = db_data[i].name;
+ *        std::string &prop_name = db_data[i].name;
  *        if (att_name == "velocity")
  *        {
  *           if (prop_name == "min")
@@ -676,7 +676,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_attribute_property(string dev_name, DbData &db) {get_device_attribute_property(dev_name,db,NULL);}
+	void get_device_attribute_property(std::string dev_name, DbData &db) {get_device_attribute_property(dev_name,db,NULL);}
 /**
  * Put device attribute property value in database
  *
@@ -716,7 +716,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_device_attribute_property(string dev_name, DbData &db);
+	void put_device_attribute_property(std::string dev_name, DbData &db);
 /**
  * Delete device attribute property from database
  *
@@ -736,7 +736,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_device_attribute_property(string dev_name, DbData &db);
+	void delete_device_attribute_property(std::string dev_name, DbData &db);
 /**
  * Get device attribute property history from database
  *
@@ -752,7 +752,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_device_attribute_property_history(string &dev_name,string &prop_name,string &att_name);
+	std::vector<DbHistory> get_device_attribute_property_history(std::string &dev_name,std::string &prop_name,std::string &att_name);
 /**
  * Get list of attribute with data in database for a specific device
  *
@@ -765,7 +765,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_attribute_list(string &dev_name,vector<string> &att_list);
+	void get_device_attribute_list(std::string &dev_name,std::vector<std::string> &att_list);
 /**
  * Get list of pipe with data in database for a specific device
  *
@@ -778,7 +778,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_pipe_list(const string &dev_name,vector<string> &pipe_list);
+	void get_device_pipe_list(const std::string &dev_name,std::vector<std::string> &pipe_list);
 //@}
 
 /**@name Device pipe property oriented methods */
@@ -805,12 +805,12 @@ public :
  * for (int i=0;i < db_data.size();i++)
  * {
  *    long nb_prop;
- *    string &pipe_name = db_data[i].name;
+ *    std::string &pipe_name = db_data[i].name;
  *    db_data[i] >> nb_prop;
  *    i++;
  *    for (int k=0;k < nb_prop;k++)
  *    {
- *        string &prop_name = db_data[i].name;
+ *        std::string &prop_name = db_data[i].name;
  *        if (pipe_name == "velocity")
  *        {
  *           if (prop_name == "min")
@@ -835,7 +835,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_pipe_property(string dev_name, DbData &db) {get_device_pipe_property(dev_name,db,NULL);}
+	void get_device_pipe_property(std::string dev_name, DbData &db) {get_device_pipe_property(dev_name,db,NULL);}
 /**
  * Put device pipe property value in database
  *
@@ -875,7 +875,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_device_pipe_property(string dev_name, DbData &db);
+	void put_device_pipe_property(std::string dev_name, DbData &db);
 /**
  * Delete device pipe property from database
  *
@@ -895,7 +895,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_device_pipe_property(string dev_name, DbData &db);
+	void delete_device_pipe_property(std::string dev_name, DbData &db);
 /**
  * Get device pipe property history from database
  *
@@ -911,7 +911,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_device_pipe_property_history(string &dev_name,string &pipe_name,string &prop_name);
+	std::vector<DbHistory> get_device_pipe_property_history(std::string &dev_name,std::string &pipe_name,std::string &prop_name);
 //@}
 
 /**@name Class property oriented methods */
@@ -940,7 +940,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_class_property(string class_name,DbData &db) {get_class_property(class_name,db,NULL);}
+	void get_class_property(std::string class_name,DbData &db) {get_class_property(class_name,db,NULL);}
 /**
  * Put class property value in database
  *
@@ -964,7 +964,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_class_property(string class_name, DbData &db);
+	void put_class_property(std::string class_name, DbData &db);
 /**
  * Delete class property from database
  *
@@ -983,7 +983,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_class_property(string class_name, DbData &db);
+	void delete_class_property(std::string class_name, DbData &db);
 /**
  * Get class property history from database
  *
@@ -998,7 +998,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_class_property_history(string &class_name,string &prop_name);
+	std::vector<DbHistory> get_class_property_history(std::string &class_name,std::string &prop_name);
 //@}
 
 /**@name Class attribute property oriented methods */
@@ -1024,12 +1024,12 @@ public :
  * for (int i=0; i< db_data.size(); i++)
  * {
  *    long nb_prop;
- *    string &att_name = db_data[i].name;
+ *    std::string &att_name = db_data[i].name;
  *    db_data[i] >> nb_prop;
  *    i++;
  *    for (int k=0;k < nb_prop;k++)
  *    {
- *        string &prop_name = db_data[i].name;
+ *        std::string &prop_name = db_data[i].name;
  *        if (att_name == "velocity")
  *        {
  *           if (prop_name == "min")
@@ -1054,7 +1054,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_class_attribute_property(string class_name,DbData &db) {get_class_attribute_property(class_name,db,NULL);}
+	void get_class_attribute_property(std::string class_name,DbData &db) {get_class_attribute_property(class_name,db,NULL);}
 /**
  * Put class attribute property value in database
  *
@@ -1092,12 +1092,12 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_class_attribute_property(string class_name, DbData &db);
+	void put_class_attribute_property(std::string class_name, DbData &db);
 /**
  * Delete class attribute property from database
  *
- * Delete a list of attribute properties for the specified class. The attribute names are specified by the vector
- * of DbDatum structures. All properties belonging to the listed attributes are deleted. Here is an example of
+ * Delete a std::list of attribute properties for the specified class. The attribute names are specified by the std::vector
+ * of DbDatum structures. All properties belonging to the std::listed attributes are deleted. Here is an example of
  * how to delete the unit property of the velocity attribute of the StepperMotor class from the database using
  * this method :
  * @code
@@ -1113,11 +1113,11 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_class_attribute_property(string class_name, DbData &db);
+	void delete_class_attribute_property(std::string class_name, DbData &db);
 /**
  * Get class attribute property history from database
  *
- * Get the list of the last 10 modifications of the specifed class attribute property. Note that prop_name
+ * Get the std::list of the last 10 modifications of the specifed class attribute property. Note that prop_name
  * and att_name can contain
  * a wildcard character (eg: "prop*"). An example of usage of a similar function can be found in the
  * documentation of the get_property_history() function.
@@ -1125,11 +1125,11 @@ public :
  * @param [in] class_name The class name
  * @param [in] att_name The attribute name
  * @param [in] prop_name The property name
- * @return A vector of DbHistory instances
+ * @return A std::vector of DbHistory instances
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_class_attribute_property_history(string &class_name,string &att_name,string &prop_name);
+	std::vector<DbHistory> get_class_attribute_property_history(std::string &class_name,std::string &att_name,std::string &prop_name);
 //@}
 
 /**@name Class pipe property oriented methods */
@@ -1137,10 +1137,10 @@ public :
 /**
  * Get class pipe property value
  *
- * Query the database for a list of class pipe properties for the specified object. The pipe names are
- * specified by the vector of DbDatum structures. The method returns all the properties for the specified
+ * Query the database for a std::list of class pipe properties for the specified object. The pipe names are
+ * specified by the std::vector of DbDatum structures. The method returns all the properties for the specified
  * pipes. The pipe names are returned with the number of properties specified as their value. The
- * first DbDatum element of the returned DbData vector contains the first pipe name and the first pipe
+ * first DbDatum element of the returned DbData std::vector contains the first pipe name and the first pipe
  * property number. The following DbDatum element contains the first pipe property name and property
  * values. To retrieve the properties use the extract operator >>. Here is an example of how to use the DbData
  * type to specify and extract pipe properties :
@@ -1155,12 +1155,12 @@ public :
  * for (int i=0; i< db_data.size(); i++)
  * {
  *    long nb_prop;
- *    string &pipe_name = db_data[i].name;
+ *    std::string &pipe_name = db_data[i].name;
  *    db_data[i] >> nb_prop;
  *    i++;
  *    for (int k=0;k < nb_prop;k++)
  *    {
- *        string &prop_name = db_data[i].name;
+ *        std::string &prop_name = db_data[i].name;
  *        if (pipe_name == "pipe_image")
  *        {
  *           if (prop_name == "min_x")
@@ -1183,12 +1183,12 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_class_pipe_property(string class_name,DbData &db) {get_class_pipe_property(class_name,db,NULL);}
+	void get_class_pipe_property(std::string class_name,DbData &db) {get_class_pipe_property(class_name,db,NULL);}
 /**
  * Put class pipe property value in database
  *
- * Insert or update a list of pipe properties for the specified class. The pipe property names and their
- * values are specified by the vector of DbDatum structures. Use the insert operator >> to insert the properties
+ * Insert or update a std::list of pipe properties for the specified class. The pipe property names and their
+ * values are specified by the std::vector of DbDatum structures. Use the insert operator >> to insert the properties
  * into the DbDatum structures. Here is an example of how to insert/update min, max properties for pipe
  * velocity and min, max properties for pipe acceleration properties belonging to class StepperMotor into
  * the database using this method :
@@ -1221,12 +1221,12 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_class_pipe_property(string class_name, DbData &db);
+	void put_class_pipe_property(std::string class_name, DbData &db);
 /**
  * Delete class pipe property from database
  *
- * Delete a list of pipe properties for the specified class. The pipe names are specified by the vector
- * of DbDatum structures. All properties belonging to the listed pipes are deleted. Here is an example of
+ * Delete a std::list of pipe properties for the specified class. The pipe names are specified by the std::vector
+ * of DbDatum structures. All properties belonging to the std::listed pipes are deleted. Here is an example of
  * how to delete the unit property of the velocity pipe of the StepperMotor class from the database using
  * this method :
  * @code
@@ -1242,11 +1242,11 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_class_pipe_property(string class_name, DbData &db);
+	void delete_class_pipe_property(std::string class_name, DbData &db);
 /**
  * Get class pipe property history from database
  *
- * Get the list of the last 10 modifications of the specifed class pipe property. Note that prop_name
+ * Get the std::list of the last 10 modifications of the specifed class pipe property. Note that prop_name
  * and pipe_name can contain
  * a wildcard character (eg: "prop*"). An example of usage of a similar function can be found in the
  * documentation of the get_property_history() function.
@@ -1254,11 +1254,11 @@ public :
  * @param [in] class_name The class name
  * @param [in] pipe_name The pipe name
  * @param [in] prop_name The property name
- * @return A vector of DbHistory instances
+ * @return A std::vector of DbHistory instances
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	vector<DbHistory> get_class_pipe_property_history(string &class_name,string &pipe_name,string &prop_name);
+	std::vector<DbHistory> get_class_pipe_property_history(std::string &class_name,std::string &pipe_name,std::string &prop_name);
 //@}
 
 /**@name Alias oriented methods */
@@ -1274,7 +1274,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_from_alias(string alias,string &dev_name);
+	void get_device_from_alias(std::string alias,std::string &dev_name);
 /**
  * Get device alias form its name
  *
@@ -1286,7 +1286,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_alias_from_device(string dev_name,string &alias);
+	void get_alias_from_device(std::string dev_name,std::string &alias);
 /**
  * Get device alias from its name
  *
@@ -1300,7 +1300,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_alias(string dev_name,string &dev_alias);
+	void get_alias(std::string dev_name,std::string &dev_alias);
 /**
  * Get device name from its alias
  *
@@ -1314,7 +1314,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_alias(string dev_alias,string &dev_name);
+	void get_device_alias(std::string dev_alias,std::string &dev_name);
 /**
  * Define device alias
  *
@@ -1326,7 +1326,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_device_alias(string &dev_name,string &dev_alias);
+	void put_device_alias(std::string &dev_name,std::string &dev_alias);
 /**
  * Delete device alias
  *
@@ -1336,7 +1336,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_device_alias(string &dev_alias);
+	void delete_device_alias(std::string &dev_alias);
 /**
  * Get attribute name from its alias
  *
@@ -1348,7 +1348,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_attribute_from_alias(string alias,string &att_name);
+	void get_attribute_from_alias(std::string alias,std::string &att_name);
 /**
  * Get attribute alias form its name
  *
@@ -1360,7 +1360,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_alias_from_attribute(string att_name,string &alias);
+	void get_alias_from_attribute(std::string att_name,std::string &alias);
 /**
  * Get attribute name from its alias
  *
@@ -1372,7 +1372,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_attribute_alias(string att_alias, string &att_name);
+	void get_attribute_alias(std::string att_alias, std::string &att_name);
 /**
  * Define attribute alias
  *
@@ -1384,7 +1384,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void put_attribute_alias(string &att_name,string &att_alias);
+	void put_attribute_alias(std::string &att_name,std::string &att_alias);
 /**
  * Delete attribute alias
  *
@@ -1394,439 +1394,439 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void delete_attribute_alias(string &att_alias);
+	void delete_attribute_alias(std::string &att_alias);
 //@}
 
 /**@name Database browsing oriented methods */
 //@{
 /**
- * Get host list
+ * Get host std::list
  *
- * Returns the list of all host names registered in the database.
+ * Returns the std::list of all host names registered in the database.
  * @code
  * DbDatum db_datum = db->get_host_list();
  *
- * vector<string> host_list;
+ * std::vector<std::string> host_list;
  * db_datum >> host_list;
  * @endcode
  *
- * @return A host name list
+ * @return A host name std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
 	DbDatum get_host_list();
 /**
- * Get host list with name matching a wildcard
+ * Get host std::list with name matching a wildcard
  *
- * Returns the list of all host names registered in the database which match the specified wildcard (eg: "lc0*")
+ * Returns the std::list of all host names registered in the database which match the specified wildcard (eg: "lc0*")
  * @code
- * string wildcard("l-c0*");
+ * std::string wildcard("l-c0*");
  *
  * DbDatum db_datum = db->get_host_list(wildcard);
  *
- * vector<string> host_list;
+ * std::vector<std::string> host_list;
  * db_datum >> host_list;
  * @endcode
  *
  * @param [in] wildcard The wildcard
- * @return A host name list matching the input
+ * @return A host name std::list matching the input
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_host_list(string &wildcard);
+	DbDatum get_host_list(std::string &wildcard);
 /**
- * Get list of Tango classes embedded in a device server proess
+ * Get std::list of Tango classes embedded in a device server proess
  *
- * Query the database for a list of classes instancied by the specified server.
+ * Query the database for a std::list of classes instancied by the specified server.
  * The DServer class exists in all TANGO servers and for this reason this class
- * is removed from the returned list.
+ * is removed from the returned std::list.
  * @code
- * string server("Serial/1");
+ * std::string server("Serial/1");
  *
  * DbDatum db_datum = db->get_server_class_list(server);
  *
- * vector<string> class_list;
+ * std::vector<std::string> class_list;
  * db_datum >> class_list;
  * @endcode
  *
  * @param [in] ds_name The full device server process name
- * @return The list of Tango classes embedded in the specified server process
+ * @return The std::list of Tango classes embedded in the specified server process
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_server_class_list(string &ds_name);
+	DbDatum get_server_class_list(std::string &ds_name);
 /**
- * Get list of all Tango device server process
+ * Get std::list of all Tango device server process
  *
- * Return the list of all server names registered in the database.
+ * Return the std::list of all server names registered in the database.
  * @code
  * DbDatum db_datum = db->get_server_name_list();
  *
- * vector<string> server_list;
+ * std::vector<std::string> server_list;
  * db_datum >> server_list;
  * @endcode
  *
- * @return The list of all server names
+ * @return The std::list of all server names
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
 	DbDatum get_server_name_list();
 /**
- * Get list of instances
+ * Get std::list of instances
  *
- * Return the list of all instance names existing in the database for the specifed server.
+ * Return the std::list of all instance names existing in the database for the specifed server.
  * @code
- * string servername("Serial");
+ * std::string servername("Serial");
  *
  * DbDatum db_datum = db->get_instance_name_list(servername);
  *
- * vector<string> instance_list;
+ * std::vector<std::string> instance_list;
  * db_datum >> instance_list;
  * @endcode
  *
  * @param [in] ds_name The device server process executable name
- * @return The list of all instances for the specified device server process
+ * @return The std::list of all instances for the specified device server process
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_instance_name_list(string &ds_name);
+	DbDatum get_instance_name_list(std::string &ds_name);
 /**
- * Get list of device server processes
+ * Get std::list of device server processes
  *
- * Return the list of all servers registered in the database.
+ * Return the std::list of all servers registered in the database.
  * @code
  * DbDatum db_datum = db->get_server_list();
  *
- * vector<string> server_list;
+ * std::vector<std::string> server_list;
  * db_datum >> server_list;
  * @endcode
  *
- * @return The list of all device server processes defined in database
+ * @return The std::list of all device server processes defined in database
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
 	DbDatum get_server_list();
 /**
- * Get list of device server processes with a wildcard
+ * Get std::list of device server processes with a wildcard
  *
- * Return the list of all servers registered in the database which match the specified wildcard (eg: "Serial/l*").
+ * Return the std::list of all servers registered in the database which match the specified wildcard (eg: "Serial/l*").
  * @code
- * string wildcard("Serial/l*");
+ * std::string wildcard("Serial/l*");
  *
  * DbDatum db_datum = db->get_server_list(wildcard);
  *
- * vector<string> server_list;
+ * std::vector<std::string> server_list;
  * db_datum >> server_list;
  * @endcode
  *
  * @param [in] wildcard The wildcard
- * @return The list of device server processes defined in database matching the specified wildcard
+ * @return The std::list of device server processes defined in database matching the specified wildcard
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_server_list(string &wildcard);
+	DbDatum get_server_list(std::string &wildcard);
 /**
- * Get list of device server processes running on a host
+ * Get std::list of device server processes running on a host
  *
- * Query the database for a list of servers registred on the specified host.
+ * Query the database for a std::list of servers registred on the specified host.
  * @code
- * string host("kidiboo");
+ * std::string host("kidiboo");
  *
  * DbDatum db_datum = db->get_host_server_list(wildcard);
  *
- * vector<string> server_list;
+ * std::vector<std::string> server_list;
  * db_datum >> server_list;
  * @endcode
  *
  * @param [in] host_name The host name
- * @return The list of device server processes
+ * @return The std::list of device server processes
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_host_server_list(string &host_name);
+	DbDatum get_host_server_list(std::string &host_name);
 /**
- * Get list of devices served by a device server process
+ * Get std::list of devices served by a device server process
  *
- * Query the database for a list of devices served by the specified server (1st parameter)
+ * Query the database for a std::list of devices served by the specified server (1st parameter)
  * and of the specified class (2nd parameter).
  *
  * @param [in] ds_name The device server name (executable/instance)
  * @param [in] class_name The class name
- * @return The list of devices
+ * @return The std::list of devices
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_name(string &ds_name, string &class_name);
+	DbDatum get_device_name(std::string &ds_name, std::string &class_name);
 /**
- * Get list of exported devices
+ * Get std::list of exported devices
  *
- * Query the database for a list of exported devices whose names satisfy the supplied filter
+ * Query the database for a std::list of exported devices whose names satisfy the supplied filter
  * (* is wildcard for any character(s)).
  *
  * @param [in] filter The filter
- * @return The list of exported devices
+ * @return The std::list of exported devices
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_exported(string &filter);
+	DbDatum get_device_exported(std::string &filter);
 /**
- * Get list of device domain names
+ * Get std::list of device domain names
  *
- * Query the database for a list of device domain names which match the wildcard provided.
+ * Query the database for a std::list of device domain names which match the wildcard provided.
  * Wildcard character * matches any number of characters. Domain names are case insensitive.
  *
  * @param [in] wildcard The wildcard
- * @return The device domain names list
+ * @return The device domain names std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_domain(string &wildcard);
+	DbDatum get_device_domain(std::string &wildcard);
 /**
- * Get list of device family name
+ * Get std::list of device family name
  *
- * Query the database for a list of device family names which match the wildcard provided.
+ * Query the database for a std::list of device family names which match the wildcard provided.
  * Wildcard character * matches any number of characters. Family names are case insensitive.
  *
  * @param [in] wildcard The wildcard
- * @return The device family names list
+ * @return The device family names std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_family(string &wildcard);
+	DbDatum get_device_family(std::string &wildcard);
 /**
- * Get list of device member name
+ * Get std::list of device member name
  *
- * Query the database for a list of device member names which match the wildcard provided.
+ * Query the database for a std::list of device member names which match the wildcard provided.
  * Wildcard character * matches any number of characters. Member names are case insensitive.
  *
  * @param [in] wildcard The wildcard
- * @return The device member names list
+ * @return The device member names std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_member(string &wildcard);
+	DbDatum get_device_member(std::string &wildcard);
 /**
- * Get list of devices/classes for a specified device server
+ * Get std::list of devices/classes for a specified device server
  *
- * Query the database for a list of devices and classes served by the specified server.
- * Return a list with the following structure: {device name,class name,device name,class name,...}
+ * Query the database for a std::list of devices and classes served by the specified server.
+ * Return a std::list with the following structure: {device name,class name,device name,class name,...}
  * @code
- * string server("Serial/1");
+ * std::string server("Serial/1");
  *
  * DbDatum db_datum = db->get_device_class_list(server);
  *
- * vector<string> dev_list;
+ * std::vector<std::string> dev_list;
  * db_datum >> dev_list;
  * @endcode
  *
  * @param [in] ds_name The full device server process name
- * @return The device / class list
+ * @return The device / class std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_class_list(string &ds_name);
+	DbDatum get_device_class_list(std::string &ds_name);
 /**
- * Get list of exported device for a class
+ * Get std::list of exported device for a class
  *
- * Query database for list of exported devices for the specified class.
+ * Query database for std::list of exported devices for the specified class.
  * @code
- * string classname("MyClass");
+ * std::string classname("MyClass");
  *
  * DbDatum db_datum = db->get_device_exported_for_class(classname);
  *
- * vector<string> dev_list;
+ * std::vector<std::string> dev_list;
  * db_datum >> dev_list;
  * @endcode
  *
  * @param [in] class_name The Tango device class name
- * @return The exported device list
+ * @return The exported device std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_exported_for_class(string &class_name);
+	DbDatum get_device_exported_for_class(std::string &class_name);
 /**
- * Get object (free property) list
+ * Get object (free property) std::list
  *
- * Query the database for a list of object (free properties) for which properties are defined and which match
+ * Query the database for a std::list of object (free properties) for which properties are defined and which match
  * the specified wildcard.
  * @code
- * string wildcard("Optic*");
+ * std::string wildcard("Optic*");
  *
  * DbDatum db_datum = db->get_object_list(wildcard);
  *
- * vector<string> obj_list;
+ * std::vector<std::string> obj_list;
  * db_datum >> obj_list;
  * @endcode
  *
  * @param [in] wildcard The wildcard
- * @return The object (free property) list
+ * @return The object (free property) std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_object_list(string &wildcard);
+	DbDatum get_object_list(std::string &wildcard);
 /**
- * Get object property list
+ * Get object property std::list
  *
- * Query the database for a list of properties defined for the specified object and which match the specified wildcard.
+ * Query the database for a std::list of properties defined for the specified object and which match the specified wildcard.
  * @code
- * string objname("OpticID9");
- * string wildcard("Delta*");
+ * std::string objname("OpticID9");
+ * std::string wildcard("Delta*");
  *
  * DbDatum db_datum = db->get_object_property_list(objname,wildcard);
  *
- * vector<string> prop_list;
+ * std::vector<std::string> prop_list;
  * db_datum >> prop_list;
  * @endcode
  *
  * @param [in] obj_name The object (free property) name
  * @param [in] wildcard The wildcard
- * @return The object (free property) property list
+ * @return The object (free property) property std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-    DbDatum get_object_property_list(string &obj_name,string &wildcard);
+    DbDatum get_object_property_list(std::string &obj_name,std::string &wildcard);
 /**
- * Get Tango class list
+ * Get Tango class std::list
  *
- * Query the database for a list of classes which match the specified wildcard.
+ * Query the database for a std::list of classes which match the specified wildcard.
  * @code
- * string wildcard("Motor*");
+ * std::string wildcard("Motor*");
  *
  * DbDatum db_datum = db->get_class_list(wildcard);
  *
- * vector<string> class_list;
+ * std::vector<std::string> class_list;
  * db_datum >> class_list;
  * @endcode
  *
  * @param [in] wildcard The wildcard
- * @return The class list
+ * @return The class std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_class_list(string &wildcard);
+	DbDatum get_class_list(std::string &wildcard);
 /**
- * Get class property list
+ * Get class property std::list
  *
- * Query the database for a list of properties defined for the specified class.
+ * Query the database for a std::list of properties defined for the specified class.
  * @code
- * string classname("MyClass");
+ * std::string classname("MyClass");
  *
  * DbDatum db_datum = db->get_object_property_list(classname);
  *
- * vector<string> prop_list;
+ * std::vector<std::string> prop_list;
  * db_datum >> prop_list;
  * @endcode
  *
  * @param [in] class_name The class name
- * @return The class property list
+ * @return The class property std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_class_property_list(string &class_name);
+	DbDatum get_class_property_list(std::string &class_name);
 /**
- * Get class attribute list
+ * Get class attribute std::list
  *
- * Query the database for a list of attributes defined for the specified class which match the specified wildcard.
+ * Query the database for a std::list of attributes defined for the specified class which match the specified wildcard.
  * @code
- * string classname("MyClass");
- * string wildcard("*");
+ * std::string classname("MyClass");
+ * std::string wildcard("*");
  *
  * DbDatum db_datum = db->get_class_attribute_list(classname,wildcard);
  *
- * vector<string> att_list;
+ * std::vector<std::string> att_list;
  * db_datum >> att_list;
  * @endcode
  *
  * @param [in] class_name The class name
  * @param [in] wildcard The wildcard
- * @return The class property list
+ * @return The class property std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_class_attribute_list(string &class_name,string &wildcard);
+	DbDatum get_class_attribute_list(std::string &class_name,std::string &wildcard);
 /**
- * Get class pipe list
+ * Get class pipe std::list
  *
- * Query the database for a list of pipes defined for the specified class which match the specified wildcard.
+ * Query the database for a std::list of pipes defined for the specified class which match the specified wildcard.
  * @code
- * string classname("MyClass");
- * string wildcard("*");
+ * std::string classname("MyClass");
+ * std::string wildcard("*");
  *
  * DbDatum db_datum = db->get_class_pipe_list(classname,wildcard);
  *
- * vector<string> pipe_list;
+ * std::vector<std::string> pipe_list;
  * db_datum >> pipe_list;
  * @endcode
  *
  * @param [in] class_name The class name
  * @param [in] wildcard The wildcard
- * @return The class pipe list
+ * @return The class pipe std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_class_pipe_list(const string &class_name,const string &wildcard);
+	DbDatum get_class_pipe_list(const std::string &class_name,const std::string &wildcard);
 /**
- * Get device alias list
+ * Get device alias std::list
  *
- * Get device alias list. The parameter is a string to filter the alias list returned. Wildcard (*) is supported.
- * For instance, if the string passed as the method parameter is initialised with only the * character, all
+ * Get device alias std::list. The parameter is a std::string to filter the alias std::list returned. Wildcard (*) is supported.
+ * For instance, if the std::string passed as the method parameter is initialised with only the * character, all
  * the defined device alias will be returned. The DbDatum returned by this method is initialised with an array
- * of strings and must be extracted into a vector<string>. If there is no alias with the given filter, the returned
+ * of std::strings and must be extracted into a std::vector<std::string>. If there is no alias with the given filter, the returned
  * array will have a 0 size.
  * @code
  * DbData db_data;
- * string filter("*");
+ * std::string filter("*");
  *
  * db_data = db->get_device_alias_list(filter);
  *
- * vector<string> al_list;
+ * std::vector<std::string> al_list;
  * db_data >> al_list;
  *
- * cout << al_list.size() << " device alias defined in db" << endl;
+ * cout << al_list.size() << " device alias defined in db" << std::endl;
  * for (int i=0;i < al_list.size();i++)
- *     cout << "alias = " << al_list[i] << endl;
+ *     cout << "alias = " << al_list[i] << std::endl;
  * @endcode
  *
  * @param [in] filter The filter
- * @return The device alias list
+ * @return The device alias std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_device_alias_list(string &filter);
+	DbDatum get_device_alias_list(std::string &filter);
 /**
- * Get attribute alias list
+ * Get attribute alias std::list
  *
- * Get attribute alias list. The parameter is a string to filter the alias list returned. Wildcard (*) is
- * supported. For instance, if the string passed as the method parameter is initialised with only the
+ * Get attribute alias std::list. The parameter is a std::string to filter the alias std::list returned. Wildcard (*) is
+ * supported. For instance, if the std::string passed as the method parameter is initialised with only the
  * * character, all the defined attribute alias will be returned. The DbDatum returned by this method is
- * initialised with an array of strings and must be extracted into a vector<string>. If there is no alias with the
+ * initialised with an array of std::strings and must be extracted into a std::vector<std::string>. If there is no alias with the
  * given filter, the returned array will have a 0 size.
  *
  * @param [in] filter The filter
- * @return The attribute alias list
+ * @return The attribute alias std::list
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_attribute_alias_list(string &filter);
+	DbDatum get_attribute_alias_list(std::string &filter);
 //@}
 
 
 ///@privatesection
-	Database(string &host, int port, CORBA::ORB *orb=NULL);
-	Database(string &file);
+	Database(std::string &host, int port, CORBA::ORB *orb=NULL);
+	Database(std::string &file);
 
 	Database(const Database &);
 	Database & operator=(const Database &);
 
 	void write_filedatabase();
 	void reread_filedatabase();
-	void write_event_channel_ior_filedatabase(string &);
+	void write_event_channel_ior_filedatabase(std::string &);
 	void build_connection ();
 	void post_reconnection();
 	~Database();
 	inline Device_var &get_dbase() { return device;}
 	void check_tango_host(const char *);
-	AccessControlType check_access_control(string &);
+	AccessControlType check_access_control(std::string &);
 	bool is_control_access_checked() {return access_checked;}
 	void set_access_checked(bool val) {access_checked = val;}
 
@@ -1835,65 +1835,65 @@ public :
 
 	DevErrorList &get_access_except_errors() {return access_except_errors;}
 	void clear_access_except_errors() {access_except_errors.length(0);}
-	bool is_command_allowed(string &,string &);
+	bool is_command_allowed(std::string &,std::string &);
 
 	bool is_multi_tango_host() {return db_multi_svc;}
-	vector<string> &get_multi_host() {return multi_db_host;}
-	vector<string> &get_multi_port() {return multi_db_port;}
+	std::vector<std::string> &get_multi_host() {return multi_db_host;}
+	std::vector<std::string> &get_multi_port() {return multi_db_port;}
 
-	const string &get_file_name();
-	const string &get_orig_tango_host() {return ext->orig_tango_host;}
-	void set_orig_tango_host(const string &_s) {ext->orig_tango_host=_s;}
+	const std::string &get_file_name();
+	const std::string &get_orig_tango_host() {return ext->orig_tango_host;}
+	void set_orig_tango_host(const std::string &_s) {ext->orig_tango_host=_s;}
 
 #ifdef _TG_WINDOWS_
-	Database(CORBA::ORB *orb,string &,string &);
-	long get_tango_host_from_reg(char **,string &,string &);
+	Database(CORBA::ORB *orb,std::string &,std::string &);
+	long get_tango_host_from_reg(char **,std::string &,std::string &);
 #endif
 
 //
 // general methods
 //
 
-	CORBA::Any *fill_server_cache(string &,string &);
+	CORBA::Any *fill_server_cache(std::string &,std::string &);
 
 //
 // device methods
 //
 
-	DbDatum get_device_name(string &, string &,DbServerCache *dsc);
+	DbDatum get_device_name(std::string &, std::string &,DbServerCache *dsc);
 
 //
 // server methods
 //
 
-	DbServerInfo get_server_info(string &);
+	DbServerInfo get_server_info(std::string &);
 	void put_server_info(DbServerInfo &);
-	void delete_server_info(string &);
+	void delete_server_info(std::string &);
 
 //
 // property methods
 //
 
-	void get_property(string, DbData &,DbServerCache *dsc);
-	void get_property_forced(string, DbData &,DbServerCache *dsc = NULL);
-	void get_device_property(string, DbData &, DbServerCache *dsc);
-	DbDatum get_device_property_list(string &,string &);
-	void get_device_property_list(string &,const string &,vector<string> &,DbServerCache *dsc = NULL);
-	void get_device_attribute_property(string, DbData &, DbServerCache *dsc);
-	void get_device_pipe_property(string, DbData &, DbServerCache *dsc);
-	void delete_all_device_attribute_property(string, DbData &);
-	void delete_all_device_pipe_property(string, DbData &);
-	void get_class_property(string, DbData &, DbServerCache *dsc);
-	void get_class_attribute_property(string, DbData &, DbServerCache *dsc);
-	void get_class_pipe_property(string, DbData &, DbServerCache *dsc);
+	void get_property(std::string, DbData &,DbServerCache *dsc);
+	void get_property_forced(std::string, DbData &,DbServerCache *dsc = NULL);
+	void get_device_property(std::string, DbData &, DbServerCache *dsc);
+	DbDatum get_device_property_list(std::string &,std::string &);
+	void get_device_property_list(std::string &,const std::string &,std::vector<std::string> &,DbServerCache *dsc = NULL);
+	void get_device_attribute_property(std::string, DbData &, DbServerCache *dsc);
+	void get_device_pipe_property(std::string, DbData &, DbServerCache *dsc);
+	void delete_all_device_attribute_property(std::string, DbData &);
+	void delete_all_device_pipe_property(std::string, DbData &);
+	void get_class_property(std::string, DbData &, DbServerCache *dsc);
+	void get_class_attribute_property(std::string, DbData &, DbServerCache *dsc);
+	void get_class_pipe_property(std::string, DbData &, DbServerCache *dsc);
 
 //
 // event methods
 //
 
 	void export_event(DevVarStringArray *);
-	void unexport_event(string &);
-	CORBA::Any *import_event(string &);
+	void unexport_event(std::string &);
+	CORBA::Any *import_event(std::string &);
 
 };
 
@@ -1901,7 +1901,7 @@ public :
 // Some Database class inline methods
 //
 
-inline string Database::dev_name()
+inline std::string Database::dev_name()
 {
 	if (db_device_name.empty() == true)
 	{

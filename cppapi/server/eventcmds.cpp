@@ -58,23 +58,23 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
     if (argin->length() < 4)
     {
 		TangoSys_OMemStream o;
-		o << "Not enough input arguments, needs 4 i.e. device name, attribute name, action, event name" << ends;
+		o << "Not enough input arguments, needs 4 i.e. device name, attribute name, action, event name" << std::ends;
 
 		Except::throw_exception((const char *)API_WrongNumberOfArgs,
 								o.str(),
 								(const char *)"DServer::event_subscription_change");
 	}
 
-	string dev_name, attr_name, action, event, attr_name_lower;
+	std::string dev_name, attr_name, action, event, attr_name_lower;
 	dev_name = (*argin)[0];
 	attr_name = (*argin)[1];
 	action = (*argin)[2];
 	event = (*argin)[3];
 
 	attr_name_lower = attr_name;
-	transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
+	std::transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
 
-	cout4 << "EventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
+	cout4 << "EventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << std::endl;
 
 	Tango::Util *tg = Tango::Util::instance();
 
@@ -85,7 +85,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 	if (tg->get_heartbeat_thread_object() == NULL)
 	{
      	TangoSys_OMemStream o;
-		o << "The device server is shutting down! You can no longer subscribe for events" << ends;
+		o << "The device server is shutting down! You can no longer subscribe for events" << std::ends;
 
 		Except::throw_exception((const char *)API_ShutdownInProgress,
 									    o.str(),
@@ -112,7 +112,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 		ev->file_db_svr();
 	}
 
-    string mcast;
+    std::string mcast;
     int rate,ivl;
 
 //
@@ -177,8 +177,8 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DServer::event_subscription(string &dev_name,string &obj_name,string &action,string &event,string &obj_name_lower,
-								 ChannelType ct,string &mcast_data,int &rate,int &ivl,DeviceImpl *dev,int client_lib)
+void DServer::event_subscription(std::string &dev_name,std::string &obj_name,std::string &action,std::string &event,std::string &obj_name_lower,
+								 ChannelType ct,std::string &mcast_data,int &rate,int &ivl,DeviceImpl *dev,int client_lib)
 {
     Tango::Util *tg = Tango::Util::instance();
 
@@ -197,7 +197,7 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
         catch (Tango::DevFailed &e)
         {
             TangoSys_OMemStream o;
-            o << "Device " << dev_name << " not found" << ends;
+            o << "Device " << dev_name << " not found" << std::ends;
             Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
                                        (const char *)"DServer::event_subscription");
         }
@@ -218,7 +218,7 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 		{
 			if (attribute.is_fwd_att() == true)
 			{
-				stringstream ss;
+				std::stringstream ss;
 				ss << "The attribute " << obj_name << " is a forwarded attribute.";
 				ss << "\nIt is not supported to subscribe events from forwarded attribute using Tango < 9. Please update!!";
 
@@ -230,7 +230,7 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 		{
 			if (attribute.is_fwd_att() == true && client_lib < 5)
 			{
-				stringstream ss;
+				std::stringstream ss;
 				ss << "The attribute " << obj_name << " is a forwarded attribute.";
 				ss << "\nIt is not supported to subscribe events from forwarded attribute using Tango < 9. Please update!!";
 
@@ -261,7 +261,7 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 					break;
 				}
 			}
-			else if (event.find(CONF_TYPE_EVENT) != string::npos)
+			else if (event.find(CONF_TYPE_EVENT) != std::string::npos)
 			{
 				cout4 << "DServer::event_subscription(): update attr_conf subscription\n";
 
@@ -278,7 +278,7 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 					TangoSys_OMemStream o;
 					o << "The attribute ";
 					o << obj_name;
-					o << " is not data ready event enabled" << ends;
+					o << " is not data ready event enabled" << std::ends;
 
 					Except::throw_exception(API_AttributeNotDataReadyEnabled,
 											o.str(),
@@ -301,7 +301,7 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 					TangoSys_OMemStream o;
 					o << "The polling (necessary to send events) for the attribute ";
 					o << obj_name;
-					o << " is not started" << ends;
+					o << " is not started" << std::ends;
 
 					if ( event == "change")
 					{
@@ -356,7 +356,7 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 									TangoSys_OMemStream o;
 									o << "Event properties (abs_change or rel_change) for attribute ";
 									o << obj_name;
-									o << " are not set" << ends;
+									o << " are not set" << std::ends;
 
 									Except::throw_exception(API_EventPropertiesNotSet,
 															o.str(),"DServer::event_subscription");
@@ -433,7 +433,7 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 									TangoSys_OMemStream o;
 									o << "Archive event properties (archive_abs_change or archive_rel_change or archive_period) for attribute ";
 									o << obj_name;
-									o << " are not set" << ends;
+									o << " are not set" << std::ends;
 
 									Except::throw_exception(API_EventPropertiesNotSet,
 															o.str(),"DServer::event_subscription");
@@ -498,18 +498,18 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 							TangoSys_OMemStream o;
 							o << "Device server process is using zmq release ";
 							o << zmq_major << "." << zmq_minor << "." << zmq_patch;
-							o << "\nMulticast event(s) not available with this ZMQ release" << ends;
+							o << "\nMulticast event(s) not available with this ZMQ release" << std::ends;
 
 							Except::throw_exception(API_UnsupportedFeature,
 													o.str(),"DServer::event_subscription");
 						}
 
-						string::size_type start,end;
+						std::string::size_type start,end;
 						start = attribute.mcast_event[i].find(':');
 						start++;
 						end = attribute.mcast_event[i].find(':',start);
 
-						if ((end = attribute.mcast_event[i].find(':',end + 1)) == string::npos)
+						if ((end = attribute.mcast_event[i].find(':',end + 1)) == std::string::npos)
 						{
 							mcast_data = attribute.mcast_event[i].substr(start);
 							rate = 0;
@@ -525,10 +525,10 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 // Get rate because one is defined
 //
 
-							string::size_type start_rate = end + 1;
-							if ((end = attribute.mcast_event[i].find(':',start_rate)) == string::npos)
+							std::string::size_type start_rate = end + 1;
+							if ((end = attribute.mcast_event[i].find(':',start_rate)) == std::string::npos)
 							{
-								istringstream iss(attribute.mcast_event[i].substr(start_rate));
+								std::istringstream iss(attribute.mcast_event[i].substr(start_rate));
 								iss >> rate;
 								rate = rate * 1024;
 								ivl = 0;
@@ -537,7 +537,7 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 							}
 							else
 							{
-								istringstream iss(attribute.mcast_event[i].substr(start_rate,end - start_rate));
+								std::istringstream iss(attribute.mcast_event[i].substr(start_rate,end - start_rate));
 								iss >> rate;
 								rate = rate * 1024;
 
@@ -545,7 +545,7 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 // Get ivl because one is defined
 //
 
-								istringstream iss_ivl(attribute.mcast_event[i].substr(end + 1));
+								std::istringstream iss_ivl(attribute.mcast_event[i].substr(end + 1));
 								iss_ivl >> ivl;
 								ivl = ivl * 1000;
 								found = true;
@@ -666,7 +666,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
     if (argin->length() > 1 && argin->length() < 4)
     {
 		TangoSys_OMemStream o;
-		o << "Not enough input arguments, needs at least 4 i.e. device name, attribute/pipe name, action, event name, <Tango lib release>" << ends;
+		o << "Not enough input arguments, needs at least 4 i.e. device name, attribute/pipe name, action, event name, <Tango lib release>" << std::ends;
 
 		Except::throw_exception((const char *)API_WrongNumberOfArgs,
 								o.str(),
@@ -678,12 +678,12 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
     if (argin->length() == 1)
     {
-        string arg((*argin)[0]);
-        transform(arg.begin(),arg.end(),arg.begin(),::tolower);
+        std::string arg((*argin)[0]);
+        std::transform(arg.begin(),arg.end(),arg.begin(),::tolower);
         if (arg != "info")
         {
             TangoSys_OMemStream o;
-            o << "Not enough input arguments, needs 4 i.e. device name, attribute/pipe name, action, event name" << ends;
+            o << "Not enough input arguments, needs 4 i.e. device name, attribute/pipe name, action, event name" << std::ends;
 
             Except::throw_exception((const char *)API_WrongNumberOfArgs,
                                     o.str(),
@@ -703,12 +703,12 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         ZmqEventSupplier *ev;
         if ((ev = tg->get_zmq_event_supplier()) != NULL)
         {
-            string tmp_str("Heartbeat: ");
+            std::string tmp_str("Heartbeat: ");
             tmp_str = tmp_str + ev->get_heartbeat_endpoint();
             ret_data->svalue[0] = Tango::string_dup(tmp_str.c_str());
 
             tmp_str = "Event: ";
-            string ev_end = ev->get_event_endpoint();
+            std::string ev_end = ev->get_event_endpoint();
             if (ev_end.size() != 0)
 				tmp_str = "Event: " + ev_end;
 			size_t nb_mcast = ev->get_mcast_event_nb();
@@ -727,14 +727,14 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
                 for (size_t loop = 0;loop < nb_alt;loop++)
                 {
-                    string tmp_str("Alternate heartbeat: ");
+                    std::string tmp_str("Alternate heartbeat: ");
                     tmp_str = tmp_str + ev->get_alternate_heartbeat_endpoint()[loop];
                     ret_data->svalue[(loop + 1) << 1] = Tango::string_dup(tmp_str.c_str());
 
                     tmp_str = "Alternate event: ";
                     if (ev->get_alternate_event_endpoint().size() != 0)
                     {
-                         string ev_end = ev->get_alternate_event_endpoint()[loop];
+                         std::string ev_end = ev->get_alternate_event_endpoint()[loop];
                          if (ev_end.empty() == false)
                             tmp_str = "Alternate event: " + ev_end;
                     }
@@ -749,7 +749,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
     }
     else
     {
-        string dev_name, obj_name, action, event, obj_name_lower;
+        std::string dev_name, obj_name, action, event, obj_name_lower;
         dev_name = (*argin)[0];
         obj_name = (*argin)[1];
         action = (*argin)[2];
@@ -759,11 +759,11 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 // Check event type validity
 //
 
-        string check_event = event;
-        transform(check_event.begin(),check_event.end(),check_event.begin(),::tolower);
+        std::string check_event = event;
+        std::transform(check_event.begin(),check_event.end(),check_event.begin(),::tolower);
 
-        string::size_type pos_check = check_event.find(EVENT_COMPAT);
-        if (pos_check != string::npos)
+        std::string::size_type pos_check = check_event.find(EVENT_COMPAT);
+        if (pos_check != std::string::npos)
             check_event.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
         size_t nb_event_type = sizeof(EventName)/sizeof(char *);
@@ -780,7 +780,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
         if (found == false)
         {
-            stringstream ss;
+            std::stringstream ss;
             ss << "The event type you sent (" << event << ") is not  valid event type";
 
             Except::throw_exception(API_WrongNumberOfArgs,ss.str(),"DServer::zmq_event_subscription_change");
@@ -795,7 +795,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 			pipe_event = true;
 
         obj_name_lower = obj_name;
-        transform(obj_name_lower.begin(),obj_name_lower.end(),obj_name_lower.begin(),::tolower);
+        std::transform(obj_name_lower.begin(),obj_name_lower.end(),obj_name_lower.begin(),::tolower);
 
         int client_release = 4;
 		if (event == EventName[ATTR_CONF_EVENT])
@@ -803,17 +803,17 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
         if (argin->length() == 5)
         {
-			stringstream ss;
+			std::stringstream ss;
 			ss << (*argin)[4];
 			ss >> client_release;
 
 			if (client_release == 0)
 			{
-				string::size_type pos = event.find(EVENT_COMPAT);
-				if (pos != string::npos)
+				std::string::size_type pos = event.find(EVENT_COMPAT);
+				if (pos != std::string::npos)
 				{
-					string client_lib_str = event.substr(pos + 3,1);
-					stringstream ss;
+					std::string client_lib_str = event.substr(pos + 3,1);
+					std::stringstream ss;
 					ss << client_lib_str;
 					ss >> client_release;
 					event.erase(0,EVENT_COMPAT_IDL5_SIZE);
@@ -848,7 +848,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 			}
 		}
 
-        cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute/pipe " << obj_name << " action " << action << " event " << event << " client lib = " << client_release << endl;
+        cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute/pipe " << obj_name << " action " << action << " event " << event << " client lib = " << client_release << std::endl;
 
 //
 // If we receive this command while the DS is in its shuting down sequence, do nothing
@@ -857,7 +857,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         if (tg->get_heartbeat_thread_object() == NULL)
         {
             TangoSys_OMemStream o;
-            o << "The device server is shutting down! You can no longer subscribe for events" << ends;
+            o << "The device server is shutting down! You can no longer subscribe for events" << std::ends;
 
             Except::throw_exception((const char *)API_ShutdownInProgress,
                                             o.str(),
@@ -890,7 +890,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         catch (Tango::DevFailed &e)
         {
             TangoSys_OMemStream o;
-            o << "Device " << dev_name << " not found" << ends;
+            o << "Device " << dev_name << " not found" << std::ends;
             Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
                                        (const char *)"DServer::event_subscription");
         }
@@ -901,7 +901,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             TangoSys_OMemStream o;
 
             o << "Device " << dev_name << " too old to use ZMQ event (it does not implement IDL 4)";
-            o << "\nSimulate a CommandNotFound exception to move to notifd event system" << ends;
+            o << "\nSimulate a CommandNotFound exception to move to notifd event system" << std::ends;
             Except::throw_exception((const char *)API_CommandNotFound,
 				      o.str(),
 				      (const char *)"DServer::zmq_event_subscription_change");
@@ -914,11 +914,11 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 // Call common method (common between old and new command)
 //
 
-        string mcast;
+        std::string mcast;
         int rate,ivl;
 
-		string::size_type pos = event.find(EVENT_COMPAT);
-		if (pos != string::npos)
+		std::string::size_type pos = event.find(EVENT_COMPAT);
+		if (pos != std::string::npos)
 			event.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
         event_subscription(dev_name,obj_name,action,event,obj_name_lower,ZMQ,mcast,rate,ivl,dev,client_release);
@@ -936,7 +936,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 // in a file
 //
 
-        string ev_name = ev->get_fqdn_prefix();
+        std::string ev_name = ev->get_fqdn_prefix();
         if (Util::_FileDb == true)
         {
             int size = ev_name.size();
@@ -1002,7 +1002,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 			if (attribute.is_fwd_att() == true && et != ATTR_CONF_EVENT)
 			{
 				FwdAttribute &fwd_att = static_cast<FwdAttribute &>(attribute);
-				string root_name = fwd_att.get_fwd_dev_name() + "/" + fwd_att.get_fwd_att_name();
+				std::string root_name = fwd_att.get_fwd_dev_name() + "/" + fwd_att.get_fwd_att_name();
 				RootAttRegistry &rar = tg->get_root_att_reg();
 				bool already_there = rar.is_event_subscribed(root_name,et);
 
@@ -1033,23 +1033,23 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         ret_data->lvalue[4] = ivl;
         ret_data->lvalue[5] = ev->get_zmq_release();
 
-        string &heartbeat_endpoint = ev->get_heartbeat_endpoint();
+        std::string &heartbeat_endpoint = ev->get_heartbeat_endpoint();
         ret_data->svalue[0] = Tango::string_dup(heartbeat_endpoint.c_str());
         if (mcast.empty() == true)
         {
-            string &event_endpoint = ev->get_event_endpoint();
+            std::string &event_endpoint = ev->get_event_endpoint();
             ret_data->svalue[1] = Tango::string_dup(event_endpoint.c_str());
         }
         else
         {
             if (local_call == true)
             {
-                string &event_endpoint = ev->get_event_endpoint();
+                std::string &event_endpoint = ev->get_event_endpoint();
                 ret_data->svalue[1] = Tango::string_dup(event_endpoint.c_str());
             }
             else
             {
-                string &event_endpoint = ev->get_mcast_event_endpoint(ev_name);
+                std::string &event_endpoint = ev->get_mcast_event_endpoint(ev_name);
                 ret_data->svalue[1] = Tango::string_dup(event_endpoint.c_str());
             }
         }
@@ -1061,7 +1061,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
             for (size_t loop = 0;loop < nb_alt;loop++)
             {
-                string tmp_str = ev->get_alternate_heartbeat_endpoint()[loop];
+                std::string tmp_str = ev->get_alternate_heartbeat_endpoint()[loop];
                 ret_data->svalue[(loop + 1) << 1] = Tango::string_dup(tmp_str.c_str());
 
                 tmp_str = ev->get_alternate_event_endpoint()[loop];
@@ -1073,7 +1073,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         size_t size = ret_data->svalue.length();
         ret_data->svalue.length(size + 2);
 
-        string event_topic = "";
+        std::string event_topic = "";
         bool add_compat_info = false;
         if ((event != EventName[PIPE_EVENT]) &&
             (event != EventName[INTERFACE_CHANGE_EVENT]) &&
@@ -1090,16 +1090,16 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             event_topic = ev->create_full_event_name(dev, event, obj_name_lower, intr_change);
         }
         assert(!(event_topic.empty()));
-        cout4 << "Sending event_topic = " << event_topic << endl;
+        cout4 << "Sending event_topic = " << event_topic << std::endl;
         ret_data->svalue[size] = Tango::string_dup(event_topic.c_str());
 
-        string channel_name = ev->get_fqdn_prefix();
+        std::string channel_name = ev->get_fqdn_prefix();
         char * adm_name = dev->adm_name();
         channel_name += adm_name;
         Tango::string_free(adm_name);
-        transform(channel_name.begin(), channel_name.end(), channel_name.begin(), ::tolower);
+        std::transform(channel_name.begin(), channel_name.end(), channel_name.begin(), ::tolower);
         assert(!(channel_name.empty()));
-        cout4 << "Sending channel_name = " << channel_name << endl;
+        cout4 << "Sending channel_name = " << channel_name << std::endl;
         ret_data->svalue[size + 1] = Tango::string_dup(channel_name.c_str());
     }
 
@@ -1131,21 +1131,21 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 
     unsigned int nb_event = argin->length() / 3;
 
-	string old_dev;
+	std::string old_dev;
 	DeviceImpl *dev = NULL;
 
 	for (unsigned int loop = 0;loop < nb_event;loop++)
 	{
-		string dev_name, obj_name, event, obj_name_lower;
+		std::string dev_name, obj_name, event, obj_name_lower;
 		int base = loop * 3;
 		dev_name = (*argin)[base];
 		obj_name = (*argin)[base + 1];
 		event = (*argin)[base + 2];
 
 		obj_name_lower = obj_name;
-		transform(obj_name_lower.begin(),obj_name_lower.end(),obj_name_lower.begin(),::tolower);
+		std::transform(obj_name_lower.begin(),obj_name_lower.end(),obj_name_lower.begin(),::tolower);
 
-		cout4 << "EventConfirmSubscriptionCmd: confirm subscription for device " << dev_name << " attribute/pipe " << obj_name << " event " << event << endl;
+		cout4 << "EventConfirmSubscriptionCmd: confirm subscription for device " << dev_name << " attribute/pipe " << obj_name << " event " << event << std::endl;
 
 //
 // Find device
@@ -1160,7 +1160,7 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
         	catch (Tango::DevFailed &e)
         	{
             	TangoSys_OMemStream o;
-            	o << "Device " << dev_name << " not found" << ends;
+            	o << "Device " << dev_name << " not found" << std::ends;
             	Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
              	                          (const char *)"DServer::event_confirm_subscription");
         	}
@@ -1172,17 +1172,17 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 // Call common method (common between old and new command)
 //
 
-		string mcast;
+		std::string mcast;
 		int rate,ivl,client_lib;
 
-		string action("subscribe");
-		string client_lib_str;
+		std::string action("subscribe");
+		std::string client_lib_str;
 
-		string::size_type pos = event.find(EVENT_COMPAT);
-		if (pos != string::npos)
+		std::string::size_type pos = event.find(EVENT_COMPAT);
+		if (pos != std::string::npos)
 		{
 			client_lib_str = event.substr(pos + 3,1);
-			stringstream ss;
+			std::stringstream ss;
 			ss << client_lib_str;
 			ss >> client_lib;
 			event.erase(0,EVENT_COMPAT_IDL5_SIZE);

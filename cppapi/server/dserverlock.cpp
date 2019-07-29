@@ -62,10 +62,10 @@ void DServer::lock_device(const Tango::DevVarLongStringArray *in_data)
 {
 	NoSyncModelTangoMonitor mon(this);
 
-	string dev_name(in_data->svalue[0]);
+	std::string dev_name(in_data->svalue[0]);
 	int lock_validity = in_data->lvalue[0];
 
-	cout4 << "In lock_device command for device " << dev_name << ", lock validity = " << lock_validity << endl;
+	cout4 << "In lock_device command for device " << dev_name << ", lock validity = " << lock_validity << std::endl;
 
 //
 // Get client identification
@@ -79,7 +79,7 @@ void DServer::lock_device(const Tango::DevVarLongStringArray *in_data)
 					        (const char*)"DServer::lock_device");
 	}
 
-	cout4 << "Client identification = " << *cl << endl;
+	cout4 << "Client identification = " << *cl << std::endl;
 
 	if (cl->client_ident == false)
 	{
@@ -94,10 +94,10 @@ void DServer::lock_device(const Tango::DevVarLongStringArray *in_data)
 
 	Tango::Util *tg = Tango::Util::instance();
 
-	string local_dev_name(get_name());
+	std::string local_dev_name(get_name());
 	transform(local_dev_name.begin(),local_dev_name.end(),local_dev_name.begin(),::tolower);
 
-	string d_name_lower(dev_name);
+	std::string d_name_lower(dev_name);
 	transform(d_name_lower.begin(),d_name_lower.end(),d_name_lower.begin(),::tolower);
 
 //
@@ -122,7 +122,7 @@ void DServer::lock_device(const Tango::DevVarLongStringArray *in_data)
 // Refuse to lock database device
 //
 
-	string &cl_name = the_dev->get_device_class()->get_name();
+	std::string &cl_name = the_dev->get_device_class()->get_name();
 	if (::strcmp(cl_name.c_str(),DATABASE_CLASS) == 0)
 	{
 		Except::throw_exception((const char *)API_DeviceUnlockable,
@@ -153,7 +153,7 @@ Tango::DevLong DServer::un_lock_device(const Tango::DevVarLongStringArray *in_da
 {
 	NoSyncModelTangoMonitor mon(this);
 
-	cout4 << "In un_lock_device command for device " << in_data->svalue[0] << endl;
+	cout4 << "In un_lock_device command for device " << in_data->svalue[0] << std::endl;
 
 //
 // Get client identification
@@ -167,7 +167,7 @@ Tango::DevLong DServer::un_lock_device(const Tango::DevVarLongStringArray *in_da
 					        (const char*)"DServer::un_lock_device");
 	}
 
-	cout4 << "Client identification = " << *cl << endl;
+	cout4 << "Client identification = " << *cl << std::endl;
 
 	if ((cl->client_ident == false) && (in_data->lvalue[0] == 0))
 	{
@@ -185,7 +185,7 @@ Tango::DevLong DServer::un_lock_device(const Tango::DevVarLongStringArray *in_da
 
 	for (unsigned int loop = 0;loop < in_data->svalue.length();++loop)
 	{
-		string d_name(in_data->svalue[loop]);
+		std::string d_name(in_data->svalue[loop]);
 
 		if (d_name == get_name())
 			ctr = lock_ctr;
@@ -216,12 +216,12 @@ void DServer::re_lock_devices(const Tango::DevVarStringArray *dev_name_list)
 {
 	NoSyncModelTangoMonitor mon(this);
 
-	cout4 << "In re_lock_devices command" << endl;
+	cout4 << "In re_lock_devices command" << std::endl;
 	CORBA::ULong loop;
 	CORBA::ULong nb_dev = dev_name_list->length();
 
 	for (loop = 0;loop < nb_dev;loop++)
-		cout4 << "Device to re-lock: " << (*dev_name_list)[loop] << endl;
+		cout4 << "Device to re-lock: " << (*dev_name_list)[loop] << std::endl;
 
 //
 // Get client identification
@@ -235,7 +235,7 @@ void DServer::re_lock_devices(const Tango::DevVarStringArray *dev_name_list)
 					        (const char*)"DServer::re_lock_devices");
 	}
 
-	cout4 << "Client identification = " << *cl << endl;
+	cout4 << "Client identification = " << *cl << std::endl;
 
 	if (cl->client_ident == false)
 	{
@@ -257,7 +257,7 @@ void DServer::re_lock_devices(const Tango::DevVarStringArray *dev_name_list)
 
 	for (loop = 0;loop < nb_dev;loop++)
 	{
-		string d_name((*dev_name_list)[loop]);
+		std::string d_name((*dev_name_list)[loop]);
 
 //
 // Get device ptr
@@ -321,13 +321,13 @@ Tango::DevVarLongStringArray *DServer::dev_lock_status(Tango::ConstDevString dev
 {
 	NoSyncModelTangoMonitor mon(this);
 
-	cout4 << "In dev_lock_status command for device " << dev_name << endl;
+	cout4 << "In dev_lock_status command for device " << dev_name << std::endl;
 
 //
 // Get the device and get its lock status
 //
 
-	string d_name(dev_name);
+	std::string d_name(dev_name);
 
 	Tango::Util *tg = Tango::Util::instance();
 	DeviceImpl *the_dev = tg->get_device_by_name(d_name);

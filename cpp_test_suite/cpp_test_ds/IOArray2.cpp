@@ -171,13 +171,13 @@ CORBA::Any *IOPollArray2::execute(Tango::DeviceImpl *device,TANGO_UNUSED(const C
     {   
     	(dev->get_short_array())[0] = 100;
     	(dev->get_short_array())[1] = 200;
-cout << "Value are 100,200" << endl;
+cout << "Value are 100,200" << std::endl;
     }
     else
     {
         (dev->get_short_array())[0] = 300;
 	(dev->get_short_array())[1] = 400;
-cout << "Value are 300,400" << endl;
+cout << "Value are 300,400" << std::endl;
     }
         
     data_ptr = dev->get_short_array();

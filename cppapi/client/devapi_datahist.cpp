@@ -106,7 +106,7 @@ DeviceDataHistory::DeviceDataHistory(const DeviceDataHistory &source)
 
 #ifdef HAS_RVALUE
 DeviceDataHistory::DeviceDataHistory(DeviceDataHistory &&source)
-    : DeviceData(move(source)), ext_hist(Tango_nullptr)
+    : DeviceData(std::move(source)), ext_hist(Tango_nullptr)
 {
     fail = source.fail;
     time = source.time;
@@ -117,7 +117,7 @@ DeviceDataHistory::DeviceDataHistory(DeviceDataHistory &&source)
 
     if (source.ext_hist.get() != NULL)
     {
-        ext_hist = move(source.ext_hist);
+        ext_hist = std::move(source.ext_hist);
     }
     else
     {
@@ -238,7 +238,7 @@ DeviceDataHistory &DeviceDataHistory::operator=(DeviceDataHistory &&rval)
 // Assignement of DeviceData class members first
 //
 
-    this->DeviceData::operator=(move(rval));
+    this->DeviceData::operator=(std::move(rval));
 
 //
 // Then, assignement of DeviceDataHistory members
@@ -274,7 +274,7 @@ DeviceDataHistory &DeviceDataHistory::operator=(DeviceDataHistory &&rval)
 
     if (rval.ext_hist.get() != NULL)
     {
-        ext_hist = move(rval.ext_hist);
+        ext_hist = std::move(rval.ext_hist);
     }
     else
     {
@@ -294,7 +294,7 @@ DeviceDataHistory &DeviceDataHistory::operator=(DeviceDataHistory &&rval)
 //
 //--------------------------------------------------------------------------
 
-ostream &operator<<(ostream &o_str, DeviceDataHistory &dh)
+std::ostream &operator<<(std::ostream &o_str, DeviceDataHistory &dh)
 {
 
 //
@@ -310,7 +310,7 @@ ostream &operator<<(ostream &o_str, DeviceDataHistory &dh)
 #endif
     tmp_date[strlen(tmp_date) - 1] = '\0';
     o_str << tmp_date;
-    o_str << " (" << dh.time.tv_sec << "," << setw(6) << setfill('0') << dh.time.tv_usec << " sec) : ";
+    o_str << " (" << dh.time.tv_sec << "," << std::setw(6) << std::setfill('0') << dh.time.tv_usec << " sec) : ";
 
 //
 // Print data or error stack
@@ -321,7 +321,7 @@ ostream &operator<<(ostream &o_str, DeviceDataHistory &dh)
         unsigned int nb_err = dh.err.in().length();
         for (unsigned long i = 0; i < nb_err; i++)
         {
-            o_str << "Tango error stack" << endl;
+            o_str << "Tango error stack" << std::endl;
             o_str << "Severity = ";
             switch ((dh.err.in())[i].severity)
             {
@@ -341,13 +341,13 @@ ostream &operator<<(ostream &o_str, DeviceDataHistory &dh)
                     o_str << "Unknown severity code";
                     break;
             }
-            o_str << endl;
-            o_str << "Error reason = " << (dh.err.in())[i].reason.in() << endl;
-            o_str << "Desc : " << (dh.err.in())[i].desc.in() << endl;
+            o_str << std::endl;
+            o_str << "Error reason = " << (dh.err.in())[i].reason.in() << std::endl;
+            o_str << "Desc : " << (dh.err.in())[i].desc.in() << std::endl;
             o_str << "Origin : " << (dh.err.in())[i].origin.in();
             if (i != nb_err - 1)
             {
-                o_str << endl;
+                o_str << std::endl;
             }
         }
     }
@@ -698,13 +698,13 @@ DeviceAttributeHistory::DeviceAttributeHistory(const DeviceAttributeHistory &sou
 
 #ifdef HAS_RVALUE
 DeviceAttributeHistory::DeviceAttributeHistory(DeviceAttributeHistory &&source)
-    : DeviceAttribute(move(source)), ext_hist(Tango_nullptr)
+    : DeviceAttribute(std::move(source)), ext_hist(Tango_nullptr)
 {
     fail = source.fail;
 
     if (source.ext_hist.get() != NULL)
     {
-        ext_hist = move(source.ext_hist);
+        ext_hist = std::move(source.ext_hist);
     }
 
 }
@@ -782,7 +782,7 @@ DeviceAttributeHistory &DeviceAttributeHistory::operator=(DeviceAttributeHistory
 // First, assignement of DeviceAttribute class members
 //
 
-    this->DeviceAttribute::operator=(move(rval));
+    this->DeviceAttribute::operator=(std::move(rval));
 
 //
 // Then, assignement of DeviceAttributeHistory members
@@ -792,7 +792,7 @@ DeviceAttributeHistory &DeviceAttributeHistory::operator=(DeviceAttributeHistory
 
     if (rval.ext_hist.get() != NULL)
     {
-        ext_hist = move(rval.ext_hist);
+        ext_hist = std::move(rval.ext_hist);
     }
     else
     {
@@ -812,7 +812,7 @@ DeviceAttributeHistory &DeviceAttributeHistory::operator=(DeviceAttributeHistory
 //
 //--------------------------------------------------------------------------
 
-ostream &operator<<(ostream &o_str, DeviceAttributeHistory &dah)
+std::ostream &operator<<(std::ostream &o_str, DeviceAttributeHistory &dah)
 {
 //
 // Print date
@@ -829,7 +829,7 @@ ostream &operator<<(ostream &o_str, DeviceAttributeHistory &dah)
 #endif
         tmp_date[strlen(tmp_date) - 1] = '\0';
         o_str << tmp_date;
-        o_str << " (" << dah.time.tv_sec << "," << setw(6) << setfill('0') << dah.time.tv_usec << " sec) : ";
+        o_str << " (" << dah.time.tv_sec << "," << std::setw(6) << std::setfill('0') << dah.time.tv_usec << " sec) : ";
     }
 
 //
@@ -858,7 +858,7 @@ ostream &operator<<(ostream &o_str, DeviceAttributeHistory &dah)
     switch (dah.quality)
     {
         case Tango::ATTR_VALID:
-            o_str << "VALID)" << endl;
+            o_str << "VALID)" << std::endl;
             break;
 
         case Tango::ATTR_INVALID:
@@ -866,15 +866,15 @@ ostream &operator<<(ostream &o_str, DeviceAttributeHistory &dah)
             break;
 
         case Tango::ATTR_ALARM:
-            o_str << "ALARM)" << endl;
+            o_str << "ALARM)" << std::endl;
             break;
 
         case Tango::ATTR_CHANGING:
-            o_str << "CHANGING)" << endl;
+            o_str << "CHANGING)" << std::endl;
             break;
 
         case Tango::ATTR_WARNING:
-            o_str << "WARNING) " << endl;
+            o_str << "WARNING) " << std::endl;
             break;
     }
 
@@ -887,7 +887,7 @@ ostream &operator<<(ostream &o_str, DeviceAttributeHistory &dah)
         unsigned int nb_err = dah.err_list.in().length();
         for (unsigned long i = 0; i < nb_err; i++)
         {
-            o_str << "Tango error stack" << endl;
+            o_str << "Tango error stack" << std::endl;
             o_str << "Severity = ";
             switch (dah.err_list[i].severity)
             {
@@ -907,13 +907,13 @@ ostream &operator<<(ostream &o_str, DeviceAttributeHistory &dah)
                     o_str << "Unknown severity code";
                     break;
             }
-            o_str << endl;
-            o_str << "Error reason = " << dah.err_list[i].reason.in() << endl;
-            o_str << "Desc : " << dah.err_list[i].desc.in() << endl;
+            o_str << std::endl;
+            o_str << "Error reason = " << dah.err_list[i].reason.in() << std::endl;
+            o_str << "Desc : " << dah.err_list[i].desc.in() << std::endl;
             o_str << "Origin : " << dah.err_list[i].origin.in();
             if (i != nb_err - 1)
             {
-                o_str << endl;
+                o_str << std::endl;
             }
         }
     }

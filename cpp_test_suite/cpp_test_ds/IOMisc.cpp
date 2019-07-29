@@ -41,7 +41,7 @@ CORBA::Any *IODServDevice::execute(TANGO_UNUSED(Tango::DeviceImpl *device), TANG
 {
 	try
 	{
-		cout << "[IODServDevice::execute]" << endl;
+		cout << "[IODServDevice::execute]" << std::endl;
 
 		Tango::DeviceImpl *dev;
 		Tango::Util *tg = Tango::Util::instance();
@@ -100,7 +100,7 @@ CORBA::Any *IODevByName::execute(TANGO_UNUSED(Tango::DeviceImpl *device), const 
 	{
 		Tango::DevString dev_name;
 		extract(in_any, dev_name);
-		cout << "[IODevByName::execute] received dev name " << dev_name << endl;
+		cout << "[IODevByName::execute] received dev name " << dev_name << std::endl;
 
 		Tango::DeviceImpl *dev;
 		Tango::Util *tg = Tango::Util::instance();
@@ -160,9 +160,9 @@ CORBA::Any *IODevListByClass::execute(TANGO_UNUSED(Tango::DeviceImpl *device), c
 	{
 		Tango::DevString class_name;
 		extract(in_any, class_name);
-		cout << "[IODevListByClass::execute] received class name " << class_name << endl;
+		cout << "[IODevListByClass::execute] received class name " << class_name << std::endl;
 
-		vector<Tango::DeviceImpl *> d_list;
+		std::vector<Tango::DeviceImpl *> d_list;
 		Tango::Util *tg = Tango::Util::instance();
 		d_list = tg->get_device_list_by_class(class_name);
 
@@ -227,7 +227,7 @@ CORBA::Any *IOSleep::execute(TANGO_UNUSED(Tango::DeviceImpl *device), const CORB
 		Tango::DevUShort sleeping_Time;
 
 		extract(in_any, sleeping_Time);
-		cout << "[IOSleep::execute] sleeping time " << sleeping_Time << endl;
+		cout << "[IOSleep::execute] sleeping time " << sleeping_Time << std::endl;
 #ifdef WIN32
 		Sleep(sleeping_Time);
 #else
@@ -283,7 +283,7 @@ CORBA::Any *IOState::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any
 	{
 		Tango::DevState theState;
 		extract(in_any, theState);
-		cout << "[IOState::execute] received state " << theState << endl;
+		cout << "[IOState::execute] received state " << theState << std::endl;
 		device->set_state(theState);
 		return insert();
 	}
@@ -512,7 +512,7 @@ CORBA::Any *IOTrigPoll::execute(Tango::DeviceImpl *device, const CORBA::Any &in_
 #ifndef COMPAT
 	tg->trigger_cmd_polling(device, cmd_name);
 #else
-	string name(cmd_name);
+	std::string name(cmd_name);
 	tg->trigger_cmd_polling(device, name);
 #endif
 
@@ -564,7 +564,7 @@ CORBA::Any *IOAttrTrigPoll::execute(Tango::DeviceImpl *device, const CORBA::Any 
 #ifndef COMPAT
 	tg->trigger_attr_polling(device, att_name);
 #else
-	string name(att_name);
+	std::string name(att_name);
 	tg->trigger_attr_polling(device, name);
 #endif
 
@@ -1143,7 +1143,7 @@ bool IOGetCbExecuted::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_
 
 CORBA::Any *IOGetCbExecuted::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
-	cout << "[IOGetCbExecuted::execute] received, returned value = " << (static_cast<DevTest *>(device))->cb.cb_executed << endl;
+	cout << "[IOGetCbExecuted::execute] received, returned value = " << (static_cast<DevTest *>(device))->cb.cb_executed << std::endl;
 
 	Tango::DevLong exec = (static_cast<DevTest *>(device))->cb.cb_executed;
 	return insert(exec);
@@ -1570,8 +1570,8 @@ void *AcquisitionThread::run_undetached (TANGO_UNUSED(void *arg))
 // sort the devices in the ascending name order
 //
 
-	vector<Tango::DeviceImpl *> &dev_list = tg->get_device_list_by_class("DevTest");
-	vector<Tango::DeviceImpl *> dev_list_sorted = dev_list;
+	std::vector<Tango::DeviceImpl *> &dev_list = tg->get_device_list_by_class("DevTest");
+	std::vector<Tango::DeviceImpl *> dev_list_sorted = dev_list;
 
 	size_t n = dev_list_sorted.size();
 	// the second device on the list is selected to be the sub device, so the list has to comprise of 2 or more elements
@@ -1595,7 +1595,7 @@ void *AcquisitionThread::run_undetached (TANGO_UNUSED(void *arg))
 		}
 		while (n != 1);
 
-		cout << "Thread : Connect device = " << dev_list_sorted[1]->get_name() << endl;
+		cout << "Thread : Connect device = " << dev_list_sorted[1]->get_name() << std::endl;
 
 		try
 		{
@@ -1655,8 +1655,8 @@ CORBA::Any *SubDeviceTst::execute(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO
 // sort the devices in the ascending name order
 //
 
-		vector<Tango::DeviceImpl *> &dev_list = tg->get_device_list_by_class("DevTest");
-		vector<Tango::DeviceImpl *> dev_list_sorted = dev_list;
+		std::vector<Tango::DeviceImpl *> &dev_list = tg->get_device_list_by_class("DevTest");
+		std::vector<Tango::DeviceImpl *> dev_list_sorted = dev_list;
 
 		size_t n = dev_list_sorted.size();
 		// the third device on the list is selected to be the sub device, so the list has to comprise of 3 or more elements
@@ -1729,7 +1729,7 @@ bool PollingPoolTst::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_U
 CORBA::Any *PollingPoolTst::execute(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	Tango::DevVarStringArray *theOutputArray = new Tango::DevVarStringArray();
-	vector<string> pool_conf;
+	std::vector<std::string> pool_conf;
 
 	Tango::Util *tg = Tango::Util::instance();
 	tg->build_first_pool_conf(pool_conf);
@@ -1790,11 +1790,11 @@ ReynaldPollThread::ReynaldPollThread(Tango::DeviceImpl *_d):dev(_d)
 
 void ReynaldPollThread::run (TANGO_UNUSED(void *arg))
 {
-    string att1_name("Double_spec_attr");
-    string att2_name("Short_attr");
-    string att3_name("ReynaldPollAttr");
+    std::string att1_name("Double_spec_attr");
+    std::string att2_name("Short_attr");
+    std::string att3_name("ReynaldPollAttr");
 
-    stringstream ss;
+    std::stringstream ss;
 
 #ifdef WIN32
     Sleep(300);
@@ -1877,7 +1877,7 @@ void ReynaldPollThread::run (TANGO_UNUSED(void *arg))
     local_dev->stop_poll_att(att2_name);
     local_dev->stop_poll_att(att3_name);
 
-    cout << "ReynaldPollThread exiting" << endl;
+    cout << "ReynaldPollThread exiting" << std::endl;
 }
 
 //+----------------------------------------------------------------------------
@@ -2042,13 +2042,13 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 
 	try
 	{
-		cout << "[SetGetAlarms::execute]" << endl;
+		cout << "[SetGetAlarms::execute]" << std::endl;
 
 		Tango::MultiAttribute *attributes = device->get_device_attr();
 		Tango::DevVarStringArray *alarms = new Tango::DevVarStringArray();
 
 		TangoSys_MemStream str;
-		vector<string> alarms_vec;
+		std::vector<std::string> alarms_vec;
 		Tango::AttributeConfig_5 conf;
 		Tango::Attribute *attr_ptr = NULL;
 
@@ -2467,17 +2467,17 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 		alarms->length(alarms_vec.size());
 		for (unsigned int i = 0; i < alarms_vec.size(); i++)
 		{
-//			cout << alarms_vec[i] << endl;
+//			cout << alarms_vec[i] << std::endl;
 			(*alarms)[i] = Tango::string_dup(alarms_vec[i].c_str());
 		}
 
-		cout << "Alarms have been set" << endl;
+		cout << "Alarms have been set" << std::endl;
 
 		return insert(alarms);
 	}
 	catch (CORBA::Exception &e)
 	{
-		cout << "Exception while setting alarms" << endl;
+		cout << "Exception while setting alarms" << std::endl;
 		Tango::Except::print_exception(e);
 		throw ;
 	}
@@ -2531,13 +2531,13 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 
 	try
 	{
-		cout << "[SetGetRanges::execute]" << endl;
+		cout << "[SetGetRanges::execute]" << std::endl;
 
 		Tango::MultiAttribute *attributes = device->get_device_attr();
 		Tango::DevVarStringArray *ranges = new Tango::DevVarStringArray();
 
 		TangoSys_MemStream str;
-		vector<string> ranges_vec;
+		std::vector<std::string> ranges_vec;
 		Tango::AttributeConfig conf;
 		Tango::WAttribute *wattr_ptr = NULL;
 
@@ -2848,17 +2848,17 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 		ranges->length(ranges_vec.size());
 		for (unsigned int i = 0; i < ranges_vec.size(); i++)
 		{
-//			cout << ranges_vec[i] << endl;
+//			cout << ranges_vec[i] << std::endl;
 			(*ranges)[i] = Tango::string_dup(ranges_vec[i].c_str());
 		}
 
-		cout << "Ranges have been set" << endl;
+		cout << "Ranges have been set" << std::endl;
 
 		return insert(ranges);
 	}
 	catch (CORBA::Exception &e)
 	{
-		cout << "Exception while setting ranges" << endl;
+		cout << "Exception while setting ranges" << std::endl;
 		Tango::Except::print_exception(e);
 		throw ;
 	}
@@ -2901,7 +2901,7 @@ bool SetGetProperties::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 		return(false);
 }
 
-void SetGetProperties::set_vect(vector<double> &vect, double v1, double v2)
+void SetGetProperties::set_vect(std::vector<double> &vect, double v1, double v2)
 {
 	vect.clear();
 	vect.push_back(v1);
@@ -2923,15 +2923,15 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, TANGO_UNUSED(co
 
 	try
 	{
-		cout << "[SetGetProperties::execute]" << endl;
+		cout << "[SetGetProperties::execute]" << std::endl;
 
 		Tango::MultiAttribute *attributes = device->get_device_attr();
 		Tango::DevVarStringArray *props = new Tango::DevVarStringArray();
 
-		vector<string> props_vec;
+		std::vector<std::string> props_vec;
 		Tango::AttributeConfig_5 conf;
 		Tango::Attribute *attr_ptr = NULL;
-		vector<Tango::DevDouble> changes;
+		std::vector<Tango::DevDouble> changes;
 
 		try
 		{
@@ -4219,18 +4219,18 @@ Tango_sleep(1);
 		props->length(props_vec.size());
 		for (unsigned int i = 0; i < props_vec.size(); i++)
 		{
-//			cout << props_vec[i] << endl;
+//			cout << props_vec[i] << std::endl;
 			(*props)[i] = Tango::string_dup(props_vec[i].c_str());
 		}
 
-		cout << "Properties have been set" << endl;
+		cout << "Properties have been set" << std::endl;
 
 		return insert(props);
 	}
 	catch (CORBA::Exception &e)
 	{
 		db->set_timeout_millis(Tango::DB_TIMEOUT);
-		cout << "Exception while setting properties" << endl;
+		cout << "Exception while setting properties" << std::endl;
 		Tango::Except::print_exception(e);
 		throw ;
 	}

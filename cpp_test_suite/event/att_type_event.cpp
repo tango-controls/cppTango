@@ -1,4 +1,4 @@
-/* 
+/*
  * example of a client using the TANGO device api.
  */
 
@@ -18,12 +18,12 @@
 using namespace Tango;
 
 bool verbose = false;
-void check_attribute_data_type(DeviceProxy *,string &, const char *);
+void check_attribute_data_type(DeviceProxy *,std::string &, const char *);
 
 class EventCallBack : public Tango::CallBack
 {
 	void push_event(Tango::EventData*);
-	
+
 public:
 	int cb_executed;
 	int cb_err;
@@ -39,12 +39,12 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 		coutv << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
 		if (!event_data->err)
 		{
-			coutv << "CallBack value " << *(event_data->attr_value) << endl;
+			coutv << "CallBack value " << *(event_data->attr_value) << std::endl;
 			data_type = event_data->attr_value->get_type();
 		}
 		else
 		{
-			coutv << "Error send to callback" << endl;
+			coutv << "Error send to callback" << std::endl;
 			cb_err++;
 		}
 	}
@@ -57,22 +57,22 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
-	
+
 	if (argc == 1)
 	{
-		cout << "usage: %s device [-v]" << endl;
+		cout << "usage: %s device [-v]" << std::endl;
 		exit(-1);
 	}
 
-	string device_name = argv[1];
+	std::string device_name = argv[1];
 
 	if (argc == 3)
 	{
 		if (strcmp(argv[2],"-v") == 0)
 			verbose = true;
 	}
-	
-	try 
+
+	try
 	{
 		device = new DeviceProxy(device_name);
 	}
@@ -82,18 +82,18 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+	coutv << std::endl << "new DeviceProxy(" << device->name() << ") returned" << std::endl << std::endl;
 
-	
+
 	try
 	{
 
 
 //*************** DevShort data type ***********************
 
-		string att_name("Short_attr");
+		std::string att_name("Short_attr");
 		check_attribute_data_type(device,att_name, "DevShort");
-		
+
 //*************** DevLong data type ***********************
 
 		att_name = ("Long_attr");
@@ -157,7 +157,7 @@ int main(int argc, char **argv)
 //*************** Exception data type ***********************
 
 		att_name = ("attr_wrong_type");
-		check_attribute_data_type(device,att_name, "Error");							
+		check_attribute_data_type(device,att_name, "Error");
 	}
 	catch (Tango::DevFailed &e)
 	{
@@ -171,11 +171,11 @@ int main(int argc, char **argv)
 	}
 
 	delete device;
-	
+
 	return 0;
 }
 
-void check_attribute_data_type(DeviceProxy *device,string &att_name, const char *data_type)
+void check_attribute_data_type(DeviceProxy *device,std::string &att_name, const char *data_type)
 {
 
 //
@@ -183,16 +183,16 @@ void check_attribute_data_type(DeviceProxy *device,string &att_name, const char 
 //
 
 	int eve_id;
-	vector<string> filters;
+	std::vector<std::string> filters;
 	EventCallBack cb;
 	cb.cb_executed = 0;
 	cb.cb_err = 0;
 	cb.data_type = 100;
-		
+
 // start the polling first!
 
 	device->poll_attribute(att_name,500);
-		
+
 	eve_id = device->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb,filters);
 
 //
@@ -200,13 +200,13 @@ void check_attribute_data_type(DeviceProxy *device,string &att_name, const char 
 //
 
 	bool po = device->is_attribute_polled(att_name);
-	coutv << "attribute polled : " << po << endl;
+	coutv << "attribute polled : " << po << std::endl;
 	assert( po == true);
-		
+
 	int poll_period = device->get_attribute_poll_period(att_name);
-	coutv << "att polling period : " << poll_period << endl;
-	assert( poll_period == 500);		
-		
+	coutv << "att polling period : " << poll_period << std::endl;
+	assert( poll_period == 500);
+
 //
 // Check that callback was called
 //
@@ -224,18 +224,18 @@ void check_attribute_data_type(DeviceProxy *device,string &att_name, const char 
 #else
 	Sleep(2000);
 #endif
-			
-	coutv << "cb excuted = " << cb.cb_executed << endl;
+
+	coutv << "cb excuted = " << cb.cb_executed << std::endl;
 	assert (cb.cb_executed != 0);
-	
-	string requested_type(data_type);
+
+	std::string requested_type(data_type);
 	if (requested_type != "Error")
 	{
-		string received_type(CmdArgTypeName[cb.data_type]);
+		std::string received_type(CmdArgTypeName[cb.data_type]);
 		assert (received_type == requested_type);
 	}
-				
-	cout << "   Event received for " << data_type << " attribute --> OK" << endl;
+
+	cout << "   Event received for " << data_type << " attribute --> OK" << std::endl;
 
 //
 // unsubscribe to the event and stop polling

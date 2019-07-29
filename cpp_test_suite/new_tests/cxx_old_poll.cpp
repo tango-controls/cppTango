@@ -1,17 +1,10 @@
 #ifndef PollTestSuite_h
 #define PollTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
 #include <thread>
 #include <chrono>
+#include "cxx_common.h"
 
-using namespace Tango;
-using namespace std;
-
-#define cout cout << "\t"
 #define BASIC_NB_POLL        16
 #define TEST_CLASS "devTest"
 

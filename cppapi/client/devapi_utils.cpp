@@ -49,7 +49,7 @@ namespace Tango
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<DeviceDataHistory> *ddh)
+void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,std::vector<DeviceDataHistory> *ddh)
 {
 
 //
@@ -559,15 +559,15 @@ bool _CommandInfo::operator==(const _CommandInfo &ci)
 	return _DevCommandInfo::operator==(ci) && disp_level == ci.disp_level;
 }
 
-ostream &operator<<(ostream &o_str,_CommandInfo &ci)
+std::ostream &operator<<(std::ostream &o_str,_CommandInfo &ci)
 {
-	o_str << "Command name = " << ci.cmd_name << endl;
+	o_str << "Command name = " << ci.cmd_name << std::endl;
 
-	o_str << "Command input parameter data type = Tango::" << CmdArgTypeName[ci.in_type] << endl;
+	o_str << "Command input parameter data type = Tango::" << CmdArgTypeName[ci.in_type] << std::endl;
 	if (ci.in_type_desc.empty() == false)
-		o_str << "Command input parameter description = " << ci.in_type_desc << endl;
+		o_str << "Command input parameter description = " << ci.in_type_desc << std::endl;
 
-	o_str << "Command output parameter data type = Tango::" << CmdArgTypeName[ci.out_type] << endl;
+	o_str << "Command output parameter data type = Tango::" << CmdArgTypeName[ci.out_type] << std::endl;
 	if (ci.out_type_desc.empty() == false)
 		o_str << "Command output parameter description = " << ci.out_type_desc;
 

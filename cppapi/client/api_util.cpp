@@ -70,7 +70,7 @@ void _killproc_()
 void _t_handler(TANGO_UNUSED(int signum))
 {
 #ifdef HAS_THREAD
-    thread t(_killproc_);
+    std::thread t(_killproc_);
     t.detach();
 #else
     _KillProc_ *t = new _KillProc_;
@@ -141,11 +141,11 @@ ApiUtil::ApiUtil()
 // Check if the user has defined his own connection timeout
 //
 
-    string var;
+    std::string var;
     if (get_env_var("TANGOconnectTimeout", var) == 0)
     {
         int user_to = -1;
-        istringstream iss(var);
+        std::istringstream iss(var);
         iss >> user_to;
         if (iss)
         {
@@ -161,7 +161,7 @@ ApiUtil::ApiUtil()
     if (get_env_var("TANGO_EVENT_BUFFER_HWM", var) == 0)
     {
         int sub_hwm = -1;
-        istringstream iss(var);
+        std::istringstream iss(var);
         iss >> sub_hwm;
         if (iss)
         {
@@ -376,7 +376,7 @@ void ApiUtil::create_orb()
 
         if (sigaction(SIGPIPE, &sb, NULL) == -1)
         {
-            cerr << "Can re-install user signal handler for SIGPIPE!" << endl;
+            std::cerr << "Can re-install user signal handler for SIGPIPE!" << std::endl;
         }
     }
 #endif
@@ -414,7 +414,7 @@ int ApiUtil::get_db_ind()
 
 }
 
-int ApiUtil::get_db_ind(string &host, int port)
+int ApiUtil::get_db_ind(std::string &host, int port)
 {
     omni_mutex_lock lo(the_mutex);
 
@@ -510,8 +510,8 @@ void ApiUtil::get_asynch_replies()
 // For all replies already there
 //
 
-    multimap<Connection *, TgRequest>::iterator pos;
-    multimap<Connection *, TgRequest> &req_table = asyn_p_table->get_cb_dev_table();
+    std::multimap<Connection *, TgRequest>::iterator pos;
+    std::multimap<Connection *, TgRequest> &req_table = asyn_p_table->get_cb_dev_table();
 
     for (pos = req_table.begin(); pos != req_table.end(); ++pos)
     {
@@ -562,8 +562,8 @@ void ApiUtil::get_asynch_replies(long call_timeout)
 // For all replies already there
 //
 
-    multimap<Connection *, TgRequest>::iterator pos;
-    multimap<Connection *, TgRequest> &req_table = asyn_p_table->get_cb_dev_table();
+    std::multimap<Connection *, TgRequest>::iterator pos;
+    std::multimap<Connection *, TgRequest> &req_table = asyn_p_table->get_cb_dev_table();
 
     for (pos = req_table.begin(); pos != req_table.end(); ++pos)
     {
@@ -677,7 +677,7 @@ void ApiUtil::get_asynch_replies(long call_timeout)
             if ((nb == 0) && (asyn_p_table->get_cb_request_nb() != 0))
             {
                 TangoSys_OMemStream desc;
-                desc << "Still some reply(ies) for asynchronous callback call(s) to be received" << ends;
+                desc << "Still some reply(ies) for asynchronous callback call(s) to be received" << std::ends;
                 ApiAsynNotThereExcept::throw_exception((const char *) API_AsynReplyNotArrived,
                                                        desc.str(),
                                                        (const char *) "ApiUtil::get_asynch_replies");
@@ -844,7 +844,7 @@ void ApiUtil::clean_locking_threads(bool clean)
 
     if (lock_threads.empty() == false)
     {
-        map<string, LockingThread>::iterator pos;
+        std::map<std::string, LockingThread>::iterator pos;
         for (pos = lock_threads.begin(); pos != lock_threads.end(); ++pos)
         {
             if (pos->second.shared->suicide == true)
@@ -869,7 +869,7 @@ void ApiUtil::clean_locking_threads(bool clean)
 
                     pos->second.mon->signal();
 
-                    cout4 << "Cmd sent to locking thread" << endl;
+                    cout4 << "Cmd sent to locking thread" << std::endl;
 
                     if (pos->second.shared->cmd_pending == true)
                     {
@@ -1353,7 +1353,7 @@ void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr, AttributeValue_4 &
     }
 }
 
-void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr, AttributeValue &att, string &d_name)
+void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr, AttributeValue &att, std::string &d_name)
 {
 
     att.name = dev_attr.name.c_str();
@@ -1414,7 +1414,7 @@ void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr, AttributeValue &at
     {
         TangoSys_OMemStream desc;
         desc << "Device " << d_name;
-        desc << " does not support DevEncoded data type" << ends;
+        desc << " does not support DevEncoded data type" << std::ends;
         ApiNonSuppExcept::throw_exception((const char *) API_UnsupportedFeature,
                                           desc.str(),
                                           (const char *) "DeviceProxy::device_to_attr");
@@ -1545,7 +1545,7 @@ void ApiUtil::AttributeInfoEx_to_AttributeConfig(const AttributeInfoEx *aie, Att
 //
 //----------------------------------------------------------------------------------------------------------------
 
-int ApiUtil::get_env_var(const char *env_var_name, string &env_var)
+int ApiUtil::get_env_var(const char *env_var_name, std::string &env_var)
 {
     DummyDeviceProxy d;
     return d.get_env_var(env_var_name, env_var);
@@ -1565,7 +1565,7 @@ int ApiUtil::get_env_var(const char *env_var_name, string &env_var)
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
+void ApiUtil::get_ip_from_if(std::vector<std::string> &ip_adr_list)
 {
     omni_mutex_lock oml(lock_th_map);
 
@@ -1578,7 +1578,7 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
 
         if (getifaddrs(&ifaddr) == -1)
         {
-            cerr << "ApiUtil::get_ip_from_if: getifaddrs() failed: " << strerror(errno) << endl;
+            std::cerr << "ApiUtil::get_ip_from_if: getifaddrs() failed: " << strerror(errno) << std::endl;
 
             Tango::Except::throw_exception((const char *) API_SystemCallFailed,
                                            (const char *) strerror(errno),
@@ -1618,8 +1618,8 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
 
                     if (s != 0)
                     {
-                        cerr << "ApiUtil::get_ip_from_if: getnameinfo() failed: " << gai_strerror(s);
-                        cerr << "ApiUtil::get_ip_from_if: not getting info from remaining ifaddrs";
+                        std::cerr << "ApiUtil::get_ip_from_if: getnameinfo() failed: " << gai_strerror(s);
+                        std::cerr << "ApiUtil::get_ip_from_if: not getting info from remaining ifaddrs";
 
                         freeifaddrs(ifaddr);
 
@@ -1629,7 +1629,7 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
                     }
                     else
                     {
-                        host_ip_adrs.push_back(string(host));
+                        host_ip_adrs.push_back(std::string(host));
                     }
                 }
             }
@@ -1660,11 +1660,11 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
             closesocket(sock);
 
             int err = WSAGetLastError();
-            cerr << "Warning: WSAIoctl failed" << endl;
-            cerr << "Unable to obtain the list of all interface addresses. Error = " << err << endl;
+            std::cerr << "Warning: WSAIoctl failed" << std::endl;
+            std::cerr << "Unable to obtain the list of all interface addresses. Error = " << err << std::endl;
 
             TangoSys_OMemStream desc;
-            desc << "Can't retrieve list of all interfaces addresses (WSAIoctl)! Error = " << err << ends;
+            desc << "Can't retrieve list of all interfaces addresses (WSAIoctl)! Error = " << err << std::ends;
 
             Tango::Except::throw_exception((const char *) API_SystemCallFailed,
                                            (const char *) desc.str().c_str(),
@@ -1690,14 +1690,14 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
                     int result = getnameinfo(addr, addrlen, dest, sizeof(dest), 0, 0, NI_NUMERICHOST);
                     if (result != 0)
                     {
-                        cerr << "Warning: getnameinfo failed" << endl;
-                        cerr << "Unable to convert IP address to string (getnameinfo)." << endl;
+                        std::cerr << "Warning: getnameinfo failed" << std::endl;
+                        std::cerr << "Unable to convert IP address to string (getnameinfo)." << std::endl;
 
                         Tango::Except::throw_exception((const char *) API_SystemCallFailed,
                                                        (const char *) "Can't convert IP address to string (getnameinfo)!",
                                                        (const char *) "ApiUtil::get_ip_from_if()");
                     }
-                    string tmp_str(dest);
+                    std::string tmp_str(dest);
                     if (tmp_str != "0.0.0.0" && tmp_str != "0:0:0:0:0:0:0:0" && tmp_str != "::")
                     {
                         host_ip_adrs.push_back(tmp_str);
@@ -1741,7 +1741,7 @@ void ApiUtil::print_error_message(const char *mess)
     ctime_r(&tmp_val, tmp_date);
 #endif
     tmp_date[strlen(tmp_date) - 1] = '\0';
-    cerr << tmp_date << ": " << mess << endl;
+    std::cerr << tmp_date << ": " << mess << std::endl;
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -1754,7 +1754,7 @@ void ApiUtil::print_error_message(const char *mess)
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-ostream &operator<<(ostream &o_str, AttributeInfo &p)
+std::ostream &operator<<(std::ostream &o_str, AttributeInfo &p)
 {
 
 
@@ -1762,44 +1762,44 @@ ostream &operator<<(ostream &o_str, AttributeInfo &p)
 // Print all these properties
 //
 
-    o_str << "Attribute name = " << p.name << endl;
+    o_str << "Attribute name = " << p.name << std::endl;
     o_str << "Attribute data_type = ";
     switch (p.data_type)
     {
         case Tango::DEV_SHORT :
-            o_str << "Tango::DevShort" << endl;
+            o_str << "Tango::DevShort" << std::endl;
             break;
 
         case Tango::DEV_LONG :
-            o_str << "Tango::DevLong" << endl;
+            o_str << "Tango::DevLong" << std::endl;
             break;
 
         case Tango::DEV_DOUBLE :
-            o_str << "Tango::DevDouble" << endl;
+            o_str << "Tango::DevDouble" << std::endl;
             break;
 
         case Tango::DEV_STRING :
-            o_str << "Tango::DevString" << endl;
+            o_str << "Tango::DevString" << std::endl;
             break;
 
         case Tango::DEV_FLOAT :
-            o_str << "Tango::DevFloat" << endl;
+            o_str << "Tango::DevFloat" << std::endl;
             break;
 
         case Tango::DEV_USHORT :
-            o_str << "Tango::DevUShort" << endl;
+            o_str << "Tango::DevUShort" << std::endl;
             break;
 
         case Tango::DEV_UCHAR :
-            o_str << "Tango::DevUChar" << endl;
+            o_str << "Tango::DevUChar" << std::endl;
             break;
 
         case Tango::DEV_BOOLEAN :
-            o_str << "Tango::DevBoolean" << endl;
+            o_str << "Tango::DevBoolean" << std::endl;
             break;
 
         case Tango::DEV_STATE :
-            o_str << "Tango::DevState" << endl;
+            o_str << "Tango::DevState" << std::endl;
             break;
     }
 
@@ -1810,36 +1810,36 @@ ostream &operator<<(ostream &o_str, AttributeInfo &p)
             break;
 
         case Tango::SCALAR :
-            o_str << "scalar" << endl;
+            o_str << "scalar" << std::endl;
             break;
 
         case Tango::SPECTRUM :
-            o_str << "spectrum, max_dim_x = " << p.max_dim_x << endl;
+            o_str << "spectrum, max_dim_x = " << p.max_dim_x << std::endl;
             break;
 
         case Tango::IMAGE :
-            o_str << "image, max_dim_x = " << p.max_dim_x << ", max_dim_y = " << p.max_dim_y << endl;
+            o_str << "image, max_dim_x = " << p.max_dim_x << ", max_dim_y = " << p.max_dim_y << std::endl;
             break;
     }
 
     if ((p.writable == Tango::WRITE) || (p.writable == Tango::READ_WRITE))
     {
-        o_str << "Attribute is writable" << endl;
+        o_str << "Attribute is writable" << std::endl;
     }
     else
     {
-        o_str << "Attribute is not writable" << endl;
+        o_str << "Attribute is not writable" << std::endl;
     }
-    o_str << "Attribute label = " << p.label << endl;
-    o_str << "Attribute description = " << p.description << endl;
+    o_str << "Attribute label = " << p.label << std::endl;
+    o_str << "Attribute description = " << p.description << std::endl;
     o_str << "Attribute unit = " << p.unit;
     o_str << ", standard unit = " << p.standard_unit;
-    o_str << ", display unit = " << p.display_unit << endl;
-    o_str << "Attribute format = " << p.format << endl;
-    o_str << "Attribute min alarm = " << p.min_alarm << endl;
-    o_str << "Attribute max alarm = " << p.max_alarm << endl;
-    o_str << "Attribute min value = " << p.min_value << endl;
-    o_str << "Attribute max value = " << p.max_value << endl;
+    o_str << ", display unit = " << p.display_unit << std::endl;
+    o_str << "Attribute format = " << p.format << std::endl;
+    o_str << "Attribute min alarm = " << p.min_alarm << std::endl;
+    o_str << "Attribute max alarm = " << p.max_alarm << std::endl;
+    o_str << "Attribute min value = " << p.min_value << std::endl;
+    o_str << "Attribute max value = " << p.max_value << std::endl;
     o_str << "Attribute writable_attr_name = " << p.writable_attr_name;
 
     return o_str;
@@ -2065,7 +2065,7 @@ AttributeInfoEx &AttributeInfoEx::operator=(const AttributeConfig_5 *att_5)
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-ostream &operator<<(ostream &o_str, AttributeInfoEx &p)
+std::ostream &operator<<(std::ostream &o_str, AttributeInfoEx &p)
 {
 
 
@@ -2073,68 +2073,68 @@ ostream &operator<<(ostream &o_str, AttributeInfoEx &p)
 // Print all these properties
 //
 
-    o_str << "Attribute name = " << p.name << endl;
+    o_str << "Attribute name = " << p.name << std::endl;
     o_str << "Attribute data_type = ";
     switch (p.data_type)
     {
         case Tango::DEV_SHORT :
-            o_str << "Tango::DevShort" << endl;
+            o_str << "Tango::DevShort" << std::endl;
             break;
 
         case Tango::DEV_LONG :
-            o_str << "Tango::DevLong" << endl;
+            o_str << "Tango::DevLong" << std::endl;
             break;
 
         case Tango::DEV_DOUBLE :
-            o_str << "Tango::DevDouble" << endl;
+            o_str << "Tango::DevDouble" << std::endl;
             break;
 
         case Tango::DEV_STRING :
-            o_str << "Tango::DevString" << endl;
+            o_str << "Tango::DevString" << std::endl;
             break;
 
         case Tango::DEV_FLOAT :
-            o_str << "Tango::DevFloat" << endl;
+            o_str << "Tango::DevFloat" << std::endl;
             break;
 
         case Tango::DEV_USHORT :
-            o_str << "Tango::DevUShort" << endl;
+            o_str << "Tango::DevUShort" << std::endl;
             break;
 
         case Tango::DEV_UCHAR :
-            o_str << "Tango::DevUChar" << endl;
+            o_str << "Tango::DevUChar" << std::endl;
             break;
 
         case Tango::DEV_BOOLEAN :
-            o_str << "Tango::DevBoolean" << endl;
+            o_str << "Tango::DevBoolean" << std::endl;
             break;
 
         case Tango::DEV_STATE :
-            o_str << "Tango::DevState" << endl;
+            o_str << "Tango::DevState" << std::endl;
             break;
 
         case Tango::DEV_ULONG :
-            o_str << "Tango::DevULong" << endl;
+            o_str << "Tango::DevULong" << std::endl;
             break;
 
         case Tango::DEV_ULONG64 :
-            o_str << "Tango::DevULong64" << endl;
+            o_str << "Tango::DevULong64" << std::endl;
             break;
 
         case Tango::DEV_ENCODED :
-            o_str << "Tango::DevEncoded" << endl;
+            o_str << "Tango::DevEncoded" << std::endl;
             break;
 
         case Tango::DEV_ENUM :
-            o_str << "Tango::DevEnum" << endl;
+            o_str << "Tango::DevEnum" << std::endl;
             for (size_t loop = 0; loop < p.enum_labels.size(); loop++)
             {
-                o_str << "\tEnumeration label = " << p.enum_labels[loop] << endl;
+                o_str << "\tEnumeration label = " << p.enum_labels[loop] << std::endl;
             }
             break;
 
         case Tango::DATA_TYPE_UNKNOWN :
-            o_str << "Unknown" << endl;
+            o_str << "Unknown" << std::endl;
             break;
     }
 
@@ -2142,19 +2142,19 @@ ostream &operator<<(ostream &o_str, AttributeInfoEx &p)
     switch (p.data_format)
     {
         case Tango::FMT_UNKNOWN:
-            o_str << " Unknown" << endl;
+            o_str << " Unknown" << std::endl;
             break;
 
         case Tango::SCALAR :
-            o_str << "scalar" << endl;
+            o_str << "scalar" << std::endl;
             break;
 
         case Tango::SPECTRUM :
-            o_str << "spectrum, max_dim_x = " << p.max_dim_x << endl;
+            o_str << "spectrum, max_dim_x = " << p.max_dim_x << std::endl;
             break;
 
         case Tango::IMAGE :
-            o_str << "image, max_dim_x = " << p.max_dim_x << ", max_dim_y = " << p.max_dim_y << endl;
+            o_str << "image, max_dim_x = " << p.max_dim_x << ", max_dim_y = " << p.max_dim_y << std::endl;
             break;
     }
 
@@ -2162,19 +2162,19 @@ ostream &operator<<(ostream &o_str, AttributeInfoEx &p)
     switch (p.writable)
     {
         case Tango::WRITE:
-            o_str << "Write" << endl;
+            o_str << "Write" << std::endl;
             break;
 
         case Tango::READ:
-            o_str << "Read" << endl;
+            o_str << "Read" << std::endl;
             break;
 
         case Tango::READ_WRITE:
-            o_str << "Read/Write" << endl;
+            o_str << "Read/Write" << std::endl;
             break;
 
         case Tango::READ_WITH_WRITE:
-            o_str << "Read with write" << endl;
+            o_str << "Read with write" << std::endl;
             break;
 
         default:
@@ -2186,19 +2186,19 @@ ostream &operator<<(ostream &o_str, AttributeInfoEx &p)
         switch (p.memorized)
         {
             case NOT_KNOWN:
-                o_str << "Device/Appli too old to send/receive attribute memorisation data" << endl;
+                o_str << "Device/Appli too old to send/receive attribute memorisation data" << std::endl;
                 break;
 
             case NONE:
-                o_str << "Attribute is not memorized" << endl;
+                o_str << "Attribute is not memorized" << std::endl;
                 break;
 
             case MEMORIZED:
-                o_str << "Attribute is memorized" << endl;
+                o_str << "Attribute is memorized" << std::endl;
                 break;
 
             case MEMORIZED_WRITE_INIT:
-                o_str << "Attribute is memorized and the memorized value is written at initialisation" << endl;
+                o_str << "Attribute is memorized and the memorized value is written at initialisation" << std::endl;
                 break;
 
             default:
@@ -2210,119 +2210,119 @@ ostream &operator<<(ostream &o_str, AttributeInfoEx &p)
     switch (p.disp_level)
     {
         case DL_UNKNOWN :
-            o_str << "Unknown" << endl;
+            o_str << "Unknown" << std::endl;
             break;
 
         case OPERATOR:
-            o_str << "Operator" << endl;
+            o_str << "Operator" << std::endl;
             break;
 
         case EXPERT:
-            o_str << "Expert" << endl;
+            o_str << "Expert" << std::endl;
             break;
 
         default:
             break;
     }
 
-    o_str << "Attribute writable_attr_name = " << p.writable_attr_name << endl;
+    o_str << "Attribute writable_attr_name = " << p.writable_attr_name << std::endl;
     if (p.root_attr_name.empty() == false)
     {
-        o_str << "Root attribute name = " << p.root_attr_name << endl;
+        o_str << "Root attribute name = " << p.root_attr_name << std::endl;
     }
-    o_str << "Attribute label = " << p.label << endl;
-    o_str << "Attribute description = " << p.description << endl;
+    o_str << "Attribute label = " << p.label << std::endl;
+    o_str << "Attribute description = " << p.description << std::endl;
     o_str << "Attribute unit = " << p.unit;
     o_str << ", standard unit = " << p.standard_unit;
-    o_str << ", display unit = " << p.display_unit << endl;
-    o_str << "Attribute format = " << p.format << endl;
-    o_str << "Attribute min value = " << p.min_value << endl;
-    o_str << "Attribute max value = " << p.max_value << endl;
+    o_str << ", display unit = " << p.display_unit << std::endl;
+    o_str << "Attribute format = " << p.format << std::endl;
+    o_str << "Attribute min value = " << p.min_value << std::endl;
+    o_str << "Attribute max value = " << p.max_value << std::endl;
 
     unsigned int i;
     for (i = 0; i < p.extensions.size(); i++)
     {
-        o_str << "Attribute extensions " << i + 1 << " = " << p.extensions[i] << endl;
+        o_str << "Attribute extensions " << i + 1 << " = " << p.extensions[i] << std::endl;
     }
 
     o_str << "Attribute alarm : min alarm = ";
     p.alarms.min_alarm.empty() == true ? o_str << "Not specified" : o_str << p.alarms.min_alarm;
-    o_str << endl;
+    o_str << std::endl;
 
     o_str << "Attribute alarm : max alarm = ";
     p.alarms.max_alarm.empty() == true ? o_str << "Not specified" : o_str << p.alarms.max_alarm;
-    o_str << endl;
+    o_str << std::endl;
 
     o_str << "Attribute warning alarm : min warning = ";
     p.alarms.min_warning.empty() == true ? o_str << "Not specified" : o_str << p.alarms.min_warning;
-    o_str << endl;
+    o_str << std::endl;
 
     o_str << "Attribute warning alarm : max warning = ";
     p.alarms.max_warning.empty() == true ? o_str << "Not specified" : o_str << p.alarms.max_warning;
-    o_str << endl;
+    o_str << std::endl;
 
     o_str << "Attribute rds alarm : delta time = ";
     p.alarms.delta_t.empty() == true ? o_str << "Not specified" : o_str << p.alarms.delta_t;
-    o_str << endl;
+    o_str << std::endl;
 
     o_str << "Attribute rds alarm : delta value = ";
     p.alarms.delta_val.empty() == true ? o_str << "Not specified" : o_str << p.alarms.delta_val;
-    o_str << endl;
+    o_str << std::endl;
 
     for (i = 0; i < p.alarms.extensions.size(); i++)
     {
-        o_str << "Attribute alarm extensions " << i + 1 << " = " << p.alarms.extensions[i] << endl;
+        o_str << "Attribute alarm extensions " << i + 1 << " = " << p.alarms.extensions[i] << std::endl;
     }
 
     o_str << "Attribute event : change event absolute change = ";
     p.events.ch_event.abs_change.empty() == true ? o_str << "Not specified" : o_str << p.events.ch_event.abs_change;
-    o_str << endl;
+    o_str << std::endl;
 
     o_str << "Attribute event : change event relative change = ";
     p.events.ch_event.rel_change.empty() == true ? o_str << "Not specified" : o_str << p.events.ch_event.rel_change;
-    o_str << endl;
+    o_str << std::endl;
 
     for (i = 0; i < p.events.ch_event.extensions.size(); i++)
     {
         o_str << "Attribute alarm : change event extensions " << i + 1 << " = " << p.events.ch_event.extensions[i]
-              << endl;
+              << std::endl;
     }
 
     o_str << "Attribute event : periodic event period = ";
     p.events.per_event.period.empty() == true ? o_str << "Not specified" : o_str << p.events.per_event.period;
-    o_str << endl;
+    o_str << std::endl;
 
     for (i = 0; i < p.events.per_event.extensions.size(); i++)
     {
         o_str << "Attribute alarm : periodic event extensions " << i + 1 << " = " << p.events.per_event.extensions[i]
-              << endl;
+              << std::endl;
     }
 
     o_str << "Attribute event : archive event absolute change = ";
     p.events.arch_event.archive_abs_change.empty() == true ? o_str << "Not specified" : o_str
         << p.events.arch_event.archive_abs_change;
-    o_str << endl;
+    o_str << std::endl;
 
     o_str << "Attribute event : archive event relative change = ";
     p.events.arch_event.archive_rel_change.empty() == true ? o_str << "Not specified" : o_str
         << p.events.arch_event.archive_rel_change;
-    o_str << endl;
+    o_str << std::endl;
 
     o_str << "Attribute event : archive event period = ";
     p.events.arch_event.archive_period.empty() == true ? o_str << "Not specified" : o_str
         << p.events.arch_event.archive_period;
-    o_str << endl;
+    o_str << std::endl;
 
     for (i = 0; i < p.events.arch_event.extensions.size(); i++)
     {
         if (i == 0)
         {
-            o_str << endl;
+            o_str << std::endl;
         }
         o_str << "Attribute alarm : archive event extensions " << i + 1 << " = " << p.events.arch_event.extensions[i];
         if (i != p.events.arch_event.extensions.size() - 1)
         {
-            o_str << endl;
+            o_str << std::endl;
         }
     }
 
@@ -2339,25 +2339,25 @@ ostream &operator<<(ostream &o_str, AttributeInfoEx &p)
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-ostream &operator<<(ostream &o_str, PipeInfo &p)
+std::ostream &operator<<(std::ostream &o_str, PipeInfo &p)
 {
 
 //
 // Print all these properties
 //
 
-    o_str << "Pipe name = " << p.name << endl;
-    o_str << "Pipe label = " << p.label << endl;
-    o_str << "Pipe description = " << p.description << endl;
+    o_str << "Pipe name = " << p.name << std::endl;
+    o_str << "Pipe label = " << p.label << std::endl;
+    o_str << "Pipe description = " << p.description << std::endl;
 
     o_str << "Pipe writable type = ";
     if (p.writable == PIPE_READ)
     {
-        o_str << "READ" << endl;
+        o_str << "READ" << std::endl;
     }
     else
     {
-        o_str << "READ_WRITE" << endl;
+        o_str << "READ_WRITE" << std::endl;
     }
 
     o_str << "Pipe display level = ";
@@ -2384,9 +2384,9 @@ ostream &operator<<(ostream &o_str, PipeInfo &p)
     {
         if (i == 0)
         {
-            o_str << endl;
+            o_str << std::endl;
         }
-        o_str << "Pipe extensions " << i + 1 << " = " << p.extensions[i] << endl;
+        o_str << "Pipe extensions " << i + 1 << " = " << p.extensions[i] << std::endl;
     }
 
     return o_str;

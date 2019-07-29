@@ -70,7 +70,7 @@ MultiClassPipe::~MultiClassPipe()
 
 MultiClassPipe::MultiClassPipe()
 {
-	cout4 << "Entering MultiClassPipe constructor" << endl;
+	cout4 << "Entering MultiClassPipe constructor" << std::endl;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -90,11 +90,11 @@ MultiClassPipe::MultiClassPipe()
 
 void MultiClassPipe::init_class_pipe(DeviceClass *cl_ptr)
 {
-	cout4 << "Entering MultiClassPipe::init_class_pipe" << endl;
+	cout4 << "Entering MultiClassPipe::init_class_pipe" << std::endl;
 
 	Tango::Util *tg = Tango::Util::instance();
 
-	vector<Pipe *> &pi_list = cl_ptr->get_pipe_list();
+	std::vector<Pipe *> &pi_list = cl_ptr->get_pipe_list();
 	size_t nb_pipe = pi_list.size();
 
 //
@@ -107,7 +107,7 @@ void MultiClassPipe::init_class_pipe(DeviceClass *cl_ptr)
 	{
 		size_t i;
 		Tango::DbData db_list;
-		string &class_name = cl_ptr->get_name();
+		std::string &class_name = cl_ptr->get_name();
 		size_t nb_db_requested_pipe = 0;
 
 //
@@ -117,7 +117,7 @@ void MultiClassPipe::init_class_pipe(DeviceClass *cl_ptr)
 		for(i = 0;i < nb_pipe;i++)
 		{
 			Pipe *pi_ptr = pi_list[i];
-			string &pi_name = pi_ptr->get_name();
+			std::string &pi_name = pi_ptr->get_name();
 			if (pi_ptr->get_label() == pi_name || pi_ptr->get_desc() == DescNotSpec)
 			{
 				db_list.push_back(DbDatum(pi_name));
@@ -131,7 +131,7 @@ void MultiClassPipe::init_class_pipe(DeviceClass *cl_ptr)
 		}
 		catch (Tango::DevFailed &e)
 		{
-			stringstream ss;
+			std::stringstream ss;
 			ss << "Can't get class pipe properties for class " << class_name;
 
 			Except::re_throw_exception(e,API_DatabaseAccess,ss.str(),
@@ -145,9 +145,9 @@ void MultiClassPipe::init_class_pipe(DeviceClass *cl_ptr)
 		long ind = 0;
 		for (i = 0;i < nb_db_requested_pipe;i++)
 		{
-			vector<PipeProperty> prop_list;
+			std::vector<PipeProperty> prop_list;
 
-			string pipe_name = db_list[ind].name;
+			std::string pipe_name = db_list[ind].name;
 			long nb_prop = 0;
 			db_list[ind] >> nb_prop;
 
@@ -156,7 +156,7 @@ void MultiClassPipe::init_class_pipe(DeviceClass *cl_ptr)
 			{
 				if (db_list[ind].size() > 1)
 				{
-					string tmp(db_list[ind].value_string[0]);
+					std::string tmp(db_list[ind].value_string[0]);
 					long nb = db_list[ind].size();
 					for (int k = 1;k < nb;k++)
 					{
@@ -181,7 +181,7 @@ void MultiClassPipe::init_class_pipe(DeviceClass *cl_ptr)
 		}
 	}
 
-	cout4 << "Leaving MultiClassPipe::init_class_pipe" << endl;
+	cout4 << "Leaving MultiClassPipe::init_class_pipe" << std::endl;
 }
 
 
@@ -202,14 +202,14 @@ void MultiClassPipe::init_class_pipe(DeviceClass *cl_ptr)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-vector<Tango::PipeProperty> &MultiClassPipe::get_prop_list(const string &pipe_name)
+std::vector<Tango::PipeProperty> &MultiClassPipe::get_prop_list(const std::string &pipe_name)
 {
-	map<string,vector<PipeProperty> >::iterator ite;
+	std::map<std::string,std::vector<PipeProperty> >::iterator ite;
 	ite = pipe_prop_list.find(pipe_name);
 	if (ite == pipe_prop_list.end())
 	{
-		stringstream ss;
-		ss << "Pipe " << pipe_name << " not found in class pipe(s) properties" << ends;
+		std::stringstream ss;
+		ss << "Pipe " << pipe_name << " not found in class pipe(s) properties" << std::ends;
 
 		Except::throw_exception(API_PipeNotFound,ss.str(),"MultiClassPipe::get_prop_list");
 	}

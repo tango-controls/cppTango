@@ -32,14 +32,14 @@ DevTestClass *DevTestClass::_instance = NULL;
 //
 //-----------------------------------------------------------------------------
 
-DevTestClass::DevTestClass(string &s):Tango::DeviceClass(s)
+DevTestClass::DevTestClass(std::string &s):Tango::DeviceClass(s)
 {
 
-	cout2 << "Entering DevTestClass constructor" << endl;
+	cout2 << "Entering DevTestClass constructor" << std::endl;
 
 	set_type("TestDevice");
 
-	cout2 << "Leaving DevTestClass constructor" << endl;
+	cout2 << "Leaving DevTestClass constructor" << std::endl;
 
 }
 
@@ -60,10 +60,10 @@ DevTestClass *DevTestClass::init(const char *name)
 	{
 		try
 		{
-			string s(name);
+			std::string s(name);
 			_instance = new DevTestClass(s);
 		}
-		catch (bad_alloc)
+		catch (std::bad_alloc)
 		{
 			throw;
 		}
@@ -75,7 +75,7 @@ DevTestClass *DevTestClass::instance()
 {
 	if (_instance == NULL)
 	{
-		cerr << "Class is not initialised !!" << endl;
+		std::cerr << "Class is not initialised !!" << std::endl;
 		exit(-1);
 	}
 	return _instance;
@@ -666,7 +666,7 @@ void DevTestClass::command_factory()
 
 void DevTestClass::device_factory(const Tango::DevVarStringArray *devlist_ptr) {
   for (unsigned long i = 0;i < devlist_ptr->length();i++) {
-    cout4 << "Device name : " << (*devlist_ptr)[i] << endl;
+    cout4 << "Device name : " << (*devlist_ptr)[i] << std::endl;
 //
 // Create device and add it into the device list
 //
@@ -684,7 +684,7 @@ void DevTestClass::device_factory(const Tango::DevVarStringArray *devlist_ptr) {
   }
 }
 
-void DevTestClass::device_name_factory(vector<string> &list_name)
+void DevTestClass::device_name_factory(std::vector<std::string> &list_name)
 {
 	list_name.push_back("The_first_device");
 	list_name.push_back("The_second_device");
@@ -701,10 +701,10 @@ void DevTestClass::signal_handler(long signo)
 	      << signo
 	      << " for class "
 	      << name
-	      << endl;
+	      << std::endl;
 }
 
-void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
+void DevTestClass::attribute_factory(std::vector<Tango::Attr *> &att_list)
 {
   att_list.push_back(new Short_attrAttr());
   att_list.push_back(new Long_attrAttr());
@@ -878,7 +878,7 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(new DefClassAttr());
 
   Tango::UserDefaultAttrProp att_enum_prop;
-  vector<string> v_s;
+  std::vector<std::string> v_s;
   v_s.push_back("North");
   v_s.push_back("South");
   v_s.push_back("East");

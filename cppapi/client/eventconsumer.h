@@ -125,10 +125,10 @@ public:
     void init_seq(char *,_CORBA_ULong &,TangoCdrMemoryStream &);
 
     template <typename T>
-    void set_seq(T &) {cerr << "In default ZmqAttrValUnion::set_seq!" << endl;assert(false);}
+    void set_seq(T &) {std::cerr << "In default ZmqAttrValUnion::set_seq!" << std::endl;assert(false);}
 
     template <typename T>
-    T &get_seq() {cerr << "In default ZmqAttrValUnion::get_seq!" << endl;assert(false);}
+    T &get_seq() {std::cerr << "In default ZmqAttrValUnion::get_seq!" << std::endl;assert(false);}
 };
 
 /***            ZmqAttributeValue_4               ***/
@@ -316,23 +316,23 @@ public :
 typedef struct event_not_connected
 {
 	DeviceProxy 					*device;
-	string 							attribute;
+	std::string 							attribute;
 	EventType 						event_type;
-	string 							event_name;
+	std::string 							event_name;
 	int 						 	event_id;
 	CallBack 						*callback;
 	EventQueue                  	*ev_queue;
-	vector<string> 					filters;
+	std::vector<std::string> 					filters;
 	time_t 							last_heartbeat;
-	string							prefix;
+	std::string							prefix;
 } EventNotConnected;
 
 //------------------------ Event Callback related info --------------------------------------
 
 struct ReceivedFromAdmin
 {
-    string event_name;
-    string channel_name;
+    std::string event_name;
+    std::string channel_name;
 };
 
 typedef struct event_subscribe
@@ -345,13 +345,13 @@ typedef struct event_subscribe
 typedef struct event_callback_base
 {
  	DeviceProxy 					*device;
-	string 							obj_name;
-	string 							event_name;
-	string 							channel_name;
-	string                          fully_qualified_event_name;
+	std::string 							obj_name;
+	std::string 							event_name;
+	std::string 							channel_name;
+	std::string                          fully_qualified_event_name;
 	time_t 							last_subscribed;
 	TangoMonitor					*callback_monitor;
-	vector<EventSubscribeStruct>	callback_list;
+	std::vector<EventSubscribeStruct>	callback_list;
 	bool							alias_used;
 } EventCallBackBase;
 
@@ -359,19 +359,19 @@ typedef struct event_callback_zmq
 {
     DevLong                         device_idl;
     DevULong                        ctr;
-    string							endpoint;
+    std::string							endpoint;
     bool							discarded_event;
     bool							fwd_att;
 }EventCallBackZmq;
 
 typedef struct event_callback: public EventCallBackBase, public EventCallBackZmq
 {
-	string filter_constraint;
+	std::string filter_constraint;
 	CosNotifyFilter::FilterID filter_id;
 	bool filter_ok;
-	string client_attribute_name;
+	std::string client_attribute_name;
 	ReceivedFromAdmin received_from_admin;
-	string get_client_attribute_name()
+	std::string get_client_attribute_name()
 	{
 		return client_attribute_name;
 	}
@@ -382,7 +382,7 @@ typedef struct event_callback: public EventCallBackBase, public EventCallBackZmq
 typedef struct event_channel_base
 {
  	DeviceProxy 					*adm_device_proxy;
-	string 							full_adm_name;
+	std::string 							full_adm_name;
 	time_t 							last_subscribed;
 	time_t 							last_heartbeat;
 	bool 							heartbeat_skipped;
@@ -392,7 +392,7 @@ typedef struct event_channel_base
 
 typedef struct event_channel_zmq
 {
-    string                        	endpoint;
+    std::string                        	endpoint;
     size_t                          valid_endpoint;
 }EventChannelZmq;
 
@@ -401,7 +401,7 @@ typedef struct channel_struct: public EventChannelBase, public EventChannelZmq
 	CosNotifyChannelAdmin::EventChannel_var eventChannel;
 	CosNotifyChannelAdmin::StructuredProxyPushSupplier_var structuredProxyPushSupplier;
 	CosNotifyFilter::FilterID 		heartbeat_filter_id;
-	string 							notifyd_host;
+	std::string 							notifyd_host;
 	bool 							event_system_failed;
 	long 							has_notifd_closed_the_connection;
 } EventChannelStruct;
@@ -419,25 +419,25 @@ typedef std::map<std::string,EventCallBackStruct>::iterator EvCbIte;
 class EventConsumer
 {
 
-	typedef void    (*EventCallbackFunction)(string event_name,string event_type,Tango::DeviceAttribute *attr_value);
+	typedef void    (*EventCallbackFunction)(std::string event_name,std::string event_type,Tango::DeviceAttribute *attr_value);
 
 public :
 	EventConsumer(ApiUtil *ptr);
 	virtual ~EventConsumer() {}
 
-	int connect_event(DeviceProxy *,const string &,EventType,CallBack *,EventQueue *,const vector<string> &,string &,int event_id = 0);
-	void connect(DeviceProxy *,string &,DeviceData &,string &,bool &);
+	int connect_event(DeviceProxy *,const std::string &,EventType,CallBack *,EventQueue *,const std::vector<std::string> &,std::string &,int event_id = 0);
+	void connect(DeviceProxy *,std::string &,DeviceData &,std::string &,bool &);
 
 	void shutdown();
 	void shutdown_keep_alive_thread();
     ChannelType get_event_system_for_event_id(int);
 	virtual void cleanup_EventChannel_map() = 0;
-    virtual void get_subscription_command_name(string &) = 0;
+    virtual void get_subscription_command_name(std::string &) = 0;
 
-	int subscribe_event(DeviceProxy *device, const string &attribute, EventType event,
-	                   CallBack *callback, const vector<string> &filters, bool stateless = false);
-	int subscribe_event(DeviceProxy *device, const string &attribute, EventType event,
-	                   int event_queue_size, const vector<string> &filters, bool stateless = false);
+	int subscribe_event(DeviceProxy *device, const std::string &attribute, EventType event,
+	                   CallBack *callback, const std::vector<std::string> &filters, bool stateless = false);
+	int subscribe_event(DeviceProxy *device, const std::string &attribute, EventType event,
+	                   int event_queue_size, const std::vector<std::string> &filters, bool stateless = false);
 	int subscribe_event(DeviceProxy *device, EventType event,CallBack *callback,bool stateless = false);
 	int subscribe_event(DeviceProxy *device, EventType event,int event_queue_size,bool stateless = false);
 
@@ -462,9 +462,9 @@ public :
 	static EventConsumerKeepAliveThread 	                *keep_alive_thread;
 
 protected :
-	int subscribe_event(DeviceProxy *device, const string &attribute, EventType event,
+	int subscribe_event(DeviceProxy *device, const std::string &attribute, EventType event,
 	                   CallBack *callback, EventQueue *ev_queue,
-					   const vector<string> &filters, bool stateless = false);
+					   const std::vector<std::string> &filters, bool stateless = false);
 	friend class EventConsumerKeepAliveThread;
 	void attr_to_device(const AttributeValue *,const AttributeValue_3 *,long,DeviceAttribute *);
 	void attr_to_device(const AttributeValue_4 *,DeviceAttribute *);
@@ -474,40 +474,40 @@ protected :
     void att_union_to_device(const AttrValUnion *union_ptr,DeviceAttribute *dev_attr);
 	void conf_to_info(AttributeConfig_2 &,AttributeInfoEx **);
 	void get_cs_tango_host(Database *);
-	string get_client_attribute_name(const string &, const vector<string> &filters);
+	std::string get_client_attribute_name(const std::string &, const std::vector<std::string> &filters);
 
-	static map<std::string,std::string> 					device_channel_map;     // key - device_name, value - channel name (full adm name)
-	static map<std::string,EventChannelStruct> 				channel_map;            // key - channel_name (full adm name), value - Event Channel info
-	static map<std::string,EventCallBackStruct> 			event_callback_map;     // key - callback_key, value - Event CallBack info
+	static std::map<std::string,std::string> 					device_channel_map;     // key - device_name, value - channel name (full adm name)
+	static std::map<std::string,EventChannelStruct> 				channel_map;            // key - channel_name (full adm name), value - Event Channel info
+	static std::map<std::string,EventCallBackStruct> 			event_callback_map;     // key - callback_key, value - Event CallBack info
 	static ReadersWritersLock 								map_modification_lock;
 
-	static vector<EventNotConnected> 						event_not_connected;
+	static std::vector<EventNotConnected> 						event_not_connected;
 	static int 												subscribe_event_id; 	// unique event id
-	static vector<string> 									env_var_fqdn_prefix;
-	static map<std::string,std::string>						alias_map;				// key - real host name, value - alias
+	static std::vector<std::string> 									env_var_fqdn_prefix;
+	static std::map<std::string,std::string>						alias_map;				// key - real host name, value - alias
 
 	static omni_mutex										ev_consumer_inst_mutex;
 
-	string													device_name;
-	string 													obj_name_lower;
+	std::string													device_name;
+	std::string 													obj_name_lower;
     int                                                     thread_id;
 
 	int add_new_callback(EvCbIte &,CallBack *,EventQueue *,int);
-	void get_fire_sync_event(DeviceProxy *,CallBack *,EventQueue *,EventType,string &,const string &,EventCallBackStruct &,string &);
+	void get_fire_sync_event(DeviceProxy *,CallBack *,EventQueue *,EventType,std::string &,const std::string &,EventCallBackStruct &,std::string &);
 
-	virtual void connect_event_channel(string &,Database *,bool,DeviceData &) = 0;
-    virtual void disconnect_event_channel(TANGO_UNUSED(string &channel_name),TANGO_UNUSED(string &endpoint),TANGO_UNUSED(string &endpoint_event)) {}
-    virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t) = 0;
-    virtual void disconnect_event(string &,string &) {}
+	virtual void connect_event_channel(std::string &,Database *,bool,DeviceData &) = 0;
+    virtual void disconnect_event_channel(TANGO_UNUSED(std::string &channel_name),TANGO_UNUSED(std::string &endpoint),TANGO_UNUSED(std::string &endpoint_event)) {}
+    virtual void connect_event_system(std::string &,std::string &,std::string &e,const std::vector<std::string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t) = 0;
+    virtual void disconnect_event(std::string &,std::string &) {}
 
     virtual void set_channel_type(EventChannelStruct &) = 0;
-    virtual void zmq_specific(DeviceData &,string &,DeviceProxy *,const string &) = 0;
+    virtual void zmq_specific(DeviceData &,std::string &,DeviceProxy *,const std::string &) = 0;
 
-   
-    
+
+
     virtual ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
-                                                             const string &local_callback_key,
-                                                             const string &adm_name,
+                                                             const std::string &local_callback_key,
+                                                             const std::string &adm_name,
                                                              bool device_from_env_var)=0;
 };
 
@@ -532,26 +532,26 @@ public :
 	void disconnect_structured_push_consumer();
 	void offer_change(const CosNotification::EventTypeSeq &,const CosNotification::EventTypeSeq &);
 
-    virtual void get_subscription_command_name(string &cmd) {cmd="EventSubscriptionChange";}
+    virtual void get_subscription_command_name(std::string &cmd) {cmd="EventSubscriptionChange";}
 
 	CORBA::ORB_var 					orb_;
 
 protected :
 	NotifdEventConsumer(ApiUtil *ptr);
-	virtual void connect_event_channel(string &,Database *,bool,DeviceData &);
-    virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t);
+	virtual void connect_event_channel(std::string &,Database *,bool,DeviceData &);
+    virtual void connect_event_system(std::string &,std::string &,std::string &e,const std::vector<std::string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t);
 
     virtual void set_channel_type(EventChannelStruct &ecs) {ecs.channel_type = NOTIFD;}
-	virtual void zmq_specific(DeviceData &,string &,DeviceProxy *,const string &) {}
+	virtual void zmq_specific(DeviceData &,std::string &,DeviceProxy *,const std::string &) {}
 #ifdef HAS_OVERRIDE
 	ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
-	                                                 const string &local_callback_key,
-	                                                 const string &adm_name,
+	                                                 const std::string &local_callback_key,
+	                                                 const std::string &adm_name,
 	                                                 bool device_from_env_var) override;
 #else
 	virtual ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
-	                                                         const string &local_callback_key,
-	                                                         const string &adm_name,
+	                                                         const std::string &local_callback_key,
+	                                                         const std::string &adm_name,
 	                                                         bool device_from_env_var);
 #endif
 
@@ -584,9 +584,9 @@ public :
     TANGO_IMP_EXP static void cleanup() {if (_instance != NULL){_instance=NULL;}}
 
 	virtual void cleanup_EventChannel_map();
-    virtual void get_subscription_command_name(string &cmd) {cmd="ZmqEventSubscriptionChange";}
+    virtual void get_subscription_command_name(std::string &cmd) {cmd="ZmqEventSubscriptionChange";}
 
-    void get_subscribed_event_ids(DeviceProxy *,vector<int> &);
+    void get_subscribed_event_ids(DeviceProxy *,std::vector<int> &);
 
 	enum UserDataEventType
 	{
@@ -605,23 +605,23 @@ public :
 
 protected :
 	ZmqEventConsumer(ApiUtil *ptr);
-	virtual void connect_event_channel(string &,Database *,bool,DeviceData &);
-    virtual void disconnect_event_channel(string &channel_name,string &endpoint,string &endpoint_event);
-    virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t);
-    virtual void disconnect_event(string &,string &);
+	virtual void connect_event_channel(std::string &,Database *,bool,DeviceData &);
+    virtual void disconnect_event_channel(std::string &channel_name,std::string &endpoint,std::string &endpoint_event);
+    virtual void connect_event_system(std::string &,std::string &,std::string &e,const std::vector<std::string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t);
+    virtual void disconnect_event(std::string &,std::string &);
 
     virtual void set_channel_type(EventChannelStruct &ecs) {ecs.channel_type = ZMQ;}
-	virtual void zmq_specific(DeviceData &,string &,DeviceProxy *,const string &);
+	virtual void zmq_specific(DeviceData &,std::string &,DeviceProxy *,const std::string &);
 
 #ifdef HAS_OVERRIDE
 	ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
-	                                                 const string &local_callback_key,
-	                                                 const string &adm_name,
+	                                                 const std::string &local_callback_key,
+	                                                 const std::string &adm_name,
 	                                                 bool device_from_env_var) override;
 #else
 	virtual ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
-	                                                         const string &local_callback_key,
-	                                                         const string &adm_name,
+	                                                         const std::string &local_callback_key,
+	                                                         const std::string &adm_name,
 	                                                         bool device_from_env_var);
 #endif
 
@@ -632,9 +632,9 @@ private :
 	zmq::socket_t                           *control_sock;          // control socket
 	zmq::socket_t                           *event_sub_sock;        // event subscriber socket
 
-	map<string,zmq::socket_t *>             event_mcast;            // multicast socket(s)
-	vector<string>                          connected_pub;          //
-	vector<string>                          connected_heartbeat;    //
+	std::map<std::string,zmq::socket_t *>             event_mcast;            // multicast socket(s)
+	std::vector<std::string>                          connected_pub;          //
+	std::vector<std::string>                          connected_heartbeat;    //
 
     AttributeValue_var                      av;
     AttributeValue_3_var                    av3;
@@ -655,28 +655,28 @@ private :
 
 
 	void *run_undetached(void *arg);
-	void push_heartbeat_event(string &);
-    void push_zmq_event(string &,unsigned char,zmq::message_t &,bool,const DevULong &);
+	void push_heartbeat_event(std::string &);
+    void push_zmq_event(std::string &,unsigned char,zmq::message_t &,bool,const DevULong &);
     bool process_ctrl(zmq::message_t &,zmq::pollitem_t *,int &);
     void process_heartbeat(zmq::message_t &,zmq::message_t &,zmq::message_t &);
     void process_event(zmq::message_t &,zmq::message_t &,zmq::message_t &,zmq::message_t &);
     void process_event(zmq_msg_t &,zmq_msg_t &,zmq_msg_t &,zmq_msg_t &);
-    void multi_tango_host(zmq::socket_t *,SocketCmd,string &);
+    void multi_tango_host(zmq::socket_t *,SocketCmd,std::string &);
 	void print_error_message(const char *mess) {ApiUtil *au=ApiUtil::instance();au->print_error_message(mess);}
 	void set_ctrl_sock_bound() {sock_bound_mutex.lock();ctrl_socket_bound=true;sock_bound_mutex.unlock();}
 	bool is_ctrl_sock_bound() {bool _b;sock_bound_mutex.lock();_b=ctrl_socket_bound;sock_bound_mutex.unlock();return _b;}
 	void set_socket_hwm(int hwm);
 	static void disconnect_socket(zmq::socket_t&, const char*);
 
-    bool check_zmq_endpoint(const string &);
+    bool check_zmq_endpoint(const std::string &);
 
     friend class DelayEvent;
 
     FwdEventData *newFwdEventData(zmq::message_t &event_data,
-                                  const string &new_tango_host,
+                                  const std::string &new_tango_host,
                                   DevErrorList &errors,
-                                  string &event_name,
-                                  string &full_att_name,
+                                  std::string &event_name,
+                                  std::string &full_att_name,
                                   long vers,
                                   const DeviceAttribute *dev_attr,
                                   bool no_unmarshalling,
@@ -712,7 +712,7 @@ public :
     EventConsumerKeepAliveThread(const EventConsumer&);
 	EventConsumerKeepAliveThread(KeepAliveThCmd &cmd):shared_cmd(cmd){};
 	void start() {start_undetached();}
-    void stateless_subscription_failed(vector<EventNotConnected>::iterator &,DevFailed &,time_t &);
+    void stateless_subscription_failed(std::vector<EventNotConnected>::iterator &,DevFailed &,time_t &);
     void fwd_not_conected_event(ZmqEventConsumer *);
 
 protected :
@@ -727,9 +727,9 @@ private :
     bool reconnect_to_zmq_channel(EvChanIte &,EventConsumer *,DeviceData &);
 	void reconnect_to_zmq_event(EvChanIte &,EventConsumer *,DeviceData &);
 	void not_conected_event(ZmqEventConsumer *,time_t,NotifdEventConsumer *);
-	void confirm_subscription(ZmqEventConsumer *,map<string,EventChannelStruct>::iterator &);
-	void main_reconnect(ZmqEventConsumer *,NotifdEventConsumer *,map<string,EventCallBackStruct>::iterator &,map<string,EventChannelStruct>::iterator &);
-	void re_subscribe_after_reconnect(ZmqEventConsumer *,NotifdEventConsumer *,map<string,EventCallBackStruct>::iterator &,map<string,EventChannelStruct>::iterator &,string &);
+	void confirm_subscription(ZmqEventConsumer *,std::map<std::string,EventChannelStruct>::iterator &);
+	void main_reconnect(ZmqEventConsumer *,NotifdEventConsumer *,std::map<std::string,EventCallBackStruct>::iterator &,std::map<std::string,EventChannelStruct>::iterator &);
+	void re_subscribe_after_reconnect(ZmqEventConsumer *,NotifdEventConsumer *,std::map<std::string,EventCallBackStruct>::iterator &,std::map<std::string,EventChannelStruct>::iterator &,std::string &);
 };
 
 /********************************************************************************
@@ -761,12 +761,12 @@ class DelayedEventSubThread: public omni_thread
 {
 public:
 	DelayedEventSubThread(EventConsumer *ec,DeviceProxy *_device,
-				   const string &_attribute,
+				   const std::string &_attribute,
 				   EventType _event,
 				   CallBack *_callback,
 				   EventQueue *_ev_queue,
 				   bool _stateless,
-				   const string &_ev_name,
+				   const std::string &_ev_name,
 				   int _id):omni_thread(),ev_cons(ec),device(_device),
 				   attribute(_attribute),et(_event),callback(_callback),ev_queue(_ev_queue),
 				   stateless(_stateless),ev_id(_id),event_name(_ev_name) {}
@@ -776,13 +776,13 @@ public:
 private:
 	EventConsumer 	*ev_cons;
 	DeviceProxy     *device;
-	string          attribute;
+	std::string          attribute;
 	EventType       et;
 	CallBack        *callback;
 	EventQueue      *ev_queue;
 	bool            stateless;
 	int             ev_id;
-	string          event_name;
+	std::string          event_name;
 };
 
 } // End of namespace

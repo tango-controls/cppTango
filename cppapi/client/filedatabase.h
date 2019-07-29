@@ -87,17 +87,17 @@ public:
 
 template <class T> class hasName
 {
-    string 		name;
+    std::string 		name;
 public:
-    hasName (string _name) : name(_name) {};
+    hasName (std::string _name) : name(_name) {};
     bool operator () (T* obj);
 };
 
 template <class T> class hasAttributeName
 {
-    string 		attribute_name;
+    std::string 		attribute_name;
 public:
-    hasAttributeName (string _name) : attribute_name(_name) {};
+    hasAttributeName (std::string _name) : attribute_name(_name) {};
     bool operator () (T* obj);
 };
 
@@ -119,8 +119,8 @@ public:
 	~FileDatabase();
 	std::string  parse_res_file(const std::string& file_name);
 	void display();
-	string get_display();
-	void write_event_channel_ior(string &);
+	std::string get_display();
+	void write_event_channel_ior(std::string &);
 
 
 	CORBA::Any*      DbInfo(CORBA::Any&);
@@ -172,7 +172,7 @@ public:
 	void write_file();
 
 private:
-	string 			filename;
+	std::string 			filename;
 	t_server 		m_server;
 
 	void read_char(std::ifstream& f);
@@ -184,7 +184,7 @@ private:
 	std::vector<std::string> parse_resource_value(std::ifstream& f);
 
 	std::string read_full_word(std::ifstream& f);
-	void escape_double_quote(string &);
+	void escape_double_quote(std::string &);
 
 
 	static const char* lexical_word_null;
@@ -207,7 +207,7 @@ private:
   	char 			NextChar;
 
   	bool 			DELETE_ENTRY;
-  	string 			word;
+  	std::string 			word;
 
 	FileDatabaseExt	*ext;
 };

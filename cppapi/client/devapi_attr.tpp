@@ -52,7 +52,7 @@ namespace Tango
 //-------------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-DeviceAttribute::DeviceAttribute(string &_name,T _val):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(std::string &_name,T _val):ext(new DeviceAttributeExt)
 {
 	name = _name;
 	base_val(_val);
@@ -88,7 +88,7 @@ void DeviceAttribute::base_val(T _val)
 //-----------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-DeviceAttribute::DeviceAttribute(string &_name,vector<T> &_val):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(std::string &_name,std::vector<T> &_val):ext(new DeviceAttributeExt)
 {
 	name = _name;
 	dim_x = _val.size();
@@ -96,7 +96,7 @@ DeviceAttribute::DeviceAttribute(string &_name,vector<T> &_val):ext(new DeviceAt
 }
 
 template <typename T>
-DeviceAttribute::DeviceAttribute(const char *_name,vector<T> &_val):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *_name,std::vector<T> &_val):ext(new DeviceAttributeExt)
 {
 	name = _name;
 	dim_x = _val.size();
@@ -104,7 +104,7 @@ DeviceAttribute::DeviceAttribute(const char *_name,vector<T> &_val):ext(new Devi
 }
 
 template <typename T>
-void DeviceAttribute::base_vect(vector<T> &_val)
+void DeviceAttribute::base_vect(std::vector<T> &_val)
 {
 	dim_y = 0;
 	w_dim_x = 0;
@@ -126,7 +126,7 @@ void DeviceAttribute::base_vect(vector<T> &_val)
 //-----------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-DeviceAttribute::DeviceAttribute(string &_name,vector<T> &_val,int _x,int _y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(std::string &_name,std::vector<T> &_val,int _x,int _y):ext(new DeviceAttributeExt)
 {
 	name = _name;
 	dim_x = _x;
@@ -135,7 +135,7 @@ DeviceAttribute::DeviceAttribute(string &_name,vector<T> &_val,int _x,int _y):ex
 }
 
 template <typename T>
-DeviceAttribute::DeviceAttribute(const char *_name,vector<T> &_val,int _x,int _y):ext(new DeviceAttributeExt)
+DeviceAttribute::DeviceAttribute(const char *_name,std::vector<T> &_val,int _x,int _y):ext(new DeviceAttributeExt)
 {
 	name = _name;
 	dim_x = _x;
@@ -144,7 +144,7 @@ DeviceAttribute::DeviceAttribute(const char *_name,vector<T> &_val,int _x,int _y
 }
 
 template <typename T>
-void DeviceAttribute::base_vect_size(vector<T> &_val)
+void DeviceAttribute::base_vect_size(std::vector<T> &_val)
 {
 	w_dim_x = 0;
 	w_dim_y = 0;
@@ -216,7 +216,7 @@ bool DeviceAttribute::operator >> (T &datum)
 }
 
 template <typename T>
-bool DeviceAttribute::operator >> (vector<T> &datum)
+bool DeviceAttribute::operator >> (std::vector<T> &datum)
 {
 	bool ret = true;
 
@@ -255,7 +255,7 @@ bool DeviceAttribute::operator >> (vector<T> &datum)
 }
 
 template <typename T>
-bool DeviceAttribute::extract_read (vector<T> &_data)
+bool DeviceAttribute::extract_read (std::vector<T> &_data)
 {
 	bool ret = true;
 
@@ -295,7 +295,7 @@ bool DeviceAttribute::extract_read (vector<T> &_data)
 }
 
 template <typename T>
-bool DeviceAttribute::extract_set(vector<T> &_data)
+bool DeviceAttribute::extract_set(std::vector<T> &_data)
 {
 	bool ret = true;
 
@@ -374,7 +374,7 @@ void DeviceAttribute::operator << (T datum)
 }
 
 template <typename T>
-void DeviceAttribute::operator << (vector<T> &_datum)
+void DeviceAttribute::operator << (std::vector<T> &_datum)
 {
 	T dummy;
 	template_type_check(dummy);
@@ -400,7 +400,7 @@ void DeviceAttribute::operator << (vector<T> &_datum)
 }
 
 template <typename T>
-void DeviceAttribute::insert(vector<T> &_datum,int _x,int _y)
+void DeviceAttribute::insert(std::vector<T> &_datum,int _x,int _y)
 {
 	*this << _datum;
 	dim_x = _x;
@@ -411,8 +411,8 @@ template <typename T>
 bool DeviceAttribute::template_type_check(T &TANGO_UNUSED(_datum))
 {
 #ifdef HAS_UNDERLYING
-	bool short_enum = is_same<short,typename underlying_type<T>::type>::value;
-	bool uns_int_enum = is_same<unsigned int,typename underlying_type<T>::type>::value;
+	bool short_enum = std::is_same<short,typename std::underlying_type<T>::type>::value;
+	bool uns_int_enum = std::is_same<unsigned int,typename std::underlying_type<T>::type>::value;
 
 	if (short_enum == false && uns_int_enum == false)
 	{
@@ -428,7 +428,7 @@ bool DeviceAttribute::template_type_check(T &TANGO_UNUSED(_datum))
 #endif // HAS_UNDERLYING
 
 #ifdef HAS_TYPE_TRAITS
-	if (is_enum<T>::value == false)
+	if (std::is_enum<T>::value == false)
 	{
 		if (exceptions_flags.test(wrongtype_flag))
 		{

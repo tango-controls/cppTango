@@ -530,8 +530,8 @@ LRESULT CALLBACK AboutProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 {
 	Util *tg = Util::instance();
 	TCHAR str[160];
-	string vers;
-	string full_vers;
+	std::string vers;
+	std::string full_vers;
 	string::size_type nb_char;
 
 	switch (message)
@@ -591,10 +591,10 @@ void all_dev(Util *tg,LogLevel level)
 	dev_list = tg->get_device_list("*");
 	for (unsigned int i = 0;i < dev_list.size();i++)
 	{
-		string dev_name = dev_list[i]->get_name();
+		std::string dev_name = dev_list[i]->get_name();
 		if (dev_name.size() > 7)
 		{
-			string dev_name_begin = dev_name.substr(0,7);
+			std::string dev_name_begin = dev_name.substr(0,7);
 			transform(dev_name_begin.begin(),dev_name_begin.end(),dev_name_begin.begin(),::tolower);
 			if (dev_name_begin == "dserver")
 				continue;
@@ -626,10 +626,10 @@ int get_all_dev_log_level(Util *tg,LogLevel &lev)
 
 	for (i = 0,j = 0;i < nb_dev;i++)
 	{
-		string dev_name = dev_list[i]->get_name();
+		std::string dev_name = dev_list[i]->get_name();
 		if (dev_name.size() > 7)
 		{
-			string dev_name_begin = dev_name.substr(0,7);
+			std::string dev_name_begin = dev_name.substr(0,7);
 			transform(dev_name_begin.begin(),dev_name_begin.end(),dev_name_begin.begin(),::tolower);
 			if (dev_name_begin == "dserver")
 				continue;
@@ -692,10 +692,10 @@ void all_dev_add_cout(Util *tg)
 	dev_list = tg->get_device_list("*");
 	for (unsigned int i = 0;i < dev_list.size();i++)
 	{
-		string dev_name = dev_list[i]->get_name();
+		std::string dev_name = dev_list[i]->get_name();
 		if (dev_name.size() > 7)
 		{
-			string dev_name_begin = dev_name.substr(0,7);
+			std::string dev_name_begin = dev_name.substr(0,7);
 			transform(dev_name_begin.begin(),dev_name_begin.end(),dev_name_begin.begin(),::tolower);
 			if (dev_name_begin == "dserver")
 				continue;

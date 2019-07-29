@@ -75,7 +75,7 @@ public:
  *
  * @param	def_label	The user default label property
  */
-	void set_label(const string &def_label)
+	void set_label(const std::string &def_label)
 	{
 		label = def_label;
 	}
@@ -85,7 +85,7 @@ public:
  *
  * @param	def_desc	The user default description property
  */
-	void set_description(const string &def_desc)
+	void set_description(const std::string &def_desc)
 	{
 		description = def_desc;
 	}
@@ -94,8 +94,8 @@ public:
 /// @privatesection
 	~UserDefaultPipeProp() {}
 
-	string 			label;
-	string 			description;
+	std::string 			label;
+	std::string 			description;
 
 private:
     class UserDefaultPipePropExt
@@ -103,7 +103,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<UserDefaultPipePropExt>  ext;           // Class extension
+    std::unique_ptr<UserDefaultPipePropExt>  ext;           // Class extension
 #else
 	UserDefaultPipePropExt	            *ext;
 #endif

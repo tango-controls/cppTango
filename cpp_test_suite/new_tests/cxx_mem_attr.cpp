@@ -1,15 +1,7 @@
 #ifndef MemAttrTestSuite_h
 #define MemAttrTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
-
-using namespace Tango;
-using namespace std;
-
-#define cout cout << "\t"
+#include "cxx_common.h"
 
 #define STATUS_MEM_FAILED "Memorized attribute Short_attr_w has failed during device startup sequence"
 #define STATUS_ON "The device is in ON state."
@@ -127,7 +119,7 @@ public:
 //
 
 		DeviceAttribute read_da = device1->read_attribute("Short_attr_w");
-		short s_val;		
+		short s_val;
 		TS_ASSERT_THROWS_ASSERT(read_da >> s_val,Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "Aaaa" && e.errors[0].severity == Tango::ERR &&
 						  string(e.errors[1].reason.in()) == "API_MemAttFailedDuringInit" && e.errors[1].severity == Tango::ERR));
@@ -170,7 +162,7 @@ public:
 		DeviceAttribute read_da_2 = device1->read_attribute("Short_attr_w");
 		short s_val_2;
 		read_da_2 >> s_val_2;
-		TS_ASSERT(s_val_2 == 10);			
+		TS_ASSERT(s_val_2 == 10);
 	}
 
 };

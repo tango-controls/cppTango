@@ -56,7 +56,7 @@ namespace Tango
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-DbServerData::DbServerData(const string &exec_name,const string &inst_name)
+DbServerData::DbServerData(const std::string &exec_name,const std::string &inst_name)
 {
 	full_server_name = exec_name + '/' + inst_name;
 
@@ -64,7 +64,7 @@ DbServerData::DbServerData(const string &exec_name,const string &inst_name)
 //  Check if server defined in database
 //
 
-	string adm_name("dserver/");
+	std::string adm_name("dserver/");
 	adm_name = adm_name + full_server_name;
 	Database *db_ptr = NULL;
 
@@ -77,7 +77,7 @@ DbServerData::DbServerData(const string &exec_name,const string &inst_name)
 	}
 	catch (Tango::DevFailed &e)
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << "Device server process " << full_server_name << " is not defined in database";
 		Tango::Except::throw_exception("DBServerNotDefinedInDb",ss.str(),"DbServerData::DbServerData");
 	}
@@ -90,7 +90,7 @@ DbServerData::DbServerData(const string &exec_name,const string &inst_name)
 	classes.push_back(tc);
 
 	DbDatum svr_class_list = db_ptr->get_server_class_list(full_server_name);
-	vector<string> vs;
+	std::vector<std::string> vs;
 	svr_class_list >> vs;
 
 	for (size_t loop = 0;loop < vs.size();loop++)
@@ -115,16 +115,16 @@ DbServerData::DbServerData(const string &exec_name,const string &inst_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DbServerData::put_in_database(const string &tg_host)
+void DbServerData::put_in_database(const std::string &tg_host)
 {
 //
 // Check tango host syntax
 //
 
-	string::size_type pos;
-	if ((pos = tg_host.find(':')) == string::npos)
+	std::string::size_type pos;
+	if ((pos = tg_host.find(':')) == std::string::npos)
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << tg_host << " is not a valid synatx for Tango host (host:port)";
 		Tango::Except::throw_exception("DBWrongTangoHostSyntax",ss.str(),"DbServerData::put_in_database");
 	}
@@ -133,9 +133,9 @@ void DbServerData::put_in_database(const string &tg_host)
 // Create db object
 //
 
-	string db_host = tg_host.substr(0,pos);
-	string db_port_str = tg_host.substr(pos + 1);
-	stringstream ss;
+	std::string db_host = tg_host.substr(0,pos);
+	std::string db_port_str = tg_host.substr(pos + 1);
+	std::stringstream ss;
 	ss << db_port_str;
 	int db_port;
 	ss >> db_port;
@@ -169,21 +169,21 @@ void DbServerData::put_in_database(const string &tg_host)
 //--------------------------------------------------------------------------------------------------------------------
 
 
-bool DbServerData::already_exist(const string &tg_host)
+bool DbServerData::already_exist(const std::string &tg_host)
 {
 
 //
 // Check tango host syntax
 //
 
-	if (tg_host.find(':') == string::npos)
+	if (tg_host.find(':') == std::string::npos)
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << tg_host << " is not a valid synatx for Tango host (host:port)";
 		Tango::Except::throw_exception("DBWrongTangoHostSyntax",ss.str(),"DbServerData::already_exist");
 	}
 
-	string header("tango://");
+	std::string header("tango://");
 	header = header + tg_host + '/';
 
 //
@@ -192,7 +192,7 @@ bool DbServerData::already_exist(const string &tg_host)
 
 	try
 	{
-		string adm_name(header);
+		std::string adm_name(header);
 		adm_name = adm_name + "dserver/" + full_server_name;
 		DeviceProxy adm(adm_name);
 
@@ -208,7 +208,7 @@ bool DbServerData::already_exist(const string &tg_host)
 	{
 		for (size_t ctr = 0;ctr < classes[loop].size();ctr++)
 		{
-			string dev_name = header + classes[loop][ctr].name;
+			std::string dev_name = header + classes[loop][ctr].name;
 
 			try
 			{
@@ -217,11 +217,11 @@ bool DbServerData::already_exist(const string &tg_host)
 			}
 			catch (Tango::DevFailed &e)
 			{
-				string desc(e.errors[0].desc.in());
-				if (desc.find("not defined in the database") == string::npos)
+				std::string desc(e.errors[0].desc.in());
+				if (desc.find("not defined in the database") == std::string::npos)
 				{
-					stringstream ss;
-					ss << "Failed to check " << dev_name << " in Tango host " << tg_host << endl;
+					std::stringstream ss;
+					ss << "Failed to check " << dev_name << " in Tango host " << tg_host << std::endl;
 					Tango::Except::re_throw_exception(e,"DBFailedToCheck",ss.str(),"DbServerData::already_exist");
 				}
 			}
@@ -307,17 +307,17 @@ void DbServerData::put_properties(Database *db_ptr)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DbServerData::remove(const string &tg_host)
+void DbServerData::remove(const std::string &tg_host)
 {
 
 //
 // Check tango host syntax
 //
 
-	string::size_type pos;
-	if ((pos = tg_host.find(':')) == string::npos)
+	std::string::size_type pos;
+	if ((pos = tg_host.find(':')) == std::string::npos)
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << tg_host << " is not a valid synatx for Tango host (host:port)";
 		Tango::Except::throw_exception("DBWrongTangoHostSyntax",ss.str(),"DbServerData::remove");
 	}
@@ -326,9 +326,9 @@ void DbServerData::remove(const string &tg_host)
 // Create db object
 //
 
-	string db_host = tg_host.substr(0,pos);
-	string db_port_str = tg_host.substr(pos + 1);
-	stringstream ss;
+	std::string db_host = tg_host.substr(0,pos);
+	std::string db_port_str = tg_host.substr(pos + 1);
+	std::stringstream ss;
 	ss << db_port_str;
 	int db_port;
 	ss >> db_port;
@@ -357,7 +357,7 @@ void DbServerData::remove(const string &tg_host)
 
 		for (size_t loop = 1;loop < classes.size();loop++)
 		{
-			string all("*");
+			std::string all("*");
 			DbDatum dev_list = db_ptr->get_device_name(all,classes[loop].name);
 			if (dev_list.value_string.empty() == true)
 			{
@@ -381,10 +381,10 @@ void DbServerData::remove()
 // Get from one device the tango host
 //
 
-	string &db_host = classes[0][0].get_db_host();
-	string &db_port = classes[0][0].get_db_port();
+	std::string &db_host = classes[0][0].get_db_host();
+	std::string &db_port = classes[0][0].get_db_port();
 
-	string tg_host = db_host + ":" + db_port;
+	std::string tg_host = db_host + ":" + db_port;
 
 	remove(tg_host);
 }
@@ -406,13 +406,13 @@ void DbServerData::remove()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-DbServerData::TangoDevice::TangoDevice(string &na):DeviceProxy(na),name(na)
+DbServerData::TangoDevice::TangoDevice(std::string &na):DeviceProxy(na),name(na)
 {
 //
 //  First read device properties
 //
 
-	vector<string> prop_list;
+	std::vector<std::string> prop_list;
 	get_property_list("*",prop_list);
 
 	if (prop_list.empty() == false)
@@ -438,7 +438,7 @@ DbServerData::TangoDevice::TangoDevice(string &na):DeviceProxy(na),name(na)
 	int ind = au->get_db_ind(get_db_host(),get_db_port_num());
 	Database *db = au->get_db_vect()[ind];
 
-	vector<string> att_list;
+	std::vector<std::string> att_list;
 	db->get_device_attribute_list(name,att_list);
 
 	for (size_t loop = 0; loop < att_list.size();loop++)
@@ -461,7 +461,7 @@ DbServerData::TangoDevice::TangoDevice(string &na):DeviceProxy(na),name(na)
 // Then get pipe list from db
 //
 
-	vector<string> pipe_list;
+	std::vector<std::string> pipe_list;
 	try
 	{
 		db->get_device_pipe_list(name,pipe_list);
@@ -484,7 +484,7 @@ DbServerData::TangoDevice::TangoDevice(string &na):DeviceProxy(na),name(na)
 	}
 	catch (DevFailed &e)
 	{
-		string reason(e.errors[0].reason.in());
+		std::string reason(e.errors[0].reason.in());
 		if (reason != "API_CommandNotFound")
 			throw;
 	}
@@ -615,7 +615,7 @@ void DbServerData::TangoDevice::put_pipe_properties(Database *db_ptr)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-DbServerData::TangoClass::TangoClass(const string &na,const string &full_ds_name,Database *db):name(na)
+DbServerData::TangoClass::TangoClass(const std::string &na,const std::string &full_ds_name,Database *db):name(na)
 {
 
 //
@@ -625,7 +625,7 @@ DbServerData::TangoClass::TangoClass(const string &na,const string &full_ds_name
 	DbDatum cl_prop = db->get_class_property_list(name);
 	if (cl_prop.is_empty() == false)
 	{
-		vector<string> vs;
+		std::vector<std::string> vs;
 		cl_prop >> vs;
 
 		DbData db_data;
@@ -644,11 +644,11 @@ DbServerData::TangoClass::TangoClass(const string &na,const string &full_ds_name
 //  Get class attribute list
 //
 
-	string all("*");
+	std::string all("*");
 	DbDatum cl_att_list = db->get_class_attribute_list(name,all);
 	if (cl_att_list.is_empty() == false)
 	{
-		vector<string> vs;
+		std::vector<std::string> vs;
 		cl_att_list >> vs;
 
 		for (size_t loop = 0;loop < vs.size();loop++)
@@ -673,7 +673,7 @@ DbServerData::TangoClass::TangoClass(const string &na,const string &full_ds_name
 		DbDatum cl_pipe_list = db->get_class_pipe_list(name,all);
 		if (cl_pipe_list.is_empty() == false)
 		{
-			vector<string> vs;
+			std::vector<std::string> vs;
 			cl_pipe_list >> vs;
 
 			for (size_t loop = 0;loop < vs.size();loop++)
@@ -691,7 +691,7 @@ DbServerData::TangoClass::TangoClass(const string &na,const string &full_ds_name
 	}
 	catch (DevFailed &e)
 	{
-		string reason(e.errors[0].reason.in());
+		std::string reason(e.errors[0].reason.in());
 		if (reason != "API_CommandNotFound")
 			throw;
 	}
@@ -700,7 +700,7 @@ DbServerData::TangoClass::TangoClass(const string &na,const string &full_ds_name
 // Get all devices for this class
 //
 
-	DbDatum dev_names = db->get_device_name(const_cast<string &>(full_ds_name),name);
+	DbDatum dev_names = db->get_device_name(const_cast<std::string &>(full_ds_name),name);
 
 	for (size_t loop = 0;loop < dev_names.value_string.size();loop++)
 	{

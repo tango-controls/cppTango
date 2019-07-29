@@ -46,12 +46,12 @@ namespace Tango
 class FwdAttribute: public WAttribute
 {
 public:
-	FwdAttribute(vector<AttrProperty> &,Attr &,string &,long);
+	FwdAttribute(std::vector<AttrProperty> &,Attr &,std::string &,long);
 	~FwdAttribute();
 
 	virtual bool is_fwd_att() {return true;}
-	string &get_fwd_dev_name() {return fwd_dev_name;}
-	string &get_fwd_att_name() {return fwd_att_name;}
+	std::string &get_fwd_dev_name() {return fwd_dev_name;}
+	std::string &get_fwd_att_name() {return fwd_att_name;}
 
 	void set_att_config(const Tango::AttributeConfig_5 &);
 	void set_att_config(const Tango::AttributeConfig_3 &) {}
@@ -79,10 +79,10 @@ public:
 	AttributeValueList_5 *write_read_root_att(AttributeValueList_4&);
 
 protected:
-	void convert_event_prop(string &,double *);
+	void convert_event_prop(std::string &,double *);
 
-	string				fwd_dev_name;					// Root dev name for fwd attribute
-	string				fwd_att_name;					// Root att name for fwd attribute
+	std::string				fwd_dev_name;					// Root dev name for fwd attribute
+	std::string				fwd_att_name;					// Root att name for fwd attribute
 
 	AttrQuality 		qual;
 #ifdef _TG_WINDOWS_

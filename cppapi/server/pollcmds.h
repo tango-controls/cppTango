@@ -118,7 +118,7 @@ public:
 	AddObjPollingCmd(const char *cmd_name,
 		        Tango::CmdArgType in,
 		        Tango::CmdArgType out,
-			string &in_desc);
+			std::string &in_desc);
 	~AddObjPollingCmd() {};
 
 	virtual CORBA::Any *execute(DeviceImpl *device, const CORBA::Any &in_any);
@@ -142,7 +142,7 @@ public:
 	UpdObjPollingPeriodCmd(const char *cmd_name,
 		               Tango::CmdArgType in,
 		               Tango::CmdArgType out,
-			       string &in_desc);
+			       std::string &in_desc);
 	~UpdObjPollingPeriodCmd() {};
 
 	virtual CORBA::Any *execute(DeviceImpl *device, const CORBA::Any &in_any);
@@ -167,7 +167,7 @@ public:
 	RemObjPollingCmd(const char *cmd_name,
 		         Tango::CmdArgType in,
 		         Tango::CmdArgType out,
-			 string &in_desc);
+			 std::string &in_desc);
 	~RemObjPollingCmd() {};
 
 	virtual CORBA::Any *execute(DeviceImpl *device, const CORBA::Any &in_any);

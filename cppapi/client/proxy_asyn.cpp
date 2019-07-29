@@ -81,7 +81,7 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 		else
 			db_num = au->get_db_ind(get_db_host(),get_db_port_num());
 
-		vector<Database *> & v_d = au->get_db_vect();
+		std::vector<Database *> & v_d = au->get_db_vect();
 		Database *db = v_d[db_num];
 
 //
@@ -90,8 +90,8 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 // of allowed commands from the control access service
 //
 
-		string d_name = dev_name();
-		string cmd(command);
+		std::string d_name = dev_name();
+		std::string cmd(command);
 
 		if (db->is_command_allowed(d_name,cmd) == false)
 		{
@@ -104,7 +104,7 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 
 			TangoSys_OMemStream desc;
 			desc << "Command_inout_asynch on device " << dev_name() << " for command ";
-			desc << command << " is not authorized" << ends;
+			desc << command << " is not authorized" << std::ends;
 
 			NotAllowedExcept::throw_exception(API_ReadOnlyMode,desc.str(),
 									  	  "Connection::command_inout_asynch()");
@@ -123,7 +123,7 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute command_inout on device " << dev_name();
-		desc << ", command " << command << ends;
+		desc << ", command " << command << std::ends;
                 ApiConnExcept::re_throw_exception(e,API_CommandFailed,
                         desc.str(),"Connection::command_inout_asynch()");
 	}
@@ -198,7 +198,7 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 //-----------------------------------------------------------------------------
 
 
-long Connection::command_inout_asynch(string &command, DeviceData &data_in, bool faf)
+long Connection::command_inout_asynch(std::string &command, DeviceData &data_in, bool faf)
 {
 	return command_inout_asynch(command.c_str(),data_in,faf);
 }
@@ -209,7 +209,7 @@ long Connection::command_inout_asynch(const char *command,bool faf)
 	return command_inout_asynch(command,data_in,faf);
 }
 
-long Connection::command_inout_asynch(string &command,bool faf)
+long Connection::command_inout_asynch(std::string &command,bool faf)
 {
 	DeviceData data_in;
 	return command_inout_asynch(command.c_str(),data_in,faf);
@@ -258,7 +258,7 @@ DeviceData Connection::command_inout_reply(long id)
 		TangoSys_OMemStream desc;
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
-		desc << ") is not yet arrived" << ends;
+		desc << ") is not yet arrived" << std::ends;
 		ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 						       desc.str(),
 						       "Connection::command_inout_reply");
@@ -362,7 +362,7 @@ DeviceData Connection::command_inout_reply(long id)
 
                     TangoSys_OMemStream desc;
                     desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
-                    desc << ", command " << tmp << ends;
+                    desc << ", command " << tmp << std::ends;
                     Tango::string_free(tmp);
 
                     remove_asyn_request(id);
@@ -377,7 +377,7 @@ DeviceData Connection::command_inout_reply(long id)
                     set_connection_state(CONNECTION_NOTOK);
                     remove_asyn_request(id);
 
-                    stringstream ss;
+                    std::stringstream ss;
                     ss << "Failed to execute command_inout_asynch on device " << dev_name();
 
                     ApiCommExcept::re_throw_exception(cb_excep_mess,
@@ -408,7 +408,7 @@ DeviceData Connection::command_inout_reply(long id)
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
-			desc << ", command " << tmp << ends;
+			desc << ", command " << tmp << std::ends;
 			Tango::string_free(tmp);
 
 			remove_asyn_request(id);
@@ -446,10 +446,10 @@ DeviceData Connection::command_inout_reply(long id)
 // If successful just return, otherwise throw the first exception
 //
 
-			string ex(cb_excep_mess);
-			string::size_type pos_con = ex.find("TRANSIENT_ConnectFailed");
-			string::size_type pos_one = ex.find("EXIST_NoMatch");
-			if (pos_con != string::npos || pos_one != string::npos)
+			std::string ex(cb_excep_mess);
+			std::string::size_type pos_con = ex.find("TRANSIENT_ConnectFailed");
+			std::string::size_type pos_one = ex.find("EXIST_NoMatch");
+			if (pos_con != std::string::npos || pos_one != std::string::npos)
 			{
 				try
 				{
@@ -471,7 +471,7 @@ DeviceData Connection::command_inout_reply(long id)
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
-			desc << ", command " << tmp << ends;
+			desc << ", command " << tmp << std::ends;
 			Tango::string_free(tmp);
 
 			remove_asyn_request(id);
@@ -580,7 +580,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 				TangoSys_OMemStream desc;
 				desc << "Device " << dev_name();
 				desc << ": Reply for asynchronous call (id = " << id;
-				desc << ") is not yet arrived" << ends;
+				desc << ") is not yet arrived" << std::ends;
 				ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 							       	       desc.str(),
 							               "Connection::command_inout_reply");
@@ -688,7 +688,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 
                     TangoSys_OMemStream desc;
                     desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
-                    desc << ", command " << tmp << ends;
+                    desc << ", command " << tmp << std::ends;
                     Tango::string_free(tmp);
 
                     remove_asyn_request(id);
@@ -703,7 +703,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
                     set_connection_state(CONNECTION_NOTOK);
                     remove_asyn_request(id);
 
-                    stringstream ss;
+                    std::stringstream ss;
                     ss << "Failed to execute command_inout_asynch on device " << dev_name();
 
                     ApiCommExcept::re_throw_exception(cb_excep_mess,
@@ -734,7 +734,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
-			desc << ", command " << tmp << ends;
+			desc << ", command " << tmp << std::ends;
 			Tango::string_free(tmp);
 
 			remove_asyn_request(id);;
@@ -770,10 +770,10 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 // If successful just return, otherwise throw the first exception
 //
 
-			string ex(cb_excep_mess);
-			string::size_type pos_con = ex.find("TRANSIENT_ConnectFailed");
-			string::size_type pos_one = ex.find("EXIST_NoMatch");
-			if (pos_con != string::npos || pos_one != string::npos)
+			std::string ex(cb_excep_mess);
+			std::string::size_type pos_con = ex.find("TRANSIENT_ConnectFailed");
+			std::string::size_type pos_one = ex.find("EXIST_NoMatch");
+			if (pos_con != std::string::npos || pos_one != std::string::npos)
 			{
 				try
 				{
@@ -795,7 +795,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
-			desc << ", command " << tmp << ends;
+			desc << ", command " << tmp << std::ends;
 			Tango::string_free(tmp);
 
 			remove_asyn_request(id);
@@ -831,7 +831,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 //-----------------------------------------------------------------------------
 
 
-long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
+long DeviceProxy::read_attributes_asynch(std::vector<std::string> &attr_names)
 {
 //
 // Reconnect to device in case it is needed
@@ -844,7 +844,7 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 	catch (Tango::ConnectionFailed &e)
 	{
 		TangoSys_OMemStream desc;
-		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << ends;
+		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << std::ends;
                 ApiConnExcept::re_throw_exception(e,API_CommandFailed,
                         desc.str(),"DeviceProxy::read_attributes_asynch()");
 	}
@@ -923,9 +923,9 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 	return id;
 }
 
-long DeviceProxy::read_attribute_asynch(string &name)
+long DeviceProxy::read_attribute_asynch(std::string &name)
 {
-	vector<string> tmp_names(1,name);
+	std::vector<std::string> tmp_names(1,name);
 	return read_attributes_asynch(tmp_names);
 }
 
@@ -943,7 +943,7 @@ long DeviceProxy::read_attribute_asynch(string &name)
 //
 //-----------------------------------------------------------------------------
 
-vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
+std::vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 {
 //
 // Retrieve request object
@@ -971,7 +971,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 		TangoSys_OMemStream desc;
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
-		desc << ") is not yet arrived" << ends;
+		desc << ") is not yet arrived" << std::ends;
 		ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 						       desc.str(),
 						       "DeviceProxy::read_attributes_reply");
@@ -1004,7 +1004,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
                 set_connection_state(CONNECTION_NOTOK);
                 omni420_except_attr(id,cb_excep_mess,MULTIPLE);
 
-                vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
+                std::vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
                 remove_asyn_request(id);
                 return a_ptr;
             }
@@ -1016,7 +1016,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
             Tango::Except::print_CORBA_SystemException_r(&ex,cb_excep_mess);
             omni420_except_attr(id,cb_excep_mess,MULTIPLE);
 
-            vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
+            std::vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
             remove_asyn_request(id);
             return a_ptr;
         }
@@ -1031,7 +1031,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 // Try to redo the call synchronously
 //
 
-			vector<DeviceAttribute> *a_ptr;
+			std::vector<DeviceAttribute> *a_ptr;
 			a_ptr = redo_synch_reads_call(req);
 
 //
@@ -1043,7 +1043,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 			return a_ptr;
 		}
 
-		vector<DeviceAttribute> *dev_attr = new(vector<DeviceAttribute>);
+		std::vector<DeviceAttribute> *dev_attr = new(std::vector<DeviceAttribute>);
 
 //
 // Get received value
@@ -1103,13 +1103,13 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 				{
 					TangoSys_OMemStream desc;
 					desc << "Failed to read_attributes on device " << device_name;
-					desc << ", attribute " << (*dev_attr)[i].name << ends;
+					desc << ", attribute " << (*dev_attr)[i].name << std::ends;
 
 					err_list.inout().length(nb_except + 1);
 					err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
 					err_list[nb_except].origin = Tango::string_dup("DeviceProxy::read_attribute()");
 
-					string st = desc.str();
+					std::string st = desc.str();
 					err_list[nb_except].desc = Tango::string_dup(st.c_str());
 					err_list[nb_except].severity = Tango::ERR;
 				}
@@ -1176,7 +1176,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 		TangoSys_OMemStream desc;
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
-		desc << ") is not yet arrived" << ends;
+		desc << ") is not yet arrived" << std::ends;
 		ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 						       desc.str(),
 						       "DeviceProxy::read_attribute_reply");
@@ -1299,13 +1299,13 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 			{
 				TangoSys_OMemStream desc;
 				desc << "Failed to read_attributes on device " << device_name;
-				desc << ", attribute " << dev_attr->name << ends;
+				desc << ", attribute " << dev_attr->name << std::ends;
 
 				err_list.inout().length(nb_except + 1);
 				err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
 				err_list[nb_except].origin = Tango::string_dup("DeviceProxy::read_attribute_reply()");
 
-				string st = desc.str();
+				std::string st = desc.str();
 				err_list[nb_except].desc = Tango::string_dup(st.c_str());
 
 				err_list[nb_except].severity = Tango::ERR;
@@ -1346,7 +1346,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 //
 //-----------------------------------------------------------------------------
 
-vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_timeout)
+std::vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_timeout)
 {
 //
 // Retrieve request object
@@ -1406,7 +1406,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 			nanosleep(&to_wait,&inter);
 #endif
 		}
-	
+
 		if (i == nb)
 		{
 			if (req.request->poll_response() == false)
@@ -1414,7 +1414,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 				TangoSys_OMemStream desc;
 				desc << "Device " << device_name;
 				desc << ": Reply for asynchronous call (id = " << id;
-				desc << ") is not yet arrived" << ends;
+				desc << ") is not yet arrived" << std::ends;
 				ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 							       	       desc.str(),
 							               "DeviceProxy::read_attributes_reply");
@@ -1447,7 +1447,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
             set_connection_state(CONNECTION_NOTOK);
             omni420_except_attr(id,cb_excep_mess,MULTIPLE);
 
-            vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
+            std::vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
             remove_asyn_request(id);
             return a_ptr;
         }
@@ -1459,7 +1459,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
         Tango::Except::print_CORBA_SystemException_r(&ex,cb_excep_mess);
         omni420_except_attr(id,cb_excep_mess,MULTIPLE);
 
-		vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
+		std::vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
 		remove_asyn_request(id);
 		return a_ptr;
     }
@@ -1474,7 +1474,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 // Try to redo the call synchronously
 //
 
-		vector<DeviceAttribute> *a_ptr;
+		std::vector<DeviceAttribute> *a_ptr;
 		a_ptr = redo_synch_reads_call(req);
 
 //
@@ -1487,7 +1487,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 	}
 
 
-	vector<DeviceAttribute> *dev_attr = new(vector<DeviceAttribute>);
+	std::vector<DeviceAttribute> *dev_attr = new(std::vector<DeviceAttribute>);
 
 //
 // Get received value
@@ -1547,13 +1547,13 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 			{
 				TangoSys_OMemStream desc;
 				desc << "Failed to read_attributes on device " << device_name;
-				desc << ", attribute " << (*dev_attr)[i].name << ends;
+				desc << ", attribute " << (*dev_attr)[i].name << std::ends;
 
 				err_list.inout().length(nb_except + 1);
 				err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
 				err_list[nb_except].origin = Tango::string_dup("DeviceProxy::read_attributes_reply()");
 
-				string st = desc.str();
+				std::string st = desc.str();
 				err_list[nb_except].desc = Tango::string_dup(st.c_str());
 				err_list[nb_except].severity = Tango::ERR;
 			}
@@ -1660,7 +1660,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 				TangoSys_OMemStream desc;
 				desc << "Device " << device_name;
 				desc << ": Reply for asynchronous call (id = " << id;
-				desc << ") is not yet arrived" << ends;
+				desc << ") is not yet arrived" << std::ends;
 				ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 							       	       desc.str(),
 							               "DeviceProxy::read_attribute_reply");
@@ -1783,13 +1783,13 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 		{
 			TangoSys_OMemStream desc;
 			desc << "Failed to read_attributes on device " << device_name;
-			desc << ", attribute " << dev_attr->name << ends;
+			desc << ", attribute " << dev_attr->name << std::ends;
 
 			err_list.inout().length(nb_except + 1);
 			err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
 			err_list[nb_except].origin = Tango::string_dup("DeviceProxy::read_attribute_reply()");
 
-			string st = desc.str();
+			std::string st = desc.str();
 			err_list[nb_except].desc = Tango::string_dup(st.c_str());
 			err_list[nb_except].severity = Tango::ERR;
 		}
@@ -1858,7 +1858,7 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
             char cb_excep_mess[256];
             Tango::Except::print_CORBA_SystemException_r(tra,cb_excep_mess);
 
-            string meth;
+            std::string meth;
             if (type == SIMPLE)
                 meth = "DeviceProxy::read_attribute_replay()";
             else
@@ -1880,7 +1880,7 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
                     if (i != (names->length() - 1))
                         desc << ", ";
                 }
-                desc << ends;
+                desc << std::ends;
 
                 remove_asyn_request(id);
                 ApiCommExcept::re_throw_exception(cb_excep_mess,"API_DeviceTimedOut",desc.str(),meth.c_str());
@@ -1890,7 +1890,7 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
                 set_connection_state(CONNECTION_NOTOK);
                 remove_asyn_request(id);
 
-                stringstream ss;
+                std::stringstream ss;
                 ss << "Failed to execute read_attribute_asynch on device " << device_name;
                 ApiCommExcept::re_throw_exception(cb_excep_mess,"API_CommunicationFailed",ss.str(),meth.c_str());
             }
@@ -1924,7 +1924,7 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 			if (i != (names->length() - 1))
 				desc << ", ";
 		}
-		desc << ends;
+		desc << std::ends;
 
 		remove_asyn_request(id);
 
@@ -1964,10 +1964,10 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 // If successfull, just returns otherwise, throw the first exception
 //
 
-		string ex(cb_excep_mess);
-		string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
-        string::size_type pos_one = ex.find("EXIST_NoMatch");
-		if (pos != string::npos || pos_one != string::npos)
+		std::string ex(cb_excep_mess);
+		std::string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
+        std::string::size_type pos_one = ex.find("EXIST_NoMatch");
+		if (pos != std::string::npos || pos_one != std::string::npos)
 		{
 			try
 			{
@@ -1986,7 +1986,7 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 			if (i != (names->length() - 1))
 				desc << ", ";
 		}
-		desc << ends;
+		desc << std::ends;
 
 		remove_asyn_request(id);
 
@@ -2017,7 +2017,7 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 //-----------------------------------------------------------------------------
 
 
-long DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list)
+long DeviceProxy::write_attributes_asynch(std::vector<DeviceAttribute> &attr_list)
 {
 //
 // Throw exception if caller not allowed to write_attribute
@@ -2026,7 +2026,7 @@ long DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list)
 	if (access == ACCESS_READ)
 	{
 		TangoSys_OMemStream desc;
-		desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
+		desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << std::ends;
 
 		NotAllowedExcept::throw_exception(API_ReadOnlyMode,desc.str(),
 									  	  "DeviceProxy::write_attributes_asynch()");
@@ -2043,7 +2043,7 @@ long DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list)
 	catch (Tango::ConnectionFailed &e)
 	{
 		TangoSys_OMemStream desc;
-		desc << "Failed to execute write_attributes_asynch on device " << dev_name() << ends;
+		desc << "Failed to execute write_attributes_asynch on device " << dev_name() << std::ends;
                 ApiConnExcept::re_throw_exception(e,API_CommandFailed,
                         desc.str(),"DeviceProxy::write_attributes_asynch()");
 	}
@@ -2115,7 +2115,7 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 	if (access == ACCESS_READ)
 	{
 		TangoSys_OMemStream desc;
-		desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
+		desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << std::ends;
 
 		NotAllowedExcept::throw_exception(API_ReadOnlyMode,desc.str(),
 									  	  "DeviceProxy::write_attribute_asynch()");
@@ -2132,7 +2132,7 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 	catch (Tango::ConnectionFailed &e)
 	{
 		TangoSys_OMemStream desc;
-		desc << "Failed to execute write_attributes_asynch on device " << dev_name() << ends;
+		desc << "Failed to execute write_attributes_asynch on device " << dev_name() << std::ends;
                 ApiConnExcept::re_throw_exception(e,API_CommandFailed,
                         desc.str(),"DeviceProxy::write_attribute_asynch()");
 	}
@@ -2278,7 +2278,7 @@ void DeviceProxy::write_attributes_reply(long id,long call_timeout)
 				TangoSys_OMemStream desc;
 				desc << "Device " << device_name;
 				desc << ": Reply for asynchronous call (id = " << id;
-				desc << ") is not yet arrived" << ends;
+				desc << ") is not yet arrived" << std::ends;
 				ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 							       	       desc.str(),
 							               "DeviceProxy::write_attributes_reply");
@@ -2384,7 +2384,7 @@ void DeviceProxy::write_attributes_reply(long id)
 		TangoSys_OMemStream desc;
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
-		desc << ") is not yet arrived" << ends;
+		desc << ") is not yet arrived" << std::ends;
 		ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 						       desc.str(),
 						       "DeviceProxy::write_attributes_reply");
@@ -2530,7 +2530,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
                         if (i != (nb_att - 1))
                             desc << ", ";
                     }
-                    desc << ends;
+                    desc << std::ends;
                 }
 
                 remove_asyn_request(id);
@@ -2544,7 +2544,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
                 set_connection_state(CONNECTION_NOTOK);
                 remove_asyn_request(id);
 
-                stringstream ss;
+                std::stringstream ss;
                 ss << "Failed to execute write_attribute_asynch on device " << device_name;
                 ApiCommExcept::re_throw_exception(cb_excep_mess,
                                 "API_CommunicationFailed",ss.str(),"DeviceProxy::write_attributes_reply");
@@ -2615,7 +2615,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 					desc << ", ";
 			}
 		}
-		desc << ends;
+		desc << std::ends;
 
 		remove_asyn_request(id);
 
@@ -2689,10 +2689,10 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 // If successfull, just returns otherwise, throw the first exception
 //
 
-		string ex(cb_excep_mess);
-		string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
-        string::size_type pos_one = ex.find("EXIST_NoMatch");
-		if (pos != string::npos || pos_one != string::npos)
+		std::string ex(cb_excep_mess);
+		std::string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
+        std::string::size_type pos_one = ex.find("EXIST_NoMatch");
+		if (pos != std::string::npos || pos_one != std::string::npos)
 		{
 			try
 			{
@@ -2718,7 +2718,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 					desc << ", ";
 			}
 		}
-		desc << ends;
+		desc << std::ends;
 
 		remove_asyn_request(id);
 
@@ -2742,7 +2742,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 //
 //-----------------------------------------------------------------------------
 
-void DeviceProxy::retrieve_read_args(TgRequest &req,vector<string> &att_list)
+void DeviceProxy::retrieve_read_args(TgRequest &req,std::vector<std::string> &att_list)
 {
 
 	att_list.clear();
@@ -2760,7 +2760,7 @@ void DeviceProxy::retrieve_read_args(TgRequest &req,vector<string> &att_list)
 		(*arg_val) >>= att_names;
 
 		for (unsigned loop = 0;loop < att_names->length();loop++)
-			att_list.push_back(string((*att_names)[loop]));
+			att_list.push_back(std::string((*att_names)[loop]));
 	}
 	catch (CORBA::SystemException &e)
 	{
@@ -2779,7 +2779,7 @@ void DeviceProxy::retrieve_read_args(TgRequest &req,vector<string> &att_list)
 					desc << ", ";
 			}
 		}
-		desc << ends;
+		desc << std::ends;
 
 		ApiCommExcept::re_throw_exception(cb_excep_mess,
 							  			  "API_CommunicationFailed",
@@ -2807,7 +2807,7 @@ DeviceAttribute *DeviceProxy::redo_synch_read_call(TgRequest &req)
 // Retrieve which attribute was read
 //
 
-	vector<string> att_list;
+	std::vector<std::string> att_list;
 	retrieve_read_args(req,att_list);
 
 //
@@ -2830,14 +2830,14 @@ DeviceAttribute *DeviceProxy::redo_synch_read_call(TgRequest &req)
 //
 //-----------------------------------------------------------------------------
 
-vector<DeviceAttribute> *DeviceProxy::redo_synch_reads_call(TgRequest &req)
+std::vector<DeviceAttribute> *DeviceProxy::redo_synch_reads_call(TgRequest &req)
 {
 
 //
 // Retrieve which attributes was read
 //
 
-	vector<string> att_list;
+	std::vector<std::string> att_list;
 	retrieve_read_args(req,att_list);
 
 //
@@ -2884,7 +2884,7 @@ void DeviceProxy::redo_synch_write_call(TgRequest &req)
 		Tango::Except::print_CORBA_SystemException_r(&e,cb_excep_mess);
 
 		TangoSys_OMemStream desc;
-		desc << "Failed to redo the call synchronously on device " << device_name << ends;
+		desc << "Failed to redo the call synchronously on device " << device_name << std::ends;
 
 		ApiCommExcept::re_throw_exception(cb_excep_mess,
 							  			  "API_CommunicationFailed",
@@ -2934,7 +2934,7 @@ DeviceData Connection::redo_synch_cmd(TgRequest &req)
 		Tango::Except::print_CORBA_SystemException_r(&e,cb_excep_mess);
 
 		TangoSys_OMemStream desc;
-		desc << "Failed to redo the call synchronously on device " << dev_name() << ends;
+		desc << "Failed to redo the call synchronously on device " << dev_name() << std::ends;
 
 		ApiCommExcept::re_throw_exception(cb_excep_mess,
 							  			  "API_CommunicationFailed",
@@ -3023,7 +3023,7 @@ void Connection::omni420_timeout(int id,char *cb_excep_mess)
 		catch(...) {}
     }
 
-    stringstream ss;
+    std::stringstream ss;
     remove_asyn_request(id);
 
     if (need_reconnect == false)
@@ -3052,9 +3052,9 @@ DeviceData Connection::omni420_except(int id,char *cb_excep_mess,TgRequest &req)
 // If successful just return, otherwise throw the first exception
 //
 
-    string ex(cb_excep_mess);
-    string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
-    if (pos != string::npos)
+    std::string ex(cb_excep_mess);
+    std::string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
+    if (pos != std::string::npos)
     {
         try
         {
@@ -3070,7 +3070,7 @@ DeviceData Connection::omni420_except(int id,char *cb_excep_mess,TgRequest &req)
         catch (Tango::DevFailed &) {}
     }
 
-    stringstream ss;
+    std::stringstream ss;
     ss << "Failed to execute command_inout_asynch on device " << dev_name();
 
     remove_asyn_request(id);
@@ -3103,10 +3103,10 @@ void DeviceProxy::omni420_timeout_attr(int id,char *cb_excep_mess,read_attr_type
 		catch(...) {}
     }
 
-    stringstream ss;
+    std::stringstream ss;
     remove_asyn_request(id);
 
-    string meth;
+    std::string meth;
     if (type == SIMPLE)
         meth = "DeviceProxy::read_attribute_reply()";
     else
@@ -3130,9 +3130,9 @@ void DeviceProxy::omni420_timeout_attr(int id,char *cb_excep_mess,read_attr_type
 
 void DeviceProxy::omni420_except_attr(int id,char *cb_excep_mess,read_attr_type type)
 {
-    string ex(cb_excep_mess);
-    string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
-    if (pos != string::npos)
+    std::string ex(cb_excep_mess);
+    std::string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
+    if (pos != std::string::npos)
     {
         try
         {
@@ -3142,12 +3142,12 @@ void DeviceProxy::omni420_except_attr(int id,char *cb_excep_mess,read_attr_type 
         catch (Tango::DevFailed &) {}
     }
 
-    stringstream ss;
+    std::stringstream ss;
     ss << "Failed to execute read_attributes_asynch on device " << device_name;
 
     remove_asyn_request(id);
 
-    string meth;
+    std::string meth;
     if (type == SIMPLE)
         meth = "DeviceProxy::read_attribute_reply()";
     else
@@ -3178,7 +3178,7 @@ void DeviceProxy::omni420_timeout_wattr(int id,char *cb_excep_mess)
 		catch(...) {}
     }
 
-    stringstream ss;
+    std::stringstream ss;
     remove_asyn_request(id);
 
     if (need_reconnect == false)
@@ -3199,9 +3199,9 @@ void DeviceProxy::omni420_timeout_wattr(int id,char *cb_excep_mess)
 
 void DeviceProxy::omni420_except_wattr(int id,char *cb_excep_mess)
 {
-    string ex(cb_excep_mess);
-    string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
-    if (pos != string::npos)
+    std::string ex(cb_excep_mess);
+    std::string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
+    if (pos != std::string::npos)
     {
         try
         {
@@ -3211,7 +3211,7 @@ void DeviceProxy::omni420_except_wattr(int id,char *cb_excep_mess)
         catch (Tango::DevFailed &) {}
     }
 
-    stringstream ss;
+    std::stringstream ss;
     ss << "Failed to execute write_attributes_asynch on device " << device_name;
 
     remove_asyn_request(id);

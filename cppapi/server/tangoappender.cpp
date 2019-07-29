@@ -112,8 +112,8 @@ namespace Tango
                   << std::noshowpoint
                   << std::setprecision(0)
                   << ts_ms
-                  << ends;
-        string st = ts_ms_str.str();
+                  << std::ends;
+        std::string st = ts_ms_str.str();
         (*dvsa)[0] = Tango::string_dup(st.c_str());
 
         (*dvsa)[1] = Tango::string_dup(log4tango::Level::get_name(event.level).c_str());
@@ -123,9 +123,9 @@ namespace Tango
         omni_thread* ct = omni_thread::self();
         if (ct) {
           TangoSys_OMemStream ctstr;
-          ctstr << "@" << hex << event.thread_id << " [" << ct->id() << "]"<< ends;
+          ctstr << "@" << std::hex << event.thread_id << " [" << ct->id() << "]"<< std::ends;
 
-          string st = ctstr.str();
+          std::string st = ctstr.str();
           (*dvsa)[5] = Tango::string_dup(st.c_str());
         } else {
           (*dvsa)[5] = Tango::string_dup("unknown");

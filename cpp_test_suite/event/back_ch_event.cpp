@@ -1,4 +1,4 @@
-/* 
+/*
  * example of a client using the TANGO device api.
  */
 
@@ -22,7 +22,7 @@ bool verbose = false;
 class EventCallBack : public Tango::CallBack
 {
 	void push_event(Tango::EventData*);
-	
+
 public:
 	int cb_executed;
 	int cb_err;
@@ -44,8 +44,8 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 #endif
 
 	cout << "Callback date : tv_sec = " << now_timeval.tv_sec;
-	cout << ", tv_usec = " << now_timeval.tv_usec << endl;
-	
+	cout << ", tv_usec = " << now_timeval.tv_usec << std::endl;
+
 	int delta_s = now_timeval.tv_sec - old_sec;
 	if (delta_s == 0)
 		delta_msec = (now_timeval.tv_usec - old_usec) / 1000;
@@ -57,8 +57,8 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 	}
 	old_sec = now_timeval.tv_sec;
 	old_usec = now_timeval.tv_usec;
-	
-	coutv << "delta_msec = " << delta_msec << endl;
+
+	coutv << "delta_msec = " << delta_msec << std::endl;
 
 	cb_executed++;
 	try
@@ -68,11 +68,11 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 		{
 
 			*(event_data->attr_value) >> value;
-			coutv << "CallBack value " << value << endl;
+			coutv << "CallBack value " << value << std::endl;
 		}
 		else
 		{
-			coutv << "Error send to callback" << endl;
+			coutv << "Error send to callback" << std::endl;
 //			Tango::Except::print_error_stack(event_data->errors);
 			if (strcmp(event_data->errors[0].reason.in(),"aaa") == 0)
 				cb_err++;
@@ -88,14 +88,14 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
-	
+
 	if ((argc == 1) || (argc == 2))
 	{
-		cout << "usage: %s device sleeping_time [-v]" << endl;
+		cout << "usage: %s device sleeping_time [-v]" << std::endl;
 		exit(-1);
 	}
 
-	string device_name = argv[1];
+	std::string device_name = argv[1];
 	long sleeping_time = atol(argv[2]);
 
 	if (argc == 4)
@@ -103,8 +103,8 @@ int main(int argc, char **argv)
 		if (strcmp(argv[3],"-v") == 0)
 			verbose = true;
 	}
-	
-	try 
+
+	try
 	{
 		device = new DeviceProxy(device_name);
 	}
@@ -114,16 +114,16 @@ int main(int argc, char **argv)
 		exit(1);
         }
 
-	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+	coutv << std::endl << "new DeviceProxy(" << device->name() << ") returned" << std::endl << std::endl;
 
 
 
-	
+
 	try
 	{
 
-		string att_name("long_attr");
-				
+		std::string att_name("long_attr");
+
 //
 // Test set up (stop polling and clear event_period attribute property but
 // restart device to take this into account)
@@ -137,18 +137,18 @@ int main(int argc, char **argv)
 //
 
 		int eve_id;
-		vector<string> filters;
+		std::vector<std::string> filters;
 		EventCallBack cb;
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
-		
-		filters.push_back("$delta_change_abs >= 2 or $delta_change_abs <= -2");		
+
+		filters.push_back("$delta_change_abs >= 2 or $delta_change_abs <= -2");
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
 
 		sleep(sleeping_time);
-		
-		device->unsubscribe_event(eve_id);							
+
+		device->unsubscribe_event(eve_id);
 	}
 	catch (Tango::DevFailed &e)
 	{
@@ -162,6 +162,6 @@ int main(int argc, char **argv)
 	}
 
 	delete device;
-	
+
 	return 0;
 }

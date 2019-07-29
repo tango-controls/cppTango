@@ -98,8 +98,8 @@ void DevIntrThread::run(TANGO_UNUSED(void *ptr))
 			    }
 			    catch (Tango::DevFailed &e)
 			    {
-			        cerr << "Received a DevFailed exception while trying to push the device interface change event!!!" << endl;
-			        cerr << e.errors[0].desc.in() << endl;
+			        std::cerr << "Received a DevFailed exception while trying to push the device interface change event!!!" << std::endl;
+			        std::cerr << e.errors[0].desc.in() << std::endl;
 			    }
 				exit = true;
 				break;
@@ -114,7 +114,7 @@ void DevIntrThread::run(TANGO_UNUSED(void *ptr))
 	}
 	catch (omni_thread_fatal &)
 	{
-		cerr << "OUPS !! A omni thread fatal exception in a device interface change event thread!!!!!!!!" << endl;
+		std::cerr << "OUPS !! A omni thread fatal exception in a device interface change event thread!!!!!!!!" << std::endl;
 	}
 
 }
@@ -148,7 +148,7 @@ DevIntrCmdType DevIntrThread::get_command(DevLong tout)
 
 	if (shared_data.cmd_pending == false)
 	{
-		cout4 << "DevIntrThread:: Going to wait on monitor" << endl;
+		cout4 << "DevIntrThread:: Going to wait on monitor" << std::endl;
 		p_mon.wait(tout);
 	}
 
@@ -179,7 +179,7 @@ DevIntrCmdType DevIntrThread::get_command(DevLong tout)
 
 void DevIntrThread::execute_cmd()
 {
-	vector<string>::iterator pos;
+	std::vector<std::string>::iterator pos;
 	bool need_exit = false;
 
 	switch (local_cmd.cmd_code)
@@ -239,13 +239,13 @@ void DevIntrThread::execute_cmd()
 
 void DevIntrThread::push_event()
 {
-	cout4 << "Device interface change event thread pushing event!" << endl;
+	cout4 << "Device interface change event thread pushing event!" << std::endl;
 
 	AutoTangoMonitor sync(dev,true);
 	
 	if (shared_data.interface.has_changed(dev) == true)
 	{
-		cout4 << "Device interface has changed" << endl;
+		cout4 << "Device interface has changed" << std::endl;
 
 		Device_5Impl *dev_5 = static_cast<Device_5Impl *>(dev);
 		DevCmdInfoList_2 *cmds_list = dev_5->command_list_query_2();

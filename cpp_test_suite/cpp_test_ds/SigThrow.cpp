@@ -43,7 +43,7 @@ CORBA::Any *IOThrow::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA
   const Tango::DevVarLongStringArray *theException;
   extract(in_any, theException);
   Tango::ErrSeverity severity= (Tango::ErrSeverity) (theException->lvalue)[0];
-  cout << "[IOThrow::execute] throwing severity exception " << severity << endl;
+  cout << "[IOThrow::execute] throwing severity exception " << severity << std::endl;
  
   Tango::Except::throw_exception((const char *)(theException->svalue)[0],
   			         (const char *)"This is a test ",
@@ -151,7 +151,7 @@ CORBA::Any *IOReThrow::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const COR
   extract(in_any, theException);
   Tango::ErrSeverity severity= (Tango::ErrSeverity) (theException->lvalue)[0];
   long nb_except = theException->lvalue.length();
-  cout << "[IOReThrow::execute] throwing " << nb_except << " exception(s) " << endl;
+  cout << "[IOReThrow::execute] throwing " << nb_except << " exception(s) " << std::endl;
   try
   { 
   	Tango::Except::throw_exception((const char *)(theException->svalue)[0],
@@ -237,7 +237,7 @@ CORBA::Any *IORegClassSig::execute(Tango::DeviceImpl *device,const CORBA::Any &i
   try {
     Tango::DevLong theSignal;
     extract(in_any,theSignal);
-    cout << "[IORegClassSig::execute] received signal number " << theSignal << endl;
+    cout << "[IORegClassSig::execute] received signal number " << theSignal << std::endl;
     device->get_device_class()->register_signal(theSignal);
     return insert();
   }
@@ -291,7 +291,7 @@ CORBA::Any *IORegSig::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any
   try {
     Tango::DevLong theSignal;
     extract(in_any,theSignal);
-    cout << "[IORegSig::execute] received signal number " << theSignal << endl;
+    cout << "[IORegSig::execute] received signal number " << theSignal << std::endl;
     device->register_signal(theSignal);
     return insert();
   }
@@ -346,7 +346,7 @@ CORBA::Any *IORegSigOwn::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
   try {
     Tango::DevLong theSignal;
     extract(in_any,theSignal);
-    cout << "[IORegSigOwn::execute] received signal number " << theSignal << endl;
+    cout << "[IORegSigOwn::execute] received signal number " << theSignal << std::endl;
     device->register_signal(theSignal,true);
     return insert();
   }
@@ -404,7 +404,7 @@ CORBA::Any *IOUnregClassSig::execute(Tango::DeviceImpl *device,const CORBA::Any 
   try {
     Tango::DevLong theSignal;
     extract(in_any,theSignal);
-    cout << "[IOUnregClassSig::execute] received signal number " << theSignal << endl;
+    cout << "[IOUnregClassSig::execute] received signal number " << theSignal << std::endl;
     device->get_device_class()->unregister_signal(theSignal);
     return insert();
   }
@@ -458,7 +458,7 @@ CORBA::Any *IOUnregSig::execute(Tango::DeviceImpl *device,const CORBA::Any &in_a
   try {
     Tango::DevLong theSignal;
     extract(in_any,theSignal);
-    cout << "[IOUnregSig::execute] received signal number " << theSignal << endl;
+    cout << "[IOUnregSig::execute] received signal number " << theSignal << std::endl;
     device->unregister_signal(theSignal);
     return insert();
   }

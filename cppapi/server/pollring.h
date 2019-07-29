@@ -99,7 +99,7 @@ public:
 
 	template <typename T> void force_copy_data(T *);
 
-	void get_delta_t(vector<double> &,long nb);
+	void get_delta_t(std::vector<double> &,long nb);
 	struct timeval get_last_insert_date();
 	bool is_empty() {if (nb_elt == 0) return true;else return false;}
 
@@ -130,7 +130,7 @@ public:
 private:
 	void inc_indexes();
 
-	vector<RingElt>		ring;
+	std::vector<RingElt>		ring;
 	long				insert_elt;
 	long				nb_elt;
 	long				max_elt;

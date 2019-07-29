@@ -1,4 +1,4 @@
-/* 
+/*
  * example of a client using the TANGO device api.
  */
 
@@ -22,13 +22,13 @@ bool verbose = false;
 class EventCallBack : public Tango::CallBack
 {
 	void push_event(Tango::DataReadyEventData*);
-	
+
 public:
 	int cb_executed;
 	int cb_err;
 	int old_sec,old_usec;
 	int delta_msec;
-	
+
 	int ctr;
 };
 
@@ -45,14 +45,14 @@ void EventCallBack::push_event(Tango::DataReadyEventData* event_data)
 	gettimeofday(&now_timeval,NULL);
 #endif
 	coutv << "date : tv_sec = " << now_timeval.tv_sec;
-	coutv << ", tv_usec = " << now_timeval.tv_usec << endl;
+	coutv << ", tv_usec = " << now_timeval.tv_usec << std::endl;
 
-	delta_msec = ((now_timeval.tv_sec - old_sec) * 1000) + ((now_timeval.tv_usec - old_usec) / 1000);		
+	delta_msec = ((now_timeval.tv_sec - old_sec) * 1000) + ((now_timeval.tv_usec - old_usec) / 1000);
 
 	old_sec = now_timeval.tv_sec;
 	old_usec = now_timeval.tv_usec;
-	
-	coutv << "delta_msec = " << delta_msec << endl;
+
+	coutv << "delta_msec = " << delta_msec << std::endl;
 
 	cb_executed++;
 
@@ -61,12 +61,12 @@ void EventCallBack::push_event(Tango::DataReadyEventData* event_data)
 		coutv << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
 		if (!event_data->err)
 		{
-			coutv << "Event data: Attribute data type = " << event_data->attr_data_type << ", User ctr = " << event_data->ctr << endl;
+			coutv << "Event data: Attribute data type = " << event_data->attr_data_type << ", User ctr = " << event_data->ctr << std::endl;
 			ctr = event_data->ctr;
 		}
 		else
 		{
-			coutv << "Error send to callback" << endl;
+			coutv << "Error send to callback" << std::endl;
 			Tango::Except::print_error_stack(event_data->errors);
 		}
 	}
@@ -80,22 +80,22 @@ void EventCallBack::push_event(Tango::DataReadyEventData* event_data)
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
-	
+
 	if (argc == 1)
 	{
-		cout << "usage: %s device [-v]" << endl;
+		cout << "usage: %s device [-v]" << std::endl;
 		exit(-1);
 	}
 
-	string device_name = argv[1];
+	std::string device_name = argv[1];
 
 	if (argc == 3)
 	{
 		if (strcmp(argv[2],"-v") == 0)
 			verbose = true;
 	}
-	
-	try 
+
+	try
 	{
 		device = new DeviceProxy(device_name);
 	}
@@ -105,18 +105,18 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
-	
+	coutv << std::endl << "new DeviceProxy(" << device->name() << ") returned" << std::endl << std::endl;
+
 	try
 	{
-		string att_name("Long_attr");
-		
+		std::string att_name("Long_attr");
+
 //
 // Check that the attribute is still not polled
 //
 
 		bool po = device->is_attribute_polled(att_name);
-		coutv << "attribute polled : " << po << endl;
+		coutv << "attribute polled : " << po << std::endl;
 		assert( po == false);
 
 //
@@ -124,13 +124,13 @@ int main(int argc, char **argv)
 //
 
 		int eve_id;
-		vector<string> filters;
+		std::vector<std::string> filters;
 		EventCallBack cb;
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
 		cb.ctr = -1;
-		
+
 		eve_id = device->subscribe_event(att_name,Tango::DATA_READY_EVENT,1,filters);
 
 //
@@ -148,9 +148,9 @@ int main(int argc, char **argv)
 		{
 			dvlsa.lvalue[0] = dvlsa.lvalue[0] + 1;
 			d_in << dvlsa;
-			
+
 			device->command_inout("PushDataReady",d_in);
-			
+
 #ifdef _TG_WINDOWS_
 			Sleep((DWORD)200);
 #else
@@ -160,25 +160,25 @@ int main(int argc, char **argv)
 			nanosleep(&to_wait,&inter);
 #endif
 		}
-		
+
 //
 // Check that only the last event was kept
 //
 
 		device->get_events(eve_id, &cb);
-		
-		coutv << "cb excuted = " << cb.cb_executed << endl;
+
+		coutv << "cb excuted = " << cb.cb_executed << std::endl;
 		assert (cb.cb_executed == 1);
 		assert (cb.ctr == 19);
-		
-		cout << "   CallBack executed only for the last arrived event --> OK" << endl;
-		
+
+		cout << "   CallBack executed only for the last arrived event --> OK" << std::endl;
+
 //
 // unsubscribe to the event
 //
 
 		device->unsubscribe_event(eve_id);
-		cout << "   unsubscribe_event --> OK" << endl;
+		cout << "   unsubscribe_event --> OK" << std::endl;
 
 //
 // Subscribe for attibute configuration events.
@@ -188,7 +188,7 @@ int main(int argc, char **argv)
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
-		cb.ctr = 0;		
+		cb.ctr = 0;
 
 		eve_id = device->subscribe_event(att_name,Tango::DATA_READY_EVENT,5,filters);
 
@@ -200,9 +200,9 @@ int main(int argc, char **argv)
 		{
 			dvlsa.lvalue[0] = dvlsa.lvalue[0] + 1;
 			d_in << dvlsa;
-			
+
 			device->command_inout("PushDataReady",d_in);
-			
+
 #ifdef _TG_WINDOWS_
 			Sleep((DWORD)200);
 #else
@@ -212,25 +212,25 @@ int main(int argc, char **argv)
 			nanosleep(&to_wait,&inter);
 #endif
 		}
-		
+
 //
 // Check that only the last event was kept
 //
 
 		device->get_events(eve_id, &cb);
-		
-		coutv << "cb excuted = " << cb.cb_executed << endl;
+
+		coutv << "cb excuted = " << cb.cb_executed << std::endl;
 		assert (cb.cb_executed == 5);
 		assert (cb.ctr == 29);
-		
-		cout << "   CallBack executed only for the last 5 arrived events --> OK" << endl;
-		
+
+		cout << "   CallBack executed only for the last 5 arrived events --> OK" << std::endl;
+
 //
 // unsubscribe to the event
 //
 
 		device->unsubscribe_event(eve_id);
-		cout << "   unsubscribe_event --> OK" << endl;
+		cout << "   unsubscribe_event --> OK" << std::endl;
 
 //
 // Subscribe for attribute data ready events.
@@ -240,7 +240,7 @@ int main(int argc, char **argv)
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
-		cb.ctr = 0;		
+		cb.ctr = 0;
 
 		eve_id = device->subscribe_event(att_name,Tango::DATA_READY_EVENT,ALL_EVENTS,filters);
 
@@ -252,9 +252,9 @@ int main(int argc, char **argv)
 		{
 			dvlsa.lvalue[0] = dvlsa.lvalue[0] + 1;
 			d_in << dvlsa;
-			
+
 			device->command_inout("PushDataReady",d_in);
-			
+
 #ifdef _TG_WINDOWS_
 			Sleep((DWORD)200);
 #else
@@ -264,18 +264,18 @@ int main(int argc, char **argv)
 			nanosleep(&to_wait,&inter);
 #endif
 		}
-		
+
 //
 // Check that only the last event was kept
 //
 
 		device->get_events(eve_id, &cb);
-		
-		coutv << "cb excuted = " << cb.cb_executed << endl;
+
+		coutv << "cb excuted = " << cb.cb_executed << std::endl;
 		assert (cb.cb_executed == 10);
 		assert (cb.ctr == 39);
-		
-		cout << "   CallBack executed for 10 arrived events --> OK" << endl;
+
+		cout << "   CallBack executed for 10 arrived events --> OK" << std::endl;
 
 //
 // Check the data ready event data reading as a vector
@@ -284,7 +284,7 @@ int main(int argc, char **argv)
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
-		
+
 //
 // Send 15 attribute data ready events
 //
@@ -293,9 +293,9 @@ int main(int argc, char **argv)
 		{
 			dvlsa.lvalue[0] = dvlsa.lvalue[0] + 1;
 			d_in << dvlsa;
-			
+
 			device->command_inout("PushDataReady",d_in);
-			
+
 #ifdef _TG_WINDOWS_
 			Sleep((DWORD)200);
 #else
@@ -305,37 +305,37 @@ int main(int argc, char **argv)
 			nanosleep(&to_wait,&inter);
 #endif
 		}
-		
+
 //
 // Check that all events were kept and can be read as a vector
 //
 
-		coutv << "event queue size = " << device->event_queue_size(eve_id) << endl;
+		coutv << "event queue size = " << device->event_queue_size(eve_id) << std::endl;
 		assert (device->event_queue_size(eve_id) == 15);
-		
+
 		DataReadyEventDataList event_list;
 		device->get_events(eve_id, event_list);
-		coutv << "number of events read = " << event_list.size() << endl;
+		coutv << "number of events read = " << event_list.size() << std::endl;
 		assert (event_list.size() == 15);
-		
+
 		int ref_val = 40;
 		DataReadyEventDataList::iterator vpos;
 		for (vpos=event_list.begin(); vpos!=event_list.end(); vpos++)
 		{
 			double local_ctr = (*vpos)->ctr;
-			
-			coutv << "local_ctr = " << local_ctr << endl;
+
+			coutv << "local_ctr = " << local_ctr << std::endl;
 			assert (local_ctr == ref_val);
 			ref_val++;
 		}
-		cout << "   Data received for 15 arrived events --> OK" << endl;
+		cout << "   Data received for 15 arrived events --> OK" << std::endl;
 
 //
 // unsubscribe to the event
 //
 
 		device->unsubscribe_event(eve_id);
-		cout << "   unsubscribe_event --> OK" << endl;
+		cout << "   unsubscribe_event --> OK" << std::endl;
 
 //
 // subscribe several times to an attribute data ready event
@@ -354,7 +354,7 @@ int main(int argc, char **argv)
 		cb2.cb_err = 0;
 		cb2.old_sec = cb.old_usec = 0;
 		cb2.ctr = -1;
-		
+
 		eve_id1 = device->subscribe_event(att_name,Tango::DATA_READY_EVENT,1,filters);
 		eve_id2 = device->subscribe_event(att_name,Tango::DATA_READY_EVENT,1,filters);
 
@@ -373,9 +373,9 @@ int main(int argc, char **argv)
 		{
 			dvlsa1.lvalue[0] = dvlsa1.lvalue[0] + 1;
 			d_in1 << dvlsa1;
-			
+
 			device->command_inout("PushDataReady",d_in);
-			
+
 #ifdef _TG_WINDOWS_
 			Sleep((DWORD)200);
 #else
@@ -385,30 +385,30 @@ int main(int argc, char **argv)
 			nanosleep(&to_wait,&inter);
 #endif
 		}
-		
+
 //
 // Check that only the last event was kept
 //
 
 		device->get_events(eve_id1, &cb1);
 		device->get_events(eve_id2, &cb2);
-		
-		coutv << "cb excuted = " << cb1.cb_executed << endl;
+
+		coutv << "cb excuted = " << cb1.cb_executed << std::endl;
 		assert (cb1.cb_executed == 1);
 		assert (cb1.ctr == 54);
 		assert (cb2.cb_executed == 1);
 		assert (cb2.ctr == 54);
-		
-		cout << "   Several CallBack executed only for the last arrived event --> OK" << endl;
-		
+
+		cout << "   Several CallBack executed only for the last arrived event --> OK" << std::endl;
+
 //
 // unsubscribe to the event
 //
 
 		device->unsubscribe_event(eve_id1);
 		device->unsubscribe_event(eve_id2);
-		cout << "   unsubscribe_events --> OK" << endl;
-	
+		cout << "   unsubscribe_events --> OK" << std::endl;
+
 	}
 	catch (Tango::DevFailed &e)
 	{
@@ -422,6 +422,6 @@ int main(int argc, char **argv)
 	}
 
 	delete device;
-	
+
 	return 0;
 }

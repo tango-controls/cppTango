@@ -75,7 +75,7 @@ class EventData
 public :
 ///@privatesection
 	EventData() {}
-	EventData(DeviceProxy *dev,string &nam,string &evt,Tango::DeviceAttribute *attr_value_in,DevErrorList &errors_in);
+	EventData(DeviceProxy *dev,std::string &nam,std::string &evt,Tango::DeviceAttribute *attr_value_in,DevErrorList &errors_in);
 
 	~EventData();
 	EventData(const EventData &);
@@ -88,8 +88,8 @@ public :
 
 ///@publicsection
 	DeviceProxy     *device;        ///< The DeviceProxy object on which the call was executed
-	string          attr_name;      ///< The attribute name
-	string          event;          ///< The event name
+	std::string          attr_name;      ///< The attribute name
+	std::string          event;          ///< The event name
 	DeviceAttribute *attr_value;    ///< The attribute data
 	bool            err;            ///< A boolean flag set to true if the request failed. False otherwise
 	DevErrorList    errors;         ///< The error stack
@@ -102,8 +102,8 @@ class FwdEventData: public EventData
 {
 public:
 	FwdEventData();
-	FwdEventData(DeviceProxy *,string &,string &,Tango::DeviceAttribute *,DevErrorList &);
-	FwdEventData(DeviceProxy *,string &,string &,Tango::DeviceAttribute *,DevErrorList &,zmq::message_t *);
+	FwdEventData(DeviceProxy *,std::string &,std::string &,Tango::DeviceAttribute *,DevErrorList &);
+	FwdEventData(DeviceProxy *,std::string &,std::string &,Tango::DeviceAttribute *,DevErrorList &,zmq::message_t *);
 
 	void set_av_5(const AttributeValue_5 *_p) {av_5 = _p;}
 	const AttributeValue_5 *get_av_5() {return av_5;}
@@ -119,10 +119,10 @@ private:
  * 						EventDataList class										*
  * 																				*
  *******************************************************************************/
-class EventDataList:public vector<EventData *>
+class EventDataList:public std::vector<EventData *>
 {
 public:
-	EventDataList(): vector<EventData *>(0) {};
+	EventDataList(): std::vector<EventData *>(0) {};
 	~EventDataList()
 		{
 		if (size() > 0)
@@ -174,7 +174,7 @@ class AttrConfEventData
 public :
 ///@privatesection
 	AttrConfEventData() {}
-	AttrConfEventData(DeviceProxy *dev,string &nam,string &evt,
+	AttrConfEventData(DeviceProxy *dev,std::string &nam,std::string &evt,
 	                  Tango::AttributeInfoEx *attr_conf_in,
 	                  DevErrorList &errors_in);
 	~AttrConfEventData();
@@ -188,8 +188,8 @@ public :
 
 ///@publicsection
 	DeviceProxy     *device;        ///< The DeviceProxy object on which the call was executed
-	string          attr_name;      ///< The attribute name
-	string          event;          ///< The event name
+	std::string          attr_name;      ///< The attribute name
+	std::string          event;          ///< The event name
 	AttributeInfoEx *attr_conf;     ///< The attribute configuration
 	bool            err;            ///< A boolean flag set to true if the request failed. False otherwise
 	DevErrorList    errors;         ///< The error stack
@@ -203,7 +203,7 @@ class FwdAttrConfEventData: public AttrConfEventData
 {
 public:
 	FwdAttrConfEventData();
-	FwdAttrConfEventData(DeviceProxy *,string &,string &,Tango::AttributeInfoEx *,DevErrorList &);
+	FwdAttrConfEventData(DeviceProxy *,std::string &,std::string &,Tango::AttributeInfoEx *,DevErrorList &);
 
 	void set_fwd_attr_conf(const AttributeConfig_5 *_p) {fwd_attr_conf = _p;}
 	const AttributeConfig_5 *get_fwd_attr_conf() {return fwd_attr_conf;}
@@ -217,10 +217,10 @@ private:
  * 						AttrConfEventDataList class								*
  * 																				*
  *******************************************************************************/
-class AttrConfEventDataList:public vector<AttrConfEventData *>
+class AttrConfEventDataList:public std::vector<AttrConfEventData *>
 {
 public:
-	AttrConfEventDataList(): vector<AttrConfEventData *>(0) {};
+	AttrConfEventDataList(): std::vector<AttrConfEventData *>(0) {};
 	~AttrConfEventDataList()
 		{
 		if (size() > 0)
@@ -270,7 +270,7 @@ class DataReadyEventData
 public :
 ///@privatesection
 	DataReadyEventData() {}
-	DataReadyEventData(DeviceProxy *,AttDataReady *,string &evt,DevErrorList &);
+	DataReadyEventData(DeviceProxy *,AttDataReady *,std::string &evt,DevErrorList &);
 	~DataReadyEventData() {};
 	DataReadyEventData(const DataReadyEventData &);
 	DataReadyEventData & operator=(const DataReadyEventData &);
@@ -282,8 +282,8 @@ public :
 
 ///@publicsection
 	DeviceProxy 	*device;            ///< The DeviceProxy object on which the call was executed
-	string 			attr_name;          ///< The attribute name
-	string			event;              ///< The event name
+	std::string 			attr_name;          ///< The attribute name
+	std::string			event;              ///< The event name
 	int 			attr_data_type;     ///< The attribute data type
 	int 			ctr;                ///< The user counter. Set to 0 if not defined when sent by the server
 
@@ -300,10 +300,10 @@ private:
  * 																				*
  *******************************************************************************/
 
-class DataReadyEventDataList:public vector<DataReadyEventData *>
+class DataReadyEventDataList:public std::vector<DataReadyEventData *>
 {
 public:
-	DataReadyEventDataList(): vector<DataReadyEventData *>(0) {};
+	DataReadyEventDataList(): std::vector<DataReadyEventData *>(0) {};
 	~DataReadyEventDataList()
 	{
 		if (size() > 0)
@@ -355,8 +355,8 @@ class DevIntrChangeEventData
 public :
 ///@privatesection
 	DevIntrChangeEventData() {}
-	DevIntrChangeEventData(DeviceProxy *,string &,string &,DevCmdInfoList_2 *,AttributeConfigList_5 *,bool,DevErrorList &);
-	DevIntrChangeEventData(DeviceProxy *,string &,string &,CommandInfoList *,AttributeInfoListEx *,bool,DevErrorList &);
+	DevIntrChangeEventData(DeviceProxy *,std::string &,std::string &,DevCmdInfoList_2 *,AttributeConfigList_5 *,bool,DevErrorList &);
+	DevIntrChangeEventData(DeviceProxy *,std::string &,std::string &,CommandInfoList *,AttributeInfoListEx *,bool,DevErrorList &);
 	~DevIntrChangeEventData() {};
 	DevIntrChangeEventData(const DevIntrChangeEventData &);
 	DevIntrChangeEventData & operator=(const DevIntrChangeEventData &);
@@ -368,8 +368,8 @@ public :
 
 ///@publicsection
 	DeviceProxy 		*device;            ///< The DeviceProxy object on which the call was executed
-	string				event;              ///< The event name
-	string				device_name;		///< The device name
+	std::string				event;              ///< The event name
+	std::string				device_name;		///< The device name
 	CommandInfoList 	cmd_list;			///< Device command list info
 	AttributeInfoListEx	att_list;			///< Device attribute list info
 	bool				dev_started;		///< Device started flag (true when event sent due to device being (re)started
@@ -388,10 +388,10 @@ private:
  * 																				*
  *******************************************************************************/
 
-class DevIntrChangeEventDataList:public vector<DevIntrChangeEventData *>
+class DevIntrChangeEventDataList:public std::vector<DevIntrChangeEventData *>
 {
 public:
-	DevIntrChangeEventDataList(): vector<DevIntrChangeEventData *>(0) {};
+	DevIntrChangeEventDataList(): std::vector<DevIntrChangeEventData *>(0) {};
 	~DevIntrChangeEventDataList()
 	{
 		if (size() > 0)
@@ -441,7 +441,7 @@ class PipeEventData
 public :
 ///@privatesection
 	PipeEventData() {}
-	PipeEventData(DeviceProxy *dev,string &nam,string &evt,Tango::DevicePipe *pipe_value_in,DevErrorList &errors_in);
+	PipeEventData(DeviceProxy *dev,std::string &nam,std::string &evt,Tango::DevicePipe *pipe_value_in,DevErrorList &errors_in);
 
 	~PipeEventData();
 	PipeEventData(const PipeEventData &);
@@ -454,8 +454,8 @@ public :
 
 ///@publicsection
 	DeviceProxy     *device;        ///< The DeviceProxy object on which the call was executed
-	string          pipe_name;      ///< The pipe name
-	string          event;          ///< The event name
+	std::string          pipe_name;      ///< The pipe name
+	std::string          event;          ///< The event name
 	DevicePipe 		*pipe_value;   	///< The pipe data
 	bool            err;            ///< A boolean flag set to true if the request failed. False otherwise
 	DevErrorList    errors;         ///< The error stack
@@ -470,10 +470,10 @@ private:
  * 																				*
  *******************************************************************************/
 
-class PipeEventDataList:public vector<PipeEventData *>
+class PipeEventDataList:public std::vector<PipeEventData *>
 {
 public:
-	PipeEventDataList(): vector<PipeEventData *>(0) {};
+	PipeEventDataList(): std::vector<PipeEventData *>(0) {};
 	~PipeEventDataList()
 	{
 		if (size() > 0)
@@ -533,11 +533,11 @@ public:
 private:
 	void inc_indexes();
 
-	vector<EventData *>         		event_buffer;
-	vector<AttrConfEventData *> 		conf_event_buffer;
-	vector<DataReadyEventData *>		ready_event_buffer;
-	vector<DevIntrChangeEventData *>	dev_inter_event_buffer;
-	vector<PipeEventData *>				pipe_event_buffer;
+	std::vector<EventData *>         		event_buffer;
+	std::vector<AttrConfEventData *> 		conf_event_buffer;
+	std::vector<DataReadyEventData *>		ready_event_buffer;
+	std::vector<DevIntrChangeEventData *>	dev_inter_event_buffer;
+	std::vector<PipeEventData *>				pipe_event_buffer;
 
 	long	max_elt;
 	long	insert_elt;

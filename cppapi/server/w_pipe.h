@@ -71,7 +71,7 @@ public:
  * @param	level	The pipe display level
  *
  */
-	WPipe(const string &na,const Tango::DispLevel level);
+	WPipe(const std::string &na,const Tango::DispLevel level);
 //@}
 
 /**@name Destructor
@@ -98,7 +98,7 @@ public:
  *
  * @return The root blob name
  */
-	string get_root_blob_name() {return the_blob.get_name();}
+	std::string get_root_blob_name() {return the_blob.get_name();}
 //@}
 
 /**@name Extracting data from a WPipe
@@ -132,7 +132,7 @@ public:
  *
  * @return The root blob data elements name
  */
-	vector<string> get_data_elt_names() {return the_blob.get_data_elt_names();}
+	std::vector<std::string> get_data_elt_names() {return the_blob.get_data_elt_names();}
 /**
  * Get root blob data element name
  *
@@ -141,7 +141,7 @@ public:
  * @param [in] ind The data element index within the root blob
  * @return The root blob data element name
  */
-	string get_data_elt_name(size_t ind) {return the_blob.get_data_elt_name(ind);}
+	std::string get_data_elt_name(size_t ind) {return the_blob.get_data_elt_name(ind);}
 /**
  * Get root blob data element value type
  *
@@ -157,7 +157,7 @@ public:
 	virtual void write(DeviceImpl *) {}
 
 
-	WPipe &operator[](const string &);
+	WPipe &operator[](const std::string &);
 
 private:
     class WPipeExt
@@ -167,7 +167,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<WPipeExt>			w_ext;           // Class extension
+    std::unique_ptr<WPipeExt>			w_ext;           // Class extension
 #else
 	WPipeExt		 				*w_ext;
 #endif

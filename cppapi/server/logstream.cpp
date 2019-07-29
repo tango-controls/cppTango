@@ -60,7 +60,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevFaile
         << "Org: " << e.errors[i].origin.in();
     ls << msg.str();
     if (i != num_errors - 1) {
-      ls << endl;
+      ls << std::endl;
     }
   }
   exception_tag++;
@@ -79,7 +79,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarCh
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -96,7 +96,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarSh
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -113,7 +113,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarLo
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -130,7 +130,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarFl
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -147,7 +147,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarDo
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
   }
 	return ls;
 }
@@ -164,7 +164,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarUS
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -181,7 +181,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarUL
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -198,7 +198,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarSt
 	{
 		ls << "Element number [" << i << "]: " << v[i].in();
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -213,48 +213,48 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attribut
 	Tango::AttributeConfig conf;
 	(const_cast<Attribute &>(a)).get_properties(conf);
 
-        ls << "Attribute name: " << conf.name.in() << endl;
+        ls << "Attribute name: " << conf.name.in() << std::endl;
 	ls << "Attribute data_type: ";
 	switch (conf.data_type)
 	{
 	  case Tango::DEV_SHORT :
-		  ls << "Tango::DevShort" << endl;
+		  ls << "Tango::DevShort" << std::endl;
 		  break;
 
 	  case Tango::DEV_LONG :
-		  ls << "Tango::DevLong" << endl;
+		  ls << "Tango::DevLong" << std::endl;
 		  break;
 
 	  case Tango::DEV_DOUBLE :
-		  ls << "Tango::DevDouble" << endl;
+		  ls << "Tango::DevDouble" << std::endl;
 		  break;
 
 	  case Tango::DEV_STRING :
-		  ls << "Tango::DevString" << endl;
+		  ls << "Tango::DevString" << std::endl;
 		  break;
 
 	  case Tango::DEV_FLOAT :
-		  ls << "Tango::DevFloat" << endl;
+		  ls << "Tango::DevFloat" << std::endl;
 		  break;
 
 	  case Tango::DEV_BOOLEAN :
-		  ls << "Tango::DevBoolean" << endl;
+		  ls << "Tango::DevBoolean" << std::endl;
 		  break;
 
 	  case Tango::DEV_USHORT :
-		  ls << "Tango::DevUShort" << endl;
+		  ls << "Tango::DevUShort" << std::endl;
 		  break;
 
 	  case Tango::DEV_UCHAR :
-		  ls << "Tango::DevUChar" << endl;
+		  ls << "Tango::DevUChar" << std::endl;
 		  break;
 
 	  case Tango::DEV_STATE :
-	  	  ls << "Tango::DevState" << endl;
+	  	  ls << "Tango::DevState" << std::endl;
 		  break;
 
 	  case Tango::DEV_ENUM :
-		  ls << "Tango::DevEnum" << endl;
+		  ls << "Tango::DevEnum" << std::endl;
 		  break;
 	}
 	ls << "Attribute data_format: ";
@@ -264,12 +264,12 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attribut
 	  	  break;
 
 	  case Tango::SCALAR :
-		  ls << "scalar" << endl;
+		  ls << "scalar" << std::endl;
 		  break;
 
 	  case Tango::SPECTRUM :
 		  ls << "spectrum, max_dim_x: "
-            << conf.max_dim_x << endl;
+            << conf.max_dim_x << std::endl;
 		  break;
 
 	  case Tango::IMAGE :
@@ -277,25 +277,25 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attribut
             << conf.max_dim_x
             << ", max_dim_y: "
             << conf.max_dim_y
-            << endl;
+            << std::endl;
 		  break;
 	}
 
 	if (conf.writable == static_cast<unsigned char>(true))
-	  ls << "Attribute is writable" << endl;
+	  ls << "Attribute is writable" << std::endl;
 	else
-	  ls << "Attribute is not writable" << endl;
-	ls << "Attribute label: " << conf.label.in() << endl;
-	ls << "Attribute description: " << conf.description.in() << endl;
-	ls << "Attribute unit: " << conf.unit.in() << endl;
-	ls << "Attribute standard unit: " << conf.standard_unit.in() << endl;
-	ls << "Attribute display unit: " << conf.display_unit.in() << endl;
-	ls << "Attribute format: " << conf.format.in() << endl;
-	ls << "Attribute min alarm: " << conf.min_alarm.in() << endl;
-	ls << "Attribute max alarm: " << conf.max_alarm.in() << endl;
-	ls << "Attribute min value: " << conf.min_value.in() << endl;
-	ls << "Attribute max value: " << conf.max_value.in() << endl;
-	ls << "Attribute writable_attr_name: " << conf.writable_attr_name.in() << endl;
+	  ls << "Attribute is not writable" << std::endl;
+	ls << "Attribute label: " << conf.label.in() << std::endl;
+	ls << "Attribute description: " << conf.description.in() << std::endl;
+	ls << "Attribute unit: " << conf.unit.in() << std::endl;
+	ls << "Attribute standard unit: " << conf.standard_unit.in() << std::endl;
+	ls << "Attribute display unit: " << conf.display_unit.in() << std::endl;
+	ls << "Attribute format: " << conf.format.in() << std::endl;
+	ls << "Attribute min alarm: " << conf.min_alarm.in() << std::endl;
+	ls << "Attribute max alarm: " << conf.max_alarm.in() << std::endl;
+	ls << "Attribute min value: " << conf.min_value.in() << std::endl;
+	ls << "Attribute max value: " << conf.max_value.in() << std::endl;
+	ls << "Attribute writable_attr_name: " << conf.writable_attr_name.in() << std::endl;
 	return ls;
 }
 
@@ -307,7 +307,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attribut
 log4tango::LoggerStream&  operator<< (log4tango::LoggerStream& ls, const AttrProperty& ap)
 {
   AttrProperty& ap_ = const_cast<AttrProperty&>(ap);
-	ls << "Attr.Property: name:" << ap_.get_name() << " - value:" << ap_.get_value() << endl;
+	ls << "Attr.Property: name:" << ap_.get_name() << " - value:" << ap_.get_value() << std::endl;
 	return ls;
 }
 
@@ -318,7 +318,7 @@ log4tango::LoggerStream&  operator<< (log4tango::LoggerStream& ls, const AttrPro
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attr& a)
 {
-  vector<AttrProperty> v = (const_cast<Attr&>(a)).get_class_properties();
+  std::vector<AttrProperty> v = (const_cast<Attr&>(a)).get_class_properties();
   unsigned int n = v.size();
   if (n) {
 	  for (unsigned  i = 0; i < n; i++) {
@@ -328,7 +328,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attr& a)
          << v[i].get_name()
          << " - value:"
          << v[i].get_value();
-      if (i <= (n - 2)) ls << endl;
+      if (i <= (n - 2)) ls << std::endl;
 	  }
   } else {
     ls << "Attr. " << const_cast<Attr&>(a).get_name() << " has no class properties";
@@ -364,10 +364,10 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Devfailed &e)
     msg << "[Ex: " << ++exception_tag << "-" << i << "] "
         << "Rsn: " << e.errors[i].reason.in() << " - "
         << "Dsc: " << e.errors[i].desc.in() << " - "
-        << "Org: " << e.errors[i].origin.in() << ends;
+        << "Org: " << e.errors[i].origin.in() << std::ends;
     ls << msg.str();
     if (i != num_errors - 1) {
-      ls << endl;
+      ls << std::endl;
     }
   }
 	return ls;
@@ -385,7 +385,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarCharArra
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -402,7 +402,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarShortArr
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -419,7 +419,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarLongArra
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -436,7 +436,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarFloatArr
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -453,7 +453,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarDoubleAr
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
   }
 	return ls;
 }
@@ -470,7 +470,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarUShortAr
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -487,7 +487,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarULongArr
 	{
 		ls << "Element number [" << i << "]: " << v[i];
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -504,7 +504,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarStringAr
 	{
 		ls << "Element number [" << i << "]: " << v[i].in();
 		if (i < (nb_elt - 1))
-			ls << endl;
+			ls << std::endl;
 	}
 	return ls;
 }
@@ -520,21 +520,21 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Attribute &a)
 
 	(const_cast<Attribute &>(a)).get_properties(conf);
 
-	ls << "Attribute name: " << conf.name.in() << endl;
+	ls << "Attribute name: " << conf.name.in() << std::endl;
 	ls << "Attribute data_type: ";
 	switch (conf.data_type)
 	{
 	  case Tango::DEV_SHORT:
-		  ls << "Tango::DevShort" << endl;
+		  ls << "Tango::DevShort" << std::endl;
 		  break;
 	  case Tango::DEV_LONG:
-		  ls << "Tango::DevLong" << endl;
+		  ls << "Tango::DevLong" << std::endl;
 		  break;
 	  case Tango::DEV_DOUBLE:
-		  ls << "Tango::DevDouble" << endl;
+		  ls << "Tango::DevDouble" << std::endl;
 		  break;
     case Tango::DEV_STRING:
-		  ls << "Tango::DevString" << endl;
+		  ls << "Tango::DevString" << std::endl;
 		  break;
 	}
 
@@ -543,38 +543,38 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Attribute &a)
 	{
 	  case Tango::SCALAR:
 		  ls << "scalar"
-         << endl;
+         << std::endl;
 		  break;
 	  case Tango::SPECTRUM:
 		  ls << "spectrum, max_dim_x: "
          << conf.max_dim_x
-         << endl;
+         << std::endl;
 		  break;
 	  case Tango::IMAGE:
 		  ls << "image, max_dim_x: "
          << conf.max_dim_x
          << ", max_dim_y: "
          << conf.max_dim_y
-         << endl;
+         << std::endl;
 		  break;
 	}
 
 	if (conf.writable == static_cast<unsigned char>(true))
-		ls << "Attribute is writable" << endl;
+		ls << "Attribute is writable" << std::endl;
 	else
-		ls << "Attribute is not writable" << endl;
+		ls << "Attribute is not writable" << std::endl;
 
-	ls << "Attribute label: " << conf.label.in() << endl;
-	ls << "Attribute description: " << conf.description.in() << endl;
-	ls << "Attribute unit: " << conf.unit.in() << endl;
-	ls << "Attribute standard unit: " << conf.standard_unit.in() << endl;
-	ls << "Attribute display unit: " << conf.display_unit.in() << endl;
-	ls << "Attribute format: " << conf.format.in() << endl;
-	ls << "Attribute min alarm: " << conf.min_alarm.in() << endl;
-	ls << "Attribute max alarm: " << conf.max_alarm.in() << endl;
-	ls << "Attribute min value: " << conf.min_value.in() << endl;
-	ls << "Attribute max value: " << conf.max_value.in() << endl;
-	ls << "Attribute writable_attr_name: " << conf.writable_attr_name.in() << endl;
+	ls << "Attribute label: " << conf.label.in() << std::endl;
+	ls << "Attribute description: " << conf.description.in() << std::endl;
+	ls << "Attribute unit: " << conf.unit.in() << std::endl;
+	ls << "Attribute standard unit: " << conf.standard_unit.in() << std::endl;
+	ls << "Attribute display unit: " << conf.display_unit.in() << std::endl;
+	ls << "Attribute format: " << conf.format.in() << std::endl;
+	ls << "Attribute min alarm: " << conf.min_alarm.in() << std::endl;
+	ls << "Attribute max alarm: " << conf.max_alarm.in() << std::endl;
+	ls << "Attribute min value: " << conf.min_value.in() << std::endl;
+	ls << "Attribute max value: " << conf.max_value.in() << std::endl;
+	ls << "Attribute writable_attr_name: " << conf.writable_attr_name.in() << std::endl;
 
 	return ls;
 }
@@ -601,7 +601,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const AttrProperty &
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Attr& a)
 {
-  vector<AttrProperty> v = (const_cast<Attr&>(a)).get_class_properties();
+  std::vector<AttrProperty> v = (const_cast<Attr&>(a)).get_class_properties();
   unsigned int n = v.size();
   if (n) {
 	  for (unsigned  i = 0; i < n; i++) {
@@ -611,7 +611,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Attr& a)
          << v[i].get_name()
          << " - value:"
          << v[i].get_value();
-      if (i <= (n - 2)) ls << endl;
+      if (i <= (n - 2)) ls << std::endl;
 	  }
   } else {
     ls << "Attr. " << const_cast<Attr&>(a).get_name() << " has no class properties";

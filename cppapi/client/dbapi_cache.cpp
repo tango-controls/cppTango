@@ -58,7 +58,7 @@ namespace Tango
 //
 //------------------------------------------------------------------------------------------------------------------
 
-DbServerCache::DbServerCache(Database *db,string &ds_name,string &host)
+DbServerCache::DbServerCache(Database *db,std::string &ds_name,std::string &host)
 {
 
 //
@@ -71,7 +71,7 @@ DbServerCache::DbServerCache(Database *db,string &ds_name,string &host)
 	}
 	catch (Tango::DevFailed &)
 	{
-		cout3 << "Got an exception while getting cache data from database !!" << endl;
+		cout3 << "Got an exception while getting cache data from database !!" << std::endl;
 		throw;
 	}
 
@@ -86,15 +86,15 @@ DbServerCache::DbServerCache(Database *db,string &ds_name,string &host)
 //
 
 	proc_release = 0;
-	string proc_rel((*data_list)[0]);
-	if (proc_rel.find("release") != string::npos)
+	std::string proc_rel((*data_list)[0]);
+	if (proc_rel.find("release") != std::string::npos)
 	{
-		string rel = proc_rel.substr(8);
-		string::size_type pos = rel.find('.');
-		if (pos != string::npos)
+		std::string rel = proc_rel.substr(8);
+		std::string::size_type pos = rel.find('.');
+		if (pos != std::string::npos)
 		{
-			string maj_str = rel.substr(0,pos);
-			string min_str = rel.substr(pos + 1);
+			std::string maj_str = rel.substr(0,pos);
+			std::string min_str = rel.substr(pos + 1);
 
 			int maj = atoi(maj_str.c_str());
 			int min = atoi(min_str.c_str());
@@ -435,7 +435,7 @@ const DevVarStringArray *DbServerCache::get_class_property(DevVarStringArray *in
 		else
 		{
 			TangoSys_OMemStream o;
-			o << "Class " << (*in_param)[0] << " not found in DB cache" << ends;
+			o << "Class " << (*in_param)[0] << " not found in DB cache" << std::ends;
 
 			Tango::Except::throw_exception((const char *)"DB_ClassNotFoundInCache",o.str(),
 										   (const char *)"DbServerCache::get_dev_property");
@@ -516,9 +516,9 @@ void DbServerCache::get_obj_prop(DevVarStringArray *in_param,PropEltIdx &obj,boo
 	::sprintf(n_prop_str,"%d",found_prop);
 	ret_obj_prop[1] = Tango::string_dup(n_prop_str);
 
-//	cout4 << "DbCache --> Data returned for a get_obj_property for object " << (*in_param)[0] << endl;
+//	cout4 << "DbCache --> Data returned for a get_obj_property for object " << (*in_param)[0] << std::endl;
 //	for (unsigned int ll=0;ll< ret_obj_prop.length();ll++)
-//		cout4 << "    DbCache --> Returned string = " << ret_obj_prop[ll] << endl;
+//		cout4 << "    DbCache --> Returned std::string = " << ret_obj_prop[ll] << std::endl;
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -553,7 +553,7 @@ const DevVarStringArray *DbServerCache::get_dev_property(DevVarStringArray *in_p
 	    if (adm_dev_prop.first_idx == -1)
 	    {
 			TangoSys_OMemStream o;
-			o << "Device " << (*in_param)[0] << " not found in DB cache" << ends;
+			o << "Device " << (*in_param)[0] << " not found in DB cache" << std::ends;
 
 			Tango::Except::throw_exception((const char *)"DB_DeviceNotFoundInCache",o.str(),
 										   (const char *)"DbServerCache::get_dev_property");
@@ -570,7 +570,7 @@ const DevVarStringArray *DbServerCache::get_dev_property(DevVarStringArray *in_p
 		if (res == -1)
 		{
 			TangoSys_OMemStream o;
-			o << "Device " << (*in_param)[0] << " not found in DB cache" << ends;
+			o << "Device " << (*in_param)[0] << " not found in DB cache" << std::ends;
 
 			Tango::Except::throw_exception((const char *)"DB_DeviceNotFoundInCache",o.str(),
 										   (const char *)"DbServerCache::get_dev_property");
@@ -725,15 +725,15 @@ const DevVarStringArray *DbServerCache::get_class_att_property(DevVarStringArray
 	else
 	{
 		TangoSys_OMemStream o;
-		o << "Class " << (*in_param)[0] << " not found in DB cache" << ends;
+		o << "Class " << (*in_param)[0] << " not found in DB cache" << std::ends;
 
 		Tango::Except::throw_exception((const char *)"DB_ClassNotFoundInCache",o.str(),
 										   (const char *)"DbServerCache::get_dev_property");
 	}
 
-//	cout4 << "DbCache --> Returned data for a get_class_att_property for class " << (*in_param)[0] << endl;
+//	cout4 << "DbCache --> Returned data for a get_class_att_property for class " << (*in_param)[0] << std::endl;
 //	for (unsigned int ll=0;ll< ret_obj_att_prop.length();ll++)
-//		cout4 << "    DbCache --> Returned object att prop = " << ret_obj_att_prop[ll] << endl;
+//		cout4 << "    DbCache --> Returned object att prop = " << ret_obj_att_prop[ll] << std::endl;
 
 	return &ret_obj_att_prop;
 }
@@ -816,7 +816,7 @@ const DevVarStringArray *DbServerCache::get_dev_att_property(DevVarStringArray *
 		if (TG_strncasecmp("dserver/",(*in_param)[0],8) != 0)
 		{
 			TangoSys_OMemStream o;
-			o << "Device " << (*in_param)[0] << " not found in DB cache" << ends;
+			o << "Device " << (*in_param)[0] << " not found in DB cache" << std::ends;
 
 			Tango::Except::throw_exception((const char *)"DB_DeviceNotFoundInCache",o.str(),
 											(const char *)"DbServerCache::get_dev_att_property");
@@ -828,9 +828,9 @@ const DevVarStringArray *DbServerCache::get_dev_att_property(DevVarStringArray *
 		}
 	}
 
-//	cout4 << "DbCache --> Returned data for a get_dev_att_property for device " << (*in_param)[0] << endl;
+//	cout4 << "DbCache --> Returned data for a get_dev_att_property for device " << (*in_param)[0] << std::endl;
 //	for (unsigned int ll=0;ll< ret_obj_att_prop.length();ll++)
-//		cout4 << "    DbCache --> Returned object att prop = " << ret_obj_att_prop[ll] << endl;
+//		cout4 << "    DbCache --> Returned object att prop = " << ret_obj_att_prop[ll] << std::endl;
 
 	return &ret_obj_att_prop;
 }
@@ -1135,7 +1135,7 @@ const DevVarStringArray *DbServerCache::get_obj_property(DevVarStringArray *in_p
 	if (res == -1)
 	{
 		TangoSys_OMemStream o;
-		o << "Object " << (*in_param)[0] << " not found in DB cache" << ends;
+		o << "Object " << (*in_param)[0] << " not found in DB cache" << std::ends;
 
 		Tango::Except::throw_exception((const char *)"DB_DeviceNotFoundInCache",o.str(),
 									   (const char *)"DbServerCache::get_obj_property");
@@ -1191,7 +1191,7 @@ const DevVarStringArray *DbServerCache::get_device_property_list(DevVarStringArr
 		if (res == -1)
 		{
 			TangoSys_OMemStream o;
-			o << "Device " << (*in_param)[0] << " not found in DB cache" << ends;
+			o << "Device " << (*in_param)[0] << " not found in DB cache" << std::ends;
 
 			Tango::Except::throw_exception((const char *)"DB_DeviceNotFoundInCache",o.str(),
 										   (const char *)"DbServerCache::get_device_property_list");
@@ -1232,14 +1232,14 @@ void DbServerCache::get_obj_prop_list(DevVarStringArray *in_param,PropEltIdx &ob
 //
 
 	bool before = false,after = false,wildcard_used;
-	string before_str;
-	string after_str;
-	string wildcard((*in_param)[1]);
+	std::string before_str;
+	std::string after_str;
+	std::string wildcard((*in_param)[1]);
 
-	transform(wildcard.begin(),wildcard.end(),wildcard.begin(),::tolower);
+	std::transform(wildcard.begin(),wildcard.end(),wildcard.begin(),::tolower);
 
-	string::size_type pos = wildcard.find('*');
-	if (pos != string::npos)
+	std::string::size_type pos = wildcard.find('*');
+	if (pos != std::string::npos)
 	{
 		wildcard_used = true;
 		if (pos == 0)
@@ -1276,7 +1276,7 @@ void DbServerCache::get_obj_prop_list(DevVarStringArray *in_param,PropEltIdx &ob
 	int obj_prop = obj.prop_nb;
 
 	int lo;
-	string::size_type pos_after,pos_before;
+	std::string::size_type pos_after,pos_before;
 
 //
 // A loop on each prop.
@@ -1299,39 +1299,39 @@ void DbServerCache::get_obj_prop_list(DevVarStringArray *in_param,PropEltIdx &ob
 					store = true;
 				else
 				{
-					string tmp_name((*data_list)[obj.props_idx[lo]]);
-					transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+					std::string tmp_name((*data_list)[obj.props_idx[lo]]);
+					std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
 
 					pos_after = tmp_name.rfind(after_str);
-					if ((pos_after != string::npos) && (pos_after == (tmp_name.size() - after_str.size())))
+					if ((pos_after != std::string::npos) && (pos_after == (tmp_name.size() - after_str.size())))
 						store = true;
 				}
 			}
 			else
 			{
-				string tmp_name((*data_list)[obj.props_idx[lo]]);
-				transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+				std::string tmp_name((*data_list)[obj.props_idx[lo]]);
+				std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
 
 				if (after == false)
 				{
 					pos_before = tmp_name.find(before_str);
-					if ((pos_before != string::npos) && (pos_before == 0))
+					if ((pos_before != std::string::npos) && (pos_before == 0))
 						store = true;
 				}
 				else
 				{
 					pos_before = tmp_name.find(before_str);
 					pos_after = tmp_name.rfind(after_str);
-					if ((pos_before != string::npos) && (pos_before == 0) &&
-						(pos_after != string::npos) && (pos_after == (tmp_name.size() - after_str.size())))
+					if ((pos_before != std::string::npos) && (pos_before == 0) &&
+						(pos_after != std::string::npos) && (pos_after == (tmp_name.size() - after_str.size())))
 						store = true;
 				}
 			}
 		}
 		else
 		{
-			string tmp_name((*data_list)[obj.props_idx[lo]]);
-			transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+			std::string tmp_name((*data_list)[obj.props_idx[lo]]);
+			std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
 
 			if (tmp_name == wildcard)
 				store = true;
@@ -1364,7 +1364,7 @@ void DbServerCache::get_obj_prop_list(DevVarStringArray *in_param,PropEltIdx &ob
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
+const DevVarLongStringArray *DbServerCache::import_tac_dev(std::string &tac_dev)
 {
 
 //
@@ -1389,11 +1389,11 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
                                        (const char *)"DbServerCache::import_tac_dev");
     }
 
-    string local_tac_dev(tac_dev);
-    string cache_tac_dev((*data_list)[imp_tac.first_idx]);
+    std::string local_tac_dev(tac_dev);
+    std::string cache_tac_dev((*data_list)[imp_tac.first_idx]);
 
-    transform(local_tac_dev.begin(),local_tac_dev.end(),local_tac_dev.begin(),::tolower);
-    transform(cache_tac_dev.begin(),cache_tac_dev.end(),cache_tac_dev.begin(),::tolower);
+    std::transform(local_tac_dev.begin(),local_tac_dev.end(),local_tac_dev.begin(),::tolower);
+    std::transform(cache_tac_dev.begin(),cache_tac_dev.end(),cache_tac_dev.begin(),::tolower);
 
     if (local_tac_dev != cache_tac_dev)
     {
@@ -1409,7 +1409,7 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 	if (::strcmp((*data_list)[imp_tac.first_idx + 1],"Not Found") == 0)
 	{
 		TangoSys_OMemStream o;
-		o << "Device " << tac_dev << " not defined in database" << ends;
+		o << "Device " << tac_dev << " not defined in database" << std::ends;
 
 		Tango::Except::throw_exception((const char *)"DB_DeviceNotDefined",o.str(),
 									   (const char *)"DbServerCache::import_tac_dev");
@@ -1458,7 +1458,7 @@ const DevVarStringArray *DbServerCache::get_class_pipe_property(DevVarStringArra
 
 	if (proc_release < 109)
 	{
-		string mess("Your database stored procedure is too old to support pipe. Please update to stored procedure release 1.9 or more");
+		std::string mess("Your database stored procedure is too old to support pipe. Please update to stored procedure release 1.9 or more");
 		Tango::Except::throw_exception("DB_TooOldStoredProc",mess,"DbServerCache::get_class_pipe_property");
 	}
 
@@ -1526,15 +1526,15 @@ const DevVarStringArray *DbServerCache::get_class_pipe_property(DevVarStringArra
 	else
 	{
 		TangoSys_OMemStream o;
-		o << "Class " << (*in_param)[0] << " not found in DB cache" << ends;
+		o << "Class " << (*in_param)[0] << " not found in DB cache" << std::ends;
 
 		Tango::Except::throw_exception("DB_ClassNotFoundInCache",o.str(),
 										   "DbServerCache::get_class_pipe_property");
 	}
 
-//	cout4 << "DbCache --> Returned data for a get_class_pipe_property for class " << (*in_param)[0] << endl;
+//	cout4 << "DbCache --> Returned data for a get_class_pipe_property for class " << (*in_param)[0] << std::endl;
 //	for (unsigned int ll=0;ll< ret_obj_pipe_prop.length();ll++)
-//		cout4 << "    DbCache --> Returned object pipe prop = " << ret_obj_pipe_prop[ll] << endl;
+//		cout4 << "    DbCache --> Returned object pipe prop = " << ret_obj_pipe_prop[ll] << std::endl;
 
 	return &ret_obj_pipe_prop;
 }
@@ -1566,7 +1566,7 @@ const DevVarStringArray *DbServerCache::get_dev_pipe_property(DevVarStringArray 
 
 	if (proc_release < 109)
 	{
-		string mess("Your database stored procedure is too old to support pipe. Please update to stored procedure release 1.9 or more");
+		std::string mess("Your database stored procedure is too old to support pipe. Please update to stored procedure release 1.9 or more");
 		Tango::Except::throw_exception("DB_TooOldStoredProc",mess,"DbServerCache::get_dev_pipe_property");
 	}
 
@@ -1629,7 +1629,7 @@ const DevVarStringArray *DbServerCache::get_dev_pipe_property(DevVarStringArray 
 		if (TG_strncasecmp("dserver/",(*in_param)[0],8) != 0)
 		{
 			TangoSys_OMemStream o;
-			o << "Device " << (*in_param)[0] << " not found in DB cache" << ends;
+			o << "Device " << (*in_param)[0] << " not found in DB cache" << std::ends;
 
 			Tango::Except::throw_exception((const char *)"DB_DeviceNotFoundInCache",o.str(),
 											(const char *)"DbServerCache::get_dev_pipe_property");
@@ -1641,9 +1641,9 @@ const DevVarStringArray *DbServerCache::get_dev_pipe_property(DevVarStringArray 
 		}
 	}
 
-//	cout4 << "DbCache --> Returned data for a get_dev_pipe_property for device " << (*in_param)[0] << endl;
+//	cout4 << "DbCache --> Returned data for a get_dev_pipe_property for device " << (*in_param)[0] << std::endl;
 //	for (unsigned int ll=0;ll< ret_obj_pipe_prop.length();ll++)
-//		cout4 << "    DbCache --> Returned object pipe prop = " << ret_obj_pipe_prop[ll] << endl;
+//		cout4 << "    DbCache --> Returned object pipe prop = " << ret_obj_pipe_prop[ll] << std::endl;
 
 	return &ret_obj_pipe_prop;
 }

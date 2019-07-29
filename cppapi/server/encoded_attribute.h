@@ -233,7 +233,7 @@ private:
     bool					manage_exclusion;
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<EncodedAttributeExt>     ext;           // Class extension
+    std::unique_ptr<EncodedAttributeExt>     ext;           // Class extension
 #else
     EncodedAttributeExt	                *ext;
 #endif

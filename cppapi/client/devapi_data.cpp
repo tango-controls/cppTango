@@ -110,7 +110,7 @@ DeviceData::DeviceData(DeviceData &&source)
 
     if (source.ext.get() != NULL)
     {
-        ext = move(source.ext);
+        ext = std::move(source.ext);
     }
 }
 #endif
@@ -171,7 +171,7 @@ DeviceData &DeviceData::operator=(DeviceData &&rval)
 
     if (rval.ext.get() != NULL)
     {
-        ext = move(rval.ext);
+        ext = std::move(rval.ext);
     }
     else
     {
@@ -666,11 +666,11 @@ bool DeviceData::operator>>(double &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator >>(string &) - extract a string from DeviceData
+// DeviceData::operator >>(std::string &) - extract a string from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::operator>>(string &datum)
+bool DeviceData::operator>>(std::string &datum)
 {
     ext->ext_state.reset();
 
@@ -758,13 +758,13 @@ bool DeviceData::operator>>(DevState &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator >>(vector<bool> &) - extract a vector<bool> from DeviceData
+// DeviceData::operator >>(std::vector<bool> &) - extract a vector<bool> from DeviceData
 //
 //	@return true if operation was successful, otherwise - false
 //	@throws ApiDataExcept in case underlying value is not a boolean array
 //-----------------------------------------------------------------------------
 
-bool DeviceData::operator>>(vector<bool> &datum)
+bool DeviceData::operator>>(std::vector<bool> &datum)
 {
     ext->ext_state.reset();
 
@@ -842,11 +842,11 @@ bool DeviceData::operator>>(const DevVarBooleanArray *&datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator >>(vector<unsigned char> &) - extract a vector<unsigned char> from DeviceData
+// DeviceData::operator >>(std::vector<unsigned char> &) - extract a vector<unsigned char> from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::operator>>(vector<unsigned char> &datum)
+bool DeviceData::operator>>(std::vector<unsigned char> &datum)
 {
     ext->ext_state.reset();
 
@@ -921,11 +921,11 @@ bool DeviceData::operator>>(const DevVarCharArray *&datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator >>(vector<short> &) - extract a vector<short> from DeviceData
+// DeviceData::operator >>(std::vector<short> &) - extract a vector<short> from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::operator>>(vector<short> &datum)
+bool DeviceData::operator>>(std::vector<short> &datum)
 {
     ext->ext_state.reset();
 
@@ -1001,11 +1001,11 @@ bool DeviceData::operator>>(const DevVarShortArray *&datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator >>(vector<unsigned short> &) - extract a vector<unsigned short> from DeviceData
+// DeviceData::operator >>(std::vector<unsigned short> &) - extract a vector<unsigned short> from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::operator>>(vector<unsigned short> &datum)
+bool DeviceData::operator>>(std::vector<unsigned short> &datum)
 {
     ext->ext_state.reset();
 
@@ -1080,11 +1080,11 @@ bool DeviceData::operator>>(const DevVarUShortArray *&datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator >>(vector<DevLong> &) - extract a vector<DevLong> from DeviceData
+// DeviceData::operator >>(std::vector<DevLong> &) - extract a vector<DevLong> from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::operator>>(vector<DevLong> &datum)
+bool DeviceData::operator>>(std::vector<DevLong> &datum)
 {
     ext->ext_state.reset();
     const DevVarLongArray *long_array = NULL;
@@ -1159,11 +1159,11 @@ bool DeviceData::operator>>(const DevVarLongArray *&datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator >>(vector<DevULong> &) - extract a vector<DevULong> from DeviceData
+// DeviceData::operator >>(std::vector<DevULong> &) - extract a vector<DevULong> from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::operator>>(vector<DevULong> &datum)
+bool DeviceData::operator>>(std::vector<DevULong> &datum)
 {
     ext->ext_state.reset();
 
@@ -1300,11 +1300,11 @@ bool DeviceData::operator>>(const DevVarULong64Array *&datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator >>(vector<DevLong64> &) - extract a vector<DevLong64> from DeviceData
+// DeviceData::operator >>(std::vector<DevLong64> &) - extract a vector<DevLong64> from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::operator>>(vector<DevLong64> &datum)
+bool DeviceData::operator>>(std::vector<DevLong64> &datum)
 {
     ext->ext_state.reset();
 
@@ -1348,11 +1348,11 @@ bool DeviceData::operator>>(vector<DevLong64> &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator >>(vector<DevULong64> &) - extract a vector<DevULong64> from DeviceData
+// DeviceData::operator >>(std::vector<DevULong64> &) - extract a vector<DevULong64> from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::operator>>(vector<DevULong64> &datum)
+bool DeviceData::operator>>(std::vector<DevULong64> &datum)
 {
     ext->ext_state.reset();
 
@@ -1396,11 +1396,11 @@ bool DeviceData::operator>>(vector<DevULong64> &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator >>(vector<float> &) - extract a vector<float> from DeviceData
+// DeviceData::operator >>(std::vector<float> &) - extract a vector<float> from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::operator>>(vector<float> &datum)
+bool DeviceData::operator>>(std::vector<float> &datum)
 {
     ext->ext_state.reset();
 
@@ -1475,11 +1475,11 @@ bool DeviceData::operator>>(const DevVarFloatArray *&datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator >>(vector<double> &) - extract a vector<double> from DeviceData
+// DeviceData::operator >>(std::vector<double> &) - extract a vector<double> from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::operator>>(vector<double> &datum)
+bool DeviceData::operator>>(std::vector<double> &datum)
 {
     ext->ext_state.reset();
 
@@ -1555,11 +1555,11 @@ bool DeviceData::operator>>(const DevVarDoubleArray *&datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator >>(vector<string> &) - extract a vector<string> from DeviceData
+// DeviceData::operator >>(std::vector<std::string> &) - extract a vector<string> from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::operator>>(vector<string> &datum)
+bool DeviceData::operator>>(std::vector<std::string> &datum)
 {
     ext->ext_state.reset();
 
@@ -1714,11 +1714,11 @@ bool DeviceData::operator>>(DevEncoded &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator <<(vector<bool> &) - insert a vector<bool> into DeviceData
+// DeviceData::operator <<(std::vector<bool> &) - insert a vector<bool> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::operator<<(vector<bool> &datum)
+void DeviceData::operator<<(std::vector<bool> &datum)
 {
     DevVarBooleanArray *bool_array = new DevVarBooleanArray();
     bool_array->length(datum.size());
@@ -1731,11 +1731,11 @@ void DeviceData::operator<<(vector<bool> &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator <<(vector<unsigned char> &) - insert a vector<unsigned char> into DeviceData
+// DeviceData::operator <<(std::vector<unsigned char> &) - insert a vector<unsigned char> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::operator<<(vector<unsigned char> &datum)
+void DeviceData::operator<<(std::vector<unsigned char> &datum)
 {
     DevVarCharArray *char_array = new DevVarCharArray();
     char_array->length(datum.size());
@@ -1748,11 +1748,11 @@ void DeviceData::operator<<(vector<unsigned char> &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator <<(vector<short> &) - insert a vector<short> into DeviceData
+// DeviceData::operator <<(std::vector<short> &) - insert a vector<short> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::operator<<(vector<short> &datum)
+void DeviceData::operator<<(std::vector<short> &datum)
 {
     DevVarShortArray *short_array = new DevVarShortArray();
     short_array->length(datum.size());
@@ -1765,11 +1765,11 @@ void DeviceData::operator<<(vector<short> &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator <<(vector<unsigned short> &) - insert a vector<unsigned short> into DeviceData
+// DeviceData::operator <<(std::vector<unsigned short> &) - insert a vector<unsigned short> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::operator<<(vector<unsigned short> &datum)
+void DeviceData::operator<<(std::vector<unsigned short> &datum)
 {
     DevVarUShortArray *ushort_array = new DevVarUShortArray();
     ushort_array->length(datum.size());
@@ -1783,11 +1783,11 @@ void DeviceData::operator<<(vector<unsigned short> &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator <<(vector<DevLong> &) - insert a vector<DevLong> into DeviceData
+// DeviceData::operator <<(std::vector<DevLong> &) - insert a vector<DevLong> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::operator<<(vector<DevLong> &datum)
+void DeviceData::operator<<(std::vector<DevLong> &datum)
 {
     DevVarLongArray *long_array = new DevVarLongArray();
     long_array->length(datum.size());
@@ -1801,11 +1801,11 @@ void DeviceData::operator<<(vector<DevLong> &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator <<(vector<DevULong> &) - insert a vector<DevULong> into DeviceData
+// DeviceData::operator <<(std::vector<DevULong> &) - insert a vector<DevULong> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::operator<<(vector<DevULong> &datum)
+void DeviceData::operator<<(std::vector<DevULong> &datum)
 {
     DevVarULongArray *ulong_array = new DevVarULongArray();
     ulong_array->length(datum.size());
@@ -1818,11 +1818,11 @@ void DeviceData::operator<<(vector<DevULong> &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator <<(vector<float> &) - insert a vector<float> into DeviceData
+// DeviceData::operator <<(std::vector<float> &) - insert a vector<float> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::operator<<(vector<float> &datum)
+void DeviceData::operator<<(std::vector<float> &datum)
 {
     DevVarFloatArray *float_array = new DevVarFloatArray();
     float_array->length(datum.size());
@@ -1835,11 +1835,11 @@ void DeviceData::operator<<(vector<float> &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator <<(vector<double> &) - insert a vector<double> into DeviceData
+// DeviceData::operator <<(std::vector<double> &) - insert a vector<double> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::operator<<(vector<double> &datum)
+void DeviceData::operator<<(std::vector<double> &datum)
 {
     DevVarDoubleArray *double_array = new DevVarDoubleArray();
     double_array->length(datum.size());
@@ -1853,11 +1853,11 @@ void DeviceData::operator<<(vector<double> &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator <<(vector<string> &) - insert a vector<string> into DeviceData
+// DeviceData::operator <<(std::vector<std::string> &) - insert a vector<string> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::operator<<(vector<string> &datum)
+void DeviceData::operator<<(std::vector<std::string> &datum)
 {
     DevVarStringArray *string_array = new DevVarStringArray();
     string_array->length(datum.size());
@@ -1870,11 +1870,11 @@ void DeviceData::operator<<(vector<string> &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator <<(vector<DevLong64> &) - insert a vector<DevLong64> into DeviceData
+// DeviceData::operator <<(std::vector<DevLong64> &) - insert a vector<DevLong64> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::operator<<(vector<DevLong64> &datum)
+void DeviceData::operator<<(std::vector<DevLong64> &datum)
 {
     DevVarLong64Array *ll_array = new DevVarLong64Array();
     ll_array->length(datum.size());
@@ -1887,11 +1887,11 @@ void DeviceData::operator<<(vector<DevLong64> &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::operator <<(vector<DevULong64> &) - insert a vector<DevULong64> into DeviceData
+// DeviceData::operator <<(std::vector<DevULong64> &) - insert a vector<DevULong64> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::operator<<(vector<DevULong64> &datum)
+void DeviceData::operator<<(std::vector<DevULong64> &datum)
 {
     DevVarULong64Array *ull_array = new DevVarULong64Array();
     ull_array->length(datum.size());
@@ -1904,12 +1904,12 @@ void DeviceData::operator<<(vector<DevULong64> &datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::insert (vector<DevLong>, vector<string> &) - insert a pair of
+// DeviceData::insert (std::vector<DevLong>, std::vector<std::string> &) - insert a pair of
 //             vector<DevLong>,vector<string> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::insert(vector<DevLong> &long_datum, vector<string> &string_datum)
+void DeviceData::insert(std::vector<DevLong> &long_datum, std::vector<std::string> &string_datum)
 {
     unsigned int i;
 
@@ -1929,12 +1929,12 @@ void DeviceData::insert(vector<DevLong> &long_datum, vector<string> &string_datu
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::extract (vector<DevLong>, vector<string> &) - extract a pair of
+// DeviceData::extract (std::vector<DevLong>, std::vector<std::string> &) - extract a pair of
 //             vector<Devlong>,vector<string> from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::extract(vector<DevLong> &long_datum, vector<string> &string_datum)
+bool DeviceData::extract(std::vector<DevLong> &long_datum, std::vector<std::string> &string_datum)
 {
     bool ret;
     ext->ext_state.reset();
@@ -2016,12 +2016,12 @@ bool DeviceData::operator>>(const DevVarLongStringArray *&datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::insert (vector<double>, vector<string> &) - insert a pair of
+// DeviceData::insert (std::vector<double>, std::vector<std::string> &) - insert a pair of
 //             vector<double>,vector<string> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::insert(vector<double> &double_datum, vector<string> &string_datum)
+void DeviceData::insert(std::vector<double> &double_datum, std::vector<std::string> &string_datum)
 {
     unsigned int i;
 
@@ -2041,12 +2041,12 @@ void DeviceData::insert(vector<double> &double_datum, vector<string> &string_dat
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::extract (vector<double>, vector<string> &) - extract a pair of
+// DeviceData::extract (std::vector<double>, std::vector<std::string> &) - extract a pair of
 //             vector<double>,vector<string> from DeviceData
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::extract(vector<double> &double_datum, vector<string> &string_datum)
+bool DeviceData::extract(std::vector<double> &double_datum, std::vector<std::string> &string_datum)
 {
     bool ret;
     ext->ext_state.reset();
@@ -2127,12 +2127,12 @@ bool DeviceData::operator>>(const DevVarDoubleStringArray *&datum)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceData::insert (string, vector<unsigned char> &) - insert a pair of
+// DeviceData::insert (std::string, std::vector<unsigned char> &) - insert a pair of
 //             string,vector<unsigned char> into DeviceData
 //
 //-----------------------------------------------------------------------------
 
-void DeviceData::insert(const string &str_datum, vector<unsigned char> &char_datum)
+void DeviceData::insert(const std::string &str_datum, std::vector<unsigned char> &char_datum)
 {
     DevEncoded *the_enc = new DevEncoded();
     the_enc->encoded_format = CORBA::string_dup(str_datum.c_str());
@@ -2229,7 +2229,7 @@ bool DeviceData::extract(const char *&str, const unsigned char *&data_ptr, unsig
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::extract(string &str, vector<unsigned char> &datum)
+bool DeviceData::extract(std::string &str, std::vector<unsigned char> &datum)
 {
     ext->ext_state.reset();
 
@@ -2280,7 +2280,7 @@ bool DeviceData::extract(string &str, vector<unsigned char> &datum)
 //
 //--------------------------------------------------------------------------
 
-ostream &operator<<(ostream &o_str, DeviceData &dd)
+std::ostream &operator<<(std::ostream &o_str, DeviceData &dd)
 {
     if (dd.any_is_null() == true)
     {
@@ -2455,14 +2455,14 @@ ostream &operator<<(ostream &o_str, DeviceData &dd)
                             case CORBA::tk_long:
                                 Tango::DevVarLongStringArray *lgstr_arr;
                                 dd.any.inout() >>= lgstr_arr;
-                                o_str << lgstr_arr->lvalue << endl;
+                                o_str << lgstr_arr->lvalue << std::endl;
                                 o_str << lgstr_arr->svalue;
                                 break;
 
                             case CORBA::tk_double:
                                 Tango::DevVarDoubleStringArray *dbstr_arr;
                                 dd.any.inout() >>= dbstr_arr;
-                                o_str << dbstr_arr->dvalue << endl;
+                                o_str << dbstr_arr->dvalue << std::endl;
                                 o_str << dbstr_arr->svalue;
                                 break;
 
@@ -2474,7 +2474,7 @@ ostream &operator<<(ostream &o_str, DeviceData &dd)
                     case CORBA::tk_string:
                         Tango::DevEncoded *enc;
                         dd.any.inout() >>= enc;
-                        o_str << "Encoding string: " << enc->encoded_format << endl;
+                        o_str << "Encoding string: " << enc->encoded_format << std::endl;
                         {
                             long nb_data_elt = enc->encoded_data.length();
                             for (long i = 0; i < nb_data_elt; i++)

@@ -94,7 +94,7 @@ public:
  * @param	dev_name	The device name
  *
  */
-	Device_4Impl(DeviceClass *device_class,string &dev_name);
+	Device_4Impl(DeviceClass *device_class,std::string &dev_name);
 
 /**
  * Constructs a newly allocated Device_4Impl object from its name and its description.
@@ -108,7 +108,7 @@ public:
  * @param	desc	The device description
  *
  */
-	Device_4Impl(DeviceClass *device_class,string &dev_name,string &desc);
+	Device_4Impl(DeviceClass *device_class,std::string &dev_name,std::string &desc);
 
 /**
  * Constructs a newly allocated Device_4Impl object from all its creation
@@ -125,8 +125,8 @@ public:
  *
  */
 	Device_4Impl(DeviceClass *device_class,
-	           string &dev_name,string &desc,
-	           Tango::DevState dev_state,string &dev_status);
+	           std::string &dev_name,std::string &desc,
+	           Tango::DevState dev_state,std::string &dev_status);
 
 /**
  * Constructs a newly allocated Device_4Impl object from all its creation
@@ -340,7 +340,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<Device_4ImplExt>     ext_4;           // Class extension
+    std::unique_ptr<Device_4ImplExt>     ext_4;           // Class extension
 #else
 	Device_4ImplExt				    *ext_4;
 #endif

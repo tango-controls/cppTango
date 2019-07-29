@@ -53,11 +53,11 @@ DevicePipe::DevicePipe():ext(Tango_nullptr)
 {
 }
 
-DevicePipe::DevicePipe(const string &pipe_name):name(pipe_name),ext(Tango_nullptr)
+DevicePipe::DevicePipe(const std::string &pipe_name):name(pipe_name),ext(Tango_nullptr)
 {
 }
 
-DevicePipe::DevicePipe(const string &pipe_name,const string &root_blob_name):name(pipe_name),ext(Tango_nullptr)
+DevicePipe::DevicePipe(const std::string &pipe_name,const std::string &root_blob_name):name(pipe_name),ext(Tango_nullptr)
 {
 	the_root_blob.set_name(root_blob_name);
 }
@@ -133,13 +133,13 @@ DevicePipe &DevicePipe::operator=(const DevicePipe &rhs)
 #ifdef HAS_RVALUE
 DevicePipe::DevicePipe(DevicePipe && source):ext(Tango_nullptr)
 {
-	name = move(source.name);
+	name = std::move(source.name);
 	time = source.time;
-	the_root_blob = move(source.the_root_blob);
+	the_root_blob = std::move(source.the_root_blob);
 
     if (source.ext.get() != NULL)
     {
-        ext = move(source.ext);
+        ext = std::move(source.ext);
     }
 }
 #endif // HAS_RVALUE
@@ -153,13 +153,13 @@ DevicePipe::DevicePipe(DevicePipe && source):ext(Tango_nullptr)
 #ifdef HAS_RVALUE
 DevicePipe &DevicePipe::operator=(DevicePipe &&rhs)
 {
-	name = move(rhs.name);
+	name = std::move(rhs.name);
 	time = rhs.time;
-	the_root_blob = move(rhs.the_root_blob);
+	the_root_blob = std::move(rhs.the_root_blob);
 
 	if (rhs.ext.get() != NULL)
 	{
-		ext = move(rhs.ext);
+		ext = std::move(rhs.ext);
 	}
 	else
 		ext.reset();
@@ -181,7 +181,7 @@ DevicePipe::~DevicePipe()
 #endif
 }
 
-DevicePipe &DevicePipe::operator[](const string &_na)
+DevicePipe &DevicePipe::operator[](const std::string &_na)
 {
 	the_root_blob.operator[](_na);
 	return *this;
@@ -213,7 +213,7 @@ extract_elt_array(Tango_nullptr),extract_ctr(0),extract_delete(false),ext(Tango_
 }
 
 
-DevicePipeBlob::DevicePipeBlob(const string &blob_name):name(blob_name),failed(false),
+DevicePipeBlob::DevicePipeBlob(const std::string &blob_name):name(blob_name),failed(false),
 insert_elt_array(Tango_nullptr),insert_ctr(0),extract_elt_array(Tango_nullptr),extract_ctr(0),
 extract_delete(false),ext(Tango_nullptr)
 {
@@ -363,7 +363,7 @@ DevicePipeBlob &DevicePipeBlob::operator=(const DevicePipeBlob &rhs)
 #ifdef HAS_RVALUE
 DevicePipeBlob::DevicePipeBlob(DevicePipeBlob && source):ext(Tango_nullptr)
 {
-	name = move(source.name);
+	name = std::move(source.name);
 	exceptions_flags = source.exceptions_flags;
 	ext_state = source.ext_state;
 	failed = source.failed;
@@ -394,7 +394,7 @@ DevicePipeBlob::DevicePipeBlob(DevicePipeBlob && source):ext(Tango_nullptr)
 
     if (source.ext.get() != NULL)
     {
-        ext = move(source.ext);
+        ext = std::move(source.ext);
     }
 }
 #endif
@@ -408,7 +408,7 @@ DevicePipeBlob::DevicePipeBlob(DevicePipeBlob && source):ext(Tango_nullptr)
 #ifdef HAS_RVALUE
 DevicePipeBlob &DevicePipeBlob::operator=(DevicePipeBlob &&rhs)
 {
-	name = move(rhs.name);
+	name = std::move(rhs.name);
 	exceptions_flags = rhs.exceptions_flags;
 	ext_state = rhs.ext_state;
 	failed = rhs.failed;
@@ -432,7 +432,7 @@ DevicePipeBlob &DevicePipeBlob::operator=(DevicePipeBlob &&rhs)
 
     if (rhs.ext.get() != NULL)
     {
-        ext = move(rhs.ext);
+        ext = std::move(rhs.ext);
     }
     else
 		ext.reset();
@@ -454,22 +454,22 @@ DevicePipeBlob &DevicePipeBlob::operator=(DevicePipeBlob &&rhs)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-vector<string> DevicePipeBlob::get_data_elt_names()
+std::vector<std::string> DevicePipeBlob::get_data_elt_names()
 {
     if (extract_elt_array == Tango_nullptr)
     {
-		stringstream ss;
+		std::stringstream ss;
 
 		ss << "You try to get data element name(s) for a blob which has never been received from a device";
 		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_data_elt_names()");
     }
 
-	vector<string> v_str;
+	std::vector<std::string> v_str;
 	size_t nb_elt = extract_elt_array->length();
 
 	for (size_t loop = 0;loop < nb_elt;loop++)
 	{
-		v_str.push_back(string((*extract_elt_array)[loop].name.in()));
+		v_str.push_back(std::string((*extract_elt_array)[loop].name.in()));
 	}
 
 	return v_str;
@@ -492,11 +492,11 @@ vector<string> DevicePipeBlob::get_data_elt_names()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-string DevicePipeBlob::get_data_elt_name(size_t _ind)
+std::string DevicePipeBlob::get_data_elt_name(size_t _ind)
 {
     if (extract_elt_array == Tango_nullptr)
     {
-		stringstream ss;
+		std::stringstream ss;
 
 		ss << "You try to get data element name(s) for a blob which has never been received from a device";
 		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_data_elt_names()");
@@ -504,12 +504,12 @@ string DevicePipeBlob::get_data_elt_name(size_t _ind)
 
 	if (_ind > extract_elt_array->length())
 	{
-		stringstream ss;
+		std::stringstream ss;
 
 		ss << "Given index (" << _ind << ") is above the number of data element in the data blob (" << get_data_elt_nb() << ")";
 		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_data_elt_name()");
 	}
-	string tmp((*extract_elt_array)[_ind].name.in());
+	std::string tmp((*extract_elt_array)[_ind].name.in());
 	return tmp;
 }
 
@@ -536,7 +536,7 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 
     if (extract_elt_array == Tango_nullptr)
     {
-		stringstream ss;
+		std::stringstream ss;
 
 		ss << "You try to get data element name(s) for a blob which has never been received from a device";
 		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_data_elt_type()");
@@ -544,7 +544,7 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 
 	if (_ind > extract_elt_array->length())
 	{
-		stringstream ss;
+		std::stringstream ss;
 
 		ss << "Given index (" << _ind << ") is above the number of data element in the data blob (" << get_data_elt_nb() << ")";
 		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_data_elt_type()");
@@ -560,7 +560,7 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 	}
 	else
 	{
-        string d_type = (*extract_elt_array)[_ind].inner_blob_name.in();
+        std::string d_type = (*extract_elt_array)[_ind].inner_blob_name.in();
 		switch((*extract_elt_array)[_ind].value._d())
 		{
 			case ATT_BOOL:
@@ -705,10 +705,10 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-size_t DevicePipeBlob::get_extract_ind_from_name(const string &_na)
+size_t DevicePipeBlob::get_extract_ind_from_name(const std::string &_na)
 {
-	string lower_name(_na);
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
+	std::string lower_name(_na);
+	std::transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 
 	bool found = false;
 	size_t loop;
@@ -729,8 +729,8 @@ size_t DevicePipeBlob::get_extract_ind_from_name(const string &_na)
 
 	for (loop = 0;loop < extract_elt_array->length();loop++)
 	{
-		string tmp((*extract_elt_array)[loop].name.in());
-		transform(tmp.begin(),tmp.end(),tmp.begin(),::tolower);
+		std::string tmp((*extract_elt_array)[loop].name.in());
+		std::transform(tmp.begin(),tmp.end(),tmp.begin(),::tolower);
 
 		if (tmp == lower_name)
 		{
@@ -741,7 +741,7 @@ size_t DevicePipeBlob::get_extract_ind_from_name(const string &_na)
 
 	if (found == false)
 	{
-		stringstream ss;
+		std::stringstream ss;
 
 		ss << "Can't get data element with name " << _na;
 		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_extract_ind_from_name()");
@@ -751,10 +751,10 @@ size_t DevicePipeBlob::get_extract_ind_from_name(const string &_na)
 	return loop;
 }
 
-size_t DevicePipeBlob::get_insert_ind_from_name(const string &_na)
+size_t DevicePipeBlob::get_insert_ind_from_name(const std::string &_na)
 {
-	string lower_name(_na);
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
+	std::string lower_name(_na);
+	std::transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 
 	bool found = false;
 	size_t loop;
@@ -775,8 +775,8 @@ size_t DevicePipeBlob::get_insert_ind_from_name(const string &_na)
 
 	for (loop = 0;loop < insert_elt_array->length();loop++)
 	{
-		string tmp((*insert_elt_array)[loop].name.in());
-		transform(tmp.begin(),tmp.end(),tmp.begin(),::tolower);
+		std::string tmp((*insert_elt_array)[loop].name.in());
+		std::transform(tmp.begin(),tmp.end(),tmp.begin(),::tolower);
 
 		if (tmp == lower_name)
 		{
@@ -787,7 +787,7 @@ size_t DevicePipeBlob::get_insert_ind_from_name(const string &_na)
 
 	if (found == false)
 	{
-		stringstream ss;
+		std::stringstream ss;
 
 		ss << "Can't get data element with name " << _na;
 		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_insert_ind_from_name()");
@@ -816,7 +816,7 @@ size_t DevicePipeBlob::get_insert_ind_from_name(const string &_na)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-DevicePipeBlob &DevicePipeBlob::operator[](const string &_na)
+DevicePipeBlob &DevicePipeBlob::operator[](const std::string &_na)
 {
 	int ind;
 	try
@@ -826,7 +826,7 @@ DevicePipeBlob &DevicePipeBlob::operator[](const string &_na)
 	}
 	catch (Tango::DevFailed &e)
 	{
-		string reason(e.errors[0].reason.in());
+		std::string reason(e.errors[0].reason.in());
 		if (reason != API_PipeNoDataElement)
 			throw;
 	}
@@ -838,7 +838,7 @@ DevicePipeBlob &DevicePipeBlob::operator[](const string &_na)
 	}
 	catch (Tango::DevFailed &e)
 	{
-		string reason(e.errors[0].reason.in());
+		std::string reason(e.errors[0].reason.in());
 		if (reason != API_PipeNoDataElement)
 			throw;
 	}
@@ -861,7 +861,7 @@ DevicePipeBlob &DevicePipeBlob::operator[](const string &_na)
 //-------------------------------------------------------------------------------------------------------------------
 
 
-void DevicePipeBlob::set_data_elt_names(vector<string> &elt_names)
+void DevicePipeBlob::set_data_elt_names(std::vector<std::string> &elt_names)
 {
 
 //
@@ -871,21 +871,21 @@ void DevicePipeBlob::set_data_elt_names(vector<string> &elt_names)
 	if (elt_names.size() > 1)
 	{
 	    unsigned int i;
-		vector<string> same_de = elt_names;
+		std::vector<std::string> same_de = elt_names;
 
 		for (i = 0;i < same_de.size();++i)
-			transform(same_de[i].begin(),same_de[i].end(),same_de[i].begin(),::tolower);
+			std::transform(same_de[i].begin(),same_de[i].end(),same_de[i].begin(),::tolower);
 		sort(same_de.begin(),same_de.end());
-		vector<string> same_de_lower = same_de;
+		std::vector<std::string> same_de_lower = same_de;
 
-		vector<string>::iterator pos = unique(same_de.begin(),same_de.end());
+		std::vector<std::string>::iterator pos = unique(same_de.begin(),same_de.end());
 
 		int duplicate_de;
 		duplicate_de = distance(elt_names.begin(),elt_names.end()) - distance(same_de.begin(),pos);
 
 		if (duplicate_de != 0)
 		{
-			stringstream desc;
+			std::stringstream desc;
 			desc << "Several times the same data element name in provided vector: ";
 			int ctr = 0;
 			for (i = 0;i < same_de_lower.size() - 1;i++)
@@ -967,7 +967,7 @@ void DevicePipeBlob::set_data_elt_nb(size_t _nb)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DevicePipeBlob::set_current_delt_name(const string &_na)
+void DevicePipeBlob::set_current_delt_name(const std::string &_na)
 {
     if (insert_elt_array == Tango_nullptr)
     {
@@ -1160,7 +1160,7 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevEncoded &datum)
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(const string &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(const std::string &datum)
 {
 	failed = false;
 	ext_state.reset();
@@ -1268,7 +1268,7 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevicePipeBlob &datum)
 
 //---------------------------------------------------------------------------------------------------------------
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevBoolean> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<DevBoolean> &datum)
 {
 	failed = false;
 	ext_state.reset();
@@ -1317,91 +1317,91 @@ DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevBoolean> &datum)
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevShort> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<DevShort> &datum)
 {
 	INSERT_VECTOR_TYPE(DevVarShortArray,short_att_value)
 
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevLong> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<DevLong> &datum)
 {
 	INSERT_VECTOR_TYPE(DevVarLongArray,long_att_value)
 
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevLong64> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<DevLong64> &datum)
 {
 	INSERT_VECTOR_TYPE(DevVarLong64Array,long64_att_value)
 
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<float> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<float> &datum)
 {
 	INSERT_VECTOR_TYPE(DevVarFloatArray,float_att_value)
 
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<double> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<double> &datum)
 {
 	INSERT_VECTOR_TYPE(DevVarDoubleArray,double_att_value)
 
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevUChar> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<DevUChar> &datum)
 {
 	INSERT_VECTOR_TYPE(DevVarUCharArray,uchar_att_value)
 
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevUShort> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<DevUShort> &datum)
 {
 	INSERT_VECTOR_TYPE(DevVarUShortArray,ushort_att_value)
 
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevULong> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<DevULong> &datum)
 {
 	INSERT_VECTOR_TYPE(DevVarULongArray,ulong_att_value)
 
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevULong64> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<DevULong64> &datum)
 {
 	INSERT_VECTOR_TYPE(DevVarULong64Array,ulong64_att_value)
 
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevString> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<DevString> &datum)
 {
 	INSERT_VECTOR_TYPE(DevVarStringArray,string_att_value)
 
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevState> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<DevState> &datum)
 {
 	INSERT_VECTOR_TYPE(DevVarStateArray,state_att_value)
 
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevEncoded> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<DevEncoded> &datum)
 {
 	INSERT_VECTOR_TYPE(DevVarEncodedArray,encoded_att_value)
 
 	return *this;
 }
 
-DevicePipeBlob & DevicePipeBlob::operator<<(vector<string> &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<std::string> &datum)
 {
 	failed = false;
 	ext_state.reset();
@@ -1785,7 +1785,7 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevEncoded &datum)
 	return *this;
 }
 
-DevicePipeBlob &DevicePipeBlob::operator >> (string &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (std::string &datum)
 {
 	EXTRACT_BASIC_TYPE(ATT_STRING,string_att_value,"DevString")
 
@@ -1821,7 +1821,7 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevicePipeBlob &datum)
 		else
 		{
 			datum.set_extract_data(&((*extract_elt_array)[ind].inner_blob));
-			string tmp((*extract_elt_array)[ind].inner_blob_name.in());
+			std::string tmp((*extract_elt_array)[ind].inner_blob_name.in());
 			datum.set_name(tmp);
 			datum.reset_extract_ctr();
 
@@ -1852,91 +1852,91 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevicePipeBlob &datum)
 
 //----------------------------------------------------------------------------------------------------------
 
-DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevBoolean> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (std::vector<DevBoolean> &datum)
 {
 	EXTRACT_VECTOR_TYPE(ATT_BOOL,bool_att_value,DevVarBooleanArray,"DevBoolean")
 
 	return *this;
 }
 
-DevicePipeBlob &DevicePipeBlob::operator >> (vector<short> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (std::vector<short> &datum)
 {
 	EXTRACT_VECTOR_TYPE(ATT_SHORT,short_att_value,DevVarShortArray,"DevShort")
 
 	return *this;
 }
 
-DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevLong> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (std::vector<DevLong> &datum)
 {
 	EXTRACT_VECTOR_TYPE(ATT_LONG,long_att_value,DevVarLongArray,"DevLong")
 
 	return *this;
 }
 
-DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevLong64> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (std::vector<DevLong64> &datum)
 {
 	EXTRACT_VECTOR_TYPE(ATT_LONG64,long64_att_value,DevVarLong64Array,"DevLong64")
 
 	return *this;
 }
 
-DevicePipeBlob &DevicePipeBlob::operator >> (vector<float> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (std::vector<float> &datum)
 {
 	EXTRACT_VECTOR_TYPE(ATT_FLOAT,float_att_value,DevVarFloatArray,"DevFloat")
 
 	return *this;
 }
 
-DevicePipeBlob &DevicePipeBlob::operator >> (vector<double> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (std::vector<double> &datum)
 {
 	EXTRACT_VECTOR_TYPE(ATT_DOUBLE,double_att_value,DevVarDoubleArray,"DevDouble")
 
 	return *this;
 }
 
-DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevUChar> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (std::vector<DevUChar> &datum)
 {
 	EXTRACT_VECTOR_TYPE(ATT_UCHAR,uchar_att_value,DevVarUCharArray,"DevUChar")
 
 	return *this;
 }
 
-DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevUShort> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (std::vector<DevUShort> &datum)
 {
 	EXTRACT_VECTOR_TYPE(ATT_USHORT,ushort_att_value,DevVarUShortArray,"DevUShort")
 
 	return *this;
 }
 
-DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevULong> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (std::vector<DevULong> &datum)
 {
 	EXTRACT_VECTOR_TYPE(ATT_ULONG,ulong_att_value,DevVarULongArray,"DevULong")
 
 	return *this;
 }
 
-DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevULong64> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (std::vector<DevULong64> &datum)
 {
 	EXTRACT_VECTOR_TYPE(ATT_ULONG64,ulong64_att_value,DevVarULong64Array,"DevULong64")
 
 	return *this;
 }
 
-DevicePipeBlob &DevicePipeBlob::operator >> (vector<string> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (std::vector<std::string> &datum)
 {
 	EXTRACT_VECTOR_TYPE(ATT_STRING,string_att_value,DevVarStringArray,"DevString")
 
 	return *this;
 }
 
-DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevState> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (std::vector<DevState> &datum)
 {
 	EXTRACT_VECTOR_TYPE(ATT_STATE,state_att_value,DevVarStateArray,"DevState")
 
 	return *this;
 }
 
-/*DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevEncoded> &datum)
+/*DevicePipeBlob &DevicePipeBlob::operator >> (std::vector<DevEncoded> &datum)
 {
 	EXTRACT_VECTOR_TYPE(ATT_ENCODED,encoded_att_value,DevVarEncodedArray,"DevEncoded")
 
@@ -2078,7 +2078,7 @@ bool DevicePipeBlob::has_failed()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DevicePipeBlob::throw_type_except(const string &_ty,const string &_meth)
+void DevicePipeBlob::throw_type_except(const std::string &_ty,const std::string &_meth)
 {
 	delete insert_elt_array;
 	if (extract_delete == true)
@@ -2087,10 +2087,10 @@ void DevicePipeBlob::throw_type_except(const string &_ty,const string &_meth)
 		extract_delete = false;
 	}
 
-	stringstream ss;
+	std::stringstream ss;
 
 	ss << "Can't get data element " << extract_ctr << " (numbering starting from 0) into a " << _ty << " data type";
-	string m_name("DevicePipeBlob::");
+	std::string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
 	ApiDataExcept::throw_exception(API_IncompatibleArgumentType,ss.str(),m_name.c_str());
 }
@@ -2110,16 +2110,16 @@ void DevicePipeBlob::throw_type_except(const string &_ty,const string &_meth)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DevicePipeBlob::throw_too_many(const string &_meth,bool _extract)
+void DevicePipeBlob::throw_too_many(const std::string &_meth,bool _extract)
 {
-	stringstream ss;
+	std::stringstream ss;
 	ss << "Not enough data element in blob (";
 	if (_extract == true)
 		ss << get_data_elt_nb();
 	else
 		ss << insert_elt_array->length();
 	ss << " data elt in created/received blob)";
-	string m_name("DevicePipeBlob::");
+	std::string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
 
 	delete insert_elt_array;
@@ -2147,7 +2147,7 @@ void DevicePipeBlob::throw_too_many(const string &_meth,bool _extract)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DevicePipeBlob::throw_is_empty(const string &_meth)
+void DevicePipeBlob::throw_is_empty(const std::string &_meth)
 {
 	delete insert_elt_array;
 	if (extract_delete == true)
@@ -2156,7 +2156,7 @@ void DevicePipeBlob::throw_is_empty(const string &_meth)
 		extract_delete = false;
 	}
 
-	string m_name("DevicePipeBlob::");
+	std::string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
 	ApiDataExcept::throw_exception(API_EmptyDataElement,"The data element is empty",m_name.c_str());
 }
@@ -2175,7 +2175,7 @@ void DevicePipeBlob::throw_is_empty(const string &_meth)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DevicePipeBlob::throw_name_not_set(const string &_meth)
+void DevicePipeBlob::throw_name_not_set(const std::string &_meth)
 {
 	delete insert_elt_array;
 	if (extract_delete == true)
@@ -2184,7 +2184,7 @@ void DevicePipeBlob::throw_name_not_set(const string &_meth)
 		extract_delete = false;
 	}
 
-	string m_name("DevicePipeBlob::");
+	std::string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
 	ApiDataExcept::throw_exception(API_PipeNoDataElement,"The blob data element number (or name) not set",m_name.c_str());
 }
@@ -2203,7 +2203,7 @@ void DevicePipeBlob::throw_name_not_set(const string &_meth)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DevicePipeBlob::throw_mixing(const string &_meth)
+void DevicePipeBlob::throw_mixing(const std::string &_meth)
 {
 	delete insert_elt_array;
 	if (extract_delete == true)
@@ -2212,7 +2212,7 @@ void DevicePipeBlob::throw_mixing(const string &_meth)
 		extract_delete = false;
 	}
 
-	string m_name("DevicePipeBlob::");
+	std::string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
 	Except::throw_exception(API_NotSupportedFeature,
 								"Not supported to mix extraction type (operator >> (or <<) and operator [])",m_name.c_str());
@@ -2235,7 +2235,7 @@ void DevicePipeBlob::throw_mixing(const string &_meth)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DevicePipeBlob::print(ostream &o_str,int indent,bool insert_extract)
+void DevicePipeBlob::print(std::ostream &o_str,int indent,bool insert_extract)
 {
 
 //
@@ -2249,7 +2249,7 @@ void DevicePipeBlob::print(ostream &o_str,int indent,bool insert_extract)
 			max--;
 		for (int loop = 0;loop < max;loop++)
 			o_str << "\t";
-		o_str << "Blob name = " << name << endl;
+		o_str << "Blob name = " << name << std::endl;
 	}
 
 
@@ -2269,10 +2269,10 @@ void DevicePipeBlob::print(ostream &o_str,int indent,bool insert_extract)
 		{
 			for (int loop = 0;loop < indent;loop++)
 				o_str << "\t";
-			o_str << "Data element name = " << (*dvpdea)[ctr].name.in() << endl;
+			o_str << "Data element name = " << (*dvpdea)[ctr].name.in() << std::endl;
 			for (int loop = 0;loop < indent;loop++)
 				o_str<< "\t";
-			o_str << "Data element value:" << endl;
+			o_str << "Data element value:" << std::endl;
 
 //
 // Print indent level
@@ -2379,7 +2379,7 @@ void DevicePipeBlob::print(ostream &o_str,int indent,bool insert_extract)
 				break;
 
 				case DEVICE_STATE:
-				o_str << "Unsupported data type in data element (ATT_NO_DATA, DEVICE_STATE)!" << endl;
+				o_str << "Unsupported data type in data element (ATT_NO_DATA, DEVICE_STATE)!" << std::endl;
 				break;
 
 				default:
@@ -2399,7 +2399,7 @@ void DevicePipeBlob::print(ostream &o_str,int indent,bool insert_extract)
 			}
 
 			if (ctr < dvpdea->length() - 1)
-				o_str << endl;
+				o_str << std::endl;
 		}
 	}
 }
@@ -2414,7 +2414,7 @@ void DevicePipeBlob::print(ostream &o_str,int indent,bool insert_extract)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-ostream &operator<<(ostream &o_str,DevicePipe &dd)
+std::ostream &operator<<(std::ostream &o_str,DevicePipe &dd)
 {
 
 //
@@ -2439,7 +2439,7 @@ ostream &operator<<(ostream &o_str,DevicePipe &dd)
 // Print pipe name
 //
 
-	o_str << dd.name << endl;
+	o_str << dd.name << std::endl;
 
 //
 // Print blob

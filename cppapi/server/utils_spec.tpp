@@ -57,7 +57,7 @@ namespace Tango
 //----------------------------------------------------------------------------------------------------------------
 
 template <>
-inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHistoryStack<DevBoolean>  &data)
+inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,std::string &cmd_name,CmdHistoryStack<DevBoolean>  &data)
 {
 
 //
@@ -67,7 +67,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
     if (dev->is_polled() == false)
     {
         TangoSys_OMemStream o;
-        o << "Device " << dev->get_name() << " is not polled" << ends;
+        o << "Device " << dev->get_name() << " is not polled" << std::ends;
 
         Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
                     (const char *)"Util::fill_cmd_polling_buffer");
@@ -77,8 +77,8 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
 // Command name in lower case letters and check that it is marked as polled
 //
 
-    string obj_name(cmd_name);
-    transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
+    std::string obj_name(cmd_name);
+    std::transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 
     dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
 
@@ -95,7 +95,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
         o << "The polling buffer depth for command " << cmd_name;
         o << " for device " << dev->get_name();
         o << " is only " << nb_poll;
-        o << " which is less than " << nb_elt << "!" << ends;
+        o << " which is less than " << nb_elt << "!" << std::ends;
 
         Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
                     (const char *)"Util::fill_cmd_polling_buffer");
@@ -133,7 +133,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
             {
                 save_except = new Tango::DevFailed((data.get_data())[i].err);
             }
-            catch (bad_alloc &)
+            catch (std::bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception((const char *)API_MemoryAllocation,
@@ -152,7 +152,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
             {
                 any_ptr = new CORBA::Any();
             }
-            catch (bad_alloc &)
+            catch (std::bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception((const char *)API_MemoryAllocation,
@@ -178,7 +178,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
 
         try
         {
-            vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
+            std::vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
             when.tv_sec = (data.get_data())[i].t_val.tv_sec - DELTA_T;
             when.tv_usec = (data.get_data())[i].t_val.tv_usec;
             if (cmd_failed == false)
@@ -201,7 +201,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
 
 
 template <>
-inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHistoryStack<DevUChar>  &data)
+inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,std::string &cmd_name,CmdHistoryStack<DevUChar>  &data)
 {
 
 //
@@ -211,7 +211,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
     if (dev->is_polled() == false)
     {
         TangoSys_OMemStream o;
-        o << "Device " << dev->get_name() << " is not polled" << ends;
+        o << "Device " << dev->get_name() << " is not polled" << std::ends;
 
         Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
                     (const char *)"Util::fill_cmd_polling_buffer");
@@ -221,8 +221,8 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
 // Command name in lower case letters and check that it is marked as polled
 //
 
-    string obj_name(cmd_name);
-    transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
+    std::string obj_name(cmd_name);
+    std::transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 
     dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
 
@@ -239,7 +239,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
         o << "The polling buffer depth for command " << cmd_name;
         o << " for device " << dev->get_name();
         o << " is only " << nb_poll;
-        o << " which is less than " << nb_elt << "!" << ends;
+        o << " which is less than " << nb_elt << "!" << std::ends;
 
         Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
                     (const char *)"Util::fill_cmd_polling_buffer");
@@ -277,7 +277,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
             {
                 save_except = new Tango::DevFailed((data.get_data())[i].err);
             }
-            catch (bad_alloc &)
+            catch (std::bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception((const char *)API_MemoryAllocation,
@@ -296,7 +296,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
             {
                 any_ptr = new CORBA::Any();
             }
-            catch (bad_alloc &)
+            catch (std::bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception((const char *)API_MemoryAllocation,
@@ -322,7 +322,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
 
         try
         {
-            vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
+            std::vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
             when.tv_sec = (data.get_data())[i].t_val.tv_sec - DELTA_T;
             when.tv_usec = (data.get_data())[i].t_val.tv_usec;
             if (cmd_failed == false)

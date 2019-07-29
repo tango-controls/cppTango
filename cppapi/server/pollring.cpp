@@ -115,7 +115,7 @@ PollRing::PollRing(long max_size):ring(max_size)
 
 PollRing::~PollRing()
 {
-	cout4 << "In PollRing destructor" << endl;
+	cout4 << "In PollRing destructor" << std::endl;
 
 	long nb = ring.size();
 
@@ -354,7 +354,7 @@ void PollRing::inc_indexes()
 //
 //--------------------------------------------------------------------------
 
-void PollRing::get_delta_t(vector<double> &res,long nb)
+void PollRing::get_delta_t(std::vector<double> &res,long nb)
 {
 
 //

@@ -1,4 +1,4 @@
-/* 
+/*
  * example of a client using the TANGO device api.
  */
 
@@ -22,7 +22,7 @@ bool verbose = false;
 class SlowCallBack : public Tango::CallBack
 {
 	void push_event(Tango::EventData*);
-	
+
 public:
 	int cb_executed;
 	int cb_err;
@@ -35,7 +35,7 @@ public:
 class FastCallBack : public Tango::CallBack
 {
 	void push_event(Tango::EventData*);
-	
+
 public:
 	int cb_executed;
 	int cb_err;
@@ -47,7 +47,7 @@ public:
 
 void SlowCallBack::push_event(Tango::EventData* event_data)
 {
-	vector<short> value;
+	std::vector<short> value;
         struct timeval now_timeval;
 
 #ifdef WIN32
@@ -59,8 +59,8 @@ void SlowCallBack::push_event(Tango::EventData* event_data)
 	gettimeofday(&now_timeval,NULL);
 #endif
 	coutv << "date : tv_sec = " << now_timeval.tv_sec;
-	coutv << ", tv_usec = " << now_timeval.tv_usec << endl;
-	
+	coutv << ", tv_usec = " << now_timeval.tv_usec << std::endl;
+
 	int delta_s = now_timeval.tv_sec - old_sec;
 	if (delta_s == 0)
 		delta_msec = (now_timeval.tv_usec - old_usec) / 1000;
@@ -72,8 +72,8 @@ void SlowCallBack::push_event(Tango::EventData* event_data)
 	}
 	old_sec = now_timeval.tv_sec;
 	old_usec = now_timeval.tv_usec;
-	
-	coutv << "delta_msec = " << delta_msec << endl;
+
+	coutv << "delta_msec = " << delta_msec << std::endl;
 
 	cb_executed++;
 	try
@@ -85,11 +85,11 @@ void SlowCallBack::push_event(Tango::EventData* event_data)
 
 			*(event_data->attr_value) >> value;
 			val = value[0];
-			coutv << "Callback value " << val << endl;
+			coutv << "Callback value " << val << std::endl;
 		}
 		else
 		{
-			coutv << "Error send to callback" << endl;
+			coutv << "Error send to callback" << std::endl;
 //			Tango::Except::print_error_stack(event_data->errors);
 		}
 	}
@@ -102,7 +102,7 @@ void SlowCallBack::push_event(Tango::EventData* event_data)
 
 void FastCallBack::push_event(Tango::EventData* event_data)
 {
-	vector<double> value;
+	std::vector<double> value;
         struct timeval now_timeval;
 
 #ifdef WIN32
@@ -114,8 +114,8 @@ void FastCallBack::push_event(Tango::EventData* event_data)
 	gettimeofday(&now_timeval,NULL);
 #endif
 	coutv << "date : tv_sec = " << now_timeval.tv_sec;
-	coutv << ", tv_usec = " << now_timeval.tv_usec << endl;
-	
+	coutv << ", tv_usec = " << now_timeval.tv_usec << std::endl;
+
 	int delta_s = now_timeval.tv_sec - old_sec;
 	if (delta_s == 0)
 		delta_msec = (now_timeval.tv_usec - old_usec) / 1000;
@@ -127,8 +127,8 @@ void FastCallBack::push_event(Tango::EventData* event_data)
 	}
 	old_sec = now_timeval.tv_sec;
 	old_usec = now_timeval.tv_usec;
-	
-	coutv << "delta_msec = " << delta_msec << endl;
+
+	coutv << "delta_msec = " << delta_msec << std::endl;
 
 	cb_executed++;
 	try
@@ -140,11 +140,11 @@ void FastCallBack::push_event(Tango::EventData* event_data)
 
 			*(event_data->attr_value) >> value;
 			val = value[0];
-			coutv << "Callback value " << val << endl;
+			coutv << "Callback value " << val << std::endl;
 		}
 		else
 		{
-			coutv << "Error send to callback" << endl;
+			coutv << "Error send to callback" << std::endl;
 //			Tango::Except::print_error_stack(event_data->errors);
 		}
 	}
@@ -158,22 +158,22 @@ void FastCallBack::push_event(Tango::EventData* event_data)
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
-	
+
 	if (argc == 1)
 	{
-		cout << "usage: %s device [-v]" << endl;
+		cout << "usage: %s device [-v]" << std::endl;
 		exit(-1);
 	}
 
-	string device_name = argv[1];
+	std::string device_name = argv[1];
 
 	if (argc == 3)
 	{
 		if (strcmp(argv[2],"-v") == 0)
 			verbose = true;
 	}
-	
-	try 
+
+	try
 	{
 		device = new DeviceProxy(device_name);
 	}
@@ -183,14 +183,14 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+	coutv << std::endl << "new DeviceProxy(" << device->name() << ") returned" << std::endl << std::endl;
 
-	
+
 	try
 	{
 
-		string att_name("slow_actuator");
-		
+		std::string att_name("slow_actuator");
+
 //
 // Test set up (stop polling and clear abs_change and rel_change attribute
 // properties but restart device to take this into account)
@@ -208,7 +208,7 @@ int main(int argc, char **argv)
 		dbd.push_back(DbDatum("abs_change"));
 		dbd.push_back(DbDatum("rel_change"));
 		dba.delete_property(dbd);
-		
+
 		dbd.clear();
 		a << (short)1;
 		dbd.push_back(a);
@@ -216,13 +216,13 @@ int main(int argc, char **argv)
 		ch << (short)1;
 		dbd.push_back(ch);
 		dba.put_property(dbd);
-		
+
 		DeviceProxy adm_dev(device->adm_name().c_str());
 		DeviceData di;
 		di << device_name;
 		adm_dev.command_inout("DevRestart",di);
 		}
-		
+
 		delete device;
 		device = new DeviceProxy(device_name);
 		Tango_sleep(1);
@@ -237,11 +237,11 @@ int main(int argc, char **argv)
 //
 
 		bool po = device->is_attribute_polled(att_name);
-		coutv << "attribute polled : " << po << endl;
+		coutv << "attribute polled : " << po << std::endl;
 		assert( po == true);
-		
+
 		int poll_period = device->get_attribute_poll_period(att_name);
-		coutv << "att polling period : " << poll_period << endl;
+		coutv << "att polling period : " << poll_period << std::endl;
 		assert( poll_period == 250);
 
 //
@@ -253,8 +253,8 @@ int main(int argc, char **argv)
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
-		
-		vector<string> filters;
+
+		std::vector<std::string> filters;
 		filters.push_back("$quality == 1");
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
 
@@ -273,17 +273,17 @@ int main(int argc, char **argv)
 
 		assert (cb.cb_executed == 1);
 		assert (cb.qua == ATTR_VALID);
-		cout << "   (Slow actuator) first point received --> OK" << endl;
+		cout << "   (Slow actuator) first point received --> OK" << std::endl;
 //
 // Write a value into the actuator
 //
 
 		short new_val = 10;
 		DeviceAttribute da(att_name,new_val);
-		
+
 		device->write_attribute(da);
 
-#ifndef WIN32		
+#ifndef WIN32
 		int rest = sleep(1);
 		if (rest != 0)
 			sleep(1);
@@ -297,7 +297,7 @@ int main(int argc, char **argv)
 
 		assert (cb.cb_executed == 2);
 		assert (cb.qua == ATTR_CHANGING);
-		cout << "   (Slow actuator) Event quality from VALID->CHANGING --> OK" << endl;
+		cout << "   (Slow actuator) Event quality from VALID->CHANGING --> OK" << std::endl;
 
 //
 // Read value from device which should have quality factor still set to
@@ -308,15 +308,15 @@ int main(int argc, char **argv)
 		device->set_source(DEV);
 		da_r = device->read_attribute(att_name);
 		device->set_source(CACHE_DEV);
-		
+
 		assert (da_r.get_quality() == ATTR_CHANGING);
-		cout << "   (Slow actuator) Attribute quality still CHANGING after read --> OK" << endl;
-		
+		cout << "   (Slow actuator) Attribute quality still CHANGING after read --> OK" << std::endl;
+
 //
 // Wait for end of movement
 //
 
-#ifndef WIN32		
+#ifndef WIN32
 		rest = sleep(3);
 		if (rest != 0)
 			sleep(3);
@@ -330,16 +330,16 @@ int main(int argc, char **argv)
 
 		assert (cb.cb_executed == 3);
 		assert (cb.qua == ATTR_VALID);
-		cout << "   (Slow actuator) event quality from CHANGING->VALID --> OK" << endl;
-												
+		cout << "   (Slow actuator) event quality from CHANGING->VALID --> OK" << std::endl;
+
 //
 // unsubscribe to the event
 //
 
 		device->unsubscribe_event(eve_id);
-		
-		cout << "   (Slow actuator) unsubscribe_event --> OK" << endl;
-		
+
+		cout << "   (Slow actuator) unsubscribe_event --> OK" << std::endl;
+
 //---------------------------------------------------------------------------------
 //
 //			Now, check a fast actuator scan
@@ -347,8 +347,8 @@ int main(int argc, char **argv)
 //---------------------------------------------------------------------------------
 
 		att_name = "fast_actuator";
-						
-		
+
+
 //
 // Test set up (stop polling and clear abs_change and rel_change attribute
 // properties but restart device to take this into account)
@@ -366,7 +366,7 @@ int main(int argc, char **argv)
 		dbd.push_back(DbDatum("abs_change"));
 		dbd.push_back(DbDatum("rel_change"));
 		dba.delete_property(dbd);
-		
+
 		dbd.clear();
 		a << (short)1;
 		dbd.push_back(a);
@@ -374,13 +374,13 @@ int main(int argc, char **argv)
 		ch << (short)1;
 		dbd.push_back(ch);
 		dba.put_property(dbd);
-		
+
 		DeviceProxy adm_dev(device->adm_name().c_str());
 		DeviceData di;
 		di << device_name;
 		adm_dev.command_inout("DevRestart",di);
 		}
-		
+
 		delete device;
 		device = new DeviceProxy(device_name);
 		Tango_sleep(1);
@@ -394,11 +394,11 @@ int main(int argc, char **argv)
 // Check that the attribute is now polled at 100 mS
 //
 		po = device->is_attribute_polled(att_name);
-		coutv << "attribute polled : " << po << endl;
+		coutv << "attribute polled : " << po << std::endl;
 		assert( po == true);
-		
+
 		poll_period = device->get_attribute_poll_period(att_name);
-		coutv << "att polling period : " << poll_period << endl;
+		coutv << "att polling period : " << poll_period << std::endl;
 		assert( poll_period == 250);
 
 //
@@ -409,12 +409,12 @@ int main(int argc, char **argv)
 		fcb.cb_executed = 0;
 		fcb.cb_err = 0;
 		fcb.old_sec = cb.old_usec = 0;
-		
-		vector<string> ffilters;
+
+		std::vector<std::string> ffilters;
 		ffilters.push_back("$quality == 1");
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&fcb,ffilters);
-		
-		cout << "   (Fast actuator) subscribe_event --> OK" << endl;
+
+		cout << "   (Fast actuator) subscribe_event --> OK" << std::endl;
 
 #ifdef _TG_WINDOWS_
 		Sleep((DWORD)250);
@@ -430,7 +430,7 @@ int main(int argc, char **argv)
 
 		assert (fcb.cb_executed == 1);
 		assert (fcb.qua == ATTR_VALID);
-		cout << "   (Fast actuator) first point received --> OK" << endl;
+		cout << "   (Fast actuator) first point received --> OK" << std::endl;
 
 
 //
@@ -439,7 +439,7 @@ int main(int argc, char **argv)
 
 		double val = 100.333;
 		DeviceAttribute fda(att_name,val);
-		
+
 		device->write_attribute(fda);
 
 //  Only sleep a 100ms. The events should be fired immediately
@@ -458,18 +458,18 @@ int main(int argc, char **argv)
 
 		assert (fcb.cb_executed == 3);
 		assert (fcb.qua == ATTR_VALID);
-		cout << "   (Fast actuator) Two quality events received --> OK" << endl;
-												
+		cout << "   (Fast actuator) Two quality events received --> OK" << std::endl;
+
 //
 // unsubscribe to the event
 //
 
 		device->unsubscribe_event(eve_id);
-		cout << "   (Fast actuator) Unsubscribe_event --> OK" << endl;
-		
+		cout << "   (Fast actuator) Unsubscribe_event --> OK" << std::endl;
+
 		device->stop_poll_attribute(att_name);
 		device->stop_poll_attribute("slow_actuator");
-	
+
 	}
 	catch (Tango::DevFailed &e)
 	{
@@ -483,6 +483,6 @@ int main(int argc, char **argv)
 	}
 
 	delete device;
-	
+
 	return 0;
 }

@@ -5,16 +5,9 @@
 #define RecoZmqTestSuite_h
 
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
 #include <thread>
+#include "cxx_common.h"
 
-using namespace Tango;
-using namespace std;
-
-#define cout cout << "\t"
 #define    coutv    if (verbose == true) cout
 
 #undef SUITE_NAME

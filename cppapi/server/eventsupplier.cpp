@@ -50,7 +50,7 @@ omni_mutex        EventSupplier::push_mutex;
 
 omni_condition    EventSupplier::push_cond(&EventSupplier::push_mutex);
 
-string        EventSupplier::fqdn_prefix;
+std::string        EventSupplier::fqdn_prefix;
 
 //---------------------------------------------------------------------------------------------------------------------
 //
@@ -82,7 +82,7 @@ EventSupplier::EventSupplier(Util *tg)
             Database *db = tg->get_database();
             fqdn_prefix = fqdn_prefix + db->get_db_host() + ':' + db->get_db_port() + '/';
         }
-        transform(fqdn_prefix.begin(), fqdn_prefix.end(), fqdn_prefix.begin(), ::tolower);
+        std::transform(fqdn_prefix.begin(), fqdn_prefix.end(), fqdn_prefix.begin(), ::tolower);
     }
 }
 
@@ -105,14 +105,14 @@ EventSupplier::EventSupplier(Util *tg)
 //--------------------------------------------------------------------------------------------------------------------
 
 SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, struct SuppliedEventData &attr_value,
-                                                    DevFailed *except, string &attr_name, struct timeval *time_bef_attr)
+                                                    DevFailed *except, std::string &attr_name, struct timeval *time_bef_attr)
 {
-    string event, domain_name;
+    std::string event, domain_name;
     time_t now, change3_subscription, periodic3_subscription, archive3_subscription;
     time_t change4_subscription, periodic4_subscription, archive4_subscription;
     time_t change5_subscription, periodic5_subscription, archive5_subscription;
     SendEventType ret;
-    cout3 << "EventSupplier::detect_and_push_events(): called for attribute " << attr_name << endl;
+    cout3 << "EventSupplier::detect_and_push_events(): called for attribute " << attr_name << std::endl;
 
     Attribute &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str());
 
@@ -135,7 +135,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
     }
 
     cout3 << "EventSupplier::detect_and_push_events(): last subscription for change5 " << change5_subscription
-          << " periodic5 " << periodic5_subscription << " archive5 " << archive5_subscription << endl;
+          << " periodic5 " << periodic5_subscription << " archive5 " << archive5_subscription << std::endl;
 
 //
 // For change event
@@ -143,9 +143,9 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
 //
 
     ret.change = false;
-    vector<int> client_libs = attr.get_client_lib(CHANGE_EVENT);    // We want a copy
+    std::vector<int> client_libs = attr.get_client_lib(CHANGE_EVENT);    // We want a copy
 
-    vector<int>::iterator ite;
+    std::vector<int>::iterator ite;
     for (ite = client_libs.begin(); ite != client_libs.end(); ++ite)
     {
         switch (*ite)
@@ -153,21 +153,21 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
             case 5:
                 if (change5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(5, string(EventName[CHANGE_EVENT]));
+                    attr.remove_client_lib(5, std::string(EventName[CHANGE_EVENT]));
                 }
                 break;
 
             case 4:
                 if (change4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(4, string(EventName[CHANGE_EVENT]));
+                    attr.remove_client_lib(4, std::string(EventName[CHANGE_EVENT]));
                 }
                 break;
 
             default:
                 if (change3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(3, string(EventName[CHANGE_EVENT]));
+                    attr.remove_client_lib(3, std::string(EventName[CHANGE_EVENT]));
                 }
                 break;
         }
@@ -197,21 +197,21 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
             case 5:
                 if (periodic5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(5, string(EventName[PERIODIC_EVENT]));
+                    attr.remove_client_lib(5, std::string(EventName[PERIODIC_EVENT]));
                 }
                 break;
 
             case 4:
                 if (periodic4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(4, string(EventName[PERIODIC_EVENT]));
+                    attr.remove_client_lib(4, std::string(EventName[PERIODIC_EVENT]));
                 }
                 break;
 
             default:
                 if (periodic3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(3, string(EventName[PERIODIC_EVENT]));
+                    attr.remove_client_lib(3, std::string(EventName[PERIODIC_EVENT]));
                 }
                 break;
         }
@@ -241,21 +241,21 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
             case 5:
                 if (archive5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(5, string(EventName[ARCHIVE_EVENT]));
+                    attr.remove_client_lib(5, std::string(EventName[ARCHIVE_EVENT]));
                 }
                 break;
 
             case 4:
                 if (archive4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(4, string(EventName[ARCHIVE_EVENT]));
+                    attr.remove_client_lib(4, std::string(EventName[ARCHIVE_EVENT]));
                 }
                 break;
 
             default:
                 if (archive3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
                 {
-                    attr.remove_client_lib(3, string(EventName[ARCHIVE_EVENT]));
+                    attr.remove_client_lib(3, std::string(EventName[ARCHIVE_EVENT]));
                 }
                 break;
         }
@@ -293,9 +293,9 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
 //--------------------------------------------------------------------------------------------------------------------
 
 bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct SuppliedEventData &attr_value,
-                                                 Attribute &attr, string &attr_name, DevFailed *except, TANGO_UNUSED(bool user_push))
+                                                 Attribute &attr, std::string &attr_name, DevFailed *except, TANGO_UNUSED(bool user_push))
 {
-    string event, domain_name;
+    std::string event, domain_name;
     double delta_change_rel = 0.0;
     double delta_change_abs = 0.0;
     bool is_change = false;
@@ -303,7 +303,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
     bool quality_change = false;
     bool ret = false;
 
-    cout3 << "EventSupplier::detect_and_push_change_event(): called for attribute " << attr_name << endl;
+    cout3 << "EventSupplier::detect_and_push_change_event(): called for attribute " << attr_name << std::endl;
 
     Tango::AttrQuality the_quality;
 
@@ -382,7 +382,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
                                   force_change,
                                   device_impl);
         cout3 << "EventSupplier::detect_and_push_change_event(): rel_change " << delta_change_rel << " abs_change "
-              << delta_change_abs << " is change = " << is_change << endl;
+              << delta_change_abs << " is change = " << is_change << std::endl;
     }
 
 //
@@ -397,10 +397,10 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
 
     if (is_change)
     {
-        vector<string> filterable_names;
-        vector<double> filterable_data;
-        vector<string> filterable_names_lg;
-        vector<long> filterable_data_lg;
+        std::vector<std::string> filterable_names;
+        std::vector<double> filterable_data;
+        std::vector<std::string> filterable_names_lg;
+        std::vector<long> filterable_data_lg;
 
         if (except != NULL)
         {
@@ -459,9 +459,9 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
             filterable_data.push_back((double) 0.0);
         }
 
-        vector<int> &client_libs = attr.get_client_lib(CHANGE_EVENT);
-        vector<int>::iterator ite;
-        string ev_name = EventName[CHANGE_EVENT];
+        std::vector<int> &client_libs = attr.get_client_lib(CHANGE_EVENT);
+        std::vector<int>::iterator ite;
+        std::string ev_name = EventName[CHANGE_EVENT];
         bool inc_ctr = true;
 
         for (ite = client_libs.begin(); ite != client_libs.end(); ++ite)
@@ -535,7 +535,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
 
     }
 
-    cout3 << "EventSupplier::detect_and_push_change_event(): leaving for attribute " << attr_name << endl;
+    cout3 << "EventSupplier::detect_and_push_change_event(): leaving for attribute " << attr_name << std::endl;
     return ret;
 }
 
@@ -562,12 +562,12 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
 bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
                                                   SuppliedEventData &attr_value,
                                                   Attribute &attr,
-                                                  string &attr_name,
+                                                  std::string &attr_name,
                                                   DevFailed *except,
                                                   struct timeval *time_bef_attr,
                                                   TANGO_UNUSED(bool user_push))
 {
-    string event, domain_name;
+    std::string event, domain_name;
     double delta_change_rel = 0.0;
     double delta_change_abs = 0.0;
     bool is_change = false;
@@ -576,7 +576,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
     bool quality_change = false;
     bool ret = false;
 
-    cout3 << "EventSupplier::detect_and_push_archive_event(): called for attribute " << attr_name << endl;
+    cout3 << "EventSupplier::detect_and_push_archive_event(): called for attribute " << attr_name << std::endl;
 
     double now_ms, ms_since_last_periodic;
     Tango::AttrQuality the_quality;
@@ -677,7 +677,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 
         cout3 << "EventSupplier::detect_and_push_archive_event(): ms_since_last_periodic = " << ms_since_last_periodic
               << ", arch_period = " << arch_period << ", attr.prev_archive_event.inited = "
-              << attr.prev_archive_event.inited << endl;
+              << attr.prev_archive_event.inited << std::endl;
 
         if ((ms_since_last_periodic > arch_period) && (attr.prev_archive_event.inited == true))
         {
@@ -758,10 +758,10 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 
     if (is_change)
     {
-        vector<string> filterable_names;
-        vector<double> filterable_data;
-        vector<string> filterable_names_lg;
-        vector<long> filterable_data_lg;
+        std::vector<std::string> filterable_names;
+        std::vector<double> filterable_data;
+        std::vector<std::string> filterable_names_lg;
+        std::vector<long> filterable_data_lg;
 
         domain_name = device_impl->get_name() + "/" + attr_name;
 
@@ -836,9 +836,9 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         filterable_data.push_back(now_ms - attr.archive_last_event);
         attr.archive_last_event = now_ms;
 
-        vector<int> &client_libs = attr.get_client_lib(ARCHIVE_EVENT);
-        vector<int>::iterator ite;
-        string ev_name = EventName[ARCHIVE_EVENT];
+        std::vector<int> &client_libs = attr.get_client_lib(ARCHIVE_EVENT);
+        std::vector<int>::iterator ite;
+        std::string ev_name = EventName[ARCHIVE_EVENT];
         bool inc_ctr = true;
 
         for (ite = client_libs.begin(); ite != client_libs.end(); ++ite)
@@ -937,11 +937,11 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
                                                    struct SuppliedEventData &attr_value,
                                                    Attribute &attr,
-                                                   string &attr_name,
+                                                   std::string &attr_name,
                                                    DevFailed *except,
                                                    struct timeval *time_bef_attr)
 {
-    string event, domain_name;
+    std::string event, domain_name;
     double now_ms, ms_since_last_periodic;
     bool ret = false;
 
@@ -1028,7 +1028,7 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
 
     ms_since_last_periodic = now_ms - attr.last_periodic;
     cout3 << "EventSupplier::detect_and_push_is_periodic_event(): delta since last periodic " << ms_since_last_periodic
-          << " event_period " << eve_period << " for " << device_impl->get_name() + "/" + attr_name << endl;
+          << " event_period " << eve_period << " for " << device_impl->get_name() + "/" + attr_name << std::endl;
 
     if (ms_since_last_periodic > eve_period)
     {
@@ -1037,23 +1037,23 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
 // Prepare to push the event
 //
 
-        vector<string> filterable_names;
-        vector<double> filterable_data;
-        vector<string> filterable_names_lg;
-        vector<long> filterable_data_lg;
+        std::vector<std::string> filterable_names;
+        std::vector<double> filterable_data;
+        std::vector<std::string> filterable_names_lg;
+        std::vector<long> filterable_data_lg;
 
         attr.periodic_counter++;
         attr.last_periodic = now_ms;
         filterable_names_lg.push_back("counter");
         filterable_data_lg.push_back(attr.periodic_counter);
 
-        vector<int> &client_libs = attr.get_client_lib(PERIODIC_EVENT);
-        vector<int>::iterator ite;
-        string ev_name = EventName[PERIODIC_EVENT];
+        std::vector<int> &client_libs = attr.get_client_lib(PERIODIC_EVENT);
+        std::vector<int>::iterator ite;
+        std::string ev_name = EventName[PERIODIC_EVENT];
         bool inc_ctr = true;
 
         cout3 << "EventSupplier::detect_and_push_is_periodic_event(): detected periodic event for "
-              << device_impl->get_name() + "/" + attr_name << endl;
+              << device_impl->get_name() + "/" + attr_name << std::endl;
 
         for (ite = client_libs.begin(); ite != client_libs.end(); ++ite)
         {
@@ -1158,7 +1158,7 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
 {
     bool is_change = false;
 
-    cout3 << "EventSupplier::detect_change(): called for attribute " << attr.get_name() << endl;
+    cout3 << "EventSupplier::detect_change(): called for attribute " << attr.get_name() << std::endl;
 
     Tango::AttrQuality the_new_quality;
     const CORBA::Any *the_new_any = NULL;
@@ -2372,7 +2372,7 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
         }
     }
 
-    cout3 << "EventSupplier::detect_change(): leaving for attribute " << attr.get_name() << endl;
+    cout3 << "EventSupplier::detect_change(): leaving for attribute " << attr.get_name() << std::endl;
     return (is_change);
 }
 
@@ -2395,16 +2395,16 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
 //-------------------------------------------------------------------------------------------------------------
 
 void
-EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl, const string &attr_name, long data_type, DevLong ctr)
+EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl, const std::string &attr_name, long data_type, DevLong ctr)
 {
-    cout3 << "EventSupplier::push_att_data_ready_event(): called for attribute " << attr_name << endl;
+    cout3 << "EventSupplier::push_att_data_ready_event(): called for attribute " << attr_name << std::endl;
 
-    vector<string> filterable_names;
-    vector<double> filterable_data;
-    vector<string> filterable_names_lg;
-    vector<long> filterable_data_lg;
+    std::vector<std::string> filterable_names;
+    std::vector<double> filterable_data;
+    std::vector<std::string> filterable_names_lg;
+    std::vector<long> filterable_data_lg;
 
-    string ev_type(DATA_READY_TYPE_EVENT);
+    std::string ev_type(DATA_READY_TYPE_EVENT);
 
     AttDataReady dat_ready;
     dat_ready.name = attr_name.c_str();
@@ -2422,7 +2422,7 @@ EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl, const string &
                filterable_names_lg,
                filterable_data_lg,
                ad,
-               const_cast<string &>(attr_name),
+               const_cast<std::string &>(attr_name),
                NULL, true);
 }
 
@@ -2447,12 +2447,12 @@ EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl, const string &
 void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,
                                          SuppliedEventData &attr_conf,
                                          DevFailed *except,
-                                         string &attr_name)
+                                         std::string &attr_name)
 {
-    string event, domain_name;
+    std::string event, domain_name;
     time_t now, att_conf_subscription, attr_sub;
 
-    cout3 << "EventSupplier::push_att_conf_events(): called for attribute " << attr_name << endl;
+    cout3 << "EventSupplier::push_att_conf_events(): called for attribute " << attr_name << std::endl;
 
     Attribute &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str());
 
@@ -2494,11 +2494,11 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,
     now = time(NULL);
     att_conf_subscription = now - attr_sub;
 
-    cout3 << "EventSupplier::push_att_conf_events(): delta since last subscription " << att_conf_subscription << endl;
+    cout3 << "EventSupplier::push_att_conf_events(): delta since last subscription " << att_conf_subscription << std::endl;
 
     if (att_conf_subscription > EVENT_RESUBSCRIBE_PERIOD)
     {
-        attr.remove_client_lib(vers, string(EventName[ATTR_CONF_EVENT]));
+        attr.remove_client_lib(vers, std::string(EventName[ATTR_CONF_EVENT]));
         return;
     }
 
@@ -2506,12 +2506,12 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,
 // Push event
 //
 
-    vector<string> filterable_names;
-    vector<double> filterable_data;
-    vector<string> filterable_names_lg;
-    vector<long> filterable_data_lg;
+    std::vector<std::string> filterable_names;
+    std::vector<double> filterable_data;
+    std::vector<std::string> filterable_names_lg;
+    std::vector<long> filterable_data_lg;
 
-    string ev_type = CONF_TYPE_EVENT;
+    std::string ev_type = CONF_TYPE_EVENT;
     if (conf5 == true)
     {
         ev_type = EVENT_COMPAT_IDL5 + ev_type;
@@ -2551,14 +2551,14 @@ void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,
                                                DevCmdInfoList_2 *cmds_list,
                                                AttributeConfigList_5 *atts_list)
 {
-    cout3 << "EventSupplier::push_dev_intr_change_event(): called for device " << device_impl->get_name() << endl;
+    cout3 << "EventSupplier::push_dev_intr_change_event(): called for device " << device_impl->get_name() << std::endl;
 
-    vector<string> filterable_names;
-    vector<double> filterable_data;
-    vector<string> filterable_names_lg;
-    vector<long> filterable_data_lg;
+    std::vector<std::string> filterable_names;
+    std::vector<double> filterable_data;
+    std::vector<std::string> filterable_names_lg;
+    std::vector<long> filterable_data_lg;
 
-    string ev_type(EventName[INTERFACE_CHANGE_EVENT]);
+    std::string ev_type(EventName[INTERFACE_CHANGE_EVENT]);
     time_t now, dev_intr_subscription;
 
 //
@@ -2568,7 +2568,7 @@ void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,
     now = time(NULL);
     dev_intr_subscription = now - device_impl->get_event_intr_change_subscription();
 
-    cout3 << "EventSupplier::push_dev_intr_event(): delta since last subscription " << dev_intr_subscription << endl;
+    cout3 << "EventSupplier::push_dev_intr_event(): delta since last subscription " << dev_intr_subscription << std::endl;
 
     if (dev_intr_subscription > EVENT_RESUBSCRIBE_PERIOD)
     {
@@ -2588,7 +2588,7 @@ void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,
     ::memset(&ad, 0, sizeof(ad));
     ad.dev_intr_change = &dev_intr;
 
-    string att_name("dummy");
+    std::string att_name("dummy");
     push_event(device_impl,
                ev_type,
                filterable_names,

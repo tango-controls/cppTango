@@ -60,8 +60,8 @@ namespace Tango
 
 typedef struct
 {
-	vector <DeviceClass *>	registered_classes;
-	vector <DeviceImpl *>	registered_devices;
+	std::vector <DeviceClass *>	registered_classes;
+	std::vector <DeviceImpl *>	registered_devices;
 	bool			own_handler;
 }
 DevSigAction;
@@ -127,11 +127,11 @@ protected :
 
 private:
 	static DServerSignal *_instance;
-	vector<DeviceImpl *>::iterator find_device(long, DeviceImpl *);
-	vector<DeviceImpl *>::iterator find_delayed_device(long, DeviceImpl *);
+	std::vector<DeviceImpl *>::iterator find_device(long, DeviceImpl *);
+	std::vector<DeviceImpl *>::iterator find_delayed_device(long, DeviceImpl *);
 
-	vector<DeviceClass *>::iterator find_class(long, DeviceClass *);
-	vector<DeviceClass *>::iterator find_delayed_class(long, DeviceClass *);
+	std::vector<DeviceClass *>::iterator find_class(long, DeviceClass *);
+	std::vector<DeviceClass *>::iterator find_delayed_class(long, DeviceClass *);
 
 #ifdef _TG_WINDOWS_
 	static inline bool auto_signal(long s)
@@ -159,7 +159,7 @@ private:
 	static inline bool auth_signal(long s) {return true;}
 #endif
 
-	static string 			sig_name[_NSIG];
+	static std::string 			sig_name[_NSIG];
 
 };
 

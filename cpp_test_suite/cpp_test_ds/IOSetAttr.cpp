@@ -72,7 +72,7 @@ CORBA::Any *IOSetAttr::execute(Tango::DeviceImpl *device,const CORBA::Any &in_an
   try {
     Tango::DevLong theNumber;
     extract(in_any,theNumber);
-    cout << "[IOSetAttr::execute] received number " << theNumber << endl;
+    cout << "[IOSetAttr::execute] received number " << theNumber << std::endl;
     DevTest *dev = static_cast<DevTest *>(device);    
     dev->set_attr_long(theNumber);
     return insert();

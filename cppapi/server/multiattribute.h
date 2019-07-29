@@ -49,12 +49,12 @@ class DeviceClass;
 struct EventPar
 {
 	long			attr_id;
-	vector<int>		change;
-	vector<int>		archive;
+	std::vector<int>		change;
+	std::vector<int>		archive;
 	bool			quality;
-	vector<int>		periodic;
-	vector<int>		user;
-	vector<int>		att_conf;
+	std::vector<int>		periodic;
+	std::vector<int>		user;
+	std::vector<int>		att_conf;
 	bool			data_ready;
 	bool			dev_intr_change;
 	bool        	notifd;
@@ -103,7 +103,7 @@ public:
  * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	MultiAttribute(string &dev_name,DeviceClass *dev_class,DeviceImpl *dev);
+	MultiAttribute(std::string &dev_name,DeviceClass *dev_class,DeviceImpl *dev);
 //@}
 
 /**@name Destructor
@@ -183,7 +183,7 @@ public:
  * @return  A vector of long data. Each object is the index in the main
  * attribute vector of attribute with alarm level defined
  */
-	vector<long> &get_alarm_list() {return alarm_attr_list;}
+	std::vector<long> &get_alarm_list() {return alarm_attr_list;}
 /**
  * Get attribute number.
  *
@@ -241,14 +241,14 @@ public:
  *
  * @param  status  The string (should be the device status)
  */
-	void read_alarm(string &status);
+	void read_alarm(std::string &status);
 /**
  * Get the vector of attribute objects.
  *
  * Returns the vector of attribute objects.
  *
  */
-	 vector<Attribute *> &get_attribute_list(){return attr_list;}
+	 std::vector<Attribute *> &get_attribute_list(){return attr_list;}
 //@}
 
 protected:
@@ -259,38 +259,38 @@ protected:
  *
  * This vector is often referred as the main attributes vector
  */
-	vector<Attribute *>	attr_list;
+	std::vector<Attribute *>	attr_list;
 /**
  * The list of writable attribute.
  *
  * It is a vector of index in the main attribute vector
  */
-	vector<long>		writable_attr_list;
+	std::vector<long>		writable_attr_list;
 /**
  * The list of attribute with an alarm level defined.
  *
  * It is a vector of index in the main attribute vector
  */
-	vector<long>		alarm_attr_list;
+	std::vector<long>		alarm_attr_list;
 //@}
 
 public:
 /// @privatesection
 
 	void add_write_value(Attribute &);
-	void add_attribute(string &,DeviceClass *,long);
-	void add_fwd_attribute(string &,DeviceClass *,long,Attr *);
-	void remove_attribute(string &,bool);
-	vector<long> &get_w_attr_list() {return writable_attr_list;}
+	void add_attribute(std::string &,DeviceClass *,long);
+	void add_fwd_attribute(std::string &,DeviceClass *,long,Attr *);
+	void remove_attribute(std::string &,bool);
+	std::vector<long> &get_w_attr_list() {return writable_attr_list;}
 	bool is_att_quality_alarmed();
-	void get_event_param(vector<EventPar> &);
-	void set_event_param(vector<EventPar> &);
-	void add_alarmed_quality_factor(string &);
-	void add_default(vector<AttrProperty> &,string &,string &,long);
+	void get_event_param(std::vector<EventPar> &);
+	void set_event_param(std::vector<EventPar> &);
+	void add_alarmed_quality_factor(std::string &);
+	void add_default(std::vector<AttrProperty> &,std::string &,std::string &,long);
 	void add_attr(Attribute *att);
-	void update(Attribute &,string &);
+	void update(Attribute &,std::string &);
 	void check_idl_release(DeviceImpl *);
-	bool is_opt_prop(const string &);
+	bool is_opt_prop(const std::string &);
 
 private:
     class MultiAttributeExt
@@ -302,7 +302,7 @@ private:
 			long att_index_in_vector;
 		};
 		MultiAttributeExt() {}
-		map<string, AttributePtrAndIndex> attr_map;
+		std::map<std::string, AttributePtrAndIndex> attr_map;
 		void put_attribute_in_map(Attribute * att, long index)
 		{
 			AttributePtrAndIndex mapElement;
@@ -317,12 +317,12 @@ private:
 		}
     };
 
-	void concat(vector<AttrProperty> &,vector<AttrProperty> &,vector<AttrProperty> &);
-	void add_user_default(vector<AttrProperty> &,vector<AttrProperty> &);
-	void check_associated(long,string &);
+	void concat(std::vector<AttrProperty> &,std::vector<AttrProperty> &,std::vector<AttrProperty> &);
+	void add_user_default(std::vector<AttrProperty> &,std::vector<AttrProperty> &);
+	void check_associated(long,std::string &);
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<MultiAttributeExt>           ext;           // Class extension
+    std::unique_ptr<MultiAttributeExt>           ext;           // Class extension
 #else
 	MultiAttributeExt		                *ext;
 #endif

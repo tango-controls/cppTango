@@ -75,7 +75,7 @@ void DevIntr::get_interface(DeviceImpl *dev)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DevIntr::build_cmd_interfaces(DeviceImpl *dev,vector<CmdIntr> &cmds)
+void DevIntr::build_cmd_interfaces(DeviceImpl *dev,std::vector<CmdIntr> &cmds)
 {
 
 //
@@ -134,7 +134,7 @@ void DevIntr::build_cmd_interfaces(DeviceImpl *dev,vector<CmdIntr> &cmds)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DevIntr::build_att_interfaces(DeviceImpl *dev,vector<AttrIntr> &atts)
+void DevIntr::build_att_interfaces(DeviceImpl *dev,std::vector<AttrIntr> &atts)
 {
 
 //
@@ -206,7 +206,7 @@ bool DevIntr::has_changed(DeviceImpl *dev)
 // First, check for commands
 //
 
-	vector<CmdIntr> v_ci;
+	std::vector<CmdIntr> v_ci;
 	build_cmd_interfaces(dev,v_ci);
 
 	if (v_ci != cmds)
@@ -218,7 +218,7 @@ bool DevIntr::has_changed(DeviceImpl *dev)
 // Check attributes
 //
 
-		vector<AttrIntr> v_ai;
+		std::vector<AttrIntr> v_ai;
 		build_att_interfaces(dev,v_ai);
 
 		if (v_ai != atts)

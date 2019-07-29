@@ -1,4 +1,4 @@
-/* 
+/*
  * example of a client using the TANGO device api.
  */
 
@@ -6,22 +6,22 @@
 #include <assert.h>
 
 #define	coutv	if (verbose == true) cout
-		    
+
 using namespace Tango;
 
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
-	
+
 	if (argc == 1)
 	{
-		cout << "usage: %s device" << endl;
+		cout << "usage: %s device" << std::endl;
 		exit(-1);
 	}
 
-	string device_name = argv[1];
+	std::string device_name = argv[1];
 
-	try 
+	try
 	{
 		device = new DeviceProxy(device_name);
 	}
@@ -31,14 +31,14 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	
+
 	try
 	{
 		ApiUtil *au = ApiUtil::instance();
 
 		Tango::cb_sub_model mode = au->get_asynch_cb_sub_model();
 		assert (mode == PULL_CALLBACK);
-			
+
 //
 // Start callback thread
 //
@@ -46,24 +46,24 @@ int main(int argc, char **argv)
 //		char key;
 //		cout << "Hit any key ";
 //		cin >> key;
-		
-		au->set_asynch_cb_sub_model(PUSH_CALLBACK);
 
-//		cout << "Hit any key ";
-//		cin >> key;
-		
-		au->set_asynch_cb_sub_model(PULL_CALLBACK);
-		
-//		cout << "Hit any key ";
-//		cin >> key;
-		
 		au->set_asynch_cb_sub_model(PUSH_CALLBACK);
 
 //		cout << "Hit any key ";
 //		cin >> key;
 
 		au->set_asynch_cb_sub_model(PULL_CALLBACK);
-		
+
+//		cout << "Hit any key ";
+//		cin >> key;
+
+		au->set_asynch_cb_sub_model(PUSH_CALLBACK);
+
+//		cout << "Hit any key ";
+//		cin >> key;
+
+		au->set_asynch_cb_sub_model(PULL_CALLBACK);
+
 //		cout << "Hit any key ";
 //		cin >> key;
 	}
@@ -78,8 +78,8 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 
-		
+
 	delete device;
-	
+
 	return 0;
 }

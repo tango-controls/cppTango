@@ -129,7 +129,7 @@ void FwdAttribute::propagate_writen_data(DeviceAttribute &da, WAttribute &attr, 
 template<typename T>
 bool FwdAttribute::new_att_conf_base(const T &conf)
 {
-    if (string(conf.name.in()) != name)
+    if (std::string(conf.name.in()) != name)
         return true;
 
     if (conf.writable != writable)
@@ -141,25 +141,25 @@ bool FwdAttribute::new_att_conf_base(const T &conf)
     if (conf.data_type != data_type)
         return true;
 
-    if (string(conf.description.in()) != description)
+    if (std::string(conf.description.in()) != description)
         return true;
 
-    if (string(conf.unit.in()) != unit)
+    if (std::string(conf.unit.in()) != unit)
         return true;
 
-    if (string(conf.standard_unit.in()) != standard_unit)
+    if (std::string(conf.standard_unit.in()) != standard_unit)
         return true;
 
-    if (string(conf.display_unit.in()) != display_unit)
+    if (std::string(conf.display_unit.in()) != display_unit)
         return true;
 
-    if (string(conf.format.in()) != format)
+    if (std::string(conf.format.in()) != format)
         return true;
 
-    if (string(conf.min_value.in()) != min_value_str)
+    if (std::string(conf.min_value.in()) != min_value_str)
         return true;
 
-    if (string(conf.max_value.in()) != max_value_str)
+    if (std::string(conf.max_value.in()) != max_value_str)
         return true;
 
     if (conf.level != disp_level)
@@ -168,19 +168,19 @@ bool FwdAttribute::new_att_conf_base(const T &conf)
     if (conf.writable_attr_name.in() != writable_attr_name)
         return true;
 
-    if (string(conf.att_alarm.min_alarm.in()) != min_alarm_str)
+    if (std::string(conf.att_alarm.min_alarm.in()) != min_alarm_str)
         return true;
 
-    if (string(conf.att_alarm.max_alarm.in()) != max_alarm_str)
+    if (std::string(conf.att_alarm.max_alarm.in()) != max_alarm_str)
         return true;
 
-    if (string(conf.att_alarm.min_warning.in()) != min_warning_str)
+    if (std::string(conf.att_alarm.min_warning.in()) != min_warning_str)
         return true;
 
-    if (string(conf.att_alarm.max_warning.in()) != max_warning_str)
+    if (std::string(conf.att_alarm.max_warning.in()) != max_warning_str)
         return true;
 
-    string tmp_prop(conf.att_alarm.delta_t);
+    std::string tmp_prop(conf.att_alarm.delta_t);
     if (tmp_prop == AlrmValueNotSpec)
     {
         if (delta_t_str != "0")
@@ -306,7 +306,7 @@ bool FwdAttribute::new_att_conf_base(const T &conf)
     }
     else
     {
-        stringstream ss;
+        std::stringstream ss;
         int tmp_per;
 
         ss << tmp_prop;
@@ -328,7 +328,7 @@ bool FwdAttribute::new_att_conf_base(const T &conf)
     }
     else
     {
-        stringstream ss;
+        std::stringstream ss;
         int tmp_per;
 
         ss << tmp_prop;

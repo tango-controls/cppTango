@@ -4,8 +4,8 @@ using namespace Tango;
 
 #define CLASS_NAME "DevTest"
 
-void print_changes(string &desc, string &server, DbData &db_data) {
-    cout << desc << " -> " << server << " : " << endl;
+void print_changes(std::string &desc, std::string &server, DbData &db_data) {
+    cout << desc << " -> " << server << " : " << std::endl;
 
     DbData::iterator it = db_data.begin();
     while (it != db_data.end()) {
@@ -13,14 +13,14 @@ void print_changes(string &desc, string &server, DbData &db_data) {
         for (size_t i = 0; i < it->value_string.size(); i++)
             cout << ((i == 0) ? (" = ") : (" , ")) << it->value_string[i];
 //			cout << "   " << ((i == 0) ? ((str << it->value_string[i], (str >> nb_prop && str.eof()) ? " : " : (" = " + it->value_string[i]))) : (" , " + it->value_string[i]));
-        cout << endl;
+        cout << std::endl;
         ++it;
     }
-    cout << endl;
+    cout << std::endl;
 }
 
 void print_changes(const char *desc, const char *server, DbData &db_data) {
-    string desc_str(desc), server_str(server);
+    std::string desc_str(desc), server_str(server);
     print_changes(desc_str, server_str, db_data);
 }
 
@@ -32,18 +32,18 @@ void print_changes(const char *desc, const char *server, DbData &db_data) {
 int main(int argc, char **argv) {
     if (argc < 7) {
         cout << "usage: " << argv[0] << " dserver device1 device2 device3 device1_alias attribute_alias fwd_device device20" <<
-        endl;
+        std::endl;
         exit(-1);
     }
 
-    string dserver_name = argv[1], device1_name = argv[2], device2_name = argv[3], device3_name = argv[4], device1_alias = argv[5], attribute_alias = argv[6], fwd_dev_name = argv[7], device20_name = argv[8];
+    std::string dserver_name = argv[1], device1_name = argv[2], device2_name = argv[3], device3_name = argv[4], device1_alias = argv[5], attribute_alias = argv[6], fwd_dev_name = argv[7], device20_name = argv[8];
 
     Database *db = new Database();
     DbData db_data;
 
     long num_prop;
-    string str;
-    vector<string> str_vec;
+    std::string str;
+    std::vector<std::string> str_vec;
     DevLong lg;
     DeviceData din;
     DbDevInfos db_dev_infos;
@@ -66,18 +66,18 @@ int main(int argc, char **argv) {
 #ifdef HAS_RANGE_BASE_FOR
         for(auto info : db_dev_infos){
             cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
-                 info._class << endl;
+                 info._class << std::endl;
         }
 #else
         for(size_t i = 0; i < db_dev_infos.size(); i++){
 			cout << "Added test server : " << str << " -> " << db_dev_infos[i].name
-			     << ", class : " << db_dev_infos[i]._class << endl;
+			     << ", class : " << db_dev_infos[i]._class << std::endl;
         }
 #endif
-        cout << endl;
+        cout << std::endl;
     }
     catch (...) {
-        cout << "Exception: cannot create test server" << endl;
+        cout << "Exception: cannot create test server" << std::endl;
     }
 
 
@@ -95,18 +95,18 @@ int main(int argc, char **argv) {
 #ifdef HAS_RANGE_BASE_FOR
         for(auto info : db_dev_infos){
             cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
-                 info._class << endl;
+                 info._class << std::endl;
         }
 #else
         for(size_t i = 0; i < db_dev_infos.size(); i++){
 			cout << "Added test server : " << str << " -> " << db_dev_infos[i].name
-			     << ", class : " << db_dev_infos[i]._class << endl;
+			     << ", class : " << db_dev_infos[i]._class << std::endl;
         }
 #endif
-        cout << endl;
+        cout << std::endl;
     }
     catch (...) {
-        cout << "Exception: cannot create test server" << endl;
+        cout << "Exception: cannot create test server" << std::endl;
     }
 
 
@@ -121,18 +121,18 @@ int main(int argc, char **argv) {
 #ifdef HAS_RANGE_BASE_FOR
         for(auto info : db_dev_infos){
             cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
-                 info._class << endl;
+                 info._class << std::endl;
         }
 #else
         for(size_t i = 0; i < db_dev_infos.size(); i++){
 			cout << "Added test server : " << str << " -> " << db_dev_infos[i].name
-			     << ", class : " << db_dev_infos[i]._class << endl;
+			     << ", class : " << db_dev_infos[i]._class << std::endl;
         }
 #endif
-        cout << endl;
+        cout << std::endl;
     }
     catch (...) {
-        cout << "Exception: cannot create test server" << endl;
+        cout << "Exception: cannot create test server" << std::endl;
     }
 
     db_dev_infos.clear();
@@ -155,11 +155,11 @@ int main(int argc, char **argv) {
         db->add_server(str, db_dev_infos);
         for (size_t i = 0; i < db_dev_infos.size(); i++)
             cout << "Added pseudo server : " << str << " -> " << db_dev_infos[i].name << ", class : " <<
-            db_dev_infos[i]._class << endl;
-        cout << endl;
+            db_dev_infos[i]._class << std::endl;
+        cout << std::endl;
     }
     catch (...) {
-        cout << "Exception: cannot create DsCache/test pseudo server" << endl;
+        cout << "Exception: cannot create DsCache/test pseudo server" << std::endl;
     }
 
     db_data.clear();
@@ -173,7 +173,7 @@ int main(int argc, char **argv) {
         print_changes("Device properties", db_dev_info_1.name.c_str(), db_data);
     }
     catch (...) {
-        cout << "Exception: cannot set test/cache1/1 properties" << endl;
+        cout << "Exception: cannot set test/cache1/1 properties" << std::endl;
     }
 
     db_data.clear();
@@ -187,7 +187,7 @@ int main(int argc, char **argv) {
         print_changes("Device properties", db_dev_info_2.name.c_str(), db_data);
     }
     catch (...) {
-        cout << "Exception: cannot set test/cache1/2 properties" << endl;
+        cout << "Exception: cannot set test/cache1/2 properties" << std::endl;
     }
 
 
@@ -197,7 +197,7 @@ int main(int argc, char **argv) {
 
     db_data.clear();
     DbDatum logging_level("logging_level");
-    string logging_str = "WARNING";
+    std::string logging_str = "WARNING";
     logging_level << logging_str;
     db_data.push_back(logging_level);
 
@@ -206,7 +206,7 @@ int main(int argc, char **argv) {
         print_changes("Dserver properties", dserver_name.c_str(), db_data);
     }
     catch (...) {
-        cout << "Exception: cannot set dserver properties" << endl;
+        cout << "Exception: cannot set dserver properties" << std::endl;
     }
 
 
@@ -227,7 +227,7 @@ int main(int argc, char **argv) {
         print_changes("Class properties", CLASS_NAME, db_data);
     }
     catch (...) {
-        cout << "Exception: cannot set class properties" << endl;
+        cout << "Exception: cannot set class properties" << std::endl;
     }
 
 
@@ -318,7 +318,7 @@ int main(int argc, char **argv) {
         print_changes("Class level attribute properties", CLASS_NAME, db_data);
     }
     catch (...) {
-        cout << "Exception: cannot set attribute properties defined on class level" << endl;
+        cout << "Exception: cannot set attribute properties defined on class level" << std::endl;
     }
 
 // attribute properties defined on device level
@@ -342,7 +342,7 @@ int main(int argc, char **argv) {
             print_changes("Common device properties", argv[i], db_data);
         }
         catch (...) {
-            cout << "Exception: cannot set common properties for the device: " << argv[i] << endl;
+            cout << "Exception: cannot set common properties for the device: " << argv[i] << std::endl;
         }
     }
 
@@ -368,7 +368,7 @@ int main(int argc, char **argv) {
         print_changes("Device specific attribute properties", device1_name.c_str(), db_data);
     }
     catch (...) {
-        cout << "Exception: cannot set specific attribute properties for the device: " << device1_name << endl;
+        cout << "Exception: cannot set specific attribute properties for the device: " << device1_name << std::endl;
     }
 
     db_data.clear();
@@ -394,25 +394,25 @@ int main(int argc, char **argv) {
         print_changes("Device specific properties", device1_name.c_str(), db_data);
     }
     catch (...) {
-        cout << "Exception: cannot set specific properties for the device: " << device1_name << endl;
+        cout << "Exception: cannot set specific properties for the device: " << device1_name << std::endl;
     }
 
     try {
         db->put_device_alias(device1_name, device1_alias);
-        cout << "Device alias -> " << device1_name << " :\n   " << device1_alias << "\n" << endl;
+        cout << "Device alias -> " << device1_name << " :\n   " << device1_alias << "\n" << std::endl;
     }
     catch (...) {
-        cout << "Exception: cannot set device alias for the device: " << device1_name << endl;
+        cout << "Exception: cannot set device alias for the device: " << device1_name << std::endl;
     }
 
     try {
         str = device1_name + "/" + "Short_attr";
         db->put_attribute_alias(str, attribute_alias);
-        cout << "Attribute alias -> " << str << " :\n   " << attribute_alias << "\n" << endl;
+        cout << "Attribute alias -> " << str << " :\n   " << attribute_alias << "\n" << std::endl;
     }
     catch (...) {
         cout << "Exception: cannot set attribute alias for the attribute: " << device1_name + "/" + "Short_attr" <<
-        endl;
+        std::endl;
     }
 
 // device2
@@ -440,7 +440,7 @@ int main(int argc, char **argv) {
         print_changes("Device specific properties", device2_name.c_str(), db_data);
     }
     catch (...) {
-        cout << "Exception: cannot set specific properties for the device: " << device2_name << endl;
+        cout << "Exception: cannot set specific properties for the device: " << device2_name << std::endl;
     }
 
     db_data.clear();
@@ -449,7 +449,7 @@ int main(int argc, char **argv) {
     Tango::DbDatum fwd_att1("fwd_short_rw");
     Tango::DbDatum root_att1("__root_att");
     fwd_att1 << (short) 1;
-    string r_name = device1_name + "/short_attr_rw";;
+    std::string r_name = device1_name + "/short_attr_rw";;
     root_att1 << r_name;
     db_data.push_back(fwd_att1);
     db_data.push_back(root_att1);
@@ -486,7 +486,7 @@ int main(int argc, char **argv) {
 
     }
     catch (...) {
-        cout << "Exception: cannot set specific attribute properties for the device: " << fwd_dev_name << endl;
+        cout << "Exception: cannot set specific attribute properties for the device: " << fwd_dev_name << std::endl;
     }
 
     db_data.clear();
@@ -531,7 +531,7 @@ int main(int argc, char **argv) {
         print_changes("Set pipe properties at class level",CLASS_NAME, db_data);
     }
     catch (...){
-        cout << "Exception: cannot set pipe properties at class level: " << CLASS_NAME << endl;
+        cout << "Exception: cannot set pipe properties at class level: " << CLASS_NAME << std::endl;
     }
 
     //pipe class level configuration
@@ -555,7 +555,7 @@ int main(int argc, char **argv) {
         print_changes("Set pipe properties at device level" , device1_name.c_str(), db_data);
     }
     catch (...){
-        cout << "Exception: cannot set specific attribute properties for the device: " << fwd_dev_name << endl;
+        cout << "Exception: cannot set specific attribute properties for the device: " << fwd_dev_name << std::endl;
     }
 
     DbDatum short_attr_rw("short_attr_rw");
@@ -576,13 +576,13 @@ int main(int argc, char **argv) {
         print_changes("Device specific attribute properties", device1_name.c_str(), db_data);
     }
     catch (...) {
-        cout << "Exception: cannot set specific attribute properties for the device: " << device1_name << endl;
+        cout << "Exception: cannot set specific attribute properties for the device: " << device1_name << std::endl;
     }
 
 
     //Define polling for DevTest/test2
     DbDatum polled_attr("polled_attr");
-    vector<string> attrs;
+    std::vector<std::string> attrs;
     attrs.push_back("event_change_tst");
     attrs.push_back("3000");
     polled_attr << attrs;
@@ -593,7 +593,7 @@ int main(int argc, char **argv) {
         print_changes("Device specific attribute properties", device20_name.c_str(), db_data);
     }
     catch (...) {
-        cout << "Exception: cannot set specific attribute properties for the device: " << device20_name << endl;
+        cout << "Exception: cannot set specific attribute properties for the device: " << device20_name << std::endl;
     }
 
     DbDatum eventProperties("event_change_tst");
@@ -612,7 +612,7 @@ int main(int argc, char **argv) {
         print_changes("Device specific attribute properties", device20_name.c_str(), db_data);
     }
     catch (...) {
-        cout << "Exception: cannot set specific attribute properties for the device: " << device20_name << endl;
+        cout << "Exception: cannot set specific attribute properties for the device: " << device20_name << std::endl;
     }
 
     delete db;

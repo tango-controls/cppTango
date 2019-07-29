@@ -106,15 +106,15 @@ void WAttribute::get_write_value(const T *&ptr)
 //-----------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void WAttribute::check_type(T &dummy,const string &origin)
+void WAttribute::check_type(T &dummy,const std::string &origin)
 {
 #ifdef HAS_UNDERLYING
-	bool short_enum = is_same<short,typename underlying_type<T>::type>::value;
-	bool uns_int_enum = is_same<unsigned int,typename underlying_type<T>::type>::value;
+	bool short_enum = std::is_same<short,typename std::underlying_type<T>::type>::value;
+	bool uns_int_enum = std::is_same<unsigned int,typename std::underlying_type<T>::type>::value;
 
 	if (short_enum == false && uns_int_enum == false)
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << "Invalid enumeration type. Supported types are C++11 scoped enum with short as underlying data type\n";
 		ss << "or old enum";
 
@@ -127,7 +127,7 @@ void WAttribute::check_type(T &dummy,const string &origin)
 //
 
 #ifdef HAS_TYPE_TRAITS
-	if (is_enum<T>::value == false)
+	if (std::is_enum<T>::value == false)
 	{
 		Except::throw_exception(API_IncompatibleArgumentType,
 								"The input argument data type is not an enumeration",origin);
@@ -142,11 +142,11 @@ void WAttribute::check_type(T &dummy,const string &origin)
 	}
 	catch (Tango::DevFailed &e)
 	{
-		string reas = e.errors[0].reason.in();
+		std::string reas = e.errors[0].reason.in();
 		if (reas == API_DeviceNotFound)
 		{
 			Util *tg = Util::instance();
-			const vector<Tango::DeviceClass *> *cl_list_ptr = tg->get_class_list();
+			const std::vector<Tango::DeviceClass *> *cl_list_ptr = tg->get_class_list();
 			dev_class = (*cl_list_ptr)[cl_list_ptr->size() - 2];
 		}
 		else
@@ -158,7 +158,7 @@ void WAttribute::check_type(T &dummy,const string &origin)
 
 	if (att.same_type(typeid(T)) == false)
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << "Invalid enumeration type. Requested enum type is " << att.get_enum_type();
 		Except::throw_exception(API_IncompatibleArgumentType,ss.str(),origin);
 	}
@@ -232,7 +232,7 @@ void WAttribute::set_write_value(T *val, long x, long y)
 }
 
 template <typename T>
-void WAttribute::set_write_value(vector<T> &val, long x, long y)
+void WAttribute::set_write_value(std::vector<T> &val, long x, long y)
 {
 	T dum;
 	check_type(dum,"WAttribute::set_write_value");

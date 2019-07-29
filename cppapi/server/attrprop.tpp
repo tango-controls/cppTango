@@ -77,7 +77,7 @@ inline void AttrProp<DevUChar>::set_val(const DevUChar &value)
 //
 
 template<>
-inline DoubleAttrProp<DevUChar>::DoubleAttrProp(const vector<DevUChar> &values) : val(values), is_value(true)
+inline DoubleAttrProp<DevUChar>::DoubleAttrProp(const std::vector<DevUChar> &values) : val(values), is_value(true)
 {
 	TangoSys_MemStream st;
 	st.precision(TANGO_FLOAT_PRECISION);
@@ -100,7 +100,7 @@ inline DoubleAttrProp<DevUChar>::DoubleAttrProp(const DevUChar &value) : is_valu
 }
 
 template<>
-inline DoubleAttrProp<DevUChar>& DoubleAttrProp<DevUChar>::operator=(const vector<DevUChar> &values)
+inline DoubleAttrProp<DevUChar>& DoubleAttrProp<DevUChar>::operator=(const std::vector<DevUChar> &values)
 {
 	TangoSys_MemStream st;
 	st.precision(TANGO_FLOAT_PRECISION);
@@ -129,7 +129,7 @@ inline DoubleAttrProp<DevUChar>& DoubleAttrProp<DevUChar>::operator=(const DevUC
 }
 
 template<>
-inline void DoubleAttrProp<DevUChar>::set_val(const vector<DevUChar> &values)
+inline void DoubleAttrProp<DevUChar>::set_val(const std::vector<DevUChar> &values)
 {
 	TangoSys_MemStream st;
 	st.precision(TANGO_FLOAT_PRECISION);
@@ -165,12 +165,12 @@ class MultiAttrProp<DevEncoded>
 public:
         MultiAttrProp() {}
 
-		string 					            label;
-		string 					            description;
-		string 					            unit;
-		string 					            standard_unit;
-		string 					            display_unit;
-		string 					            format;
+		std::string 					            label;
+		std::string 					            description;
+		std::string 					            unit;
+		std::string 					            standard_unit;
+		std::string 					            display_unit;
+		std::string 					            format;
         AttrProp<DevUChar>                 	min_value;
         AttrProp<DevUChar>                 	max_value;
         AttrProp<DevUChar>                 	min_alarm;
@@ -185,7 +185,7 @@ public:
         DoubleAttrProp<DevDouble>	        abs_change;
         DoubleAttrProp<DevDouble>	        archive_rel_change;
         DoubleAttrProp<DevDouble>	        archive_abs_change;
-        vector<string>						enum_labels;
+        std::vector<std::string>						enum_labels;
 
 private:
 
@@ -196,7 +196,7 @@ private:
 	class MultiAttrPropExt {};
 
 #ifdef HAS_UNIQUE_PTR
-	unique_ptr<MultiAttrPropExt>	ext;           // Class extension
+	std::unique_ptr<MultiAttrPropExt>	ext;           // Class extension
 #else
 	MultiAttrPropExt				*ext;
 #endif

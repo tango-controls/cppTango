@@ -35,7 +35,11 @@
  * @ingroup Client
  */
 
-using namespace std;
+#include <tango_const.h>
+
+#ifdef TANGO_USE_USING_NAMESPACE
+  using namespace std;
+#endif
 
 namespace Tango {
 
@@ -60,10 +64,10 @@ class AccessProxy;
 /// Some typedef and define
 ///
 
-typedef vector<DbDevInfo> DbDevInfos;
-typedef vector<DbDevExportInfo> DbDevExportInfos;
-typedef vector<DbDevImportInfo> DbDevImportInfos;
-typedef vector<DbDatum> DbData;
+typedef std::vector<DbDevInfo> DbDevInfos;
+typedef std::vector<DbDevExportInfo> DbDevExportInfos;
+typedef std::vector<DbDevImportInfo> DbDevImportInfos;
+typedef std::vector<DbDatum> DbData;
 
 #define		POGO_DESC	"Description"
 #define		POGO_TITLE	"ProjectTitle"
@@ -101,7 +105,7 @@ typedef vector<DbDatum> DbData;
 class DbProperty
 {
 public :
-	DbProperty(string);
+	DbProperty(std::string);
 	~DbProperty();
 //
 // methods
@@ -122,16 +126,16 @@ public :
 class DbAttribute
 {
 private :
-	string name;
-	string device_name;
+	std::string name;
+	std::string device_name;
 	Database *dbase;
 	int db_ind;
 	bool ext_dbase;
 
 public :
-	DbAttribute(string &, string &);
-	DbAttribute(string &, string &, Database *);
-	DbAttribute(string &,string &, string &,string &);
+	DbAttribute(std::string &, std::string &);
+	DbAttribute(std::string &, std::string &, Database *);
+	DbAttribute(std::string &,std::string &, std::string &,std::string &);
 	~DbAttribute();
 //
 // methods
@@ -157,7 +161,7 @@ public :
 class DbServer
 {
 private :
-	string 		name;
+	std::string 		name;
 	Database 	*dbase;
 	int 		db_ind;
 	bool 		ext_dbase;
@@ -169,7 +173,7 @@ private :
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DbServerExt> ext;
+    std::unique_ptr<DbServerExt> ext;
 #else
 	DbServerExt	            *ext;
 #endif
@@ -186,7 +190,7 @@ public :
  * @param [in] server_name	The device server name
  *
  */
-	DbServer(string server_name);
+	DbServer(std::string server_name);
 /**
  * Create a DbServer instance using a specified database
  *
@@ -197,7 +201,7 @@ public :
  * @param [in] db The database object
  *
  */
-	DbServer(string server_name, Database *db);
+	DbServer(std::string server_name, Database *db);
 //@}
 //
 // methods
@@ -267,7 +271,7 @@ public :
 class DbClass
 {
 private :
-	string 		name;
+	std::string 		name;
 	Database 	*dbase;
 	int 		db_ind;
 	bool 		ext_dbase;
@@ -279,7 +283,7 @@ private :
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DbClassExt>  ext;
+    std::unique_ptr<DbClassExt>  ext;
 #else
 	DbClassExt	            *ext;
 #endif
@@ -296,7 +300,7 @@ public :
  * @param [in] class_name	The Tango class name
  *
  */
-	DbClass(string class_name);
+	DbClass(std::string class_name);
 /**
  * Create a DbClass instance using a specified database
  *
@@ -307,7 +311,7 @@ public :
  * @param [in] db The database object
  *
  */
-	DbClass(string class_name, Database *db);
+	DbClass(std::string class_name, Database *db);
 //@}
 
 //
@@ -461,7 +465,7 @@ public:
  * @param [in] name	The CORBA ORB pointer. Default value is fine for 99 % of cases
  *
  */
-	DbDatum (string name);
+	DbDatum (std::string name);
 /**
  * Create a DbDatum object.
  *
@@ -489,35 +493,35 @@ public:
  * @li DevULong64
  * @li float
  * @li double
- * @li string
+ * @li std::string
  * @li char* (insert only)
  * @li const char *
- * @li vector<string>
- * @li vector<short>
- * @li vector<unsigned short>
- * @li vector<DevLong>
- * @li vector<DevULong>
- * @li vector<DevLong64>
- * @li vector<DevULong64>
- * @li vector<float>
- * @li vector<double>
+ * @li std::vector<std::string>
+ * @li std::vector<short>
+ * @li std::vector<unsigned short>
+ * @li std::vector<DevLong>
+ * @li std::vector<DevULong>
+ * @li std::vector<DevLong64>
+ * @li std::vector<DevULong64>
+ * @li std::vector<float>
+ * @li std::vector<double>
  *
  * Here is an example of creating, inserting and extracting some DbDatum types :
  * @code
  * DbDatum my_short("my_short"), my_long(“my_long”), my_string("my_string");
  * DbDatum my_float_vector("my_float_vector"), my_double_vector("my_double_vector");
  *
- * string a_string;
+ * std::string a_string;
  * short a_short;
  * DevLong a_long;
- * vector<float> a_float_vector;
- * vector<double> a_double_vector;
+ * std::vector<float> a_float_vector;
+ * std::vector<double> a_double_vector;
  *
  * my_short << 100; // insert a short
  * my_short >> a_short; // extract a short
  * my_long << 1000; // insert a DevLong
  * my_long >> a_long; // extract a long
- * my_string << string("estas lista a bailar el tango ?"); // insert a string
+ * my_string << std::string("estas lista a bailar el tango ?"); // insert a string
  * my_string >> a_string; // extract a string
  * my_float_vector << a_float_vector // insert a vector of floats
  * my_float_vector >> a_float_vector; // extract a vector of floats
@@ -555,7 +559,7 @@ public:
  *
  * @param [in] fl The exception flag
  */
-	void exceptions(bitset<DbDatum::numFlags> fl) { exceptions_flags = fl;}
+	void exceptions(std::bitset<DbDatum::numFlags> fl) { exceptions_flags = fl;}
 /**
  * Get exception flag
  *
@@ -564,18 +568,18 @@ public:
  * @code
  * DbDatum da;
  *
- * bitset<DbDatum::numFlags> bs = da.exceptions();
- * cout << "bs = " << bs << endl;
+ * std::bitset<DbDatum::numFlags> bs = da.exceptions();
+ * cout << "bs = " << bs << std::endl;
  *
  * da.set_exceptions(DbDatum::wrongtype_flag);
  * bs = da.exceptions();
  *
- * cout << "bs = " << bs << endl;
+ * cout << "bs = " << bs << std::endl;
  * @endcode
  *
  * @return The exception flag
  */
-	bitset<DbDatum::numFlags> exceptions() {return exceptions_flags;}
+	std::bitset<DbDatum::numFlags> exceptions() {return exceptions_flags;}
 /**
  * Reset one exception flag
  *
@@ -610,7 +614,7 @@ public:
  * }
  * else
  * {
- *     cout << device_name << " has no parity defined in database !" << endl;
+ *     cout << device_name << " has no parity defined in database !" << std::endl;
  * }
  * @endcode
  *
@@ -622,8 +626,8 @@ public:
 //@}
 /// @privatesection
 
-	string name;
-	vector<string> value_string;
+	std::string name;
+std::vector<std::string> value_string;
 //
 // constructor methods
 //
@@ -651,17 +655,17 @@ public:
 //	void operator << (char *&);
 	void operator << (const char *);
 //	void operator << (const char *&);
-	void operator << (string&);
+	void operator << (std::string&);
 
-	void operator << (vector<string>&);
-	void operator << (vector<short>&);
-	void operator << (vector<unsigned short>&);
-	void operator << (vector<DevLong>&);
-	void operator << (vector<DevULong>&);
-	void operator << (vector<DevLong64>&);
-	void operator << (vector<DevULong64>&);
-	void operator << (vector<float>&);
-	void operator << (vector<double>&);
+	void operator << (std::vector<std::string>&);
+	void operator << (std::vector<short>&);
+	void operator << (std::vector<unsigned short>&);
+	void operator << (std::vector<DevLong>&);
+	void operator << (std::vector<DevULong>&);
+	void operator << (std::vector<DevLong64>&);
+	void operator << (std::vector<DevULong64>&);
+	void operator << (std::vector<float>&);
+	void operator << (std::vector<double>&);
 
 //
 // extract methods
@@ -677,23 +681,23 @@ public:
 	bool operator >> (float&);
 	bool operator >> (double&);
 	bool operator >> (const char*&);
-	bool operator >> (string&);
+	bool operator >> (std::string&);
 
-	bool operator >> (vector<string>&);
-	bool operator >> (vector<short>&);
-	bool operator >> (vector<unsigned short>&);
-	bool operator >> (vector<DevLong>&);
-	bool operator >> (vector<DevULong>&);
-	bool operator >> (vector<DevLong64>&);
-	bool operator >> (vector<DevULong64>&);
-	bool operator >> (vector<float>&);
-	bool operator >> (vector<double>&);
+	bool operator >> (std::vector<std::string>&);
+	bool operator >> (std::vector<short>&);
+	bool operator >> (std::vector<unsigned short>&);
+	bool operator >> (std::vector<DevLong>&);
+	bool operator >> (std::vector<DevULong>&);
+	bool operator >> (std::vector<DevLong64>&);
+	bool operator >> (std::vector<DevULong64>&);
+	bool operator >> (std::vector<float>&);
+	bool operator >> (std::vector<double>&);
 
 private :
 
 	int 				value_type;
 	int 				value_size;
-	bitset<numFlags> 	exceptions_flags;
+	std::bitset<numFlags> 	exceptions_flags;
 
     class DbDatumExt
     {
@@ -702,7 +706,7 @@ private :
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DbDatumExt>  ext;
+    std::unique_ptr<DbDatumExt>  ext;
 #else
 	DbDatumExt			    *ext;
 #endif
@@ -729,8 +733,8 @@ public:
 // constructor methods
 //
 
-  DbHistory(string ,string ,vector<string> &);
-  DbHistory(string ,string ,string ,vector<string> &);
+  DbHistory(std::string ,std::string ,std::vector<std::string> &);
+  DbHistory(std::string ,std::string ,std::string ,std::vector<std::string> &);
 
 //
 // getter methods
@@ -741,19 +745,19 @@ public:
  *
  * @return The property name
  */
-  string get_name();
+  std::string get_name();
 /**
  * Get attribute name
  *
  * @return The attribute name
  */
-  string get_attribute_name();
+  std::string get_attribute_name();
 /**
  * Get change date
  *
  * @return The date
  */
-  string get_date();
+  std::string get_date();
 /**
  * Get value
  *
@@ -769,14 +773,14 @@ public:
 
 private:
 
-  string  propname;   // Property name
-  string  attname;    // Attribute name (Not used for device/pipe properties)
+  std::string  propname;   // Property name
+  std::string  attname;    // Attribute name (Not used for device/pipe properties)
   DbDatum value;      // Property value
-  string  date;       // Update date
+  std::string  date;       // Update date
   bool    deleted;    // Deleted flag
 
-  string format_mysql_date(string );
-  void make_db_datum(vector<string> &);
+  std::string format_mysql_date(std::string );
+  void make_db_datum(std::vector<std::string> &);
 };
 
 /**********************************************************************
@@ -795,9 +799,9 @@ private:
 class DbDevInfo
 {
 public :
-	string name;    ///< The device name
-	string _class;  ///< The device class name
-	string server;  ///< The full device server process name
+	std::string name;    ///< The device name
+	std::string _class;  ///< The device class name
+	std::string server;  ///< The full device server process name
 };
 
 /**********************************************************************
@@ -815,10 +819,10 @@ public :
 class DbDevImportInfo
 {
 public :
-	string  name;       ///< The device name
+	std::string  name;       ///< The device name
 	long    exported;   ///< The exported flag
-	string  ior;        ///< The device IOR
-	string  version;    ///< The device version (as a string)
+	std::string  ior;        ///< The device IOR
+	std::string  version;    ///< The device version (as a std::string)
 };
 
 /****************************************************************
@@ -836,11 +840,11 @@ public :
 class DbDevFullInfo: public DbDevImportInfo
 {
 public :
-    string  class_name;         ///< The device class name
-	string  ds_full_name;       ///< The full device server process name
-	string  host;               ///< The host name where the device server process is running
-	string  started_date;       ///< Date of the last device export (empty if not set in DB)
-	string  stopped_date;       ///< Date of the last device un-export (empty if not set in DB)
+    std::string  class_name;         ///< The device class name
+	std::string  ds_full_name;       ///< The full device server process name
+	std::string  host;               ///< The host name where the device server process is running
+	std::string  started_date;       ///< Date of the last device export (empty if not set in DB)
+	std::string  stopped_date;       ///< Date of the last device un-export (empty if not set in DB)
 	long    pid;                ///< The device server process PID (-1 if not set in DB)
 };
 
@@ -860,10 +864,10 @@ public :
 class DbDevExportInfo
 {
 public :
-	string  name;        ///< The device name
-	string  ior;         ///< The device IOR
-	string  host;        ///< The host name where the device server process runs
-	string  version;     ///< The device version
+	std::string  name;        ///< The device name
+	std::string  ior;         ///< The device IOR
+	std::string  host;        ///< The host name where the device server process runs
+	std::string  version;     ///< The device version
 	int     pid;         ///< The device server process PID
 };
 
@@ -876,8 +880,8 @@ public :
 class DbServerInfo
 {
 public :
-	string  name;
-	string  host;
+	std::string  name;
+	std::string  host;
 	int     mode;
 	int     level;
 };
@@ -937,7 +941,7 @@ public:
 		DevEltIdx		*devs_idx;
 	}ClassEltIdx;
 
-	DbServerCache(Database *,string &,string &);
+	DbServerCache(Database *,std::string &,std::string &);
 	~DbServerCache();
 
 	const DevVarLongStringArray *import_adm_dev();
@@ -952,7 +956,7 @@ public:
 	const DevVarStringArray *get_device_property_list(DevVarStringArray *);
 	const DevVarStringArray *get_class_pipe_property(DevVarStringArray *);
 	const DevVarStringArray *get_dev_pipe_property(DevVarStringArray *);
-	const DevVarLongStringArray *import_tac_dev(string &);
+	const DevVarLongStringArray *import_tac_dev(std::string &);
 
 	const EltIdx &get_imp_dat() {return imp_adm;}
 	const EltIdx &get_imp_notifd_event() {return imp_notifd_event;}
@@ -1027,58 +1031,58 @@ class DbServerData
 private:
     struct TangoProperty
     {
-        string   		name;
-        vector<string> 	values;
+        std::string   		name;
+        std::vector<std::string> 	values;
 
-        TangoProperty(string &na, vector<string> &val):name(na),values(val) {}
+        TangoProperty(std::string &na, std::vector<std::string> &val):name(na),values(val) {}
 	};
 
-    struct TangoAttribute: vector<TangoProperty>
+    struct TangoAttribute: std::vector<TangoProperty>
     {
-        string   				name;
+        std::string   				name;
 
-        TangoAttribute(string na):name(na) {}
+        TangoAttribute(std::string na):name(na) {}
     };
 
-    struct TangoPipe: vector<TangoProperty>
+    struct TangoPipe: std::vector<TangoProperty>
     {
-        string   				name;
+        std::string   				name;
 
-        TangoPipe(string na):name(na) {}
+        TangoPipe(std::string na):name(na) {}
     };
 
 	struct TangoDevice: DeviceProxy
 	{
-        string 	name;
-        vector<TangoProperty>   properties;
-        vector<TangoAttribute>  attributes;
-        vector<TangoPipe>		pipes;
+        std::string 	name;
+        std::vector<TangoProperty>   properties;
+        std::vector<TangoAttribute>  attributes;
+        std::vector<TangoPipe>		pipes;
 
-        TangoDevice(string &);
+        TangoDevice(std::string &);
 
-		string get_name() {return name;}
-        vector<TangoProperty> &get_properties() {return properties;}
-        vector<TangoAttribute> &get_attributes() {return attributes;}
-        vector<TangoPipe> &get_pipes() {return pipes;}
+		std::string get_name() {return name;}
+        std::vector<TangoProperty> &get_properties() {return properties;}
+        std::vector<TangoAttribute> &get_attributes() {return attributes;}
+        std::vector<TangoPipe> &get_pipes() {return pipes;}
 
 		void put_properties(Database *);
         void put_attribute_properties(Database *);
         void put_pipe_properties(Database *);
 	};
 
-	struct TangoClass: vector<TangoDevice>
+	struct TangoClass: std::vector<TangoDevice>
 	{
-        string  name;
-        vector<TangoProperty>   	properties;
-        vector<TangoAttribute>   	attributes;
-        vector<TangoPipe>			pipes;
+        std::string  name;
+        std::vector<TangoProperty>   	properties;
+        std::vector<TangoAttribute>   	attributes;
+        std::vector<TangoPipe>			pipes;
 
-		TangoClass(const string &,const string &,Database *);
+		TangoClass(const std::string &,const std::string &,Database *);
 
-		string get_name() {return name;}
-        vector<TangoProperty> &get_properties() {return properties;}
-        vector<TangoAttribute> &get_attributes() {return attributes;}
-        vector<TangoPipe> &get_pipes() {return pipes;}
+		std::string get_name() {return name;}
+        std::vector<TangoProperty> &get_properties() {return properties;}
+        std::vector<TangoAttribute> &get_attributes() {return attributes;}
+        std::vector<TangoPipe> &get_pipes() {return pipes;}
 
 		void put_properties(Database *);
         void put_attribute_properties(Database *);
@@ -1089,8 +1093,8 @@ private:
 	void create_server(Database *);
 	void put_properties(Database *);
 
-	string   			full_server_name;
-    vector<TangoClass>  classes;
+  std::string full_server_name;
+  std::vector<TangoClass>  classes;
 
 public:
 /**
@@ -1103,7 +1107,7 @@ public:
  * @param [in] ds_inst_name The device server process instance name
  *
  */
-	DbServerData(const string &ds_exec_name,const string &ds_inst_name);
+	DbServerData(const std::string &ds_exec_name,const std::string &ds_inst_name);
 /**
  * Check if device(s) already defined
  *
@@ -1113,7 +1117,7 @@ public:
  * @param [in] tg_host The tango host
  * @return Boolean set to true if one of the device server device is defined in the Tango host given as parameter
  */
-	bool already_exist(const string &tg_host);
+	bool already_exist(const std::string &tg_host);
 /**
  * Put device server database configuration in new Tango host
  *
@@ -1121,7 +1125,7 @@ public:
  *
  * @param [in] tg_host The tango host
  */
-	void put_in_database(const string &tg_host);
+	void put_in_database(const std::string &tg_host);
 /**
  * Remove device server database configuration from Tango host
  *
@@ -1129,7 +1133,7 @@ public:
  *
  * @param [in] tg_host The tango host
  */
-	void remove(const string &tg_host);
+	void remove(const std::string &tg_host);
 /**
  * Remove device server database configuration from default Tango host
  *
@@ -1142,8 +1146,8 @@ public:
 ///@privatesection
 	~DbServerData() {}
 
-	const string &get_name() {return full_server_name;}
-	vector<TangoClass> &get_classes() {return classes;}
+	const std::string &get_name() {return full_server_name;}
+	std::vector<TangoClass> &get_classes() {return classes;}
 };
 
 /*

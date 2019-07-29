@@ -1,17 +1,10 @@
 #ifndef SvrMcastLocalRemoteTestSuite_h
 #define SvrMcastLocalRemoteTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
-
-using namespace Tango;
-using namespace std;
+#include "cxx_common.h"
 
 #define coutv		if (verbose == true) cout << "\t"
 #define coutv_cb 	if (parent->verbose == true) cout << "\t"
-#define cout cout << "\t"
 
 #undef SUITE_NAME
 #define SUITE_NAME SvrMcastLocalRemoteTestSuite
@@ -87,7 +80,7 @@ public:
 			device_remote = new DeviceProxy(remote_device_name);
 
 			att_name = "Event_change_tst";
-				
+
 //
 // Test set up (stop polling and clear abs_change and rel_change attribute
 // properties but restart device to take this into account)
@@ -106,7 +99,7 @@ public:
 			dbd.push_back(DbDatum("abs_change"));
 			dbd.push_back(DbDatum("rel_change"));
 			db_local.delete_property(dbd);
-		
+
 			dbd.clear();
 			a << (short)1;
 			dbd.push_back(a);
@@ -114,12 +107,12 @@ public:
 			ch << (short)1;
 			dbd.push_back(ch);
 			db_local.put_property(dbd);
-		
+
 			DeviceProxy adm_dev_local(device_local->adm_name().c_str());
 			DeviceData di;
 			di << local_device_name;
 			adm_dev_local.command_inout("DevRestart",di);
-		
+
 			delete device_local;
 
 			device_local = new DeviceProxy(local_device_name);
@@ -169,7 +162,7 @@ public:
 
 	void test_Subscribe_multicast_events(void)
 	{
-		
+
 // switch on the polling first!
 
 		device_local->poll_attribute(att_name,1000);
@@ -180,7 +173,7 @@ public:
 		bool po = device_local->is_attribute_polled(att_name);
 		coutv << "Local device: attribute polled : " << po << endl;
 		TS_ASSERT ( po == true);
-		
+
 		int poll_period = device_local->get_attribute_poll_period(att_name);
 		coutv << "Local device: att polling period : " << poll_period << endl;
 		TS_ASSERT( poll_period == 1000);
@@ -217,14 +210,14 @@ public:
 
 	void test_Callback_executed_after_a_change_for_both_events(void)
 	{
-#ifndef WIN32		
+#ifndef WIN32
 		int rest = sleep(1);
 		if (rest != 0)
 			sleep(1);
 #else
 		Sleep(1000);
 #endif
-			
+
 		device_local->command_inout("IOIncValue");
 
 #ifndef WIN32
@@ -234,7 +227,7 @@ public:
 #else
 		Sleep(2000);
 #endif
-						
+
 		coutv << "local cb excuted = " << cb->cb_executed << endl;
 
 		TS_ASSERT (cb->cb_executed == 2);

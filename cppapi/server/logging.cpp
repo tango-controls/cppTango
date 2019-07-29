@@ -172,7 +172,7 @@ void Logging::init (const std::string& ds_name, // dserver name
         // get properties from TANGO-db
         db.get_device_property(dserver_dev_name, db_data,tg->get_db_cache());
         // set logging path
-        string level_str("WARN");
+        std::string level_str("WARN");
         if (db_data[0].is_empty() == false) {
           db_data[0] >> Logging::_log_path;
           _VERBOSE(("\tLogging::_log_path is %s (set from db)\n",
@@ -199,7 +199,7 @@ void Logging::init (const std::string& ds_name, // dserver name
         // set logging level (if not set from cmd line)
         if (! level_set_from_cmd_line)
         {
-          string level_str("WARN");
+          std::string level_str("WARN");
           if (db_data[2].is_empty() == false)
             db_data[2] >> level_str;
           _VERBOSE(("\tproperty::level is %s\n", level_str.c_str()));
@@ -256,11 +256,11 @@ void Logging::add_logging_target (const Tango::DevVarStringArray *argin)
     // fight against the "zombie appender" syndrom
     Logging::kill_zombie_appenders();
     // trace
-    cout4 << "Entering Logging::add_logging_target" << endl;
+    cout4 << "Entering Logging::add_logging_target" << std::endl;
     // log input
     unsigned int i;
     for (i = 0; i < argin->length(); i++)  {
-      cout4 << "input string = " << (*argin)[i].in() << endl;
+      cout4 << "input string = " << (*argin)[i].in() << std::endl;
     }
     // N x [device-name, target-type::target-name] expected
     // The length of the input sequence must be a multiple of 2
@@ -284,7 +284,7 @@ void Logging::add_logging_target (const Tango::DevVarStringArray *argin)
       // throw an exception if the list is empty
       if (dl.empty()) {
         TangoSys_OMemStream o;
-        o << "No device name matching pattern  <" << pattern << ">" << ends;
+        o << "No device name matching pattern  <" << pattern << ">" << std::ends;
         Except::throw_exception((const char *)API_DeviceNotFound,o.str(),
                                 (const char *)"Logging::add_logging_target");
       }
@@ -300,11 +300,11 @@ void Logging::add_logging_target (const Tango::DevVarStringArray *argin)
       }
     } // for each tuple
     // trace
-    cout4 << "Leaving Logging::add_logging_target" << endl;
+    cout4 << "Leaving Logging::add_logging_target" << std::endl;
   }
   catch (std::exception& e) {
     TangoSys_OMemStream o;
-    o << "std::exception caught [" << e.what() << "]" << ends;
+    o << "std::exception caught [" << e.what() << "]" << std::ends;
     Except::throw_exception((const char *)API_InternalError, o.str(),
                             (const char *)"Logging::add_logging_target");
   }
@@ -332,11 +332,11 @@ void Logging::add_logging_target(log4tango::Logger* logger,
 {
   try {
     // trace
-    cout4 << "Entering Logging::add_logging_target (internal impl)" << endl;
+    cout4 << "Entering Logging::add_logging_target (internal impl)" << std::endl;
     // check input
     if (!logger) {
       //--TODO::better error handler needed?
-      cout4 << "internal error (logger is null)" << endl;
+      cout4 << "internal error (logger is null)" << std::endl;
       return;
     }
     // target type (as string)
@@ -364,7 +364,7 @@ void Logging::add_logging_target(log4tango::Logger* logger,
     else {
       if (throw_exception) {
         TangoSys_OMemStream o;
-        o << "Invalid logging target type specified (" << ltg_type_str << ")" << ends;
+        o << "Invalid logging target type specified (" << ltg_type_str << ")" << std::ends;
         Except::throw_exception((const char *)API_MethodArgument, o.str(),
                                 (const char *)"DeviceImpl::add_logging_target");
       }
@@ -397,7 +397,7 @@ void Logging::add_logging_target(log4tango::Logger* logger,
         if (ltg_name_str == kDefaultTargetName) {
           if (throw_exception) {
             TangoSys_OMemStream o;
-            o << "Device target name must be specified (no default value)" << ends;
+            o << "Device target name must be specified (no default value)" << std::ends;
             Except::throw_exception((const char *)API_MethodArgument, o.str(),
                                     (const char *)"DeviceImpl::add_logging_target");
           }
@@ -409,16 +409,16 @@ void Logging::add_logging_target(log4tango::Logger* logger,
     // attach the appender to the logger if not already attached
     log4tango::Appender* appender = logger->get_appender(appender_name);
     if (!appender) {
-      cout4 << "Adding logging target " << appender_name << " to " << logger->get_name() << endl;
+      cout4 << "Adding logging target " << appender_name << " to " << logger->get_name() << std::endl;
       // instanciate the appender (i.e. the target) and the layout (if needed)
       switch (ltg_type) {
         case LOG_CONSOLE: {
           appender = new CoutAppender(appender_name);
           if (appender == 0) {
-            cout4 << "Internal error (Appender instanciation failed)" << endl;
+            cout4 << "Internal error (Appender instanciation failed)" << std::endl;
             if (throw_exception) {
             TangoSys_OMemStream o;
-            o << "Out of memory error" << ends;
+            o << "Out of memory error" << std::ends;
             Except::throw_exception((const char *)API_MemoryAllocation, o.str(),
                                     (const char *)"DeviceImpl::add_logging_target");
             }
@@ -430,7 +430,7 @@ void Logging::add_logging_target(log4tango::Logger* logger,
           if (appender == 0) {
             if (throw_exception) {
               TangoSys_OMemStream o;
-              o << "Out of memory error" << ends;
+              o << "Out of memory error" << std::ends;
               Except::throw_exception((const char *)API_MemoryAllocation, o.str(),
                                       (const char *)"DeviceImpl::add_logging_target");
             }
@@ -441,7 +441,7 @@ void Logging::add_logging_target(log4tango::Logger* logger,
             appender = 0;
             if (throw_exception) {
               TangoSys_OMemStream o;
-              o << "Could not open logging file " << full_file_name << ends;
+              o << "Could not open logging file " << full_file_name << std::ends;
               Except::throw_exception((const char *)API_CannotOpenFile, o.str(),
                                       (const char *)"DeviceImpl::add_logging_target");
             }
@@ -453,7 +453,7 @@ void Logging::add_logging_target(log4tango::Logger* logger,
             appender = 0;
             if (throw_exception) {
               TangoSys_OMemStream o;
-              o << "Out of memory error" << ends;
+              o << "Out of memory error" << std::ends;
               Except::throw_exception((const char *)API_MemoryAllocation, o.str(),
                                       (const char *)"DeviceImpl::add_logging_target");
             }
@@ -466,7 +466,7 @@ void Logging::add_logging_target(log4tango::Logger* logger,
           if (appender == 0) {
             if (throw_exception) {
               TangoSys_OMemStream o;
-              o << "Out of memory error" << ends;
+              o << "Out of memory error" << std::ends;
               Except::throw_exception((const char *)API_MemoryAllocation, o.str(),
                                       (const char *)"DeviceImpl::add_logging_target");
             }
@@ -477,7 +477,7 @@ void Logging::add_logging_target(log4tango::Logger* logger,
             appender = 0;
             if (throw_exception) {
               TangoSys_OMemStream o;
-              o << "Could not connect to log consumer " << ltg_name_str << ends;
+              o << "Could not connect to log consumer " << ltg_name_str << std::ends;
               Except::throw_exception((const char *)API_ConnectionFailed, o.str(),
                                       (const char *)"DeviceImpl::add_logging_target");
             }
@@ -493,14 +493,14 @@ void Logging::add_logging_target(log4tango::Logger* logger,
     else {
       cout4 << "Target " << appender_name
             << " is already attached to "
-            << logger->get_name() << endl;
+            << logger->get_name() << std::endl;
     }
-    cout4 << "Leaving Logging::add_logging_target (internal impl)" << endl;
+    cout4 << "Leaving Logging::add_logging_target (internal impl)" << std::endl;
   }
   catch (std::exception& e) {
     if (throw_exception) {
       TangoSys_OMemStream o;
-      o << "std::exception caught [" << e.what() << "]" << ends;
+      o << "std::exception caught [" << e.what() << "]" << std::ends;
       Except::throw_exception((const char *)API_StdException,
                               o.str(),
                               (const char *)"Logging::add_logging_target");
@@ -517,11 +517,11 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
     // fight against the "zombie appender" syndrom
     Logging::kill_zombie_appenders();
     // trace
-    cout4 << "Entering Logging::remove_logging_target" << endl;
+    cout4 << "Entering Logging::remove_logging_target" << std::endl;
     // log input
     unsigned int i;
     for (i = 0; i < argin->length(); i++) {
-      cout4 << "Input string = " << (*argin)[i].in() << endl;
+      cout4 << "Input string = " << (*argin)[i].in() << std::endl;
     }
     // N x [device-name, target-type, target-name] expected
     // The length of the input sequence must a multiple of 3
@@ -557,7 +557,7 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
       // throw an exception if the list is empty
       if (dl.empty()) {
               TangoSys_OMemStream o;
-              o << "No device name matching pattern  <" << pattern << ">" << ends;
+              o << "No device name matching pattern  <" << pattern << ">" << std::ends;
               Except::throw_exception((const char *)API_DeviceNotFound,o.str(),
                                       (const char *)"Logging::remove_logging_target");
       }
@@ -585,7 +585,7 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
       }
       else {
         TangoSys_OMemStream o;
-        o << "Logging target type <" << tg_type_str << "> not supported" << ends;
+        o << "Logging target type <" << tg_type_str << "> not supported" << std::ends;
         Except::throw_exception((const char *)API_MethodArgument, o.str(),
                                 (const char *)"Logging::remove_logging_target");
       }
@@ -597,7 +597,7 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
         logger = dl[j]->get_logger();
         if (logger == 0) {
           TangoSys_OMemStream o;
-          o << "Internal error (got a NULL logger)" << ends;
+          o << "Internal error (got a NULL logger)" << std::ends;
           Except::throw_exception((const char *)API_InternalError, o.str(),
                                   (const char *)"Logging::remove_logging_target");
         }
@@ -623,14 +623,14 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
             full_tg_name += tg_name;
           }
           cout4 << "removing target " << full_tg_name
-                << " from " << dl[j]->get_name() << endl;
+                << " from " << dl[j]->get_name() << std::endl;
           // remove appender from device's logger
           logger->remove_appender(full_tg_name);
         }
         // CASE II: remove ALL targets of type <tg_type_str>
         else {
           cout4 << "removing ALL <" << tg_type_str
-                << "> targets from " << dl[j]->get_name() << endl;
+                << "> targets from " << dl[j]->get_name() << std::endl;
           // get logger's appender list
           log4tango::AppenderList al = logger->get_all_appenders();
           // find appenders of type <tg_type_str> in <al>
@@ -640,7 +640,7 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
           for (unsigned int a = 0; a < al.size(); a++) {
             idx = al[a]->get_name().find(substr);
             if (idx != std::string::npos) {
-              cout4 << "\tremoving " << al[a]->get_name() << endl;
+              cout4 << "\tremoving " << al[a]->get_name() << std::endl;
               logger->remove_appender(al[a]->get_name());
             }
           } // for each appender in <al>
@@ -648,11 +648,11 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
       } // for each device in <dl>
     } // for each tuple
     // trace
-    cout4 << "Leaving Logging::remove_logging_target" << endl;
+    cout4 << "Leaving Logging::remove_logging_target" << std::endl;
   }
   catch (std::exception& e) {
     TangoSys_OMemStream o;
-    o << "std::exception caught [" << e.what() << "]" << ends;
+    o << "std::exception caught [" << e.what() << "]" << std::ends;
     Except::throw_exception((const char *)API_StdException,
                             o.str(),
                             (const char *)"Logging::remove_logging_target");
@@ -669,7 +669,7 @@ Tango::DevVarStringArray* Logging::get_logging_target (const std::string& dev_na
     // fight against the "zombie appender" syndrom
     Logging::kill_zombie_appenders();
     // trace
-    cout4 << "Entering Logging::get_logging_target " << endl;
+    cout4 << "Entering Logging::get_logging_target " << std::endl;
     // first check device name (does it exist?)
     DeviceImpl* dev = 0;
     try {
@@ -677,7 +677,7 @@ Tango::DevVarStringArray* Logging::get_logging_target (const std::string& dev_na
     }
     catch (Tango::DevFailed &e) {
       TangoSys_OMemStream o;
-      o << "Device " << dev_name << " not found" << ends;
+      o << "Device " << dev_name << " not found" << std::ends;
       Except::re_throw_exception(e,
                                 (const char *)API_DeviceNotFound,
                                 o.str(),
@@ -687,7 +687,7 @@ Tango::DevVarStringArray* Logging::get_logging_target (const std::string& dev_na
     log4tango::Logger *logger = dev->get_logger();
     if (logger == 0) {
       TangoSys_OMemStream o;
-      o << "Could not instanciate logger (out of memory error)" << ends;
+      o << "Could not instanciate logger (out of memory error)" << std::ends;
       Except::throw_exception((const char *)API_MemoryAllocation, o.str(),
                               (const char *)"Logging::get_logging_target");
     }
@@ -705,15 +705,15 @@ Tango::DevVarStringArray* Logging::get_logging_target (const std::string& dev_na
     ret->length(al.size());
     // populate the CORBA::sequence
     for (unsigned int i = 0; i != al.size(); i++) {
-      cout4 << "\tadding " << al[i]->get_name() << " to the returned target list" << endl;
+      cout4 << "\tadding " << al[i]->get_name() << " to the returned target list" << std::endl;
       (*ret)[i] = Tango::string_dup(al[i]->get_name().c_str());
     } // for i
     // trace
-    cout4 << "Leaving Logging::get_logging_target " << endl;
+    cout4 << "Leaving Logging::get_logging_target " << std::endl;
   }
   catch (std::exception& e) {
     TangoSys_OMemStream o;
-    o << "std::exception caught [" << e.what() << "]" << ends;
+    o << "std::exception caught [" << e.what() << "]" << std::ends;
     Except::throw_exception((const char *)API_StdException,
                             o.str(),(const char *)"Logging::get_logging_target");
   }
@@ -727,13 +727,13 @@ void Logging::set_logging_level (const DevVarLongStringArray *argin)
 {
   try {
     // trace
-    cout4 << "Entering Logging::set_logging_level" << endl;
+    cout4 << "Entering Logging::set_logging_level" << std::endl;
     // log input
     unsigned int i;
     for (i = 0; i < argin->svalue.length(); i++)
-      cout4 << "Input string = " << argin->svalue[i].in() << endl;
+      cout4 << "Input string = " << argin->svalue[i].in() << std::endl;
     for (i = 0; i < argin->lvalue.length(); i++)
-      cout4 << "Input long = " << argin->lvalue[i] << endl;
+      cout4 << "Input long = " << argin->lvalue[i] << std::endl;
     // check input
     if (argin->svalue.length() != argin->lvalue.length()) {
       Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
@@ -785,11 +785,11 @@ void Logging::set_logging_level (const DevVarLongStringArray *argin)
       } // for j
     } // for i
     // trace
-    cout4 << "Leaving Logging::set_logging_level" << endl;
+    cout4 << "Leaving Logging::set_logging_level" << std::endl;
   }
   catch (std::exception& e) {
     TangoSys_OMemStream o;
-    o << "std::exception caught [" << e.what() << "]" << ends;
+    o << "std::exception caught [" << e.what() << "]" << std::ends;
     Except::throw_exception((const char *)API_StdException,
                             o.str(), (const char *)"Logging::set_logging_level");
   }
@@ -803,10 +803,10 @@ DevVarLongStringArray* Logging::get_logging_level (const DevVarStringArray *argi
   Tango::DevVarLongStringArray *ret = 0;
   try {
     // trace
-    cout4 << "Entering Logging::get_logging_level" << endl;
+    cout4 << "Entering Logging::get_logging_level" << std::endl;
     unsigned int i, j;
     for (i = 0; i < argin->length(); i++) {
-      cout4 << "Input string = " << (*argin)[i].in() << endl;
+      cout4 << "Input string = " << (*argin)[i].in() << std::endl;
     }
     // instance the returned CORBA::seq
     ret = new Tango::DevVarLongStringArray;
@@ -838,7 +838,7 @@ DevVarLongStringArray* Logging::get_logging_level (const DevVarStringArray *argi
         if (logger == 0) {
         TangoSys_OMemStream o;
         //--TODO: change the following message
-        o << "out of memory error" << ends;
+        o << "out of memory error" << std::ends;
         Except::throw_exception((const char *)API_MemoryAllocation,
                                 "out of memory error",
                                 (const char *)"Logging::get_logging_level");
@@ -854,11 +854,11 @@ DevVarLongStringArray* Logging::get_logging_level (const DevVarStringArray *argi
       } // for j
     } // for i
     // trace
-    cout4 << "Leaving Logging::get_logging_level" << endl;
+    cout4 << "Leaving Logging::get_logging_level" << std::endl;
   }
   catch (std::exception& e) {
     TangoSys_OMemStream o;
-    o << "std::exception caught [" << e.what() << "]" << ends;
+    o << "std::exception caught [" << e.what() << "]" << std::ends;
     Except::throw_exception((const char *)API_StdException,
                             o.str(),(const char *)"Logging::get_logging_level");
   }
@@ -870,14 +870,14 @@ DevVarLongStringArray* Logging::get_logging_level (const DevVarStringArray *argi
 //-----------------------------------------------------------------------------
 void  Logging::stop_logging (void)
 {
-  cout4 << "Entering Logging::stop_logging" << endl;
+  cout4 << "Entering Logging::stop_logging" << std::endl;
   // get all devices
   std::vector<DeviceImpl*> dl =
     Util::instance()->get_device_list(std::string("*"));
   for (unsigned int i = 0; i < dl.size(); i++) {
     dl[i]->stop_logging();
   }
-  cout4 << "Leaving Logging::stop_logging" << endl;
+  cout4 << "Leaving Logging::stop_logging" << std::endl;
 }
 
 //+----------------------------------------------------------------------------
@@ -885,14 +885,14 @@ void  Logging::stop_logging (void)
 //-----------------------------------------------------------------------------
 void  Logging::start_logging (void)
 {
-  cout4 << "Entering Logging::start_logging" << endl;
+  cout4 << "Entering Logging::start_logging" << std::endl;
   // get all devices
   std::vector<DeviceImpl*> dl =
             Util::instance()->get_device_list(std::string("*"));
   for (unsigned int i = 0; i < dl.size(); i++) {
     dl[i]->start_logging();
   }
-  cout4 << "Leaving Logging::start_logging" << endl;
+  cout4 << "Leaving Logging::start_logging" << std::endl;
 }
 
 //+----------------------------------------------------------------------------
@@ -900,7 +900,7 @@ void  Logging::start_logging (void)
 //-----------------------------------------------------------------------------
 void Logging::kill_zombie_appenders (void)
 {
-  cout4 << "Entering kill_zombie_appenders" << endl;
+  cout4 << "Entering kill_zombie_appenders" << std::endl;
   // get all devices
   std::vector<DeviceImpl*> dl(0);
   dl = Util::instance()->get_device_list("*");
@@ -921,13 +921,13 @@ void Logging::kill_zombie_appenders (void)
                 << dl[i]->get_name()
                 << "::"
                 << al[j]->get_name()
-                << endl;
+                << std::endl;
           logger->remove_appender(al[j]);
         }
       } // for each appender in <al>
     } // if logger
   } // for each device in <dl>
-  cout4 << "Leaving kill_zombie_appenders" << endl;
+  cout4 << "Leaving kill_zombie_appenders" << std::endl;
 }
 
 //+----------------------------------------------------------------------------
@@ -991,7 +991,7 @@ log4tango::Level::Value Logging::tango_to_log4tango_level (Tango::LogLevel tango
     default:
       if (throw_exception == true) {
         TangoSys_OMemStream o;
-        o << "Invalid logging level specified" << ends;
+        o << "Invalid logging level specified" << std::ends;
         Except::throw_exception((const char *)API_MethodArgument,
                                 o.str(),(const char *)"Logging::tango_to_log4tango_level");
       }
@@ -1023,7 +1023,7 @@ log4tango::Level::Value Logging::tango_to_log4tango_level (const std::string& ta
   } else {
     if (throw_exception == true) {
       TangoSys_OMemStream o;
-      o << "Invalid logging level specified" << ends;
+      o << "Invalid logging level specified" << std::ends;
       Except::throw_exception((const char *)API_MethodArgument,
                               o.str(),(const char *)"Logging::tango_to_log4tango_level");
     }
@@ -1067,8 +1067,8 @@ Tango::LogLevel Logging::log4tango_to_tango_level (log4tango::Level::Value log4t
 //-----------------------------------------------------------------------------
 std::string Logging::dev_to_file_name (const std::string& _dev_name)
 {
-  cout4 << "Entering Logging::dev_to_file_name (input " << _dev_name << ")" << endl;
-  string file_name(_dev_name);
+  cout4 << "Entering Logging::dev_to_file_name (input " << _dev_name << ")" << std::endl;
+  std::string file_name(_dev_name);
   std::transform(file_name.begin(), file_name.end(), file_name.begin(), ::tolower);
   std::string::size_type pos = 0;
   do  {
@@ -1080,7 +1080,7 @@ std::string Logging::dev_to_file_name (const std::string& _dev_name)
     pos++;
   } while (1);
   cout4 << "Leaving Logging::dev_to_file_name (output "
-        << file_name << ")" << endl;
+        << file_name << ")" << std::endl;
   return file_name;
 }
 
@@ -1091,7 +1091,7 @@ int Logging::get_target_type_and_name (const std::string& input,
                                        std::string& type,
                                        std::string& name)
 {
-  cout4 << "Logging::get_target_type_and_name (input " << input << ")" << endl;
+  cout4 << "Logging::get_target_type_and_name (input " << input << ")" << std::endl;
   std::string::size_type pos = input.find(kLogTargetSep, 0);
   if (pos == std::string::npos) {
     type = input;
@@ -1105,7 +1105,7 @@ int Logging::get_target_type_and_name (const std::string& input,
     }
   }
   cout4 << "Logging::get_target_type_and_name (output "
-        << type << " "  << name << ")" << endl;
+        << type << " "  << name << ")" << std::endl;
   return 0;
 }
 

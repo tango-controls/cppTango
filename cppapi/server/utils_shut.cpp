@@ -150,7 +150,7 @@ void Util::shutdown_ds()
 		Database *db_ptr = get_database();
 		db_ptr->write_filedatabase();
 		delete db_ptr;
-		cout4 << "Database object deleted" << endl;
+		cout4 << "Database object deleted" << std::endl;
 	}
 
 //
@@ -164,17 +164,17 @@ void Util::shutdown_ds()
 // Shutdown the ORB
 //
 
-	cout4 << "Going to shutdown ORB" << endl;
+	cout4 << "Going to shutdown ORB" << std::endl;
 	CORBA::ORB_ptr loc_orb = get_orb();
 	loc_orb->shutdown(true);
 
-	cout4 << "ORB shutdown" << endl;
+	cout4 << "ORB shutdown" << std::endl;
 
 #ifdef TANGO_HAS_LOG4TANGO
 // clean-up the logging system
 
 	Logging::cleanup();
-	cout4 << "Logging cleaned-up" << endl;
+	cout4 << "Logging cleaned-up" << std::endl;
 #endif
 }
 

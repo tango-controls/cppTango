@@ -169,7 +169,7 @@ void NotifdEventConsumer::cleanup_EventChannel_map()
             }
             catch(...)
             {
-                cerr << "Could not remove filter from notification daemon for " << evt_cb.channel_name << endl;
+                std::cerr << "Could not remove filter from notification daemon for " << evt_cb.channel_name << std::endl;
             }
 	    }
 	}
@@ -194,13 +194,13 @@ void NotifdEventConsumer::cleanup_EventChannel_map()
 
                     // disconnect the pushsupplier to stop receiving events
 
-                    //cout << "EventConsumer::cleanup_EventChannel_map(): Disconnect push supplier!" << endl;
+                    //cout << "EventConsumer::cleanup_EventChannel_map(): Disconnect push supplier!" << std::endl;
 
                     evt_ch.structuredProxyPushSupplier->disconnect_structured_push_supplier();
                 }
                 catch(...)
                 {
-                    cerr << "Could not remove heartbeat filter from notification daemon for " << evt_ch.full_adm_name << endl;
+                    std::cerr << "Could not remove heartbeat filter from notification daemon for " << evt_ch.full_adm_name << std::endl;
                 }
 
                 // Release the connection to the device server administration device
@@ -234,8 +234,8 @@ void NotifdEventConsumer::cleanup_EventChannel_map()
 //
 //-----------------------------------------------------------------------------
 
-void NotifdEventConsumer::connect_event_system(string &device_name,string &att_name,string &event_name,
-                                              const vector<string> &filters,EvChanIte &evt_it,
+void NotifdEventConsumer::connect_event_system(std::string &device_name,std::string &att_name,std::string &event_name,
+                                              const std::vector<std::string> &filters,EvChanIte &evt_it,
                                               EventCallBackStruct &new_event_callback,TANGO_UNUSED(DeviceData &dd),
                                               TANGO_UNUSED(size_t valid_end))
 {
@@ -277,13 +277,13 @@ void NotifdEventConsumer::connect_event_system(string &device_name,string &att_n
 // protocol prefix
 //
 
-    string tmp_dev_name(device_name);
-    string::size_type pos;
+    std::string tmp_dev_name(device_name);
+    std::string::size_type pos;
     pos = tmp_dev_name.find("://");
     pos = pos + 3;
     pos = tmp_dev_name.find('/',pos);
     ++pos;
-    string d_name = tmp_dev_name.substr(pos,tmp_dev_name.size() - pos);
+    std::string d_name = tmp_dev_name.substr(pos,tmp_dev_name.size() - pos);
 
 	char constraint_expr[512];
 
@@ -321,13 +321,13 @@ void NotifdEventConsumer::connect_event_system(string &device_name,string &att_n
   	catch(CosNotifyFilter::InvalidConstraint &)
 	{
     	//cerr << "Exception thrown : Invalid constraint given "
-	  	//     << (const char *)constraint_expr << endl;
+	  	//     << (const char *)constraint_expr << std::endl;
 		res = 1;
   	}
   	catch (...)
 	{
     	//cerr << "Exception thrown while adding constraint "
-	 	//     << (const char *)constraint_expr << endl;
+	 	//     << (const char *)constraint_expr << std::endl;
 		res = 1;
   	}
 
@@ -372,7 +372,7 @@ void NotifdEventConsumer::connect_event_system(string &device_name,string &att_n
 //
 //-----------------------------------------------------------------------------
 
-void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *db,bool reconnect,TANGO_UNUSED(DeviceData &dd))
+void NotifdEventConsumer::connect_event_channel(std::string &channel_name,Database *db,bool reconnect,TANGO_UNUSED(DeviceData &dd))
 {
 	CORBA::Any_var received;
 	const DevVarLongStringArray *dev_import_list;
@@ -384,8 +384,8 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 //
 
 	int channel_exported;
-	string channel_ior;
-	string hostname;
+	std::string channel_ior;
+	std::string hostname;
 
 	if (db != NULL)
 	{
@@ -394,14 +394,14 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 // Remove extra info from channel name (protocol,  dbase=xxx)
 //
 
-		string local_channel_name(channel_name);
-		string::size_type pos;
-		if ((pos = local_channel_name.find('#')) != string::npos)
+		std::string local_channel_name(channel_name);
+		std::string::size_type pos;
+		if ((pos = local_channel_name.find('#')) != std::string::npos)
 			local_channel_name.erase(pos);
-		if ((pos = local_channel_name.find("://")) != string::npos)
+		if ((pos = local_channel_name.find("://")) != std::string::npos)
 		{
 			pos = pos + 3;
-			if ((pos = local_channel_name.find('/',pos)) != string::npos)
+			if ((pos = local_channel_name.find('/',pos)) != std::string::npos)
 				local_channel_name.erase(0,pos + 1);
 		}
 
@@ -419,18 +419,18 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 
 			o << channel_name;
 			o << " has no event channel defined in the database\n";
-			o << "Maybe the server is not running or is not linked with Tango release 4.x (or above)... " << ends;
+			o << "Maybe the server is not running or is not linked with Tango release 4.x (or above)... " << std::ends;
 			Except::throw_exception((const char *)API_NotificationServiceFailed,
 			      			o.str(),
 			      			(const char *)"NotifdEventConsumer::connect_event_channel");
 		}
 
      	received.inout() >>= dev_import_list;
-     	channel_ior = string((dev_import_list->svalue)[1]);
+     	channel_ior = std::string((dev_import_list->svalue)[1]);
      	channel_exported = dev_import_list->lvalue[0];
 
 	  	// get the hostname where the notifyd should be running
-		hostname = string (dev_import_list->svalue[3]);
+		hostname = std::string (dev_import_list->svalue[3]);
 	}
 	else
 	{
@@ -453,7 +453,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 
 			o << channel_name;
 			o << " has no event channel\n";
-			o << "Maybe the server is not running or is not linked with Tango release 4.x (or above)... " << ends;
+			o << "Maybe the server is not running or is not linked with Tango release 4.x (or above)... " << std::ends;
 			Except::throw_exception((const char *)API_NotificationServiceFailed,
 			      			o.str(),
 			      			(const char *)"NotifdEventConsumer::connect_event_channel");
@@ -506,7 +506,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 
 		if (CORBA::is_nil(consumerAdmin))
 		{
-        		//cerr << "Could not get CosNotifyChannelAdmin::ConsumerAdmin" << endl;
+        		//cerr << "Could not get CosNotifyChannelAdmin::ConsumerAdmin" << std::endl;
 			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        		(const char*)"Failed to get default Consumer admin from notification daemon (hint: make sure the notifd process is running on this host)",
                        		(const char*)"NotifdEventConsumer::connect_event_channel()");
@@ -533,7 +533,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 		consumerAdmin -> obtain_notification_push_supplier(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxyId);
 		if (CORBA::is_nil(proxySupplier))
 		{
-        		//cerr << "Could not get CosNotifyChannelAdmin::ProxySupplier" << endl;
+        		//cerr << "Could not get CosNotifyChannelAdmin::ProxySupplier" << std::endl;
 			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        		(const char*)"Failed to obtain a push supplier from notification daemon (hint: make sure the notifd process is running on this host)",
                        		(const char*)"NotifdEventConsumer::connect_event_channel()");
@@ -544,7 +544,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 		    		proxySupplier);
 		if (CORBA::is_nil(structuredProxyPushSupplier))
 		{
-       			//cerr << "Tango::NotifdEventConsumer::NotifdEventConsumer() could not get CosNotifyChannelAdmin::StructuredProxyPushSupplier" << endl;
+       			//cerr << "Tango::NotifdEventConsumer::NotifdEventConsumer() could not get CosNotifyChannelAdmin::StructuredProxyPushSupplier" << std::endl;
        		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        		(const char*)"Failed to narrow the push supplier from notification daemon (hint: make sure the notifd process is running on this host)",
                        		(const char*)"NotifdEventConsumer::connect_event_channel()");
@@ -574,7 +574,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 	}
 	catch(const CosEventChannelAdmin::AlreadyConnected&)
 	{
-       	cerr << "Tango::NotifdEventConsumer::NotifdEventConsumer() caught AlreadyConnected exception" << endl;
+       	std::cerr << "Tango::NotifdEventConsumer::NotifdEventConsumer() caught AlreadyConnected exception" << std::endl;
 	}
 
 	EvChanIte evt_it = channel_map.end();
@@ -627,7 +627,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 	}
 	catch (...)
 	{
-                //cerr << "Caught exception obtaining filter object" << endl;
+                //cerr << "Caught exception obtaining filter object" << std::endl;
 		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        	(const char*)"Caught exception while creating heartbeat filter (check filter)",
                        	(const char*)"NotifdEventConsumer::connect_event_channel()");
@@ -687,20 +687,20 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 
 void NotifdEventConsumer::push_structured_event(const CosNotification::StructuredEvent& event)
 {
-	string domain_name(event.header.fixed_header.event_type.domain_name);
-	string event_type(event.header.fixed_header.event_type.type_name);
-	string event_name(event.header.fixed_header.event_name);
+	std::string domain_name(event.header.fixed_header.event_type.domain_name);
+	std::string event_type(event.header.fixed_header.event_type.type_name);
+	std::string event_name(event.header.fixed_header.event_name);
 
-//	cout << "Received event: domain_name = " << domain_name << ", event_type = " << event_type << ", event_name = " << event_name << endl;
+//	cout << "Received event: domain_name = " << domain_name << ", event_type = " << event_type << ", event_name = " << event_name << std::endl;
 
 	bool svr_send_tg_host = false;
 
 	if (event_name == "heartbeat")
 	{
-		string fq_dev_name = domain_name;
-		if (event_type.find("tango://") != string::npos)
+		std::string fq_dev_name = domain_name;
+		if (event_type.find("tango://") != std::string::npos)
 		{
-			if (event_type.find("#") == string::npos)
+			if (event_type.find("#") == std::string::npos)
 				fq_dev_name.insert(0,event_type);
 			else
 			{
@@ -728,8 +728,8 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 
 		if (ipos == channel_map.end())
 		{
-			string::size_type pos,end;
-			if ((pos = event_type.find('.')) != string::npos)
+			std::string::size_type pos,end;
+			if ((pos = event_type.find('.')) != std::string::npos)
 			{
 				end = event_type.find(':',pos);
 				fq_dev_name.erase(pos,end - pos);
@@ -757,11 +757,11 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 
 		if (ipos == channel_map.end() && svr_send_tg_host == true)
 		{
-			string svc_tango_host = event_type.substr(8,event_type.size() - 9);
+			std::string svc_tango_host = event_type.substr(8,event_type.size() - 9);
 			unsigned int i = 0;
 			for (i = 1;i < env_var_fqdn_prefix.size();i++)
 			{
-				if (env_var_fqdn_prefix[i].find(svc_tango_host) != string::npos)
+				if (env_var_fqdn_prefix[i].find(svc_tango_host) != std::string::npos)
 				{
 					fq_dev_name = domain_name;
 					fq_dev_name.insert(0,env_var_fqdn_prefix[0]);
@@ -785,7 +785,7 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 			}
 			catch (...)
 			{
-				cerr << "Tango::NotifdEventConsumer::push_structured_event() timeout on channel monitor of " << ipos->first << endl;
+				std::cerr << "Tango::NotifdEventConsumer::push_structured_event() timeout on channel monitor of " << ipos->first << std::endl;
 			}
 		}
 
@@ -793,10 +793,10 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 	}
 	else
 	{
-		string fq_dev_name = domain_name;
-		if (event_type.find("tango://") != string::npos)
+		std::string fq_dev_name = domain_name;
+		if (event_type.find("tango://") != std::string::npos)
 		{
-			if (event_type.find("#") == string::npos)
+			if (event_type.find("#") == std::string::npos)
 				fq_dev_name.insert(0,event_type);
 			else
 			{
@@ -821,14 +821,14 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 // the event with the first one in the client list (like for the heartbeat event)
 //
 
-		string attr_event_name = fq_dev_name + "." + event_name;
-		map<std::string,EventCallBackStruct>::iterator ipos;
+		std::string attr_event_name = fq_dev_name + "." + event_name;
+		std::map<std::string,EventCallBackStruct>::iterator ipos;
 
 		ipos = event_callback_map.find(attr_event_name);
 		if (ipos == event_callback_map.end())
 		{
-			string::size_type pos,end;
-			if ((pos = event_type.find('.')) != string::npos)
+			std::string::size_type pos,end;
+			if ((pos = event_type.find('.')) != std::string::npos)
 			{
 				end = event_type.find(':',pos);
 				attr_event_name.erase(pos,end - pos);
@@ -837,11 +837,11 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 
 				if (ipos == event_callback_map.end() && svr_send_tg_host == true)
 				{
-					string svc_tango_host = event_type.substr(8,event_type.size() - 9);
+					std::string svc_tango_host = event_type.substr(8,event_type.size() - 9);
 					unsigned int i = 0;
 					for (i = 1;i < env_var_fqdn_prefix.size();i++)
 					{
-						if (env_var_fqdn_prefix[i].find(svc_tango_host) != string::npos)
+						if (env_var_fqdn_prefix[i].find(svc_tango_host) != std::string::npos)
 						{
 							fq_dev_name = domain_name;
 							fq_dev_name.insert(0,env_var_fqdn_prefix[0]);
@@ -951,8 +951,8 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 // We need to find which type of event we have received
 //
 
-					string::size_type pos = attr_event_name.find('.');
-					string att_type = attr_event_name.substr(pos + 1);
+					std::string::size_type pos = attr_event_name.find('.');
+					std::string att_type = attr_event_name.substr(pos + 1);
 					if (att_type == CONF_TYPE_EVENT)
 						ev_attr_conf = true;
 					else if (att_type == DATA_READY_TYPE_EVENT)
@@ -963,7 +963,7 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 // Fire the user callback
 //
 
-				vector<EventSubscribeStruct>::iterator esspos;
+				std::vector<EventSubscribeStruct>::iterator esspos;
 
 				unsigned int cb_nb = ipos->second.callback_list.size();
 				unsigned int cb_ctr = 0;
@@ -1020,7 +1020,7 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 								}
 								catch (...)
 								{
-									cerr << "Tango::NotifdEventConsumer::push_structured_event() exception in callback method of " << ipos->first << endl;
+									std::cerr << "Tango::NotifdEventConsumer::push_structured_event() exception in callback method of " << ipos->first << std::endl;
 								}
 
 								delete event_data;
@@ -1066,7 +1066,7 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 								}
 								catch (...)
 								{
-									cerr << "Tango::NotifdEventConsumer::push_structured_event() exception in callback method of " << ipos->first << endl;
+									std::cerr << "Tango::NotifdEventConsumer::push_structured_event() exception in callback method of " << ipos->first << std::endl;
 								}
 
 								delete event_data;
@@ -1092,7 +1092,7 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 								}
 								catch (...)
 								{
-									cerr << "Tango::NotifdEventConsumer::push_structured_event() exception in callback method of " << ipos->first << endl;
+									std::cerr << "Tango::NotifdEventConsumer::push_structured_event() exception in callback method of " << ipos->first << std::endl;
 								}
 								delete event_data;
 							}
@@ -1128,7 +1128,7 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 					map_modification_lock.readerOut();
 				}
 
-				cerr << "Tango::NotifdEventConsumer::push_structured_event() timeout on callback monitor of " << ipos->first << endl;
+				std::cerr << "Tango::NotifdEventConsumer::push_structured_event() timeout on callback monitor of " << ipos->first << std::endl;
 			}
 		}
 		else
@@ -1139,15 +1139,15 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 	}
 }
 
-ReceivedFromAdmin NotifdEventConsumer::initialize_received_from_admin(TANGO_UNUSED(const Tango::DevVarLongStringArray *dvlsa), 
-                                                                      const string &local_callback_key,
-                                                                      const string &adm_name,
+ReceivedFromAdmin NotifdEventConsumer::initialize_received_from_admin(TANGO_UNUSED(const Tango::DevVarLongStringArray *dvlsa),
+                                                                      const std::string &local_callback_key,
+                                                                      const std::string &adm_name,
                                                                       bool device_from_env_var)
 {
 	ReceivedFromAdmin result;
 	result.event_name = local_callback_key;
 
-	string full_adm_name(adm_name);
+	std::string full_adm_name(adm_name);
 	if (device_from_env_var)
 	{
 		full_adm_name.insert(0, env_var_fqdn_prefix[0]);
@@ -1155,8 +1155,8 @@ ReceivedFromAdmin NotifdEventConsumer::initialize_received_from_admin(TANGO_UNUS
 
 	result.channel_name = full_adm_name;
 
-	cout4 << "received_from_admin.event_name = " << result.event_name << endl;
-	cout4 << "received_from_admin.channel_name = " << result.channel_name << endl;
+	cout4 << "received_from_admin.event_name = " << result.event_name << std::endl;
+	cout4 << "received_from_admin.channel_name = " << result.channel_name << std::endl;
 	return result;
 }
 

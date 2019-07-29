@@ -81,7 +81,7 @@ DevRestartCmd::DevRestartCmd(const char *name,
 CORBA::Any *DevRestartCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
 {
 
-	cout4 << "DevRestart::execute(): arrived " << endl;
+	cout4 << "DevRestart::execute(): arrived " << std::endl;
 
 //
 // Extract the input string
@@ -94,8 +94,8 @@ CORBA::Any *DevRestartCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
 				        (const char *)"Imcompatible command argument type, expected type is : string",
 				        (const char *)"DevRestartCmd::execute");
 	}
-	string d_name(tmp_name);
-	cout4 << "Received string = " << d_name << endl;
+	std::string d_name(tmp_name);
+	cout4 << "Received string = " << d_name << std::endl;
 
 //
 // call DServer method which implements this command
@@ -138,7 +138,7 @@ DevRestartServerCmd::DevRestartServerCmd(const char *name,
 CORBA::Any *DevRestartServerCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
-	cout4 << "DevRestartServerCmd::execute(): arrived" << endl;
+	cout4 << "DevRestartServerCmd::execute(): arrived" << std::endl;
 
 //
 // call DServer method which implements this command
@@ -184,7 +184,7 @@ DevQueryClassCmd::DevQueryClassCmd(const char *name,
 CORBA::Any *DevQueryClassCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
-	cout4 << "DevQueryClassCmd::execute(): arrived" << endl;
+	cout4 << "DevQueryClassCmd::execute(): arrived" << std::endl;
 
 //
 // call DServer method which implements this command
@@ -201,9 +201,9 @@ CORBA::Any *DevQueryClassCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORB
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
-		cout3 << "Bad allocation while in DevQueryClassCmd::execute()" << endl;
+		cout3 << "Bad allocation while in DevQueryClassCmd::execute()" << std::endl;
 		delete ret;
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -211,7 +211,7 @@ CORBA::Any *DevQueryClassCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORB
 	}
 	(*out_any) <<= ret;
 
-	cout4 << "Leaving DevQueryClassCmd::execute()" << endl;
+	cout4 << "Leaving DevQueryClassCmd::execute()" << std::endl;
 	return(out_any);
 }
 
@@ -245,7 +245,7 @@ DevQueryDeviceCmd::DevQueryDeviceCmd(const char *name,
 CORBA::Any *DevQueryDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
-	cout4 << "DevQueryDeviceCmd::execute(): arrived" << endl;
+	cout4 << "DevQueryDeviceCmd::execute(): arrived" << std::endl;
 
 //
 // call DServer method which implements this command
@@ -261,9 +261,9 @@ CORBA::Any *DevQueryDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const COR
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
-		cout3 << "Bad allocation while in DevQueryDeviceCmd::execute()" << endl;
+		cout3 << "Bad allocation while in DevQueryDeviceCmd::execute()" << std::endl;
 		delete ret;
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -271,7 +271,7 @@ CORBA::Any *DevQueryDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const COR
 	}
 	(*out_any) <<= ret;
 
-	cout4 << "Leaving DevQueryDeviceCmd::execute()" << endl;
+	cout4 << "Leaving DevQueryDeviceCmd::execute()" << std::endl;
 	return(out_any);
 }
 
@@ -304,7 +304,7 @@ DevQuerySubDeviceCmd::DevQuerySubDeviceCmd(const char *name,
 CORBA::Any *DevQuerySubDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
-	cout4 << "DevQuerySubDeviceCmd::execute(): arrived" << endl;
+	cout4 << "DevQuerySubDeviceCmd::execute(): arrived" << std::endl;
 
 //
 // call DServer method which implements this command
@@ -320,9 +320,9 @@ CORBA::Any *DevQuerySubDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const 
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
-		cout3 << "Bad allocation while in DevQuerySubDeviceCmd::execute()" << endl;
+		cout3 << "Bad allocation while in DevQuerySubDeviceCmd::execute()" << std::endl;
 		delete ret;
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -330,7 +330,7 @@ CORBA::Any *DevQuerySubDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const 
 	}
 	(*out_any) <<= ret;
 
-	cout4 << "Leaving DevQuerySubDeviceCmd::execute()" << endl;
+	cout4 << "Leaving DevQuerySubDeviceCmd::execute()" << std::endl;
 	return(out_any);
 }
 
@@ -364,7 +364,7 @@ DevKillCmd::DevKillCmd(const char *name,
 CORBA::Any *DevKillCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
-	cout4 << "DevKillCmd::execute(): arrived" << endl;
+	cout4 << "DevKillCmd::execute(): arrived" << std::endl;
 
 //
 // call DServer method which implements this command
@@ -410,7 +410,7 @@ DevSetTraceLevelCmd::DevSetTraceLevelCmd(const char *name,
 CORBA::Any *DevSetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
-	cout4 << "DevSetTraceLevelCmd::execute(): arrived" << endl;
+	cout4 << "DevSetTraceLevelCmd::execute(): arrived" << std::endl;
 
 #ifdef TANGO_HAS_LOG4TANGO
   	Except::throw_exception((const char *)API_DeprecatedCommand,
@@ -432,7 +432,7 @@ CORBA::Any *DevSetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 	int new_level;
 	if ((in_any >>= new_level) == false)
 	{
-		cout3 << "DevSetTraceLevelCmd::execute() --> Wrong argument type" << endl;
+		cout3 << "DevSetTraceLevelCmd::execute() --> Wrong argument type" << std::endl;
 		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 				      (const char *)"Imcompatible command argument type, expected type is : long",
 				      (const char *)"DevSetTraceLevelCmd::execute");
@@ -483,7 +483,7 @@ DevGetTraceLevelCmd::DevGetTraceLevelCmd(const char *name,
 CORBA::Any *DevGetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
-	cout4 << "DevGetTraceLevelCmd::execute(): arrived" << endl;
+	cout4 << "DevGetTraceLevelCmd::execute(): arrived" << std::endl;
 
 #ifdef TANGO_HAS_LOG4TANGO
 
@@ -513,7 +513,7 @@ CORBA::Any *DevGetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 	CORBA::Any *out_any = new CORBA::Any();
 	(*out_any) <<= level;
 
-	cout4 << "Leaving DevGetTraceLevelCmd::execute()" << endl;
+	cout4 << "Leaving DevGetTraceLevelCmd::execute()" << std::endl;
 	return(out_any);
 #endif
 }
@@ -548,7 +548,7 @@ DevGetTraceOutputCmd::DevGetTraceOutputCmd(const char *name,
 CORBA::Any *DevGetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
-	cout4 << "DevGetTraceOutputCmd::execute(): arrived" << endl;
+	cout4 << "DevGetTraceOutputCmd::execute(): arrived" << std::endl;
 
 #ifdef TANGO_HAS_LOG4TANGO
 	Except::throw_exception((const char *)API_DeprecatedCommand,
@@ -567,7 +567,7 @@ CORBA::Any *DevGetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 // Get Trace output
 //
 
-	string st = Tango::Util::instance()->get_trace_output();
+	std::string st = Tango::Util::instance()->get_trace_output();
 
 //
 // return data to the caller
@@ -576,7 +576,7 @@ CORBA::Any *DevGetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 	CORBA::Any *out_any = new CORBA::Any();
 	(*out_any) <<= st.c_str();
 
-	cout4 << "Leaving DevGetTraceOutputCmd::execute()" << endl;
+	cout4 << "Leaving DevGetTraceOutputCmd::execute()" << std::endl;
 	return(out_any);
 #endif
 }
@@ -612,7 +612,7 @@ DevSetTraceOutputCmd::DevSetTraceOutputCmd(const char *name,
 CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
-	cout4 << "DevSetTraceOutputCmd::execute(): arrived" << endl;
+	cout4 << "DevSetTraceOutputCmd::execute(): arrived" << std::endl;
 
 #ifdef TANGO_HAS_LOG4TANGO
 
@@ -639,15 +639,15 @@ CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 				      (const char *)"Imcompatible command argument type, expected type is : string",
 				      (const char *)"DevSetTraceOutputCmd::execute");
 	}
-	string in_file(in_file_ptr);
-	cout4 << "Received string = " << in_file << endl;
+	std::string in_file(in_file_ptr);
+	cout4 << "Received string = " << in_file << std::endl;
 
 	if (in_file == InitialOutput)
 	{
 		delete(Tango::Util::instance()->get_trace_output_stream());
 		Tango::Util::instance()->set_trace_output_stream((ofstream *)NULL);
 
-		ostream &tmp_stream = Tango::Util::instance()->get_out();
+		std::ostream &tmp_stream = Tango::Util::instance()->get_out();
 
 //
 // For windows, the stdc++ library also implements the new IOstreams where the
@@ -676,10 +676,10 @@ CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 		}
 		else
 		{
-			cout3 << "Cannot open ofstream" << endl;
+			cout3 << "Cannot open ofstream" << std::endl;
 			TangoSys_OMemStream o;
 
-			o << "Impossible to open file " << in_file << ends;
+			o << "Impossible to open file " << in_file << std::ends;
 			Except::throw_exception((const char *)API_CannotOpenFile,
 					      o.str(),
 					      (const char *)"DevSetTraceoutput::execute");
@@ -728,7 +728,7 @@ QueryWizardClassPropertyCmd::QueryWizardClassPropertyCmd(const char *name,
 CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
 {
 
-	cout4 << "QueryWizardClassPropertyCmd::execute(): arrived" << endl;
+	cout4 << "QueryWizardClassPropertyCmd::execute(): arrived" << std::endl;
 
 //
 // Extract the input string
@@ -741,7 +741,7 @@ CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA:
 				        (const char *)"Imcompatible command argument type, expected type is : string",
 				        (const char *)"QueryWizardClassPropertyCmd::execute");
 	}
-	string class_name(tmp_name);
+	std::string class_name(tmp_name);
 
 //
 // call DServer method which implements this command
@@ -757,9 +757,9 @@ CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA:
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
-		cout3 << "Bad allocation while in QueryWizardClassPropertyCmd::execute()" << endl;
+		cout3 << "Bad allocation while in QueryWizardClassPropertyCmd::execute()" << std::endl;
 		delete ret;
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -767,7 +767,7 @@ CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA:
 	}
 	(*out_any) <<= ret;
 
-	cout4 << "Leaving QueryWizardClassPropertyCmd::execute()" << endl;
+	cout4 << "Leaving QueryWizardClassPropertyCmd::execute()" << std::endl;
 	return(out_any);
 }
 
@@ -805,7 +805,7 @@ QueryWizardDevPropertyCmd::QueryWizardDevPropertyCmd(const char *name,
 CORBA::Any *QueryWizardDevPropertyCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
 {
 
-	cout4 << "QueryWizardDevPropertyCmd::execute(): arrived" << endl;
+	cout4 << "QueryWizardDevPropertyCmd::execute(): arrived" << std::endl;
 
 //
 // Extract the input string
@@ -818,7 +818,7 @@ CORBA::Any *QueryWizardDevPropertyCmd::execute(DeviceImpl *device,const CORBA::A
 				        (const char *)"Imcompatible command argument type, expected type is : string",
 				        (const char *)"QueryWizardDevPropertyCmd::execute");
 	}
-	string class_name(tmp_name);
+	std::string class_name(tmp_name);
 
 //
 // call DServer method which implements this command
@@ -834,9 +834,9 @@ CORBA::Any *QueryWizardDevPropertyCmd::execute(DeviceImpl *device,const CORBA::A
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
-		cout3 << "Bad allocation while in QueryWizardDevPropertyCmd::execute()" << endl;
+		cout3 << "Bad allocation while in QueryWizardDevPropertyCmd::execute()" << std::endl;
 		delete ret;
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -844,7 +844,7 @@ CORBA::Any *QueryWizardDevPropertyCmd::execute(DeviceImpl *device,const CORBA::A
 	}
 	(*out_any) <<= ret;
 
-	cout4 << "Leaving QueryWizardDevPropertyCmd::execute()" << endl;
+	cout4 << "Leaving QueryWizardDevPropertyCmd::execute()" << std::endl;
 	return(out_any);
 }
 
@@ -879,7 +879,7 @@ QueryEventChannelIORCmd::QueryEventChannelIORCmd(const char *name,
 CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
-	cout4 << "QueryEventChannelIORCmd::execute(): arrived" << endl;
+	cout4 << "QueryEventChannelIORCmd::execute(): arrived" << std::endl;
 
 //
 // Get DS event channel IOR which is stored in the EventSupplier object
@@ -890,7 +890,7 @@ CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TA
 	nd_event_supplier = Util::instance()->get_notifd_event_supplier();
 	if (nd_event_supplier == NULL)
 	{
-		cout3 << "Try to retrieve DS event channel while NotifdEventSupplier object is not yet created" << endl;
+		cout3 << "Try to retrieve DS event channel while NotifdEventSupplier object is not yet created" << std::endl;
 
 		Except::throw_exception((const char *)API_EventSupplierNotConstructed,
 				      	(const char *)"Try to retrieve DS event channel while EventSupplier object is not created",
@@ -899,7 +899,7 @@ CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TA
 	else
 	{
 
-		string &ior = nd_event_supplier->get_event_channel_ior();
+		std::string &ior = nd_event_supplier->get_event_channel_ior();
 
 //
 // return data to the caller
@@ -909,9 +909,9 @@ CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TA
 		{
 			out_any = new CORBA::Any();
 		}
-		catch (bad_alloc &)
+		catch (std::bad_alloc &)
 		{
-			cout3 << "Bad allocation while in QueryEventChannelIORCmd::execute()" << endl;
+			cout3 << "Bad allocation while in QueryEventChannelIORCmd::execute()" << std::endl;
 			Except::throw_exception((const char *)API_MemoryAllocation,
 				      		(const char *)"Can't allocate memory in server",
 				      		(const char *)"QueryEventChannelIORCmd::execute");
@@ -919,7 +919,7 @@ CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TA
 		(*out_any) <<= ior.c_str();
 	}
 
-	cout4 << "Leaving QueryEventChannelIORCmd::execute()" << endl;
+	cout4 << "Leaving QueryEventChannelIORCmd::execute()" << std::endl;
 	return(out_any);
 }
 
@@ -953,7 +953,7 @@ LockDeviceCmd::LockDeviceCmd(const char *name,
 CORBA::Any *LockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
 {
 
-	cout4 << "LockDeviceCmd::execute(): arrived" << endl;
+	cout4 << "LockDeviceCmd::execute(): arrived" << std::endl;
 
 //
 // Extract the input argument
@@ -1006,7 +1006,7 @@ ReLockDevicesCmd::ReLockDevicesCmd(const char *name,
 CORBA::Any *ReLockDevicesCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
 {
 
-	cout4 << "ReLockDevicesCmd::execute(): arrived" << endl;
+	cout4 << "ReLockDevicesCmd::execute(): arrived" << std::endl;
 
 //
 // Extract the input argument
@@ -1061,7 +1061,7 @@ UnLockDeviceCmd::UnLockDeviceCmd(const char *name,
 CORBA::Any *UnLockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
 {
 
-	cout4 << "UnLockDeviceCmd::execute(): arrived" << endl;
+	cout4 << "UnLockDeviceCmd::execute(): arrived" << std::endl;
 
 //
 // Extract the input string
@@ -1085,16 +1085,16 @@ CORBA::Any *UnLockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
-		cout3 << "Bad allocation while in UnLockDeviceCmd::execute()" << endl;
+		cout3 << "Bad allocation while in UnLockDeviceCmd::execute()" << std::endl;
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"UnLockDeviceCmd::execute");
 	}
 	(*out_any) <<= ret;
 
-	cout4 << "Leaving UnLockDeviceCmd::execute()" << endl;
+	cout4 << "Leaving UnLockDeviceCmd::execute()" << std::endl;
 	return(out_any);
 }
 
@@ -1129,7 +1129,7 @@ DevLockStatusCmd::DevLockStatusCmd(const char *name,
 CORBA::Any *DevLockStatusCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
 {
 
-	cout4 << "DevLockStatusCmd::execute(): arrived" << endl;
+	cout4 << "DevLockStatusCmd::execute(): arrived" << std::endl;
 
 //
 // Extract the input string
@@ -1153,16 +1153,16 @@ CORBA::Any *DevLockStatusCmd::execute(DeviceImpl *device,const CORBA::Any &in_an
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
-		cout3 << "Bad allocation while in DevLockStatusCmd::execute()" << endl;
+		cout3 << "Bad allocation while in DevLockStatusCmd::execute()" << std::endl;
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DevLockStatusCmd::execute");
 	}
 	(*out_any) <<= ret;
 
-	cout4 << "Leaving DevLockStatusCmd::execute()" << endl;
+	cout4 << "Leaving DevLockStatusCmd::execute()" << std::endl;
 	return(out_any);
 }
 
@@ -1235,7 +1235,7 @@ bool EventSubscriptionChangeCmd::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *devi
 //-----------------------------------------------------------------------------
 CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-    cout4 << "EventSubscriptionChangeCmd::execute(): arrived" << endl;
+    cout4 << "EventSubscriptionChangeCmd::execute(): arrived" << std::endl;
 
 //
 // Extract the input string array
@@ -1259,20 +1259,20 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
-		cout3 << "Bad allocation while in EventSubscriptionChangeCmd::execute()" << endl;
+		cout3 << "Bad allocation while in EventSubscriptionChangeCmd::execute()" << std::endl;
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"EventSubscriptionChangeCmd::execute");
 	}
 	(*out_any) <<= ret;
 
-	cout4 << "Leaving EventSubscriptionChangeCmd::execute()" << endl;
+	cout4 << "Leaving EventSubscriptionChangeCmd::execute()" << std::endl;
 	return(out_any);
 }
 
-const string ZmqEventSubscriptionChangeCmd::in_desc = "Event consumer wants to subscribe to.\n"
+const std::string ZmqEventSubscriptionChangeCmd::in_desc = "Event consumer wants to subscribe to.\n"
 "device name, attribute/pipe name, action (\"subscribe\"), event name, <Tango client IDL version>\"\n"
 "event name can take the following values:\n"
 "    \"change\",\n"
@@ -1286,7 +1286,7 @@ const string ZmqEventSubscriptionChangeCmd::in_desc = "Event consumer wants to s
 "    \"pipe\"\n"
 "\"info\" can also be used as single parameter to retrieve information about the heartbeat and event pub endpoints.";
 
-const string ZmqEventSubscriptionChangeCmd::out_desc = "Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint\n"
+const std::string ZmqEventSubscriptionChangeCmd::out_desc = "Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint\n"
 "...\n"
 "Str[n] = Alternate Heartbeat pub endpoint - Str[n+1] = Alternate Event pub endpoint\n"
 "Str[n+1] = event name used by this server as zmq topic to send events\n"
@@ -1355,7 +1355,7 @@ bool ZmqEventSubscriptionChangeCmd::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *d
 //-----------------------------------------------------------------------------
 CORBA::Any *ZmqEventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-    cout4 << "ZmqEventSubscriptionChangeCmd::execute(): arrived" << endl;
+    cout4 << "ZmqEventSubscriptionChangeCmd::execute(): arrived" << std::endl;
 
 //
 // Extract the input string array
@@ -1379,16 +1379,16 @@ CORBA::Any *ZmqEventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,con
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
-		cout3 << "Bad allocation while in ZmqEventSubscriptionChangeCmd::execute()" << endl;
+		cout3 << "Bad allocation while in ZmqEventSubscriptionChangeCmd::execute()" << std::endl;
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"ZmqEventSubscriptionChangeCmd::execute");
 	}
 	(*out_any) <<= ret;
 
-	cout4 << "Leaving ZmqEventSubscriptionChangeCmd::execute()" << endl;
+	cout4 << "Leaving ZmqEventSubscriptionChangeCmd::execute()" << std::endl;
 	return(out_any);
 }
 
@@ -1459,7 +1459,7 @@ bool EventConfirmSubscriptionCmd::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *dev
 //-----------------------------------------------------------------------------
 CORBA::Any *EventConfirmSubscriptionCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-    cout4 << "EventConfirmSubscriptionCmd::execute(): arrived" << endl;
+    cout4 << "EventConfirmSubscriptionCmd::execute(): arrived" << std::endl;
 
     //
     // If we receive this command while the DS is in its shutting down sequence, do nothing
@@ -1469,7 +1469,7 @@ CORBA::Any *EventConfirmSubscriptionCmd::execute(Tango::DeviceImpl *device,const
     if (tg->get_heartbeat_thread_object() == NULL)
     {
         TangoSys_OMemStream o;
-        o << "The device server is shutting down! You can no longer subscribe for events" << ends;
+        o << "The device server is shutting down! You can no longer subscribe for events" << std::ends;
 
         Except::throw_exception((const char *) API_ShutdownInProgress, o.str(),
                                 (const char *) "DServer::event_confirm_subscription");
@@ -1489,7 +1489,7 @@ CORBA::Any *EventConfirmSubscriptionCmd::execute(Tango::DeviceImpl *device,const
     {
         TangoSys_OMemStream o;
         o << "Wrong number of input arguments: 3 needed per event: device name, attribute/pipe name and event name"
-          << endl;
+          << std::endl;
 
         Except::throw_exception((const char *) API_WrongNumberOfArgs, o.str(),
                                 (const char *) "DServer::event_confirm_subscription");
@@ -1519,7 +1519,7 @@ DServerClass *DServerClass::_instance = NULL;
 //
 // description : 	constructor for the DServerClass class
 //			The constructor add specific class commands to the
-//			command list, create a device of the DServer class
+//			command std::list, create a device of the DServer class
 //			retrieve all classes which must be created within the
 //			server and finally, creates these classes
 //
@@ -1535,7 +1535,7 @@ bool less_than_dserver (Command *a,Command *b)
 		return false;
 }
 
-DServerClass::DServerClass(string &s):DeviceClass(s)
+DServerClass::DServerClass(std::string &s):DeviceClass(s)
 {
 
 	try
@@ -1557,7 +1557,7 @@ DServerClass::DServerClass(string &s):DeviceClass(s)
 // Create device name from device server name
 //
 
-		string dev_name(DSDeviceDomain);
+		std::string dev_name(DSDeviceDomain);
 		dev_name.append(1,'/');
 		dev_name.append(Tango::Util::instance()->get_ds_exec_name());
 		dev_name.append(1,'/');
@@ -1574,7 +1574,7 @@ DServerClass::DServerClass(string &s):DeviceClass(s)
 		device_factory(&dev_list);
 
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		for (unsigned long i = 0;i < command_list.size();i++)
 			delete command_list[i];
@@ -1586,7 +1586,7 @@ DServerClass::DServerClass(string &s):DeviceClass(s)
 				delete device_list[i];
 			device_list.clear();
 		}
-		cerr << "Can't allocate memory while building the DServerClass object" << endl;
+		std::cerr << "Can't allocate memory while building the DServerClass object" << std::endl;
 		throw;
 	}
 }
@@ -1604,7 +1604,7 @@ DServerClass *DServerClass::instance()
 {
 	if (_instance == NULL)
 	{
-		cerr << "Class DServer is not initialised!" << endl;
+		std::cerr << "Class DServer is not initialised!" << std::endl;
 		Except::throw_exception((const char *)API_DServerClassNotInitialised,
 				        (const char *)"The DServerClass is not yet initialised, please wait!",
 				        (const char *)"DServerClass::instance");
@@ -1619,10 +1619,10 @@ DServerClass *DServerClass::init()
 	{
 		try
 		{
-			string s("DServer");
+			std::string s("DServer");
 			_instance = new DServerClass(s);
 		}
-		catch (bad_alloc &)
+		catch (std::bad_alloc &)
 		{
 			throw;
 		}
@@ -1677,7 +1677,7 @@ void DServerClass::command_factory()
 						   Tango::DEVVAR_STRINGARRAY,
 						   "Device name",
 						   "Device polling status"));
-	string msg("Lg[0]=Upd period.");
+	std::string msg("Lg[0]=Upd period.");
 	msg = msg + (" Str[0]=Device name");
 	msg = msg + (". Str[1]=Object type");
 	msg = msg + (". Str[2]=Object name");
@@ -1840,7 +1840,7 @@ void DServerClass::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 
 	for (unsigned long i = 0;i < devlist_ptr->length();i++)
 	{
-		cout4 << "Device name : " << (*devlist_ptr)[i].in() << endl;
+		cout4 << "Device name : " << (*devlist_ptr)[i].in() << std::endl;
 
 //
 // Create device and add it into the device list

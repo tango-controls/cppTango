@@ -61,7 +61,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 // get host and port from environment variable TANGO_HOST
 //
 
-	string tango_host_env_var;
+	std::string tango_host_env_var;
 	int ret;
 	filedb = Tango_nullptr;
 	serv_version = 0;
@@ -71,7 +71,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 	if (ret == -1)
 	{
 		TangoSys_MemStream desc;
-		desc << "TANGO_HOST env. variable not set, set it and retry (e.g. TANGO_HOST=<host>:<port>)" << ends;
+		desc << "TANGO_HOST env. variable not set, set it and retry (e.g. TANGO_HOST=<host>:<port>)" << std::ends;
 		ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       desc.str(),
 					       (const char *)"Database::Database");
@@ -79,7 +79,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 
 	check_tango_host(tango_host_env_var.c_str());
 
-	cout4 <<"Database::Database(): TANGO host " << host << " port " << port << endl;
+	cout4 <<"Database::Database(): TANGO host " << host << " port " << port << std::endl;
 
 	build_connection();
 
@@ -89,7 +89,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 }
 
 #ifdef _TG_WINDOWS_
-Database::Database(ORB *orb_in,string &ds_exec_name,string &ds_inst_name) : Connection(orb_in),
+Database::Database(ORB *orb_in,std::string&ds_exec_name,std::string&ds_inst_name) : Connection(orb_in),
 ext(new DatabaseExt),
 access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {
@@ -106,7 +106,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 	if (tango_host_env_c_str == NULL)
 	{
 		TangoSys_MemStream desc;
-		desc << "TANGO_HOST env. variable not set, set it and retry (e.g. TANGO_HOST=<host>:<port>)" << ends;
+		desc << "TANGO_HOST env. variable not set, set it and retry (e.g. TANGO_HOST=<host>:<port>)" << std::ends;
 		ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       desc.str(),
 					       (const char *)"Database::Database");
@@ -116,7 +116,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 
 	delete [] tango_host_env_c_str;
 
-	cout4 <<"Database::Database(): TANGO host " << host << " port " << port << endl;
+	cout4 <<"Database::Database(): TANGO host " << host << " port " << port << std::endl;
 
 	build_connection();
 
@@ -141,12 +141,12 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 void Database::check_tango_host(const char *tango_host_env_c_str)
 {
 	filedb = Tango_nullptr;
-	string tango_host_env(tango_host_env_c_str);
-	string::size_type separator;
+	std::string tango_host_env(tango_host_env_c_str);
+	std::string::size_type separator;
 
 	db_multi_svc = false;
 	separator = tango_host_env.find(',');
-	if (separator != string::npos)
+	if (separator != std::string::npos)
 	{
 
 //
@@ -156,19 +156,19 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 
 		db_multi_svc = true;
 		separator = 0;
-		string::size_type old_sep = separator;
-		string::size_type host_sep;
-		while((separator = tango_host_env.find(',',separator + 1)) != string::npos)
+		std::string::size_type old_sep = separator;
+		std::string::size_type host_sep;
+		while((separator = tango_host_env.find(',',separator + 1)) != std::string::npos)
 		{
-			string sub = tango_host_env.substr(old_sep,separator - old_sep);
+			std::string sub = tango_host_env.substr(old_sep,separator - old_sep);
 			old_sep = separator + 1;
 			host_sep = sub.find(":");
-			if (host_sep != string::npos)
+			if (host_sep != std::string::npos)
 			{
 				if ((host_sep == sub.size() - 1) || (host_sep == 0))
 				{
 					TangoSys_MemStream desc;
-					desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << ends;
+					desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << std::ends;
 					ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       				desc.str(),
 					       				(const char *)"Database::Database");
@@ -178,24 +178,24 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 			else
 			{
 				TangoSys_MemStream desc;
-				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << ends;
+				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << std::ends;
 				ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       		desc.str(),
 					       		(const char *)"Database::Database");
 			}
-			string tmp_host(sub.substr(0,host_sep));
-			if (tmp_host.find('.') == string::npos)
+			std::string tmp_host(sub.substr(0,host_sep));
+			if (tmp_host.find('.') == std::string::npos)
 				get_fqdn(tmp_host);
 			multi_db_host.push_back(tmp_host);
 		}
-		string last = tango_host_env.substr(old_sep);
+		std::string last = tango_host_env.substr(old_sep);
 		host_sep = last.find(":");
-		if (host_sep != string::npos)
+		if (host_sep != std::string::npos)
 		{
 			if ((host_sep == last.size() - 1) || (host_sep == 0))
 			{
 				TangoSys_MemStream desc;
-				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << ends;
+				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << std::ends;
 				ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       				desc.str(),
 					       				(const char *)"Database::Database");
@@ -205,13 +205,13 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 		else
 		{
 			TangoSys_MemStream desc;
-			desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << ends;
+			desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << std::ends;
 			ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       		desc.str(),
 					       		(const char *)"Database::Database");
 		}
-		string tmp_host(last.substr(0,host_sep));
-		if (tmp_host.find('.') == string::npos)
+		std::string tmp_host(last.substr(0,host_sep));
+		if (tmp_host.find('.') == std::string::npos)
 			get_fqdn(tmp_host);
 		multi_db_host.push_back(tmp_host);
 
@@ -227,12 +227,12 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 //
 
 		separator = tango_host_env.find(":");
-		if (separator != string::npos)
+		if (separator != std::string::npos)
 		{
 			if ((separator == tango_host_env.size() - 1) || (separator == 0))
 			{
 				TangoSys_MemStream desc;
-				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>)" << ends;
+				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>)" << std::ends;
 				ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       				desc.str(),
 					       				(const char *)"Database::Database");
@@ -243,7 +243,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 		else
 		{
 			TangoSys_MemStream desc;
-			desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>)" << ends;
+			desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>)" << std::ends;
 			ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       		desc.str(),
 					       		(const char *)"Database::Database");
@@ -254,8 +254,9 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 // If localhost is used as host name, try to replace it by the real host name
 //
 
-		string db_host_lower(db_host);
-		transform(db_host_lower.begin(),db_host_lower.end(),db_host_lower.begin(),::tolower);
+		std::string db_host_lower(db_host);
+		std::transform(db_host_lower.begin(),db_host_lower.end(),db_host_lower.begin(),::tolower);
+
 		if (db_host_lower == "localhost")
 		{
 			char h_name[80];
@@ -272,13 +273,13 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 //
 
 		ext->orig_tango_host = db_host;
-		if (db_host.find('.') == string::npos)
+		if (db_host.find('.') == std::string::npos)
 		{
 			get_fqdn(db_host);
-			string::size_type pos = db_host.find('.');
-			if (pos != string::npos)
+			std::string::size_type pos = db_host.find('.');
+			if (pos != std::string::npos)
             {
-                string fq = db_host.substr(pos);
+                std::string fq = db_host.substr(pos);
                 ext->orig_tango_host = ext->orig_tango_host + fq;
             }
 		}
@@ -297,12 +298,12 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 
 //-----------------------------------------------------------------------------
 //
-// Database::Database(string host, int port, ORB *orb) - constructor to
+// Database::Database(std::stringhost, int port, ORB *orb) - constructor to
 //           create connection to TANGO Database with host, port, orb specified.
 //
 //-----------------------------------------------------------------------------
 
-Database::Database(string &in_host, int in_port, ORB *orb_in) : Connection(orb_in),
+Database::Database(std::string&in_host, int in_port, ORB *orb_in) : Connection(orb_in),
 ext(new DatabaseExt),
 access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {
@@ -314,9 +315,9 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 	db_host = host;
 
 	TangoSys_MemStream o;
-	o << in_port << ends;
+	o << in_port << std::ends;
 
-	string st = o.str();
+	std::string st = o.str();
 	port = st.c_str();
 
 	db_port = port;
@@ -333,7 +334,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 	dev_name();
 }
 
-Database::Database(string &name) : Connection(true),
+Database::Database(std::string&name) : Connection(true),
 ext(new DatabaseExt),
 access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {
@@ -530,7 +531,7 @@ void Database::set_server_release()
 //
 //-----------------------------------------------------------------------------
 
-const string &Database::get_file_name()
+const std::string&Database::get_file_name()
 {
 	if (filedb == 0)
 	{
@@ -578,8 +579,8 @@ Database::~Database()
 
 
 long Database::get_tango_host_from_reg(char **buffer,
-				       string &ds_exec_name,
-				       string &ds_instance_name)
+				       std::string&ds_exec_name,
+				       std::string&ds_instance_name)
 {
 
 //
@@ -587,7 +588,7 @@ long Database::get_tango_host_from_reg(char **buffer,
 //
 
 	HKEY regHandle = HKEY_LOCAL_MACHINE;
-	string keyName("SYSTEM\\CurrentControlSet\\Services\\");
+	std::string keyName("SYSTEM\\CurrentControlSet\\Services\\");
 	keyName = keyName + ds_exec_name + '_' + ds_instance_name;
 	keyName = keyName + "\\Server";
 
@@ -648,7 +649,7 @@ void Database::reread_filedatabase()
 
 void Database::build_connection()
 {
-	string corba_name = get_corba_name(true);
+	std::string corba_name = get_corba_name(true);
 //	omniORB::setClientConnectTimeout(CORBA::ULong(DB_CONNECT_TIMEOUT));
 	try
 	{
@@ -670,9 +671,9 @@ void Database::build_connection()
 //
 //-----------------------------------------------------------------------------
 
-string Database::get_corba_name(TANGO_UNUSED(bool ch_acc))
+std::string Database::get_corba_name(TANGO_UNUSED(bool ch_acc))
 {
-	string db_corbaloc;
+	std::string db_corbaloc;
 	if (db_multi_svc == true)
 	{
         db_corbaloc = "corbaloc:iiop:1.2@";
@@ -718,7 +719,7 @@ void Database::post_reconnection()
 //
 //-----------------------------------------------------------------------------
 
-string Database::get_info()
+std::string Database::get_info()
 {
 	Any send;
 	Any_var received;
@@ -733,14 +734,14 @@ string Database::get_info()
 	const DevVarStringArray *db_info_list = NULL;
 	received.inout() >>= db_info_list;
 
-	ostringstream ostream;
+	std::ostringstream ostream;
 
 	for (unsigned int i=0; i<db_info_list->length(); i++)
 	{
-		ostream << (*db_info_list)[i].in() << endl;
+		ostream << (*db_info_list)[i].in() << std::endl;
 	}
 
-	string ret_str = ostream.str();
+	std::string ret_str = ostream.str();
 
 	return(ret_str);
 }
@@ -751,7 +752,7 @@ string Database::get_info()
 //
 //-----------------------------------------------------------------------------
 
-DbDevImportInfo Database::import_device(string &dev)
+DbDevImportInfo Database::import_device(std::string &dev)
 {
 	Any send;
 	DeviceData received_cmd;
@@ -829,8 +830,8 @@ DbDevImportInfo Database::import_device(string &dev)
 
 		dev_import.exported = 0;
 		dev_import.name = dev;
-		dev_import.ior = string((dev_import_list->svalue)[1]);
-		dev_import.version = string((dev_import_list->svalue)[2]);
+		dev_import.ior = std::string((dev_import_list->svalue)[1]);
+		dev_import.version = std::string((dev_import_list->svalue)[2]);
 		dev_import.exported = dev_import_list->lvalue[0];
 
 //
@@ -842,16 +843,16 @@ DbDevImportInfo Database::import_device(string &dev)
 		{
 			omni_mutex_lock guard(map_mutex);
 
-			map<string,string>::iterator pos = dev_class_cache.find(dev);
+			std::map<std::string,std::string>::iterator pos = dev_class_cache.find(dev);
 			if (pos == dev_class_cache.end())
 			{
-				string dev_class((dev_import_list->svalue)[5]);
-				pair<map<string,string>::iterator,bool> status;
-				status = dev_class_cache.insert(make_pair(dev,dev_class));
+				std::string dev_class((dev_import_list->svalue)[5]);
+        std::pair<std::map<std::string,std::string>::iterator,bool> status;
+				status = dev_class_cache.insert(std::make_pair(dev,dev_class));
 				if (status.second == false)
 				{
 					TangoSys_OMemStream o;
-					o << "Can't insert device class for device " << dev << " in device class cache" << ends;
+					o << "Can't insert device class for device " << dev << " in device class cache" << std::ends;
 					Tango::Except::throw_exception((const char *)API_CantStoreDeviceClass,o.str(),
 			                               (const char *)"DeviceProxy::import_device()");
 				}
@@ -883,10 +884,10 @@ void Database::export_device(DbDevExportInfo& dev_export)
 	(*dev_export_list)[1] = string_dup(dev_export.ior.c_str());
 	(*dev_export_list)[2] = string_dup(dev_export.host.c_str());
 
-	ostringstream ostream;
+	std::ostringstream ostream;
 
-	ostream << dev_export.pid << ends;
-	string st = ostream.str();
+	ostream << dev_export.pid << std::ends;
+	std::string st = ostream.str();
 
 	(*dev_export_list)[3] = string_dup(st.c_str());
 	(*dev_export_list)[4] = string_dup(dev_export.version.c_str());
@@ -907,7 +908,7 @@ void Database::export_device(DbDevExportInfo& dev_export)
 //
 //-----------------------------------------------------------------------------
 
-void Database::unexport_device(string dev)
+void Database::unexport_device(std::string dev)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -956,7 +957,7 @@ void Database::add_device(DbDevInfo &dev_info)
 //
 //-----------------------------------------------------------------------------
 
-void Database::delete_device(string dev)
+void Database::delete_device(std::string dev)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -978,7 +979,7 @@ void Database::delete_device(string dev)
 //
 //-----------------------------------------------------------------------------
 
-void Database::add_server(string &server, DbDevInfos &dev_infos)
+void Database::add_server(std::string &server, DbDevInfos &dev_infos)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -1008,7 +1009,7 @@ void Database::add_server(string &server, DbDevInfos &dev_infos)
 //
 //-----------------------------------------------------------------------------
 
-void Database::delete_server(string &server)
+void Database::delete_server(std::string &server)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -1040,16 +1041,16 @@ void Database::export_server(DbDevExportInfos& dev_export)
 	DevVarStringArray *dev_export_list = new DevVarStringArray;
 	dev_export_list->length(5*dev_export.size());
 
-	ostringstream ostream;
+	std::ostringstream ostream;
 
 	for (unsigned int i=0; i<dev_export.size(); i++)
 	{
 		(*dev_export_list)[i*5] = string_dup(dev_export[i].name.c_str());
 		(*dev_export_list)[i*5+1] = string_dup(dev_export[i].ior.c_str());
 		(*dev_export_list)[i*5+2] = string_dup(dev_export[i].host.c_str());
-		ostream << dev_export[i].pid << ends;
+		ostream << dev_export[i].pid << std::ends;
 
-		string st = ostream.str();
+		std::string st = ostream.str();
 		(*dev_export_list)[i*5+3] = string_dup(st.c_str());
 		(*dev_export_list)[i*5+4] = string_dup(dev_export[i].version.c_str());
 	}
@@ -1069,7 +1070,7 @@ void Database::export_server(DbDevExportInfos& dev_export)
 //
 //-----------------------------------------------------------------------------
 
-void Database::unexport_server(string &server)
+void Database::unexport_server(std::string &server)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -1091,7 +1092,7 @@ void Database::unexport_server(string &server)
 //
 //-----------------------------------------------------------------------------
 
-DbServerInfo Database::get_server_info(string &server)
+DbServerInfo Database::get_server_info(std::string &server)
 {
 	Any send;
 	Any_var received;
@@ -1111,8 +1112,8 @@ DbServerInfo Database::get_server_info(string &server)
 	DbServerInfo server_info;
 	if (server_info_list != NULL)
 	{
-        server_info.name = string((*server_info_list)[0]);
-        server_info.host = string((*server_info_list)[1]);
+        server_info.name = std::string((*server_info_list)[0]);
+        server_info.host = std::string((*server_info_list)[1]);
         server_info.mode = atoi((*server_info_list)[2]);
         server_info.level = atoi((*server_info_list)[3]);
 	}
@@ -1132,7 +1133,7 @@ DbServerInfo Database::get_server_info(string &server)
 //
 //-----------------------------------------------------------------------------
 
-void Database::get_device_property(string dev, DbData &db_data,DbServerCache *db_cache)
+void Database::get_device_property(std::string dev, DbData &db_data,DbServerCache *db_cache)
 {
 	unsigned int i;
 	Any_var received;
@@ -1208,9 +1209,9 @@ void Database::get_device_property(string dev, DbData &db_data,DbServerCache *db
 	}
 
 	unsigned int n_props, index;
-	stringstream iostream;
+  std::stringstream iostream;
 
-	iostream << (*property_values)[1].in() << ends;
+	iostream << (*property_values)[1].in() << std::ends;
 	iostream >> n_props;
 	index = 2;
 	for (i=0; i<n_props; i++)
@@ -1218,7 +1219,7 @@ void Database::get_device_property(string dev, DbData &db_data,DbServerCache *db
 		int n_values;
 		db_data[i].name = (*property_values)[index].in(); index++;
 		iostream.seekp (0);  iostream.seekg (0); iostream.clear();
-		iostream << (*property_values)[index].in() << ends;
+		iostream << (*property_values)[index].in() << std::ends;
 		iostream >> n_values;
 		index++;
 
@@ -1247,9 +1248,9 @@ void Database::get_device_property(string dev, DbData &db_data,DbServerCache *db
 //
 //-----------------------------------------------------------------------------
 
-void Database::put_device_property(string dev, DbData &db_data)
+void Database::put_device_property(std::string dev, DbData &db_data)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index;
@@ -1261,7 +1262,7 @@ void Database::put_device_property(string dev, DbData &db_data)
 	(*property_values)[0] = string_dup(dev.c_str());
 	ostream << db_data.size();
 
-	string st = ostream.str();
+	std::string st = ostream.str();
 	(*property_values)[1] = string_dup(st.c_str());
 
 	for (unsigned int i=0; i<db_data.size(); i++)
@@ -1269,10 +1270,10 @@ void Database::put_device_property(string dev, DbData &db_data)
 		index++; property_values->length(index);
 		(*property_values)[index-1] = string_dup(db_data[i].name.c_str());
 		ostream.seekp (0); ostream.clear();
-		ostream << db_data[i].size() << ends;
+		ostream << db_data[i].size() << std::ends;
 		index++; property_values->length(index);
 
-		string st = ostream.str();
+		std::string st = ostream.str();
 		(*property_values)[index-1] = string_dup(st.c_str());
 
 		for (size_t j=0; j<db_data[i].size(); j++)
@@ -1301,7 +1302,7 @@ void Database::put_device_property(string dev, DbData &db_data)
 //
 //-----------------------------------------------------------------------------
 
-void Database::delete_device_property(string dev, DbData &db_data)
+void Database::delete_device_property(std::string dev, DbData &db_data)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -1332,7 +1333,7 @@ void Database::delete_device_property(string dev, DbData &db_data)
 //
 //-----------------------------------------------------------------------------
 
-void Database::get_device_attribute_property(string dev, DbData &db_data, DbServerCache *db_cache)
+void Database::get_device_attribute_property(std::string dev, DbData &db_data, DbServerCache *db_cache)
 {
 	unsigned int i,j;
 	Any_var received;
@@ -1428,9 +1429,9 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 
 	unsigned int n_attribs, index;
 	int i_total_props;
-	stringstream iostream;
+  std::stringstream iostream;
 
-	iostream << (*property_values)[1].in() << ends;
+	iostream << (*property_values)[1].in() << std::ends;
 	iostream >> n_attribs;
 	index = 2;
 	if (serv_version < 230)
@@ -1445,7 +1446,7 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 			unsigned short n_props;
 			db_data[i_total_props].name = (*property_values)[index]; index++;
 			iostream.seekp(0); iostream.seekg(0); iostream.clear();
-			iostream << (*property_values)[index].in() << ends;
+			iostream << (*property_values)[index].in() << std::ends;
 			iostream >> n_props;
 			db_data[i_total_props] << n_props; i_total_props++;
 			index++;
@@ -1469,7 +1470,7 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 			unsigned short n_props;
 			db_data[i_total_props].name = (*property_values)[index]; index++;
 			iostream.seekp(0); iostream.seekg(0); iostream.clear();
-			iostream << (*property_values)[index].in() << ends;
+			iostream << (*property_values)[index].in() << std::ends;
 			iostream >> n_props;
 			db_data[i_total_props] << n_props;
 			db_data.resize(old_size + n_props);
@@ -1482,7 +1483,7 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 				index++;
 				int n_values;
 				iostream.seekp (0);  iostream.seekg (0); iostream.clear();
-				iostream << (*property_values)[index].in() << ends;
+				iostream << (*property_values)[index].in() << std::ends;
 				iostream >> n_values;
 				index++;
 
@@ -1504,7 +1505,7 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 		}
 	}
 
-    cout4 << "Leaving get_device_attribute_property" << endl;
+    cout4 << "Leaving get_device_attribute_property" << std::endl;
 	return;
 }
 
@@ -1515,9 +1516,9 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 //
 //-----------------------------------------------------------------------------
 
-void Database::put_device_attribute_property(string dev, DbData &db_data)
+void Database::put_device_attribute_property(std::string dev, DbData &db_data)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index, n_attribs ;
@@ -1541,10 +1542,10 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 				(*property_values)[index-1] = string_dup(db_data[i].name.c_str());
 				db_data[i] >> n_props;
 				ostream.seekp(0); ostream.clear();
-				ostream << n_props << ends;
+				ostream << n_props << std::ends;
 				index++; property_values->length(index);
 
-				string st = ostream.str();
+				std::string st = ostream.str();
 				(*property_values)[index-1] = string_dup(st.c_str());
 
 				for (int j=0; j<n_props; j++)
@@ -1554,9 +1555,9 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 					index++; property_values->length(index);
 					int prop_size = db_data[i+j+1].size();
 					ostream.seekp(0); ostream.clear();
-					ostream << prop_size << ends;
+					ostream << prop_size << std::ends;
 
-					string st = ostream.str();
+					std::string st = ostream.str();
 					(*property_values)[index-1] = string_dup(st.c_str());
 
 					property_values->length(index + prop_size);
@@ -1571,9 +1572,9 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 			}
 
 			ostream.seekp(0); ostream.clear();
-			ostream << n_attribs << ends;
+			ostream << n_attribs << std::ends;
 
-			string st = ostream.str();
+			std::string st = ostream.str();
 			(*property_values)[1] = string_dup(st.c_str());
 		}
 		else
@@ -1585,10 +1586,10 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 				(*property_values)[index-1] = string_dup(db_data[i].name.c_str());
 				db_data[i] >> n_props;
 				ostream.seekp(0); ostream.clear();
-				ostream << n_props << ends;
+				ostream << n_props << std::ends;
 				index++; property_values->length(index);
 
-				string st = ostream.str();
+				std::string st = ostream.str();
 				(*property_values)[index-1] = string_dup(st.c_str());
 
 				for (int j=0; j<n_props; j++)
@@ -1602,9 +1603,9 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 				n_attribs++;
 			}
 			ostream.seekp(0); ostream.clear();
-			ostream << n_attribs << ends;
+			ostream << n_attribs << std::ends;
 
-			string st = ostream.str();
+			std::string st = ostream.str();
 			(*property_values)[1] = string_dup(st.c_str());
 		}
 		send <<= property_values;
@@ -1644,7 +1645,7 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 //
 //-----------------------------------------------------------------------------
 
-void Database::delete_device_attribute_property(string dev, DbData &db_data)
+void Database::delete_device_attribute_property(std::string dev, DbData &db_data)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -1676,7 +1677,7 @@ void Database::delete_device_attribute_property(string dev, DbData &db_data)
 //
 //-----------------------------------------------------------------------------
 
-void Database::get_class_property(string device_class, DbData &db_data, DbServerCache *db_cache)
+void Database::get_class_property(std::string device_class, DbData &db_data, DbServerCache *db_cache)
 {
 	unsigned int i;
 	const DevVarStringArray *property_values = NULL;
@@ -1764,9 +1765,9 @@ void Database::get_class_property(string device_class, DbData &db_data, DbServer
 //
 
 	unsigned int n_props, index;
-	stringstream iostream;
+  std::stringstream iostream;
 
-	iostream << (*property_values)[1].in() << ends;
+	iostream << (*property_values)[1].in() << std::ends;
 	iostream >> n_props;
 	index = 2;
 	for (i=0; i<n_props; i++)
@@ -1774,7 +1775,7 @@ void Database::get_class_property(string device_class, DbData &db_data, DbServer
 		int n_values;
 		db_data[i].name = (*property_values)[index]; index++;
 		iostream.seekp(0); iostream.seekg(0); iostream.clear();
-		iostream << (*property_values)[index].in() << ends; index++;
+		iostream << (*property_values)[index].in() << std::ends; index++;
 		iostream >> n_values;
 
 		db_data[i].value_string.resize(n_values);
@@ -1795,9 +1796,9 @@ void Database::get_class_property(string device_class, DbData &db_data, DbServer
 //
 //-----------------------------------------------------------------------------
 
-void Database::put_class_property(string device_class, DbData &db_data)
+void Database::put_class_property(std::string device_class, DbData &db_data)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
     Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index;
@@ -1807,9 +1808,9 @@ void Database::put_class_property(string device_class, DbData &db_data)
 	DevVarStringArray *property_values = new DevVarStringArray;
 	property_values->length(2); index = 2;
 	(*property_values)[0] = string_dup(device_class.c_str());
-	ostream << db_data.size() << ends;
+	ostream << db_data.size() << std::ends;
 
-	string st = ostream.str();
+	std::string st = ostream.str();
 	(*property_values)[1] = string_dup(st.c_str());
 
 	for (unsigned int i=0; i<db_data.size(); i++)
@@ -1817,10 +1818,10 @@ void Database::put_class_property(string device_class, DbData &db_data)
 		index++; property_values->length(index);
 		(*property_values)[index-1] = string_dup(db_data[i].name.c_str());
 		ostream.seekp (0); ostream.clear();
-		ostream << db_data[i].size() << ends;
+		ostream << db_data[i].size() << std::ends;
 		index++; property_values->length(index);
 
-		string st = ostream.str();
+		std::string st = ostream.str();
 		(*property_values)[index-1] = string_dup(st.c_str());
 
 		for (size_t j=0; j<db_data[i].size(); j++)
@@ -1849,7 +1850,7 @@ void Database::put_class_property(string device_class, DbData &db_data)
 //
 //-----------------------------------------------------------------------------
 
-void Database::delete_class_property(string device_class, DbData &db_data)
+void Database::delete_class_property(std::string device_class, DbData &db_data)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -1877,7 +1878,7 @@ void Database::delete_class_property(string device_class, DbData &db_data)
 //
 //-----------------------------------------------------------------------------
 
-void Database::get_class_attribute_property(string device_class, DbData &db_data, DbServerCache *db_cache)
+void Database::get_class_attribute_property(std::string device_class, DbData &db_data, DbServerCache *db_cache)
 {
 	unsigned int i;
 	Any_var received;
@@ -1976,9 +1977,9 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 
 	unsigned int n_attribs, index;
 	int i_total_props;
-	stringstream iostream;
+  std::stringstream iostream;
 
-	iostream << (*property_values)[1].in() << ends;
+	iostream << (*property_values)[1].in() << std::ends;
 	iostream >> n_attribs;
 	index = 2;
 	if (serv_version < 230)
@@ -1992,7 +1993,7 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 			short n_props;
 			db_data[i_total_props].name = (*property_values)[index]; index++;
 			iostream.seekp(0); iostream.seekg(0); iostream.clear();
-			iostream << (*property_values)[index].in() << ends; index++;
+			iostream << (*property_values)[index].in() << std::ends; index++;
 			iostream >> n_props;
 			db_data[i_total_props] << n_props; i_total_props++;
 			for (int j=0; j<n_props; j++)
@@ -2015,7 +2016,7 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 			short n_props;
 			db_data[i_total_props].name = (*property_values)[index]; index++;
 			iostream.seekp(0); iostream.seekg(0); iostream.clear();
-			iostream << (*property_values)[index].in() << ends;
+			iostream << (*property_values)[index].in() << std::ends;
 			iostream >> n_props;
 			db_data[i_total_props] << n_props;
 			db_data.resize(old_size + n_props);
@@ -2028,7 +2029,7 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 				index++;
 				int n_values;
 				iostream.seekp(0); iostream.seekg(0); iostream.clear();
-				iostream << (*property_values)[index].in() << ends;
+				iostream << (*property_values)[index].in() << std::ends;
 				iostream >> n_values;
 				index++;
 
@@ -2060,9 +2061,9 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 //
 //-----------------------------------------------------------------------------
 
-void Database::put_class_attribute_property(string device_class, DbData &db_data)
+void Database::put_class_attribute_property(std::string device_class, DbData &db_data)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index, n_attribs;
@@ -2086,10 +2087,10 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 				(*property_values)[index-1] = string_dup(db_data[i].name.c_str());
 				db_data[i] >> n_props;
 				ostream.seekp(0); ostream.clear();
-				ostream << n_props << ends;
+				ostream << n_props << std::ends;
 				index++; property_values->length(index);
 
-				string st = ostream.str();
+				std::string st = ostream.str();
 				(*property_values)[index-1] = string_dup(st.c_str());
 
 				for (int j=0; j<n_props; j++)
@@ -2099,9 +2100,9 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 					index++; property_values->length(index);
 					int prop_size = db_data[i+j+1].size();
 					ostream.seekp(0); ostream.clear();
-					ostream << prop_size << ends;
+					ostream << prop_size << std::ends;
 
-					string st = ostream.str();
+					std::string st = ostream.str();
 					(*property_values)[index-1] = string_dup(st.c_str());
 
 					property_values->length(index + prop_size);
@@ -2116,9 +2117,9 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 			}
 
 			ostream.seekp(0); ostream.clear();
-			ostream << n_attribs << ends;
+			ostream << n_attribs << std::ends;
 
-			string st = ostream.str();
+			std::string st = ostream.str();
 			(*property_values)[1] = string_dup(st.c_str());
 		}
 		else
@@ -2130,10 +2131,10 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 				(*property_values)[index-1] = string_dup(db_data[i].name.c_str());
 				db_data[i] >> n_props;
 				ostream.seekp(0); ostream.clear();
-				ostream << n_props << ends;
+				ostream << n_props << std::ends;
 				index++; property_values->length(index);
 
-				string st = ostream.str();
+				std::string st = ostream.str();
 				(*property_values)[index-1] = string_dup(st.c_str());
 
 				for (int j=0; j<n_props; j++)
@@ -2147,9 +2148,9 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 				n_attribs++;
 			}
 			ostream.seekp(0); ostream.clear();
-			ostream << n_attribs << ends;
+			ostream << n_attribs << std::ends;
 
-			string st = ostream.str();
+			std::string st = ostream.str();
 			(*property_values)[1] = string_dup(st.c_str());
 		}
 		send <<= property_values;
@@ -2183,7 +2184,7 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 //
 //-----------------------------------------------------------------------------
 
-void Database::delete_class_attribute_property(string device_class, DbData &db_data)
+void Database::delete_class_attribute_property(std::string device_class, DbData &db_data)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -2215,12 +2216,12 @@ void Database::delete_class_attribute_property(string device_class, DbData &db_d
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_device_name(string &d_server, string &d_class)
+DbDatum Database::get_device_name(std::string &d_server, std::string &d_class)
 {
 	return get_device_name(d_server,d_class,NULL);
 }
 
-DbDatum Database::get_device_name(string &device_server, string &device_class, DbServerCache *db_cache)
+DbDatum Database::get_device_name(std::string &device_server, std::string &device_class, DbServerCache *db_cache)
 {
 	Any_var received;
 	const DevVarStringArray *device_names = NULL;
@@ -2271,7 +2272,7 @@ DbDatum Database::get_device_name(string &device_server, string &device_class, D
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_device_exported(string &filter)
+DbDatum Database::get_device_exported(std::string &filter)
 {
 	Any send;
 	Any_var received;
@@ -2317,7 +2318,7 @@ DbDatum Database::get_device_exported(string &filter)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_device_member(string &wildcard)
+DbDatum Database::get_device_member(std::string &wildcard)
 {
 	Any send;
 	Any_var received;
@@ -2363,7 +2364,7 @@ DbDatum Database::get_device_member(string &wildcard)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_device_family(string &wildcard)
+DbDatum Database::get_device_family(std::string &wildcard)
 {
 	Any send;
 	Any_var received;
@@ -2411,7 +2412,7 @@ DbDatum Database::get_device_family(string &wildcard)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_device_domain(string &wildcard)
+DbDatum Database::get_device_domain(std::string &wildcard)
 {
 	Any send;
 	Any_var received;
@@ -2458,7 +2459,7 @@ DbDatum Database::get_device_domain(string &wildcard)
 //
 //-----------------------------------------------------------------------------
 
-void Database::get_property_forced(string obj, DbData &db_data,DbServerCache *dsc)
+void Database::get_property_forced(std::string obj, DbData &db_data,DbServerCache *dsc)
 {
 	WriterLock guard(con_to_mon);
 
@@ -2472,7 +2473,7 @@ void Database::get_property_forced(string obj, DbData &db_data,DbServerCache *ds
 	access = tmp_access;
 }
 
-void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
+void Database::get_property(std::string obj, DbData &db_data,DbServerCache *db_cache)
 {
 	unsigned int i;
 	Any_var received;
@@ -2548,9 +2549,9 @@ void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 	}
 
 	unsigned int n_props, index;
-	stringstream iostream;
+  std::stringstream iostream;
 
-	iostream << (*property_values)[1].in() << ends;
+	iostream << (*property_values)[1].in() << std::ends;
 	iostream >> n_props;
 	index = 2;
 	for (i=0; i<n_props; i++)
@@ -2558,7 +2559,7 @@ void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 		int n_values;
 		db_data[i].name = (*property_values)[index]; index++;
 		iostream.seekp (0);  iostream.seekg (0); iostream.clear();
-		iostream << (*property_values)[index].in() << ends;
+		iostream << (*property_values)[index].in() << std::ends;
 		iostream >> n_values;
 		index++;
 
@@ -2587,9 +2588,9 @@ void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 //
 //-----------------------------------------------------------------------------
 
-void Database::put_property(string obj, DbData &db_data)
+void Database::put_property(std::string obj, DbData &db_data)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index;
@@ -2601,7 +2602,7 @@ void Database::put_property(string obj, DbData &db_data)
 	(*property_values)[0] = string_dup(obj.c_str());
 	ostream << db_data.size();
 
-	string st = ostream.str();
+	std::string st = ostream.str();
 	(*property_values)[1] = string_dup(st.c_str());
 
 	for (unsigned int i=0; i<db_data.size(); i++)
@@ -2609,10 +2610,10 @@ void Database::put_property(string obj, DbData &db_data)
 		index++; property_values->length(index);
 		(*property_values)[index-1] = string_dup(db_data[i].name.c_str());
 		ostream.seekp (0); ostream.clear();
-		ostream << db_data[i].size() << ends;
+		ostream << db_data[i].size() << std::ends;
 		index++; property_values->length(index);
 
-		string st = ostream.str();
+		std::string st = ostream.str();
 		(*property_values)[index-1] = string_dup(st.c_str());
 
 		for (size_t j=0; j<db_data[i].size(); j++)
@@ -2638,7 +2639,7 @@ void Database::put_property(string obj, DbData &db_data)
 //
 //-----------------------------------------------------------------------------
 
-void Database::delete_property(string obj, DbData &db_data)
+void Database::delete_property(std::string obj, DbData &db_data)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -2670,7 +2671,7 @@ void Database::delete_property(string obj, DbData &db_data)
 //
 //-----------------------------------------------------------------------------
 
-void Database::get_device_alias(string alias,string &dev_name)
+void Database::get_device_alias(std::string alias,std::string &dev_name)
 {
 	Any send;
 	Any_var received;
@@ -2696,7 +2697,7 @@ void Database::get_device_alias(string alias,string &dev_name)
 //
 //-----------------------------------------------------------------------------
 
-void Database::get_alias(string dev_name,string &alias_name)
+void Database::get_alias(std::string dev_name,std::string &alias_name)
 {
 	Any send;
 	Any_var received;
@@ -2722,7 +2723,7 @@ void Database::get_alias(string dev_name,string &alias_name)
 //
 //-----------------------------------------------------------------------------
 
-void Database::get_attribute_alias(string  attr_alias, string &attr_name)
+void Database::get_attribute_alias(std::string  attr_alias, std::string &attr_name)
 {
 	Any send;
 	Any_var received;
@@ -2756,7 +2757,7 @@ void Database::get_attribute_alias(string  attr_alias, string &attr_name)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_device_alias_list(string &alias)
+DbDatum Database::get_device_alias_list(std::string &alias)
 {
 	Any send;
 	Any_var received;
@@ -2801,7 +2802,7 @@ DbDatum Database::get_device_alias_list(string &alias)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_attribute_alias_list(string &alias)
+DbDatum Database::get_attribute_alias_list(std::string &alias)
 {
 	Any send;
 	Any_var received;
@@ -2845,7 +2846,7 @@ DbDatum Database::get_attribute_alias_list(string &alias)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::make_string_array(string name,Any_var &received) {
+DbDatum Database::make_string_array(std::string name,Any_var &received) {
 
 	const DevVarStringArray *prop_list = NULL;
 	DbDatum db_datum;
@@ -2881,7 +2882,7 @@ DbDatum Database::make_string_array(string name,Any_var &received) {
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_device_property_list(string &dev, string &wildcard)
+DbDatum Database::get_device_property_list(std::string &dev, std::string &wildcard)
 {
 	Any send;
 	Any_var received;
@@ -2901,11 +2902,11 @@ DbDatum Database::get_device_property_list(string &dev, string &wildcard)
 	return make_string_array(dev,received);
 }
 
-void Database::get_device_property_list(string &dev, const string &wildcard, vector<string> &prop_list,DbServerCache *db_cache)
+void Database::get_device_property_list(std::string &dev, const std::string &wildcard, std::vector<std::string> &prop_list,DbServerCache *db_cache)
 {
 	if (db_cache == NULL)
 	{
-		DbDatum db = get_device_property_list(dev,const_cast<string &>(wildcard));
+		DbDatum db = get_device_property_list(dev,const_cast<std::string &>(wildcard));
 		prop_list = db.value_string;
 	}
 	else
@@ -2975,7 +2976,7 @@ DbDatum Database::get_host_list()
 
 	CALL_DB_SERVER("DbGetHostList",send,received);
 
-	return make_string_array(string("host"),received);
+	return make_string_array(std::string("host"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -2984,7 +2985,7 @@ DbDatum Database::get_host_list()
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_host_list(string &wildcard)
+DbDatum Database::get_host_list(std::string &wildcard)
 {
 	Any send;
 	Any_var received;
@@ -2996,7 +2997,7 @@ DbDatum Database::get_host_list(string &wildcard)
 
 	CALL_DB_SERVER("DbGetHostList",send,received);
 
-	return make_string_array(string("host"),received);
+	return make_string_array(std::string("host"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -3006,7 +3007,7 @@ DbDatum Database::get_host_list(string &wildcard)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_server_class_list(string &servname)
+DbDatum Database::get_server_class_list(std::string &servname)
 {
 	Any send;
 	Any_var received;
@@ -3072,7 +3073,7 @@ DbDatum Database::get_server_name_list()
 
 	CALL_DB_SERVER("DbGetServerNameList",send,received);
 
-	return make_string_array(string("server"),received);
+	return make_string_array(std::string("server"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -3082,7 +3083,7 @@ DbDatum Database::get_server_name_list()
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_instance_name_list(string &servname)
+DbDatum Database::get_instance_name_list(std::string &servname)
 {
 	Any send;
 	Any_var received;
@@ -3116,7 +3117,7 @@ DbDatum Database::get_server_list()
 
 	CALL_DB_SERVER("DbGetServerList",send,received);
 
-	return make_string_array(string("server"),received);
+	return make_string_array(std::string("server"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -3126,7 +3127,7 @@ DbDatum Database::get_server_list()
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_server_list(string &wildcard)
+DbDatum Database::get_server_list(std::string &wildcard)
 {
 	Any send;
 	Any_var received;
@@ -3138,7 +3139,7 @@ DbDatum Database::get_server_list(string &wildcard)
 
 	CALL_DB_SERVER("DbGetServerList",send,received);
 
-	return make_string_array(string("server"),received);
+	return make_string_array(std::string("server"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -3148,7 +3149,7 @@ DbDatum Database::get_server_list(string &wildcard)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_host_server_list(string &hostname)
+DbDatum Database::get_host_server_list(std::string &hostname)
 {
 	Any send;
 	Any_var received;
@@ -3160,7 +3161,7 @@ DbDatum Database::get_host_server_list(string &hostname)
 
 	CALL_DB_SERVER("DbGetHostServerList",send,received);
 
-	return make_string_array(string("server"),received);
+	return make_string_array(std::string("server"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -3171,7 +3172,7 @@ DbDatum Database::get_host_server_list(string &hostname)
 
 void Database::put_server_info(DbServerInfo &info)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	DevVarStringArray *serv_info = new DevVarStringArray;
@@ -3183,13 +3184,13 @@ void Database::put_server_info(DbServerInfo &info)
 	(*serv_info)[1] = string_dup(info.host.c_str());
 
 	ostream.seekp(0); ostream.clear();
-	ostream << info.mode << ends;
+	ostream << info.mode << std::ends;
 
-	string st = ostream.str();
+	std::string st = ostream.str();
 	(*serv_info)[2] = string_dup(st.c_str());
 
 	ostream.seekp(0); ostream.clear();
-	ostream << info.level << ends;
+	ostream << info.level << std::ends;
 
 	st = ostream.str();
 	(*serv_info)[3] = string_dup(st.c_str());
@@ -3207,7 +3208,7 @@ void Database::put_server_info(DbServerInfo &info)
 //
 //-----------------------------------------------------------------------------
 
-void Database::delete_server_info(string &servname)
+void Database::delete_server_info(std::string &servname)
 {
 	Any send;
 	Any_var received;
@@ -3229,7 +3230,7 @@ void Database::delete_server_info(string &servname)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_device_class_list(string &servname)
+DbDatum Database::get_device_class_list(std::string &servname)
 {
 	Any send;
 	Any_var received;
@@ -3241,7 +3242,7 @@ DbDatum Database::get_device_class_list(string &servname)
 
 	CALL_DB_SERVER("DbGetDeviceClassList",send,received);
 
-	return make_string_array(string("server"),received);
+	return make_string_array(std::string("server"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -3251,7 +3252,7 @@ DbDatum Database::get_device_class_list(string &servname)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_object_list(string &wildcard)
+DbDatum Database::get_object_list(std::string &wildcard)
 {
 	Any send;
 	Any_var received;
@@ -3263,7 +3264,7 @@ DbDatum Database::get_object_list(string &wildcard)
 
 	CALL_DB_SERVER("DbGetObjectList",send,received);
 
-	return make_string_array(string("object"),received);
+	return make_string_array(std::string("object"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -3274,7 +3275,7 @@ DbDatum Database::get_object_list(string &wildcard)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_object_property_list(string &objname,string &wildcard)
+DbDatum Database::get_object_property_list(std::string &objname,std::string &wildcard)
 {
 	Any send;
 	Any_var received;
@@ -3292,7 +3293,7 @@ DbDatum Database::get_object_property_list(string &objname,string &wildcard)
 
 	CALL_DB_SERVER("DbGetPropertyList",send,received);
 
-	return make_string_array(string("object"),received);
+	return make_string_array(std::string("object"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -3303,7 +3304,7 @@ DbDatum Database::get_object_property_list(string &objname,string &wildcard)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_class_property_list(string &classname)
+DbDatum Database::get_class_property_list(std::string &classname)
 {
 	Any send;
 	Any_var received;
@@ -3315,7 +3316,7 @@ DbDatum Database::get_class_property_list(string &classname)
 
 	CALL_DB_SERVER("DbGetClassPropertyList",send,received);
 
-	return make_string_array(string("class"),received);
+	return make_string_array(std::string("class"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -3324,7 +3325,7 @@ DbDatum Database::get_class_property_list(string &classname)
 //
 //-----------------------------------------------------------------------------
 
-string Database::get_class_for_device(string &devname)
+std::string Database::get_class_for_device(std::string &devname)
 {
 	Any send;
 	Any_var received;
@@ -3338,12 +3339,12 @@ string Database::get_class_for_device(string &devname)
 // and stores it in device class cache
 //
 
-	string ret_str;
+	std::string ret_str;
 
 	{
 		omni_mutex_lock guard(map_mutex);
 
-		map<string,string>::iterator pos = dev_class_cache.find(devname);
+		std::map<std::string,std::string>::iterator pos = dev_class_cache.find(devname);
 		if (pos == dev_class_cache.end())
 		{
 			send <<= devname.c_str();
@@ -3354,12 +3355,13 @@ string Database::get_class_for_device(string &devname)
 			received.inout() >>= classname;
 			ret_str = classname;
 
-			pair<map<string,string>::iterator,bool> status;
-			status = dev_class_cache.insert(make_pair(devname,ret_str));
+      std::pair<std::map<std::string,std::string>::iterator,bool> status;
+
+			status = dev_class_cache.insert(std::make_pair(devname,ret_str));
 			if (status.second == false)
 			{
 				TangoSys_OMemStream o;
-				o << "Can't insert device class for device " << devname << " in device class cache" << ends;
+				o << "Can't insert device class for device " << devname << " in device class cache" << std::ends;
 				Tango::Except::throw_exception((const char *)API_CantStoreDeviceClass,o.str(),
 		                               (const char *)"DeviceProxy::get_class_for_device()");
 			}
@@ -3380,7 +3382,7 @@ string Database::get_class_for_device(string &devname)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_class_inheritance_for_device(string &devname)
+DbDatum Database::get_class_inheritance_for_device(std::string &devname)
 {
 	Any send;
 	Any_var received;
@@ -3409,7 +3411,7 @@ DbDatum Database::get_class_inheritance_for_device(string &devname)
 
 	}
 
-	return make_string_array(string("class"),received);
+	return make_string_array(std::string("class"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -3418,7 +3420,7 @@ DbDatum Database::get_class_inheritance_for_device(string &devname)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_class_list(string &wildcard)
+DbDatum Database::get_class_list(std::string &wildcard)
 {
 	Any send;
 	Any_var received;
@@ -3430,7 +3432,7 @@ DbDatum Database::get_class_list(string &wildcard)
 
 	CALL_DB_SERVER("DbGetClassList",send,received);
 
-	return make_string_array(string("class"),received);
+	return make_string_array(std::string("class"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -3441,7 +3443,7 @@ DbDatum Database::get_class_list(string &wildcard)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_class_attribute_list(string &classname,string &wildcard)
+DbDatum Database::get_class_attribute_list(std::string &classname,std::string &wildcard)
 {
 	Any send;
 	Any_var received;
@@ -3459,7 +3461,7 @@ DbDatum Database::get_class_attribute_list(string &classname,string &wildcard)
 
 	CALL_DB_SERVER("DbGetClassAttributeList",send,received);
 
-	return make_string_array(string("class"),received);
+	return make_string_array(std::string("class"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -3469,7 +3471,7 @@ DbDatum Database::get_class_attribute_list(string &classname,string &wildcard)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_device_exported_for_class(string &classname)
+DbDatum Database::get_device_exported_for_class(std::string &classname)
 {
 	Any send;
 	Any_var received;
@@ -3481,7 +3483,7 @@ DbDatum Database::get_device_exported_for_class(string &classname)
 
 	CALL_DB_SERVER("DbGetExportdDeviceListForClass",send,received);
 
-	return make_string_array(string("device"),received);
+	return make_string_array(std::string("device"),received);
 }
 
 //-----------------------------------------------------------------------------
@@ -3490,7 +3492,7 @@ DbDatum Database::get_device_exported_for_class(string &classname)
 //
 //-----------------------------------------------------------------------------
 
-void Database::put_device_alias(string &devname,string &aliasname)
+void Database::put_device_alias(std::string &devname,std::string &aliasname)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -3514,7 +3516,7 @@ void Database::put_device_alias(string &devname,string &aliasname)
 //
 //-----------------------------------------------------------------------------
 
-void Database::delete_device_alias(string &aliasname)
+void Database::delete_device_alias(std::string &aliasname)
 {
 	Any send;
 	Any_var received;
@@ -3535,7 +3537,7 @@ void Database::delete_device_alias(string &aliasname)
 //
 //-----------------------------------------------------------------------------
 
-void Database::put_attribute_alias(string &attname,string &aliasname)
+void Database::put_attribute_alias(std::string &attname,std::string &aliasname)
 {
 	Any send;
 	Any_var received;
@@ -3560,7 +3562,7 @@ void Database::put_attribute_alias(string &attname,string &aliasname)
 //
 //-----------------------------------------------------------------------------
 
-void Database::delete_attribute_alias(string &aliasname)
+void Database::delete_attribute_alias(std::string &aliasname)
 {
 	Any send;
 	Any_var received;
@@ -3582,12 +3584,12 @@ void Database::delete_attribute_alias(string &aliasname)
 //
 //-----------------------------------------------------------------------------
 
-vector<DbHistory> Database::make_history_array(bool is_attribute, Any_var &received) {
+std::vector<DbHistory> Database::make_history_array(bool is_attribute, Any_var &received) {
 
 	const DevVarStringArray *ret = NULL;
 	received.inout() >>= ret;
 
-	vector<DbHistory> v;
+	std::vector<DbHistory> v;
     if (ret == NULL)
     {
         Tango::Except::throw_exception((const char *)API_IncoherentDbData,
@@ -3599,10 +3601,10 @@ vector<DbHistory> Database::make_history_array(bool is_attribute, Any_var &recei
         unsigned int	i=0;
         int		  count=0;
         int		  offset;
-        string	aName = "";
-        string	pName;
-        string	pDate;
-        string	pCount;
+        std::string	aName = "";
+        std::string	pName;
+        std::string	pDate;
+        std::string	pCount;
 
         while(i<ret->length())
         {
@@ -3622,7 +3624,7 @@ vector<DbHistory> Database::make_history_array(bool is_attribute, Any_var &recei
                 offset = 3;
             }
 
-            istringstream istream(pCount);
+            std::istringstream istream(pCount);
             istream >> count;
             if (!istream)
             {
@@ -3630,9 +3632,9 @@ vector<DbHistory> Database::make_history_array(bool is_attribute, Any_var &recei
                                  (const char *)"History format is invalid",
                                  (const char *)"Database::make_history_array()");
             }
-            vector<string> value;
+            std::vector<std::string> value;
             for(int j=0;j<count;j++)
-             value.push_back( string((*ret)[i+offset+j]) );
+             value.push_back( std::string((*ret)[i+offset+j]) );
 
             if (is_attribute)
                 v.push_back(DbHistory(aName,pName,pDate,value));
@@ -3653,7 +3655,7 @@ vector<DbHistory> Database::make_history_array(bool is_attribute, Any_var &recei
 //
 //-----------------------------------------------------------------------------
 
-vector<DbHistory> Database::get_property_history(string &objname,string &propname) {
+std::vector<DbHistory> Database::get_property_history(std::string &objname,std::string &propname) {
 
 	Any send;
 	Any_var received;
@@ -3682,7 +3684,7 @@ vector<DbHistory> Database::get_property_history(string &objname,string &propnam
 //
 //-----------------------------------------------------------------------------
 
-vector<DbHistory> Database::get_device_property_history(string &devname,string &propname) {
+std::vector<DbHistory> Database::get_device_property_history(std::string &devname,std::string &propname) {
 
 	Any send;
 	Any_var received;
@@ -3712,7 +3714,7 @@ vector<DbHistory> Database::get_device_property_history(string &devname,string &
 //
 //-----------------------------------------------------------------------------
 
-vector<DbHistory> Database::get_device_attribute_property_history(string &devname,string &attname,string &propname) {
+std::vector<DbHistory> Database::get_device_attribute_property_history(std::string &devname,std::string &attname,std::string &propname) {
 
 	Any send;
 	Any_var received;
@@ -3742,7 +3744,7 @@ vector<DbHistory> Database::get_device_attribute_property_history(string &devnam
 //
 //-----------------------------------------------------------------------------
 
-vector<DbHistory> Database::get_class_property_history(string &classname,string &propname) {
+std::vector<DbHistory> Database::get_class_property_history(std::string &classname,std::string &propname) {
 
 	Any send;
 	Any_var received;
@@ -3772,7 +3774,7 @@ vector<DbHistory> Database::get_class_property_history(string &classname,string 
 //
 //-----------------------------------------------------------------------------
 
-vector<DbHistory> Database::get_class_attribute_property_history(string &classname,string &attname,string &propname)
+std::vector<DbHistory> Database::get_class_attribute_property_history(std::string &classname,std::string &attname,std::string &propname)
 {
 	Any send;
 	Any_var received;
@@ -3800,12 +3802,12 @@ vector<DbHistory> Database::get_class_attribute_property_history(string &classna
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_services(string &servname,string &instname)
+DbDatum Database::get_services(std::string &servname,std::string &instname)
 {
 	DbData data;
 	DbDatum db_datum;
-	vector<string> services;
-	vector<string> filter_services;
+	std::vector<std::string> services;
+	std::vector<std::string> filter_services;
 
 // Get list of services
 
@@ -3824,7 +3826,7 @@ DbDatum Database::get_services(string &servname,string &instname)
 			}
 			catch (Tango::DevFailed &e)
 			{
-				string reason = e.errors[0].reason.in();
+				std::string reason = e.errors[0].reason.in();
 				if (reason == "API_UtilSingletonNotCreated" && db_tg != NULL)
 					dsc = db_tg->get_db_cache();
 				else
@@ -3842,20 +3844,20 @@ DbDatum Database::get_services(string &servname,string &instname)
 
 // Filter
 
-	string filter = servname+"/";
+	std::string filter = servname+"/";
 	if( strcmp( instname.c_str() , "*")!=0 )
 		filter += instname + ":";
 
-	transform(filter.begin(),filter.end(),filter.begin(),::tolower);
+	std::transform(filter.begin(),filter.end(),filter.begin(),::tolower);
 
 	for(unsigned int i=0;i<services.size();i++)
 	{
-		transform(services[i].begin(),services[i].end(),services[i].begin(),::tolower);
+		std::transform(services[i].begin(),services[i].end(),services[i].begin(),::tolower);
 		if( strncmp( services[i].c_str() , filter.c_str() , filter.length() )==0 )
 		{
-			string::size_type pos;
+			std::string::size_type pos;
 			pos = services[i].find(':');
-			if( pos != string::npos )
+			if( pos != std::string::npos )
 			{
 				filter_services.push_back( services[i].substr(pos+1) );
 			}
@@ -3879,12 +3881,12 @@ DbDatum Database::get_services(string &servname,string &instname)
 //
 //-----------------------------------------------------------------------------
 
-DbDatum Database::get_device_service_list(string &servname)
+DbDatum Database::get_device_service_list(std::string &servname)
 {
 	DbData data;
 	DbDatum db_datum;
-	vector<string> services;
-	vector<string> filter_services;
+	std::vector<std::string> services;
+	std::vector<std::string> filter_services;
 
 //
 // Get list of services
@@ -3905,7 +3907,7 @@ DbDatum Database::get_device_service_list(string &servname)
 			}
 			catch (Tango::DevFailed &e)
 			{
-				string reason = e.errors[0].reason.in();
+				std::string reason = e.errors[0].reason.in();
 				if (reason == "API_UtilSingletonNotCreated" && db_tg != NULL)
 					dsc = db_tg->get_db_cache();
 				else
@@ -3925,21 +3927,21 @@ DbDatum Database::get_device_service_list(string &servname)
 // Filter the required service
 //
 
-	string filter = servname + "/";
+	std::string filter = servname + "/";
 
-	transform(filter.begin(),filter.end(),filter.begin(),::tolower);
+	std::transform(filter.begin(),filter.end(),filter.begin(),::tolower);
 
 	for(unsigned int i = 0;i < services.size();i++)
 	{
-		transform(services[i].begin(),services[i].end(),services[i].begin(),::tolower);
+		std::transform(services[i].begin(),services[i].end(),services[i].begin(),::tolower);
 		if (strncmp(services[i].c_str(),filter.c_str(),filter.length()) == 0)
 		{
-			string::size_type pos,pos_end;
+			std::string::size_type pos,pos_end;
 			pos = services[i].find('/');
-			if (pos != string::npos)
+			if (pos != std::string::npos)
 			{
 				pos_end = services[i].find(':');
-				if (pos != string::npos)
+				if (pos != std::string::npos)
 				{
 					filter_services.push_back(services[i].substr(pos + 1,pos_end - pos - 1));
 					filter_services.push_back(services[i].substr(pos_end + 1));
@@ -3965,11 +3967,11 @@ DbDatum Database::get_device_service_list(string &servname)
 //
 //-----------------------------------------------------------------------------
 
-void Database::register_service(string &servname,string &instname,string &devname)
+void Database::register_service(std::string &servname,std::string &instname,std::string &devname)
 {
 	DbData data;
-	vector<string> services;
-	vector<string> new_services;
+	std::vector<std::string> services;
+	std::vector<std::string> new_services;
 	bool service_exists = false;
 
 // Get list of services
@@ -3978,23 +3980,24 @@ void Database::register_service(string &servname,string &instname,string &devnam
 	get_property(CONTROL_SYSTEM,data );
 	data[0] >> services;
 
-	string full_name = servname+"/"+instname+":";
-	transform(full_name.begin(),full_name.end(),full_name.begin(),::tolower);
+	std::string full_name = servname+"/"+instname+":";
+
+	std::transform(full_name.begin(),full_name.end(),full_name.begin(),::tolower);
 
 // Update service list
 
 	for(unsigned int i=0;i<services.size();i++)
 	{
-		string service_lower = services[i];
-		transform(service_lower.begin(),service_lower.end(),service_lower.begin(),::tolower);
+		std::string service_lower = services[i];
+		std::transform(service_lower.begin(),service_lower.end(),service_lower.begin(),::tolower);
 		if( strncmp(service_lower.c_str(),full_name.c_str(),full_name.length())==0 )
 		{
 
 // The service already exists, update the device name
 
-			string::size_type pos;
+			std::string::size_type pos;
 			pos = services[i].find(':');
-			if( pos != string::npos )
+			if( pos != std::string::npos )
 			{
 				new_services.push_back( services[i].substr(0,pos) + ":" + devname );
 				service_exists = true;
@@ -4026,11 +4029,11 @@ void Database::register_service(string &servname,string &instname,string &devnam
 //
 //-----------------------------------------------------------------------------
 
-void Database::unregister_service(string &servname,string &instname)
+void Database::unregister_service(std::string &servname,std::string &instname)
 {
 	DbData data;
-	vector<string> services;
-	vector<string> new_services;
+	std::vector<std::string> services;
+	std::vector<std::string> new_services;
 	bool service_deleted = false;
 
 // Get list of services
@@ -4039,15 +4042,15 @@ void Database::unregister_service(string &servname,string &instname)
 	get_property(CONTROL_SYSTEM, data );
 	data[0] >> services;
 
-	string full_name = servname+"/"+instname+":";
-	transform(full_name.begin(),full_name.end(),full_name.begin(),::tolower);
+	std::string full_name = servname+"/"+instname+":";
+	std::transform(full_name.begin(),full_name.end(),full_name.begin(),::tolower);
 
 // Update service list
 
 	for(unsigned int i=0;i<services.size();i++)
 	{
-		string service_lower = services[i];
-		transform(service_lower.begin(),service_lower.end(),service_lower.begin(),::tolower);
+		std::string service_lower = services[i];
+		std::transform(service_lower.begin(),service_lower.end(),service_lower.begin(),::tolower);
 		if( strncmp(service_lower.c_str(),full_name.c_str(),full_name.length())!=0 )
 		{
 			new_services.push_back( services[i] );
@@ -4093,7 +4096,7 @@ void Database::export_event(DevVarStringArray *eve_export)
 //
 //-----------------------------------------------------------------------------
 
-void Database::unexport_event(string &event)
+void Database::unexport_event(std::string &event)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -4111,7 +4114,7 @@ void Database::unexport_event(string &event)
 //
 //-----------------------------------------------------------------------------
 
-CORBA::Any *Database::import_event(string &event)
+CORBA::Any *Database::import_event(std::string &event)
 {
 	Any send;
 	Any_var received;
@@ -4150,7 +4153,7 @@ CORBA::Any *Database::import_event(string &event)
 //
 //-----------------------------------------------------------------------------
 
-CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
+CORBA::Any *Database::fill_server_cache(std::string &ds_name,std::string &loc_host)
 {
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 
@@ -4158,9 +4161,9 @@ CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 // Some check on args.
 //
 
-	string::size_type pos;
+	std::string::size_type pos;
 	pos = ds_name.find('/');
-	if (pos == string::npos)
+	if (pos == std::string::npos)
 	{
 		Tango::Except::throw_exception((const char *)API_MethodArgument,
 				       		(const char *)"The device server name parameter is incorrect. Should be: <ds_exec_name>/<inst_name>",
@@ -4175,7 +4178,7 @@ CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 // To read the attribute, we do not have a DeviceProxy.
 //
 
-	string ds_host(loc_host);
+	std::string ds_host(loc_host);
 	int db_proc_release = 0;
 
 	AttributeValueList_3 *attr_value_list_3 = NULL;
@@ -4218,15 +4221,15 @@ CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 			delete attr_value_list_3;
 		}
 
-		string sp_rel;
+		std::string sp_rel;
 		da >> sp_rel;
 
-		string rel = sp_rel.substr(8);
-		string::size_type pos = rel.find('.');
-		if (pos != string::npos)
+		std::string rel = sp_rel.substr(8);
+		std::string::size_type pos = rel.find('.');
+		if (pos != std::string::npos)
 		{
-			string maj_str = rel.substr(0,pos);
-			string min_str = rel.substr(pos + 1);
+			std::string maj_str = rel.substr(0,pos);
+			std::string min_str = rel.substr(pos + 1);
 
 			int maj = atoi(maj_str.c_str());
 			int min = atoi(min_str.c_str());
@@ -4286,7 +4289,7 @@ CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 //
 //-----------------------------------------------------------------------------
 
-void Database::delete_all_device_attribute_property(string dev_name,DbData &db_data)
+void Database::delete_all_device_attribute_property(std::string dev_name,DbData &db_data)
 {
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	Any send;
@@ -4332,7 +4335,7 @@ void Database::check_access()
 //
 //-----------------------------------------------------------------------------
 
-AccessControlType Database::check_access_control(string &devname)
+AccessControlType Database::check_access_control(std::string &devname)
 {
 //
 // For DB device
@@ -4353,16 +4356,16 @@ AccessControlType Database::check_access_control(string &devname)
 // variable (for test purpose) or from the AccessControl service
 //
 
-			string access_devname_str;
+			std::string access_devname_str;
 
 			int ret = get_env_var("ACCESS_DEVNAME",access_devname_str);
 			if (ret == -1)
 			{
-				string service_name(ACCESS_SERVICE);
-				string service_inst_name("*");
+				std::string service_name(ACCESS_SERVICE);
+				std::string service_inst_name("*");
 
 				DbDatum db_serv = get_services(service_name,service_inst_name);
-				vector<string> serv_dev_list;
+				std::vector<std::string> serv_dev_list;
 				db_serv >> serv_dev_list;
 				if (serv_dev_list.empty() == false)
 				{
@@ -4398,7 +4401,7 @@ AccessControlType Database::check_access_control(string &devname)
 
 				if (num == 2)
 				{
-					string fqdn("tango://");
+					std::string fqdn("tango://");
 					fqdn = fqdn + db_host + ":" + db_port + "/";
 					access_devname_str.insert(0,fqdn);
 				}
@@ -4426,7 +4429,7 @@ AccessControlType Database::check_access_control(string &devname)
 	{
 		if (::strcmp(e.errors[0].reason.in(),API_DeviceNotExported) == 0 || ::strcmp(e.errors[0].reason.in(),"DB_DeviceNotDefined") == 0)
 		{
-			string tmp_err_desc(e.errors[0].desc.in());
+			std::string tmp_err_desc(e.errors[0].desc.in());
 			tmp_err_desc = tmp_err_desc + "\nControlled access service defined in Db but unreachable --> Read access given to all devices...";
 			e.errors[0].desc = Tango::string_dup(tmp_err_desc.c_str());
 		}
@@ -4443,7 +4446,7 @@ AccessControlType Database::check_access_control(string &devname)
 //
 //-----------------------------------------------------------------------------
 
-bool Database::is_command_allowed(string &devname,string &cmd)
+bool Database::is_command_allowed(std::string &devname,std::string &cmd)
 {
 	WriterLock guard(con_to_mon);
 
@@ -4481,7 +4484,7 @@ bool Database::is_command_allowed(string &devname,string &cmd)
 
 		if (access == ACCESS_READ)
 		{
-			string db_class("Database");
+			std::string db_class("Database");
 			ret = access_proxy->is_command_allowed(db_class,cmd);
 		}
 		else
@@ -4494,7 +4497,7 @@ bool Database::is_command_allowed(string &devname,string &cmd)
 // Get device class
 //
 
-		string dev_class = get_class_for_device(devname);
+		std::string dev_class = get_class_for_device(devname);
 		ret = access_proxy->is_command_allowed(dev_class,cmd);
 	}
 
@@ -4512,7 +4515,7 @@ bool Database::is_command_allowed(string &devname,string &cmd)
 //
 //-----------------------------------------------------------------------------
 
-void Database::write_event_channel_ior_filedatabase(string &ec_ior)
+void Database::write_event_channel_ior_filedatabase(std::string &ec_ior)
 {
 	if (filedb == NULL)
 	{
@@ -4530,7 +4533,7 @@ void Database::write_event_channel_ior_filedatabase(string &ec_ior)
 //
 //-----------------------------------------------------------------------------
 
-DbDevFullInfo Database::get_device_info(string &dev)
+DbDevFullInfo Database::get_device_info(std::string &dev)
 {
 	Any send;
 	Any_var received;
@@ -4548,18 +4551,18 @@ DbDevFullInfo Database::get_device_info(string &dev)
 	DbDevFullInfo dev_info;
 	if (dev_info_db != NULL)
 	{
-        dev_info.name = string(dev_info_db->svalue[0]);
-        dev_info.ior = string(dev_info_db->svalue[1]);
-        dev_info.version = string(dev_info_db->svalue[2]);
-        dev_info.ds_full_name = string(dev_info_db->svalue[3]);
-        dev_info.host = string(dev_info_db->svalue[4]);
+        dev_info.name = std::string(dev_info_db->svalue[0]);
+        dev_info.ior = std::string(dev_info_db->svalue[1]);
+        dev_info.version = std::string(dev_info_db->svalue[2]);
+        dev_info.ds_full_name = std::string(dev_info_db->svalue[3]);
+        dev_info.host = std::string(dev_info_db->svalue[4]);
         if (::strlen(dev_info_db->svalue[5]) != 1)
-            dev_info.started_date = string(dev_info_db->svalue[5]);
+            dev_info.started_date = std::string(dev_info_db->svalue[5]);
         if (::strlen(dev_info_db->svalue[6]) != 1)
-            dev_info.stopped_date = string(dev_info_db->svalue[6]);
+            dev_info.stopped_date = std::string(dev_info_db->svalue[6]);
 
         if (dev_info_db->svalue.length() > 7)
-            dev_info.class_name = string(dev_info_db->svalue[7]);
+            dev_info.class_name = std::string(dev_info_db->svalue[7]);
         else
         {
             try
@@ -4587,7 +4590,7 @@ DbDevFullInfo Database::get_device_info(string &dev)
 // Database::get_device_from_alias() - Get device name from an alias
 //
 //-----------------------------------------------------------------------------
-void Database::get_device_from_alias(string alias_name, string &dev_name)
+void Database::get_device_from_alias(std::string alias_name, std::string &dev_name)
 {
 	Any send;
 	Any_var received;
@@ -4611,7 +4614,7 @@ void Database::get_device_from_alias(string alias_name, string &dev_name)
 // Database::get_alias_from_device() - Get alias name from a device name
 //
 //-----------------------------------------------------------------------------
-void Database::get_alias_from_device(string dev_name, string &alias_name)
+void Database::get_alias_from_device(std::string dev_name, std::string &alias_name)
 {
 	Any send;
 	Any_var received;
@@ -4635,7 +4638,7 @@ void Database::get_alias_from_device(string dev_name, string &alias_name)
 // Database::get_attribute_from_alias() - Get attribute name from an alias
 //
 //-----------------------------------------------------------------------------
-void Database::get_attribute_from_alias(string attr_alias, string &attr_name)
+void Database::get_attribute_from_alias(std::string attr_alias, std::string &attr_name)
 {
 	Any send;
 	Any_var received;
@@ -4667,7 +4670,7 @@ void Database::get_attribute_from_alias(string attr_alias, string &attr_name)
 // Database::get_alias_from_attribute() - Get alias name from an attribute name
 //
 //-----------------------------------------------------------------------------
-void Database::get_alias_from_attribute(string attr_name, string &attr_alias)
+void Database::get_alias_from_attribute(std::string attr_name, std::string &attr_alias)
 {
 	Any send;
 	Any_var received;
@@ -4700,7 +4703,7 @@ void Database::get_alias_from_attribute(string attr_name, string &attr_alias)
 // for a specified device
 //
 //-----------------------------------------------------------------------------
-void Database::get_device_attribute_list(string &dev_name, vector<string> &att_list)
+void Database::get_device_attribute_list(std::string &dev_name, std::vector<std::string> &att_list)
 {
 	Any send;
 	Any_var received;
@@ -4728,7 +4731,7 @@ void Database::get_device_attribute_list(string &dev_name, vector<string> &att_l
 // Database::rename_server() - Rename a device server process
 //
 //-----------------------------------------------------------------------------
-void Database::rename_server(const string &old_ds_name, const string &new_ds_name)
+void Database::rename_server(const std::string &old_ds_name, const std::string &new_ds_name)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -4751,7 +4754,7 @@ void Database::rename_server(const string &old_ds_name, const string &new_ds_nam
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-void Database::get_class_pipe_property(string device_class, DbData &db_data, DbServerCache *db_cache)
+void Database::get_class_pipe_property(std::string device_class, DbData &db_data, DbServerCache *db_cache)
 {
 	unsigned int i;
 	Any_var received;
@@ -4810,16 +4813,16 @@ void Database::get_class_pipe_property(string device_class, DbData &db_data, DbS
 		}
 		catch (Tango::DevFailed &e)
 		{
-			string err_reason(e.errors[0].reason.in());
+			std::string err_reason(e.errors[0].reason.in());
 
 			if (err_reason == "DB_ClassNotFoundInCache" || err_reason == "DB_TooOldStoredProc")
 			{
 
 				if (err_reason == "DB_TooOldStoredProc")
 				{
-					cout << "WARNING: You database stored procedure is too old to support device pipe" << endl;
-					cout << "Please, update to stored procedure release 1.9 or more" << endl;
-					cout << "Trying direct Db access" << endl;
+					cout << "WARNING: You database stored procedure is too old to support device pipe" << std::endl;
+					cout << "Please, update to stored procedure release 1.9 or more" << std::endl;
+					cout << "Trying direct Db access" << std::endl;
 				}
 
 //
@@ -4852,9 +4855,9 @@ void Database::get_class_pipe_property(string device_class, DbData &db_data, DbS
 
 	unsigned int n_pipes, index;
 	int i_total_props;
-	stringstream iostream;
+  std::stringstream iostream;
 
-	iostream << (*property_values)[1].in() << ends;
+	iostream << (*property_values)[1].in() << std::ends;
 	iostream >> n_pipes;
 	index = 2;
 	i_total_props = 0;
@@ -4868,7 +4871,7 @@ void Database::get_class_pipe_property(string device_class, DbData &db_data, DbS
 		short n_props;
 		db_data[i_total_props].name = (*property_values)[index]; index++;
 		iostream.seekp(0); iostream.seekg(0); iostream.clear();
-		iostream << (*property_values)[index].in() << ends;
+		iostream << (*property_values)[index].in() << std::ends;
 		iostream >> n_props;
 		db_data[i_total_props] << n_props;
 		db_data.resize(old_size + n_props);
@@ -4881,7 +4884,7 @@ void Database::get_class_pipe_property(string device_class, DbData &db_data, DbS
 			index++;
 			int n_values;
 			iostream.seekp(0); iostream.seekg(0); iostream.clear();
-			iostream << (*property_values)[index].in() << ends;
+			iostream << (*property_values)[index].in() << std::ends;
 			iostream >> n_values;
 			index++;
 
@@ -4911,7 +4914,7 @@ void Database::get_class_pipe_property(string device_class, DbData &db_data, DbS
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Database::get_device_pipe_property(string dev, DbData &db_data, DbServerCache *db_cache)
+void Database::get_device_pipe_property(std::string dev, DbData &db_data, DbServerCache *db_cache)
 {
 	unsigned int i,j;
 	Any_var received;
@@ -4970,15 +4973,15 @@ void Database::get_device_pipe_property(string dev, DbData &db_data, DbServerCac
 		}
 		catch (Tango::DevFailed &e)
 		{
-			string err_reason(e.errors[0].reason.in());
+			std::string err_reason(e.errors[0].reason.in());
 
 			if (err_reason == "DB_DeviceNotFoundInCache" || err_reason == "DB_TooOldStoredProc")
 			{
 				if (err_reason == "DB_TooOldStoredProc")
 				{
-					cout << "WARNING: You database stored procedure is too old to support device pipe" << endl;
-					cout << "Please, update to stored procedure release 1.9 or more" << endl;
-					cout << "Trying direct Db access" << endl;
+					cout << "WARNING: You database stored procedure is too old to support device pipe" << std::endl;
+					cout << "Please, update to stored procedure release 1.9 or more" << std::endl;
+					cout << "Trying direct Db access" << std::endl;
 				}
 
 //
@@ -5010,9 +5013,9 @@ void Database::get_device_pipe_property(string dev, DbData &db_data, DbServerCac
 
 	unsigned int n_pipes, index;
 	int i_total_props;
-	stringstream iostream;
+  std::stringstream iostream;
 
-	iostream << (*property_values)[1].in() << ends;
+	iostream << (*property_values)[1].in() << std::ends;
 	iostream >> n_pipes;
 	index = 2;
 
@@ -5026,7 +5029,7 @@ void Database::get_device_pipe_property(string dev, DbData &db_data, DbServerCac
 		unsigned short n_props;
 		db_data[i_total_props].name = (*property_values)[index]; index++;
 		iostream.seekp(0); iostream.seekg(0); iostream.clear();
-		iostream << (*property_values)[index].in() << ends;
+		iostream << (*property_values)[index].in() << std::ends;
 		iostream >> n_props;
 		db_data[i_total_props] << n_props;
 		db_data.resize(old_size + n_props);
@@ -5039,7 +5042,7 @@ void Database::get_device_pipe_property(string dev, DbData &db_data, DbServerCac
 			index++;
 			int n_values;
 			iostream.seekp (0);  iostream.seekg (0); iostream.clear();
-			iostream << (*property_values)[index].in() << ends;
+			iostream << (*property_values)[index].in() << std::ends;
 			iostream >> n_values;
 			index++;
 
@@ -5060,7 +5063,7 @@ void Database::get_device_pipe_property(string dev, DbData &db_data, DbServerCac
 		}
 	}
 
-    cout4 << "Leaving get_device_pipe_property" << endl;
+    cout4 << "Leaving get_device_pipe_property" << std::endl;
 	return;
 }
 
@@ -5070,7 +5073,7 @@ void Database::get_device_pipe_property(string dev, DbData &db_data, DbServerCac
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Database::delete_class_pipe_property(string device_class, DbData &db_data)
+void Database::delete_class_pipe_property(std::string device_class, DbData &db_data)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -5101,7 +5104,7 @@ void Database::delete_class_pipe_property(string device_class, DbData &db_data)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Database::delete_device_pipe_property(string dev, DbData &db_data)
+void Database::delete_device_pipe_property(std::string dev, DbData &db_data)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
@@ -5132,7 +5135,7 @@ void Database::delete_device_pipe_property(string dev, DbData &db_data)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-DbDatum Database::get_class_pipe_list(const string &classname,const string &wildcard)
+DbDatum Database::get_class_pipe_list(const std::string &classname,const std::string &wildcard)
 {
 	Any send;
 	Any_var received;
@@ -5150,7 +5153,7 @@ DbDatum Database::get_class_pipe_list(const string &classname,const string &wild
 
 	CALL_DB_SERVER("DbGetClassPipeList",send,received);
 
-	return make_string_array(string("class"),received);
+	return make_string_array(std::string("class"),received);
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -5158,7 +5161,7 @@ DbDatum Database::get_class_pipe_list(const string &classname,const string &wild
 // Database::get_device_pipe_list() - Get list of pipes with data in db for a specified device
 //
 //-------------------------------------------------------------------------------------------------------------------
-void Database::get_device_pipe_list(const string &dev_name, vector<string> &pipe_list)
+void Database::get_device_pipe_list(const std::string &dev_name, std::vector<std::string> &pipe_list)
 {
 	Any send;
 	Any_var received;
@@ -5188,7 +5191,7 @@ void Database::get_device_pipe_list(const string &dev_name, vector<string> &pipe
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void Database::delete_all_device_pipe_property(string dev_name,DbData &db_data)
+void Database::delete_all_device_pipe_property(std::string dev_name,DbData &db_data)
 {
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	Any send;
@@ -5219,9 +5222,9 @@ void Database::delete_all_device_pipe_property(string dev_name,DbData &db_data)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Database::put_class_pipe_property(string device_class, DbData &db_data)
+void Database::put_class_pipe_property(std::string device_class, DbData &db_data)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index, n_pipes;
@@ -5243,10 +5246,10 @@ void Database::put_class_pipe_property(string device_class, DbData &db_data)
 			(*property_values)[index-1] = string_dup(db_data[i].name.c_str());
 			db_data[i] >> n_props;
 			ostream.seekp(0); ostream.clear();
-			ostream << n_props << ends;
+			ostream << n_props << std::ends;
 			index++; property_values->length(index);
 
-			string st = ostream.str();
+			std::string st = ostream.str();
 			(*property_values)[index-1] = string_dup(st.c_str());
 
 			for (int j=0; j<n_props; j++)
@@ -5256,9 +5259,9 @@ void Database::put_class_pipe_property(string device_class, DbData &db_data)
 				index++; property_values->length(index);
 				int prop_size = db_data[i+j+1].size();
 				ostream.seekp(0); ostream.clear();
-				ostream << prop_size << ends;
+				ostream << prop_size << std::ends;
 
-				string st = ostream.str();
+				std::string st = ostream.str();
 				(*property_values)[index-1] = string_dup(st.c_str());
 
 				property_values->length(index + prop_size);
@@ -5273,9 +5276,9 @@ void Database::put_class_pipe_property(string device_class, DbData &db_data)
 		}
 
 		ostream.seekp(0); ostream.clear();
-		ostream << n_pipes << ends;
+		ostream << n_pipes << std::ends;
 
-		string st = ostream.str();
+		std::string st = ostream.str();
 		(*property_values)[1] = string_dup(st.c_str());
 
 		send <<= property_values;
@@ -5301,9 +5304,9 @@ void Database::put_class_pipe_property(string device_class, DbData &db_data)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Database::put_device_pipe_property(string dev, DbData &db_data)
+void Database::put_device_pipe_property(std::string dev, DbData &db_data)
 {
-	ostringstream ostream;
+	std::ostringstream ostream;
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index, n_pipes ;
@@ -5325,10 +5328,10 @@ void Database::put_device_pipe_property(string dev, DbData &db_data)
 			(*property_values)[index-1] = string_dup(db_data[i].name.c_str());
 			db_data[i] >> n_props;
 			ostream.seekp(0); ostream.clear();
-			ostream << n_props << ends;
+			ostream << n_props << std::ends;
 			index++; property_values->length(index);
 
-			string st = ostream.str();
+			std::string st = ostream.str();
 			(*property_values)[index-1] = string_dup(st.c_str());
 
 			for (int j=0; j<n_props; j++)
@@ -5338,9 +5341,9 @@ void Database::put_device_pipe_property(string dev, DbData &db_data)
 				index++; property_values->length(index);
 				int prop_size = db_data[i+j+1].size();
 				ostream.seekp(0); ostream.clear();
-				ostream << prop_size << ends;
+				ostream << prop_size << std::ends;
 
-				string st = ostream.str();
+				std::string st = ostream.str();
 				(*property_values)[index-1] = string_dup(st.c_str());
 
 				property_values->length(index + prop_size);
@@ -5355,9 +5358,9 @@ void Database::put_device_pipe_property(string dev, DbData &db_data)
 		}
 
 		ostream.seekp(0); ostream.clear();
-		ostream << n_pipes << ends;
+		ostream << n_pipes << std::ends;
 
-		string st = ostream.str();
+		std::string st = ostream.str();
 		(*property_values)[1] = string_dup(st.c_str());
 
 		send <<= property_values;
@@ -5391,7 +5394,7 @@ void Database::put_device_pipe_property(string dev, DbData &db_data)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-vector<DbHistory> Database::get_class_pipe_property_history(string &classname,string &pipename,string &propname)
+std::vector<DbHistory> Database::get_class_pipe_property_history(std::string &classname,std::string &pipename,std::string &propname)
 {
 	Any send;
 	Any_var received;
@@ -5419,7 +5422,7 @@ vector<DbHistory> Database::get_class_pipe_property_history(string &classname,st
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-vector<DbHistory> Database::get_device_pipe_property_history(string &devname,string &pipename,string &propname)
+std::vector<DbHistory> Database::get_device_pipe_property_history(std::string &devname,std::string &pipename,std::string &propname)
 {
 	Any send;
 	Any_var received;

@@ -1101,8 +1101,8 @@ public:
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
 	{(static_cast<DevTest *>(dev))->write_Enum_attr(att);}
 
-	virtual bool same_type(const type_info &in_type) {return typeid(CardinalPoints) == in_type;}
-	virtual string get_enum_type() {return string("CardinalPoints");}
+	virtual bool same_type(const std::type_info &in_type) {return typeid(CardinalPoints) == in_type;}
+	virtual std::string get_enum_type() {return std::string("CardinalPoints");}
 };
 
 class EnumSpecAttr: public Tango::SpectrumAttr
@@ -1116,8 +1116,8 @@ public:
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
 	{(static_cast<DevTest *>(dev))->write_Enum_spec_attr_rw(att);}
 
-	virtual bool same_type(const type_info &in_type) {return typeid(CardinalPoints) == in_type;}
-	virtual string get_enum_type() {return string("CardinalPoints");}
+	virtual bool same_type(const std::type_info &in_type) {return typeid(CardinalPoints) == in_type;}
+	virtual std::string get_enum_type() {return std::string("CardinalPoints");}
 };
 
 class DynEnumAttr: public Tango::Attr
@@ -1135,7 +1135,7 @@ public:
 class RPipeClass : public Tango::Pipe
 {
 public:
-	RPipeClass(const string &name,Tango::DispLevel  level)
+	RPipeClass(const std::string &name,Tango::DispLevel  level)
 	:Pipe(name,level) {};
 
 	~RPipeClass() {};
@@ -1149,7 +1149,7 @@ public:
 class RWPipeClass : public Tango::WPipe
 {
 public:
-	RWPipeClass(const string &name,Tango::DispLevel  level)
+	RWPipeClass(const std::string &name,Tango::DispLevel  level)
 	:WPipe(name,level) {};
 
 	~RWPipeClass() {};
@@ -1165,7 +1165,7 @@ public:
 class ConfPipeClass : public Tango::Pipe
 {
 public:
-	ConfPipeClass(const string &name,Tango::DispLevel  level)
+	ConfPipeClass(const std::string &name,Tango::DispLevel  level)
 	:Pipe(name,level) {};
 
 	~ConfPipeClass() {};
@@ -1179,7 +1179,7 @@ public:
 class RPipeDEClass : public Tango::Pipe
 {
 public:
-	RPipeDEClass(const string &name,Tango::DispLevel  level)
+	RPipeDEClass(const std::string &name,Tango::DispLevel  level)
 	:Pipe(name,level) {};
 
 	~RPipeDEClass() {};
@@ -1204,14 +1204,14 @@ public:
 	static DevTestClass *instance();
 	~DevTestClass() {_instance = NULL;}
 
-	virtual void device_name_factory(vector<string> &);
+	virtual void device_name_factory(std::vector<std::string> &);
 	virtual void signal_handler(long signo);
 
 protected:
-	DevTestClass(string &);
+	DevTestClass(std::string &);
 	static DevTestClass *_instance;
 	void command_factory();
-	void attribute_factory(vector<Tango::Attr *> &);
+	void attribute_factory(std::vector<Tango::Attr *> &);
 	void pipe_factory();
 
 private:

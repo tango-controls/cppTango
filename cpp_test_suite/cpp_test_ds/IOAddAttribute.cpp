@@ -69,12 +69,12 @@ bool IOAddAttribute::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CO
 CORBA::Any *IOAddAttribute::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
   try {
-    cout << "[IOAddAttribute::execute] " << endl;
+    cout << "[IOAddAttribute::execute] " << std::endl;
 
     Tango::DevString new_att;
 	extract(in_any, new_att);
-	string str(new_att);
-	transform(str.begin(),str.end(),str.begin(),::tolower);
+	std::string str(new_att);
+	std::transform(str.begin(),str.end(),str.begin(),::tolower);
 
 	if (str == "added_short_attr")
 	{
@@ -90,7 +90,7 @@ CORBA::Any *IOAddAttribute::execute(Tango::DeviceImpl *device,const CORBA::Any &
 	{
 		Tango::Attr *at = new Tango::Attr("Added_enum_attr", Tango::DEV_ENUM, Tango::READ);
 		Tango::UserDefaultAttrProp def_prop;
-		vector<string> v_s;
+		std::vector<std::string> v_s;
 		v_s.push_back("Red");
 		v_s.push_back("Green");
 		v_s.push_back("Blue");
@@ -177,11 +177,11 @@ bool IORemoveAttribute::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const
 CORBA::Any *IORemoveAttribute::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
   try {
-    cout << "[IORemoveAttribute::execute] " << endl;
+    cout << "[IORemoveAttribute::execute] " << std::endl;
 
 	Tango::DevString att_name;
 	extract(in_any, att_name);
-	string str(att_name);
+	std::string str(att_name);
 /*	transform(str.begin(),str.end(),str.begin(),::tolower);*/
 
     device->remove_attribute(str,true);
@@ -265,7 +265,7 @@ CORBA::Any *DynCommand::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UN
 {
 	try
 	{
-		cout << "[DynCommand::execute] " << endl;
+		cout << "[DynCommand::execute] " << std::endl;
 		Tango::DevFloat theNumber = 4.0;
 		return insert(theNumber);
 	}
@@ -348,7 +348,7 @@ CORBA::Any *IOAddCommand::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 {
 	try
 	{
-		cout << "[IOAddCommand::execute] " << endl;
+		cout << "[IOAddCommand::execute] " << std::endl;
 		Tango::DevLong cmd_arg;
 		extract(in_any,cmd_arg);
 
@@ -360,7 +360,7 @@ CORBA::Any *IOAddCommand::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 			loop = 3;
 		for (int ctr = 0;ctr < loop;ctr++)
 		{
-			stringstream ss;
+			std::stringstream ss;
 			ss << "Added_cmd";
 			if (ctr != 0)
 				ss << "_" << ctr;
@@ -448,8 +448,8 @@ CORBA::Any *IORemoveCommand::execute(Tango::DeviceImpl *device,TANGO_UNUSED(cons
 {
 	try
 	{
-		cout << "[IORemoveCommand::execute] " << endl;
-		string st("Added_cmd");
+		cout << "[IORemoveCommand::execute] " << std::endl;
+		std::string st("Added_cmd");
 		device->remove_command(st,true);
 		return insert();
 	}

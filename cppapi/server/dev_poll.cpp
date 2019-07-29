@@ -60,16 +60,16 @@ void DeviceImpl::init_poll_no_db()
 // A loop for all device attribute
 //
 
-    vector<Attribute *> &att_list = dev_attr->get_attribute_list();
-    vector<Attribute *>::iterator ite;
+    std::vector<Attribute *> &att_list = dev_attr->get_attribute_list();
+    std::vector<Attribute *>::iterator ite;
     for (ite = att_list.begin();ite != att_list.end();++ite)
     {
         long poll_period = (*ite)->get_polling_period();
         if (poll_period != 0)
         {
-            vector<string> &polled_attr_list = get_polled_attr();
+            std::vector<std::string> &polled_attr_list = get_polled_attr();
             polled_attr_list.push_back((*ite)->get_name());
-            stringstream ss;
+            std::stringstream ss;
             ss << poll_period;
             polled_attr_list.push_back(ss.str());
 
@@ -85,16 +85,16 @@ void DeviceImpl::init_poll_no_db()
 // A loop for all device commands
 //
 
-    vector<Command *> &cmd_list = device_class->get_command_list();
-    vector<Command *>::iterator ite_cmd;
+    std::vector<Command *> &cmd_list = device_class->get_command_list();
+    std::vector<Command *>::iterator ite_cmd;
     for (ite_cmd = cmd_list.begin();ite_cmd != cmd_list.end();++ite_cmd)
     {
         long poll_period = (*ite_cmd)->get_polling_period();
         if (poll_period != 0)
         {
-            vector<string> &polled_cmd_list = get_polled_cmd();
+            std::vector<std::string> &polled_cmd_list = get_polled_cmd();
             polled_cmd_list.push_back((*ite_cmd)->get_name());
-            stringstream ss;
+            std::stringstream ss;
             ss << poll_period;
             polled_cmd_list.push_back(ss.str());
 
@@ -121,12 +121,12 @@ void DeviceImpl::init_poll_no_db()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-bool DeviceImpl::is_attribute_polled(const string &att_name)
+bool DeviceImpl::is_attribute_polled(const std::string &att_name)
 {
-	string att = att_name;
-	transform(att.begin(),att.end(),att.begin(),::tolower);
+	std::string att = att_name;
+	std::transform(att.begin(),att.end(),att.begin(),::tolower);
 
-	vector<string> &att_list = get_polled_attr();
+	std::vector<std::string> &att_list = get_polled_attr();
 
 	for (unsigned int i = 0;i < att_list.size();i = i+2)
 	{
@@ -135,8 +135,8 @@ bool DeviceImpl::is_attribute_polled(const string &att_name)
 //	Convert to lower case before comparison
 //
 
-		string name_lowercase(att_list[i]);
-		transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
+		std::string name_lowercase(att_list[i]);
+		std::transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
 		if ( att == name_lowercase )
 		{
 
@@ -166,7 +166,7 @@ bool DeviceImpl::is_attribute_polled(const string &att_name)
 // check the list of non_auto_polled attributes to verify wether the polling was disabled
 //
 
-		vector<string> &napa = get_non_auto_polled_attr();
+		std::vector<std::string> &napa = get_non_auto_polled_attr();
 		for (unsigned int j = 0;j < napa.size();j++)
 		{
 #ifdef _TG_WINDOWS_
@@ -199,12 +199,12 @@ bool DeviceImpl::is_attribute_polled(const string &att_name)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-bool DeviceImpl::is_command_polled(const string &cmd_name)
+bool DeviceImpl::is_command_polled(const std::string &cmd_name)
 {
-	string cmd = cmd_name;
-	transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
+	std::string cmd = cmd_name;
+	std::transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
 
-	vector<string> &cmd_list = get_polled_cmd();
+	std::vector<std::string> &cmd_list = get_polled_cmd();
 
 	for (unsigned int i = 0;i < cmd_list.size();i = i+2)
 	{
@@ -213,8 +213,8 @@ bool DeviceImpl::is_command_polled(const string &cmd_name)
 //	Convert to lower case before comparison
 //
 
-		string name_lowercase(cmd_list[i]);
-		transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
+		std::string name_lowercase(cmd_list[i]);
+		std::transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
 		if ( cmd == name_lowercase )
 		{
 
@@ -244,7 +244,7 @@ bool DeviceImpl::is_command_polled(const string &cmd_name)
 // check the list of non_auto_polled attributes to verify wether the polling was disabled
 //
 
-		vector<string> &napa = get_non_auto_polled_cmd();
+		std::vector<std::string> &napa = get_non_auto_polled_cmd();
 		for (unsigned int j = 0;j < napa.size();j++)
 		{
 #ifdef _TG_WINDOWS_
@@ -277,15 +277,15 @@ bool DeviceImpl::is_command_polled(const string &cmd_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-int DeviceImpl::get_attribute_poll_period(const string &att_name)
+int DeviceImpl::get_attribute_poll_period(const std::string &att_name)
 {
     int per = 0;
 
-	string att = att_name;
-	transform(att.begin(),att.end(),att.begin(),::tolower);
+	std::string att = att_name;
+	std::transform(att.begin(),att.end(),att.begin(),::tolower);
 
     bool found = false;
-	vector<string> &att_list = get_polled_attr();
+	std::vector<std::string> &att_list = get_polled_attr();
 	for (unsigned int i = 0;i < att_list.size();i = i+2)
 	{
 
@@ -293,11 +293,11 @@ int DeviceImpl::get_attribute_poll_period(const string &att_name)
 //	Convert to lower case before comparison
 //
 
-		string name_lowercase(att_list[i]);
-		transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
+		std::string name_lowercase(att_list[i]);
+		std::transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
 		if ( att == name_lowercase )
 		{
-            stringstream ss;
+            std::stringstream ss;
             ss << att_list[i + 1];
             ss >> per;
             found = true;
@@ -333,15 +333,15 @@ int DeviceImpl::get_attribute_poll_period(const string &att_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-int DeviceImpl::get_command_poll_period(const string &cmd_name)
+int DeviceImpl::get_command_poll_period(const std::string &cmd_name)
 {
     int per = 0;
 
-	string cmd = cmd_name;
-	transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
+	std::string cmd = cmd_name;
+	std::transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
 
     bool found = false;
-	vector<string> &cmd_list = get_polled_cmd();
+	std::vector<std::string> &cmd_list = get_polled_cmd();
 	for (unsigned int i = 0;i < cmd_list.size();i = i+2)
 	{
 
@@ -349,11 +349,11 @@ int DeviceImpl::get_command_poll_period(const string &cmd_name)
 //	Convert to lower case before comparison
 //
 
-		string name_lowercase(cmd_list[i]);
-		transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
+		std::string name_lowercase(cmd_list[i]);
+		std::transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
 		if ( cmd == name_lowercase )
 		{
-            stringstream ss;
+            std::stringstream ss;
             ss << cmd_list[i + 1];
             ss >> per;
             found = true;
@@ -390,7 +390,7 @@ int DeviceImpl::get_command_poll_period(const string &cmd_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::poll_attribute(const string &att_name,int period)
+void DeviceImpl::poll_attribute(const std::string &att_name,int period)
 {
     poll_object(att_name,period,POLL_ATTR);
 }
@@ -410,7 +410,7 @@ void DeviceImpl::poll_attribute(const string &att_name,int period)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::poll_command(const string &cmd_name,int period)
+void DeviceImpl::poll_command(const std::string &cmd_name,int period)
 {
     poll_object(cmd_name,period,POLL_CMD);
 }
@@ -431,7 +431,7 @@ void DeviceImpl::poll_command(const string &cmd_name,int period)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::poll_object(const string &obj_name,int period,PollObjType type)
+void DeviceImpl::poll_object(const std::string &obj_name,int period,PollObjType type)
 {
     Tango::Util *tg = Tango::Util::instance();
 
@@ -453,7 +453,7 @@ void DeviceImpl::poll_object(const string &obj_name,int period,PollObjType type)
         if (period < MIN_POLL_PERIOD)
         {
             TangoSys_OMemStream o;
-            o << period << " is below the min authorized period (" << MIN_POLL_PERIOD << " mS)" << ends;
+            o << period << " is below the min authorized period (" << MIN_POLL_PERIOD << " mS)" << std::ends;
             Except::throw_exception((const char *)API_NotSupported,o.str(),
                         (const char *)"DeviceImpl::poll_object");
         }
@@ -462,18 +462,18 @@ void DeviceImpl::poll_object(const string &obj_name,int period,PollObjType type)
 // Just to be sure that the command/attribute exist. Also init ptr to the command/attribute polled list
 //
 
-        vector<string> *poll_obj;
+        std::vector<std::string> *poll_obj;
 
         if (type == POLL_CMD)
         {
             device_class->get_cmd_by_name(obj_name);
-            vector<string> &po = get_polled_cmd();
+            std::vector<std::string> &po = get_polled_cmd();
             poll_obj = &po;
         }
         else
         {
             dev_attr->get_attr_by_name(obj_name.c_str());
-            vector<string> &po = get_polled_attr();
+            std::vector<std::string> &po = get_polled_attr();
             poll_obj = &po;
         }
 
@@ -485,18 +485,18 @@ void DeviceImpl::poll_object(const string &obj_name,int period,PollObjType type)
 //
 
         bool found = false;
-        string obj_name_lower(obj_name);
-        transform(obj_name_lower.begin(),obj_name_lower.end(),obj_name_lower.begin(),::tolower);
+        std::string obj_name_lower(obj_name);
+        std::transform(obj_name_lower.begin(),obj_name_lower.end(),obj_name_lower.begin(),::tolower);
 
         for (unsigned int i = 0;i < poll_obj->size();i = i + 2)
         {
-            string tmp_name((*poll_obj)[i]);
-            transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+            std::string tmp_name((*poll_obj)[i]);
+            std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
             if (tmp_name == obj_name_lower)
             {
                 found = true;
-                stringstream ss;
-                string period_str;
+                std::stringstream ss;
+                std::string period_str;
                 ss << period;
                 ss >> period_str;
                 if (ss)
@@ -506,7 +506,7 @@ void DeviceImpl::poll_object(const string &obj_name,int period,PollObjType type)
 
         if (found == false)
         {
-            stringstream ss;
+            std::stringstream ss;
             ss << -period;
 
             if (ss)
@@ -532,7 +532,7 @@ void DeviceImpl::poll_object(const string &obj_name,int period,PollObjType type)
         send->svalue.length(3);
 
         send->svalue[0] = Tango::string_dup(get_name().c_str());
-        string obj_type;
+        std::string obj_type;
         if (type == POLL_ATTR)
             obj_type = "attribute";
         else
@@ -585,7 +585,7 @@ void DeviceImpl::poll_object(const string &obj_name,int period,PollObjType type)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::stop_poll_attribute(const string &att_name)
+void DeviceImpl::stop_poll_attribute(const std::string &att_name)
 {
     stop_poll_object(att_name,POLL_ATTR);
 }
@@ -604,7 +604,7 @@ void DeviceImpl::stop_poll_attribute(const string &att_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::stop_poll_command(const string &cmd_name)
+void DeviceImpl::stop_poll_command(const std::string &cmd_name)
 {
     stop_poll_object(cmd_name,POLL_CMD);
 }
@@ -623,7 +623,7 @@ void DeviceImpl::stop_poll_command(const string &cmd_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::stop_poll_object(const string &obj_name,PollObjType type)
+void DeviceImpl::stop_poll_object(const std::string &obj_name,PollObjType type)
 {
     Tango::Util *tg = Tango::Util::instance();
 
@@ -634,18 +634,18 @@ void DeviceImpl::stop_poll_object(const string &obj_name,PollObjType type)
 // Just to be sure that the attribute/command exist
 //
 
-        vector<string> *poll_obj;
+        std::vector<std::string> *poll_obj;
 
         if (type == POLL_CMD)
         {
             device_class->get_cmd_by_name(obj_name);
-            vector<string> &po = get_polled_cmd();
+            std::vector<std::string> &po = get_polled_cmd();
             poll_obj = &po;
         }
         else
         {
             dev_attr->get_attr_by_name(obj_name.c_str());
-            vector<string> &po = get_polled_attr();
+            std::vector<std::string> &po = get_polled_attr();
             poll_obj = &po;
         }
 
@@ -653,14 +653,14 @@ void DeviceImpl::stop_poll_object(const string &obj_name,PollObjType type)
 // Remove object info in vector of polled attributes/commands
 //
 
-        string obj_name_lower(obj_name);
-        transform(obj_name_lower.begin(),obj_name_lower.end(),obj_name_lower.begin(),::tolower);
+        std::string obj_name_lower(obj_name);
+        std::transform(obj_name_lower.begin(),obj_name_lower.end(),obj_name_lower.begin(),::tolower);
 
-        vector<string>::iterator ite;
+        std::vector<std::string>::iterator ite;
         for (ite = poll_obj->begin();ite != poll_obj->end();ite = ite + 2)
         {
-            string tmp_name(*ite);
-            transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+            std::string tmp_name(*ite);
+            std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
             if (tmp_name == obj_name_lower)
             {
                 ite = poll_obj->erase(ite,ite+2);
@@ -688,7 +688,7 @@ void DeviceImpl::stop_poll_object(const string &obj_name,PollObjType type)
 			send->length(3);
 
 			(*send)[0] = Tango::string_dup(get_name().c_str());
-			string str_type;
+			std::string str_type;
 			if (type == POLL_CMD)
 				str_type = "command";
 			else

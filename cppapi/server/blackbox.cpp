@@ -356,11 +356,11 @@ void BlackBox::add_cl_ident(const ClntIdent &cl_ident, client_addr *cl_addr)
     if (cl_lang == Tango::CPP)
     {
         cl_addr->client_pid = cl_ident.cpp_clnt();
-        string str(cl_addr->client_ip);
-        if (str.find(":unix:") != string::npos)
+        std::string str(cl_addr->client_ip);
+        if (str.find(":unix:") != std::string::npos)
         {
-            string::size_type pos = str.find(' ');
-            if (pos != string::npos)
+            std::string::size_type pos = str.find(' ');
+            if (pos != std::string::npos)
             {
                 cl_addr->client_ip[pos] = '\0';
             }
@@ -558,7 +558,7 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names, long vers, Dev
     box[insert_elt].attr_names.clear();
     for (unsigned long i = 0; i < names.length(); i++)
     {
-        string tmp_str(names[i]);
+        std::string tmp_str(names[i]);
         box[insert_elt].attr_names.push_back(tmp_str);
     }
 
@@ -628,7 +628,7 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names, const ClntIden
     box[insert_elt].attr_names.clear();
     for (unsigned long i = 0; i < names.length(); i++)
     {
-        string tmp_str(names[i]);
+        std::string tmp_str(names[i]);
         box[insert_elt].attr_names.push_back(tmp_str);
     }
 
@@ -715,7 +715,7 @@ void BlackBox::insert_attr(const char *name, const ClntIdent &cl_id, TANGO_UNUSE
 
 
     box[insert_elt].attr_names.clear();
-    string tmp_str(name);
+    std::string tmp_str(name);
     box[insert_elt].attr_names.push_back(tmp_str);
 
 #ifdef _TG_WINDOWS_
@@ -799,7 +799,7 @@ void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val, const ClntIdent &
 
 
     box[insert_elt].attr_names.clear();
-    string tmp_str(pipe_val.name);
+    std::string tmp_str(pipe_val.name);
     box[insert_elt].attr_names.push_back(tmp_str);
 
 #ifdef _TG_WINDOWS_
@@ -918,7 +918,7 @@ void BlackBox::insert_attr_nl(const Tango::AttributeValueList &att_list, long ve
     box[insert_elt].attr_names.clear();
     for (unsigned long i = 0; i < att_list.length(); i++)
     {
-        string tmp_str(att_list[i].name);
+        std::string tmp_str(att_list[i].name);
         box[insert_elt].attr_names.push_back(tmp_str);
     }
     box[insert_elt].client_ident = false;
@@ -964,7 +964,7 @@ void BlackBox::insert_attr_nl_4(const Tango::AttributeValueList_4 &att_list)
     box[insert_elt].attr_names.clear();
     for (unsigned long i = 0; i < att_list.length(); i++)
     {
-        string tmp_str(att_list[i].name);
+        std::string tmp_str(att_list[i].name);
         box[insert_elt].attr_names.push_back(tmp_str);
     }
 
@@ -1069,15 +1069,15 @@ void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list,
     box[insert_elt].attr_names.clear();
     for (unsigned long i = 0; i < att_list.length(); i++)
     {
-        string tmp_str(att_list[i].name);
+        std::string tmp_str(att_list[i].name);
         box[insert_elt].attr_names.push_back(tmp_str);
     }
 
-    box[insert_elt].attr_names.push_back(string("/"));
+    box[insert_elt].attr_names.push_back(std::string("/"));
 
     for (unsigned long i = 0; i < r_names.length(); i++)
     {
-        string tmp_str(r_names[i]);
+        std::string tmp_str(r_names[i]);
         box[insert_elt].attr_names.push_back(tmp_str);
     }
 
@@ -1157,7 +1157,7 @@ void BlackBox::get_client_host()
     if (ip == NULL)
     {
         Tango::Util *tg = Tango::Util::instance();
-        vector<PollingThreadInfo *> &poll_ths = tg->get_polling_threads_info();
+        std::vector<PollingThreadInfo *> &poll_ths = tg->get_polling_threads_info();
 
         bool found_thread = false;
         if (poll_ths.empty() == false)
@@ -1597,28 +1597,28 @@ void BlackBox::build_info_as_str(long index)
         (box[index].host_ip_str[0] != 'u'))
     {
         bool ipv6 = false;
-        string omni_addr = box[index].host_ip_str;
-        string::size_type pos;
-        if ((pos = omni_addr.find(':')) == string::npos)
+        std::string omni_addr = box[index].host_ip_str;
+        std::string::size_type pos;
+        if ((pos = omni_addr.find(':')) == std::string::npos)
         {
             return;
         }
         pos++;
-        if ((pos = omni_addr.find(':', pos)) == string::npos)
+        if ((pos = omni_addr.find(':', pos)) == std::string::npos)
         {
             return;
         }
         pos++;
-        string ip_str = omni_addr.substr(pos);
+        std::string ip_str = omni_addr.substr(pos);
         if (ip_str[0] == '[')
         {
             ipv6 = true;
         }
 
-        string full_ip_str;
+        std::string full_ip_str;
         if (ipv6 == false)
         {
-            if ((pos = ip_str.find(':')) == string::npos)
+            if ((pos = ip_str.find(':')) == std::string::npos)
             {
                 return;
             }
@@ -1626,51 +1626,51 @@ void BlackBox::build_info_as_str(long index)
         }
         else
         {
-            if ((pos = ip_str.find(':')) == string::npos)
+            if ((pos = ip_str.find(':')) == std::string::npos)
             {
                 return;
             }
             pos++;
-            if ((pos = ip_str.find(':', pos)) == string::npos)
+            if ((pos = ip_str.find(':', pos)) == std::string::npos)
             {
                 return;
             }
             pos++;
-            if ((pos = ip_str.find(':', pos)) == string::npos)
+            if ((pos = ip_str.find(':', pos)) == std::string::npos)
             {
                 return;
             }
             pos++;
-            string tmp_ip = ip_str.substr(pos);
-            if ((pos = tmp_ip.find(']')) == string::npos)
+            std::string tmp_ip = ip_str.substr(pos);
+            if ((pos = tmp_ip.find(']')) == std::string::npos)
             {
                 return;
             }
             full_ip_str = tmp_ip.substr(0, pos);
         }
 
-        if ((pos = full_ip_str.find('.')) == string::npos)
+        if ((pos = full_ip_str.find('.')) == std::string::npos)
         {
             return;
         }
-        string ip1_str = full_ip_str.substr(0, pos);
-        string::size_type old_pos;
+        std::string ip1_str = full_ip_str.substr(0, pos);
+        std::string::size_type old_pos;
         pos++;
         old_pos = pos;
-        if ((pos = full_ip_str.find('.', pos)) == string::npos)
+        if ((pos = full_ip_str.find('.', pos)) == std::string::npos)
         {
             return;
         }
-        string ip2_str = full_ip_str.substr(old_pos, pos - old_pos);
+        std::string ip2_str = full_ip_str.substr(old_pos, pos - old_pos);
         pos++;
         old_pos = pos;
-        if ((pos = full_ip_str.find('.', pos)) == string::npos)
+        if ((pos = full_ip_str.find('.', pos)) == std::string::npos)
         {
             return;
         }
-        string ip3_str = full_ip_str.substr(old_pos, pos - old_pos);
+        std::string ip3_str = full_ip_str.substr(old_pos, pos - old_pos);
         pos++;
-        string ip4_str = full_ip_str.substr(pos);
+        std::string ip4_str = full_ip_str.substr(pos);
 
 //
 // Finally, get host name
@@ -1895,7 +1895,7 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
             }
         }
     }
-    catch (bad_alloc &)
+    catch (std::bad_alloc &)
     {
         sync.unlock();
 
@@ -2232,64 +2232,64 @@ bool client_addr::operator!=(const client_addr &rhs)
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-int client_addr::client_ip_2_client_name(string &cl_host_name) const
+int client_addr::client_ip_2_client_name(std::string &cl_host_name) const
 {
     int ret = 0;
-    string client_ip_str(client_ip);
+    std::string client_ip_str(client_ip);
 
-    string::size_type pos;
-    if ((pos = client_ip_str.find(':')) == string::npos)
+    std::string::size_type pos;
+    if ((pos = client_ip_str.find(':')) == std::string::npos)
     {
         ret = -1;
     }
     else
     {
         pos++;
-        if ((pos = client_ip_str.find(':', pos)) == string::npos)
+        if ((pos = client_ip_str.find(':', pos)) == std::string::npos)
         {
             ret = -1;
         }
         else
         {
             pos++;
-            string ip_str = client_ip_str.substr(pos);
-            if ((pos = ip_str.find(':')) == string::npos)
+            std::string ip_str = client_ip_str.substr(pos);
+            if ((pos = ip_str.find(':')) == std::string::npos)
             {
                 ret = -1;
             }
             else
             {
-                string full_ip_str = ip_str.substr(0, pos);
+                std::string full_ip_str = ip_str.substr(0, pos);
 
-                if ((pos = full_ip_str.find('.')) == string::npos)
+                if ((pos = full_ip_str.find('.')) == std::string::npos)
                 {
                     ret = -1;
                 }
                 else
                 {
-                    string ip1_str = full_ip_str.substr(0, pos);
+                    std::string ip1_str = full_ip_str.substr(0, pos);
 
-                    string::size_type old_pos;
+                    std::string::size_type old_pos;
                     pos++;
                     old_pos = pos;
-                    if ((pos = full_ip_str.find('.', pos)) == string::npos)
+                    if ((pos = full_ip_str.find('.', pos)) == std::string::npos)
                     {
                         ret = -1;
                     }
                     else
                     {
-                        string ip2_str = full_ip_str.substr(old_pos, pos - old_pos);
+                        std::string ip2_str = full_ip_str.substr(old_pos, pos - old_pos);
                         pos++;
                         old_pos = pos;
-                        if ((pos = full_ip_str.find('.', pos)) == string::npos)
+                        if ((pos = full_ip_str.find('.', pos)) == std::string::npos)
                         {
                             ret = -1;
                         }
                         else
                         {
-                            string ip3_str = full_ip_str.substr(old_pos, pos - old_pos);
+                            std::string ip3_str = full_ip_str.substr(old_pos, pos - old_pos);
                             pos++;
-                            string ip4_str = full_ip_str.substr(pos);
+                            std::string ip4_str = full_ip_str.substr(pos);
 
                             struct sockaddr_in si;
                             si.sin_family = AF_INET;
@@ -2334,7 +2334,7 @@ int client_addr::client_ip_2_client_name(string &cl_host_name) const
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-ostream &operator<<(ostream &o_str, const client_addr &ca)
+std::ostream &operator<<(std::ostream &o_str, const client_addr &ca)
 {
     if (ca.client_ident == false)
     {
@@ -2344,7 +2344,7 @@ ostream &operator<<(ostream &o_str, const client_addr &ca)
     {
         if (ca.client_lang == Tango::CPP)
         {
-            string cl_name;
+            std::string cl_name;
             o_str << "CPP or Python client with PID " << ca.client_pid << " from host ";
             if (ca.client_ip_2_client_name(cl_name) == 0)
             {
@@ -2358,7 +2358,7 @@ ostream &operator<<(ostream &o_str, const client_addr &ca)
         else
         {
             o_str << "JAVA client class " << ca.java_main_class << " from host ";
-            string cl_name;
+            std::string cl_name;
             if (ca.client_ip_2_client_name(cl_name) == 0)
             {
                 o_str << cl_name;

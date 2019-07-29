@@ -60,18 +60,18 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 {
 	try
 	{
-//cout << "One attribute configuration change event received" << endl;
-//cout << "Attr name = " << ev->attr_name << endl;
-//cout << "Event name = " << ev->event << endl;
-//cout << "Error flag = " << boolalpha << ev->err << endl;
+//cout << "One attribute configuration change event received" << std::endl;
+//cout << "Attr name = " << ev->attr_name << std::endl;
+//cout << "Event name = " << ev->event << std::endl;
+//cout << "Error flag = " << std::boolalpha << ev->err << std::endl;
 
 		if (ev->err == false)
 		{
-			string att_name = ev->attr_name;
+			std::string att_name = ev->attr_name;
 
 			{
 				omni_mutex_lock oml(the_lock);
-				map<string,struct NameFwdAttr>::iterator ite;
+				std::map<std::string,struct NameFwdAttr>::iterator ite;
 				ite = map_attrdesc.find(att_name);
 				if (ite != map_attrdesc.end())
 				{
@@ -81,12 +81,12 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 // Event received while everything is OK for the fwd attribute
 //
 
-						map<string,DeviceImpl *>::iterator ite3;
+						std::map<std::string,DeviceImpl *>::iterator ite3;
 						ite3 = local_dis.find(ite->second.local_name);
 						if (ite3 == local_dis.end())
 						{
-							cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): Device " ;
-							cerr << ite->second.local_name << " not found in map (local_dis)! Map corrupted?" << endl;
+							std::cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): Device " ;
+							std::cerr << ite->second.local_name << " not found in map (local_dis)! Map corrupted?" << std::endl;
 						}
 						else
 						{
@@ -122,8 +122,8 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 							}
 							else
 							{
-								cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): Device " ;
-								cerr << ite->second.local_name << " has a null pointer in DeviceImpl * map (local_dis)" << endl;
+								std::cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): Device " ;
+								std::cerr << ite->second.local_name << " has a null pointer in DeviceImpl * map (local_dis)" << std::endl;
 							}
 						}
 					}
@@ -135,20 +135,20 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 // was started while the root device was off
 //
 
-//cout << "Err kind = " << ite->second.fwd_attr->get_err_kind() << endl;
+//cout << "Err kind = " << ite->second.fwd_attr->get_err_kind() << std::endl;
 						if (ite->second.fwd_attr->get_err_kind() == FWD_ROOT_DEV_NOT_STARTED)
 						{
-							map<string,DeviceImpl *>::iterator ite3;
+							std::map<std::string,DeviceImpl *>::iterator ite3;
 							ite3 = local_dis.find(ite->second.local_name);
 							if (ite3 == local_dis.end())
 							{
-								cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): Device " ;
-								cerr << ite->second.local_name << " not found in map (local_dis)! Map corrupted?" << endl;
+								std::cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): Device " ;
+								std::cerr << ite->second.local_name << " not found in map (local_dis)! Map corrupted?" << std::endl;
 							}
 							else
 							{
-								string::size_type pos = att_name.rfind('/');
-								string root_dev_name = att_name.substr(0,pos);
+								std::string::size_type pos = att_name.rfind('/');
+								std::string root_dev_name = att_name.substr(0,pos);
 
 								bool rel_ok = rar->check_root_dev_release(root_dev_name);
 
@@ -175,10 +175,10 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 // Now, we can really start polling this attribute (if required)
 //
 
-									vector<string> &poll_attr_list = the_dev->get_polled_attr();
-									string local_att_lower(ite->second.local_att_name);
-									transform(local_att_lower.begin(),local_att_lower.end(),local_att_lower.begin(),::tolower);
-									vector<string>::iterator pos = find(poll_attr_list.begin(),poll_attr_list.end(),local_att_lower);
+									std::vector<std::string> &poll_attr_list = the_dev->get_polled_attr();
+									std::string local_att_lower(ite->second.local_att_name);
+									std::transform(local_att_lower.begin(),local_att_lower.end(),local_att_lower.begin(),::tolower);
+									std::vector<std::string>::iterator pos = find(poll_attr_list.begin(),poll_attr_list.end(),local_att_lower);
 									if (pos != poll_attr_list.end())
 									{
 										DevVarLongStringArray send;
@@ -189,7 +189,7 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 										send.svalue[1] = Tango::string_dup("attribute");
 										send.svalue[2] = Tango::string_dup((*pos).c_str());
 
-										stringstream ss;
+										std::stringstream ss;
 										long upd;
 										ss << *(pos + 1);
 										ss >> upd;
@@ -204,7 +204,7 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 								}
 								else
 								{
-									string root_att_name = att_name.substr(pos + 1);
+									std::string root_att_name = att_name.substr(pos + 1);
 									the_dev->update_wrong_conf_att(att_name,FWD_TOO_OLD_ROOT_DEVICE);
 									the_dev->set_run_att_conf_loop(true);
 								}
@@ -224,15 +224,15 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 				}
 				else
 				{
-					cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): " ;
-					cerr << "Root attribute " << att_name << " not found in map (map_attrdesc)! Map corrupted?" << endl;
+					std::cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): " ;
+					std::cerr << "Root attribute " << att_name << " not found in map (map_attrdesc)! Map corrupted?" << std::endl;
 				}
 			}
 		}
 	}
 	catch (Tango::DevFailed &e)
 	{
-		cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): Exception!" ;
+		std::cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): Exception!" ;
 		Tango::Except::print_exception(e);
 	}
 }
@@ -255,8 +255,8 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::EventData *ev)
 {
 	try
 	{
-//cout << "One event received" << endl;
-//cout << "Attr name = " << ev->attr_name << endl;
+//cout << "One event received" << std::endl;
+//cout << "Attr name = " << ev->attr_name << std::endl;
 
 		ZmqEventSupplier *zes = Util::instance()->get_zmq_event_supplier();
 
@@ -264,17 +264,17 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::EventData *ev)
 // Get local device name from event name
 //
 
-		string local_name = rar->get_local_att_name(ev->attr_name);
-		string::size_type pos = local_name.rfind('/');
-		string local_dev_name = local_name.substr(0,pos);
-		string local_att_name = local_name.substr(pos + 1);
+		std::string local_name = rar->get_local_att_name(ev->attr_name);
+		std::string::size_type pos = local_name.rfind('/');
+		std::string local_dev_name = local_name.substr(0,pos);
+		std::string local_att_name = local_name.substr(pos + 1);
 
 		DeviceImpl *dev = rar->get_local_dev(local_dev_name);
 
 		EventSupplier::SuppliedEventData ad;
 		::memset(&ad,0,sizeof(ad));
 
-		string event_name = EVENT_COMPAT_IDL5 + ev->event;
+		std::string event_name = EVENT_COMPAT_IDL5 + ev->event;
 
 		if (ev->err == true)
 		{
@@ -306,7 +306,7 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::EventData *ev)
 	}
 	catch (Tango::DevFailed &e)
 	{
-		cerr << "RootAttRegistry::RootAttUserCallBack::push_event(): Exception!" ;
+		std::cerr << "RootAttRegistry::RootAttUserCallBack::push_event(): Exception!" ;
 		Tango::Except::print_exception(e);
 	}
 }
@@ -321,17 +321,17 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::DataReadyEventData 
 // First, extract root att name (root_dev_name/att_name) from the received attribute name
 //
 
-		string::size_type pos = ev->attr_name.find("//");
+		std::string::size_type pos = ev->attr_name.find("//");
 		pos = pos + 2;
 		pos = ev->attr_name.find('/',pos);
 		pos = pos + 1;
-		string::size_type pos_end = ev->attr_name.rfind('.');
-		string root_att_name = ev->attr_name.substr(pos,pos_end - pos);
+		std::string::size_type pos_end = ev->attr_name.rfind('.');
+		std::string root_att_name = ev->attr_name.substr(pos,pos_end - pos);
 
-		string local_name = rar->get_local_att_name(root_att_name);
+		std::string local_name = rar->get_local_att_name(root_att_name);
 		pos = local_name.rfind('/');
-		string local_dev_name = local_name.substr(0,pos);
-		string local_att_name = local_name.substr(pos + 1);
+		std::string local_dev_name = local_name.substr(0,pos);
+		std::string local_att_name = local_name.substr(pos + 1);
 
 		DeviceImpl *dev = rar->get_local_dev(local_dev_name);
 
@@ -350,7 +350,7 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::DataReadyEventData 
 	}
 	catch (Tango::DevFailed &e)
 	{
-		cerr << "RootAttRegistry::RootAttUserCallBack::push_event(): Exception!" ;
+		std::cerr << "RootAttRegistry::RootAttUserCallBack::push_event(): Exception!" ;
 		Tango::Except::print_exception(e);
 	}
 }
@@ -373,8 +373,8 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::DataReadyEventData 
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void RootAttRegistry::RootAttConfCallBack::add_att(string &root_att_name,string &local_dev_name,
-													string &local_att_name,FwdAttr *att,DeviceImpl *dev)
+void RootAttRegistry::RootAttConfCallBack::add_att(std::string &root_att_name,std::string &local_dev_name,
+													std::string &local_att_name,FwdAttr *att,DeviceImpl *dev)
 {
 	DeviceImpl *the_local_dev;
 	try
@@ -387,8 +387,8 @@ void RootAttRegistry::RootAttConfCallBack::add_att(string &root_att_name,string 
 		nf.fwd_attr = new FwdAttr(*att);
 		nf.fwd_attr_cl = att;
 
-		vector<AttrProperty> &def_user_prop = att->get_user_default_properties();
-		vector<AttrProperty>::iterator pos;
+		std::vector<AttrProperty> &def_user_prop = att->get_user_default_properties();
+		std::vector<AttrProperty>::iterator pos;
 		for (pos = def_user_prop.begin();pos != def_user_prop.end();++pos)
 		{
             if (pos->get_name() == "label")
@@ -400,7 +400,7 @@ void RootAttRegistry::RootAttConfCallBack::add_att(string &root_att_name,string 
 		if (pos == def_user_prop.end())
 			nf.local_label = local_att_name;
 
-		map<string,DeviceImpl *>::iterator ite;
+		std::map<std::string,DeviceImpl *>::iterator ite;
 		ite = local_dis.find(local_dev_name);
 		if (ite == local_dis.end())
 			the_local_dev = dev;
@@ -435,7 +435,7 @@ void RootAttRegistry::RootAttConfCallBack::add_att(string &root_att_name,string 
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void RootAttRegistry::RootAttConfCallBack::remove_att(string &root_att_name)
+void RootAttRegistry::RootAttConfCallBack::remove_att(std::string &root_att_name)
 {
 	omni_mutex_lock oml(the_lock);
 
@@ -443,16 +443,16 @@ void RootAttRegistry::RootAttConfCallBack::remove_att(string &root_att_name)
 // Get local dev name and check if the same local dev name is used for other forwarded att
 //
 
-	map<string,NameFwdAttr>::iterator ite;
+	std::map<std::string,NameFwdAttr>::iterator ite;
 	ite = map_attrdesc.find(root_att_name);
 
 	if (ite != map_attrdesc.end())
 	{
-		string local_dev_name = ite->second.local_name;
+		std::string local_dev_name = ite->second.local_name;
 		map_attrdesc.erase(ite);
 
 		bool used_elsewhere = false;
-		map<string,NameFwdAttr>::iterator pos;
+		std::map<std::string,NameFwdAttr>::iterator pos;
 
 		for (pos = map_attrdesc.begin();pos != map_attrdesc.end();++pos)
 		{
@@ -470,13 +470,13 @@ void RootAttRegistry::RootAttConfCallBack::remove_att(string &root_att_name)
 
 		if (used_elsewhere == false)
 		{
-			map<string,DeviceImpl *>::iterator ite_dp = local_dis.find(local_dev_name);
+			std::map<std::string,DeviceImpl *>::iterator ite_dp = local_dis.find(local_dev_name);
 			local_dis.erase(ite_dp);
 		}
 	}
 	else
 	{
-		string desc("Root attribute ");
+		std::string desc("Root attribute ");
 		desc = desc + root_att_name + " not found in class map!";
 
 		Except::throw_exception(API_AttrNotFound,desc,"RootAttConfCallBack::remove_att");
@@ -497,9 +497,9 @@ void RootAttRegistry::RootAttConfCallBack::remove_att(string &root_att_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void RootAttRegistry::RootAttConfCallBack::clear_attrdesc(string &root_att_name)
+void RootAttRegistry::RootAttConfCallBack::clear_attrdesc(std::string &root_att_name)
 {
-	map<string,NameFwdAttr>::iterator ite;
+	std::map<std::string,NameFwdAttr>::iterator ite;
 	ite = map_attrdesc.find(root_att_name);
 	if (ite != map_attrdesc.end())
 	{
@@ -507,7 +507,7 @@ void RootAttRegistry::RootAttConfCallBack::clear_attrdesc(string &root_att_name)
 	}
 	else
 	{
-		string desc("Root attribute ");
+		std::string desc("Root attribute ");
 		desc = desc + root_att_name + " not found in class map!";
 
 		Except::throw_exception(API_AttrNotFound,desc,"RootAttConfCallBack::clear_attrdesc");
@@ -532,12 +532,12 @@ void RootAttRegistry::RootAttConfCallBack::clear_attrdesc(string &root_att_name)
 //--------------------------------------------------------------------------------------------------------------------
 
 
-bool RootAttRegistry::RootAttConfCallBack::is_root_att_in_map(string &root_att_name)
+bool RootAttRegistry::RootAttConfCallBack::is_root_att_in_map(std::string &root_att_name)
 {
 	bool ret = false;
 
 	omni_mutex_lock oml(the_lock);
-	map<string,NameFwdAttr>::iterator ite;
+	std::map<std::string,NameFwdAttr>::iterator ite;
 	ite = map_attrdesc.find(root_att_name);
 	if (ite != map_attrdesc.end())
 		ret = true;
@@ -563,15 +563,15 @@ bool RootAttRegistry::RootAttConfCallBack::is_root_att_in_map(string &root_att_n
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-int RootAttRegistry::RootAttConfCallBack::count_root_dev(string &root_dev_name)
+int RootAttRegistry::RootAttConfCallBack::count_root_dev(std::string &root_dev_name)
 {
 	int ret = 0;
-	map<string,NameFwdAttr>::iterator pos;
+	std::map<std::string,NameFwdAttr>::iterator pos;
 
 	for (pos = map_attrdesc.begin();pos != map_attrdesc.end();++pos)
 	{
-		string::size_type p = pos->first.rfind('/');
-		string key_dev = pos->first.substr(0,p);
+		std::string::size_type p = pos->first.rfind('/');
+		std::string key_dev = pos->first.substr(0,p);
 
 		if (key_dev == root_dev_name)
 			ret++;
@@ -595,10 +595,10 @@ int RootAttRegistry::RootAttConfCallBack::count_root_dev(string &root_dev_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void RootAttRegistry::RootAttConfCallBack::update_device_impl(string &local_dev_name,DeviceImpl *local_dev)
+void RootAttRegistry::RootAttConfCallBack::update_device_impl(std::string &local_dev_name,DeviceImpl *local_dev)
 {
 	omni_mutex_lock oml(the_lock);
-	map<string,DeviceImpl *>::iterator ite;
+	std::map<std::string,DeviceImpl *>::iterator ite;
 	ite = local_dis.find(local_dev_name);
 	if (ite != local_dis.end())
 	{
@@ -621,10 +621,10 @@ void RootAttRegistry::RootAttConfCallBack::update_device_impl(string &local_dev_
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void RootAttRegistry::RootAttConfCallBack::update_err_kind(string &root_att_name,FwdAttError err)
+void RootAttRegistry::RootAttConfCallBack::update_err_kind(std::string &root_att_name,FwdAttError err)
 {
 	omni_mutex_lock oml(the_lock);
-	map<string,struct NameFwdAttr>::iterator ite;
+	std::map<std::string,struct NameFwdAttr>::iterator ite;
 	ite = map_attrdesc.find(root_att_name);
 	if (ite != map_attrdesc.end())
 	{
@@ -648,7 +648,7 @@ void RootAttRegistry::RootAttConfCallBack::update_err_kind(string &root_att_name
 bool RootAttRegistry::RootAttConfCallBack::is_root_dev_not_started_err()
 {
 	omni_mutex_lock oml(the_lock);
-	map<string,struct NameFwdAttr>::iterator ite;
+	std::map<std::string,struct NameFwdAttr>::iterator ite;
 	for (ite = map_attrdesc.begin();ite != map_attrdesc.end();++ite)
     {
         if (ite->second.fwd_attr != NULL)
@@ -681,11 +681,11 @@ bool RootAttRegistry::RootAttConfCallBack::is_root_dev_not_started_err()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &local_dev_name,string &local_att_name,
+void RootAttRegistry::add_root_att(std::string &device_name,std::string &att_name,std::string &local_dev_name,std::string &local_att_name,
 								   FwdAttr *attdesc,DeviceImpl *dev)
 {
 	DeviceProxy *the_dev;
-	map<string,DeviceProxy *>::iterator ite;
+	std::map<std::string,DeviceProxy *>::iterator ite;
 	ite = dps.find(device_name);
 	if (ite == dps.end())
 	{
@@ -697,7 +697,7 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 		{
 			attdesc->set_err_kind(FWD_WRONG_DEV);
 
-			string desc("The root device ");
+			std::string desc("The root device ");
 			desc = desc + device_name + " is not defined in database";
 			Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
 		}
@@ -707,7 +707,7 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 			attdesc->set_err_kind(FWD_TOO_OLD_ROOT_DEVICE);
 			delete the_dev;
 
-			string desc("The root device ");
+			std::string desc("The root device ");
 			desc = desc + device_name + " is too old to support forwarded attribute. It requires IDL >= 5";
 			Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
 		}
@@ -727,7 +727,7 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 // First subscription is in statefull mode while the second one is in stateless mode
 //
 
-	string a_name = device_name + '/' + att_name;
+	std::string a_name = device_name + '/' + att_name;
 	bool already_there = cbp.is_root_att_in_map(a_name);
 	if (already_there == false)
 	{
@@ -760,11 +760,11 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
             else if (e.errors.length() > 1 && ::strcmp(e.errors[1].reason.in(),API_CantConnectToDevice) == 0)
             {
                 Util *tg = Util::instance();
-                string ds_name = tg->get_ds_name();
-                transform(ds_name.begin(),ds_name.end(),ds_name.begin(),::tolower);
-                string err_desc(e.errors[1].desc.in());
+                std::string ds_name = tg->get_ds_name();
+                std::transform(ds_name.begin(),ds_name.end(),ds_name.begin(),::tolower);
+                std::string err_desc(e.errors[1].desc.in());
 
-                if (err_desc.find(ds_name) != string::npos)
+                if (err_desc.find(ds_name) != std::string::npos)
                     attdesc->set_err_kind(FWD_ROOT_DEV_NOT_STARTED);
             }
 			else
@@ -789,7 +789,7 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 			attdesc->set_err_kind(FWD_DOUBLE_USED);
             cbp.update_err_kind(a_name,attdesc->get_err_kind());
 
-			string desc("It's not supported to have in the same device server process two times the same root attribute (");
+			std::string desc("It's not supported to have in the same device server process two times the same root attribute (");
 			desc = desc + a_name + ")";
 			Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
 		}
@@ -811,9 +811,9 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void RootAttRegistry::clear_attrdesc(string &dev_name,string &att_name)
+void RootAttRegistry::clear_attrdesc(std::string &dev_name,std::string &att_name)
 {
-	string full_att_name = dev_name + '/' + att_name;
+	std::string full_att_name = dev_name + '/' + att_name;
 	cbp.clear_attrdesc(full_att_name);
 }
 
@@ -832,10 +832,10 @@ void RootAttRegistry::clear_attrdesc(string &dev_name,string &att_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void RootAttRegistry::remove_root_att(string &root_dev_name,string &root_att_name)
+void RootAttRegistry::remove_root_att(std::string &root_dev_name,std::string &root_att_name)
 {
-	string full_root_att_name = root_dev_name + '/' + root_att_name;
-	map<string,DeviceProxy *>::iterator pos = dps.find(root_dev_name);
+	std::string full_root_att_name = root_dev_name + '/' + root_att_name;
+	std::map<std::string,DeviceProxy *>::iterator pos = dps.find(root_dev_name);
 
 //
 // Unsubscribe from all user events registered on this forwarded attribute (if any)
@@ -843,7 +843,7 @@ void RootAttRegistry::remove_root_att(string &root_dev_name,string &root_att_nam
 
 	if (pos != dps.end())
 	{
-		map<string,vector<UserEvent> >::iterator it;
+		std::map<std::string,std::vector<UserEvent> >::iterator it;
 		it = map_event_id_user.find(full_root_att_name);
 
 		if (it != map_event_id_user.end())
@@ -854,7 +854,7 @@ void RootAttRegistry::remove_root_att(string &root_dev_name,string &root_att_nam
 				pos->second->unsubscribe_event(elem.event_id);
 			}
 #else
-			vector<UserEvent>::iterator posi;
+			std::vector<UserEvent>::iterator posi;
 			for (posi = it->second.begin();posi != it->second.end();++posi)
 			{
 				pos->second->unsubscribe_event(posi->event_id);
@@ -876,7 +876,7 @@ void RootAttRegistry::remove_root_att(string &root_dev_name,string &root_att_nam
 // Unsubscribe from the event and if the root device is not used elsewhere, remove its device proxy
 //
 
-	map<string,int>::iterator ite = map_event_id.find(full_root_att_name);
+	std::map<std::string,int>::iterator ite = map_event_id.find(full_root_att_name);
 	if (ite != map_event_id.end())
 	{
 		if (pos != dps.end())
@@ -911,13 +911,13 @@ void RootAttRegistry::remove_root_att(string &root_dev_name,string &root_att_nam
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-DeviceProxy *RootAttRegistry::get_root_att_dp(string &device_name)
+DeviceProxy *RootAttRegistry::get_root_att_dp(std::string &device_name)
 {
-	map<string,DeviceProxy *>::iterator ite;
+	std::map<std::string,DeviceProxy *>::iterator ite;
 	ite = dps.find(device_name);
 	if (ite == dps.end())
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << device_name << " not registered in map of root attribute devices!";
 		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::get_root_att_dp");
 	}
@@ -942,18 +942,18 @@ DeviceProxy *RootAttRegistry::get_root_att_dp(string &device_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-string RootAttRegistry::RootAttConfCallBack::get_local_att_name(const string &root_name)
+std::string RootAttRegistry::RootAttConfCallBack::get_local_att_name(const std::string &root_name)
 {
-	map<string,struct NameFwdAttr>::iterator ite;
+	std::map<std::string,struct NameFwdAttr>::iterator ite;
 	ite = map_attrdesc.find(root_name);
 	if (ite == map_attrdesc.end())
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << root_name << " not registered in map of root attribute!";
 		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::get_local_att_name");
 	}
 
-	string loc_name = ite->second.local_name + '/' + ite->second.local_att_name;
+	std::string loc_name = ite->second.local_name + '/' + ite->second.local_att_name;
 	return loc_name;
 }
 
@@ -974,13 +974,13 @@ string RootAttRegistry::RootAttConfCallBack::get_local_att_name(const string &ro
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-DeviceImpl *RootAttRegistry::RootAttConfCallBack::get_local_dev(string &local_dev_name)
+DeviceImpl *RootAttRegistry::RootAttConfCallBack::get_local_dev(std::string &local_dev_name)
 {
-	map<string,DeviceImpl *>::iterator ite;
+	std::map<std::string,DeviceImpl *>::iterator ite;
 	ite = local_dis.find(local_dev_name);
 	if (ite == local_dis.end())
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << local_dev_name << " not registered in map of local device!";
 		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::get_local_dev");
 	}
@@ -1002,9 +1002,9 @@ DeviceImpl *RootAttRegistry::RootAttConfCallBack::get_local_dev(string &local_de
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void RootAttRegistry::RootAttConfCallBack::update_label(string &root_name,string &new_label)
+void RootAttRegistry::RootAttConfCallBack::update_label(std::string &root_name,std::string &new_label)
 {
-	map<string,struct NameFwdAttr>::iterator ite;
+	std::map<std::string,struct NameFwdAttr>::iterator ite;
 	ite = map_attrdesc.find(root_name);
 
 	if (ite != map_attrdesc.end())
@@ -1013,7 +1013,7 @@ void RootAttRegistry::RootAttConfCallBack::update_label(string &root_name,string
 	}
 	else
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << root_name << " not registered in map of root attribute!";
 		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::update_label");
 	}
@@ -1036,7 +1036,7 @@ void RootAttRegistry::RootAttConfCallBack::update_label(string &root_name,string
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool RootAttRegistry::check_root_dev_release(string &root_dev_name)
+bool RootAttRegistry::check_root_dev_release(std::string &root_dev_name)
 {
 	bool ret = true;
 
@@ -1066,10 +1066,10 @@ bool RootAttRegistry::check_root_dev_release(string &root_dev_name)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool RootAttRegistry::is_event_subscribed(string &ev,EventType et)
+bool RootAttRegistry::is_event_subscribed(std::string &ev,EventType et)
 {
 	bool ret = false;
-	map<string,vector<UserEvent> >::iterator pos;
+	std::map<std::string,std::vector<UserEvent> >::iterator pos;
 
 	{
 		ReaderLock rl(id_user_lock);
@@ -1086,7 +1086,7 @@ bool RootAttRegistry::is_event_subscribed(string &ev,EventType et)
 				}
 			}
 #else
-			vector<UserEvent>::iterator posi;
+			std::vector<UserEvent>::iterator posi;
 			for (posi = pos->second.begin();posi != pos->second.end();++posi)
 			{
 				if (posi->event_type == et)
@@ -1118,7 +1118,7 @@ bool RootAttRegistry::is_event_subscribed(string &ev,EventType et)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void RootAttRegistry::subscribe_user_event(string &dev_name,string &att_name,EventType et)
+void RootAttRegistry::subscribe_user_event(std::string &dev_name,std::string &att_name,EventType et)
 {
 
 //
@@ -1126,7 +1126,7 @@ void RootAttRegistry::subscribe_user_event(string &dev_name,string &att_name,Eve
 //
 
 	DeviceProxy *dp = get_root_att_dp(dev_name);
-	string f_ev_name = dev_name + '/' + att_name;
+	std::string f_ev_name = dev_name + '/' + att_name;
 
 //
 // Subscribe to the event and store the event_id in the map. If the att is already known in the map, simply add
@@ -1144,7 +1144,7 @@ void RootAttRegistry::subscribe_user_event(string &dev_name,string &att_name,Eve
 	}
 	catch (Tango::DevFailed &e)
 	{
-		string reason(e.errors[0].reason.in());
+		std::string reason(e.errors[0].reason.in());
 		if (reason == API_CantConnectToDevice)
 		{
 			ev_id = dp->subscribe_event(att_name,et,&cbu,true);
@@ -1160,12 +1160,12 @@ void RootAttRegistry::subscribe_user_event(string &dev_name,string &att_name,Eve
 
 	{
 		WriterLock wl(id_user_lock);
-		map<string,vector<UserEvent> >::iterator pos;
+		std::map<std::string,std::vector<UserEvent> >::iterator pos;
 
 		pos = map_event_id_user.find(f_ev_name);
 		if (pos == map_event_id_user.end())
 		{
-			vector<UserEvent> v_ue;
+			std::vector<UserEvent> v_ue;
 			v_ue.push_back(ue);
 
 			map_event_id_user.insert(make_pair(f_ev_name,v_ue));
@@ -1193,7 +1193,7 @@ void RootAttRegistry::subscribe_user_event(string &dev_name,string &att_name,Eve
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void RootAttRegistry::unsubscribe_user_event(string &dev_name,string &att_name,EventType et)
+void RootAttRegistry::unsubscribe_user_event(std::string &dev_name,std::string &att_name,EventType et)
 {
 
 //
@@ -1201,7 +1201,7 @@ void RootAttRegistry::unsubscribe_user_event(string &dev_name,string &att_name,E
 //
 
 	DeviceProxy *dp = get_root_att_dp(dev_name);
-	string f_ev_name = dev_name + '/' + att_name;
+	std::string f_ev_name = dev_name + '/' + att_name;
 
 //
 // Find the event_id
@@ -1211,10 +1211,10 @@ void RootAttRegistry::unsubscribe_user_event(string &dev_name,string &att_name,E
 
 	{
 		ReaderLock rl(id_user_lock);
-		map<string,vector<UserEvent> >::iterator pos;
+		std::map<std::string,std::vector<UserEvent> >::iterator pos;
 
 		pos = map_event_id_user.find(f_ev_name);
-		vector<UserEvent> &v_ue = pos->second;
+		std::vector<UserEvent> &v_ue = pos->second;
 		for (size_t loop = 0;loop < v_ue.size();++loop)
 		{
 			if (v_ue[loop].event_type == et)
@@ -1227,7 +1227,7 @@ void RootAttRegistry::unsubscribe_user_event(string &dev_name,string &att_name,E
 
 	if (local_evid == 0)
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << f_ev_name << " not found in map of user event on root attribute!";
 		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::unsubscribe_user_event");
 	}
@@ -1244,11 +1244,11 @@ void RootAttRegistry::unsubscribe_user_event(string &dev_name,string &att_name,E
 
 	{
 		WriterLock wl(id_user_lock);
-		map<string,vector<UserEvent> >::iterator pos;
+		std::map<std::string,std::vector<UserEvent> >::iterator pos;
 
 		pos = map_event_id_user.find(f_ev_name);
-		vector<UserEvent> &v_ue = pos->second;
-		vector<UserEvent>::iterator iter;
+		std::vector<UserEvent> &v_ue = pos->second;
+		std::vector<UserEvent>::iterator iter;
 		for (iter = v_ue.begin();iter != v_ue.end();++iter)
 		{
 			if (iter->event_type == et)
@@ -1294,7 +1294,7 @@ void RootAttRegistry::auto_unsub()
 	{
 		WriterLock wl(id_user_lock);
 
-		map<string,vector<UserEvent> >::iterator ite;
+		std::map<std::string,std::vector<UserEvent> >::iterator ite;
 		for (ite = map_event_id_user.begin();ite != map_event_id_user.end();++ite)
 		{
 
@@ -1302,10 +1302,10 @@ void RootAttRegistry::auto_unsub()
 // Get local dev_name and att name
 //
 
-			string local_name = get_local_att_name(ite->first);
-			string::size_type pos = local_name.rfind('/');
-			string local_dev_name = local_name.substr(0,pos);
-			string local_att_name = local_name.substr(pos + 1);
+			std::string local_name = get_local_att_name(ite->first);
+			std::string::size_type pos = local_name.rfind('/');
+			std::string local_dev_name = local_name.substr(0,pos);
+			std::string local_att_name = local_name.substr(pos + 1);
 
 //
 // Get Attribute and DeviceImpl objects
@@ -1319,7 +1319,7 @@ void RootAttRegistry::auto_unsub()
 //
 
 			time_t delta_t = 0;
-			vector<UserEvent>::iterator posi;
+			std::vector<UserEvent>::iterator posi;
 
 			for (posi = ite->second.begin();posi < ite->second.end();++posi)
 			{
@@ -1362,8 +1362,8 @@ void RootAttRegistry::auto_unsub()
 
 				if (delta_t >= EVENT_RESUBSCRIBE_PERIOD)
 				{
-					string::size_type po = ite->first.rfind('/');
-					string root_dev = ite->first.substr(0,po);
+					std::string::size_type po = ite->first.rfind('/');
+					std::string root_dev = ite->first.substr(0,po);
 
 					DeviceProxy *dp = get_root_att_dp(root_dev);
 					dp->unsubscribe_event(posi->event_id);
@@ -1400,9 +1400,9 @@ void RootAttRegistry::auto_unsub()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool RootAttRegistry::check_loop(string &device_name,string &att_name,string &local_dev_name,string &local_att_name)
+bool RootAttRegistry::check_loop(std::string &device_name,std::string &att_name,std::string &local_dev_name,std::string &local_att_name)
 {
-	string tg_host;
+	std::string tg_host;
 	int tg_port;
 	bool ret = false;
 
@@ -1417,15 +1417,15 @@ bool RootAttRegistry::check_loop(string &device_name,string &att_name,string &lo
 
 		Util *tg = Util::instance();
 		Database *db = tg->get_database();
-		string db_host = db->get_db_host();
+		std::string db_host = db->get_db_host();
 		int db_port = db->get_db_port_num();
 
 //
 // Extract device name from fqdn
 //
 
-		string::size_type pos = device_name.find('/',8);
-		string res_dev_name = device_name.substr(pos + 1);
+		std::string::size_type pos = device_name.find('/',8);
+		std::string res_dev_name = device_name.substr(pos + 1);
 
 //
 // Retrieve root attribute property
@@ -1444,7 +1444,7 @@ bool RootAttRegistry::check_loop(string &device_name,string &att_name,string &lo
 			other_db.get_device_attribute_property(res_dev_name,db_data);
 		}
 
-		string new_root_att;
+		std::string new_root_att;
 		DevLong nb_prop;
 		db_data[0] >> nb_prop;
 
@@ -1453,7 +1453,7 @@ bool RootAttRegistry::check_loop(string &device_name,string &att_name,string &lo
 			bool prop_found = false;
 			for (int k=0;k < nb_prop;k++)
 			{
-				string &prop_name = db_data[k + 1].name;
+				std::string &prop_name = db_data[k + 1].name;
 				if (prop_name == RootAttrPropName)
 				{
 					db_data[k + 1] >> new_root_att;
@@ -1469,9 +1469,9 @@ bool RootAttRegistry::check_loop(string &device_name,string &att_name,string &lo
 
 			if (prop_found == true)
 			{
-				transform(new_root_att.begin(),new_root_att.end(),new_root_att.begin(),::tolower);
-				string full_local_att_name = local_dev_name + '/' + local_att_name;
-				transform(full_local_att_name.begin(),full_local_att_name.end(),full_local_att_name.begin(),::tolower);
+				std::transform(new_root_att.begin(),new_root_att.end(),new_root_att.begin(),::tolower);
+				std::string full_local_att_name = local_dev_name + '/' + local_att_name;
+				std::transform(full_local_att_name.begin(),full_local_att_name.end(),full_local_att_name.begin(),::tolower);
 
 				if (full_local_att_name == new_root_att)
 					ret = true;

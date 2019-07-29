@@ -55,8 +55,8 @@ struct WantedPipe : public binary_function<A1,A2,R>
 	{
 		if (::strlen(name) != pipe_ptr->get_lower_name().size())
 			return false;
-        string tmp_name(name);
-		transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+        std::string tmp_name(name);
+		std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
 		return pipe_ptr->get_lower_name() == tmp_name;
 	}
 };
@@ -97,7 +97,7 @@ public:
  * @param	pwt		The pipe R/W type (default to READ)
  *
  */
-	Pipe(const string &name,const Tango::DispLevel level,const PipeWriteType pwt=PIPE_READ);
+	Pipe(const std::string &name,const Tango::DispLevel level,const PipeWriteType pwt=PIPE_READ);
 //@}
 
 /**@name Destructor
@@ -128,14 +128,14 @@ public:
  *
  * @return The pipe name
  */
-	string &get_name() {return name;}
+	std::string &get_name() {return name;}
 
 /**
  * Set the pipe name.
  *
  * @param new_name The new pipe name
  */
-	void set_name(string &new_name) {name=new_name;}
+	void set_name(std::string &new_name) {name=new_name;}
 
 /**
  * Set default attribute properties
@@ -149,35 +149,35 @@ public:
  *
  * @return The pipe name
  */
-	string &get_lower_name() {return lower_name;}
+	std::string &get_lower_name() {return lower_name;}
 
 /**
  * Return the root data blob name.
  *
  * @return The data blob name
  */
-	const string &get_root_blob_name() {return the_blob.get_name();}
+	const std::string &get_root_blob_name() {return the_blob.get_name();}
 
 /**
  * Set the root data blob name.
  *
  * @param [in] name The root data blob name
  */
-	void set_root_blob_name(const string &name) {the_blob.set_name(name);}
+	void set_root_blob_name(const std::string &name) {the_blob.set_name(name);}
 
 /**
  * Return the pipe description.
  *
  * @return The pipe description
  */
-	string &get_desc() {return desc;}
+	std::string &get_desc() {return desc;}
 
 /**
  * Return the pipe label.
  *
  * @return The pipe label
  */
-	string &get_label() {return label;}
+	std::string &get_label() {return label;}
 
 /**
  * Return the pipe display level.
@@ -255,7 +255,7 @@ public:
  *
  * @param [in] names The blob data element names
  */
-	void set_data_elt_names(vector<string> &names) {the_blob.set_data_elt_names(names);}
+	void set_data_elt_names(std::vector<std::string> &names) {the_blob.set_data_elt_names(names);}
 /**
  * Get blob data element number
  *
@@ -292,7 +292,7 @@ public:
  *
  * @param [in] fl The exception flag
  */
-	void exceptions(bitset<DevicePipeBlob::numFlags> fl) {the_blob.exceptions(fl);}
+	void exceptions(std::bitset<DevicePipeBlob::numFlags> fl) {the_blob.exceptions(fl);}
 /**
  * Get exception flag
  *
@@ -301,18 +301,18 @@ public:
  * @code
  * Pipe pi;
  *
- * bitset<DevicePipeBlob::numFlags> bs = pi.exceptions();
- * cout << "bs = " << bs << endl;
+ * std::bitset<DevicePipeBlob::numFlags> bs = pi.exceptions();
+ * cout << "bs = " << bs << std::endl;
  *
  * pi.set_exceptions(DevicePipeBlob::wrongtype_flag);
  * bs = pi.exceptions();
  *
- * cout << "bs = " << bs << endl;
+ * cout << "bs = " << bs << std::endl;
  * @endcode
  *
  * @return The exception flag
  */
-	bitset<DevicePipeBlob::numFlags> exceptions() {return the_blob.exceptions();}
+	std::bitset<DevicePipeBlob::numFlags> exceptions() {return the_blob.exceptions();}
 /**
  * Reset one exception flag
  *
@@ -347,7 +347,7 @@ public:
  * @code
  * Pipe dpb = ....
  *
- * bitset<DevicePipeBlob::numFlags> bs;
+ * std::bitset<DevicePipeBlob::numFlags> bs;
  * bs.reset();
  * dpb.exceptions(bs);
  *
@@ -356,7 +356,7 @@ public:
  *
  * if (dpb.has_failed() == true)
  * {
- *    bitset<DevicePipeBlob::numFlags> bs_err = dpb.state();
+ *    std::bitset<DevicePipeBlob::numFlags> bs_err = dpb.state();
  *    if (dpb.test(DevicePipeBlob::isempty_flag) == true)
  *        .....
  * }
@@ -364,7 +364,7 @@ public:
  *
  * @return The error bit set.
  */
-	bitset<DevicePipeBlob::numFlags> state() {return the_blob.state();}
+	std::bitset<DevicePipeBlob::numFlags> state() {return the_blob.state();}
 //@}
 
 /**@name set_value methods.
@@ -378,23 +378,23 @@ public:
 	virtual bool is_allowed (DeviceImpl *dev,PipeReqType) {(void)dev;return true;}
 	virtual void read(DeviceImpl *) {}
 
-	Pipe &operator[](const string &);
+	Pipe &operator[](const std::string &);
 
 	bool get_value_flag() {return value_flag;}
 	void set_value_flag(bool val) {value_flag = val;}
 	void set_time();
 	Tango::TimeVal &get_when() {return when;}
 	void set_returned_data_ptr(DevPipeData *_p) {ret_data=_p;}
-	void set_label(const string &_lab) {label=_lab;}
-	void set_desc(const string &_desc) {desc=_desc;}
+	void set_label(const std::string &_lab) {label=_lab;}
+	void set_desc(const std::string &_desc) {desc=_desc;}
 	bool is_label_lib_default() {return label==name;}
 	bool is_desc_lib_default() {return desc==DescNotSpec;}
 	void set_upd_properties(const PipeConfig &,DeviceImpl *);
-	void set_properties(const Tango::PipeConfig &,DeviceImpl *,vector<Attribute::AttPropDb> &);
-	void upd_database(vector<Attribute::AttPropDb> &,string &);
-	vector<PipeProperty> &get_user_default_properties() {return user_def_prop;}
-	void set_one_str_prop(const char *,const CORBA::String_member &,string &,vector<Attribute::AttPropDb> &,vector<PipeProperty> &,vector<PipeProperty> &,const char *);
-	bool prop_in_list(const char *,string &,size_t,vector<PipeProperty> &);
+	void set_properties(const Tango::PipeConfig &,DeviceImpl *,std::vector<Attribute::AttPropDb> &);
+	void upd_database(std::vector<Attribute::AttPropDb> &,std::string &);
+	std::vector<PipeProperty> &get_user_default_properties() {return user_def_prop;}
+	void set_one_str_prop(const char *,const CORBA::String_member &,std::string &,std::vector<Attribute::AttPropDb> &,std::vector<PipeProperty> &,std::vector<PipeProperty> &,const char *);
+	bool prop_in_list(const char *,std::string &,size_t,std::vector<PipeProperty> &);
 
 	DevicePipeBlob &get_blob() {return the_blob;}
 
@@ -420,19 +420,19 @@ protected:
 /**
  * The pipe name
  */
-	string 					name;
+	std::string 					name;
 /**
  * The pipe name in lower case
  */
-	string 					lower_name;
+	std::string 					lower_name;
 /**
  * The pipe description
  */
-	string					desc;
+	std::string					desc;
 /**
  * The pipe label
  */
-	string					label;
+	std::string					label;
 /**
  * The pipe display level
  */
@@ -453,7 +453,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<PipeExt>          ext;           	// Class extension
+    std::unique_ptr<PipeExt>          ext;           	// Class extension
 #else
 	PipeExt		                *ext;
 #endif
@@ -462,7 +462,7 @@ private:
 	Tango::TimeVal				when;				// Date associated to the pipe
 	Tango::DevPipeData 			*ret_data;			// Pointer for read data
 
-	vector<string> 				pe_out_names;		// Data elements name
+	std::vector<std::string> 				pe_out_names;		// Data elements name
 	int 						rec_count;			// Data elements ctr
 
     PipeSerialModel				pipe_serial_model;	// Flag for attribute serialization model
@@ -471,7 +471,7 @@ private:
 	omni_mutex					*user_pipe_mutex;	// Ptr for user mutex in case he manages exclusion
 
     time_t						event_subscription;	// Last time() a subscription was made
-    vector<PipeProperty>		user_def_prop;		// User default properties
+    std::vector<PipeProperty>		user_def_prop;		// User default properties
 };
 
 template <typename T>
@@ -491,7 +491,7 @@ Pipe &operator<<(Pipe &, DataElement<T> &);
 #define PIPE_CHECK_PTR(A,B,C) \
 	if (A == NULL) \
 	{ \
-		stringstream o; \
+		std::stringstream o; \
 		o << "Data pointer for pipe " << B << ", data element " << C << " is NULL!"; \
 		Except::throw_exception(API_PipeOptProp,o.str(),"Pipe::set_value()"); \
 	} \
@@ -522,7 +522,7 @@ Pipe &operator<<(Pipe &, DataElement<T> &);
 //
 //------------------------------------------------------------------------------------------------------------------
 
-inline bool Pipe::prop_in_list(const char *prop_name,string &prop_str,size_t list_size,vector<PipeProperty> &list)
+inline bool Pipe::prop_in_list(const char *prop_name,std::string &prop_str,size_t list_size,std::vector<PipeProperty> &list)
 {
     bool ret = false;
 

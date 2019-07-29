@@ -92,8 +92,8 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, const char *d_name,
     real_ctor();
 }
 
-DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, string &d_name, string &de,
-                       Tango::DevState st, string &sta)
+DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name, std::string &de,
+                       Tango::DevState st, std::string &sta)
     : device_name(d_name), desc(de), device_status(sta),
       device_state(st), device_class(cl_ptr), ext(new DeviceImplExt),
 #ifdef TANGO_HAS_LOG4TANGO
@@ -110,7 +110,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, string &d_name, string &de,
     real_ctor();
 }
 
-DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, string &d_name)
+DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name)
     : device_name(d_name), device_class(cl_ptr), ext(new DeviceImplExt),
 #ifdef TANGO_HAS_LOG4TANGO
       logger(NULL), saved_log_level(log4tango::Level::WARN), rft(Tango::kDefaultRollingThreshold), poll_old_factor(0),
@@ -130,7 +130,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, string &d_name)
     real_ctor();
 }
 
-DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, string &d_name, string &description)
+DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name, std::string &description)
     : device_name(d_name), device_class(cl_ptr), ext(new DeviceImplExt),
 #ifdef TANGO_HAS_LOG4TANGO
       logger(NULL), saved_log_level(log4tango::Level::WARN), rft(Tango::kDefaultRollingThreshold), poll_old_factor(0),
@@ -162,7 +162,7 @@ void DeviceImpl::real_ctor()
 //
 
     device_name_lower = device_name;
-    transform(device_name_lower.begin(), device_name_lower.end(),
+    std::transform(device_name_lower.begin(), device_name_lower.end(),
               device_name_lower.begin(), ::tolower);
 
 //
@@ -242,7 +242,7 @@ void DeviceImpl::stop_polling(bool with_db_upd)
 // already stopped for all devices)
 //
 
-    vector<PollingThreadInfo *> &v_th_info = tg->get_polling_threads_info();
+    std::vector<PollingThreadInfo *> &v_th_info = tg->get_polling_threads_info();
     if (v_th_info.empty() == true)
     {
         return;
@@ -258,7 +258,7 @@ void DeviceImpl::stop_polling(bool with_db_upd)
     if (poll_th_id == 0)
     {
         TangoSys_OMemStream o;
-        o << "Can't find a polling thread for device " << device_name << ends;
+        o << "Can't find a polling thread for device " << device_name << std::ends;
         Except::throw_exception((const char *) API_PollingThreadNotFound, o.str(),
                                 (const char *) "DeviImpl::stop_polling");
     }
@@ -290,7 +290,7 @@ void DeviceImpl::stop_polling(bool with_db_upd)
 
             if ((shared_cmd.cmd_pending == true) && (interupted == false))
             {
-                cout4 << "TIME OUT" << endl;
+                cout4 << "TIME OUT" << std::endl;
                 Except::throw_exception((const char *) API_CommandTimedOut,
                                         (const char *) "Polling thread blocked !!",
                                         (const char *) "DeviceImpl::stop_polling");
@@ -314,15 +314,15 @@ void DeviceImpl::stop_polling(bool with_db_upd)
     if ((ind = tg->get_dev_entry_in_pool_conf(device_name_lower)) == -1)
     {
         TangoSys_OMemStream o;
-        o << "Can't find entry for device " << device_name << " in polling threads pool configuration !" << ends;
+        o << "Can't find entry for device " << device_name << " in polling threads pool configuration !" << std::ends;
         Except::throw_exception((const char *) API_PolledDeviceNotInPoolConf, o.str(),
                                 (const char *) "DeviceImpl::stop_polling");
     }
 
-    vector<string> &pool_conf = tg->get_poll_pool_conf();
-    string &conf_entry = pool_conf[ind];
-    string::size_type pos;
-    if ((pos = conf_entry.find(',')) != string::npos)
+    std::vector<std::string> &pool_conf = tg->get_poll_pool_conf();
+    std::string &conf_entry = pool_conf[ind];
+    std::string::size_type pos;
+    if ((pos = conf_entry.find(',')) != std::string::npos)
     {
         pos = conf_entry.find(device_name_lower);
         if ((pos + device_name_lower.size()) != conf_entry.size())
@@ -336,7 +336,7 @@ void DeviceImpl::stop_polling(bool with_db_upd)
     }
     else
     {
-        vector<string>::iterator iter = pool_conf.begin() + ind;
+        std::vector<std::string>::iterator iter = pool_conf.begin() + ind;
         pool_conf.erase(iter);
         kill_thread = true;
     }
@@ -362,7 +362,7 @@ void DeviceImpl::stop_polling(bool with_db_upd)
         }
 
         void *dummy_ptr;
-        cout4 << "POLLING: Joining with one polling thread" << endl;
+        cout4 << "POLLING: Joining with one polling thread" << std::endl;
         th_info->poll_th->join(&dummy_ptr);
 
         tg->remove_polling_thread_info_by_id(poll_th_id);
@@ -394,7 +394,7 @@ void DeviceImpl::stop_polling(bool with_db_upd)
 
 DeviceImpl::~DeviceImpl()
 {
-    cout4 << "Entering DeviceImpl destructor for device " << device_name << endl;
+    cout4 << "Entering DeviceImpl destructor for device " << device_name << std::endl;
 
 //
 // Call user delete_device method
@@ -460,14 +460,14 @@ DeviceImpl::~DeviceImpl()
 // Clear our ptr in the device class vector
 //
 
-    vector<DeviceImpl *> &dev_vect = get_device_class()->get_device_list();
-    vector<DeviceImpl *>::iterator ite = find(dev_vect.begin(), dev_vect.end(), this);
+    std::vector<DeviceImpl *> &dev_vect = get_device_class()->get_device_list();
+    std::vector<DeviceImpl *>::iterator ite = find(dev_vect.begin(), dev_vect.end(), this);
     if (ite != dev_vect.end())
     {
         *ite = NULL;
     }
 
-    cout4 << "Leaving DeviceImpl destructor for device " << device_name << endl;
+    cout4 << "Leaving DeviceImpl destructor for device " << device_name << std::endl;
 }
 
 //+-------------------------------------------------------------------------
@@ -499,7 +499,7 @@ void DeviceImpl::black_box_create()
             blackbox_ptr = new BlackBox(blackbox_depth);
         }
     }
-    catch (bad_alloc &)
+    catch (std::bad_alloc &)
     {
         throw;
     }
@@ -558,7 +558,7 @@ void DeviceImpl::get_dev_system_resource()
         catch (Tango::DevFailed &)
         {
             TangoSys_OMemStream o;
-            o << "Database error while trying to retrieve device prperties for device " << device_name.c_str() << ends;
+            o << "Database error while trying to retrieve device prperties for device " << device_name.c_str() << std::ends;
 
             Except::throw_exception((const char *) API_DatabaseAccess,
                                     o.str(),
@@ -613,14 +613,14 @@ void DeviceImpl::get_dev_system_resource()
             {
                 cmd_poll_ring_depth.clear();
                 TangoSys_OMemStream o;
-                o << "System property cmd_poll_ring_depth for device " << device_name << " has wrong syntax" << ends;
+                o << "System property cmd_poll_ring_depth for device " << device_name << " has wrong syntax" << std::ends;
                 Except::throw_exception((const char *) API_BadConfigurationProperty,
                                         o.str(),
                                         (const char *) "DeviceImpl::get_dev_system_resource()");
             }
             for (unsigned int i = 0; i < nb_prop; i = i + 2)
             {
-                transform(cmd_poll_ring_depth[i].begin(),
+                std::transform(cmd_poll_ring_depth[i].begin(),
                           cmd_poll_ring_depth[i].end(),
                           cmd_poll_ring_depth[i].begin(),
                           ::tolower);
@@ -634,14 +634,14 @@ void DeviceImpl::get_dev_system_resource()
             {
                 attr_poll_ring_depth.clear();
                 TangoSys_OMemStream o;
-                o << "System property attr_poll_ring_depth for device " << device_name << " has wrong syntax" << ends;
+                o << "System property attr_poll_ring_depth for device " << device_name << " has wrong syntax" << std::ends;
                 Except::throw_exception((const char *) API_BadConfigurationProperty,
                                         o.str(),
                                         (const char *) "DeviceImpl::get_dev_system_resource()");
             }
             for (unsigned int i = 0; i < nb_prop; i = i + 2)
             {
-                transform(attr_poll_ring_depth[i].begin(),
+                std::transform(attr_poll_ring_depth[i].begin(),
                           attr_poll_ring_depth[i].end(),
                           attr_poll_ring_depth[i].begin(),
                           ::tolower);
@@ -665,14 +665,14 @@ void DeviceImpl::get_dev_system_resource()
             {
                 cmd_min_poll_period.clear();
                 TangoSys_OMemStream o;
-                o << "System property cmd_min_poll_period for device " << device_name << " has wrong syntax" << ends;
+                o << "System property cmd_min_poll_period for device " << device_name << " has wrong syntax" << std::ends;
                 Except::throw_exception((const char *) API_BadConfigurationProperty,
                                         o.str(),
                                         (const char *) "DeviceImpl::get_dev_system_resource()");
             }
             for (unsigned int i = 0; i < nb_prop; i = i + 2)
             {
-                transform(cmd_min_poll_period[i].begin(),
+                std::transform(cmd_min_poll_period[i].begin(),
                           cmd_min_poll_period[i].end(),
                           cmd_min_poll_period[i].begin(),
                           ::tolower);
@@ -687,14 +687,14 @@ void DeviceImpl::get_dev_system_resource()
             {
                 attr_min_poll_period.clear();
                 TangoSys_OMemStream o;
-                o << "System property attr_min_poll_period for device " << device_name << " has wrong syntax" << ends;
+                o << "System property attr_min_poll_period for device " << device_name << " has wrong syntax" << std::ends;
                 Except::throw_exception((const char *) API_BadConfigurationProperty,
                                         o.str(),
                                         (const char *) "DeviceImpl::get_dev_system_resource()");
             }
             for (unsigned int i = 0; i < nb_prop; i = i + 2)
             {
-                transform(attr_min_poll_period[i].begin(),
+                std::transform(attr_min_poll_period[i].begin(),
                           attr_min_poll_period[i].end(),
                           attr_min_poll_period[i].begin(),
                           ::tolower);
@@ -743,20 +743,20 @@ PortableServer::POA_ptr DeviceImpl::_default_POA()
 #ifndef  _TG_WINDOWS_
 void DeviceImpl::register_signal(long signo, bool hand)
 {
-    cout4 << "DeviceImpl::register_signal() arrived for signal " << signo << endl;
+    cout4 << "DeviceImpl::register_signal() arrived for signal " << signo << std::endl;
 
     DServerSignal::instance()->register_dev_signal(signo, hand, this);
 
-    cout4 << "Leaving DeviceImpl::register_signal method()" << endl;
+    cout4 << "Leaving DeviceImpl::register_signal method()" << std::endl;
 }
 #else
                                                                                                                         void DeviceImpl::register_signal(long signo)
 {
-	cout4 << "DeviceImpl::register_signal() arrived for signal " << signo << endl;
+	cout4 << "DeviceImpl::register_signal() arrived for signal " << signo << std::endl;
 
 	DServerSignal::instance()->register_dev_signal(signo,this);
 
-	cout4 << "Leaving DeviceImpl::register_signal method()" << endl;
+	cout4 << "Leaving DeviceImpl::register_signal method()" << std::endl;
 }
 #endif
 
@@ -772,11 +772,11 @@ void DeviceImpl::register_signal(long signo, bool hand)
 
 void DeviceImpl::unregister_signal(long signo)
 {
-    cout4 << "DeviceImpl::unregister_signal() arrived for signal " << signo << endl;
+    cout4 << "DeviceImpl::unregister_signal() arrived for signal " << signo << std::endl;
 
     DServerSignal::instance()->unregister_dev_signal(signo, this);
 
-    cout4 << "Leaving DeviceImpl::unregister_signal method()" << endl;
+    cout4 << "Leaving DeviceImpl::unregister_signal method()" << std::endl;
 }
 
 //+-------------------------------------------------------------------------
@@ -794,9 +794,9 @@ void DeviceImpl::unregister_signal(long signo)
 
 void DeviceImpl::signal_handler(long signo)
 {
-    cout4 << "DeviceImpl::signal_handler() arrived for signal " << signo << endl;
+    cout4 << "DeviceImpl::signal_handler() arrived for signal " << signo << std::endl;
 
-    cout4 << "Leaving DeviceImpl::signal_handler method()" << endl;
+    cout4 << "Leaving DeviceImpl::signal_handler method()" << std::endl;
 }
 
 
@@ -813,9 +813,9 @@ void DeviceImpl::signal_handler(long signo)
 //
 //--------------------------------------------------------------------------
 
-void DeviceImpl::check_command_exists(const string &cmd_name)
+void DeviceImpl::check_command_exists(const std::string &cmd_name)
 {
-    vector<Command *> &cmd_list = device_class->get_command_list();
+    std::vector<Command *> &cmd_list = device_class->get_command_list();
     unsigned long i;
     for (i = 0; i < cmd_list.size(); i++)
     {
@@ -824,7 +824,7 @@ void DeviceImpl::check_command_exists(const string &cmd_name)
             if (cmd_list[i]->get_in_type() != Tango::DEV_VOID)
             {
                 TangoSys_OMemStream o;
-                o << "Command " << cmd_name << " cannot be polled because it needs input value" << ends;
+                o << "Command " << cmd_name << " cannot be polled because it needs input value" << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleCmdArgumentType,
                                         o.str(), (const char *) "DeviceImpl::check_command_exists");
             }
@@ -833,7 +833,7 @@ void DeviceImpl::check_command_exists(const string &cmd_name)
     }
 
     TangoSys_OMemStream o;
-    o << "Command " << cmd_name << " not found" << ends;
+    o << "Command " << cmd_name << " not found" << std::ends;
     Except::throw_exception((const char *) API_CommandNotFound, o.str(),
                             (const char *) "DeviceImpl::check_command_exists");
 }
@@ -850,9 +850,9 @@ void DeviceImpl::check_command_exists(const string &cmd_name)
 //
 //--------------------------------------------------------------------------
 
-Command *DeviceImpl::get_command(const string &cmd_name)
+Command *DeviceImpl::get_command(const std::string &cmd_name)
 {
-    vector<Command *> cmd_list = device_class->get_command_list();
+    std::vector<Command *> cmd_list = device_class->get_command_list();
     unsigned long i;
     for (i = 0; i < cmd_list.size(); i++)
     {
@@ -863,7 +863,7 @@ Command *DeviceImpl::get_command(const string &cmd_name)
     }
 
     TangoSys_OMemStream o;
-    o << "Command " << cmd_name << " not found" << ends;
+    o << "Command " << cmd_name << " not found" << std::ends;
     Except::throw_exception((const char *) API_CommandNotFound, o.str(),
                             (const char *) "DeviceImpl::get_command");
 
@@ -889,12 +889,12 @@ Command *DeviceImpl::get_command(const string &cmd_name)
 //
 //--------------------------------------------------------------------------
 
-vector<PollObj *>::iterator DeviceImpl::get_polled_obj_by_type_name(
+std::vector<PollObj *>::iterator DeviceImpl::get_polled_obj_by_type_name(
     Tango::PollObjType obj_type,
-    const string &obj_name)
+    const std::string &obj_name)
 {
-    vector<PollObj *> &po_list = get_poll_obj_list();
-    vector<PollObj *>::iterator ite;
+    std::vector<PollObj *> &po_list = get_poll_obj_list();
+    std::vector<PollObj *>::iterator ite;
     for (ite = po_list.begin(); ite < po_list.end(); ++ite)
     {
         omni_mutex_lock sync(**ite);
@@ -910,7 +910,7 @@ vector<PollObj *>::iterator DeviceImpl::get_polled_obj_by_type_name(
     }
 
     TangoSys_OMemStream o;
-    o << obj_name << " not found in list of polled object" << ends;
+    o << obj_name << " not found in list of polled object" << std::ends;
     Except::throw_exception((const char *) API_PollObjNotFound, o.str(),
                             (const char *) "DeviceImpl::get_polled_obj_by_type_name");
 
@@ -920,7 +920,7 @@ vector<PollObj *>::iterator DeviceImpl::get_polled_obj_by_type_name(
 
 // exclude the return value for VC8+
 #if not defined(_TG_WINDOWS_) || (defined(_MSC_VER) && _MSC_VER < 1400)
-    return (vector<PollObj *>::iterator) NULL;
+    return (std::vector<PollObj *>::iterator) NULL;
 #endif
 }
 
@@ -943,7 +943,7 @@ vector<PollObj *>::iterator DeviceImpl::get_polled_obj_by_type_name(
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-long DeviceImpl::get_cmd_poll_ring_depth(string &cmd_name)
+long DeviceImpl::get_cmd_poll_ring_depth(std::string &cmd_name)
 {
     long ret;
 
@@ -978,7 +978,7 @@ long DeviceImpl::get_cmd_poll_ring_depth(string &cmd_name)
                 {
                     TangoSys_OMemStream o;
                     o << "System property cmd_poll_ring_depth for device " << device_name << " has wrong syntax"
-                      << ends;
+                      << std::ends;
                     Except::throw_exception((const char *) API_BadConfigurationProperty,
                                             o.str(),
                                             (const char *) "DeviceImpl::get_poll_ring_depth()");
@@ -1025,7 +1025,7 @@ long DeviceImpl::get_cmd_poll_ring_depth(string &cmd_name)
 //
 //--------------------------------------------------------------------------
 
-long DeviceImpl::get_attr_poll_ring_depth(string &attr_name)
+long DeviceImpl::get_attr_poll_ring_depth(std::string &attr_name)
 {
     long ret;
 
@@ -1069,7 +1069,7 @@ long DeviceImpl::get_attr_poll_ring_depth(string &attr_name)
                 {
                     TangoSys_OMemStream o;
                     o << "System property attr_poll_ring_depth for device " << device_name << " has wrong syntax"
-                      << ends;
+                      << std::ends;
                     Except::throw_exception((const char *) API_BadConfigurationProperty,
                                             o.str(),
                                             (const char *) "DeviceImpl::get_poll_ring_depth()");
@@ -1147,16 +1147,16 @@ Tango::DevState DeviceImpl::dev_state()
             long vers = get_dev_idl_version();
             bool set_alrm = false;
 
-            vector<long> attr_list = dev_attr->get_alarm_list();
-            vector<long> attr_list_2 = get_alarmed_not_read();
-            vector<long> attr_polled_list;
+            std::vector<long> attr_list = dev_attr->get_alarm_list();
+            std::vector<long> attr_list_2 = get_alarmed_not_read();
+            std::vector<long> attr_polled_list;
             long nb_wanted_attr;
 
             if (vers >= 3)
             {
                 if (state_from_read == true)
                 {
-                    vector<long>::iterator ite = attr_list_2.begin();
+                    std::vector<long>::iterator ite = attr_list_2.begin();
                     while (ite != attr_list_2.end())
                     {
                         Attribute &att = dev_attr->get_attr_by_ind(*ite);
@@ -1173,7 +1173,7 @@ Tango::DevState DeviceImpl::dev_state()
                 }
                 else
                 {
-                    vector<long>::iterator ite = attr_list.begin();
+                    std::vector<long>::iterator ite = attr_list.begin();
                     while (ite != attr_list.end())
                     {
                         Attribute &att = dev_attr->get_attr_by_ind(*ite);
@@ -1194,7 +1194,7 @@ Tango::DevState DeviceImpl::dev_state()
                 nb_wanted_attr = attr_list.size();
             }
 
-            cout4 << "State: Number of attribute(s) to read: " << nb_wanted_attr << endl;
+            cout4 << "State: Number of attribute(s) to read: " << nb_wanted_attr << std::endl;
 
             if (nb_wanted_attr != 0)
             {
@@ -1213,7 +1213,7 @@ Tango::DevState DeviceImpl::dev_state()
 //
 
                 long i, j;
-                vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
+                std::vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
 
                 for (i = 0; i < nb_wanted_attr; i++)
                 {
@@ -1265,7 +1265,7 @@ Tango::DevState DeviceImpl::dev_state()
                                 o << "Read value for attribute ";
                                 o << att.get_name();
                                 o << " has not been updated";
-                                o << "Hint: Did the server follow Tango V5 attribute reading framework ?" << ends;
+                                o << "Hint: Did the server follow Tango V5 attribute reading framework ?" << std::ends;
 
                                 Except::throw_exception((const char *) API_AttrValueNotSet, o.str(),
                                                         (const char *) "DeviceImpl::dev_state");
@@ -1497,10 +1497,10 @@ CORBA::Any *DeviceImpl::command_inout(const char *in_cmd,
 {
     AutoTangoMonitor sync(this);
 
-    string command(in_cmd);
+    std::string command(in_cmd);
     CORBA::Any *out_any;
 
-    cout4 << "DeviceImpl::command_inout(): command received : " << command << endl;
+    cout4 << "DeviceImpl::command_inout(): command received : " << command << std::endl;
 
 //
 //  Write the device name into the per thread data for
@@ -1510,7 +1510,7 @@ CORBA::Any *DeviceImpl::command_inout(const char *in_cmd,
 //  the thread stays the same!
 //
     SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
-    string last_associated_device = sub.get_associated_device();
+    std::string last_associated_device = sub.get_associated_device();
     sub.set_associated_device(get_name());
 
 //
@@ -1551,7 +1551,7 @@ CORBA::Any *DeviceImpl::command_inout(const char *in_cmd,
 // Return value to the caller
 //
 
-    cout4 << "DeviceImpl::command_inout(): leaving method for command " << in_cmd << endl;
+    cout4 << "DeviceImpl::command_inout(): leaving method for command " << in_cmd << std::endl;
     return (out_any);
 }
 
@@ -1571,7 +1571,7 @@ char *DeviceImpl::name()
 {
     try
     {
-        cout4 << "DeviceImpl::name arrived" << endl;
+        cout4 << "DeviceImpl::name arrived" << std::endl;
 
 //
 // Record attribute request in black box
@@ -1590,14 +1590,14 @@ char *DeviceImpl::name()
         {
             lim.minor(TG_IMP_MINOR_DEVFAILED);
         }
-        cout4 << "Leaving DeviceImpl::name throwing IMP_LIMIT" << endl;
+        cout4 << "Leaving DeviceImpl::name throwing IMP_LIMIT" << std::endl;
         throw lim;
     }
     catch (...)
     {
         CORBA::IMP_LIMIT lim;
         lim.minor(TG_IMP_MINOR_NON_DEVFAILED);
-        cout4 << "Leaving DeviceImpl::name throwing IMP_LIMIT" << endl;
+        cout4 << "Leaving DeviceImpl::name throwing IMP_LIMIT" << std::endl;
         throw lim;
     }
 
@@ -1605,7 +1605,7 @@ char *DeviceImpl::name()
 // Return data to caller
 //
 
-    cout4 << "Leaving DeviceImpl::name" << endl;
+    cout4 << "Leaving DeviceImpl::name" << std::endl;
     return CORBA::string_dup(device_name.c_str());
 }
 
@@ -1625,7 +1625,7 @@ char *DeviceImpl::adm_name()
 {
     try
     {
-        cout4 << "DeviceImpl::adm_name arrived" << endl;
+        cout4 << "DeviceImpl::adm_name arrived" << std::endl;
 
 //
 // Record attribute request in black box
@@ -1644,14 +1644,14 @@ char *DeviceImpl::adm_name()
         {
             lim.minor(TG_IMP_MINOR_DEVFAILED);
         }
-        cout4 << "Leaving DeviceImpl::adm_name throwing IMP_LIMIT" << endl;
+        cout4 << "Leaving DeviceImpl::adm_name throwing IMP_LIMIT" << std::endl;
         throw lim;
     }
     catch (...)
     {
         CORBA::IMP_LIMIT lim;
         lim.minor(TG_IMP_MINOR_NON_DEVFAILED);
-        cout4 << "Leaving DeviceImpl::adm_name throwing IMP_LIMIT" << endl;
+        cout4 << "Leaving DeviceImpl::adm_name throwing IMP_LIMIT" << std::endl;
         throw lim;
     }
 
@@ -1659,7 +1659,7 @@ char *DeviceImpl::adm_name()
 // Return data to caller
 //
 
-    cout4 << "Leaving DeviceImpl::adm_name" << endl;
+    cout4 << "Leaving DeviceImpl::adm_name" << std::endl;
     return CORBA::string_dup(adm_device_name.c_str());
 }
 
@@ -1681,7 +1681,7 @@ char *DeviceImpl::description()
 {
     try
     {
-        cout4 << "DeviceImpl::description arrived" << endl;
+        cout4 << "DeviceImpl::description arrived" << std::endl;
 
 //
 // Record attribute request in black box
@@ -1700,14 +1700,14 @@ char *DeviceImpl::description()
         {
             lim.minor(TG_IMP_MINOR_DEVFAILED);
         }
-        cout4 << "Leaving DeviceImpl::description throwing IMP_LIMIT" << endl;
+        cout4 << "Leaving DeviceImpl::description throwing IMP_LIMIT" << std::endl;
         throw lim;
     }
     catch (...)
     {
         CORBA::IMP_LIMIT lim;
         lim.minor(TG_IMP_MINOR_NON_DEVFAILED);
-        cout4 << "Leaving DeviceImpl::description throwing IMP_LIMIT" << endl;
+        cout4 << "Leaving DeviceImpl::description throwing IMP_LIMIT" << std::endl;
         throw lim;
     }
 
@@ -1715,7 +1715,7 @@ char *DeviceImpl::description()
 // Return data to caller
 //
 
-    cout4 << "Leaving DeviceImpl::description" << endl;
+    cout4 << "Leaving DeviceImpl::description" << std::endl;
     return CORBA::string_dup(desc.c_str());
 }
 
@@ -1731,12 +1731,12 @@ char *DeviceImpl::description()
 Tango::DevState DeviceImpl::state()
 {
     Tango::DevState tmp;
-    string last_associated_device;
+    std::string last_associated_device;
 
     try
     {
         AutoTangoMonitor sync(this);
-        cout4 << "DeviceImpl::state (attribute) arrived" << endl;
+        cout4 << "DeviceImpl::state (attribute) arrived" << std::endl;
 
 //
 //  Write the device name into the per thread data for
@@ -1781,7 +1781,7 @@ Tango::DevState DeviceImpl::state()
         {
             lim.minor(TG_IMP_MINOR_DEVFAILED);
         }
-        cout4 << "Leaving DeviceImpl::state (attribute) throwing IMP_LIMIT" << endl;
+        cout4 << "Leaving DeviceImpl::state (attribute) throwing IMP_LIMIT" << std::endl;
         throw lim;
     }
     catch (...)
@@ -1794,7 +1794,7 @@ Tango::DevState DeviceImpl::state()
 
         CORBA::IMP_LIMIT lim;
         lim.minor(TG_IMP_MINOR_NON_DEVFAILED);
-        cout4 << "Leaving DeviceImpl::state (attribute) throwing IMP_LIMIT" << endl;
+        cout4 << "Leaving DeviceImpl::state (attribute) throwing IMP_LIMIT" << std::endl;
         throw lim;
     }
 
@@ -1804,7 +1804,7 @@ Tango::DevState DeviceImpl::state()
         (Tango::Util::instance())->get_sub_dev_diag().set_associated_device(last_associated_device);
     }
 
-    cout4 << "Leaving DeviceImpl::state (attribute)" << endl;
+    cout4 << "Leaving DeviceImpl::state (attribute)" << std::endl;
     return tmp;
 }
 
@@ -1824,12 +1824,12 @@ Tango::DevState DeviceImpl::state()
 char *DeviceImpl::status()
 {
     char *tmp;
-    string last_associated_device;
+    std::string last_associated_device;
 
     try
     {
         AutoTangoMonitor sync(this);
-        cout4 << "DeviceImpl::status (attibute) arrived" << endl;
+        cout4 << "DeviceImpl::status (attibute) arrived" << std::endl;
 
 //
 //  Write the device name into the per thread data for
@@ -1893,7 +1893,7 @@ char *DeviceImpl::status()
         (Tango::Util::instance())->get_sub_dev_diag().set_associated_device(last_associated_device);
     }
 
-    cout4 << "Leaving DeviceImpl::status (attribute)" << endl;
+    cout4 << "Leaving DeviceImpl::status (attribute)" << std::endl;
     return tmp;
 }
 
@@ -1911,7 +1911,7 @@ char *DeviceImpl::status()
 
 Tango::DevVarStringArray *DeviceImpl::black_box(CORBA::Long n)
 {
-    cout4 << "DeviceImpl::black_box arrived" << endl;
+    cout4 << "DeviceImpl::black_box arrived" << std::endl;
 
     Tango::DevVarStringArray *ret = blackbox_ptr->read((long) n);
 
@@ -1921,7 +1921,7 @@ Tango::DevVarStringArray *DeviceImpl::black_box(CORBA::Long n)
 
     blackbox_ptr->insert_op(Op_BlackBox);
 
-    cout4 << "Leaving DeviceImpl::black_box" << endl;
+    cout4 << "Leaving DeviceImpl::black_box" << std::endl;
     return ret;
 }
 
@@ -1939,14 +1939,14 @@ Tango::DevVarStringArray *DeviceImpl::black_box(CORBA::Long n)
 
 Tango::DevCmdInfoList *DeviceImpl::command_list_query()
 {
-    cout4 << "DeviceImpl::command_list_query arrived" << endl;
+    cout4 << "DeviceImpl::command_list_query arrived" << std::endl;
 
 //
 // Retrieve number of command and allocate memory to send back info
 //
 
     long nb_cmd = device_class->get_command_list().size();
-    cout4 << nb_cmd << " command(s) for device" << endl;
+    cout4 << nb_cmd << " command(s) for device" << std::endl;
     Tango::DevCmdInfoList *back = NULL;
 
     try
@@ -1965,7 +1965,7 @@ Tango::DevCmdInfoList *DeviceImpl::command_list_query()
             tmp.cmd_tag = (long) ((device_class->get_command_list())[i]->get_disp_level());
             tmp.in_type = (long) ((device_class->get_command_list())[i]->get_in_type());
             tmp.out_type = (long) ((device_class->get_command_list())[i]->get_out_type());
-            string &str_in = (device_class->get_command_list())[i]->get_in_type_desc();
+            std::string &str_in = (device_class->get_command_list())[i]->get_in_type_desc();
             if (str_in.size() != 0)
             {
                 tmp.in_type_desc = CORBA::string_dup(str_in.c_str());
@@ -1974,7 +1974,7 @@ Tango::DevCmdInfoList *DeviceImpl::command_list_query()
             {
                 tmp.in_type_desc = CORBA::string_dup(NotSet);
             }
-            string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
+            std::string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
             if (str_out.size() != 0)
             {
                 tmp.out_type_desc = CORBA::string_dup(str_out.c_str());
@@ -1987,7 +1987,7 @@ Tango::DevCmdInfoList *DeviceImpl::command_list_query()
             (*back)[i] = tmp;
         }
     }
-    catch (bad_alloc &)
+    catch (std::bad_alloc &)
     {
         Except::throw_exception((const char *) API_MemoryAllocation,
                                 (const char *) "Can't allocate memory in server",
@@ -2004,7 +2004,7 @@ Tango::DevCmdInfoList *DeviceImpl::command_list_query()
 // Return to caller
 //
 
-    cout4 << "Leaving DeviceImpl::command_list_query" << endl;
+    cout4 << "Leaving DeviceImpl::command_list_query" << std::endl;
     return back;
 }
 
@@ -2022,11 +2022,11 @@ Tango::DevCmdInfoList *DeviceImpl::command_list_query()
 
 Tango::DevCmdInfo *DeviceImpl::command_query(const char *command)
 {
-    cout4 << "DeviceImpl::command_query arrived" << endl;
+    cout4 << "DeviceImpl::command_query arrived" << std::endl;
 
     Tango::DevCmdInfo *back = NULL;
-    string cmd(command);
-    transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
+    std::string cmd(command);
+    std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
 
 //
 // Allocate memory for the stucture sent back to caller. The ORB will free it
@@ -2036,7 +2036,7 @@ Tango::DevCmdInfo *DeviceImpl::command_query(const char *command)
     {
         back = new Tango::DevCmdInfo();
     }
-    catch (bad_alloc &)
+    catch (std::bad_alloc &)
     {
         Except::throw_exception((const char *) API_MemoryAllocation,
                                 (const char *) "Can't allocate memory in server",
@@ -2057,7 +2057,7 @@ Tango::DevCmdInfo *DeviceImpl::command_query(const char *command)
             back->cmd_tag = (long) ((device_class->get_command_list())[i]->get_disp_level());
             back->in_type = (long) ((device_class->get_command_list())[i]->get_in_type());
             back->out_type = (long) ((device_class->get_command_list())[i]->get_out_type());
-            string &str_in = (device_class->get_command_list())[i]->get_in_type_desc();
+            std::string &str_in = (device_class->get_command_list())[i]->get_in_type_desc();
             if (str_in.size() != 0)
             {
                 back->in_type_desc = CORBA::string_dup(str_in.c_str());
@@ -2066,7 +2066,7 @@ Tango::DevCmdInfo *DeviceImpl::command_query(const char *command)
             {
                 back->in_type_desc = CORBA::string_dup(NotSet);
             }
-            string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
+            std::string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
             if (str_out.size() != 0)
             {
                 back->out_type_desc = CORBA::string_dup(str_out.c_str());
@@ -2082,7 +2082,7 @@ Tango::DevCmdInfo *DeviceImpl::command_query(const char *command)
     if (i == nb_cmd)
     {
         delete back;
-        cout3 << "DeviceImpl::command_query(): command " << command << " not found" << endl;
+        cout3 << "DeviceImpl::command_query(): command " << command << " not found" << std::endl;
 
 //
 // throw an exception to client
@@ -2090,7 +2090,7 @@ Tango::DevCmdInfo *DeviceImpl::command_query(const char *command)
 
         TangoSys_OMemStream o;
 
-        o << "Command " << command << " not found" << ends;
+        o << "Command " << command << " not found" << std::ends;
         Except::throw_exception((const char *) API_CommandNotFound,
                                 o.str(),
                                 (const char *) "DeviceImpl::command_query");
@@ -2106,7 +2106,7 @@ Tango::DevCmdInfo *DeviceImpl::command_query(const char *command)
 // Return to caller
 //
 
-    cout4 << "Leaving DeviceImpl::command_query" << endl;
+    cout4 << "Leaving DeviceImpl::command_query" << std::endl;
     return back;
 }
 
@@ -2122,7 +2122,7 @@ Tango::DevCmdInfo *DeviceImpl::command_query(const char *command)
 
 Tango::DevInfo *DeviceImpl::info()
 {
-    cout4 << "DeviceImpl::info arrived" << endl;
+    cout4 << "DeviceImpl::info arrived" << std::endl;
 
     Tango::DevInfo *back = NULL;
 
@@ -2134,7 +2134,7 @@ Tango::DevInfo *DeviceImpl::info()
     {
         back = new Tango::DevInfo();
     }
-    catch (bad_alloc &)
+    catch (std::bad_alloc &)
     {
         Except::throw_exception((const char *) API_MemoryAllocation,
                                 (const char *) "Can't allocate memory in server",
@@ -2160,14 +2160,14 @@ Tango::DevInfo *DeviceImpl::info()
 // Build the complete info sent in the doc_url string
 //
 
-    string doc_url("Doc URL = ");
+    std::string doc_url("Doc URL = ");
     doc_url = doc_url + device_class->get_doc_url();
 
 //
 // Add TAG if it exist
 //
 
-    string &svn_tag = device_class->get_svn_tag();
+    std::string &svn_tag = device_class->get_svn_tag();
     if (svn_tag.size() != 0)
     {
         doc_url = doc_url + "\nSVN Tag = ";
@@ -2175,7 +2175,7 @@ Tango::DevInfo *DeviceImpl::info()
     }
     else
     {
-        string &cvs_tag = device_class->get_cvs_tag();
+        std::string &cvs_tag = device_class->get_cvs_tag();
         if (cvs_tag.size() != 0)
         {
             doc_url = doc_url + "\nCVS Tag = ";
@@ -2187,7 +2187,7 @@ Tango::DevInfo *DeviceImpl::info()
 // Add SCM location if defined
 //
 
-    string &svn_location = device_class->get_svn_location();
+    std::string &svn_location = device_class->get_svn_location();
     if (svn_location.size() != 0)
     {
         doc_url = doc_url + "\nSVN Location = ";
@@ -2195,7 +2195,7 @@ Tango::DevInfo *DeviceImpl::info()
     }
     else
     {
-        string &cvs_location = device_class->get_cvs_location();
+        std::string &cvs_location = device_class->get_cvs_location();
         if (cvs_location.size() != 0)
         {
             doc_url = doc_url + "\nCVS Location = ";
@@ -2215,7 +2215,7 @@ Tango::DevInfo *DeviceImpl::info()
 // Return to caller
 //
 
-    cout4 << "Leaving DeviceImpl::info" << endl;
+    cout4 << "Leaving DeviceImpl::info" << std::endl;
     return back;
 }
 
@@ -2230,7 +2230,7 @@ Tango::DevInfo *DeviceImpl::info()
 
 void DeviceImpl::ping()
 {
-    cout4 << "DeviceImpl::ping arrived" << endl;
+    cout4 << "DeviceImpl::ping arrived" << std::endl;
 
 //
 // Record operation request in black box
@@ -2242,7 +2242,7 @@ void DeviceImpl::ping()
 // Return to caller
 //
 
-    cout4 << "Leaving DeviceImpl::ping" << endl;
+    cout4 << "Leaving DeviceImpl::ping" << std::endl;
 }
 
 //+-------------------------------------------------------------------------
@@ -2260,7 +2260,7 @@ void DeviceImpl::ping()
 
 Tango::AttributeConfigList *DeviceImpl::get_attribute_config(const Tango::DevVarStringArray &names)
 {
-    cout4 << "DeviceImpl::get_attribute_config arrived" << endl;
+    cout4 << "DeviceImpl::get_attribute_config arrived" << std::endl;
 
     TangoMonitor &mon = get_att_conf_monitor();
     AutoTangoMonitor sync(&mon);
@@ -2289,7 +2289,7 @@ Tango::AttributeConfigList *DeviceImpl::get_attribute_config(const Tango::DevVar
 // attribute), decrement attribute number
 //
 
-    string in_name(names[0]);
+    std::string in_name(names[0]);
     if (nb_attr == 1)
     {
         if (in_name == AllAttr)
@@ -2320,7 +2320,7 @@ Tango::AttributeConfigList *DeviceImpl::get_attribute_config(const Tango::DevVar
         back = new Tango::AttributeConfigList(nb_attr);
         back->length(nb_attr);
     }
-    catch (bad_alloc &)
+    catch (std::bad_alloc &)
     {
         Except::throw_exception((const char *) API_MemoryAllocation,
                                 (const char *) "Can't allocate memory in server",
@@ -2357,7 +2357,7 @@ Tango::AttributeConfigList *DeviceImpl::get_attribute_config(const Tango::DevVar
 // Return to caller
 //
 
-    cout4 << "Leaving DeviceImpl::get_attribute_config" << endl;
+    cout4 << "Leaving DeviceImpl::get_attribute_config" << std::endl;
 
     return back;
 }
@@ -2378,7 +2378,7 @@ Tango::AttributeConfigList *DeviceImpl::get_attribute_config(const Tango::DevVar
 void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf)
 {
     AutoTangoMonitor sync(this, true);
-    cout4 << "DeviceImpl::set_attribute_config arrived" << endl;
+    cout4 << "DeviceImpl::set_attribute_config arrived" << std::endl;
 
 //
 // The attribute conf. is protected by two monitors. One protects access between
@@ -2434,8 +2434,8 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
     {
         for (i = 0; i < nb_attr; i++)
         {
-            string tmp_name(new_conf[i].name);
-            transform(tmp_name.begin(), tmp_name.end(), tmp_name.begin(), ::tolower);
+            std::string tmp_name(new_conf[i].name);
+            std::transform(tmp_name.begin(), tmp_name.end(), tmp_name.begin(), ::tolower);
             if ((tmp_name == "state") || (tmp_name == "status"))
             {
                 Except::throw_exception((const char *) API_AttrNotFound,
@@ -2445,7 +2445,7 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
 
             Attribute &attr = dev_attr->get_attr_by_name(new_conf[i].name);
             bool old_alarm = attr.is_alarmed().any();
-            vector<Attribute::AttPropDb> v_db;
+            std::vector<Attribute::AttPropDb> v_db;
             attr.set_properties(new_conf[i], device_name, false, v_db);
             if (Tango::Util::_UseDb == true)
             {
@@ -2487,7 +2487,7 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
 
             if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
             {
-                string tmp_name(new_conf[i].name);
+                std::string tmp_name(new_conf[i].name);
 
                 EventSupplier::SuppliedEventData ad;
                 ::memset(&ad, 0, sizeof(ad));
@@ -2574,9 +2574,9 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
         {
             o << "\nAll remaining attribute(s) have not been updated";
         }
-        o << ends;
+        o << std::ends;
 
-        string s = o.str();
+        std::string s = o.str();
         e.errors[0].reason = CORBA::string_dup(s.c_str());
 
         throw;
@@ -2604,7 +2604,7 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
 // Return to caller
 //
 
-    cout4 << "Leaving DeviceImpl::set_attribute_config" << endl;
+    cout4 << "Leaving DeviceImpl::set_attribute_config" << std::endl;
 }
 
 
@@ -2628,7 +2628,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 
     Tango::AttributeValueList *back = NULL;
 
-    cout4 << "DeviceImpl::read_attributes arrived" << endl;
+    cout4 << "DeviceImpl::read_attributes arrived" << std::endl;
 
 //
 //  Write the device name into the per thread data for
@@ -2638,7 +2638,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 //  the thread stays the same!
 //
     SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
-    string last_associated_device = sub.get_associated_device();
+    std::string last_associated_device = sub.get_associated_device();
     sub.set_associated_device(get_name());
 
 // Catch all execeptions to set back the associated device after
@@ -2688,7 +2688,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
         long nb_names = names.length();
         if (nb_names == 1)
         {
-            string att_name(names[0]);
+            std::string att_name(names[0]);
             if (att_name == AllAttr)
             {
                 real_names.length(nb_dev_attr);
@@ -2721,8 +2721,8 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 //
 
         nb_names = real_names.length();
-        vector<long> wanted_attr;
-        vector<long> wanted_w_attr;
+        std::vector<long> wanted_attr;
+        std::vector<long> wanted_w_attr;
 
         for (i = 0; i < nb_names; i++)
         {
@@ -2739,7 +2739,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
                     TangoSys_OMemStream o;
                     o << "Client too old to get data for attribute " << real_names[i].in();
                     o << ".\nPlease, use a client linked with Tango V5";
-                    o << " and a device inheriting from Device_3Impl" << ends;
+                    o << " and a device inheriting from Device_3Impl" << std::ends;
                     Except::throw_exception((const char *) API_NotSupportedFeature,
                                             o.str(),
                                             (const char *) "DeviceImpl::read_attributes");
@@ -2759,7 +2759,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
                         TangoSys_OMemStream o;
                         o << "Client too old to get data for attribute " << real_names[i].in();
                         o << ".\nPlease, use a client linked with Tango V5";
-                        o << " and a device inheriting from Device_3Impl" << ends;
+                        o << " and a device inheriting from Device_3Impl" << std::ends;
                         Except::throw_exception((const char *) API_NotSupportedFeature,
                                                 o.str(),
                                                 (const char *) "DeviceImpl::read_attributes");
@@ -2796,7 +2796,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 // Set attr value (for readable attribute)
 //
 
-        vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
+        std::vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
 
         for (i = 0; i < nb_wanted_attr; i++)
         {
@@ -2813,7 +2813,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
                     TangoSys_OMemStream o;
 
                     o << "It is not possible to read state/status as attributes with your\n";
-                    o << "Tango software release. Please, re-link with Tango V5." << ends;
+                    o << "Tango software release. Please, re-link with Tango V5." << std::ends;
 
                     Except::throw_exception((const char *) API_NotSupportedFeature,
                                             o.str(),
@@ -2825,7 +2825,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
                     TangoSys_OMemStream o;
 
                     o << "It is currently not allowed to read attribute ";
-                    o << att.get_name() << ends;
+                    o << att.get_name() << std::ends;
 
                     Except::throw_exception((const char *) API_AttrNotAllowed,
                                             o.str(),
@@ -2858,7 +2858,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
             back = new Tango::AttributeValueList(nb_names);
             back->length(nb_names);
         }
-        catch (bad_alloc &)
+        catch (std::bad_alloc &)
         {
             Except::throw_exception((const char *) API_MemoryAllocation,
                                     (const char *) "Can't allocate memory in server",
@@ -2888,30 +2888,30 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 
                     try
                     {
-                        string att_name(real_names[i]);
-                        transform(att_name.begin(), att_name.end(), att_name.begin(), ::tolower);
+                        std::string att_name(real_names[i]);
+                        std::transform(att_name.begin(), att_name.end(), att_name.begin(), ::tolower);
 
-                        vector<PollObj *>::iterator ite = get_polled_obj_by_type_name(Tango::POLL_ATTR, att_name);
+                        std::vector<PollObj *>::iterator ite = get_polled_obj_by_type_name(Tango::POLL_ATTR, att_name);
                         long upd = (*ite)->get_upd();
                         if (upd == 0)
                         {
                             o << "Attribute ";
                             o << att.get_name();
                             o << " value is available only by CACHE.\n";
-                            o << "Attribute values are set by external polling buffer filling" << ends;
+                            o << "Attribute values are set by external polling buffer filling" << std::ends;
                         }
                         else
                         {
                             o << "Read value for attribute ";
                             o << att.get_name();
-                            o << " has not been updated" << ends;
+                            o << " has not been updated" << std::ends;
                         }
                     }
                     catch (Tango::DevFailed &)
                     {
                         o << "Read value for attribute ";
                         o << att.get_name();
-                        o << " has not been updated" << ends;
+                        o << " has not been updated" << std::ends;
                     }
 
                     Except::throw_exception((const char *) API_AttrValueNotSet,
@@ -3067,7 +3067,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 // Return to caller
 //
 
-    cout4 << "Leaving DeviceImpl::read_attributes" << endl;
+    cout4 << "Leaving DeviceImpl::read_attributes" << std::endl;
     return back;
 }
 
@@ -3084,7 +3084,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
 {
     AutoTangoMonitor sync(this, true);
-    cout4 << "DeviceImpl::write_attributes arrived" << endl;
+    cout4 << "DeviceImpl::write_attributes arrived" << std::endl;
 
 
 //
@@ -3095,7 +3095,7 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
 //  the thread stays the same!
 //
     SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
-    string last_associated_device = sub.get_associated_device();
+    std::string last_associated_device = sub.get_associated_device();
     sub.set_associated_device(get_name());
 
 // Catch all execeptions to set back the associated device after
@@ -3132,7 +3132,7 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
 //
 
         long nb_updated_attr = values.length();
-        vector<long> updated_attr;
+        std::vector<long> updated_attr;
 
         long i;
         for (i = 0; i < nb_updated_attr; i++)
@@ -3153,7 +3153,7 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
 
                 o << "Attribute ";
                 o << dev_attr->get_attr_by_ind(updated_attr[i]).get_name();
-                o << " is not writable" << ends;
+                o << " is not writable" << std::ends;
 
                 Except::throw_exception((const char *) API_AttrNotWritable,
                                         o.str(),
@@ -3205,19 +3205,19 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
         }
         else
         {
-            vector<long> att_in_db;
+            std::vector<long> att_in_db;
 
             for (i = 0; i < nb_updated_attr; i++)
             {
                 WAttribute &att = dev_attr->get_w_attr_by_ind(updated_attr[i]);
-                vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
+                std::vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
                 if (attr_vect[att.get_attr_idx()]->is_allowed(this, Tango::WRITE_REQ) == false)
                 {
                     TangoSys_OMemStream o;
 
                     o << "It is currently not allowed to write attribute ";
                     o << att.get_name();
-                    o << ". The device state is " << Tango::DevStateName[get_state()] << ends;
+                    o << ". The device state is " << Tango::DevStateName[get_state()] << std::ends;
 
 
                     Except::throw_exception((const char *) API_AttrNotAllowed,
@@ -3266,7 +3266,7 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
 // Return to caller.
 //
 
-    cout4 << "Leaving DeviceImpl::write_attributes" << endl;
+    cout4 << "Leaving DeviceImpl::write_attributes" << std::endl;
 }
 
 
@@ -3292,7 +3292,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 
     AutoTangoMonitor sync(this, true);
 
-    vector<Tango::Attr *> &attr_list = device_class->get_class_attr()->get_attr_list();
+    std::vector<Tango::Attr *> &attr_list = device_class->get_class_attr()->get_attr_list();
     long old_attr_nb = attr_list.size();
 
 //
@@ -3301,7 +3301,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 // Therefore, all devices created after this attribute addition will also have this attribute.
 //
 
-    string &attr_name = new_attr->get_name();
+    std::string &attr_name = new_attr->get_name();
     bool already_there = true;
     bool throw_ex = false;
     try
@@ -3329,7 +3329,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 
         o << "Device " << get_name() << " -> Attribute " << attr_name
           << " already exists for your device but with other definition";
-        o << "\n(data type, data format or data write type)" << ends;
+        o << "\n(data type, data format or data write type)" << std::ends;
 
         Except::throw_exception((const char *) API_AttrNotFound,
                                 o.str(),
@@ -3411,7 +3411,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 
             o << "Device " << get_name() << " -> Attribute " << attr_name
               << " already exists for your device class but with other definition";
-            o << "\n(data type, data format or data write type)" << ends;
+            o << "\n(data type, data format or data write type)" << std::ends;
 
             Except::throw_exception((const char *) API_AttrNotFound,
                                     o.str(),
@@ -3489,7 +3489,7 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it, bool clea
 // Check that the class support this attribute
 //
 
-    string &attr_name = rem_attr->get_name();
+    std::string &attr_name = rem_attr->get_name();
 
     try
     {
@@ -3500,7 +3500,7 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it, bool clea
         TangoSys_OMemStream o;
 
         o << "Attribute " << attr_name << " is not defined as attribute for your device.";
-        o << "\nCan't remove it" << ends;
+        o << "\nCan't remove it" << std::ends;
 
         Except::throw_exception((const char *) API_AttrNotFound,
                                 o.str(),
@@ -3536,11 +3536,11 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it, bool clea
 // stop any configured polling for this attribute first!
 //
 
-    vector<string> &poll_attr = get_polled_attr();
-    vector<string>::iterator ite_attr;
+    std::vector<std::string> &poll_attr = get_polled_attr();
+    std::vector<std::string>::iterator ite_attr;
 
-    string attr_name_low(attr_name);
-    transform(attr_name_low.begin(), attr_name_low.end(), attr_name_low.begin(), ::tolower);
+    std::string attr_name_low(attr_name);
+    std::transform(attr_name_low.begin(), attr_name_low.end(), attr_name_low.begin(), ::tolower);
 
 //
 // Try to find the attribute in the list of polled attributes
@@ -3631,14 +3631,14 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it, bool clea
     }
     else
     {
-        vector<Tango::DeviceImpl *> dev_list = device_class->get_device_list();
+        std::vector<Tango::DeviceImpl *> dev_list = device_class->get_device_list();
         unsigned long nb_except = 0;
         for (unsigned long i = 0; i < nb_dev; i++)
         {
             try
             {
                 Attribute &att = dev_list[i]->get_device_attr()->get_attr_by_name(attr_name.c_str());
-                vector<Tango::Attr *> &attr_list = device_class->get_class_attr()->get_attr_list();
+                std::vector<Tango::Attr *> &attr_list = device_class->get_class_attr()->get_attr_list();
                 if (attr_list[att.get_attr_idx()]->get_cl_name() != rem_attr->get_cl_name())
                 {
                     nb_except++;
@@ -3695,7 +3695,7 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it, bool clea
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::remove_attribute(string &rem_attr_name, bool free_it, bool clean_db)
+void DeviceImpl::remove_attribute(std::string &rem_attr_name, bool free_it, bool clean_db)
 {
 
     try
@@ -3708,7 +3708,7 @@ void DeviceImpl::remove_attribute(string &rem_attr_name, bool free_it, bool clea
         TangoSys_OMemStream o;
 
         o << "Attribute " << rem_attr_name << " is not defined as attribute for your device.";
-        o << "\nCan't remove it" << ends;
+        o << "\nCan't remove it" << std::ends;
 
         Except::re_throw_exception(e, (const char *) API_AttrNotFound,
                                    o.str(),
@@ -3744,7 +3744,7 @@ void DeviceImpl::add_command(Tango::Command *new_cmd, bool device_level)
 // Check that this command is not already defined for this device. If it is already there, immediately returns.
 //
 
-    string &cmd_name = new_cmd->get_name();
+    std::string &cmd_name = new_cmd->get_name();
     bool already_there = true;
     bool throw_ex = false;
     try
@@ -3789,7 +3789,7 @@ void DeviceImpl::add_command(Tango::Command *new_cmd, bool device_level)
 
         o << "Device " << get_name() << " -> Command " << cmd_name
           << " already exists for your device but with other definition";
-        o << "\n(command input data type or command output data type)" << ends;
+        o << "\n(command input data type or command output data type)" << std::ends;
 
         Except::throw_exception(API_CommandNotFound, o.str(), "DeviceImpl::add_command");
     }
@@ -3831,12 +3831,12 @@ void DeviceImpl::add_command(Tango::Command *new_cmd, bool device_level)
 
     if (device_level == false)
     {
-        vector<Tango::Command *> &cmd_list = device_class->get_command_list();
+        std::vector<Tango::Command *> &cmd_list = device_class->get_command_list();
         cmd_list.push_back(new_cmd);
     }
     else
     {
-        vector<Tango::Command *> &dev_cmd_list = get_local_command_list();
+        std::vector<Tango::Command *> &dev_cmd_list = get_local_command_list();
         dev_cmd_list.push_back(new_cmd);
     }
 
@@ -3876,7 +3876,7 @@ void DeviceImpl::remove_command(Tango::Command *rem_cmd, bool free_it, bool clea
 // Check that the class or the device support this command
 //
 
-    string &cmd_name = rem_cmd->get_name();
+    std::string &cmd_name = rem_cmd->get_name();
     bool device_cmd = false;
 
     try
@@ -3895,7 +3895,7 @@ void DeviceImpl::remove_command(Tango::Command *rem_cmd, bool free_it, bool clea
             TangoSys_OMemStream o;
 
             o << "Command " << cmd_name << " is not defined as command for your device.";
-            o << "\nCan't remove it" << ends;
+            o << "\nCan't remove it" << std::ends;
 
             Except::throw_exception(API_CommandNotFound, o.str(), "DeviceImpl::remove_command");
         }
@@ -3930,11 +3930,11 @@ void DeviceImpl::remove_command(Tango::Command *rem_cmd, bool free_it, bool clea
 // stop any configured polling for this command first!
 //
 
-    vector<string> &poll_cmd = get_polled_cmd();
-    vector<string>::iterator ite_cmd;
+    std::vector<std::string> &poll_cmd = get_polled_cmd();
+    std::vector<std::string>::iterator ite_cmd;
 
-    string cmd_name_low(cmd_name);
-    transform(cmd_name_low.begin(), cmd_name_low.end(), cmd_name_low.begin(), ::tolower);
+    std::string cmd_name_low(cmd_name);
+    std::transform(cmd_name_low.begin(), cmd_name_low.end(), cmd_name_low.begin(), ::tolower);
 
 //
 // Try to find the command in the list of polled commands
@@ -4032,7 +4032,7 @@ void DeviceImpl::remove_command(Tango::Command *rem_cmd, bool free_it, bool clea
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::remove_command(const string &rem_cmd_name, bool free_it, bool clean_db)
+void DeviceImpl::remove_command(const std::string &rem_cmd_name, bool free_it, bool clean_db)
 {
 
 //
@@ -4056,7 +4056,7 @@ void DeviceImpl::remove_command(const string &rem_cmd_name, bool free_it, bool c
             TangoSys_OMemStream o;
 
             o << "Command " << rem_cmd_name << " is not defined as a command for your device.";
-            o << "\nCan't remove it" << ends;
+            o << "\nCan't remove it" << std::ends;
 
             Except::re_throw_exception(e, API_CommandNotFound, o.str(), "DeviceImpl::remove_command");
         }
@@ -4079,11 +4079,11 @@ void DeviceImpl::poll_lists_2_v5()
 {
     bool db_update = false;
 
-    vector<string> &poll_cmd = get_polled_cmd();
-    vector<string> &poll_attr = get_polled_attr();
+    std::vector<std::string> &poll_cmd = get_polled_cmd();
+    std::vector<std::string> &poll_attr = get_polled_attr();
 
-    vector<string>::iterator ite_state;
-    vector<string>::iterator ite_status;
+    std::vector<std::string>::iterator ite_state;
+    std::vector<std::string>::iterator ite_status;
 
 //
 // Try to find state in list of polled command(s). If found, remove it from poll cmd and move it to poll attr
@@ -4148,10 +4148,10 @@ void DeviceImpl::poll_lists_2_v5()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::init_cmd_poll_ext_trig(string cmd_name)
+void DeviceImpl::init_cmd_poll_ext_trig(std::string cmd_name)
 {
-    string cmd_lowercase(cmd_name);
-    transform(cmd_lowercase.begin(), cmd_lowercase.end(), cmd_lowercase.begin(), ::tolower);
+    std::string cmd_lowercase(cmd_name);
+    std::transform(cmd_lowercase.begin(), cmd_lowercase.end(), cmd_lowercase.begin(), ::tolower);
 
 //
 // never do the for the state or status commands, they are handled as attributes!
@@ -4161,7 +4161,7 @@ void DeviceImpl::init_cmd_poll_ext_trig(string cmd_name)
     {
         TangoSys_OMemStream o;
 
-        o << "State and status are handled as attributes for the polling" << ends;
+        o << "State and status are handled as attributes for the polling" << std::ends;
         Except::throw_exception((const char *) API_CommandNotFound,
                                 o.str(),
                                 (const char *) "DeviceImpl::init_poll_ext_trig");
@@ -4180,7 +4180,7 @@ void DeviceImpl::init_cmd_poll_ext_trig(string cmd_name)
     Tango::Util *tg = Tango::Util::instance();
     if (tg->_UseDb == true)
     {
-        vector<string> &poll_list = get_polled_cmd();
+        std::vector<std::string> &poll_list = get_polled_cmd();
         Tango::DbData poll_data;
         bool found = false;
 
@@ -4195,8 +4195,8 @@ void DeviceImpl::init_cmd_poll_ext_trig(string cmd_name)
 
             for (unsigned int i = 0; i < poll_list.size(); i = i + 2)
             {
-                string name_lowercase(poll_list[i]);
-                transform(name_lowercase.begin(), name_lowercase.end(), name_lowercase.begin(), ::tolower);
+                std::string name_lowercase(poll_list[i]);
+                std::transform(name_lowercase.begin(), name_lowercase.end(), name_lowercase.begin(), ::tolower);
 
                 if (name_lowercase == cmd_lowercase)
                 {
@@ -4239,7 +4239,7 @@ void DeviceImpl::init_cmd_poll_period()
     Tango::Util *tg = Tango::Util::instance();
     if (tg->_UseDb == true)
     {
-        vector<string> &poll_list = get_polled_cmd();
+        std::vector<std::string> &poll_list = get_polled_cmd();
         Tango::DbData poll_data;
 
         poll_data.push_back(Tango::DbDatum("polled_cmd"));
@@ -4248,7 +4248,7 @@ void DeviceImpl::init_cmd_poll_period()
 // get the command list
 //
 
-        vector<Command *> &cmd_list = device_class->get_command_list();
+        std::vector<Command *> &cmd_list = device_class->get_command_list();
 
 //
 // loop over the command list
@@ -4274,7 +4274,7 @@ void DeviceImpl::init_cmd_poll_period()
 // never do the for the state or status commands, they are handled as attributes!
 //
 
-            string cmd_name = cmd_list[i]->get_lower_name();
+            std::string cmd_name = cmd_list[i]->get_lower_name();
             if (cmd_name == "state" || cmd_name == "status")
             {
                 continue;
@@ -4296,8 +4296,8 @@ void DeviceImpl::init_cmd_poll_period()
             bool found = false;
             for (unsigned int i = 0; i < poll_list.size(); i = i + 2)
             {
-                string name_lowercase(poll_list[i]);
-                transform(name_lowercase.begin(), name_lowercase.end(), name_lowercase.begin(), ::tolower);
+                std::string name_lowercase(poll_list[i]);
+                std::transform(name_lowercase.begin(), name_lowercase.end(), name_lowercase.begin(), ::tolower);
 
                 if (name_lowercase == cmd_name)
                 {
@@ -4308,9 +4308,9 @@ void DeviceImpl::init_cmd_poll_period()
 
             if (found == false)
             {
-                string period_str;
-                stringstream str;
-                str << poll_period << ends;
+                std::string period_str;
+                std::stringstream str;
+                str << poll_period << std::ends;
                 str >> period_str;
 
                 poll_list.push_back(cmd_name);
@@ -4346,10 +4346,10 @@ void DeviceImpl::init_cmd_poll_period()
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::init_attr_poll_ext_trig(string attr_name)
+void DeviceImpl::init_attr_poll_ext_trig(std::string attr_name)
 {
-    string attr_lowercase(attr_name);
-    transform(attr_lowercase.begin(), attr_lowercase.end(), attr_lowercase.begin(), ::tolower);
+    std::string attr_lowercase(attr_name);
+    std::transform(attr_lowercase.begin(), attr_lowercase.end(), attr_lowercase.begin(), ::tolower);
 
 //
 // check whether the attribute exists for the device and can be polled
@@ -4364,7 +4364,7 @@ void DeviceImpl::init_attr_poll_ext_trig(string attr_name)
     Tango::Util *tg = Tango::Util::instance();
     if (tg->_UseDb == true)
     {
-        vector<string> &poll_list = get_polled_attr();
+        std::vector<std::string> &poll_list = get_polled_attr();
         Tango::DbData poll_data;
         bool found = false;
 
@@ -4388,8 +4388,8 @@ void DeviceImpl::init_attr_poll_ext_trig(string attr_name)
 // Convert to lower case before comparison
 //
 
-                string name_lowercase(poll_list[i]);
-                transform(name_lowercase.begin(), name_lowercase.end(), name_lowercase.begin(), ::tolower);
+                std::string name_lowercase(poll_list[i]);
+                std::transform(name_lowercase.begin(), name_lowercase.end(), name_lowercase.begin(), ::tolower);
 
                 if (name_lowercase == attr_lowercase)
                 {
@@ -4444,7 +4444,7 @@ void DeviceImpl::init_attr_poll_period()
     Tango::Util *tg = Tango::Util::instance();
     if (tg->_UseDb == true)
     {
-        vector<string> &poll_list = get_polled_attr();
+        std::vector<std::string> &poll_list = get_polled_attr();
         Tango::DbData poll_data;
 
         poll_data.push_back(Tango::DbDatum("polled_attr"));
@@ -4453,7 +4453,7 @@ void DeviceImpl::init_attr_poll_period()
 // get the multi attribute object
 //
 
-        vector<Attribute *> &attr_list = dev_attr->get_attribute_list();
+        std::vector<Attribute *> &attr_list = dev_attr->get_attribute_list();
 
 //
 // loop over the attribute list
@@ -4463,7 +4463,7 @@ void DeviceImpl::init_attr_poll_period()
         unsigned long i;
         for (i = 0; i < attr_list.size(); i++)
         {
-            string &attr_name = attr_list[i]->get_name_lower();
+            std::string &attr_name = attr_list[i]->get_name_lower();
 
 //
 // Special case for state and status attributes. They are polled as attribute but they are managed by Pogo as
@@ -4515,8 +4515,8 @@ void DeviceImpl::init_attr_poll_period()
 // Convert to lower case before comparison
 //
 
-                string name_lowercase(poll_list[i]);
-                transform(name_lowercase.begin(), name_lowercase.end(), name_lowercase.begin(), ::tolower);
+                std::string name_lowercase(poll_list[i]);
+                std::transform(name_lowercase.begin(), name_lowercase.end(), name_lowercase.begin(), ::tolower);
 
                 if (name_lowercase == attr_name)
                 {
@@ -4527,9 +4527,9 @@ void DeviceImpl::init_attr_poll_period()
 
             if (found == false)
             {
-                string period_str;
-                stringstream str;
-                str << poll_period << ends;
+                std::string period_str;
+                std::stringstream str;
+                str << poll_period << std::ends;
                 str >> period_str;
 
                 poll_list.push_back(attr_name);
@@ -4557,7 +4557,7 @@ void DeviceImpl::init_attr_poll_period()
             try
             {
                 Attribute &att = dev_attr->get_attr_by_name(poll_list[i].c_str());
-                stringstream ss;
+                std::stringstream ss;
                 long per;
                 ss << poll_list[i + 1];
                 ss >> per;
@@ -4698,7 +4698,7 @@ void DeviceImpl::lock(client_addr *cl, int validity)
             if (*cl != *(locker_client))
             {
                 TangoSys_OMemStream o;
-                o << "Device " << get_name() << " is already locked by another client" << ends;
+                o << "Device " << get_name() << " is already locked by another client" << std::ends;
                 Except::throw_exception((const char *) API_DeviceLocked, o.str(),
                                         (const char *) "Device_Impl::lock");
             }
@@ -4763,7 +4763,7 @@ void DeviceImpl::relock(client_addr *cl)
             {
                 TangoSys_OMemStream o;
                 o << get_name() << ": ";
-                o << "Device " << get_name() << " is already locked by another client" << ends;
+                o << "Device " << get_name() << " is already locked by another client" << std::ends;
                 Except::throw_exception((const char *) API_DeviceLocked, o.str(),
                                         (const char *) "Device_Impl::relock");
             }
@@ -4775,7 +4775,7 @@ void DeviceImpl::relock(client_addr *cl)
         {
             TangoSys_OMemStream o;
             o << get_name() << ": ";
-            o << "Device " << get_name() << " is not locked. Can't re-lock it" << ends;
+            o << "Device " << get_name() << " is not locked. Can't re-lock it" << std::ends;
             Except::throw_exception((const char *) API_DeviceNotLocked, o.str(),
                                     (const char *) "Device_Impl::relock");
         }
@@ -4784,7 +4784,7 @@ void DeviceImpl::relock(client_addr *cl)
     {
         TangoSys_OMemStream o;
         o << get_name() << ": ";
-        o << "Device " << get_name() << " is not locked. Can't re-lock it" << ends;
+        o << "Device " << get_name() << " is not locked. Can't re-lock it" << std::ends;
         Except::throw_exception((const char *) API_DeviceNotLocked, o.str(),
                                 (const char *) "Device_Impl::relock");
     }
@@ -4823,7 +4823,7 @@ Tango::DevLong DeviceImpl::unlock(bool forced)
                 if (*cl != *(locker_client))
                 {
                     TangoSys_OMemStream o;
-                    o << "Device " << get_name() << " is locked by another client, can't unlock it" << ends;
+                    o << "Device " << get_name() << " is locked by another client, can't unlock it" << std::ends;
                     Except::throw_exception((const char *) API_DeviceLocked, o.str(),
                                             (const char *) "Device_Impl::unlock");
                 }
@@ -4938,8 +4938,8 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
         if (valid_lock() == true)
         {
             lock_stat = "Device " + device_name + " is locked by ";
-            ostringstream ostr;
-            ostr << *(locker_client) << ends;
+            std::ostringstream ostr;
+            ostr << *(locker_client) << std::ends;
             lock_stat = lock_stat + ostr.str();
 
             dvlsa->lvalue[0] = 1;
@@ -5102,8 +5102,8 @@ void DeviceImpl::check_lock(const char *meth, const char *cmd)
             {
                 TangoSys_OMemStream o;
                 TangoSys_OMemStream o2;
-                o << "Device " << get_name() << " has been unlocked by an administrative client!!!" << ends;
-                o2 << "Device_Impl::" << meth << ends;
+                o << "Device " << get_name() << " has been unlocked by an administrative client!!!" << std::ends;
+                o2 << "Device_Impl::" << meth << std::ends;
                 Except::throw_exception((const char *) DEVICE_UNLOCKED_REASON, o.str(), o2.str());
             }
             delete old_locker_client;
@@ -5130,8 +5130,8 @@ void DeviceImpl::throw_locked_exception(const char *meth)
 {
     TangoSys_OMemStream o;
     TangoSys_OMemStream o2;
-    o << "Device " << get_name() << " is locked by another client" << ends;
-    o2 << "Device_Impl::" << meth << ends;
+    o << "Device " << get_name() << " is locked by another client" << std::ends;
+    o2 << "Device_Impl::" << meth << std::ends;
     Except::throw_exception((const char *) API_DeviceLocked, o.str(), o2.str());
 }
 
@@ -5609,14 +5609,14 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
                 TangoSys_OMemStream o;
                 o << "Data type for attribute " << names[index] << " is DEV_ENCODED.";
                 o << " It's not possible to retrieve this data type through the interface you are using (IDL V3)"
-                  << ends;
+                  << std::ends;
 
                 (*aid.data_3)[index].err_list.length(1);
                 (*aid.data_3)[index].err_list[0].severity = Tango::ERR;
                 (*aid.data_3)[index].err_list[0].reason = CORBA::string_dup(API_NotSupportedFeature);
                 (*aid.data_3)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
-                string s = o.str();
+                std::string s = o.str();
                 (*aid.data_3)[index].err_list[0].desc = CORBA::string_dup(s.c_str());
                 (*aid.data_3)[index].quality = Tango::ATTR_INVALID;
                 (*aid.data_3)[index].name = CORBA::string_dup(names[index]);
@@ -5641,16 +5641,16 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
 
 void DeviceImpl::att_conf_loop()
 {
-    vector<Attribute *> &att_list = get_device_attr()->get_attribute_list();
+    std::vector<Attribute *> &att_list = get_device_attr()->get_attribute_list();
 
 //
 // Reset data before the new loop
 //
 
-    vector<string> &wrong_conf_att_list = get_att_wrong_db_conf();
+    std::vector<std::string> &wrong_conf_att_list = get_att_wrong_db_conf();
     wrong_conf_att_list.clear();
 
-    vector<string> &mem_att_list = get_att_mem_failed();
+    std::vector<std::string> &mem_att_list = get_att_mem_failed();
     mem_att_list.clear();
 
     force_alarm_state = false;
@@ -5793,9 +5793,9 @@ void DeviceImpl::build_att_list_in_status_mess(size_t nb_att, AttErrorType att_t
                     alarm_status =
                         alarm_status + "Root attribute already used in this device server process for attribute ";
                     Util *tg = Util::instance();
-                    string root_name(fwd_att_wrong_conf[i].full_root_att_name);
-                    transform(root_name.begin(), root_name.end(), root_name.begin(), ::tolower);
-                    string local_att_name = tg->get_root_att_reg().get_local_att_name(root_name);
+                    std::string root_name(fwd_att_wrong_conf[i].full_root_att_name);
+                    std::transform(root_name.begin(), root_name.end(), root_name.begin(), ::tolower);
+                    std::string local_att_name = tg->get_root_att_reg().get_local_att_name(root_name);
                     alarm_status = alarm_status + local_att_name;
                     break;
                 }
@@ -5860,7 +5860,7 @@ void DeviceImpl::build_att_list_in_status_mess(size_t nb_att, AttErrorType att_t
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-bool DeviceImpl::is_there_subscriber(const string &att_name, EventType event_type)
+bool DeviceImpl::is_there_subscriber(const std::string &att_name, EventType event_type)
 {
     Attribute &att = dev_attr->get_attr_by_name(att_name.c_str());
 
@@ -5918,13 +5918,13 @@ bool DeviceImpl::is_there_subscriber(const string &att_name, EventType event_typ
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::rem_wrong_fwd_att(const string &root_att_name)
+void DeviceImpl::rem_wrong_fwd_att(const std::string &root_att_name)
 {
-    vector<FwdWrongConf>::iterator ite;
+    std::vector<FwdWrongConf>::iterator ite;
     for (ite = fwd_att_wrong_conf.begin(); ite != fwd_att_wrong_conf.end(); ++ite)
     {
-        string local_name(ite->full_root_att_name);
-        transform(local_name.begin(), local_name.end(), local_name.begin(), ::tolower);
+        std::string local_name(ite->full_root_att_name);
+        std::transform(local_name.begin(), local_name.end(), local_name.begin(), ::tolower);
         if (local_name == root_att_name)
         {
             fwd_att_wrong_conf.erase(ite);
@@ -5948,13 +5948,13 @@ void DeviceImpl::rem_wrong_fwd_att(const string &root_att_name)
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::update_wrong_conf_att(const string &root_att_name, FwdAttError err)
+void DeviceImpl::update_wrong_conf_att(const std::string &root_att_name, FwdAttError err)
 {
-    vector<FwdWrongConf>::iterator ite;
+    std::vector<FwdWrongConf>::iterator ite;
     for (ite = fwd_att_wrong_conf.begin(); ite != fwd_att_wrong_conf.end(); ++ite)
     {
-        string local_name(ite->full_root_att_name);
-        transform(local_name.begin(), local_name.end(), local_name.begin(), ::tolower);
+        std::string local_name(ite->full_root_att_name);
+        std::transform(local_name.begin(), local_name.end(), local_name.begin(), ::tolower);
         if (local_name == root_att_name)
         {
             ite->fae = err;
@@ -5984,15 +5984,15 @@ void DeviceImpl::lock_root_devices(int validity, bool lock_action)
 // Get list of root device(s)
 //
 
-    vector<string> root_devs;
-    vector<string>::iterator ite;
-    vector<Attribute *> att_list = dev_attr->get_attribute_list();
+    std::vector<std::string> root_devs;
+    std::vector<std::string>::iterator ite;
+    std::vector<Attribute *> att_list = dev_attr->get_attribute_list();
     for (size_t j = 0; j < att_list.size(); j++)
     {
         if (att_list[j]->is_fwd_att() == true)
         {
             FwdAttribute *fwd_att = static_cast<FwdAttribute *>(att_list[j]);
-            string &dev_name = fwd_att->get_fwd_dev_name();
+            std::string &dev_name = fwd_att->get_fwd_dev_name();
             ite = find(root_devs.begin(), root_devs.end(), dev_name);
             if (ite == root_devs.end())
             {
@@ -6031,9 +6031,9 @@ void DeviceImpl::lock_root_devices(int validity, bool lock_action)
 //
 //-----------------------------------------------------------------------------
 
-Command &DeviceImpl::get_local_cmd_by_name(const string &cmd_name)
+Command &DeviceImpl::get_local_cmd_by_name(const std::string &cmd_name)
 {
-    vector<Command *>::iterator pos;
+    std::vector<Command *>::iterator pos;
 
 #ifdef HAS_LAMBDA_FUNC
     pos = find_if(command_list.begin(), command_list.end(),
@@ -6043,8 +6043,8 @@ Command &DeviceImpl::get_local_cmd_by_name(const string &cmd_name)
                       {
                           return false;
                       }
-                      string tmp_name(cmd_name);
-                      transform(tmp_name.begin(), tmp_name.end(), tmp_name.begin(), ::tolower);
+                      std::string tmp_name(cmd_name);
+                      std::transform(tmp_name.begin(), tmp_name.end(), tmp_name.begin(), ::tolower);
                       return cmd->get_lower_name() == tmp_name;
                   });
 #else
@@ -6054,10 +6054,10 @@ Command &DeviceImpl::get_local_cmd_by_name(const string &cmd_name)
 
     if (pos == command_list.end())
     {
-        cout3 << "DeviceImpl::get_cmd_by_name throwing exception" << endl;
+        cout3 << "DeviceImpl::get_cmd_by_name throwing exception" << std::endl;
         TangoSys_OMemStream o;
 
-        o << cmd_name << " command not found" << ends;
+        o << cmd_name << " command not found" << std::ends;
         Except::throw_exception(API_CommandNotFound, o.str(), "Device::get_cmd_by_name");
     }
 
@@ -6074,9 +6074,9 @@ Command &DeviceImpl::get_local_cmd_by_name(const string &cmd_name)
 //
 //-----------------------------------------------------------------------------
 
-void DeviceImpl::remove_local_command(const string &cmd_name)
+void DeviceImpl::remove_local_command(const std::string &cmd_name)
 {
-    vector<Command *>::iterator pos;
+    std::vector<Command *>::iterator pos;
 
 #ifdef HAS_LAMBDA_FUNC
     pos = find_if(command_list.begin(), command_list.end(),
@@ -6095,10 +6095,10 @@ void DeviceImpl::remove_local_command(const string &cmd_name)
 
     if (pos == command_list.end())
     {
-        cout3 << "DeviceImpl::remove_local_command throwing exception" << endl;
+        cout3 << "DeviceImpl::remove_local_command throwing exception" << std::endl;
         TangoSys_OMemStream o;
 
-        o << cmd_name << " command not found" << ends;
+        o << cmd_name << " command not found" << std::ends;
         Except::throw_exception((const char *) API_CommandNotFound,
                                 o.str(),
                                 (const char *) "DeviceImpl::remove_local_command");
@@ -6121,7 +6121,7 @@ void DeviceImpl::remove_local_command(const string &cmd_name)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::get_event_param(vector<EventPar> &eve)
+void DeviceImpl::get_event_param(std::vector<EventPar> &eve)
 {
     ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
 
@@ -6154,7 +6154,7 @@ void DeviceImpl::get_event_param(vector<EventPar> &eve)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::set_event_param(vector<EventPar> &eve)
+void DeviceImpl::set_event_param(std::vector<EventPar> &eve)
 {
     for (size_t loop = 0; loop < eve.size(); loop++)
     {
@@ -6220,7 +6220,7 @@ void DeviceImpl::push_dev_intr(bool ev_client)
 
             devintr_mon.signal();
 
-            cout4 << "Cmd sent to device interface change thread" << endl;
+            cout4 << "Cmd sent to device interface change thread" << std::endl;
 
             while (devintr_shared.cmd_pending == true)
             {
@@ -6228,7 +6228,7 @@ void DeviceImpl::push_dev_intr(bool ev_client)
 
                 if ((devintr_shared.cmd_pending == true) && (interupted == 0))
                 {
-                    cout4 << "TIME OUT" << endl;
+                    cout4 << "TIME OUT" << std::endl;
                     Except::throw_exception(API_CommandTimedOut, "Device interface change event thread blocked !!!",
                                             "DeviceImpl::push_dev_intr");
                 }
@@ -6250,16 +6250,16 @@ void DeviceImpl::push_dev_intr(bool ev_client)
 
 void DeviceImpl::end_pipe_config()
 {
-    cout4 << "Entering end_pipe_config for device " << device_name << endl;
+    cout4 << "Entering end_pipe_config for device " << device_name << std::endl;
 
-    vector<Pipe *> &pipe_list = device_class->get_pipe_list(device_name_lower);
+    std::vector<Pipe *> &pipe_list = device_class->get_pipe_list(device_name_lower);
     size_t nb_pipe = pipe_list.size();
 
 //
 // First get device pipe configuration from db
 //
 
-    cout4 << nb_pipe << " pipe(s)" << endl;
+    cout4 << nb_pipe << " pipe(s)" << std::endl;
 
     if (nb_pipe != 0)
     {
@@ -6298,11 +6298,11 @@ void DeviceImpl::end_pipe_config()
             }
             catch (Tango::DevFailed &)
             {
-                cout4 << "Exception while accessing database" << endl;
+                cout4 << "Exception while accessing database" << std::endl;
 
                 tg->get_database()->set_timeout_millis(old_db_timeout);
-                stringstream ss;
-                ss << "Can't get device pipe properties for device " << device_name << ends;
+                std::stringstream ss;
+                ss << "Can't get device pipe properties for device " << device_name << std::ends;
 
                 Except::throw_exception(API_DatabaseAccess, ss.str(), "DeviceImpl::end_pipe_config");
             }
@@ -6319,7 +6319,7 @@ void DeviceImpl::end_pipe_config()
 //
 
                 long nb_prop = 0;
-                vector<PipeProperty> dev_prop;
+                std::vector<PipeProperty> dev_prop;
 
                 db_list[ind] >> nb_prop;
                 ind++;
@@ -6328,7 +6328,7 @@ void DeviceImpl::end_pipe_config()
                 {
                     if (db_list[ind].size() > 1)
                     {
-                        string tmp(db_list[ind].value_string[0]);
+                        std::string tmp(db_list[ind].value_string[0]);
                         long nb = db_list[ind].size();
                         for (int k = 1; k < nb; k++)
                         {
@@ -6356,7 +6356,7 @@ void DeviceImpl::end_pipe_config()
         }
     }
 
-    cout4 << "Leaving end_pipe_config for device " << device_name << endl;
+    cout4 << "Leaving end_pipe_config for device " << device_name << std::endl;
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -6378,9 +6378,9 @@ void DeviceImpl::end_pipe_config()
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::set_pipe_prop(vector<PipeProperty> &dev_prop, Pipe *pi_ptr, PipePropType ppt)
+void DeviceImpl::set_pipe_prop(std::vector<PipeProperty> &dev_prop, Pipe *pi_ptr, PipePropType ppt)
 {
-    cout4 << "Entering set_pipe_prop() method" << endl;
+    cout4 << "Entering set_pipe_prop() method" << std::endl;
 //
 // Final init of pipe prop with following priorities:
 // - Device pipe
@@ -6390,7 +6390,7 @@ void DeviceImpl::set_pipe_prop(vector<PipeProperty> &dev_prop, Pipe *pi_ptr, Pip
 //
 
     bool found = false;
-    string req_p_name;
+    std::string req_p_name;
     if (ppt == LABEL)
     {
         req_p_name = "label";
@@ -6400,11 +6400,11 @@ void DeviceImpl::set_pipe_prop(vector<PipeProperty> &dev_prop, Pipe *pi_ptr, Pip
         req_p_name = "description";
     }
 
-    vector<PipeProperty>::iterator dev_ite;
+    std::vector<PipeProperty>::iterator dev_ite;
     for (dev_ite = dev_prop.begin(); dev_ite != dev_prop.end(); ++dev_ite)
     {
-        string p_name = dev_ite->get_name();
-        transform(p_name.begin(), p_name.end(), p_name.begin(), ::tolower);
+        std::string p_name = dev_ite->get_name();
+        std::transform(p_name.begin(), p_name.end(), p_name.begin(), ::tolower);
 
         if (p_name == req_p_name)
         {
@@ -6446,14 +6446,14 @@ void DeviceImpl::set_pipe_prop(vector<PipeProperty> &dev_prop, Pipe *pi_ptr, Pip
         {
             try
             {
-                vector<PipeProperty> &cl_pi_prop = device_class->get_class_pipe()->get_prop_list(pi_ptr->get_name());
+                std::vector<PipeProperty> &cl_pi_prop = device_class->get_class_pipe()->get_prop_list(pi_ptr->get_name());
 
                 bool found = false;
-                vector<PipeProperty>::iterator class_ite;
+                std::vector<PipeProperty>::iterator class_ite;
                 for (class_ite = cl_pi_prop.begin(); class_ite != cl_pi_prop.end(); ++class_ite)
                 {
-                    string p_name = class_ite->get_name();
-                    transform(p_name.begin(), p_name.end(), p_name.begin(), ::tolower);
+                    std::string p_name = class_ite->get_name();
+                    std::transform(p_name.begin(), p_name.end(), p_name.begin(), ::tolower);
 
                     if (p_name == req_p_name)
                     {
@@ -6479,7 +6479,7 @@ void DeviceImpl::set_pipe_prop(vector<PipeProperty> &dev_prop, Pipe *pi_ptr, Pip
         }
     }
 
-    cout4 << "Leaving set_pipe_prop() method" << endl;
+    cout4 << "Leaving set_pipe_prop() method" << std::endl;
 }
 
 } // End of Tango namespace

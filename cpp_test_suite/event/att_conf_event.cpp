@@ -1,4 +1,4 @@
-/* 
+/*
  * example of a client using the TANGO device api.
  */
 
@@ -22,15 +22,15 @@ bool verbose = false;
 class EventCallBack : public Tango::CallBack
 {
 	void push_event(Tango::AttrConfEventData*);
-	
+
 public:
 	int cb_executed;
 	int cb_err;
 	int old_sec,old_usec;
 	int delta_msec;
-	
-	string min_value;
-	string max_value;
+
+	std::string min_value;
+	std::string max_value;
 };
 
 void EventCallBack::push_event(Tango::AttrConfEventData* event_data)
@@ -46,14 +46,14 @@ void EventCallBack::push_event(Tango::AttrConfEventData* event_data)
 	gettimeofday(&now_timeval,NULL);
 #endif
 	coutv << "date : tv_sec = " << now_timeval.tv_sec;
-	coutv << ", tv_usec = " << now_timeval.tv_usec << endl;
+	coutv << ", tv_usec = " << now_timeval.tv_usec << std::endl;
 
 	delta_msec = ((now_timeval.tv_sec - old_sec) * 1000) + ((now_timeval.tv_usec - old_usec) / 1000);
 
 	old_sec = now_timeval.tv_sec;
 	old_usec = now_timeval.tv_usec;
-	
-	coutv << "delta_msec = " << delta_msec << endl;
+
+	coutv << "delta_msec = " << delta_msec << std::endl;
 
 	cb_executed++;
 
@@ -62,13 +62,13 @@ void EventCallBack::push_event(Tango::AttrConfEventData* event_data)
 		coutv << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
 		if (!event_data->err)
 		{
-			coutv << *(event_data->attr_conf) << endl;
+			coutv << *(event_data->attr_conf) << std::endl;
 			min_value = event_data->attr_conf->min_value;
 			max_value = event_data->attr_conf->max_value;
 		}
 		else
 		{
-			coutv << "Error send to callback" << endl;
+			coutv << "Error send to callback" << std::endl;
 			Tango::Except::print_error_stack(event_data->errors);
 		}
 	}
@@ -82,22 +82,22 @@ void EventCallBack::push_event(Tango::AttrConfEventData* event_data)
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
-	
+
 	if (argc == 1)
 	{
-		cout << "usage: %s device [-v]" << endl;
+		cout << "usage: %s device [-v]" << std::endl;
 		exit(-1);
 	}
 
-	string device_name = argv[1];
+	std::string device_name = argv[1];
 
 	if (argc == 3)
 	{
 		if (strcmp(argv[2],"-v") == 0)
 			verbose = true;
 	}
-	
-	try 
+
+	try
 	{
 		device = new DeviceProxy(device_name);
 	}
@@ -107,24 +107,24 @@ int main(int argc, char **argv)
 	exit(1);
 	}
 
-	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
-	
+	coutv << std::endl << "new DeviceProxy(" << device->name() << ") returned" << std::endl << std::endl;
+
 	try
 	{
-		string att_name("Double_attr_w");
-				
+		std::string att_name("Double_attr_w");
+
 
 //
 // subscribe to a attribute config event
 //
 
 		int eve_id1,eve_id2;
-		vector<string> filters;
+		std::vector<std::string> filters;
 		EventCallBack cb;
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
-		
+
 		eve_id1 = device->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,&cb,filters);
 		eve_id2 = device->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,&cb,filters);
 
@@ -133,17 +133,17 @@ int main(int argc, char **argv)
 //
 
 		bool po = device->is_attribute_polled(att_name);
-		coutv << "attribute polled : " << po << endl;
-		assert( po == false);	
+		coutv << "attribute polled : " << po << std::endl;
+		assert( po == false);
 
 //
 // The callback should have been executed once
 //
 
 		assert (cb.cb_executed == 2);
-						
-		cout << "   subscribe_event --> OK" << endl;
-		
+
+		cout << "   subscribe_event --> OK" << std::endl;
+
 //
 // Execute the command which will fire an attribute
 // config event
@@ -156,28 +156,28 @@ int main(int argc, char **argv)
 		DeviceData d_in;
 		d_in << dvda;
 		device->command_inout("IOSetWAttrLimit",d_in);
-		
+
 		dvda[0] = 1.0;
 		dvda[1] = 10.0;
 		d_in << dvda;
 		device->command_inout("IOSetWAttrLimit",d_in);
-				
+
 		Tango_sleep(1);
-		
+
 		assert (cb.cb_executed == 6);
 		assert (cb.min_value == "0");
 		assert (cb.max_value == "10");
-		
-		cout << "   attr_conf_event --> OK" << endl;
-				
+
+		cout << "   attr_conf_event --> OK" << std::endl;
+
 //
 // unsubscribe to the event
 //
 
 		device->unsubscribe_event(eve_id1);
 		device->unsubscribe_event(eve_id2);
-		
-		cout << "   unsubscribe_event --> OK" << endl;							
+
+		cout << "   unsubscribe_event --> OK" << std::endl;
 	}
 	catch (Tango::DevFailed &e)
 	{
@@ -191,6 +191,6 @@ int main(int argc, char **argv)
 	}
 
 	delete device;
-	
+
 	return 0;
 }

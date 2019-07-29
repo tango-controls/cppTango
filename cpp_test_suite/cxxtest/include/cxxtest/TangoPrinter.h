@@ -134,10 +134,18 @@ private:
     static set<string> restore_points;
 
 public:
+#ifdef cout
+#define cout_stored cout
+#undef cout
+#endif
     TangoPrinter(CXXTEST_STD(ostream) &o = CXXTEST_STD(cout), const char *preLine = ":", const char *postLine = "")
         :
         ErrorFormatter(new Adapter(o), preLine, postLine)
     {}
+#ifdef cout_stored
+#define cout cout_stored
+#endif
+
     virtual ~TangoPrinter()
     { delete outputStream(); }
 

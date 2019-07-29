@@ -240,7 +240,7 @@ void EncodedAttribute::decode_rgb32(DeviceAttribute *attr,int *width,int *height
       			(const char*)"EncodedAttribute::decode_gray8");
 	}
 
-	string local_format(encDataSeq.in()[0].encoded_format);
+	std::string local_format(encDataSeq.in()[0].encoded_format);
 
 	int isRGB  = (strcmp(local_format.c_str() ,RGB_24 ) == 0);
 	int isJPEG = (strcmp(local_format.c_str() ,JPEG_RGB ) == 0);
@@ -341,7 +341,7 @@ void EncodedAttribute::decode_gray8(DeviceAttribute *attr,int *width,int *height
       			(const char*)"EncodedAttribute::decode_gray8");
 	}
 
-	string local_format(encDataSeq.in()[0].encoded_format);
+	std::string local_format(encDataSeq.in()[0].encoded_format);
 
 	int isGrey  = (strcmp(local_format.c_str() ,GRAY_8 ) == 0);
 	int isJPEG = (strcmp(local_format.c_str() ,JPEG_GRAY_8 ) == 0);
@@ -431,7 +431,7 @@ void EncodedAttribute::decode_gray16(DeviceAttribute *attr,int *width,int *heigh
       			(const char*)"EncodedAttribute::decode_gray16");
 	}
 
-	string local_format(encDataSeq.in()[0].encoded_format);
+	std::string local_format(encDataSeq.in()[0].encoded_format);
 
 	int isGrey  = (strcmp(local_format.c_str() ,GRAY_16 ) == 0);
 

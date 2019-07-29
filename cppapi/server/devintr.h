@@ -52,7 +52,7 @@ protected:
 private:
 	struct CmdIntr
 	{
-		string			name;
+		std::string			name;
 		CmdArgType		in_type;
 		CmdArgType		out_type;
 
@@ -62,7 +62,7 @@ private:
 
 	struct AttrIntr
 	{
-		string			name;
+		std::string			name;
 		AttrWriteType	writable;
 		long			data_type;
 		AttrDataFormat	data_format;
@@ -70,18 +70,18 @@ private:
 		long			max_y;
 		bool			mem;
 		bool			mem_init;
-		string			writable_attr_name;
-		vector<string>	enum_labels;
+		std::string			writable_attr_name;
+		std::vector<std::string>	enum_labels;
 
 		bool operator<(const struct AttrIntr &rhs) const {return name < rhs.name;}
 		bool operator==(const struct AttrIntr &) const;
 	};
 
-	vector<CmdIntr>		cmds;
-	vector<AttrIntr>	atts;
+	std::vector<CmdIntr>		cmds;
+	std::vector<AttrIntr>	atts;
 
-	void build_cmd_interfaces(DeviceImpl *,vector<CmdIntr> &);
-	void build_att_interfaces(DeviceImpl *,vector<AttrIntr> &);
+	void build_cmd_interfaces(DeviceImpl *,std::vector<CmdIntr> &);
+	void build_att_interfaces(DeviceImpl *,std::vector<AttrIntr> &);
 };
 
 } // End of Tango namespace

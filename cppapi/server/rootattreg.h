@@ -41,9 +41,9 @@ namespace Tango
 
 struct NameFwdAttr
 {
-	string			local_name;			// Local device name
-	string			local_att_name;		// Local attribute name
-	string			local_label;		// Local attribute label
+	std::string			local_name;			// Local device name
+	std::string			local_att_name;		// Local attribute name
+	std::string			local_label;		// Local attribute label
 	FwdAttr			*fwd_attr;
 	FwdAttr         *fwd_attr_cl;
 };
@@ -59,28 +59,28 @@ class RootAttRegistry
 public:
 	RootAttRegistry():cbp(this),cbu(this) {}
 
-	void add_root_att(string &,string &,string &,string &,FwdAttr *,DeviceImpl *);
-	void remove_root_att(string &,string &);
-	DeviceProxy *get_root_att_dp(string &);
-	DeviceImpl *get_local_dev(string &_s) {return cbp.get_local_dev(_s);}
-	string get_local_att_name(const string &_s) {return cbp.get_local_att_name(_s);}
-	void update_label(string &_d,string &_a,string &_l) {string s(_d+'/'+_a);cbp.update_label(s,_l);}
-	void update_device_impl(string &_n,DeviceImpl *_d) {cbp.update_device_impl(_n,_d);}
+	void add_root_att(std::string &,std::string &,std::string &,std::string &,FwdAttr *,DeviceImpl *);
+	void remove_root_att(std::string &,std::string &);
+	DeviceProxy *get_root_att_dp(std::string &);
+	DeviceImpl *get_local_dev(std::string &_s) {return cbp.get_local_dev(_s);}
+	std::string get_local_att_name(const std::string &_s) {return cbp.get_local_att_name(_s);}
+	void update_label(std::string &_d,std::string &_a,std::string &_l) {std::string s(_d+'/'+_a);cbp.update_label(s,_l);}
+	void update_device_impl(std::string &_n,DeviceImpl *_d) {cbp.update_device_impl(_n,_d);}
 
-	void clear_attrdesc(string &,string &);
-	bool check_root_dev_release(string &);
+	void clear_attrdesc(std::string &,std::string &);
+	bool check_root_dev_release(std::string &);
 
-	bool is_event_subscribed(string &,EventType);
-	void subscribe_user_event(string &,string &,EventType);
-	void unsubscribe_user_event(string &,string &,EventType);
+	bool is_event_subscribed(std::string &,EventType);
+	void subscribe_user_event(std::string &,std::string &,EventType);
+	void unsubscribe_user_event(std::string &,std::string &,EventType);
 	void auto_unsub();
 
-	bool is_root_attribute(string &_s) {return cbp.is_root_att_in_map(_s);}
+	bool is_root_attribute(std::string &_s) {return cbp.is_root_att_in_map(_s);}
 	bool empty() {return dps.empty();}
 	bool is_root_dev_not_started_err() {return cbp.is_root_dev_not_started_err();}
 
 protected:
-	bool check_loop(string &,string &,string &,string &);
+	bool check_loop(std::string &,std::string &,std::string &,std::string &);
 
 private:
 	class RootAttConfCallBack: public Tango::CallBack
@@ -90,24 +90,24 @@ private:
 
 		virtual void push_event(Tango::AttrConfEventData *);
 
-		void add_att(string &,string &,string &,FwdAttr *,DeviceImpl *);
-		void remove_att(string &);
-		void clear_attrdesc(string &);
-        bool is_root_att_in_map(string &);
-        int count_root_dev(string &);
-		string get_local_att_name(const string &);
-		DeviceImpl *get_local_dev(string &);
-		void update_label(string &,string &);
-		void update_device_impl(string &,DeviceImpl *);
-        void update_err_kind(string &,FwdAttError);
-		void device_restarting(string &);
+		void add_att(std::string &,std::string &,std::string &,FwdAttr *,DeviceImpl *);
+		void remove_att(std::string &);
+		void clear_attrdesc(std::string &);
+        bool is_root_att_in_map(std::string &);
+        int count_root_dev(std::string &);
+		std::string get_local_att_name(const std::string &);
+		DeviceImpl *get_local_dev(std::string &);
+		void update_label(std::string &,std::string &);
+		void update_device_impl(std::string &,DeviceImpl *);
+        void update_err_kind(std::string &,FwdAttError);
+		void device_restarting(std::string &);
         bool is_root_dev_not_started_err();
 
 	private:
 		ClntIdent 							ci;
 		omni_mutex							the_lock;
-		map<string,struct NameFwdAttr>		map_attrdesc;		// Key is root attribute device_name/att_name
-		map<string,DeviceImpl *>			local_dis;			// Key is local device name
+		std::map<std::string,struct NameFwdAttr>		map_attrdesc;		// Key is root attribute device_name/att_name
+		std::map<std::string,DeviceImpl *>			local_dis;			// Key is local device name
 		RootAttRegistry						*rar;
 	};
 
@@ -122,14 +122,14 @@ private:
 	private:
 		RootAttRegistry						*rar;
 
-		vector<string>						dummy_vs;
-		vector<double>						dummy_vd;
-		vector<long>						dummy_vl;
+		std::vector<std::string>						dummy_vs;
+		std::vector<double>						dummy_vd;
+		std::vector<long>						dummy_vl;
 	};
 
-	map<string,DeviceProxy *>		dps;				// Key is root attribute device name
-	map<string,int>					map_event_id;		// Key is root attribute device_name/att_name
-	map<string,vector<UserEvent> >	map_event_id_user;	// Key is root attribute device name/att_name
+	std::map<std::string,DeviceProxy *>		dps;				// Key is root attribute device name
+	std::map<std::string,int>					map_event_id;		// Key is root attribute device_name/att_name
+	std::map<std::string,std::vector<UserEvent> >	map_event_id_user;	// Key is root attribute device name/att_name
 	ReadersWritersLock				id_user_lock;
 
 	RootAttConfCallBack				cbp;

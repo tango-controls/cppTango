@@ -154,12 +154,8 @@ namespace Tango {
 # undef minor
 #endif
 
-//
-// Default std namespace
-//
-
-using namespace std;
-
-
+#ifdef TANGO_USE_USING_NAMESPACE
+  using namespace std;
+#endif
 
 #endif /* TANGO_H */

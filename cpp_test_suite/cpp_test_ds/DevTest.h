@@ -28,7 +28,7 @@ class DevTest : public TANGO_BASE_CLASS {
 class DevTest : public Tango::Device_3Impl {
 #endif
 public :
-	DevTest(Tango::DeviceClass *,string &);
+	DevTest(Tango::DeviceClass *,std::string &);
 	DevTest(Tango::DeviceClass *,const char *);
 	DevTest(Tango::DeviceClass *,const char *,const char *);
 	DevTest(Tango::DeviceClass *,const char *,const char *,Tango::DevState, const char *);
@@ -214,7 +214,7 @@ public :
 	void write_Enum_attr(Tango::WAttribute &att);
 	void write_Enum_spec_attr_rw(Tango::WAttribute &att);
 
-	virtual void write_attr_hardware(vector<long> &);
+	virtual void write_attr_hardware(std::vector<long> &);
 
 // Pipe related  methods
 
@@ -231,8 +231,8 @@ public :
 	bool is_RPipeDE_allowed(Tango::PipeReqType);
 	void read_RPipeDE(Tango::Pipe &);
 
-    int get_att_poll_period(string &_s) {return get_attribute_poll_period(_s);}
-    void stop_poll_att(string &_s) {stop_poll_attribute(_s);}
+    int get_att_poll_period(std::string &_s) {return get_attribute_poll_period(_s);}
+    void stop_poll_att(std::string &_s) {stop_poll_attribute(_s);}
 
 	friend class IOAttrThrowEx;
 	friend class IOAddOneElt;
@@ -248,7 +248,7 @@ public :
 	friend class SetPipeOutput;
 
 public:
-    vector<string>                          poll_messages;
+    std::vector<std::string>                          poll_messages;
 
 protected :
 	Tango::DevDouble 	attr_double;
@@ -302,7 +302,7 @@ protected :
 
 	EventCallBack 		cb;
 	Tango::DeviceProxy 	*remote_dev;
-	map<int,string>		event_atts;
+	std::map<int,std::string>		event_atts;
 
 	Tango::DevFloat 	attr_float;
 	Tango::DevBoolean 	attr_boolean;
@@ -339,22 +339,22 @@ protected :
     Tango::DevShort		enum_value;
 
 	Tango::DevLong 							dl;
-	vector<double> 							v_db;
+	std::vector<double> 							v_db;
 	Tango::DevVarStateArray 				dvsa;
 
-	Tango::DataElement<string>						pipe_str;
+	Tango::DataElement<std::string>						pipe_str;
 	Tango::DataElement<Tango::DevString>			pipe_devstr;
 	Tango::DataElement<Tango::DevEncoded>			pipe_enc;
-	Tango::DataElement<vector<string> >				pipe_v_str;
+	Tango::DataElement<std::vector<std::string> >				pipe_v_str;
 	Tango::DataElement<Tango::DevVarStringArray>	pipe_dvsa;
 
 	Tango::DevicePipeBlob 					inner_inner_blob;
 	Tango::DevicePipeBlob 					inner_blob;
 
-	string									inner_str;
+	std::string									inner_str;
 	Tango::DevBoolean						inner_bool;
-    vector<Tango::DevLong>					v_dl;
-    vector<Tango::DevBoolean>               v_bool;
+    std::vector<Tango::DevLong>					v_dl;
+    std::vector<Tango::DevBoolean>               v_bool;
     omni_mutex								pipe_mutex;
 
     Tango::DevShort							rpipe_type;

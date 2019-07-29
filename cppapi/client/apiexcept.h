@@ -29,7 +29,11 @@
 #include <except.h>
 #include <vector>
 
-using namespace std;
+#include <tango_const.h>
+
+#ifdef TANGO_USE_USING_NAMESPACE
+  using namespace std;
+#endif
 
 namespace Tango {
 
@@ -54,13 +58,13 @@ namespace Tango {
 class NamedDevFailed
 {
 public:
-	string		    name;           ///< The name of the attribute which fails
+  std::string		    name;           ///< The name of the attribute which fails
 	long		    idx_in_call;    ///< Index in the write_attributes method parameter vector of the attribute which failed.
 	DevErrorList	err_stack;      ///< The error stack
 
 /// @privatesection
 
-	NamedDevFailed(const DevErrorList &err,const string &na,long idx):name(na),idx_in_call(idx),err_stack(err) {}
+	NamedDevFailed(const DevErrorList &err,const std::string &na,long idx):name(na),idx_in_call(idx),err_stack(err) {}
 	NamedDevFailed();
 };
 
@@ -96,11 +100,11 @@ public:
  */
 	bool call_failed() {if ((err_list.empty()==true) && (errors.length()!=0))return true;else return false;}
 
-	vector<NamedDevFailed>	err_list;   ///< There is one element in this vector for each attribute which failed during its writing.
+	std::vector<NamedDevFailed>	err_list;   ///< There is one element in this vector for each attribute which failed during its writing.
 
 /// @privatesection
 
-	NamedDevFailedList(const Tango::MultiDevFailed &,string,const char *,const char *);
+	NamedDevFailedList(const Tango::MultiDevFailed &,std::string,const char *,const char *);
 	NamedDevFailedList() {};
 };
 
@@ -120,7 +124,7 @@ public: \
 class I \
 { \
 public: \
-	static inline void throw_exception(const char *reason,const string &desc,const char *origin, \
+	static inline void throw_exception(const char *reason,const std::string &desc,const char *origin, \
 					   Tango::ErrSeverity sever = Tango::ERR) \
 	{\
 		Tango::DevErrorList errors(1);\
@@ -158,7 +162,7 @@ public: \
 	}\
 \
 	static inline void re_throw_exception(CORBA::SystemException &cex,\
-					      const string &reason,const string &desc,\
+					      const std::string &reason,const std::string &desc,\
 					      const char *origin,\
 					      Tango::ErrSeverity sever = Tango::ERR)\
 	{\
@@ -201,7 +205,7 @@ public: \
 		throw Tango::E(errors);\
 	}\
 	static inline void re_throw_exception(CORBA::SystemException &cex,\
-					      const char *reason,const string &desc,\
+					      const char *reason,const std::string &desc,\
 					      const char *origin,\
 					      Tango::ErrSeverity sever = Tango::ERR)\
 	{\
@@ -221,8 +225,8 @@ public: \
 		throw Tango::E(errors);\
 	}\
 	static inline void re_throw_exception(CORBA::SystemException &cex,\
-					      const char *reason,const string &desc,\
-					      const string &origin,\
+					      const char *reason,const std::string &desc,\
+					      const std::string &origin,\
 					      Tango::ErrSeverity sever = Tango::ERR)\
 	{\
 		Tango::DevErrorList errors(2);\
@@ -279,7 +283,7 @@ public: \
 	}\
 \
 	static inline void re_throw_exception(Tango::E &ex,\
-					      const char *reason,const string &desc,\
+					      const char *reason,const std::string &desc,\
 					      const char *origin,\
 					      Tango::ErrSeverity sever = Tango::ERR)\
 	{\
@@ -307,7 +311,7 @@ public: \
 	}\
 \
 	static inline void re_throw_exception(Tango::DevFailed &ex,\
-					      const char *reason,const string &desc,\
+					      const char *reason,const std::string &desc,\
 					      const char *origin,\
 					      Tango::ErrSeverity sever = Tango::ERR)\
 	{\
@@ -353,7 +357,7 @@ public: \
 	}\
 \
 	static inline void re_throw_exception(char *CORBA_error_desc,\
-					      const char *reason,const string &desc,\
+					      const char *reason,const std::string &desc,\
 					      const char *origin,\
 					      Tango::ErrSeverity sever = Tango::ERR)\
 	{\
@@ -414,9 +418,9 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 		{ \
 			TangoSys_OMemStream desc; \
 			desc << "Timeout (" << OBJ->timeout << " mS) exceeded on device " << OBJ->dev_name(); \
-			desc << ends; \
+			desc << std::ends; \
 			TangoSys_OMemStream ori; \
-			ori << CLASS << ":" << NAME << ends; \
+			ori << CLASS << ":" << NAME << std::ends; \
 			ApiCommExcept::re_throw_exception(E, \
 						  (const char *)"API_DeviceTimedOut", \
 						  desc.str(), ori.str());\
@@ -432,9 +436,9 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 \
 		TangoSys_OMemStream desc; \
 		desc << "Failed to execute " << NAME << " on device " << OBJ->dev_name(); \
-		desc << ends; \
+		desc << std::ends; \
 		TangoSys_OMemStream ori; \
-		ori << CLASS << ":" << NAME << ends; \
+		ori << CLASS << ":" << NAME << std::ends; \
 		ApiCommExcept::re_throw_exception(E, \
 						   (const char*)"API_CommunicationFailed", \
                         			   desc.str(),ori.str()); \
@@ -466,7 +470,7 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 		{ \
 			TangoSys_OMemStream desc; \
 			desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name(); \
-			desc << ", command " << command << ends; \
+			desc << ", command " << command << std::ends; \
 			ApiCommExcept::re_throw_exception(E, \
 						  (const char *)"API_DeviceTimedOut", \
 						  desc.str(), \
@@ -479,7 +483,7 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 	{ \
 		set_lock_ctr(0); \
 		TangoSys_OMemStream desc; \
-		desc << "Device " << dev_name() << " has lost your lock(s) (server re-start?) while executing command " << command << ends; \
+		desc << "Device " << dev_name() << " has lost your lock(s) (server re-start?) while executing command " << command << std::ends; \
 		DeviceUnlockedExcept::re_throw_exception(E,(const char*)DEVICE_UNLOCKED_REASON, \
 					desc.str(), (const char*)"Connection::command_inout()"); \
 	} \
@@ -490,7 +494,7 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 	{ \
 		TangoSys_OMemStream desc; \
 		desc << "Failed to execute command_inout on device " << dev_name(); \
-		desc << ", command " << command << ends; \
+		desc << ", command " << command << std::ends; \
 		ApiCommExcept::re_throw_exception(E, \
 				   (const char*)"API_CommunicationFailed", \
                     		   desc.str(), \

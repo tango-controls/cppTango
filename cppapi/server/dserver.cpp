@@ -62,7 +62,7 @@ ClassFactoryFuncPtr DServer::class_factory_func_ptr = NULL;
 //+------------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		DServer::DServer(string &s)
+//		DServer::DServer(std::string &s)
 //
 // description :
 //		constructor for DServer object
@@ -143,7 +143,7 @@ void DServer::init_device()
 		delete_devices();
 	}
 
-	cout3 << "DServer::DSserver() create dserver " << device_name << endl;
+	cout3 << "DServer::DSserver() create dserver " << device_name << std::endl;
 
 	bool class_factory_done = false;
 	unsigned long i = 0;
@@ -238,7 +238,7 @@ void DServer::init_device()
 					catch (Tango::DevFailed &)
 					{
 						TangoSys_OMemStream o;
-						o << "Database error while trying to retrieve device list for class " << class_list[i]->get_name().c_str() << ends;
+						o << "Database error while trying to retrieve device list for class " << class_list[i]->get_name().c_str() << std::ends;
 
 						Except::throw_exception((const char *)API_DatabaseAccess,
 				                			o.str(),
@@ -252,7 +252,7 @@ void DServer::init_device()
 					for (int l = 0;l < nb_dev;l++)
 						dev_list[l] = na.value_string[l].c_str();
 
-					cout4 << dev_list.length() << " device(s) defined" << endl;
+					cout4 << dev_list.length() << " device(s) defined" << std::endl;
 
 //
 // Create all device(s) - Device creation creates device pipe(s)
@@ -315,7 +315,7 @@ void DServer::init_device()
 // Retrieve devices name list from either the command line or from the device_name_factory method
 //
 
-					vector<string> &list = class_list[i]->get_nodb_name_list();
+					std::vector<std::string> &list = class_list[i]->get_nodb_name_list();
 					Tango::DevVarStringArray *dev_list_nodb = new Tango::DevVarStringArray();
 
 					tg->get_cmd_line_name_list(class_list[i]->get_name(),list);
@@ -358,7 +358,7 @@ void DServer::init_device()
 			manager->activate();
 
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 //
 // If the class_factory method have not been successfully executed, erase all classes already built. If the error
@@ -370,7 +370,7 @@ void DServer::init_device()
 		if (class_factory_done == false)
 		{
 			long class_err = class_list.size() + 1;
-			o << "Can't allocate memory in server while creating class number " << class_err << ends;
+			o << "Can't allocate memory in server while creating class number " << class_err << std::ends;
 			if (class_list.empty() == false)
 			{
 				for (unsigned long j = 0;j < class_list.size();j++)
@@ -387,7 +387,7 @@ void DServer::init_device()
 		}
 		else
 		{
-			o << "Can't allocate memory in server while building command(s) or device(s) for class number " << i + 1 << ends;
+			o << "Can't allocate memory in server while building command(s) or device(s) for class number " << i + 1 << std::ends;
 			for (unsigned long j = i;j < class_list.size();j++)
 			{
 				class_list[j]->release_devices_mon();
@@ -541,7 +541,7 @@ void DServer::delete_devices()
 				PortableServer::POA_ptr r_poa = tg->get_poa();
 				unsigned long loop;
 
-				vector<DeviceImpl *> &devs = class_list[i]->get_device_list();
+				std::vector<DeviceImpl *> &devs = class_list[i]->get_device_list();
 				unsigned long nb_dev = devs.size();
 				for (loop = 0;loop < nb_dev;loop++)
 				{
@@ -577,7 +577,7 @@ void DServer::delete_devices()
 // Wait for POA to destroy the object before going to the next one. Limit this waiting time to 200 mS
 //
 
-					vector<DeviceImpl *>::iterator it = devs.begin();
+					std::vector<DeviceImpl *>::iterator it = devs.begin();
 					devs.erase(it);
 				}
 				devs.clear();
@@ -634,7 +634,7 @@ Tango::DevVarStringArray *DServer::query_class()
 {
 	NoSyncModelTangoMonitor sync(this);
 
-	cout4 << "In query_class command" << endl;
+	cout4 << "In query_class command" << std::endl;
 
 	long nb_class = class_list.size();
 	Tango::DevVarStringArray *ret = NULL;
@@ -649,7 +649,7 @@ Tango::DevVarStringArray *DServer::query_class()
 			(*ret)[i] = class_list[i]->get_name().c_str();
 		}
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -676,11 +676,11 @@ Tango::DevVarStringArray *DServer::query_device()
 {
 	NoSyncModelTangoMonitor mon(this);
 
-	cout4 << "In query_device command" << endl;
+	cout4 << "In query_device command" << std::endl;
 
 	long nb_class = class_list.size();
 	Tango::DevVarStringArray *ret = NULL;
-	vector<string> vs;
+	std::vector<std::string> vs;
 
 	try
 	{
@@ -689,14 +689,14 @@ Tango::DevVarStringArray *DServer::query_device()
 		for (int i = 0;i < nb_class;i++)
 		{
 			long nb_dev = class_list[i]->get_device_list().size();
-			string &class_name = class_list[i]->get_name();
+			std::string &class_name = class_list[i]->get_name();
 			for (long j = 0;j < nb_dev;j++)
 			{
 				vs.push_back(class_name + "::" + (class_list[i]->get_device_list())[j]->get_name());
 			}
 		}
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -729,7 +729,7 @@ Tango::DevVarStringArray *DServer::query_sub_device()
 {
 	NoSyncModelTangoMonitor mon(this);
 
-	cout4 << "In query_sub_device command" << endl;
+	cout4 << "In query_sub_device command" << std::endl;
 
 	Tango::DevVarStringArray *ret;
 
@@ -755,11 +755,11 @@ Tango::DevVarStringArray *DServer::query_sub_device()
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-void DServer::restart(string &d_name)
+void DServer::restart(std::string &d_name)
 {
 	NoSyncModelTangoMonitor mon(this);
 
-	cout4 << "In restart method" << endl;
+	cout4 << "In restart method" << std::endl;
 
 //
 // Change device name to lower case letters and remove extra field in name in case of (#dbase=xxx or protocol specif)
@@ -770,22 +770,22 @@ void DServer::restart(string &d_name)
 	unsigned int nb_class = class_list.size();
 	unsigned long i;
 
-	string lower_d_name(d_name);
-	transform(lower_d_name.begin(),lower_d_name.end(),lower_d_name.begin(),::tolower);
-	string::size_type pos;
-	if ((pos = lower_d_name.find('#')) != string::npos)
+	std::string lower_d_name(d_name);
+	std::transform(lower_d_name.begin(),lower_d_name.end(),lower_d_name.begin(),::tolower);
+	std::string::size_type pos;
+	if ((pos = lower_d_name.find('#')) != std::string::npos)
 		lower_d_name.erase(pos);
-	if ((pos = lower_d_name.find("://")) != string::npos)
+	if ((pos = lower_d_name.find("://")) != std::string::npos)
 	{
 		pos = pos + 3;
-		if ((pos = lower_d_name.find('/',pos)) != string::npos)
+		if ((pos = lower_d_name.find('/',pos)) != std::string::npos)
 			lower_d_name.erase(0,pos + 1);
 	}
 
-	vector<DeviceImpl *>::iterator ite,ite_end;
+	std::vector<DeviceImpl *>::iterator ite,ite_end;
 	for (i = 0;i < nb_class;i++)
 	{
-		vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
+		std::vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
 		ite_end = dev_list.end();
 		for (ite = dev_list.begin();ite != dev_list.end();++ite)
 		{
@@ -805,9 +805,9 @@ void DServer::restart(string &d_name)
 
 	if ((i == nb_class) && (ite == ite_end))
 	{
-		cout3 << "Device " << d_name << " not found in server !" << endl;
+		cout3 << "Device " << d_name << " not found in server !" << std::endl;
 		TangoSys_OMemStream o;
-		o << "Device " << d_name << " not found" << ends;
+		o << "Device " << d_name << " not found" << std::ends;
 		Except::throw_exception((const char *)API_DeviceNotFound,
 				        o.str(),
 				        (const char *)"Dserver::restart()");
@@ -859,9 +859,9 @@ void DServer::restart(string &d_name)
 
 	name[0] = lower_d_name.c_str();
 
-	vector<PollObj *> &p_obj = dev_to_del->get_poll_obj_list();
-	vector<Pol> dev_pol;
-	vector<EventPar> eve;
+	std::vector<PollObj *> &p_obj = dev_to_del->get_poll_obj_list();
+	std::vector<Pol> dev_pol;
+	std::vector<EventPar> eve;
 
 	for (i = 0;i < p_obj.size();i++)
 	{
@@ -947,7 +947,7 @@ void DServer::restart(string &d_name)
     {
 		tg->delete_restarting_device(lower_d_name);
 
-		stringstream ss;
+		std::stringstream ss;
 		ss << "init_device() method for device " << d_name << " throws DevFailed exception.";
 		ss << "\nDevice not available any more. Please fix exception reason";
 
@@ -957,7 +957,7 @@ void DServer::restart(string &d_name)
     {
         tg->delete_restarting_device(lower_d_name);
 
-		stringstream ss;
+		std::stringstream ss;
 		ss << "init_device() method for device " << d_name << " throws an unknown exception.";
 		ss << "\nDevice not available any more. Please fix exception reason";
 
@@ -974,7 +974,7 @@ void DServer::restart(string &d_name)
 // Unlock the device (locked by export_device for memorized attribute)
 //
 
-	vector<DeviceImpl *> &dev_list = dev_cl->get_device_list();
+	std::vector<DeviceImpl *> &dev_list = dev_cl->get_device_list();
 	DeviceImpl *last_dev = dev_list.back();
 	last_dev->get_dev_monitor().rel_monitor();
 
@@ -1020,7 +1020,7 @@ void DServer::restart(string &d_name)
 
 	DeviceImpl *new_dev = NULL;
 
-	vector<Tango::DeviceImpl *> &d_list = dev_cl->get_device_list();
+	std::vector<Tango::DeviceImpl *> &d_list = dev_cl->get_device_list();
 
 	for (i = 0;i < d_list.size();i++)
 	{
@@ -1032,9 +1032,9 @@ void DServer::restart(string &d_name)
 	}
 	if (i == d_list.size())
 	{
-		cout3 << "Not able to find the new device" << endl;
+		cout3 << "Not able to find the new device" << std::endl;
 		TangoSys_OMemStream o;
-		o << "Not able to find the new device" << ends;
+		o << "Not able to find the new device" << std::ends;
 		Except::throw_exception((const char *)API_DeviceNotFound,
 			        	o.str(),
 			        	(const char *)"Dserver::restart()");
@@ -1052,8 +1052,8 @@ void DServer::restart(string &d_name)
 // Re-set multicast event parameters
 //
 
-	vector<string> m_cast;
-	vector<Attribute *> &att_list = new_dev->get_device_attr()->get_attribute_list();
+	std::vector<std::string> m_cast;
+	std::vector<Attribute *> &att_list = new_dev->get_device_attr()->get_attribute_list();
 
 	for (unsigned int j = 0;j < att_list.size();++j)
 	{
@@ -1084,7 +1084,7 @@ void DServer::restart(string &d_name)
 	{
 		if (di.has_changed(new_dev) == true)
 		{
-			cout4 << "Device interface has changed !!!!!!!!!!!!!!!!!!!" << endl;
+			cout4 << "Device interface has changed !!!!!!!!!!!!!!!!!!!" << std::endl;
 
 			Device_5Impl *dev_5 = static_cast<Device_5Impl *>(new_dev);
 			DevCmdInfoList_2 *cmds_list = dev_5->command_list_query_2();
@@ -1172,8 +1172,8 @@ void ServRestartThread::run(void *ptr)
 // Memorize event parameters and devices interface
 //
 
-	map<string,vector<EventPar> > map_events;
-	map<string,DevIntr> map_dev_inter;
+	std::map<std::string,std::vector<EventPar> > map_events;
+	std::map<std::string,DevIntr> map_dev_inter;
 
 	dev->mem_event_par(map_events);
 	dev->mem_devices_interface(map_dev_inter);
@@ -1204,22 +1204,22 @@ void ServRestartThread::run(void *ptr)
 	dev->set_poll_th_pool_size(DEFAULT_POLLING_THREADS_POOL_SIZE);
 
     tg->set_svr_starting(true);
-	
-	vector<DeviceClass *> empty_class;
+
+	std::vector<DeviceClass *> empty_class;
 	tg->set_class_list(&empty_class);
-	
+
 	{
 		AutoPyLock PyLo;
 		dev->init_device();
 	}
-	
+
 //
 // Set the class list pointer in the Util class and add the DServer object class
 //
 
 	tg->set_class_list(&(dev->get_class_list()));
 	tg->add_class_to_list(dev->get_device_class());
-	
+
 	tg->set_svr_starting(false);
 
 //
@@ -1255,11 +1255,11 @@ void ServRestartThread::run(void *ptr)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
+Tango::DevVarStringArray *DServer::query_class_prop(std::string &class_name)
 {
 	NoSyncModelTangoMonitor sync(this);
 
-	cout4 << "In query_class_prop command" << endl;
+	cout4 << "In query_class_prop command" << std::endl;
 
 	long nb_class = class_list.size();
 	Tango::DevVarStringArray *ret = NULL;
@@ -1268,12 +1268,12 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 // Find the wanted class in server and throw exception if not found
 //
 
-	transform(class_name.begin(),class_name.end(),class_name.begin(),::tolower);
+	std::transform(class_name.begin(),class_name.end(),class_name.begin(),::tolower);
 	int k;
 	for (k = 0;k < nb_class;k++)
 	{
-		string tmp_name(class_list[k]->get_name());
-		transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+		std::string tmp_name(class_list[k]->get_name());
+		std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
 		if (tmp_name == class_name)
 			break;
 	}
@@ -1282,7 +1282,7 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 	if (k == nb_class)
 	{
 		TangoSys_OMemStream o;
-		o << "Class " << class_name << " not found in device server" << ends;
+		o << "Class " << class_name << " not found in device server" << std::ends;
 		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::query_class_prop");
 	}
@@ -1292,7 +1292,7 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 // Retrieve class prop vector and returns its content in a DevVarStringArray
 //
 
-	vector<string> &wiz = class_list[k]->get_wiz_class_prop();
+	std::vector<std::string> &wiz = class_list[k]->get_wiz_class_prop();
 	long nb_prop = wiz.size();
 
 	try
@@ -1305,7 +1305,7 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 			(*ret)[i] = Tango::string_dup(wiz[i].c_str());
 		}
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -1326,11 +1326,11 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
+Tango::DevVarStringArray *DServer::query_dev_prop(std::string &class_name)
 {
 	NoSyncModelTangoMonitor sync(this);
 
-	cout4 << "In query_dev_prop command" << endl;
+	cout4 << "In query_dev_prop command" << std::endl;
 
 	long nb_class = class_list.size();
 	Tango::DevVarStringArray *ret = NULL;
@@ -1339,12 +1339,12 @@ Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 // Find the wanted class in server and throw exception if not found
 //
 
-	transform(class_name.begin(),class_name.end(),class_name.begin(),::tolower);
+	std::transform(class_name.begin(),class_name.end(),class_name.begin(),::tolower);
 	int k;
 	for (k = 0;k < nb_class;k++)
 	{
-		string tmp_name(class_list[k]->get_name());
-		transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+		std::string tmp_name(class_list[k]->get_name());
+		std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
 		if (tmp_name == class_name)
 			break;
 	}
@@ -1353,7 +1353,7 @@ Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 	if (k == nb_class)
 	{
 		TangoSys_OMemStream o;
-		o << "Class " << class_name << " not found in device server" << ends;
+		o << "Class " << class_name << " not found in device server" << std::ends;
 		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::query_dev_prop");
 	}
@@ -1363,7 +1363,7 @@ Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 // Retrieve device prop vector and returns its content in a DevVarStringArray
 //
 
-	vector<string> &wiz = class_list[k]->get_wiz_dev_prop();
+	std::vector<std::string> &wiz = class_list[k]->get_wiz_dev_prop();
 	long nb_prop = wiz.size();
 
 	try
@@ -1376,7 +1376,7 @@ Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 			(*ret)[i] = Tango::string_dup(wiz[i].c_str());
 		}
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -1402,7 +1402,7 @@ void DServer::kill()
 {
 	NoSyncModelTangoMonitor mon(this);
 
-	cout4 << "In kill command" << endl;
+	cout4 << "In kill command" << std::endl;
 
 //
 // Create the thread and start it
@@ -1416,7 +1416,7 @@ void DServer::kill()
 
 void *KillThread::run_undetached(TANGO_UNUSED(void *ptr))
 {
-	cout4 << "In the killer thread !!!" << endl;
+	cout4 << "In the killer thread !!!" << std::endl;
 
 	omni_thread::self()->set_value(key_py_data,new PyData());
 
@@ -1444,9 +1444,9 @@ void *KillThread::run_undetached(TANGO_UNUSED(void *ptr))
 
 void DServer::create_cpp_class(const char *cl_name,const char *par_name)
 {
-	cout4 << "In DServer::create_cpp_class for " << cl_name <<  ", " << par_name << endl;
-	string class_name(cl_name);
-	string lib_name = class_name;
+	cout4 << "In DServer::create_cpp_class for " << cl_name <<  ", " << par_name << std::endl;
+	std::string class_name(cl_name);
+	std::string lib_name = class_name;
 
 #ifdef _TG_WINDOWS_
 	HMODULE mod;
@@ -1459,34 +1459,34 @@ void DServer::create_cpp_class(const char *cl_name,const char *par_name)
     		::FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,NULL,
 			      l_err,MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),(char *)&str,0,NULL);
 
-		cerr << "Error: " << str << endl;
+		std::cerr << "Error: " << str << std::endl;
 
 		TangoSys_OMemStream o;
-		o << "Trying to load shared library " << lib_name << " failed. It returns error: " << str << ends;
+		o << "Trying to load shared library " << lib_name << " failed. It returns error: " << str << std::ends;
 		::LocalFree((HLOCAL)str);
 
 		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::create_cpp_class");
 	}
 
-	cout4 << "GetModuleHandle is a success" << endl;
+	cout4 << "GetModuleHandle is a success" << std::endl;
 
-	string sym_name("_create_");
+	std::string sym_name("_create_");
 	sym_name = sym_name + class_name;
 	sym_name = sym_name + "_class";
 
-	cout4 << "Symbol name = " << sym_name << endl;
+	cout4 << "Symbol name = " << sym_name << std::endl;
 	FARPROC proc;
 
 	if ((proc = GetProcAddress(mod,sym_name.c_str())) == NULL)
 	{
 		TangoSys_OMemStream o;
-		o << "Class " << cl_name << " does not have the C creator function (_create_<Class name>_class)" << ends;
+		o << "Class " << cl_name << " does not have the C creator function (_create_<Class name>_class)" << std::ends;
 
 		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::create_cpp_class");
 	}
-	cout4 << "GetProcAddress is a success" << endl;
+	cout4 << "GetProcAddress is a success" << std::endl;
 
 	Cpp_creator_ptr mt = (Cpp_creator_ptr)proc;
 #else
@@ -1497,33 +1497,33 @@ void DServer::create_cpp_class(const char *cl_name,const char *par_name)
 	if (lib_ptr == NULL)
 	{
 		TangoSys_OMemStream o;
-		o << "Trying to load shared library " << lib_name << " failed. It returns error: " << dlerror() << ends;
+		o << "Trying to load shared library " << lib_name << " failed. It returns error: " << dlerror() << std::ends;
 
 		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::create_cpp_class");
 	}
 
-	cout4 << "dlopen is a success" << endl;
+	cout4 << "dlopen is a success" << std::endl;
 
 	void *sym;
 
-	string sym_name("_create_");
+	std::string sym_name("_create_");
 	sym_name = sym_name + class_name;
 	sym_name = sym_name + "_class";
 
-	cout4 << "Symbol name = " << sym_name << endl;
+	cout4 << "Symbol name = " << sym_name << std::endl;
 
 	sym = dlsym(lib_ptr,sym_name.c_str());
 	if (sym == NULL)
 	{
 		TangoSys_OMemStream o;
-		o << "Class " << cl_name << " does not have the C creator function (_create_<Class name>_class)" << ends;
+		o << "Class " << cl_name << " does not have the C creator function (_create_<Class name>_class)" << std::ends;
 
 		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::create_cpp_class");
 	}
 
-	cout4 << "dlsym is a success" << endl;
+	cout4 << "dlsym is a success" << std::endl;
 
 	Cpp_creator_ptr mt = (Cpp_creator_ptr)sym;
 #endif /* _TG_WINDOWS_ */
@@ -1567,7 +1567,7 @@ void DServer::get_dev_prop(Tango::Util *tg)
 		catch (Tango::DevFailed &)
 		{
 			TangoSys_OMemStream o;
-			o << "Database error while trying to retrieve device properties for device " << device_name.c_str() << ends;
+			o << "Database error while trying to retrieve device properties for device " << device_name.c_str() << std::ends;
 
 			Except::throw_exception((const char *)API_DatabaseAccess,
 					o.str(),
@@ -1589,7 +1589,7 @@ void DServer::get_dev_prop(Tango::Util *tg)
 
 		if (db_data[1].is_empty() == false)
 		{
-			vector<string> tmp_vect;
+			std::vector<std::string> tmp_vect;
 			db_data[1] >> tmp_vect;
 
 //
@@ -1597,14 +1597,14 @@ void DServer::get_dev_prop(Tango::Util *tg)
 // rebuild a real pool conf
 //
 
-			string rebuilt_str;
+			std::string rebuilt_str;
 			bool ended = true;
-			vector<string>::iterator iter;
+			std::vector<std::string>::iterator iter;
 			polling_th_pool_conf.clear();
 
 			for (iter = tmp_vect.begin();iter != tmp_vect.end();++iter)
 			{
-				string tmp_str = (*iter);
+				std::string tmp_str = (*iter);
 				if (tmp_str[tmp_str.size() - 1] == '\\')
 				{
 					tmp_str.resize(tmp_str.size() - 1);
@@ -1669,8 +1669,8 @@ void DServer::check_lock_owner(DeviceImpl *dev,const char *cmd_name,const char *
 				{
 					TangoSys_OMemStream o,v;
 					o << "Device " << dev_name << " is locked by another client.";
-					o << " Your request is not allowed while a device is locked." << ends;
-					v << "DServer::" << cmd_name << ends;
+					o << " Your request is not allowed while a device is locked." << std::ends;
+					v << "DServer::" << cmd_name << std::ends;
 					Except::throw_exception((const char *)API_DeviceLocked,o.str(),v.str());
 				}
 			}
@@ -1678,8 +1678,8 @@ void DServer::check_lock_owner(DeviceImpl *dev,const char *cmd_name,const char *
 			{
 				TangoSys_OMemStream o,v;
 				o << "Device " << dev_name << " is locked by another client.";
-				o << " Your request is not allowed while a device is locked." << ends;
-				v << "DServer::" << cmd_name << ends;
+				o << " Your request is not allowed while a device is locked." << std::ends;
+				v << "DServer::" << cmd_name << std::ends;
 				Except::throw_exception((const char *)API_DeviceLocked,o.str(),v.str());
 			}
 		}
@@ -1732,7 +1732,7 @@ void DServer::get_event_misc_prop(Tango::Util *tg)
 // Check property coherency
 //
 
-			vector<string>::size_type nb_elt = mcast_event_prop.size();
+			std::vector<std::string>::size_type nb_elt = mcast_event_prop.size();
 			bool uncoherent  = false;
 
 			for (unsigned int i = 0;i < nb_elt;++i)
@@ -1744,9 +1744,9 @@ void DServer::get_event_misc_prop(Tango::Util *tg)
 // Check multicast address validity
 //
 
-                    string start_ip_mcast = mcast_event_prop[i].substr(0,mcast_event_prop[i].find('.'));
+                    std::string start_ip_mcast = mcast_event_prop[i].substr(0,mcast_event_prop[i].find('.'));
 
-                    istringstream ss(start_ip_mcast);
+                    std::istringstream ss(start_ip_mcast);
                     int ip_start;
                     ss >> ip_start;
 
@@ -1790,9 +1790,9 @@ void DServer::get_event_misc_prop(Tango::Util *tg)
 
 					if (uncoherent == true)
 					{
-						cerr << "Database CtrlSystem/MulticastEvent property is uncoherent" << endl;
-						cerr << "Prop syntax = mcast ip adr (must be between 224.x.y.z and 239.x.y.z) - port - [rate] - [ivl] - event name" << endl;
-						cerr << "All events will use unicast communication" << endl;
+						std::cerr << "Database CtrlSystem/MulticastEvent property is uncoherent" << std::endl;
+						std::cerr << "Prop syntax = mcast ip adr (must be between 224.x.y.z and 239.x.y.z) - port - [rate] - [ivl] - event name" << std::endl;
+						std::cerr << "All events will use unicast communication" << std::endl;
 
 						mcast_event_prop.clear();
 						break;
@@ -1808,7 +1808,7 @@ void DServer::get_event_misc_prop(Tango::Util *tg)
 
 			for (unsigned int i = 0;i < nb_elt;i++)
 			{
-				transform(mcast_event_prop[i].begin(),mcast_event_prop[i].end(),mcast_event_prop[i].begin(),::tolower);
+				std::transform(mcast_event_prop[i].begin(),mcast_event_prop[i].end(),mcast_event_prop[i].begin(),::tolower);
 			}
 
 //
@@ -1871,8 +1871,8 @@ void DServer::get_event_misc_prop(Tango::Util *tg)
 		}
 		catch (Tango::DevFailed &)
 		{
-			cerr << "Database error while trying to retrieve multicast event property" << endl;
-			cerr << "All events will use unicast communication" << endl;
+			std::cerr << "Database error while trying to retrieve multicast event property" << std::endl;
+			std::cerr << "All events will use unicast communication" << std::endl;
 		}
 	}
 	else
@@ -1905,14 +1905,14 @@ void DServer::get_event_misc_prop(Tango::Util *tg)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::mcast_event_for_att(string &dev_name,string &att_name,vector<string> &m_event)
+void DServer::mcast_event_for_att(std::string &dev_name,std::string &att_name,std::vector<std::string> &m_event)
 {
 
 	m_event.clear();
 
-	string full_att_name = dev_name + '/' + att_name;
+	std::string full_att_name = dev_name + '/' + att_name;
 
-	vector<string>::size_type nb_elt = mcast_event_prop.size();
+	std::vector<std::string>::size_type nb_elt = mcast_event_prop.size();
 	unsigned int ip_adr_ind = 0;
 
 	for (unsigned int i = 0;i < nb_elt;++i)
@@ -1927,8 +1927,8 @@ void DServer::mcast_event_for_att(string &dev_name,string &att_name,vector<strin
 		{
 			if (mcast_event_prop[i].find(full_att_name) == 0)
 			{
-				string::size_type pos = mcast_event_prop[i].rfind('.');
-				string tmp = mcast_event_prop[i].substr(pos + 1);
+				std::string::size_type pos = mcast_event_prop[i].rfind('.');
+				std::string tmp = mcast_event_prop[i].substr(pos + 1);
 				tmp = tmp + ':' + mcast_event_prop[ip_adr_ind] + ':' + mcast_event_prop[ip_adr_ind + 1];
 				if (is_event_name(mcast_event_prop[ip_adr_ind + 2]) == false)
 				{
@@ -1956,14 +1956,14 @@ void DServer::mcast_event_for_att(string &dev_name,string &att_name,vector<strin
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::mem_event_par(map<string,vector<EventPar> > &_map)
+void DServer::mem_event_par(std::map<std::string,std::vector<EventPar> > &_map)
 {
 	for (size_t i = 0;i < class_list.size();i++)
 	{
-		vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
+		std::vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
 		for (size_t j = 0;j < dev_list.size();j++)
 		{
-			vector<EventPar> eve;
+			std::vector<EventPar> eve;
 			dev_list[j]->get_device_attr()->get_event_param(eve);
 			dev_list[j]->get_event_param(eve);
 
@@ -1989,15 +1989,15 @@ void DServer::mem_event_par(map<string,vector<EventPar> > &_map)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::apply_event_par(map<string,vector<EventPar> > &_map)
+void DServer::apply_event_par(std::map<std::string,std::vector<EventPar> > &_map)
 {
 	for (size_t i = 0;i < class_list.size();i++)
 	{
-		vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
+		std::vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
 		for (size_t j = 0;j < dev_list.size();j++)
 		{
-			string &dev_name = dev_list[j]->get_name();
-			map<string,vector<EventPar> >::iterator ite;
+			std::string &dev_name = dev_list[j]->get_name();
+			std::map<std::string,std::vector<EventPar> >::iterator ite;
 			ite = _map.find(dev_name);
 
 			if (ite != _map.end())
@@ -2024,7 +2024,7 @@ void DServer::apply_event_par(map<string,vector<EventPar> > &_map)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::mem_devices_interface(map<string,DevIntr> &_map)
+void DServer::mem_devices_interface(std::map<std::string,DevIntr> &_map)
 {
 	ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
 
@@ -2034,14 +2034,14 @@ void DServer::mem_devices_interface(map<string,DevIntr> &_map)
 		{
 			if (class_list[i]->is_py_class() == false)
 			{
-				vector<DeviceImpl *> &devs = class_list[i]->get_device_list();
+				std::vector<DeviceImpl *> &devs = class_list[i]->get_device_list();
 				size_t nb_dev = devs.size();
 				for (size_t loop = 0;loop < nb_dev;loop++)
 				{
 					if (event_supplier_zmq->any_dev_intr_client(devs[loop]) == true &&
 						devs[loop]->get_dev_idl_version() >= MIN_IDL_DEV_INTR)
 					{
-						cout4 << "Memorize dev interface for device " << devs[loop]->get_name() << endl;
+						cout4 << "Memorize dev interface for device " << devs[loop]->get_name() << std::endl;
 
 						DevIntr di;
 						di.get_interface(devs[loop]);
@@ -2069,18 +2069,18 @@ void DServer::mem_devices_interface(map<string,DevIntr> &_map)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::changed_devices_interface(map<string,DevIntr> &_map)
+void DServer::changed_devices_interface(std::map<std::string,DevIntr> &_map)
 {
 	Tango::Util *tg = Util::instance();
 	ZmqEventSupplier *event_supplier_zmq = tg->get_zmq_event_supplier();
 
-	map<string,DevIntr>::iterator pos;
+	std::map<std::string,DevIntr>::iterator pos;
 	for (pos = _map.begin();pos != _map.end();++pos)
 	{
 		DeviceImpl *dev = tg->get_device_by_name(pos->first);
 		if (pos->second.has_changed(dev) == true)
 		{
-			cout4 << "Device interface for device " << dev->get_name() << " has changed !!!!!!!!!!!!!!!!!!!" << endl;
+			cout4 << "Device interface for device " << dev->get_name() << " has changed !!!!!!!!!!!!!!!!!!!" << std::endl;
 
 			Device_5Impl *dev_5 = static_cast<Device_5Impl *>(dev);
 			DevCmdInfoList_2 *cmds_list = dev_5->command_list_query_2();

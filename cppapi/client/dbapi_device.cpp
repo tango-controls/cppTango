@@ -49,7 +49,7 @@ namespace Tango
 //
 //------------------------------------------------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name, Database *dev_dbase):ext(Tango_nullptr)
+DbDevice::DbDevice(std::string &dev_name, Database *dev_dbase):ext(Tango_nullptr)
 {
 	name = dev_name;
 	dbase = dev_dbase;
@@ -67,7 +67,7 @@ DbDevice::DbDevice(string &dev_name, Database *dev_dbase):ext(Tango_nullptr)
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name):ext(Tango_nullptr)
+DbDevice::DbDevice(std::string &dev_name):ext(Tango_nullptr)
 {
 	name = dev_name;
 	db_ind = ApiUtil::instance()->get_db_ind();
@@ -85,13 +85,13 @@ DbDevice::DbDevice(string &dev_name):ext(Tango_nullptr)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name,string &host,string &port_str):ext(Tango_nullptr)
+DbDevice::DbDevice(std::string &dev_name,std::string &host,std::string &port_str):ext(Tango_nullptr)
 {
 	name = dev_name;
 
 	TangoSys_MemStream s;
 	int port_num;
-	s << port_str << ends;
+	s << port_str << std::ends;
 	s >> port_num;
 
 	db_ind = ApiUtil::instance()->get_db_ind(host,port_num);
@@ -439,7 +439,7 @@ void DbDevice::clear_access_except_errors()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DbDevice::get_property_list(const string &wildcard,vector<string> &prop_list)
+void DbDevice::get_property_list(const std::string &wildcard,std::vector<std::string> &prop_list)
 {
 	ApiUtil *au = ApiUtil::instance();
 	DbServerCache *dsc;

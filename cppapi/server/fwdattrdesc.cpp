@@ -60,7 +60,7 @@ namespace Tango
 //--------------------------------------------------------------------------------------------------------------------
 
 
-FwdAttr::FwdAttr(const string &att_name,const string &root_attribute):
+FwdAttr::FwdAttr(const std::string &att_name,const std::string &root_attribute):
 ImageAttr(att_name.c_str()),full_root_att(root_attribute),fwd_wrongly_conf(false),err_kind(FWD_ERR_UNKNOWN),ext(Tango_nullptr)
 {
 	writable = Tango::READ;			// Difficult to switch it to WT_UNKNOWN
@@ -113,7 +113,7 @@ FwdAttr::FwdAttr(const FwdAttr &sou):ImageAttr(sou)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev_name)
+bool FwdAttr::validate_fwd_att(std::vector<AttrProperty> &prop_list,const std::string &dev_name)
 {
 	bool ret = true;
 
@@ -122,7 +122,7 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 // If it's the case, check its syntax
 //
 
-	string root_att_db;
+	std::string root_att_db;
 	bool root_att_db_defined = false;
 	bool is_full_root_att_set = false;
 
@@ -138,7 +138,7 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 						return ap.get_name() == RootAttrPropName;
 					});
 #else
-		vector<AttrProperty>::iterator pos;
+		std::vector<AttrProperty>::iterator pos;
 		for (pos = prop_list.begin();pos != prop_list.end();++pos)
 		{
 			if (pos->get_name() == RootAttrPropName)
@@ -194,15 +194,15 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 // Also add dns suffix if not defined in provided TANGO_HOST host name
 //
 
-	string fq;
+	std::string fq;
 	if (db != Tango_nullptr)
 	{
 		fq = "tango://";
-		string &h = db->get_db_host();
-		string &p = db->get_db_port();
+		std::string &h = db->get_db_host();
+		std::string &p = db->get_db_port();
 		fq = fq + h + ':' + p + '/';
 	}
-	transform(fq.begin(),fq.end(),fq.begin(),::tolower);
+	std::transform(fq.begin(),fq.end(),fq.begin(),::tolower);
 
 	if (full_root_att != RootAttNotDef)
 	{
@@ -214,18 +214,18 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 		}
 		else if (nb_sep == 6)
 		{
-			string::size_type pos = full_root_att.find("tango://");
+			std::string::size_type pos = full_root_att.find("tango://");
 			if (pos != 0)
 				ret = false;
 			else
 			{
 				pos = full_root_att.find(':',8);
-				string ho = full_root_att.substr(8,pos - 8);
-				string::size_type pos1 = ho.find('.');
+				std::string ho = full_root_att.substr(8,pos - 8);
+				std::string::size_type pos1 = ho.find('.');
 				size_t old_size = ho.size();
-				if (pos1 == string::npos)
+				if (pos1 == std::string::npos)
 					Connection::get_fqdn(ho);
-				string dom = ho.substr(old_size);
+				std::string dom = ho.substr(old_size);
 				full_root_att.insert(pos,dom);
 			}
 		}
@@ -238,12 +238,12 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 
 		if (ret == true)
 		{
-			string::size_type pos = full_root_att.find_last_of('/');
+			std::string::size_type pos = full_root_att.find_last_of('/');
 			fwd_root_att = full_root_att.substr(pos + 1);
 			fwd_dev_name = full_root_att.substr(0,pos);
 
-			transform(fwd_dev_name.begin(),fwd_dev_name.end(),fwd_dev_name.begin(),::tolower);
-			transform(fwd_root_att.begin(),fwd_root_att.end(),fwd_root_att.begin(),::tolower);
+			std::transform(fwd_dev_name.begin(),fwd_dev_name.end(),fwd_dev_name.begin(),::tolower);
+			std::transform(fwd_root_att.begin(),fwd_root_att.end(),fwd_root_att.begin(),::tolower);
 		}
 	}
 	else
@@ -257,7 +257,7 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 // Check that the root device is not the local device
 //
 
-	string local_dev_name(dev_name);
+	std::string local_dev_name(dev_name);
 	local_dev_name.insert(0,fq);
 
 	if (fwd_dev_name == local_dev_name)
@@ -285,7 +285,7 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttr::get_root_conf(string &dev_name,DeviceImpl *dev)
+void FwdAttr::get_root_conf(std::string &dev_name,DeviceImpl *dev)
 {
 	try
 	{
@@ -322,7 +322,7 @@ void FwdAttr::read(DeviceImpl *dev,Attribute &attr)
 
 	if (attr.get_data_type() == DATA_TYPE_UNKNOWN)
 	{
-		string desc("Attribute ");
+		std::string desc("Attribute ");
 		desc = desc + name + " is a forwarded attribute and its root device (";
 		desc = desc + fwd_dev_name;
 		desc = desc + ") is not yet available";
@@ -342,7 +342,7 @@ void FwdAttr::read(DeviceImpl *dev,Attribute &attr)
 	}
 	catch (Tango::DevFailed &e)
 	{
-		string desc("Attribute ");
+		std::string desc("Attribute ");
 		desc = desc + name + " is a forwarded attribute.\n";
 		desc = desc + "Check device status to get more info";
 		Tango::Except::re_throw_exception(e,API_AttrConfig,desc,"FwdAttr::read()");
@@ -422,7 +422,7 @@ void FwdAttr::read(DeviceImpl *dev,Attribute &attr)
 	}
 	catch (Tango::DevFailed &e)
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << "Reading root attribute " << fwd_root_att << " on device " << fwd_dev_name << " failed!";
 		Tango::Except::re_throw_exception(e,API_AttributeFailed,ss.str(),"FwdAttr::read");
 	}
@@ -453,7 +453,7 @@ void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttribute &attr)
 
 	if (attr.get_data_type() == DATA_TYPE_UNKNOWN)
 	{
-		string desc("Attribute ");
+		std::string desc("Attribute ");
 		desc = desc + name + " is a forwarded attribute and its root device (";
 		desc = desc + fwd_dev_name;
 		desc = desc + ") is not yet available";
@@ -473,7 +473,7 @@ void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttribute &attr)
 	}
 	catch (Tango::DevFailed &e)
 	{
-		string desc("Attribute ");
+		std::string desc("Attribute ");
 		desc = desc + name + " is a forwarded attribute.\n";
 		desc = desc + "Check device status to get more info";
 		Tango::Except::re_throw_exception(e,API_AttrConfig,desc,"FwdAttr::write()");
@@ -564,7 +564,7 @@ void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttribute &attr)
 	}
 	catch (Tango::DevFailed &e)
 	{
-		stringstream ss;
+		std::stringstream ss;
 		ss << "Writing root attribute " << fwd_root_att << " on device " << fwd_dev_name << " failed!";
 		Tango::Except::re_throw_exception(e,API_AttributeFailed,ss.str(),"FwdAttr::write");
 	}
@@ -628,7 +628,7 @@ void FwdAttr::init_conf(AttrConfEventData *ev_data)
 // If we already have a label in our conf, save it and reapply it
 //
 
-	string local_label;
+	std::string local_label;
 	try
 	{
 		local_label = get_label_from_default_properties();
@@ -696,7 +696,7 @@ void FwdAttr::set_default_properties(UserDefaultFwdAttrProp &prop_list)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-string &FwdAttr::get_label_from_default_properties()
+std::string &FwdAttr::get_label_from_default_properties()
 {
 	size_t nb_prop = user_default_properties.size();
 	size_t ctr;
@@ -732,9 +732,9 @@ string &FwdAttr::get_label_from_default_properties()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttr::remove_useless_prop(vector<AttrProperty> &prop_list,string &dev_name,MultiAttribute *m_attr)
+void FwdAttr::remove_useless_prop(std::vector<AttrProperty> &prop_list,std::string &dev_name,MultiAttribute *m_attr)
 {
-    vector<AttrProperty>::iterator ite;
+    std::vector<AttrProperty>::iterator ite;
 
     for (ite = prop_list.begin();ite != prop_list.end();)
     {
@@ -746,9 +746,9 @@ void FwdAttr::remove_useless_prop(vector<AttrProperty> &prop_list,string &dev_na
 
         if (m_attr->is_opt_prop(ite->get_name()) == true)
         {
-            cerr << "Warning: The forwarded attribute " << get_name()  << " belonging to device "  << dev_name;
-            cerr << "  has the property " << ite->get_name() << " defined in DB.\n";
-            cerr << "This property will not be taken into account. Please clean up your DB." << endl;
+            std::cerr << "Warning: The forwarded attribute " << get_name()  << " belonging to device "  << dev_name;
+            std::cerr << "  has the property " << ite->get_name() << " defined in DB.\n";
+            std::cerr << "This property will not be taken into account. Please clean up your DB." << std::endl;
             ite = prop_list.erase(ite);
         }
         else

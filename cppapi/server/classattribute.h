@@ -69,24 +69,24 @@ class AttrProperty
 {
 public:
 	AttrProperty(const char *name,const char *value);
-	AttrProperty(string &name,string &value);
+	AttrProperty(std::string &name,std::string &value);
 	AttrProperty(const char *name,long value);
-	AttrProperty(const char *name,string &value);
+	AttrProperty(const char *name,std::string &value);
 	~AttrProperty() {};
 
-	string &get_value() {return attr_value;}
+	std::string &get_value() {return attr_value;}
 	long get_lg_value() {return attr_lg;}
-	string &get_name() {return attr_name;}
+	std::string &get_name() {return attr_name;}
 
 	void convert(const char *);
 
 #ifndef TANGO_HAS_LOG4TANGO
-	friend ostream &operator<<(ostream &,const AttrProperty &);
+	friend std::ostream &operator<<(std::ostream &,const AttrProperty &);
 #endif
 
 private:
-	string			attr_name;
-	string			attr_value;
+	std::string			attr_name;
+	std::string			attr_value;
 	long			attr_lg;
 };
 
@@ -110,14 +110,14 @@ public:
 	MultiClassAttribute();
 	~MultiClassAttribute();
 
-	void init_class_attribute(string &class_name,long base = 0);
+	void init_class_attribute(std::string &class_name,long base = 0);
 
-	vector<Tango::Attr *> &get_attr_list() {return attr_list;}
-	Attr &get_attr(string &attr_name);
-	void remove_attr(const string &,const string &);
+	std::vector<Tango::Attr *> &get_attr_list() {return attr_list;}
+	Attr &get_attr(std::string &attr_name);
+	void remove_attr(const std::string &,const std::string &);
 
 protected:
-	vector<Tango::Attr *>			attr_list;
+	std::vector<Tango::Attr *>			attr_list;
 };
 
 
@@ -137,7 +137,7 @@ protected:
 //=============================================================================
 
 template <class A1, class A2, class R>
-struct WantedClassAttr : public  binary_function<A1,A2,R>
+struct WantedClassAttr : public  std::binary_function<A1,A2,R>
 {
 	R operator() (A1 att,A2 name_str) const
 	{

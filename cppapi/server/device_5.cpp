@@ -56,23 +56,23 @@ namespace Tango
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-Device_5Impl::Device_5Impl(DeviceClass *device_class,string &dev_name):
+Device_5Impl::Device_5Impl(DeviceClass *device_class,std::string &dev_name):
 Device_4Impl(device_class,dev_name),ext_5(Tango_nullptr)
 {
 	idl_version = 5;
 }
 
 Device_5Impl::Device_5Impl(DeviceClass *device_class,
-				string &dev_name,
-				string &desc):
+				std::string &dev_name,
+				std::string &desc):
 Device_4Impl(device_class,dev_name,desc),ext_5(Tango_nullptr)
 {
 	idl_version = 5;
 }
 
 Device_5Impl::Device_5Impl(DeviceClass *device_class,
-				string &dev_name,string &desc,
-				Tango::DevState dev_state,string &dev_status):
+				std::string &dev_name,std::string &desc,
+				Tango::DevState dev_state,std::string &dev_status):
 Device_4Impl(device_class,dev_name,desc,dev_state,dev_status),ext_5(Tango_nullptr)
 {
 	idl_version = 5;
@@ -102,7 +102,7 @@ Device_4Impl(device_class,dev_name,desc,dev_state,dev_status),ext_5(Tango_nullpt
 Tango::AttributeValueList_5* Device_5Impl::read_attributes_5(const Tango::DevVarStringArray& names,
 					     Tango::DevSource source,const Tango::ClntIdent &cl_id)
 {
-	cout4 << "Device_5Impl::read_attributes_5 arrived for dev " << get_name() << ", att[0] = " << names[0] << endl;
+	cout4 << "Device_5Impl::read_attributes_5 arrived for dev " << get_name() << ", att[0] = " << names[0] << std::endl;
 
 //
 // Record operation request in black box
@@ -124,7 +124,7 @@ Tango::AttributeValueList_5* Device_5Impl::read_attributes_5(const Tango::DevVar
 
 	if (nb_names == 1)
 	{
-		string att_name(names[0]);
+		std::string att_name(names[0]);
 		if (att_name == AllAttr)
 		{
 			real_names.length(nb_dev_attr);
@@ -158,7 +158,7 @@ Tango::AttributeValueList_5* Device_5Impl::read_attributes_5(const Tango::DevVar
 		for (unsigned long loop = 0;loop < nb_names;loop++)
 			(*aid.data_5)[loop].value.union_no_data(true);
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception(API_MemoryAllocation,"Can't allocate memory in server",
 				        "Device_5Impl::read_attributes_5");
@@ -175,7 +175,7 @@ Tango::AttributeValueList_5* Device_5Impl::read_attributes_5(const Tango::DevVar
 // major fault (cant allocate memory,....)
 //
 
-	vector <long> idx_in_back;
+	std::vector <long> idx_in_back;
 
 	if (source == Tango::DEV)
 	{
@@ -364,7 +364,7 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 																   const Tango::ClntIdent &cl_id)
 {
 	AutoTangoMonitor sync(this,true);
-	cout4 << "Device_5Impl::write_read_attributes_5 arrived" << endl;
+	cout4 << "Device_5Impl::write_read_attributes_5 arrived" << std::endl;
 
 //
 // Record operation request in black box
@@ -386,15 +386,15 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 // Memorize their root device name to lock unlock them
 //
 
-	vector<string> r_w_att;
+	std::vector<std::string> r_w_att;
 	for (unsigned int loop = 0;loop < nb_write;loop++)
 	{
-		string w_att_name(values[loop].name);
-		transform(w_att_name.begin(),w_att_name.end(),w_att_name.begin(),::tolower);
+		std::string w_att_name(values[loop].name);
+		std::transform(w_att_name.begin(),w_att_name.end(),w_att_name.begin(),::tolower);
 		for (unsigned int j = 0;j < nb_read;j++)
 		{
-			string r_att_name(r_names[j]);
-			transform(r_att_name.begin(),r_att_name.end(),r_att_name.begin(),::tolower);
+			std::string r_att_name(r_names[j]);
+			std::transform(r_att_name.begin(),r_att_name.end(),r_att_name.begin(),::tolower);
 			if (w_att_name == r_att_name)
 			{
 				r_w_att.push_back(w_att_name);
@@ -403,7 +403,7 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 		}
 	}
 
-	vector<string> fwd_att_root_dev_name;
+	std::vector<std::string> fwd_att_root_dev_name;
 
 	for (unsigned int loop = 0;loop < r_w_att.size();++loop)
 	{
@@ -415,7 +415,7 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 		}
 	}
 
-	cout4 << fwd_att_root_dev_name.size() << " forwarded attribute(s) in write_read_attributes_5()" << endl;
+	cout4 << fwd_att_root_dev_name.size() << " forwarded attribute(s) in write_read_attributes_5()" << std::endl;
 
 //
 // If we have some fwd atts, lock their root device
@@ -426,7 +426,7 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 
 	if (fwd_att_root_dev_name.empty() == false)
 	{
-		vector<string>::iterator ite;
+		std::vector<std::string>::iterator ite;
 		for (ite = fwd_att_root_dev_name.begin();ite != fwd_att_root_dev_name.end();++ite)
 		{
 			DeviceProxy *dp = rar.get_root_att_dp(*ite);
@@ -442,7 +442,7 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 	try
 	{
 		store_in_bb = false;
-		cout4 << "write_read_attributes_5(): Writing " << nb_write << " attribute(s)" << endl;
+		cout4 << "write_read_attributes_5(): Writing " << nb_write << " attribute(s)" << std::endl;
 		write_attributes_4(values,cl_id);
 
 //
@@ -454,14 +454,14 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 		dummy_cl_id.cpp_clnt(cci);
 
 		store_in_bb = false;
-		cout4 << "write_read_attributes_5(): Reading " << nb_read << " attribute(s)" << endl;
+		cout4 << "write_read_attributes_5(): Reading " << nb_read << " attribute(s)" << std::endl;
 		read_val_ptr = read_attributes_5(r_names,Tango::DEV,dummy_cl_id);
 	}
 	catch (...)
 	{
 		if (fwd_att_root_dev_name.empty() == false)
 		{
-			vector<string>::iterator ite;
+			std::vector<std::string>::iterator ite;
 			for (ite = fwd_att_root_dev_name.begin();ite != fwd_att_root_dev_name.end();++ite)
 			{
 				DeviceProxy *dp = rar.get_root_att_dp(*ite);
@@ -478,7 +478,7 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 
 	if (fwd_att_root_dev_name.empty() == false)
 	{
-		vector<string>::iterator ite;
+		std::vector<std::string>::iterator ite;
 		for (ite = fwd_att_root_dev_name.begin();ite != fwd_att_root_dev_name.end();++ite)
 		{
 			DeviceProxy *dp = rar.get_root_att_dp(*ite);
@@ -516,7 +516,7 @@ Tango::AttributeConfigList_5 *Device_5Impl::get_attribute_config_5(const Tango::
 	TangoMonitor &mon = get_att_conf_monitor();
 	AutoTangoMonitor sync(&mon);
 
-	cout4 << "Device_5Impl::get_attribute_config_5 arrived" << endl;
+	cout4 << "Device_5Impl::get_attribute_config_5 arrived" << std::endl;
 
 	long nb_attr = names.length();
 	Tango::AttributeConfigList_5 *back = NULL;
@@ -540,7 +540,7 @@ Tango::AttributeConfigList_5 *Device_5Impl::get_attribute_config_5(const Tango::
 // read state/status as attribute), decrement attribute number
 //
 
-	string in_name(names[0]);
+	std::string in_name(names[0]);
 	if (nb_attr == 1)
 	{
 		if (in_name == AllAttr_3)
@@ -559,7 +559,7 @@ Tango::AttributeConfigList_5 *Device_5Impl::get_attribute_config_5(const Tango::
 		back = new Tango::AttributeConfigList_5(nb_attr);
 		back->length(nb_attr);
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -596,7 +596,7 @@ Tango::AttributeConfigList_5 *Device_5Impl::get_attribute_config_5(const Tango::
 // Return to caller
 //
 
-	cout4 << "Leaving Device_3Impl::get_attribute_config_5" << endl;
+	cout4 << "Leaving Device_3Impl::get_attribute_config_5" << std::endl;
 
 	return back;
 }
@@ -620,7 +620,7 @@ void Device_5Impl::set_attribute_config_5(const Tango::AttributeConfigList_5& ne
 										  const Tango::ClntIdent &cl_id)
 {
 	AutoTangoMonitor sync(this,true);
-	cout4 << "Device_5Impl::set_attribute_config_5 arrived" << endl;
+	cout4 << "Device_5Impl::set_attribute_config_5 arrived" << std::endl;
 
 //
 // The attribute conf. is protected by two monitors. One protects access between get and set attribute conf.
@@ -684,7 +684,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
 
-	cout4 << "Device_5Impl::read_attribute_history_5 arrived, requested history depth = " << n << endl;
+	cout4 << "Device_5Impl::read_attribute_history_5 arrived, requested history depth = " << n << std::endl;
 
 //
 // Record operation request in black box
@@ -693,7 +693,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 	blackbox_ptr->insert_op(Op_Read_Attr_history_5);
 
 	Tango::DevAttrHistory_5 *back = Tango_nullptr;
-	vector<PollObj *> &poll_list = get_poll_obj_list();
+	std::vector<PollObj *> &poll_list = get_poll_obj_list();
 	long nb_poll = poll_list.size();
 
 //
@@ -703,8 +703,8 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 
 	Attribute &att = dev_attr->get_attr_by_name(name);
 
-	string attr_str(name);
-	transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
+	std::string attr_str(name);
+	std::transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
 
 //
 // Check that the wanted attribute is polled (Except in case of forwarded attribute)
@@ -724,7 +724,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 	if ((polled_attr == NULL) && (att.is_fwd_att() == false))
 	{
 		TangoSys_OMemStream o;
-		o << "Attribute " << attr_str << " not polled" << ends;
+		o << "Attribute " << attr_str << " not polled" << std::ends;
 		Except::throw_exception(API_AttrNotPolled,o.str(),"Device_5Impl::read_attribute_history_5");
 	}
 
@@ -741,7 +741,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 		}
 		catch (Tango::DevFailed &e)
 		{
-			stringstream ss;
+			std::stringstream ss;
 			ss << "Reading history for attribute " << attr_str << " on device " << get_name() << " failed!";
 			Tango::Except::re_throw_exception(e,API_AttributeFailed,ss.str(),"Device_5Impl::read_attribute_history_5");
 		}
@@ -756,7 +756,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 		if (polled_attr->is_ring_empty() == true)
 		{
 			TangoSys_OMemStream o;
-			o << "No data available in cache for attribute " << attr_str << ends;
+			o << "No data available in cache for attribute " << attr_str << std::ends;
 			Except::throw_exception(API_NoDataYet,o.str(),"Device_5Impl::read_attribute_history_5");
 		}
 
@@ -777,7 +777,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 			back = new Tango::DevAttrHistory_5;
 			back->dates.length(n);
 		}
-		catch (bad_alloc &)
+		catch (std::bad_alloc &)
 		{
 			Except::throw_exception(API_MemoryAllocation,
 								"Can't allocate memory in server",
@@ -802,7 +802,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 			polled_attr->get_attr_history(n,back,att.get_data_type(),att.get_data_format());
 	}
 
-	cout4 << "Leaving Device_5Impl::read_attribute_history_5 method" << endl;
+	cout4 << "Leaving Device_5Impl::read_attribute_history_5 method" << std::endl;
 	return back;
 }
 
@@ -828,7 +828,7 @@ Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarString
 	TangoMonitor &mon = get_pipe_conf_monitor();
 	AutoTangoMonitor sync(&mon);
 
-	cout4 << "Device_5Impl::get_pipe_config_5 arrived" << endl;
+	cout4 << "Device_5Impl::get_pipe_config_5 arrived" << std::endl;
 
 	long nb_pipe = names.length();
 	Tango::PipeConfigList *back = Tango_nullptr;
@@ -844,7 +844,7 @@ Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarString
 // Check if the caller want to get config for all pipes
 //
 
-	string in_name(names[0]);
+	std::string in_name(names[0]);
 	if (nb_pipe == 1 && in_name == AllPipe)
 	{
 		all_pipe = true;
@@ -860,7 +860,7 @@ Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarString
 		back = new Tango::PipeConfigList(nb_pipe);
 		back->length(nb_pipe);
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -871,7 +871,7 @@ Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarString
 // Fill in these structures
 //
 
-	vector<Pipe *> &pipe_list = device_class->get_pipe_list(device_name_lower);
+	std::vector<Pipe *> &pipe_list = device_class->get_pipe_list(device_name_lower);
 
 	for (long i = 0;i < nb_pipe;i++)
 	{
@@ -907,7 +907,7 @@ Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarString
 // Return to caller
 //
 
-	cout4 << "Leaving Device_5Impl::get_pipe_config_5" << endl;
+	cout4 << "Leaving Device_5Impl::get_pipe_config_5" << std::endl;
 
 	return back;
 }
@@ -932,7 +932,7 @@ void Device_5Impl::set_pipe_config_5(const Tango::PipeConfigList& new_conf,
 										  const Tango::ClntIdent &cl_id)
 {
 	AutoTangoMonitor sync(this,true);
-	cout4 << "Device_5Impl::set_pipe_config_5 arrived for " << new_conf.length() << " pipe(s)" << endl;
+	cout4 << "Device_5Impl::set_pipe_config_5 arrived for " << new_conf.length() << " pipe(s)" << std::endl;
 
 //
 // The pipe conf. is protected by two monitors. One protects access between
@@ -994,9 +994,9 @@ void Device_5Impl::set_pipe_config_5(const Tango::PipeConfigList& new_conf,
 			o << "\nAll previous pipe(s) have been successfully updated";
 		if (i != (nb_pipe - 1))
 			o << "\nAll remaining pipe(s) have not been updated";
-		o << ends;
+		o << std::ends;
 
-		string s = o.str();
+		std::string s = o.str();
 		e.errors[0].reason = Tango::string_dup(s.c_str());
 		throw;
 	}
@@ -1023,7 +1023,7 @@ void Device_5Impl::set_pipe_config_5(const Tango::PipeConfigList& new_conf,
 
 Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::ClntIdent &cl_id)
 {
-	cout4 << "Device_5Impl::read_pipe_5 arrived for pipe " << name << endl;
+	cout4 << "Device_5Impl::read_pipe_5 arrived for pipe " << name << std::endl;
 	DevPipeData *back = Tango_nullptr;
 
 //
@@ -1047,7 +1047,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 //
 
 	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
-	string last_associated_device = sub.get_associated_device();
+	std::string last_associated_device = sub.get_associated_device();
 	sub.set_associated_device(get_name());
 
 //
@@ -1060,7 +1060,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 //
 // Retrieve requested pipe
 //
-		string pipe_name(name);
+		std::string pipe_name(name);
 		Pipe &pi = device_class->get_pipe_by_name(pipe_name,device_name_lower);
 
 //
@@ -1071,7 +1071,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 		{
 			back = new Tango::DevPipeData;
 		}
-		catch (bad_alloc &)
+		catch (std::bad_alloc &)
 		{
 			Except::throw_exception(API_MemoryAllocation,"Can't allocate memory in server",
 									"Device_5Impl::read_pipe_5");
@@ -1089,7 +1089,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 
 		if (pi.is_allowed(this,READ_REQ) == false)
 		{
-			stringstream o;
+			std::stringstream o;
 			o << "It is currently not allowed to read pipe " << name;
 
 			Except::throw_exception(API_PipeNotAllowed,o.str(),"Device_5Impl::read_pipe_5");
@@ -1101,11 +1101,11 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 
 		if (pi.get_pipe_serial_model() == PIPE_BY_KERNEL)
 		{
-			cout4 << "Locking pipe mutex for pipe " << name << endl;
+			cout4 << "Locking pipe mutex for pipe " << name << std::endl;
 			omni_mutex *pi_mut = pi.get_pipe_mutex();
 			if (pi_mut->trylock() == 0)
 			{
-				cout4 << "Mutex for pipe " << name << " is already taken.........." << endl;
+				cout4 << "Mutex for pipe " << name << " is already taken.........." << std::endl;
 				pi_mut->lock();
 			}
 		}
@@ -1132,7 +1132,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 
 			if (pi.get_pipe_serial_model() == PIPE_BY_KERNEL)
 			{
-				cout4 << "Releasing pipe mutex for pipe " << name << " due to error" << endl;
+				cout4 << "Releasing pipe mutex for pipe " << name << " due to error" << std::endl;
 				omni_mutex *pi_mut = pi.get_pipe_mutex();
 				pi_mut->unlock();
 			}
@@ -1143,7 +1143,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 		{
 			if (pi.get_pipe_serial_model() == PIPE_BY_KERNEL)
 			{
-				cout4 << "Releasing pipe mutex for pipe " << name << " due to error which is not a DevFailed !!" << endl;
+				cout4 << "Releasing pipe mutex for pipe " << name << " due to error which is not a DevFailed !!" << std::endl;
 				omni_mutex *pi_mut = pi.get_pipe_mutex();
 				pi_mut->unlock();
 			}
@@ -1160,7 +1160,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 		{
 			if (pi.get_pipe_serial_model() == PIPE_BY_KERNEL)
 			{
-				cout4 << "Releasing pipe mutex for pipe " << name << " due to error (value not set)" << endl;
+				cout4 << "Releasing pipe mutex for pipe " << name << " due to error (value not set)" << std::endl;
 				omni_mutex *pi_mut = pi.get_pipe_mutex();
 				pi_mut->unlock();
 			}
@@ -1169,7 +1169,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 			delete dvpdea;
 			pi.get_blob().reset_insert_data_ptr();
 
-			stringstream o;
+			std::stringstream o;
 			o << "Value for pipe " << pipe_name << " has not been updated";
 
 			Except::throw_exception(API_PipeValueNotSet,o.str(),"Device_5Impl::read_pipe_5");
@@ -1199,7 +1199,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 		PipeSerialModel pism = pi.get_pipe_serial_model();
 		if (pism != PIPE_NO_SYNC)
 		{
-			cout4 << "Giving pipe mutex to CORBA structure for pipe " << name << endl;
+			cout4 << "Giving pipe mutex to CORBA structure for pipe " << name << std::endl;
 			if (pism == PIPE_BY_KERNEL)
 				back->set_pipe_mutex(pi.get_pipe_mutex());
 			else
@@ -1228,7 +1228,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 // Return to caller
 //
 
-	cout4 << "Leaving Device_5Impl::read_pipe_5" << endl;
+	cout4 << "Leaving Device_5Impl::read_pipe_5" << std::endl;
 	return back;
 }
 
@@ -1249,8 +1249,8 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 
 void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango::ClntIdent& cl_id)
 {
-	string pipe_name(pi_value.name.in());
-	cout4 << "Device_5Impl::write_pipe_5 arrived for pipe " << pipe_name << endl;
+	std::string pipe_name(pi_value.name.in());
+	cout4 << "Device_5Impl::write_pipe_5 arrived for pipe " << pipe_name << std::endl;
 
 //
 // Take dev monitor
@@ -1279,7 +1279,7 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango:
 //
 
 	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
-	string last_associated_device = sub.get_associated_device();
+	std::string last_associated_device = sub.get_associated_device();
 	sub.set_associated_device(get_name());
 
 //
@@ -1301,7 +1301,7 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango:
 
 		if (tmp_pi.get_writable() != PIPE_READ_WRITE)
 		{
-			stringstream o;
+			std::stringstream o;
 			o << "Pipe " << pipe_name << " is not writable";
 
 			Except::throw_exception(API_PipeNotWritable,o.str(),"Device_5Impl::write_pipe_5");
@@ -1321,7 +1321,7 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango:
 
 		if (pi.is_allowed(this,WRITE_REQ) == false)
 		{
-			stringstream o;
+			std::stringstream o;
 			o << "It is currently not allowed to write pipe " << pipe_name;
 
 			Except::throw_exception(API_PipeNotAllowed,o.str(),"Device_5Impl::write_pipe_5");
@@ -1331,7 +1331,7 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango:
 // Init the WPipe object with data received from client
 //
 
-		string bl_name;
+		std::string bl_name;
 		if (::strlen(pi_value.data_blob.name.in()) != 0)
 			bl_name = pi_value.data_blob.name.in();
 		pi.get_blob().set_name(bl_name);
@@ -1367,7 +1367,7 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango:
 // Return to caller
 //
 
-	cout4 << "Leaving Device_5Impl::write_pipe_5" << endl;
+	cout4 << "Leaving Device_5Impl::write_pipe_5" << std::endl;
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -1392,8 +1392,8 @@ Tango::DevPipeData *Device_5Impl::write_read_pipe_5(const Tango::DevPipeData &pi
 {
 	AutoTangoMonitor sync(this,true);
 
-	string pipe_name(pi_value.name.in());
-	cout4 << "Device_5Impl::write_read_pipe_5 arrived for pipe " << pipe_name << endl;
+	std::string pipe_name(pi_value.name.in());
+	cout4 << "Device_5Impl::write_read_pipe_5 arrived for pipe " << pipe_name << std::endl;
 
 //
 // Record operation request in black box

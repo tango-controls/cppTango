@@ -75,8 +75,8 @@ namespace Tango
 //--------------------------------------------------------------------------
 
 
-WAttribute::WAttribute(vector<AttrProperty> &prop_list,
-                       Attr &tmp_attr, string &dev_name, long idx)
+WAttribute::WAttribute(std::vector<AttrProperty> &prop_list,
+                       Attr &tmp_attr, std::string &dev_name, long idx)
     : Attribute(prop_list, tmp_attr, dev_name, idx),
       long_ptr(NULL), double_ptr(NULL), str_ptr(NULL), float_ptr(NULL),
       boolean_ptr(NULL), ushort_ptr(NULL), uchar_ptr(NULL), encoded_ptr(NULL),
@@ -376,7 +376,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarShortArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -399,7 +399,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
+                            o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -415,7 +415,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                            o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -453,7 +453,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarLongArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -476,7 +476,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
+                            o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -492,7 +492,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                            o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -531,7 +531,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarLong64Array (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -554,7 +554,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
+                            o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -570,7 +570,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                            o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -608,7 +608,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarDoubleArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -630,13 +630,13 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
 #ifdef _TG_WINDOWS_
                         if (_finite((*db_ptr)[i]) == 0)
 #else
-                        if (isfinite((*db_ptr)[i]) == 0)
+                        if (std::isfinite((*db_ptr)[i]) == 0)
 #endif
                         {
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is a NaN or INF value (at least element " << i << ")" << ends;
+                            o << " is a NaN or INF value (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -650,7 +650,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
+                            o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -664,7 +664,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                            o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -701,7 +701,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarStringArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -741,7 +741,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarFloatArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -763,13 +763,13 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
 #ifdef _TG_WINDOWS_
                         if (_finite((*fl_ptr)[i]) == 0)
 #else
-                        if (isfinite((*fl_ptr)[i]) == 0)
+                        if (std::isfinite((*fl_ptr)[i]) == 0)
 #endif
                         {
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is a NaN or INF value (at least element " << i << ")" << ends;
+                            o << " is a NaN or INF value (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -783,7 +783,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
+                            o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -797,7 +797,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                            o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -835,7 +835,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarUShortArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -858,7 +858,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
+                            o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -874,7 +874,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                            o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -912,7 +912,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarCharArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -935,7 +935,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
+                            o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -951,7 +951,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                            o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -988,7 +988,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarULongArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1011,7 +1011,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
+                            o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -1027,7 +1027,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                            o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -1064,7 +1064,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarULong64Array (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1087,7 +1087,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
+                            o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -1103,7 +1103,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                            o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -1140,7 +1140,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarBooleanArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1175,7 +1175,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarStateArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1233,7 +1233,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarShortArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1278,7 +1278,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 {
                     if (sh_seq[i] < 0 || sh_seq[i] > max_val)
                     {
-                        stringstream ss;
+                        std::stringstream ss;
                         ss << "Set value for attribute " << name;
                         ss << " is negative or above the maximun authorized (" << max_val << ") for at least element "
                            << i;
@@ -1301,7 +1301,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarLongArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1347,7 +1347,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarLong64Array (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1392,7 +1392,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarDoubleArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1415,13 +1415,13 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
 #ifdef _TG_WINDOWS_
                         if (_finite(db_seq[i]) == 0)
 #else
-                        if (isfinite(db_seq[i]) == 0)
+                        if (std::isfinite(db_seq[i]) == 0)
 #endif
                         {
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is a NaN or INF value (at least element " << i << ")" << ends;
+                            o << " is a NaN or INF value (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -1435,7 +1435,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
+                            o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -1449,7 +1449,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                            o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -1485,7 +1485,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarStringArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1525,7 +1525,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarFloatArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1548,13 +1548,13 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
 #ifdef _TG_WINDOWS_
                         if (_finite(fl_seq[i]) == 0)
 #else
-                        if (isfinite(fl_seq[i]) == 0)
+                        if (std::isfinite(fl_seq[i]) == 0)
 #endif
                         {
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is a NaN or INF value (at least element " << i << ")" << ends;
+                            o << " is a NaN or INF value (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -1568,7 +1568,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
+                            o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -1582,7 +1582,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                             TangoSys_OMemStream o;
 
                             o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                            o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
                             Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                     o.str(),
                                                     (const char *) "WAttribute::check_written_value()");
@@ -1618,7 +1618,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarUShortArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1663,7 +1663,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarCharArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1708,7 +1708,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarULongArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1753,7 +1753,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarULong64Array (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1798,7 +1798,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarStateArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1840,7 +1840,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarBooleanArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1872,7 +1872,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                 TangoSys_OMemStream o;
 
                 o << "Incompatible attribute type, expected type is : Tango::DevVarEncodedArray (even for single value)"
-                  << ends;
+                  << std::ends;
                 Except::throw_exception((const char *) API_IncompatibleAttrDataType,
                                         o.str(),
                                         (const char *) "WAttribute::check_written_value()");
@@ -1901,7 +1901,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                                 TangoSys_OMemStream o;
 
                                 o << "Set value for attribute " << name;
-                                o << " is below the minimum authorized (at least element " << i << ")" << ends;
+                                o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
                                 Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                         o.str(),
                                                         (const char *) "WAttribute::check_written_value()");
@@ -1921,7 +1921,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
                                 TangoSys_OMemStream o;
 
                                 o << "Set value for attribute " << name;
-                                o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                                o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
                                 Except::throw_exception((const char *) API_WAttrOutsideLimit,
                                                         o.str(),
                                                         (const char *) "WAttribute::check_written_value()");
@@ -2029,7 +2029,7 @@ void WAttribute::set_write_value(Tango::DevShort *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(vector<Tango::DevShort> &val, long x, long y)
+void WAttribute::set_write_value(std::vector<Tango::DevShort> &val, long x, long y)
 {
     Tango::DevVarShortArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2079,7 +2079,7 @@ void WAttribute::set_write_value(Tango::DevLong *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(vector<Tango::DevLong> &val, long x, long y)
+void WAttribute::set_write_value(std::vector<Tango::DevLong> &val, long x, long y)
 {
     Tango::DevVarLongArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2128,7 +2128,7 @@ void WAttribute::set_write_value(Tango::DevLong64 *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(vector<Tango::DevLong64> &val, long x, long y)
+void WAttribute::set_write_value(std::vector<Tango::DevLong64> &val, long x, long y)
 {
     Tango::DevVarLong64Array tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2176,7 +2176,7 @@ void WAttribute::set_write_value(Tango::DevDouble *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(vector<Tango::DevDouble> &val, long x, long y)
+void WAttribute::set_write_value(std::vector<Tango::DevDouble> &val, long x, long y)
 {
     CORBA::Any tmp_any;
     Tango::DevVarDoubleArray tmp_seq(val.size(), val.size(), &val[0], false);
@@ -2202,7 +2202,7 @@ void WAttribute::set_write_value(Tango::DevString val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(string &val)
+void WAttribute::set_write_value(std::string &val)
 {
     Tango::DevVarStringArray tmp_seq(1);
     tmp_seq.length(1);
@@ -2237,7 +2237,7 @@ void WAttribute::set_write_value(Tango::DevString *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(vector<string> &val, long x, long y)
+void WAttribute::set_write_value(std::vector<std::string> &val, long x, long y)
 {
     Tango::DevVarStringArray tmp_seq;
     tmp_seq << val;
@@ -2285,7 +2285,7 @@ void WAttribute::set_write_value(Tango::DevFloat *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(vector<Tango::DevFloat> &val, long x, long y)
+void WAttribute::set_write_value(std::vector<Tango::DevFloat> &val, long x, long y)
 {
     Tango::DevVarFloatArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2333,7 +2333,7 @@ void WAttribute::set_write_value(Tango::DevBoolean *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(vector<Tango::DevBoolean> &val, long x, long y)
+void WAttribute::set_write_value(std::vector<Tango::DevBoolean> &val, long x, long y)
 {
     Tango::DevVarBooleanArray tmp_seq;
     tmp_seq << val;
@@ -2382,7 +2382,7 @@ void WAttribute::set_write_value(Tango::DevUShort *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(vector<Tango::DevUShort> &val, long x, long y)
+void WAttribute::set_write_value(std::vector<Tango::DevUShort> &val, long x, long y)
 {
     Tango::DevVarUShortArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2430,7 +2430,7 @@ void WAttribute::set_write_value(Tango::DevUChar *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(vector<Tango::DevUChar> &val, long x, long y)
+void WAttribute::set_write_value(std::vector<Tango::DevUChar> &val, long x, long y)
 {
     Tango::DevVarUCharArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2478,7 +2478,7 @@ void WAttribute::set_write_value(Tango::DevULong *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(vector<Tango::DevULong> &val, long x, long y)
+void WAttribute::set_write_value(std::vector<Tango::DevULong> &val, long x, long y)
 {
     Tango::DevVarULongArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2526,7 +2526,7 @@ void WAttribute::set_write_value(Tango::DevULong64 *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(vector<Tango::DevULong64> &val, long x, long y)
+void WAttribute::set_write_value(std::vector<Tango::DevULong64> &val, long x, long y)
 {
     Tango::DevVarULong64Array tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2574,7 +2574,7 @@ void WAttribute::set_write_value(Tango::DevState *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(vector<Tango::DevState> &val, long x, long y)
+void WAttribute::set_write_value(std::vector<Tango::DevState> &val, long x, long y)
 {
     Tango::DevVarStateArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -3183,22 +3183,22 @@ bool WAttribute::check_rds_alarm()
 
 void WAttribute::set_min_value(char *new_min_value_str)
 {
-    set_min_value(string(new_min_value_str));
+    set_min_value(std::string(new_min_value_str));
 }
 
 void WAttribute::set_min_value(const char *new_min_value_str)
 {
-    set_min_value(string(new_min_value_str));
+    set_min_value(std::string(new_min_value_str));
 }
 
 void WAttribute::set_max_value(char *new_max_value_str)
 {
-    set_max_value(string(new_max_value_str));
+    set_max_value(std::string(new_max_value_str));
 }
 
 void WAttribute::set_max_value(const char *new_max_value_str)
 {
-    set_max_value(string(new_max_value_str));
+    set_max_value(std::string(new_max_value_str));
 }
 
 //+-------------------------------------------------------------------------
@@ -3215,7 +3215,7 @@ void WAttribute::set_max_value(const char *new_max_value_str)
 //
 //--------------------------------------------------------------------------
 
-bool WAttribute::mem_value_below_above(MinMaxValueCheck check_type, string &ret_mem_value)
+bool WAttribute::mem_value_below_above(MinMaxValueCheck check_type, std::string &ret_mem_value)
 {
     bool ret = false;
 
@@ -3229,7 +3229,7 @@ bool WAttribute::mem_value_below_above(MinMaxValueCheck check_type, string &ret_
 //
 
     long nb_written, i;
-    stringstream ss;
+    std::stringstream ss;
 
     DevLong lg_val;
     DevShort sh_val;

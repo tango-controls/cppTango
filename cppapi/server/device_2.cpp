@@ -68,23 +68,23 @@ namespace Tango
 //
 //--------------------------------------------------------------------------
 
-Device_2Impl::Device_2Impl(DeviceClass *device_class,string &dev_name):
+Device_2Impl::Device_2Impl(DeviceClass *device_class,std::string &dev_name):
 DeviceImpl(device_class,dev_name),ext_2(Tango_nullptr)
 {
 	idl_version = 2;
 }
 
 Device_2Impl::Device_2Impl(DeviceClass *device_class,
-			   string &dev_name,
-			   string &desc):
+			   std::string &dev_name,
+			   std::string &desc):
 DeviceImpl(device_class,dev_name,desc),ext_2(Tango_nullptr)
 {
 	idl_version = 2;
 }
 
 Device_2Impl::Device_2Impl(DeviceClass *device_class,
-	           	   string &dev_name,string &desc,
-	           	   Tango::DevState dev_state,string &dev_status):
+	           	   std::string &dev_name,std::string &desc,
+	           	   Tango::DevState dev_state,std::string &dev_status):
 DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(Tango_nullptr)
 {
 	idl_version = 2;
@@ -116,7 +116,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 					  const CORBA::Any &in_data,
 					  Tango::DevSource source)
 {
-	cout4 << "Device_2Impl::command_inout_2 arrived, source = " << source << ", command = " << in_cmd << endl;
+	cout4 << "Device_2Impl::command_inout_2 arrived, source = " << source << ", command = " << in_cmd << std::endl;
 	PollObj *polled_cmd = NULL;
 	bool polling_failed = false;
 	CORBA::Any *ret = NULL;
@@ -174,8 +174,8 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 		AutoTangoMonitor sync(&p_mon);
 		try
 		{
-			string cmd_str(in_cmd);
-			transform(cmd_str.begin(),cmd_str.end(),cmd_str.begin(),::tolower);
+			std::string cmd_str(in_cmd);
+			std::transform(cmd_str.begin(),cmd_str.end(),cmd_str.begin(),::tolower);
 
 //
 // Check that device supports this command and also check
@@ -200,7 +200,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 //
 
 			bool found = false;
-			vector<PollObj *> &poll_list = get_poll_obj_list();
+			std::vector<PollObj *> &poll_list = get_poll_obj_list();
 			unsigned long i;
 			for (i = 0;i < poll_list.size();i++)
 			{
@@ -232,7 +232,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 			if (found == false)
 			{
                 TangoSys_OMemStream o;
-                o << "Command " << in_cmd << " not polled" << ends;
+                o << "Command " << in_cmd << " not polled" << std::ends;
                 Except::throw_exception((const char *)API_CmdNotPolled,
 							o.str(),
 							(const char *)"Device_2Impl::command_inout");
@@ -249,7 +249,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
                 else
 				{
 					found = false;
-					vector<string> &napc = get_non_auto_polled_cmd();
+					std::vector<std::string> &napc = get_non_auto_polled_cmd();
 					for (i = 0;i < napc.size();i++)
 					{
 						if (napc[i] == cmd_str)
@@ -259,7 +259,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 					if (found == true)
 					{
 						TangoSys_OMemStream o;
-						o << "Command " << in_cmd << " not polled" << ends;
+						o << "Command " << in_cmd << " not polled" << std::ends;
 						Except::throw_exception((const char *)API_CmdNotPolled,
 								o.str(),
 								(const char *)"Device_2Impl::command_inout");
@@ -322,7 +322,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 			if (polled_cmd->is_ring_empty() == true)
 			{
 				TangoSys_OMemStream o;
-				o << "No data available in cache for command " << in_cmd << ends;
+				o << "No data available in cache for command " << in_cmd << std::ends;
 				Except::throw_exception((const char *)API_NoDataYet,
 						o.str(),
 						(const char *)"Device_2Impl::command_inout");
@@ -353,7 +353,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 				{
 					TangoSys_OMemStream o;
 					o << "Data in cache for command " << in_cmd;
-					o << " not updated any more" << ends;
+					o << " not updated any more" << std::ends;
 					Except::throw_exception((const char *)API_NotUpdatedAnyMore,
 						o.str(),
 						(const char *)"Device_2Impl::command_inout");
@@ -375,7 +375,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 
 		if (source == Tango::CACHE)
 		{
-			cout4 << "Device_2Impl: Returning data from polling buffer" << endl;
+			cout4 << "Device_2Impl: Returning data from polling buffer" << std::endl;
 			if ((state_cmd == true) || (status_cmd == true))
 			{
 				long vers = get_dev_idl_version();
@@ -403,7 +403,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 		{
 			if (polling_failed == false)
 			{
-				cout4 << "Device_2Impl: Returning data from polling buffer" << endl;
+				cout4 << "Device_2Impl: Returning data from polling buffer" << std::endl;
 				if ((state_cmd == true) || (status_cmd == true))
 				{
 					long vers = get_dev_idl_version();
@@ -456,7 +456,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 {
 //	AutoTangoMonitor sync(this);
 
-	cout4 << "Device_2Impl::read_attributes_2 arrived" << endl;
+	cout4 << "Device_2Impl::read_attributes_2 arrived" << std::endl;
 
 	bool att_in_fault = false;
 	bool polling_failed = false;
@@ -471,7 +471,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 //  the thread stays the same!
 //
 	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
-	string last_associated_device = sub.get_associated_device();
+	std::string last_associated_device = sub.get_associated_device();
 	sub.set_associated_device(get_name());
 
 // Catch all execeptions to set back the associated device after
@@ -513,13 +513,13 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 
 				unsigned long i,j;
 				bool all_attr = false;
-				vector<PollObj *> &poll_list = get_poll_obj_list();
+				std::vector<PollObj *> &poll_list = get_poll_obj_list();
 				unsigned long nb_poll = poll_list.size();
 				unsigned long nb_names = names.length();
 				Tango::DevVarStringArray real_names(nb_names);
 				if (nb_names == 1)
 				{
-					string att_name(names[0]);
+					std::string att_name(names[0]);
 					if (att_name == AllAttr)
 					{
 						all_attr = true;
@@ -558,7 +558,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 // their index in the real_names sequence in a vector
 //
 
-				vector<long> non_polled;
+				std::vector<long> non_polled;
 				if (all_attr == false)
 				{
 					for (i = 0;i < real_names.length();i++)
@@ -586,7 +586,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 //
 
 				bool found;
-				vector<long> poll_period;
+				std::vector<long> poll_period;
 				if (non_polled.empty() == false)
 				{
 
@@ -602,7 +602,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 						if (poll_period.back() == 0)
 						{
 							TangoSys_OMemStream o;
-							o << "Attribute " << real_names[non_polled[i]] << " not polled" << ends;
+							o << "Attribute " << real_names[non_polled[i]] << " not polled" << std::ends;
 							Except::throw_exception((const char *)API_AttrNotPolled,
 									o.str(),
 									(const char *)"Device_2Impl::read_attributes");
@@ -610,7 +610,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 						else
 						{
 							found = false;
-							vector<string> &napa = get_non_auto_polled_attr();
+							std::vector<std::string> &napa = get_non_auto_polled_attr();
 							for (j = 0;j < napa.size();j++)
 							{
 #ifdef _TG_WINDOWS_
@@ -624,7 +624,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 							if (found == true)
 							{
 								TangoSys_OMemStream o;
-								o << "Attribute " << real_names[non_polled[i]] << " not polled" << ends;
+								o << "Attribute " << real_names[non_polled[i]] << " not polled" << std::ends;
 								Except::throw_exception((const char *)API_AttrNotPolled,
 										o.str(),
 										(const char *)"Device_2Impl::read_attributes");
@@ -684,7 +684,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 					back = new Tango::AttributeValueList(nb_attr);
 					back->length(nb_attr);
 				}
-				catch (bad_alloc &)
+				catch (std::bad_alloc &)
 				{
 					back = NULL;
 					Except::throw_exception((const char *)API_MemoryAllocation,
@@ -699,7 +699,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 
 				for (i = 0;i < nb_attr;i++)
 				{
-					vector<PollObj *> &poll_list = get_poll_obj_list();
+					std::vector<PollObj *> &poll_list = get_poll_obj_list();
 					PollObj *polled_attr = NULL;
 					unsigned long j;
 					for (j = 0;j < poll_list.size();j++)
@@ -727,7 +727,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 						back = NULL;
 
 						TangoSys_OMemStream o;
-						o << "No data available in cache for attribute " << real_names[i] << ends;
+						o << "No data available in cache for attribute " << real_names[i] << std::ends;
 						Except::throw_exception((const char *)API_NoDataYet,
 								o.str(),
 								(const char *)"Device_2Impl::read_attributes");
@@ -761,7 +761,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 
 							TangoSys_OMemStream o;
 							o << "Data in cache for attribute " << real_names[i];
-							o << " not updated any more" << ends;
+							o << " not updated any more" << std::ends;
 							Except::throw_exception((const char *)API_NotUpdatedAnyMore,
 									o.str(),
 									(const char *)"Device_2Impl::read_attributes");
@@ -798,7 +798,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 							TangoSys_OMemStream o;
 							o << "Client too old to get data for attribute " << real_names[i].in();
 							o << ".\nPlease, use a client linked with Tango V5";
-							o << " and a device inheriting from Device_3Impl" << ends;
+							o << " and a device inheriting from Device_3Impl" << std::ends;
 							Except::throw_exception((const char *)API_NotSupportedFeature,
 								o.str(),
 								(const char *)"Device_2Impl::read_attributes");
@@ -834,7 +834,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 
 										TangoSys_OMemStream o;
 										o << "Data type for attribute " << real_names[i] << " is DEV_ENCODED.";
-										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << ends;
+										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << std::ends;
 										Except::throw_exception((const char *)API_NotSupportedFeature,
 												o.str(),
 												(const char *)"Device_2Impl::read_attributes");
@@ -861,7 +861,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 
 										TangoSys_OMemStream o;
 										o << "Data type for attribute " << real_names[i] << " is DEV_ENCODED.";
-										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << ends;
+										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << std::ends;
 										Except::throw_exception((const char *)API_NotSupportedFeature,
 												o.str(),
 												(const char *)"Device_2Impl::read_attributes");
@@ -889,7 +889,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 
 										TangoSys_OMemStream o;
 										o << "Data type for attribute " << real_names[i] << " is DEV_ENCODED.";
-										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << ends;
+										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << std::ends;
 										Except::throw_exception((const char *)API_NotSupportedFeature,
 												o.str(),
 												(const char *)"Device_2Impl::read_attributes");
@@ -947,7 +947,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 		}
 		else
 		{
-			cout4 << "Device_2Impl: Returning attribute(s) value from polling buffer" << endl;
+			cout4 << "Device_2Impl: Returning attribute(s) value from polling buffer" << std::endl;
 			//return back;
 		}
 	}
@@ -986,7 +986,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 
 Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 {
-	cout4 << "Device_2Impl::command_list_query_2 arrived" << endl;
+	cout4 << "Device_2Impl::command_list_query_2 arrived" << std::endl;
 
 //
 // Record operation request in black box
@@ -1001,7 +1001,7 @@ Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 	long nb_cmd_class = device_class->get_command_list().size();
 	long nb_cmd_dev = get_local_command_list().size();
 	long nb_cmd = nb_cmd_class + nb_cmd_dev;
-	cout4 << nb_cmd << " command(s) for device" << endl;
+	cout4 << nb_cmd << " command(s) for device" << std::endl;
 	Tango::DevCmdInfoList_2 *back = NULL;
 
 	try
@@ -1021,12 +1021,12 @@ Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 			tmp.level = (device_class->get_command_list())[i]->get_disp_level();
 			tmp.in_type = (long)((device_class->get_command_list())[i]->get_in_type());
 			tmp.out_type = (long)((device_class->get_command_list())[i]->get_out_type());
-			string &str_in = (device_class->get_command_list())[i]->get_in_type_desc();
+			std::string &str_in = (device_class->get_command_list())[i]->get_in_type_desc();
 			if (str_in.size() != 0)
 				tmp.in_type_desc = Tango::string_dup(str_in.c_str());
 			else
 				tmp.in_type_desc = Tango::string_dup(NotSet);
-			string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
+			std::string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
 			if (str_out.size() != 0)
 				tmp.out_type_desc = Tango::string_dup(str_out.c_str());
 			else
@@ -1044,12 +1044,12 @@ Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 			tmp.level = cmd_ptr->get_disp_level();
 			tmp.in_type = (long)(cmd_ptr->get_in_type());
 			tmp.out_type = (long)(cmd_ptr->get_out_type());
-			string &str_in = cmd_ptr->get_in_type_desc();
+			std::string &str_in = cmd_ptr->get_in_type_desc();
 			if (str_in.size() != 0)
 				tmp.in_type_desc = Tango::string_dup(str_in.c_str());
 			else
 				tmp.in_type_desc = Tango::string_dup(NotSet);
-			string &str_out = cmd_ptr->get_out_type_desc();
+			std::string &str_out = cmd_ptr->get_out_type_desc();
 			if (str_out.size() != 0)
 				tmp.out_type_desc = Tango::string_dup(str_out.c_str());
 			else
@@ -1058,7 +1058,7 @@ Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 			(*back)[i + nb_cmd_class] = tmp;
 		}
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -1069,7 +1069,7 @@ Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 // Return to caller
 //
 
-	cout4 << "Leaving Device_2Impl::command_list_query_2" << endl;
+	cout4 << "Leaving Device_2Impl::command_list_query_2" << std::endl;
 	return back;
 }
 
@@ -1092,11 +1092,11 @@ Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 
 Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 {
-	cout4 << "DeviceImpl::command_query_2 arrived" << endl;
+	cout4 << "DeviceImpl::command_query_2 arrived" << std::endl;
 
 	Tango::DevCmdInfo_2 *back = NULL;
-	string cmd(command);
-	transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
+	std::string cmd(command);
+	std::transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
 
 //
 // Record operation request in black box
@@ -1112,7 +1112,7 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 	{
 		back = new Tango::DevCmdInfo_2();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -1160,12 +1160,12 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 		back->level = cmd_ptr->get_disp_level();
 		back->in_type = (long)(cmd_ptr->get_in_type());
 		back->out_type = (long)(cmd_ptr->get_out_type());
-		string &str_in = cmd_ptr->get_in_type_desc();
+		std::string &str_in = cmd_ptr->get_in_type_desc();
 		if (str_in.size() != 0)
 			back->in_type_desc = Tango::string_dup(str_in.c_str());
 		else
 			back->in_type_desc = Tango::string_dup(NotSet);
-		string &str_out = cmd_ptr->get_out_type_desc();
+		std::string &str_out = cmd_ptr->get_out_type_desc();
 		if (str_out.size() != 0)
 			back->out_type_desc = Tango::string_dup(str_out.c_str());
 		else
@@ -1174,7 +1174,7 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 	else
 	{
 		delete back;
-		cout3 << "Device_2Impl::command_query_2(): command " << command << " not found" << endl;
+		cout3 << "Device_2Impl::command_query_2(): command " << command << " not found" << std::endl;
 
 //
 // throw an exception to client
@@ -1182,7 +1182,7 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 
 		TangoSys_OMemStream o;
 
-		o << "Command " << command << " not found" << ends;
+		o << "Command " << command << " not found" << std::ends;
 		Except::throw_exception((const char *)API_CommandNotFound,
 				        o.str(),
 				        (const char *)"Device_2Impl::command_query_2");
@@ -1192,7 +1192,7 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 // Return to caller
 //
 
-	cout4 << "Leaving Device_2Impl::command_query_2" << endl;
+	cout4 << "Leaving Device_2Impl::command_query_2" << std::endl;
 	return back;
 }
 
@@ -1222,7 +1222,7 @@ Tango::AttributeConfigList_2 *Device_2Impl::get_attribute_config_2(const Tango::
 	TangoMonitor &mon = get_att_conf_monitor();
 	AutoTangoMonitor sync(&mon);
 
-	cout4 << "Device_2Impl::get_attribute_config_2 arrived" << endl;
+	cout4 << "Device_2Impl::get_attribute_config_2 arrived" << std::endl;
 
 	long nb_attr = names.length();
 	Tango::AttributeConfigList_2 *back = NULL;
@@ -1248,7 +1248,7 @@ Tango::AttributeConfigList_2 *Device_2Impl::get_attribute_config_2(const Tango::
 // attribute), decrement attribute number
 //
 
-	string in_name(names[0]);
+	std::string in_name(names[0]);
 	if (nb_attr == 1)
 	{
 		if (in_name == AllAttr)
@@ -1275,7 +1275,7 @@ Tango::AttributeConfigList_2 *Device_2Impl::get_attribute_config_2(const Tango::
 		back = new Tango::AttributeConfigList_2(nb_attr);
 		back->length(nb_attr);
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -1312,7 +1312,7 @@ Tango::AttributeConfigList_2 *Device_2Impl::get_attribute_config_2(const Tango::
 // Return to caller
 //
 
-	cout4 << "Leaving Device_2Impl::get_attribute_config_2" << endl;
+	cout4 << "Leaving Device_2Impl::get_attribute_config_2" << std::endl;
 
 	return back;
 }
@@ -1338,10 +1338,10 @@ Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* comm
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
 
-	cout4 << "Device_2Impl::command_inout_history_2 arrived" << endl;
+	cout4 << "Device_2Impl::command_inout_history_2 arrived" << std::endl;
 	Tango::DevCmdHistoryList *back = NULL;
 
-	string cmd_str(command);
+	std::string cmd_str(command);
 
 //
 // Record operation request in black box
@@ -1354,7 +1354,7 @@ Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* comm
 // implements IDL 3 (Tango V5) and state or status history is requested
 //
 
-	transform(cmd_str.begin(),cmd_str.end(),cmd_str.begin(),::tolower);
+	std::transform(cmd_str.begin(),cmd_str.end(),cmd_str.begin(),::tolower);
 	check_command_exists(cmd_str);
 
 	bool status_cmd = false;
@@ -1375,7 +1375,7 @@ Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* comm
 //
 
 	PollObj *polled_cmd = NULL;
-	vector<PollObj *> &poll_list = get_poll_obj_list();
+	std::vector<PollObj *> &poll_list = get_poll_obj_list();
 	unsigned long i;
 	for (i = 0;i < poll_list.size();i++)
 	{
@@ -1401,7 +1401,7 @@ Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* comm
 	if (polled_cmd == NULL)
 	{
 		TangoSys_OMemStream o;
-		o << "Command " << cmd_str << " not polled" << ends;
+		o << "Command " << cmd_str << " not polled" << std::ends;
 		Except::throw_exception((const char *)API_CmdNotPolled,
 					o.str(),
 					(const char *)"Device_2Impl::command_inout_history_2");
@@ -1414,7 +1414,7 @@ Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* comm
 	if (polled_cmd->is_ring_empty() == true)
 	{
 		TangoSys_OMemStream o;
-		o << "No data available in cache for command " << cmd_str << ends;
+		o << "No data available in cache for command " << cmd_str << std::ends;
 		Except::throw_exception((const char *)API_NoDataYet,
 					o.str(),
 					(const char *)"Device_2Impl::command_inout_history_2");
@@ -1437,7 +1437,7 @@ Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* comm
 		back = new Tango::DevCmdHistoryList(n);
 		back->length(n);
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -1459,7 +1459,7 @@ Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* comm
 			back_attr = new Tango::DevAttrHistoryList_3(n);
 			back_attr->length(n);
 		}
-		catch (bad_alloc &)
+		catch (std::bad_alloc &)
 		{
 			Except::throw_exception((const char *)API_MemoryAllocation,
 				        	(const char *)"Can't allocate memory in server",
@@ -1508,7 +1508,7 @@ Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* comm
 	else
 		polled_cmd->get_cmd_history(n,back);
 
-	cout4 << "Leaving Device_2Impl::command_inout_history_2 method" << endl;
+	cout4 << "Leaving Device_2Impl::command_inout_history_2 method" << std::endl;
 	return back;
 }
 
@@ -1534,7 +1534,7 @@ Tango::DevAttrHistoryList *Device_2Impl::read_attribute_history_2(const char* na
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
 
-	cout4 << "Device_2Impl::read_attribute_history_2 arrived" << endl;
+	cout4 << "Device_2Impl::read_attribute_history_2 arrived" << std::endl;
 
 //
 // Record operation request in black box
@@ -1545,7 +1545,7 @@ Tango::DevAttrHistoryList *Device_2Impl::read_attribute_history_2(const char* na
 	long vers = get_dev_idl_version();
 	Tango::DevAttrHistoryList *back = NULL;
 	Tango::DevAttrHistoryList_3 *back_3 = NULL;
-	vector<PollObj *> &poll_list = get_poll_obj_list();
+	std::vector<PollObj *> &poll_list = get_poll_obj_list();
 	long nb_poll = poll_list.size();
 
 //
@@ -1555,8 +1555,8 @@ Tango::DevAttrHistoryList *Device_2Impl::read_attribute_history_2(const char* na
 
 	Attribute &att = dev_attr->get_attr_by_name(name);
 
-	string attr_str(name);
-	transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
+	std::string attr_str(name);
+	std::transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
 
 //
 // Check that the wanted attribute is polled.
@@ -1576,7 +1576,7 @@ Tango::DevAttrHistoryList *Device_2Impl::read_attribute_history_2(const char* na
 	if (polled_attr == NULL)
 	{
 		TangoSys_OMemStream o;
-		o << "Attribute " << attr_str << " not polled" << ends;
+		o << "Attribute " << attr_str << " not polled" << std::ends;
 		Except::throw_exception((const char *)API_AttrNotPolled,
 					o.str(),
 					(const char *)"Device_2Impl::read_attribute_history_2");
@@ -1589,7 +1589,7 @@ Tango::DevAttrHistoryList *Device_2Impl::read_attribute_history_2(const char* na
 	if (polled_attr->is_ring_empty() == true)
 	{
 		TangoSys_OMemStream o;
-		o << "No data available in cache for attribute " << attr_str << ends;
+		o << "No data available in cache for attribute " << attr_str << std::ends;
 		Except::throw_exception((const char *)API_NoDataYet,
 					o.str(),
 					(const char *)"Device_2Impl::read_attribute_history_2");
@@ -1617,7 +1617,7 @@ Tango::DevAttrHistoryList *Device_2Impl::read_attribute_history_2(const char* na
 			back_3->length(n);
 		}
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -1637,7 +1637,7 @@ Tango::DevAttrHistoryList *Device_2Impl::read_attribute_history_2(const char* na
 		delete back_3;
 	}
 
-	cout4 << "Leaving Device_2Impl::command_inout_history_2 method" << endl;
+	cout4 << "Leaving Device_2Impl::command_inout_history_2 method" << std::endl;
 	return back;
 }
 

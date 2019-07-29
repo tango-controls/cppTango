@@ -1,15 +1,7 @@
 #ifndef PipeConfTestSuite_h
 #define PipeConfTestSuite_h
 
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/TangoPrinter.h>
-#include <tango.h>
-#include <iostream>
-
-using namespace Tango;
-using namespace std;
-
-#define cout cout << "\t"
+#include "cxx_common.h"
 
 #undef SUITE_NAME
 #define SUITE_NAME PipeConfTestSuite
@@ -280,7 +272,7 @@ cout << "pi2.description = " << pi2.description << endl;
 		pi.description = dev_desc;
 		pi_list.clear();
 		pi_list.push_back(pi);
-		device1->set_pipe_config(pi_list);      
+		device1->set_pipe_config(pi_list);
 
 // Return to lib
 
@@ -360,12 +352,12 @@ cout << "pi2.description = " << pi2.description << endl;
 		device1->set_pipe_config(pi_list);
 
 		pi = device1->get_pipe_config(pipe_name);
-		TS_ASSERT (pi.description == user_desc); 
+		TS_ASSERT (pi.description == user_desc);
 
 		root_admin->command_inout("DevRestart",dd);
 
 		pi = device1->get_pipe_config(pipe_name);
-		TS_ASSERT (pi.description == user_desc); 
+		TS_ASSERT (pi.description == user_desc);
 
 // User input == class default
 
@@ -380,12 +372,12 @@ cout << "pi2.description = " << pi2.description << endl;
 		device1->set_pipe_config(pi_list);
 
 		pi = device1->get_pipe_config(pipe_name);
-		TS_ASSERT (pi.description == class_desc); 
+		TS_ASSERT (pi.description == class_desc);
 
 		root_admin->command_inout("DevRestart",dd);
 
 		pi = device1->get_pipe_config(pipe_name);
-		TS_ASSERT (pi.description == class_desc);    
+		TS_ASSERT (pi.description == class_desc);
 	}
 
 };

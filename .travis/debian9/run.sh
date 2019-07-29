@@ -8,7 +8,9 @@ docker exec cpp_tango cmake \
   -DCMAKE_VERBOSE_MAKEFILE=true \
   -DCPPZMQ_BASE=/home/tango \
   -DCMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE \
-  -DUSE_PCH=${USE_PCH:-OFF}
+  -DUSE_PCH=${USE_PCH:-OFF} \
+  -DTANGO_USE_USING_NAMESPACE=$TANGO_USE_USING_NAMESPACE
+
 if [ $? -ne "0" ]
 then
     exit -1

@@ -51,7 +51,7 @@ struct DataElement
  * @param [in] name The data element name
  * @param [in] value The data element value
  */
-	DataElement(const string &name,T value);
+	DataElement(const std::string &name,T value);
 /**
  * Create a DataElement object.
  *
@@ -59,7 +59,7 @@ struct DataElement
  *
  * @param [in] name The data element name
  */
-	DataElement(const string &name);
+	DataElement(const std::string &name);
 /**
  * Create a DataElement object.
  *
@@ -72,17 +72,17 @@ struct DataElement
 
 	DataElement();
 
-	string		name;		///< The data element name
+	std::string		name;		///< The data element name
 	T			value;		///< The data element value
 };
 
 template <typename T>
-DataElement<T>::DataElement(const string &_na,T _val):name(_na),value(_val)
+DataElement<T>::DataElement(const std::string &_na,T _val):name(_na),value(_val)
 {
 }
 
 template <typename T>
-DataElement<T>::DataElement(const string &_na):name(_na)
+DataElement<T>::DataElement(const std::string &_na):name(_na)
 {
 }
 
@@ -140,7 +140,7 @@ public:
  *
  * @param [in] blob_name The blob name
  */
-	DevicePipeBlob(const string &blob_name);
+	DevicePipeBlob(const std::string &blob_name);
 //@}
 
 /**@name Get/Set methods */
@@ -152,7 +152,7 @@ public:
  *
  * @param [in] blob_name The blob name
  */
-	void set_name(const string &blob_name) {name=blob_name;}
+	void set_name(const std::string &blob_name) {name=blob_name;}
 /**
  * Get blob name
  *
@@ -160,7 +160,7 @@ public:
  *
  * @return The blob name
  */
-	const string &get_name() {return name;}
+	const std::string &get_name() {return name;}
 //@}
 
 
@@ -197,24 +197,24 @@ public:
  * @li DevULong
  * @li DevULong64
  * @li DevString
- * @li string
+ * @li std::string
  * @li DevState
  * @li DevEncoded
  *
  * Insert operators for the following C++ vector types  (and DataElement<T>)
- * @li vector<bool>
- * @li vector<short>
- * @li vector<DevLong>
- * @li vector<DevLong64>
- * @li vector<float>
- * @li vector<double>
- * @li vector<unsigned char>
- * @li vector<unsigned short>
- * @li vector<DevULong>
- * @li vector<DevULong64>
- * @li vector<DevSstring>
- * @li vector<string>
- * @li vector<DevState>
+ * @li std::vector<bool>
+ * @li std::vector<short>
+ * @li std::vector<DevLong>
+ * @li std::vector<DevLong64>
+ * @li std::vector<float>
+ * @li std::vector<double>
+ * @li std::vector<unsigned char>
+ * @li std::vector<unsigned short>
+ * @li std::vector<DevULong>
+ * @li std::vector<DevULong64>
+ * @li std::vector<DevSstring>
+ * @li std::vector<std::string>
+ * @li std::vector<DevState>
  *
  * Insert operators for the following CORBA sequence types (and DataElement<T>):
  * @li DevVarBooleanArray &
@@ -249,11 +249,11 @@ public:
  * @code
  * DevicePipeBlob dpb("MyBlob");
  *
- * vector<string> de_names = {"FirstDE","SecondDE","ThirdDE"};
+ * std::vector<std::string> de_names = {"FirstDE","SecondDE","ThirdDE"};
  * dpb.set_data_elt_names(de_names);
  *
  * DevLong dl = 666;
- * vector<double> v_db = {1.11,2.22};
+ * std::vector<double> v_db = {1.11,2.22};
  * unsigned short *array = new unsigned short [100]; 	// The array is populated by a way or another
  *
  * DevVarUShortArray *dvush = create_DevVarUShortArray(array,100);
@@ -264,7 +264,7 @@ public:
  * }
  * catch (DevFailed &e)
  * {
- *    cout << "DevicePipeBlob insertion failed" << endl;
+ *    cout << "DevicePipeBlob insertion failed" << std::endl;
  *    ....
  * }
  *
@@ -275,8 +275,8 @@ public:
  *
  * DataElement<DevLong> de_dl("FirstDE",666);
  *
- * vector<double> v_db = {1.11,2.22};
- * DataElement<vector<double> > de_v_db("SecondDE",v_db);
+ * std::vector<double> v_db = {1.11,2.22};
+ * DataElement<std::vector<double> > de_v_db("SecondDE",v_db);
  *
  * unsigned short *array = new unsigned short [100]; 	// The array is populated by a way or another
  * DevVarUShortArray *dvush = create_DevVarUShortArray(array,100);
@@ -288,7 +288,7 @@ public:
  * }
  * catch (DevFailed &e)
  * {
- *    cout << "DevicePipeBlob insertion failed" << endl;
+ *    cout << "DevicePipeBlob insertion failed" << std::endl;
  *    ....
  * }
  *
@@ -298,11 +298,11 @@ public:
  * @code
  * DevicePipeBlob dpb("MyBlob");
  *
- * vector<string> de_names{"FirstDE","SecondDE","ThirdDE"};
+ * std::vector<std::string> de_names{"FirstDE","SecondDE","ThirdDE"};
  * dpb.set_data_elt_names(de_names);
  *
  * DevLong dl = 666;
- * vector<double> v_db = {1.11,2.22};
+ * std::vector<double> v_db = {1.11,2.22};
  * unsigned short *array = new unsigned short [100]; 	// The array is populated by a way or another
  *
  * DevVarUShortArray *dvush = create_DevVarUShortArray(array,100);
@@ -333,7 +333,7 @@ public:
  *
  * @param [in] names The blob data element names
  */
-	void set_data_elt_names(vector<string> &names);
+	void set_data_elt_names(std::vector<std::string> &names);
 //@}
 
 /**@name Extracting data from a DevicePipeBlob
@@ -345,10 +345,10 @@ public:
  * According to the data inside blob data element, several kinds of extractor methods have been implemented. You
  * can extract data into:
  * @li Scalar data type
- * @li vector
+ * @li std::vector
  * @li TANGO CORBA sequence types
  * @li DataElement<T> with T being scalar data type
- * @li DataElement<T> with T being vector
+ * @li DataElement<T> with T being std::vector
  * @li DataElement<T> with T being TANGO CORBA sequence type
  *
  * When extracting data using a DataElement<T> instance, the data element name is also returned.
@@ -367,23 +367,23 @@ public:
  * @li unsigned short
  * @li DevULong
  * @li DevULong64
- * @li string
+ * @li std::string
  * @li DevState
  * @li DevEncoded
  *
  * Extract operators for the following C++ vector types  (and DataElement<T>)
- * @li vector<bool>
- * @li vector<short>
- * @li vector<DevLong>
- * @li vector<DevLong64>
- * @li vector<float>
- * @li vector<double>
- * @li vector<unsigned char>
- * @li vector<unsigned short>
- * @li vector<DevULong>
- * @li vector<DevULong64>
- * @li vector<string>
- * @li vector<DevState>
+ * @li std::vector<bool>
+ * @li std::vector<short>
+ * @li std::vector<DevLong>
+ * @li std::vector<DevLong64>
+ * @li std::vector<float>
+ * @li std::vector<double>
+ * @li std::vector<unsigned char>
+ * @li std::vector<unsigned short>
+ * @li std::vector<DevULong>
+ * @li std::vector<DevULong64>
+ * @li std::vector<std::string>
+ * @li std::vector<DevState>
  *
  * Extract operators for the following CORBA sequence types <B>with memory consumption</B>  (and DataElement<T>):
  * @li DevVarBooleanArray *
@@ -405,7 +405,7 @@ public:
  * DevicePipeBlob dpb = .....
  *
  * DevLong dl;
- * vector<double> v_db;
+ * std::vector<double> v_db;
  * DevVarUShortArray *dvush = new DevVarUShortArray();
  *
  * try
@@ -414,7 +414,7 @@ public:
  * }
  * catch (DevFailed &e)
  * {
- *    cout << "DevicePipeBlob extraction failed" << endl;
+ *    cout << "DevicePipeBlob extraction failed" << std::endl;
  *    ....
  * }
  *
@@ -425,7 +425,7 @@ public:
  * DevicePipeBlob dpb = .....
  *
  * DataElement<DevLong> de_dl;
- * DataElement<vector<double> > de_v_db;
+ * DataElement<std::vector<double> > de_v_db;
  * DataElement<DevVarUShortArray *> de_dvush(new DevVarUShortArray());
  *
  * try
@@ -434,11 +434,11 @@ public:
  * }
  * catch (DevFailed &e)
  * {
- *    cout << "DevicePipeBlob extraction failed" << endl;
+ *    cout << "DevicePipeBlob extraction failed" << std::endl;
  *    ....
  * }
  *
- * cout << "Data element name = " << de_dl.name << " - Value = " << de_dl.value << endl;
+ * cout << "Data element name = " << de_dl.name << " - Value = " << de_dl.value << std::endl;
  * ...
  * delete de_dvush.value;
  * @endcode
@@ -450,7 +450,7 @@ public:
  * for (size_t loop = 0;loop < nb;loop++)
  * {
  *     int data_type = dpb.get_data_elt_type(loop);
- *     string de_name = dpb.get_data_elt_name(loop);
+ *     std::string de_name = dpb.get_data_elt_name(loop);
  *     switch(data_type)
  *     {
  *        case DEV_LONG:
@@ -462,7 +462,7 @@ public:
  *
  *        case DEVVAR_DOUBLEARRAY:
  *        {
- *            vector<double> v_db;
+ *            std::vector<double> v_db;
  *            dpb >> v_db;
  *        }
  *        break;
@@ -471,7 +471,7 @@ public:
  * ...
  * }
  * @endcode
- * Note that instead of using DevLong and vector<double> data, the extraction can be done using DataElement<T>
+ * Note that instead of using DevLong and std::vector<double> data, the extraction can be done using DataElement<T>
  * instances. In this case, the call to the get_data_elt_name() method becomes useless.
  *
  * @param [out] datum The blob data
@@ -493,7 +493,7 @@ public:
  *
  * @return The blob data elements name
  */
-	vector<string> get_data_elt_names();
+	std::vector<std::string> get_data_elt_names();
 /**
  * Get blob data element name
  *
@@ -502,7 +502,7 @@ public:
  * @param [in] ind The data element index within the blob
  * @return The blob data element name
  */
-	string get_data_elt_name(size_t ind);
+	std::string get_data_elt_name(size_t ind);
 /**
  * Get blob data element value type
  *
@@ -539,7 +539,7 @@ public:
  *
  * @param [in] fl The exception flag
  */
-	void exceptions(bitset<numFlags> fl) {exceptions_flags = fl;}
+	void exceptions(std::bitset<numFlags> fl) {exceptions_flags = fl;}
 /**
  * Get exception flag
  *
@@ -548,18 +548,18 @@ public:
  * @code
  * DevicePipeBlob dpb;
  *
- * bitset<DevicePipeBlob::numFlags> bs = dpb.exceptions();
- * cout << "bs = " << bs << endl;
+ * std::bitset<DevicePipeBlob::numFlags> bs = dpb.exceptions();
+ * cout << "bs = " << bs << std::endl;
  *
  * dpb.set_exceptions(DevicePipeBlob::wrongtype_flag);
  * bs = dpb.exceptions();
  *
- * cout << "bs = " << bs << endl;
+ * cout << "bs = " << bs << std::endl;
  * @endcode
  *
  * @return The exception flag
  */
-	bitset<numFlags> exceptions() {return exceptions_flags;}
+	std::bitset<numFlags> exceptions() {return exceptions_flags;}
 /**
  * Reset one exception flag
  *
@@ -594,7 +594,7 @@ public:
  * @code
  * DevicePipeBlob dpb = ....
  *
- * bitset<DevicePipeBlob::numFlags> bs;
+ * std::bitset<DevicePipeBlob::numFlags> bs;
  * bs.reset();
  * dpb.exceptions(bs);
  *
@@ -603,7 +603,7 @@ public:
  *
  * if (dpb.has_failed() == true)
  * {
- *    bitset<DevicePipeBlob::numFlags> bs_err = dpb.state();
+ *    std::bitset<DevicePipeBlob::numFlags> bs_err = dpb.state();
  *    if (bs_err.test(DevicePipeBlob::isempty_flag) == true)
  *        .....
  * }
@@ -611,7 +611,7 @@ public:
  *
  * @return The error bit set.
  */
-	bitset<numFlags> state() {return ext_state;}
+	std::bitset<numFlags> state() {return ext_state;}
 //@}
 
 ///@privatesection
@@ -636,24 +636,24 @@ public:
 	DevicePipeBlob & operator << (DevString &);
 	DevicePipeBlob & operator << (DevState &);
 	DevicePipeBlob & operator << (DevEncoded &);
-	DevicePipeBlob & operator << (const string &);
+	DevicePipeBlob & operator << (const std::string &);
 
 	DevicePipeBlob & operator << (DevicePipeBlob &);
 
-	DevicePipeBlob & operator << (vector<DevBoolean> &);
-	DevicePipeBlob & operator << (vector<short> &);
-	DevicePipeBlob & operator << (vector<DevLong> &);
-	DevicePipeBlob & operator << (vector<DevLong64> &);
-	DevicePipeBlob & operator << (vector<float> &);
-	DevicePipeBlob & operator << (vector<double> &);
-	DevicePipeBlob & operator << (vector<DevUChar> &);
-	DevicePipeBlob & operator << (vector<DevUShort> &);
-	DevicePipeBlob & operator << (vector<DevULong> &);
-	DevicePipeBlob & operator << (vector<DevULong64> &);
-	DevicePipeBlob & operator << (vector<DevString> &);
-	DevicePipeBlob & operator << (vector<DevState> &);
-	DevicePipeBlob & operator << (vector<DevEncoded> &);
-	DevicePipeBlob & operator << (vector<string> &);
+	DevicePipeBlob & operator << (std::vector<DevBoolean> &);
+	DevicePipeBlob & operator << (std::vector<short> &);
+	DevicePipeBlob & operator << (std::vector<DevLong> &);
+	DevicePipeBlob & operator << (std::vector<DevLong64> &);
+	DevicePipeBlob & operator << (std::vector<float> &);
+	DevicePipeBlob & operator << (std::vector<double> &);
+	DevicePipeBlob & operator << (std::vector<DevUChar> &);
+	DevicePipeBlob & operator << (std::vector<DevUShort> &);
+	DevicePipeBlob & operator << (std::vector<DevULong> &);
+	DevicePipeBlob & operator << (std::vector<DevULong64> &);
+	DevicePipeBlob & operator << (std::vector<DevString> &);
+	DevicePipeBlob & operator << (std::vector<DevState> &);
+	DevicePipeBlob & operator << (std::vector<DevEncoded> &);
+	DevicePipeBlob & operator << (std::vector<std::string> &);
 
 	DevicePipeBlob & operator << (DevVarBooleanArray &);
 	DevicePipeBlob & operator << (DevVarShortArray &);
@@ -698,23 +698,23 @@ public:
 	DevicePipeBlob & operator >> (DevString &);
 	DevicePipeBlob & operator >> (DevState &);
 	DevicePipeBlob & operator >> (DevEncoded &);
-	DevicePipeBlob & operator >> (string &);
+	DevicePipeBlob & operator >> (std::string &);
 
 	DevicePipeBlob & operator >> (DevicePipeBlob &);
 
-	DevicePipeBlob & operator >> (vector<DevBoolean> &);
-	DevicePipeBlob & operator >> (vector<short> &);
-	DevicePipeBlob & operator >> (vector<DevLong> &);
-	DevicePipeBlob & operator >> (vector<DevLong64> &);
-	DevicePipeBlob & operator >> (vector<float> &);
-	DevicePipeBlob & operator >> (vector<double> &);
-	DevicePipeBlob & operator >> (vector<DevUChar> &);
-	DevicePipeBlob & operator >> (vector<DevUShort> &);
-	DevicePipeBlob & operator >> (vector<DevULong> &);
-	DevicePipeBlob & operator >> (vector<DevULong64> &);
-	DevicePipeBlob & operator >> (vector<string> &);
-	DevicePipeBlob & operator >> (vector<DevState> &);
-//	DevicePipeBlob & operator >> (vector<DevEncoded> &);
+	DevicePipeBlob & operator >> (std::vector<DevBoolean> &);
+	DevicePipeBlob & operator >> (std::vector<short> &);
+	DevicePipeBlob & operator >> (std::vector<DevLong> &);
+	DevicePipeBlob & operator >> (std::vector<DevLong64> &);
+	DevicePipeBlob & operator >> (std::vector<float> &);
+	DevicePipeBlob & operator >> (std::vector<double> &);
+	DevicePipeBlob & operator >> (std::vector<DevUChar> &);
+	DevicePipeBlob & operator >> (std::vector<DevUShort> &);
+	DevicePipeBlob & operator >> (std::vector<DevULong> &);
+	DevicePipeBlob & operator >> (std::vector<DevULong64> &);
+	DevicePipeBlob & operator >> (std::vector<std::string> &);
+	DevicePipeBlob & operator >> (std::vector<DevState> &);
+//	DevicePipeBlob & operator >> (std::vector<DevEncoded> &);
 
 	DevicePipeBlob & operator >> (DevVarBooleanArray *);
 	DevicePipeBlob & operator >> (DevVarShortArray *);
@@ -730,13 +730,13 @@ public:
 	DevicePipeBlob & operator >> (DevVarStateArray *);
 	DevicePipeBlob & operator >> (DevVarEncodedArray *);
 
-	DevicePipeBlob &operator[](const string &);
+	DevicePipeBlob &operator[](const std::string &);
 
 	const char *get_current_delt_name() {return (*extract_elt_array)[extract_ctr].name.in();}
-	void set_current_delt_name(const string &);
+	void set_current_delt_name(const std::string &);
 
-	size_t get_extract_ind_from_name(const string &);
-	size_t get_insert_ind_from_name(const string &);
+	size_t get_extract_ind_from_name(const std::string &);
+	size_t get_insert_ind_from_name(const std::string &);
 
 	void reset_insert_ctr() {insert_ctr=0;}
 	DevVarPipeDataEltArray *get_insert_data() {return insert_elt_array;}
@@ -748,20 +748,20 @@ public:
 	void reset_extract_ctr() {extract_ctr=0;}
 	void set_extract_delete(bool _b) {extract_delete=_b;}
 
-	void print(ostream &,int,bool);
+	void print(std::ostream &,int,bool);
 
 protected:
 ///@privatesection
-	void throw_type_except(const string &,const string &);
-	void throw_too_many(const string &,bool);
-	void throw_is_empty(const string &);
-	void throw_name_not_set(const string &);
-	void throw_mixing(const string &);
+	void throw_type_except(const std::string &,const std::string &);
+	void throw_too_many(const std::string &,bool);
+	void throw_is_empty(const std::string &);
+	void throw_name_not_set(const std::string &);
+	void throw_mixing(const std::string &);
 
 private:
-	string							name;					// The blob name
-	bitset<numFlags> 				exceptions_flags;		// Exception flag
-	bitset<numFlags> 				ext_state;				// Extraction state
+	std::string							name;					// The blob name
+	std::bitset<numFlags> 				exceptions_flags;		// Exception flag
+	std::bitset<numFlags> 				ext_state;				// Extraction state
 	bool							failed;					// Failed flag
 
 	DevVarPipeDataEltArray			*insert_elt_array;		// Ptr for data to be inserted (client write/Server read)
@@ -780,7 +780,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DevicePipeBlobExt>   	ext;
+    std::unique_ptr<DevicePipeBlobExt>   	ext;
 #else
 	DevicePipeBlobExt		        	*ext;				// Class extension
 #endif
@@ -829,7 +829,7 @@ public :
  *
  * @param [in] pipe_name The pipe name
  */
-    DevicePipe(const string &pipe_name);
+    DevicePipe(const std::string &pipe_name);
 /**
  * Create a DevicePipe object with name and root blob name.
  *
@@ -838,7 +838,7 @@ public :
  * @param [in] pipe_name The pipe name
  * @param [in] root_blob_name The root blob name
  */
-    DevicePipe(const string &pipe_name,const string &root_blob_name);
+    DevicePipe(const std::string &pipe_name,const std::string &root_blob_name);
 //@}
 
 /**@name Get/Set methods */
@@ -850,7 +850,7 @@ public :
  *
  * @param [in] pipe_name The pipe name
  */
-	void set_name(const string &pipe_name) {name=pipe_name;}
+	void set_name(const std::string &pipe_name) {name=pipe_name;}
 /**
  * Get pipe name
  *
@@ -858,7 +858,7 @@ public :
  *
  * @return The pipe name
  */
-	const string &get_name() {return name;}
+	const std::string &get_name() {return name;}
 
 /**
  * Set root blob name
@@ -867,7 +867,7 @@ public :
  *
  * @param [in] root_blob_name The root blob name
  */
-	void set_root_blob_name(const string &root_blob_name) {the_root_blob.set_name(root_blob_name);}
+	void set_root_blob_name(const std::string &root_blob_name) {the_root_blob.set_name(root_blob_name);}
 /**
  * Get root blob name
  *
@@ -875,7 +875,7 @@ public :
  *
  * @return The root blob name
  */
-	const string &get_root_blob_name() {return the_root_blob.get_name();}
+	const std::string &get_root_blob_name() {return the_root_blob.get_name();}
 //@}
 
 /**@name Inserting data into a DevicePipe
@@ -910,7 +910,7 @@ public :
  *
  * @param [in] names The blob data element names
  */
-	void set_data_elt_names(vector<string> &names) {the_root_blob.set_data_elt_names(names);}
+	void set_data_elt_names(std::vector<std::string> &names) {the_root_blob.set_data_elt_names(names);}
 //@}
 
 /**@name Extracting data from a DevicePipe
@@ -944,7 +944,7 @@ public :
  *
  * @return The root blob data elements name
  */
-	vector<string> get_data_elt_names() {return the_root_blob.get_data_elt_names();}
+	std::vector<std::string> get_data_elt_names() {return the_root_blob.get_data_elt_names();}
 /**
  * Get root blob data element name
  *
@@ -953,7 +953,7 @@ public :
  * @param [in] ind The data element index within the root blob
  * @return The root blob data element name
  */
-	string get_data_elt_name(size_t ind) {return the_root_blob.get_data_elt_name(ind);}
+	std::string get_data_elt_name(size_t ind) {return the_root_blob.get_data_elt_name(ind);}
 /**
  * Get root blob data element value type
  *
@@ -991,7 +991,7 @@ public :
  *
  * @param [in] fl The exception flag
  */
-	void exceptions(bitset<DevicePipeBlob::numFlags> fl) {the_root_blob.exceptions(fl);}
+	void exceptions(std::bitset<DevicePipeBlob::numFlags> fl) {the_root_blob.exceptions(fl);}
 /**
  * Get exception flag
  *
@@ -1000,18 +1000,18 @@ public :
  * @code
  * DevicePipe dp;
  *
- * bitset<DevicePipeBlob::numFlags> bs = dp.exceptions();
- * cout << "bs = " << bs << endl;
+ * std::bitset<DevicePipeBlob::numFlags> bs = dp.exceptions();
+ * cout << "bs = " << bs << std::endl;
  *
  * dp.set_exceptions(DevicePipeBlob::wrongtype_flag);
  * bs = dp.exceptions();
  *
- * cout << "bs = " << bs << endl;
+ * cout << "bs = " << bs << std::endl;
  * @endcode
  *
  * @return The exception flag
  */
-	bitset<DevicePipeBlob::numFlags> exceptions() {return the_root_blob.exceptions();}
+	std::bitset<DevicePipeBlob::numFlags> exceptions() {return the_root_blob.exceptions();}
 /**
  * Reset one exception flag
  *
@@ -1046,7 +1046,7 @@ public :
  * @code
  * DevicePipe dpb = ....
  *
- * bitset<DevicePipeBlob::numFlags> bs;
+ * std::bitset<DevicePipeBlob::numFlags> bs;
  * bs.reset();
  * dpb.exceptions(bs);
  *
@@ -1055,7 +1055,7 @@ public :
  *
  * if (dpb.has_failed() == true)
  * {
- *    bitset<DevicePipeBlob::numFlags> bs_err = dpb.state();
+ *    std::bitset<DevicePipeBlob::numFlags> bs_err = dpb.state();
  *    if (dpb.test(DevicePipeBlob::isempty_flag) == true)
  *        .....
  * }
@@ -1063,7 +1063,7 @@ public :
  *
  * @return The error bit set.
  */
-	bitset<DevicePipeBlob::numFlags> state() {return the_root_blob.state();}
+	std::bitset<DevicePipeBlob::numFlags> state() {return the_root_blob.state();}
 //@}
 
 /**
@@ -1077,13 +1077,13 @@ public :
  * DevicePipe out;
  *
  * out = dev->read_pipe(“MyPipe”);
- * cout << “Pipe content: ” << out << endl;
+ * cout << “Pipe content: ” << out << std::endl;
  * @endcode
  *
  * @param [in] str The printing stream
  * @param [in] dd The instance to be printed
  */
-	friend ostream &operator<<(ostream &str,DevicePipe &dd);
+	friend std::ostream &operator<<(std::ostream &str,DevicePipe &dd);
 
 public :
 ///@privatesection
@@ -1098,11 +1098,11 @@ public :
 	void set_time(TimeVal &_ti) {time=_ti;}
 	DevicePipeBlob &get_root_blob() {return the_root_blob;}
 
-	DevicePipe &operator[](const string &);
+	DevicePipe &operator[](const std::string &);
 
 private:
 	DevicePipeBlob			the_root_blob;			// Root blob
-	string 					name;					// Pipe name
+	std::string 					name;					// Pipe name
 	TimeVal 				time;					// When pipe has been read
 
     class DevicePipeExt
@@ -1112,7 +1112,7 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DevicePipeExt>   ext;
+    std::unique_ptr<DevicePipeExt>   ext;
 #else
 	DevicePipeExt		        *ext;				// Class extension
 #endif
@@ -1132,13 +1132,13 @@ DevicePipe &operator>>(DevicePipe &_dp,char *&datum);
 //
 
 template <typename T>
-ostream &operator<<(ostream &,DataElement<T> &);
+std::ostream &operator<<(std::ostream &,DataElement<T> &);
 
 template <typename T>
-ostream &operator<<(ostream &,DataElement<vector<T> > &);
+std::ostream &operator<<(std::ostream &,DataElement<std::vector<T> > &);
 
 template <typename T>
-ostream &operator<<(ostream &,DataElement<T *> &);
+std::ostream &operator<<(std::ostream &,DataElement<T *> &);
 
 //
 // For DevicePipe insertion

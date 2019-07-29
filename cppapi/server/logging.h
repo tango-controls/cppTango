@@ -43,25 +43,31 @@
 #ifdef _TANGO_LIB //== compiling TANGO lib ====================
 
 //-- Overwrite std::cout  -------------------------------------
-#define cout \
-    if (API_LOGGER) \
+#define cout                                                \
+    if (API_LOGGER)                                         \
       API_LOGGER->get_stream(log4tango::Level::INFO, false) \
         << log4tango::LogInitiator::_begin_log
+
+#else
+
+#define cout std::cout
 
 #endif //== compiling TANGO lib ===============================
 
 // Map. cout1..2 to INFO level --------------------------------
-#define cout1 \
+#define cout1                                      \
   if (API_LOGGER && API_LOGGER->is_info_enabled()) \
-    API_LOGGER->info_stream() \
+    API_LOGGER->info_stream()                      \
       << log4tango::LogInitiator::_begin_log
+
 #define cout2 cout1
 
 // Map. cout3..5 to DEBUG level -------------------------------
-#define cout3 \
+#define cout3                                       \
   if (API_LOGGER && API_LOGGER->is_debug_enabled()) \
-    API_LOGGER->debug_stream() \
+    API_LOGGER->debug_stream()                      \
       << log4tango::LogInitiator::_begin_log
+
 #define cout4 cout3
 #define cout5 cout4
 

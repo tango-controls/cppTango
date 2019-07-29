@@ -263,10 +263,10 @@
 // Some helper define
 //
 
-#define 	TangoSys_OMemStream	ostringstream
-#define		TangoSys_MemStream	stringstream
+#define 	TangoSys_OMemStream	std::ostringstream
+#define		TangoSys_MemStream	std::stringstream
 #define		TangoSys_Pid		int
-#define		TangoSys_Cout		ostream
+#define		TangoSys_Cout		std::ostream
 
 //
 // For Microsoft compilers
@@ -332,11 +332,11 @@
 //
 
 #ifndef _TG_WINDOWS_
-    #define TG_strcasecmp ::strcasecmp
-    #define TG_strncasecmp ::strncasecmp
+    #define TG_strcasecmp strcasecmp
+    #define TG_strncasecmp strncasecmp
 #else
-    #define	TG_strcasecmp ::stricmp
-    #define TG_strncasecmp ::strnicmp
+    #define	TG_strcasecmp stricmp
+    #define TG_strncasecmp strnicmp
 #endif
 
 //

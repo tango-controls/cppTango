@@ -252,14 +252,14 @@ public:
  *
  * @param level The new process output
  */
-	void set_trace_output(string &trace) {trace_output = trace;}
+	void set_trace_output(std::string &trace) {trace_output = trace;}
 
 /**
  * Get the process trace output.
  *
  * @return The process trace output
  */
-	string &get_trace_output() {return trace_output;}
+	std::string &get_trace_output() {return trace_output;}
 
 /**
  * Get the temporary process output print stream
@@ -288,14 +288,14 @@ public:
  *
  * @return The device server instance name
  */
-	string &get_ds_inst_name() {return ds_instance_name;}
+	std::string &get_ds_inst_name() {return ds_instance_name;}
 
 /**
  * Get the device server executable name.
  *
  * @return The device server executable name
  */
-	string &get_ds_exec_name() {return ds_exec_name;}
+	std::string &get_ds_exec_name() {return ds_exec_name;}
 
 /**
  * Get the device server name.
@@ -304,21 +304,21 @@ public:
  * server instance name
  * @return The device server name
  */
-	string &get_ds_name() {return ds_name;}
+	std::string &get_ds_name() {return ds_name;}
 
 /**
  * Get the host name where the device server process is running.
  *
  * @return The host name
  */
-	string &get_host_name() {return hostname;}
+	std::string &get_host_name() {return hostname;}
 
 /**
  * Get the device server process identifier as a String
  *
  * @return The device server process identifier as a string
  */
-	string &get_pid_str() {return pid_str;}
+	std::string &get_pid_str() {return pid_str;}
 
 /**
  * Get the device server process identifier
@@ -340,14 +340,14 @@ public:
  *
  * @return The device server version
  */
-	string &get_version_str() {return version_str;}
+	std::string &get_version_str() {return version_str;}
 
 /**
  * Get the device server version.
  *
  * @return The device server version
  */
-	string &get_server_version() {return server_version;}
+	std::string &get_server_version() {return server_version;}
 
 /**
  * Set the device server version.
@@ -361,7 +361,7 @@ public:
  *
  * @param list The DeviceClass ptr vector address
  */
- 	void set_class_list(vector<DeviceClass *> *list) {cl_list_ptr = list;cl_list = *list;}
+ 	void set_class_list(std::vector<DeviceClass *> *list) {cl_list_ptr = list;cl_list = *list;}
 
 /**
  * Add a DeviceClass to the DeviceClass list pointer
@@ -375,7 +375,7 @@ public:
  *
  * @return The DeviceClass ptr vector address
  */
-	const vector<DeviceClass *> *get_class_list() {return &cl_list;}
+	const std::vector<DeviceClass *> *get_class_list() {return &cl_list;}
 
 /**
  * Set the serialization model
@@ -429,7 +429,7 @@ public:
  * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	void trigger_cmd_polling(DeviceImpl *dev,const string &name);
+	void trigger_cmd_polling(DeviceImpl *dev,const std::string &name);
 
 /**
  * Trigger polling for polled attribute.
@@ -443,7 +443,7 @@ public:
  * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	void trigger_attr_polling(DeviceImpl *dev,const string &name);
+	void trigger_attr_polling(DeviceImpl *dev,const std::string &name);
 
 /**
  * Fill polling buffer for polled attribute.
@@ -462,7 +462,7 @@ public:
 
 	template <typename T>
 	void fill_attr_polling_buffer(DeviceImpl *dev,
-				      string &att_name,
+				      std::string &att_name,
 				      AttrHistoryStack<T>  &data);
 
 /**
@@ -482,7 +482,7 @@ public:
 
 	template <typename T>
 	void fill_cmd_polling_buffer(DeviceImpl *dev,
-				     string &cmd_name,
+				     std::string &cmd_name,
 				     CmdHistoryStack<T>  &data);
 
 /**
@@ -527,7 +527,7 @@ public:
  *
  * @return A boolean set to true if the device is restarting.
  */
-    bool is_device_restarting(string &d_name);
+    bool is_device_restarting(std::string &d_name);
 //@}
 
 /**@name Database related methods */
@@ -576,7 +576,7 @@ public:
  * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	vector<DeviceImpl *> &get_device_list_by_class(const string &class_name);
+	std::vector<DeviceImpl *> &get_device_list_by_class(const std::string &class_name);
 
 /**
  * Get the list of device references for a given TANGO class.
@@ -591,7 +591,7 @@ public:
  * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	vector<DeviceImpl *> &get_device_list_by_class(const char *class_name);
+	std::vector<DeviceImpl *> &get_device_list_by_class(const char *class_name);
 
 /**
  * Get a device reference from its name
@@ -603,7 +603,7 @@ public:
  * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	DeviceImpl *get_device_by_name(const string &dev_name);
+	DeviceImpl *get_device_by_name(const std::string &dev_name);
 
 /**
  * Get a device reference from its name
@@ -633,7 +633,7 @@ public:
  * @param name The device name
  * @return The DeviceClass ptr vector address
  */
-	vector<DeviceImpl *> get_device_list(const string &name);
+	std::vector<DeviceImpl *> get_device_list(const std::string &name);
 //@}
 
 /** @name Device pattern related methods */
@@ -746,7 +746,7 @@ public:
  *
  * @return The text to be displayed
  */
-	string &get_main_window_text() {return main_win_text;}
+	std::string &get_main_window_text() {return main_win_text;}
 
 /**
  * Set the text displayed on main server window.
@@ -754,7 +754,7 @@ public:
  * @param 	txt 	The new text to be displayed at the bottom of the
  * main window
  */
-	void set_main_window_text(string &txt) {main_win_text = txt;}
+	void set_main_window_text(std::string &txt) {main_win_text = txt;}
 //@}
 #endif
 
@@ -803,8 +803,8 @@ public:
 	void set_interceptors(Interceptors *in) {inter = in;}
 	Interceptors *get_interceptors() {return inter;}
 
-	map <string,vector<string> > &get_cmd_line_name_list() {return cmd_line_name_list;}
-	void get_cmd_line_name_list(const string &,vector<string> &);
+	std::map <std::string,std::vector<std::string> > &get_cmd_line_name_list() {return cmd_line_name_list;}
+	void get_cmd_line_name_list(const std::string &,std::vector<std::string> &);
 	TangoMonitor &get_heartbeat_monitor() {return poll_mon;}
 	PollThCmd &get_heartbeat_shared_cmd() {return shared_data;}
 	bool poll_status() {return poll_on;}
@@ -822,7 +822,7 @@ public:
 	int get_polling_thread_id() {return heartbeat_th_id;}
 	int get_heartbeat_thread_id() {return heartbeat_th_id;}
 	void stop_heartbeat_thread();
-	string &get_svr_port_num() {return svr_port_num;}
+	std::string &get_svr_port_num() {return svr_port_num;}
 
 	void create_notifd_event_supplier();
 	void create_zmq_event_supplier();
@@ -845,13 +845,13 @@ public:
 	void set_svr_starting(bool val) {svr_starting = val;}
 	void set_svr_shutting_down(bool val) {svr_stopping = val;}
 
-	vector<string> &get_polled_dyn_attr_names() {return polled_dyn_attr_names;}
-	vector<string> &get_polled_dyn_cmd_names() {return polled_dyn_cmd_names;}
-	vector<string> &get_full_polled_att_list() {return polled_att_list;}
-	vector<string> &get_full_polled_cmd_list() {return polled_cmd_list;}
-	string &get_dyn_att_dev_name() {return dyn_att_dev_name;}
-	string &get_dyn_cmd_dev_name() {return dyn_cmd_dev_name;}
-	vector<string> &get_all_dyn_attr_names() {return all_dyn_attr;}
+	std::vector<std::string> &get_polled_dyn_attr_names() {return polled_dyn_attr_names;}
+	std::vector<std::string> &get_polled_dyn_cmd_names() {return polled_dyn_cmd_names;}
+	std::vector<std::string> &get_full_polled_att_list() {return polled_att_list;}
+	std::vector<std::string> &get_full_polled_cmd_list() {return polled_cmd_list;}
+	std::string &get_dyn_att_dev_name() {return dyn_att_dev_name;}
+	std::string &get_dyn_cmd_dev_name() {return dyn_cmd_dev_name;}
+	std::vector<std::string> &get_all_dyn_attr_names() {return all_dyn_attr;}
 
 	void clean_attr_polled_prop();
 	void clean_cmd_polled_prop();
@@ -859,20 +859,20 @@ public:
 
 	int create_poll_thread(const char *,bool,bool,int smallest_upd = -1);
 	void stop_all_polling_threads();
-	vector<PollingThreadInfo *> &get_polling_threads_info() {return poll_ths;}
+	std::vector<PollingThreadInfo *> &get_polling_threads_info() {return poll_ths;}
 	PollingThreadInfo *get_polling_thread_info_by_id(int);
 	int get_polling_thread_id_by_name(const char *);
 	void check_pool_conf(DServer *,unsigned long);
-	int check_dev_poll(vector<string> &,vector<string> &,DeviceImpl *);
-	void split_string(string &,char,vector<string> &);
-	void upd_polling_prop(vector<DevDbUpd> &,DServer *);
-	int get_th_polled_devs(string &,vector<string> &);
-	void get_th_polled_devs(long,vector<string> &);
-	void build_first_pool_conf(vector<string> &);
-	bool is_dev_already_in_pool_conf(string &,vector<string>&,int);
-	vector<string> &get_poll_pool_conf() {return poll_pool_conf;}
-	int get_dev_entry_in_pool_conf(string &);
-	void remove_dev_from_polling_map(string &dev_name);
+	int check_dev_poll(std::vector<std::string> &,std::vector<std::string> &,DeviceImpl *);
+	void split_string(std::string &,char,std::vector<std::string> &);
+	void upd_polling_prop(std::vector<DevDbUpd> &,DServer *);
+	int get_th_polled_devs(std::string &,std::vector<std::string> &);
+	void get_th_polled_devs(long,std::vector<std::string> &);
+	void build_first_pool_conf(std::vector<std::string> &);
+	bool is_dev_already_in_pool_conf(std::string &,std::vector<std::string>&,int);
+	std::vector<std::string> &get_poll_pool_conf() {return poll_pool_conf;}
+	int get_dev_entry_in_pool_conf(std::string &);
+	void remove_dev_from_polling_map(std::string &dev_name);
 	void remove_polling_thread_info_by_id(int);
 
 	bool is_server_event_loop_set() {if (ev_loop_func != NULL)return true;else return false;}
@@ -885,24 +885,24 @@ public:
 	bool get_endpoint_specified() {return endpoint_specified;}
 	void set_endpoint_specified(bool val) {endpoint_specified = val;}
 
-	string &get_specified_ip() {return specified_ip;}
-	void set_specified_ip(string &val) {specified_ip = val;}
+	std::string &get_specified_ip() {return specified_ip;}
+	void set_specified_ip(std::string &val) {specified_ip = val;}
 
 	DevLong get_user_pub_hwm() {return user_pub_hwm;}
 
-	void add_restarting_device(string &d_name) {restarting_devices.push_back(d_name);}
-	void delete_restarting_device(string &d_name);
+	void add_restarting_device(std::string &d_name) {restarting_devices.push_back(d_name);}
+	void delete_restarting_device(std::string &d_name);
 
     bool is_wattr_nan_allowed() {return wattr_nan_allowed;}
 	void set_wattr_nan_allowed(bool val) {wattr_nan_allowed=val;}
 
 	RootAttRegistry &get_root_att_reg() {return root_att_reg;}
-	void event_name_2_event_type(string &,EventType &);
+	void event_name_2_event_type(std::string &,EventType &);
 
 	void validate_cmd_line_classes();
 
-	static void tango_host_from_fqan(string &,string &);
-	static void tango_host_from_fqan(string &,string &,int &);
+	static void tango_host_from_fqan(std::string &,std::string &);
+	static void tango_host_from_fqan(std::string &,std::string &,int &);
 
     bool is_polling_bef_9_def() {return polling_bef_9_def;}
     bool get_polling_bef_9() {return polling_bef_9;}
@@ -917,7 +917,7 @@ private:
 	int						nCmd;
 	CoutBuf					*pcb;
 	W32Win					*ds_window;
-	string					main_win_text;
+	std::string					main_win_text;
 	bool					go;
 	TangoMonitor			mon;
 
@@ -943,21 +943,21 @@ private:
 	CORBA::ORB_var 			orb;
 	PortableServer::POA_var _poa;
 
-	string					ds_instance_name;	// The instance name
-	string					ds_exec_name;		// The server exec. name
-	string					ds_name;			// The server name
+	std::string					ds_instance_name;	// The instance name
+	std::string					ds_exec_name;		// The server exec. name
+	std::string					ds_name;			// The server name
 
-	string					hostname;			// The host name
-	string					pid_str;			// The process PID (as string)
+	std::string					hostname;			// The host name
+	std::string					pid_str;			// The process PID (as string)
 	TangoSys_Pid			pid;				// The process PID
 
-	string					version_str;		// Tango version
-	string					server_version;		// Device server version
+	std::string					version_str;		// Tango version
+	std::string					server_version;		// Device server version
 
-	string      			database_file_name;
+	std::string      			database_file_name;
 
 #ifndef TANGO_HAS_LOG4TANGO
-	string			        trace_output;
+	std::string			        trace_output;
 	TangoSys_Cout		    cout_tmp;
 	ofstream		        *file_stream;
 #endif //TANGO_HAS_LOG4TANGO
@@ -972,31 +972,31 @@ private:
 	void server_already_running();
 	void print_usage(char *);
 	static void print_err_message(const char *,Tango::MessBoxType type = Tango::STOP);
-	void print_err_message(const string &mess,Tango::MessBoxType type = Tango::STOP)
+	void print_err_message(const std::string &mess,Tango::MessBoxType type = Tango::STOP)
 	{
 		print_err_message(mess.c_str(),type);
 	}
 	void check_args(int, char *[]);
 	void display_help_message();
-	DeviceImpl *find_device_name_core(string &);
+	DeviceImpl *find_device_name_core(std::string &);
 	void check_orb_endpoint(int,char **);
-	void validate_sort(vector<string> &);
+	void validate_sort(std::vector<std::string> &);
     void check_end_point_specified(int,char **);
 
 	bool  							display_help;	// display help message flag
-	const vector<DeviceClass *>		*cl_list_ptr;	// Ptr to server device class list
+	const std::vector<DeviceClass *>		*cl_list_ptr;	// Ptr to server device class list
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<UtilExt>             ext;           // Class extension
+    std::unique_ptr<UtilExt>             ext;           // Class extension
 #else
 	Util::UtilExt					*ext;			// Class extension
 #endif
-	vector<DeviceClass *>			cl_list;		// Full class list ptr
+	std::vector<DeviceClass *>			cl_list;		// Full class list ptr
 
 //
 // Ported from the extension class
 //
 
-	map<string,vector<string> >	cmd_line_name_list;		// Command line map <Class name, device name list>
+	std::map<std::string,std::vector<std::string> >	cmd_line_name_list;		// Command line map <Class name, device name list>
 
 	PollThread					*heartbeat_th;			// The heartbeat thread object
 	int							heartbeat_th_id;		// The heartbeat thread identifier
@@ -1018,18 +1018,18 @@ private:
 	bool						svr_starting;			// Server is starting flag
 	bool						svr_stopping;			// Server is shutting down flag
 
-	vector<string>				polled_dyn_attr_names;	// Dynamic att. names (used for polling clean-up)
-	vector<string>				polled_dyn_cmd_names;	// Dynamic cmd. names (used for polling clean-up)
-	vector<string>				polled_att_list;		// Full polled att list
-	vector<string>				polled_cmd_list;		// Full polled cmd list
-	vector<string>				all_dyn_attr;			// All dynamic attr name list
-	string						dyn_att_dev_name;		// Device name (use for dyn att clean-up)
-	string						dyn_cmd_dev_name;		// Device name (use for dyn cmd clean-up)
+	std::vector<std::string>				polled_dyn_attr_names;	// Dynamic att. names (used for polling clean-up)
+	std::vector<std::string>				polled_dyn_cmd_names;	// Dynamic cmd. names (used for polling clean-up)
+	std::vector<std::string>				polled_att_list;		// Full polled att list
+	std::vector<std::string>				polled_cmd_list;		// Full polled cmd list
+	std::vector<std::string>				all_dyn_attr;			// All dynamic attr name list
+	std::string						dyn_att_dev_name;		// Device name (use for dyn att clean-up)
+	std::string						dyn_cmd_dev_name;		// Device name (use for dyn cmd clean-up)
 
 	unsigned long				poll_pool_size;			// Polling threads pool size
-	vector<string>  			poll_pool_conf;			// Polling threads pool conf.
-	map<string,int>				dev_poll_th_map;		// Link between device name and polling thread id
-	vector<PollingThreadInfo *>	poll_ths;				// Polling threads
+	std::vector<std::string>  			poll_pool_conf;			// Polling threads pool conf.
+	std::map<std::string,int>				dev_poll_th_map;		// Link between device name and polling thread id
+	std::vector<PollingThreadInfo *>	poll_ths;				// Polling threads
 	bool						conf_needs_db_upd;		// Polling conf needs to be udated in db
 
 	bool 						(*ev_loop_func)(void);	// Ptr to user event loop
@@ -1038,14 +1038,14 @@ private:
 	SubDevDiag					sub_dev_diag;			// Object to handle sub device diagnostics
 	bool						_dummy_thread;			// The main DS thread is not the process main thread
 
-	string						svr_port_num;			// Server port when using file as database
+	std::string						svr_port_num;			// Server port when using file as database
 
 	ZmqEventSupplier            *zmq_event_supplier;    // The zmq event supplier object
 	bool                        endpoint_specified;     // Endpoint specified on cmd line
-	string                      specified_ip;           // IP address specified in the endpoint
+	std::string                      specified_ip;           // IP address specified in the endpoint
 	DevLong                     user_pub_hwm;           // User defined pub HWM
 
-	vector<string>              restarting_devices;     // Restarting devices name
+	std::vector<std::string>              restarting_devices;     // Restarting devices name
 	bool                        wattr_nan_allowed;      // NaN allowed when writing attribute
 	RootAttRegistry				root_att_reg;			// Root attribute(s) registry
 
@@ -1072,13 +1072,13 @@ private:
 //
 //-----------------------------------------------------------------------------
 
-inline bool Util::is_device_restarting(string &d_name)
+inline bool Util::is_device_restarting(std::string &d_name)
 {
     bool ret = false;
 
     if (restarting_devices.empty() == false)
     {
-        vector<string>::iterator pos;
+        std::vector<std::string>::iterator pos;
         pos = find(restarting_devices.begin(),restarting_devices.end(),d_name);
         if (pos != restarting_devices.end())
             ret = true;
@@ -1107,11 +1107,11 @@ inline void Util::check_orb_endpoint(int argc, char *argv[])
 		if (::strcmp(argv[arg_nb],"-ORBendPoint") == 0)
 		{
 			arg_nb++;
-			string endpoint = argv[arg_nb];
-			string::size_type pos;
-			if ((pos = endpoint.rfind(':')) == string::npos)
+			std::string endpoint = argv[arg_nb];
+			std::string::size_type pos;
+			if ((pos = endpoint.rfind(':')) == std::string::npos)
 			{
-				cerr << "Strange ORB endPoint specification" << endl;
+				std::cerr << "Strange ORB endPoint specification" << std::endl;
 				print_usage(argv[0]);
 			}
 			svr_port_num = endpoint.substr(++pos);
@@ -1120,7 +1120,7 @@ inline void Util::check_orb_endpoint(int argc, char *argv[])
 	}
 	if (arg_nb == argc)
 	{
-		cerr << "Missing ORB endPoint specification" << endl;
+		std::cerr << "Missing ORB endPoint specification" << std::endl;
 		print_usage(argv[0]);
 	}
 }
@@ -1137,7 +1137,7 @@ inline void Util::check_orb_endpoint(int argc, char *argv[])
 //
 //-----------------------------------------------------------------------------
 
-inline void Util::event_name_2_event_type(string &event_name,EventType &et)
+inline void Util::event_name_2_event_type(std::string &event_name,EventType &et)
 {
 	if (event_name == "change")
 		et = CHANGE_EVENT;
@@ -1188,7 +1188,7 @@ inline CORBA::Any *return_empty_any(const char *cmd)
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc &)
+	catch (std::bad_alloc &)
 	{
 		TangoSys_MemStream o;
 
@@ -1234,10 +1234,10 @@ struct PollingThreadInfo
 	PollThread							*poll_th;			// The polling thread object
 	PollThCmd							shared_data;		// The shared buffer
 	TangoMonitor						poll_mon;			// The monitor
-	vector<string>						polled_devices;		// Polled devices for this thread
+	std::vector<std::string>						polled_devices;		// Polled devices for this thread
 	int									nb_polled_objects;	// Polled objects number in this thread
 	int 								smallest_upd;		// Smallest thread update period
-	vector<DevVarLongStringArray *> 	v_poll_cmd;			// Command(s) to send
+	std::vector<DevVarLongStringArray *> 	v_poll_cmd;			// Command(s) to send
 
 	PollingThreadInfo():thread_id(0),poll_th(NULL),poll_mon("Polling_thread_mon"),nb_polled_objects(0),smallest_upd(0)
 	{shared_data.cmd_pending = false;shared_data.trigger=false;}
@@ -1300,10 +1300,10 @@ public:
 	DevVarULong64Array			PerTh_dvul64a;
 	DevVarEncodedArray			PerTh_dvea;
 
-	string						PerTh_string;
+	std::string						PerTh_string;
 	DevFailed					PerTh_df;
-	vector<string>				PerTh_vec_str;
-	vector<double>				PerTh_vec_db;
+	std::vector<std::string>  PerTh_vec_str;
+	std::vector<double>				PerTh_vec_db;
 	DevErrorList				PerTh_del;
 
 	bool						rec_state;
@@ -1311,7 +1311,7 @@ public:
 
 	// name of the associated device to a thread
 	// used to sub device referencing
-	string 						device_name;
+	std::string 						device_name;
 
 	PyLock						*PerTh_py_lock;
 };
