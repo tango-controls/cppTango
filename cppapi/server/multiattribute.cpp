@@ -1156,7 +1156,7 @@ Attribute &MultiAttribute::get_attr_by_name(const char *attr_name)
     {
         attr = ext->attr_map.at(st).att_ptr;
     }
-    catch(std::out_of_range e)
+    catch(std::out_of_range &e)
     {
         cout3 << "MultiAttribute::get_attr_by_name throwing exception" << std::endl;
         TangoSys_OMemStream o;
@@ -1211,7 +1211,7 @@ WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
     {
         attr = ext->attr_map.at(st).att_ptr;
     }
-    catch(std::out_of_range e)
+    catch(std::out_of_range &e)
     {
         cout3 << "MultiAttribute::get_attr_by_name throwing exception" << std::endl;
         TangoSys_OMemStream o;
@@ -1279,7 +1279,7 @@ long MultiAttribute::get_attr_ind_by_name(const char *attr_name)
     {
         i = ext->attr_map.at(st).att_index_in_vector;
     }
-    catch(std::out_of_range e)
+    catch(std::out_of_range &e)
     {
         cout3 << "MultiAttribute::get_attr_ind_by_name throwing exception" << std::endl;
         TangoSys_OMemStream o;
