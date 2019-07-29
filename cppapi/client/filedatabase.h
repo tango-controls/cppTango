@@ -198,15 +198,11 @@ private:
 	static int ReadBufferSize;
 	static int MaxWordLength;
 
-
-	int 			length_buf;
-  	int 			pos_buf;
   	int 			CrtLine;
   	int 			StartLine;
   	char 			CurrentChar;
   	char 			NextChar;
 
-  	bool 			DELETE_ENTRY;
   	std::string 			word;
 
 #ifdef HAS_UNIQUE_PTR
