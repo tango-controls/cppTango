@@ -82,8 +82,9 @@ class OutputBitStream {
 #endif
    unsigned char *bufferPtr;
    unsigned char *numbits;
+#ifdef JPG_USE_ASM
    unsigned char  bScratch[4];
-
+#endif
 };
 
 // ------------------------------------------------------------
