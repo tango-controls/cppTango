@@ -831,7 +831,6 @@ void PollThread::one_more_poll()
         }
 
         std::list<WorkItem>::iterator ite;
-        std::vector<WorkItem>::iterator et_ite;
 
         for (size_t loop = 0;loop < auto_upd.size();loop++)
         {
