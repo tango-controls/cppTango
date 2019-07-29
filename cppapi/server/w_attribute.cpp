@@ -3064,7 +3064,7 @@ bool WAttribute::check_rds_alarm()
                     unsigned short delta =
                         (data_format == Tango::SCALAR) ? ushort_array_val[0] - tmp_ush[0] : ushort_array_val[i]
                             - (*value.ush_seq)[i];
-                    if (abs(delta) >= delta_val.ush)
+                    if (delta >= delta_val.ush)
                     {
                         quality = Tango::ATTR_ALARM;
                         alarm.set(rds);
@@ -3083,7 +3083,7 @@ bool WAttribute::check_rds_alarm()
                     unsigned char delta =
                         (data_format == Tango::SCALAR) ? uchar_array_val[0] - tmp_cha[0] : uchar_array_val[i]
                             - (*value.cha_seq)[i];
-                    if (abs(delta) >= delta_val.uch)
+                    if (delta >= delta_val.uch)
                     {
                         quality = Tango::ATTR_ALARM;
                         alarm.set(rds);
@@ -3165,7 +3165,7 @@ bool WAttribute::check_rds_alarm()
                 for (i = 0; i < nb_data; i++)
                 {
                     unsigned char delta = encoded_val.encoded_data[i] - (*value.enc_seq)[0].encoded_data[i];
-                    if (abs(delta) >= delta_val.uch)
+                    if (delta >= delta_val.uch)
                     {
                         quality = Tango::ATTR_ALARM;
                         alarm.set(rds);
