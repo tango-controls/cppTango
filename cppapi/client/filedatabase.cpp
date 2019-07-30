@@ -717,7 +717,11 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 		    	 			break;
 
 	           			default:
-                     				return "COLON or -> expected at line " + StartLine;
+						{
+							TangoSys_MemStream desc;
+							desc << "COLON or -> expected at line " << StartLine;
+							return desc.str();
+						}
 
 	         			}
 	         			break;
@@ -795,7 +799,11 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 		 			break;
 
 	       			default:
-                 			return "SLASH or -> expected at line " + StartLine;
+					{
+						TangoSys_MemStream desc;
+						desc << "SLASH or -> expected at line " << StartLine;
+						return desc.str();
+					}
 
 	     			}
 	     			break;
@@ -848,13 +856,21 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 	     			break;
 
 	   		default:
-             			return "SLASH or -> expected at line " + StartLine;
+				{
+					TangoSys_MemStream desc;
+					desc << "SLASH or -> expected at line " << StartLine;
+					return desc.str();
+				}
 			}
 			break;
 
       		default:
-        		return "Invalid resource name get  instead of STRING al line " + StartLine;
-      		}
+			{
+				TangoSys_MemStream desc;
+				desc << "Invalid resource name get  instead of STRING al line " << StartLine;
+				return desc.str();
+			}
+		}
 
       		eof=(word == lexical_word_null);
      		}
