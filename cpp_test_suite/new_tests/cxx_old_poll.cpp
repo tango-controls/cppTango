@@ -43,13 +43,14 @@ protected:
     int hist_depth;
 
 public:
-    SUITE_NAME() : hist_depth{10}, admin_dev_name{"dserver/"},
+    SUITE_NAME() : admin_dev_name{"dserver/"},
                    inst_name{"debian8"},//TODO pass from cmd
                    new_dev{"test/debian8/77"},
                    new_dev1_th2{"test/debian8/800"},
                    new_dev2_th2{"test/debian8/801"},
                    new_dev1_th3{"test/debian8/9000"},
-                   ref_polling_pool_conf{1, "test/debian8/10,test/debian8/11"} {
+                   ref_polling_pool_conf{1, "test/debian8/10,test/debian8/11"},
+                   hist_depth{10} {
 
 //
 // Arguments check -------------------------------------------------
