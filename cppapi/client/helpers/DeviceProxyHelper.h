@@ -420,7 +420,7 @@ namespace Tango
 		//  Overloaded commands to  avoid usage of DevVarXX ARRAY for argout
 		//---------------------------------------------------------------------------
 		template <class _IN>
-			void internal_command_inout (const std::string& cmd_name, const _IN& argin, DevVarDoubleStringArray* argout,std::string file= __FILE__, int line= __LINE__)
+			void internal_command_inout (const std::string& TANGO_UNUSED(cmd_name), const _IN& TANGO_UNUSED(argin), DevVarDoubleStringArray* TANGO_UNUSED(argout), std::string file= __FILE__, int line= __LINE__)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_inout:Use only STL vector instead of DevVarDoubleStringArray *****")
@@ -437,7 +437,7 @@ namespace Tango
 		//  Overloaded commands to  avoid usage of DevVarXX ARRAY for argout
 		//---------------------------------------------------------------------------
 		template <class _IN>
-			void internal_command_inout (const std::string& cmd_name, const _IN& argin, DevVarLongStringArray* argout,std::string file= __FILE__, int line= __LINE__)
+			void internal_command_inout (const std::string& TANGO_UNUSED(cmd_name), const _IN& TANGO_UNUSED(argin), DevVarLongStringArray* TANGO_UNUSED(argout), std::string file= __FILE__, int line= __LINE__)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_inout:Use only STL vector instead of DevVarLongStringArray *****")
@@ -453,7 +453,7 @@ namespace Tango
 		//  Overloaded commands to  avoid usage of DevVarXX ARRAY for argout
 		//---------------------------------------------------------------------------
 		template <class _IN>
-			void internal_command_inout (const std::string& cmd_name, const _IN& argin, DevVarDoubleStringArray& argout,std::string file= __FILE__, int line= __LINE__)
+			void internal_command_inout (const std::string& TANGO_UNUSED(cmd_name), const _IN& TANGO_UNUSED(argin), DevVarDoubleStringArray& TANGO_UNUSED(argout), std::string file= __FILE__, int line= __LINE__)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_inout:Use only STL vector instead of DevVarDoubleStringArray *****")
@@ -470,7 +470,7 @@ namespace Tango
 		//  Overloaded commands to  avoid usage of DevVarXX ARRAY for argout
 		//---------------------------------------------------------------------------
 		template <class _IN>
-			void internal_command_inout (const std::string& cmd_name, const _IN& argin, DevVarLongStringArray& argout,std::string file= __FILE__, int line= __LINE__)
+			void internal_command_inout (const std::string& TANGO_UNUSED(cmd_name), const _IN& TANGO_UNUSED(argin), DevVarLongStringArray& TANGO_UNUSED(argout), std::string file= __FILE__, int line= __LINE__)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_inout:Use only STL vector instead of DevVarLongStringArray *****")
@@ -608,7 +608,7 @@ namespace Tango
 		//  Overloaded commands to  avoid usage of DevVarDoubleStringArray ARRAY
 		//---------------------------------------------------------------------------
 		template <class _OUT>
-			void internal_command_out(_OUT dummy, DevVarDoubleStringArray* argout,  std::string file= __FILE__, int line= __LINE__)
+			void internal_command_out(_OUT TANGO_UNUSED(dummy), DevVarDoubleStringArray* TANGO_UNUSED(argout),  std::string file= __FILE__, int line= __LINE__)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_out:Use only STL vector instead of DevVarDoubleStringArray *****")
@@ -626,7 +626,7 @@ namespace Tango
 		//  Overloaded commands to  avoid usage of DevVarLongStringArray ARRAY
 		//---------------------------------------------------------------------------
 		template <class _OUT>
-			void internal_command_out (_OUT dummy, DevVarLongStringArray* argout,  std::string file= __FILE__, int line= __LINE__)
+			void internal_command_out (_OUT TANGO_UNUSED(dummy), DevVarLongStringArray* TANGO_UNUSED(argout),  std::string file= __FILE__, int line= __LINE__)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_out:Use only STL vector instead of DevVarLongStringArray *****")
@@ -642,7 +642,7 @@ namespace Tango
 		//  Overloaded commands to  avoid usage of DevVarDoubleStringArray ARRAY
 		//---------------------------------------------------------------------------
 		template <class _OUT>
-			void internal_command_out(_OUT dummy, DevVarDoubleStringArray& argout,  std::string file= __FILE__, int line= __LINE__)
+			void internal_command_out(_OUT TANGO_UNUSED(dummy), DevVarDoubleStringArray& TANGO_UNUSED(argout),  std::string file= __FILE__, int line= __LINE__)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_out:Use only STL vector instead of DevVarDoubleStringArray *****")
@@ -658,7 +658,7 @@ namespace Tango
 		//  Overloaded commands to  avoid usage of DevVarLongStringArray ARRAY
 		//---------------------------------------------------------------------------
 		template <class _OUT>
-			void internal_command_out (_OUT dummy, DevVarLongStringArray& argout,  std::string file= __FILE__, int line= __LINE__)
+			void internal_command_out (_OUT TANGO_UNUSED(dummy), DevVarLongStringArray& TANGO_UNUSED(argout),  std::string file= __FILE__, int line= __LINE__)
 		{
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #pragma message  (" TANGO WARNING ***** command_out:Use only STL vector instead of DevVarLongStringArray *****")
