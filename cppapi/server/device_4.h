@@ -31,7 +31,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //
 //=============================================================================
@@ -68,8 +67,6 @@ namespace Tango
  * Tango module has been modified in order to create a Device_4 interface
  * which inherits from the original Device interface
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server

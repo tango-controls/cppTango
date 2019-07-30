@@ -30,7 +30,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //=============================================================================
 
@@ -73,8 +72,6 @@ typedef bool (DeviceImpl::*ALLO_PTR)(const CORBA::Any &);
  * related classes for command implemented with the inheritance model or
  * with the template command model
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server
@@ -1281,8 +1278,6 @@ private:
  * This class is a class representing a command in the template command model
  * without input or output parameter
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server
@@ -1677,8 +1672,6 @@ protected:
  *<p>Synopsis : template <typename INARG,typename OUTARG> class TemplCommandInOut:public TemplCommand;</p>
  *<p>Usage : new TemplCommandInOut<Tango::DevLong,Tango::DevFloat>(...);</p>
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server
@@ -2233,8 +2226,6 @@ CORBA::Any *TemplCommandInOut<INARG,OUTARG>::execute(DeviceImpl *dev_ptr,const C
  *<p>Synopsis : template typename &lt;INARG&gt; class TemplCommandIn:public TemplCommand;</p>
  *<p>Usage : new TemplCommandIn&lt;Tango::DevLong&gt;(...);</p>
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server
@@ -2785,8 +2776,6 @@ CORBA::Any *TemplCommandIn<INARG>::execute(DeviceImpl *dev_ptr,const CORBA::Any 
  *<p>Synopsis : template &lt;typename OUTARG&gt; class TemplCommandOut:public TemplCommand;</p>
  *<p>Usage : new TemplCommandOut&lt;Tango::DevLong&gt;(...);</p>
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server

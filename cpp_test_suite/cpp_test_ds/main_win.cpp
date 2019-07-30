@@ -12,9 +12,7 @@ static const char *RcsId = "$Header$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// $Version$
 //
-// $Log$
 //
 // copyleft :           European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043

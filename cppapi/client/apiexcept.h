@@ -48,8 +48,6 @@ namespace Tango {
  *
  * This class is used as exception for the DeviceProxy::write_attribute call()
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client
@@ -73,8 +71,6 @@ public:
  *
  * This class is used as exception for the DeviceProxy::write_attribute call()
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client

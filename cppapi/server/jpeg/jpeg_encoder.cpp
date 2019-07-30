@@ -29,9 +29,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
-// $Log$
 // Revision 1.3  2009/09/08 14:23:16  taurel
 // - No real change, just to make CVS quiet
 //

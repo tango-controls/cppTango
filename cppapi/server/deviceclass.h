@@ -28,7 +28,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //
 //=============================================================================
@@ -66,8 +65,6 @@ class DServer;
  * a class where is stored all data/method common to all devices of a TANGO
  * device class
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server

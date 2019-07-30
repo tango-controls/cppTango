@@ -30,9 +30,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
-// $Log$
 // Revision 1.2  2009/04/20 14:55:58  jlpons
 // Added GPL header, changed memory allocation to C++ fashion.
 //

@@ -28,7 +28,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //=============================================================================
 
@@ -58,8 +57,6 @@ namespace Tango
  * This class represents a writable attribute. It inherits from the Attribute
  * class and only add what is specific to writable attribute.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server

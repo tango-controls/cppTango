@@ -2,7 +2,6 @@
 //
 // project :      TANGO Utility
 // file :         DeviceProxyHelper.h:
-// $Revision$
 //
 //
 //   description :  This utility class helps to use command_inout,read_attributes and write_attribute(s)
@@ -86,7 +85,6 @@
 //
 
 //
-// $Author$
 //
 // Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						Synchrotron SOLEIL
@@ -108,9 +106,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
-// $Log$
 // Revision 1.8  2010/09/21 12:08:44  taurel
 // - Added GPL header
 //

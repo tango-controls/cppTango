@@ -141,8 +141,6 @@ public:
 /**
  * This class is used to store one element of an attribute history stack.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server
@@ -711,8 +709,6 @@ public:
  * directly fills the attribute polling buffer. Each element in this stack
  * will be used to store one element of the attribute polling buffer
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server
@@ -788,8 +784,6 @@ public:
 /**
  * This class is used to store one element of a command history stack.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server
@@ -898,8 +892,6 @@ public:
  * directly fills the command polling buffer. Each element in this stack
  * will be used to store one element of the command polling buffer
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server

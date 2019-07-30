@@ -27,7 +27,6 @@
 // You should have received a copy of the GNU Lesser General Public License along with Tango.
 // If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //===================================================================================================================
 
@@ -48,8 +47,6 @@ namespace Tango
  * this UserDefaultFwdAttrProp class) and finally a Tango library default
  * value
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server
@@ -107,8 +104,6 @@ class MultiAttribute;
  * database allows the Tango core software to create the FwdAttribute object
  * for the forwarded attribute created by the user.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server

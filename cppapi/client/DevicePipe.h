@@ -21,7 +21,6 @@
 // You should have received a copy of the GNU Lesser General Public License along with Tango.
 // If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //===================================================================================================================
 
@@ -33,8 +32,6 @@
  *
  * This is the fundamental type for extracting data from a device pipe blob
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client
@@ -101,8 +98,6 @@ DataElement<T>::DataElement()
  *
  * A device pipe blob. A blob is used to pack data to be sent through device pipe
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client
@@ -800,8 +795,6 @@ private:
  *
  * This is the fundamental type for sending/receiving data to/from device pipe.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client

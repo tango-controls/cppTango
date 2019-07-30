@@ -26,7 +26,6 @@
 // You should have received a copy of the GNU Lesser General Public License along with Tango.
 // If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //===================================================================================================================
 
@@ -67,8 +66,6 @@ struct WantedPipe : public binary_function<A1,A2,R>
  * This class is a class representing a pipe in the TANGO device server pattern. It is an abstract class.
  * It is the root class for all pipe related classes.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server
