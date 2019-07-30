@@ -267,7 +267,8 @@ int main(int argc, char **argv)
 		finish = false;
 		bool failed = false;
 		nb_not_arrived = 0;
-		long nb_except,faulty_idx;
+		long nb_except = 0;
+		long faulty_idx = 0;
 		while (finish == false)
 		{
 			try
