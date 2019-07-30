@@ -63,7 +63,7 @@ DevTestClass *DevTestClass::init(const char *name)
 			std::string s(name);
 			_instance = new DevTestClass(s);
 		}
-		catch (std::bad_alloc)
+		catch (std::bad_alloc&)
 		{
 			throw;
 		}

@@ -121,7 +121,7 @@ public:
 					device1->write_attribute_reply(id);
 					finish = true;
 				}
-				catch (AsynReplyNotArrived)
+				catch (AsynReplyNotArrived&)
 				{
 					finish = false;
 					coutv << "Attribute not yet written" << endl;
@@ -179,7 +179,7 @@ public:
                     device1->write_attribute_reply(id);
                     finish = true;
                 }
-                catch (AsynReplyNotArrived)
+                catch (AsynReplyNotArrived&)
                 {
                     finish = false;
                     coutv << "Attribute not yet written" << endl;
@@ -210,7 +210,7 @@ public:
 					assert( val == 444 );
 					finish = true;
 				}
-				catch (AsynReplyNotArrived )
+				catch (AsynReplyNotArrived&)
 				{
 					finish = false;
 					coutv << "Attribute not yet read" << endl;

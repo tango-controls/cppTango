@@ -1,4 +1,4 @@
-/* 
+/*
  * Small utility program to help testing locking features.
  *
  * Possible return code:
@@ -22,7 +22,7 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
-	
+
 	if ((argc == 1) || (argc > 3))
 	{
 		cout << "usage: %s device [-v] " << endl;
@@ -30,14 +30,14 @@ int main(int argc, char **argv)
 	}
 
 	string device_name = argv[1];
-	
+
 	if (argc == 3)
 	{
 		if (strcmp(argv[2],"-v") == 0)
 			verbose = true;
-	}	
+	}
 
-	try 
+	try
 	{
 		device = new DeviceProxy(device_name);
 	}
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 
 	try
 	{
-		dout = device->command_inout("IOShort",din);					
+		dout = device->command_inout("IOShort",din);
 	}
 	catch (Tango::DevFailed &e)
 	{
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 			dout = device->command_inout_reply(id);
 			finish = true;
 		}
-		catch (AsynReplyNotArrived)
+		catch (AsynReplyNotArrived&)
 		{
 			finish = false;
 			coutv << "Command not yet arrived" << endl;
@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 			device->write_attribute_reply(id);
 			finish = true;
 		}
-		catch (AsynReplyNotArrived)
+		catch (AsynReplyNotArrived&)
 		{
 			finish = false;
 			coutv << "Attribute not yet written" << endl;
@@ -171,7 +171,7 @@ int main(int argc, char **argv)
 			return 1;
 	}
 
-	delete device;		
+	delete device;
 	return 0;
-	
+
 }

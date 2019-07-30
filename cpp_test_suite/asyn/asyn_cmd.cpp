@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 				assert( l == 8 );
 				finish = true;
 			}
-			catch (AsynReplyNotArrived)
+			catch (AsynReplyNotArrived&)
 			{
 				finish = false;
 				coutv << "Command not yet arrived" << std::endl;
@@ -99,7 +99,7 @@ int main(int argc, char **argv)
 				assert( l == 8 );
 				finish = true;
 			}
-			catch (AsynReplyNotArrived)
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Command not yet arrived" << std::endl;
 				nb_not_arrived++;
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
 				dout = device->command_inout_reply(id);
 				finish = true;
 			}
-			catch (AsynReplyNotArrived)
+			catch (AsynReplyNotArrived&)
 			{
 				finish = false;
 				nb_not_arrived++;
@@ -195,7 +195,7 @@ int main(int argc, char **argv)
 				dout = device->command_inout_reply(id,500);
 				finish = true;
 			}
-			catch (AsynReplyNotArrived)
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Command not yet arrived" << std::endl;
 				nb_not_arrived++;
@@ -275,7 +275,7 @@ int main(int argc, char **argv)
 				dout = device->command_inout_reply(id);
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				finish = false;
 				nb_not_arrived++;
@@ -315,7 +315,7 @@ int main(int argc, char **argv)
 				dout = device->command_inout_reply(id,500);
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Command not yet arrived" << std::endl;
 			}

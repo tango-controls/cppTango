@@ -160,7 +160,7 @@ int main(int argc, char **argv)
 			{
 				device->get_asynch_replies(200);
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived &)
 			{
 				coutv << "Attribute not yet written" << std::endl;
 				nb_not_arrived++;
@@ -248,7 +248,7 @@ int main(int argc, char **argv)
 			{
 				device->get_asynch_replies(500);
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived &)
 			{
 				coutv << "Attribute not yet written" << std::endl;
 				nb_not_arrived++;
@@ -339,7 +339,7 @@ int main(int argc, char **argv)
 			{
 				device->get_asynch_replies(500);
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived &)
 			{
 				coutv << "Attribute not yet written" << std::endl;
 				nb_not_arrived++;

@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 				device->write_attributes_reply(id);
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				finish = false;
 				coutv << "Attributes not yet written" << std::endl;
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 				device->write_attributes_reply(id,200);
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Attributes not yet written" << std::endl;
 				nb_not_arrived++;
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
 				device->write_attributes_reply(id);
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				finish = false;
 				nb_not_arrived++;
@@ -195,7 +195,7 @@ int main(int argc, char **argv)
 				device->write_attributes_reply(id,200);
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Attributes not yet written" << std::endl;
 				nb_not_arrived++;
@@ -276,7 +276,7 @@ int main(int argc, char **argv)
 				device->write_attributes_reply(id);
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				finish = false;
 				nb_not_arrived++;
@@ -325,7 +325,7 @@ int main(int argc, char **argv)
 				device->write_attributes_reply(id,500);
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Attribute not yet written" << std::endl;
 			}

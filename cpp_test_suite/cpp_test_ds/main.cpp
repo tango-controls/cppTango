@@ -36,7 +36,7 @@ int main(int argc,char *argv[])
 
 		tg->server_run();
 	}
-	catch (std::bad_alloc)
+	catch (std::bad_alloc&)
 	{
 		cout << "Can't allocate memory to store device object !!!" << std::endl;
 		cout << "Exiting" << std::endl;
