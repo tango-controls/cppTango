@@ -209,7 +209,11 @@ private:
   	bool 			DELETE_ENTRY;
   	std::string 			word;
 
-	FileDatabaseExt	*ext;
+#ifdef HAS_UNIQUE_PTR
+    std::unique_ptr<FileDatabaseExt> ext;
+#else
+    FileDatabaseExt	*ext;
+#endif
 };
 
 } // end namespace Tango

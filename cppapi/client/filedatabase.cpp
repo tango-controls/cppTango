@@ -233,6 +233,7 @@ FileDatabaseExt::~FileDatabaseExt() {}
 
 
 FileDatabase::FileDatabase(const std::string& file_name)
+  :ext(new FileDatabaseExt)
 {
 	cout4 << "FILEDATABASE: FileDatabase constructor" << endl;
 	filename = file_name;
@@ -286,6 +287,9 @@ FileDatabase::~FileDatabase()
 		delete (*j);
 	}
 
+#ifndef HAS_UNIQUE_PTR
+	delete ext;
+#endif
 }
 
 // ****************************************************
