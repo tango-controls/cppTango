@@ -1,5 +1,5 @@
 #TODO windows
-configure_file(tango_host.cmake ${PROJECT_BINARY_DIR}/tango_host @ONLY)
+configure_file(tango_host.cmake tango_host @ONLY)
 
 configure_file(pre_test.sh.cmake pre_test.sh @ONLY)
 execute_process(COMMAND chmod +x ${CMAKE_CURRENT_BINARY_DIR}/pre_test.sh)
