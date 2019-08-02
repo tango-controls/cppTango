@@ -23,7 +23,6 @@
  *
  * by NL - SOLEIL - 01/2003.
  *
- * $Revision$
  *
  */
 

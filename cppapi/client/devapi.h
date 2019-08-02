@@ -21,7 +21,6 @@
 // You should have received a copy of the GNU Lesser General Public License along with Tango.
 // If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //====================================================================================================================
 
@@ -503,8 +502,6 @@ enum cb_sub_model
  * <a href=http://www.esrf.eu/computing/cs/tango/tango_doc/kernel_doc/ds_prog/index.html target=new>Tango book</a>
  * for all details regarding device polling.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client
@@ -626,8 +623,6 @@ typedef std::vector<DeviceDataHistory> DeviceDataHistoryList;
  * <a href=http://www.esrf.eu/computing/cs/tango/tango_doc/kernel_doc/ds_prog/index.html target=new>Tango book</a> for all details regarding
  * device polling.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client

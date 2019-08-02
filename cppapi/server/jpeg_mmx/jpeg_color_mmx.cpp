@@ -29,9 +29,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
-// $Log$
 // Revision 1.7  2009/08/27 07:24:30  taurel
 // - Commit after another merge with Release_7_0_2-bugfixes branch
 //

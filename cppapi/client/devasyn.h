@@ -68,8 +68,6 @@ class EventConsumerKeepAliveThread;
  *
  * This class is used to pass data to the callback method in asynchronous callback model for command execution.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client
@@ -121,8 +119,6 @@ private:
  * This class is used to pass data to the callback method in asynchronous callback model for read_attribute(s)
  * execution
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client
@@ -174,8 +170,6 @@ private:
  * This class is used to pass data to the callback method in asynchronous callback model for write_attribute(s)
  * execution.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client
@@ -226,8 +220,6 @@ private:
  * where the callback method could be executed concurently by different threads started by the ORB. The
  * user has to code his callback method in a thread safe manner.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client

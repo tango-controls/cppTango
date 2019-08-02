@@ -30,7 +30,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //
 //=============================================================================
@@ -77,8 +76,6 @@ struct EventPar
  * an aggregate of Attribute or WAttribute objects. It eases management of
  * multiple attributes
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server

@@ -29,9 +29,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
-// $Log$
 // Revision 1.3  2009/11/02 08:36:17  taurel
 // - Fix warnings reported when compiling using the option -Wall
 //

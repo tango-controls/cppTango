@@ -26,7 +26,6 @@
 // You should have received a copy of the GNU Lesser General Public License along with Tango.
 // If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //===================================================================================================================
 
@@ -80,8 +79,6 @@ class FwdWrongConf;
  * This class inherits from CORBA classes where all the network layer is
  * implemented.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server

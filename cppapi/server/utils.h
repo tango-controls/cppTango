@@ -28,7 +28,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //=============================================================================
 
@@ -143,8 +142,6 @@ public:
  * the singleton design pattern. Therefore a device server process can have only
  * one instance of this class and its constructor is not public.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server

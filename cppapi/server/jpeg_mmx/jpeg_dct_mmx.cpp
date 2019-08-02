@@ -29,9 +29,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
-// $Log$
 // Revision 1.9  2009/09/02 08:01:43  taurel
 // - Fix linker problem when used with gcc release < 4
 //

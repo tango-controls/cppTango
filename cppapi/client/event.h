@@ -27,7 +27,6 @@
 // You should have received a copy of the GNU Lesser General Public License along with Tango.
 // If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //===================================================================================================================
 
@@ -63,8 +62,6 @@ void leavefunc();
  *
  * This class is used to pass data to the callback method when an event is sent to the client
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client
@@ -162,8 +159,6 @@ public:
  * This class is used to pass data to the callback method when an attribute configuration event is sent to the
  * client
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client
@@ -258,8 +253,6 @@ public:
  *
  * This class is used to pass data to the callback method when an attribute data ready event is sent to the client.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client
@@ -343,8 +336,6 @@ public:
  *
  * This class is used to pass data to the callback method when a device interface change event is sent to the client.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client
@@ -429,8 +420,6 @@ public:
  *
  * This class is used to pass data to the callback method when a pipe event is sent to the client
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Client

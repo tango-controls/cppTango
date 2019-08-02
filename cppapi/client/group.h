@@ -28,7 +28,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //=============================================================================
 
@@ -130,8 +129,6 @@ typedef AsynchRequestRep::value_type AsynchRequestRepValue;
 /**
  * Base class for Group reply
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Grp
@@ -242,8 +239,6 @@ protected:
 /**
  * Single element group reply for a command execution
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Grp
@@ -329,8 +324,6 @@ private:
 /**
  * Single element group reply for a read attribute execution
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Grp
@@ -394,8 +387,6 @@ private:
  * device in the  group heierarchy has his own GroupReply object
  * which can be retrieved with the classical vector [] operator
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Grp
@@ -459,8 +450,6 @@ private:
  * device in the  group heierarchy has his own GroupCmdReply object
  * which can be retrieved with the classical vector [] operator
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Grp
@@ -525,8 +514,6 @@ private:
  * device in the  group heierarchy has his own GroupAttrReply object
  * which can be retrieved with the classical vector [] operator
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Grp
@@ -724,8 +711,6 @@ private:
 /**
  * High level class allowing the user to handle Tango group
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Grp

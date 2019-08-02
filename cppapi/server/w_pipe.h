@@ -26,7 +26,6 @@
 // You should have received a copy of the GNU Lesser General Public License along with Tango.
 // If not, see <http://www.gnu.org/licenses/>.
 //
-// $Revision$
 //
 //===================================================================================================================
 
@@ -42,8 +41,6 @@ namespace Tango
  * This class is a class representing a writable pipe in the TANGO device server pattern. It is an base class.
  * It is the a root class for pipe related classes.
  *
- * $Author$
- * $Revision$
  *
  * @headerfile tango.h
  * @ingroup Server
