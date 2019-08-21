@@ -127,8 +127,6 @@ int main(int argc, char **argv)
 // The callback should have been executed
 //
 
-		Tango_sleep(1);
-
 		assert (cb.cb_executed == 2);
 		assert (cb.root_blob_name == "PipeEventCase0");
 
@@ -145,7 +143,6 @@ int main(int argc, char **argv)
 // The callback should have been executed
 //
 
-		Tango_sleep(1);
 
 		assert (cb.cb_executed == 3);
 		assert (cb.root_blob_name == "PipeEventCase1");
@@ -165,8 +162,6 @@ int main(int argc, char **argv)
 // The callback should have been executed
 //
 
-		Tango_sleep(1);
-
 		assert (cb.cb_executed == 4);
 		assert (cb.root_blob_name == "PipeEventCase2");
 
@@ -185,8 +180,6 @@ int main(int argc, char **argv)
 // The callback should have been executed
 //
 
-		Tango_sleep(1);
-
 		assert (cb.cb_executed == 5);
 
 		cout << "   received event (with error) --> OK" << std::endl;
@@ -203,8 +196,6 @@ int main(int argc, char **argv)
 //
 // The callback should have been executed
 //
-
-		Tango_sleep(1);
 
 		assert (cb.cb_executed == 6);
 		assert (cb.root_blob_name == "PipeEventCase4");
@@ -234,12 +225,9 @@ int main(int argc, char **argv)
 
 		eve_id1 = device->subscribe_event("RPipe",Tango::PIPE_EVENT,&cb);
 
-		Tango_sleep(1);
 		assert (cb.cb_executed == 2);
 
 		DevicePipe pipe_data = device->read_pipe("rPipe");
-
-		Tango_sleep(1);
 
 		assert (cb.cb_executed == 3);
 
