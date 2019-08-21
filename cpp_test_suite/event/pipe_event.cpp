@@ -4,6 +4,11 @@
 
 #include <tango.h>
 #include <assert.h>
+#include <mutex>
+#include <condition_variable>
+
+std::mutex m;
+std::condition_variable cv;
 
 #ifdef WIN32
 #include <sys/timeb.h>
@@ -19,48 +24,55 @@ using namespace Tango;
 
 bool verbose = false;
 
+int cb_executed = 0;
+int cb_err = 0;
+
 class EventCallBack : public Tango::CallBack
 {
 	void push_event(Tango::PipeEventData*);
 
 public:
-	int cb_executed;
-	int cb_err;
 	std::string root_blob_name;
 	size_t	nb_data;
 };
 
 void EventCallBack::push_event(Tango::PipeEventData* event_data)
 {
-	cb_executed++;
+    {
+        std::lock_guard<std::mutex> lk(m);
+        cb_executed++;
 
-	try
-	{
-		coutv << "EventCallBack::push_event(): called pipe " << event_data->pipe_name << " event " << event_data->event << "\n";
-		if (!event_data->err)
-		{
-			coutv << "Received pipe event for pipe " << event_data->pipe_name << std::endl;
+
+        try
+        {
+            coutv << "EventCallBack::push_event(): called pipe " << event_data->pipe_name << " event "
+                  << event_data->event << "\n";
+            if (!event_data->err)
+            {
+                coutv << "Received pipe event for pipe " << event_data->pipe_name << std::endl;
 //			coutv << *(event_data->pipe_value) << std::endl;
-			root_blob_name = event_data->pipe_value->get_root_blob_name();
+                root_blob_name = event_data->pipe_value->get_root_blob_name();
 
-			if (root_blob_name == "PipeEventCase4")
-			{
-				std::vector<Tango::DevLong> v_dl;
-				(*(event_data->pipe_value))["Martes"] >> v_dl;
-				nb_data = v_dl.size();
-			}
-		}
-		else
-		{
-			coutv << "Error sent to callback" << std::endl;
+                if (root_blob_name == "PipeEventCase4")
+                {
+                    std::vector<Tango::DevLong> v_dl;
+                    (*(event_data->pipe_value))["Martes"] >> v_dl;
+                    nb_data = v_dl.size();
+                }
+            }
+            else
+            {
+                coutv << "Error sent to callback" << std::endl;
 //			Tango::Except::print_error_stack(event_data->errors);
-		}
-	}
-	catch (...)
-	{
-		coutv << "EventCallBack::push_event(): could not extract data !\n";
-	}
+            }
+        }
+        catch (...)
+        {
+            coutv << "EventCallBack::push_event(): could not extract data !\n";
+        }
+    }
 
+    cv.notify_all();
 }
 
 int main(int argc, char **argv)
@@ -96,8 +108,6 @@ int main(int argc, char **argv)
 	try
 	{
 		EventCallBack cb;
-		cb.cb_executed = 0;
-		cb.cb_err = 0;
 
 //
 // subscribe to a pipe event
@@ -108,8 +118,12 @@ int main(int argc, char **argv)
 //
 // The callback should have been executed once
 //
+        {
+            std::unique_lock<std::mutex> lk(m);
+            cv.wait_for(lk, std::chrono::microseconds(1000));
+        }
 
-		assert (cb.cb_executed == 1);
+		assert (cb_executed == 1);
 
 		cout << "   subscribe_event --> OK" << std::endl;
 
@@ -123,11 +137,16 @@ int main(int argc, char **argv)
 
 		device->command_inout("PushPipeEvent",dd);
 
+        {
+            std::unique_lock<std::mutex> lk(m);
+            cv.wait_for(lk, std::chrono::microseconds(1000));
+        }
+
 //
 // The callback should have been executed
 //
 
-		assert (cb.cb_executed == 2);
+		assert (cb_executed == 2);
 		assert (cb.root_blob_name == "PipeEventCase0");
 
 //
@@ -142,9 +161,13 @@ int main(int argc, char **argv)
 //
 // The callback should have been executed
 //
+        {
+            std::unique_lock<std::mutex> lk(m);
+            cv.wait_for(lk, std::chrono::microseconds(1000));
+        }
 
 
-		assert (cb.cb_executed == 3);
+		assert (cb_executed == 3);
 		assert (cb.root_blob_name == "PipeEventCase1");
 
 		cout << "   received event --> OK" << std::endl;
@@ -161,8 +184,12 @@ int main(int argc, char **argv)
 //
 // The callback should have been executed
 //
+        {
+            std::unique_lock<std::mutex> lk(m);
+            cv.wait_for(lk, std::chrono::microseconds(1000));
+        }
 
-		assert (cb.cb_executed == 4);
+		assert (cb_executed == 4);
 		assert (cb.root_blob_name == "PipeEventCase2");
 
 		cout << "   received event (with specified date) --> OK" << std::endl;
@@ -180,7 +207,11 @@ int main(int argc, char **argv)
 // The callback should have been executed
 //
 
-		assert (cb.cb_executed == 5);
+        {
+            std::unique_lock<std::mutex> lk(m);
+            cv.wait_for(lk, std::chrono::microseconds(1000));
+        }
+		assert (cb_executed == 5);
 
 		cout << "   received event (with error) --> OK" << std::endl;
 
@@ -196,8 +227,12 @@ int main(int argc, char **argv)
 //
 // The callback should have been executed
 //
+        {
+            std::unique_lock<std::mutex> lk(m);
+            cv.wait_for(lk, std::chrono::microseconds(1000));
+        }
 
-		assert (cb.cb_executed == 6);
+		assert (cb_executed == 6);
 		assert (cb.root_blob_name == "PipeEventCase4");
 		assert (cb.nb_data == 3000);
 
@@ -216,20 +251,26 @@ int main(int argc, char **argv)
 // subscribe to a another pipe
 //
 
-		cb.cb_executed = 0;
-		cb.cb_err = 0;
-
 		DeviceData d_in;
 		d_in << (short)9;
 		device->command_inout("SetPipeOutput",d_in);
 
 		eve_id1 = device->subscribe_event("RPipe",Tango::PIPE_EVENT,&cb);
 
-		assert (cb.cb_executed == 2);
+        {
+            std::unique_lock<std::mutex> lk(m);
+            cv.wait_for(lk, std::chrono::microseconds(1000));
+        }
+
+		assert (cb_executed == 8);
 
 		DevicePipe pipe_data = device->read_pipe("rPipe");
 
-		assert (cb.cb_executed == 3);
+        {
+            std::unique_lock<std::mutex> lk(m);
+            cv.wait_for(lk, std::chrono::microseconds(1000));
+        }
+		assert (cb_executed == 9);
 
 		device->unsubscribe_event(eve_id1);
 
