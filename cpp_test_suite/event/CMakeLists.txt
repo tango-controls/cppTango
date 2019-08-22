@@ -6,7 +6,6 @@ set(TESTS   archive_event
             data_ready_event
             event_lock
             multi_event
-            pipe_event
 #            reco_svc
             scan
             state_event
@@ -39,5 +38,4 @@ add_test(NAME "event::data_ready_event"  COMMAND $<TARGET_FILE:data_ready_event>
 add_test(NAME "event::data_ready_event_buffer"  COMMAND $<TARGET_FILE:data_ready_event_buffer> ${DEV1})
 add_test(NAME "event::multi_dev_event"  COMMAND $<TARGET_FILE:multi_dev_event> ${DEV1} ${DEV2} ${DEV3})
 add_test(NAME "event::dev_intr_event"  COMMAND $<TARGET_FILE:dev_intr_event> ${DEV1})
-add_test(NAME "event::pipe_event"  COMMAND $<TARGET_FILE:pipe_event> ${DEV1})
 add_test(NAME "event::event_lock"  COMMAND $<TARGET_FILE:event_lock> ${DEV1})
