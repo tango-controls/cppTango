@@ -153,7 +153,7 @@ public:
 //
         {
             std::unique_lock<std::mutex> lk(m);
-            cv.wait_for(lk, std::chrono::microseconds(1000));
+            cv.wait_for(lk, std::chrono::milliseconds(1000));
         }
 
         TS_ASSERT_EQUALS (1, cb_executed);
@@ -172,7 +172,7 @@ public:
 
         {
             std::unique_lock<std::mutex> lk(m);
-            cv.wait_for(lk, std::chrono::microseconds(1000));
+            cv.wait_for(lk, std::chrono::milliseconds(1000));
         }
 
 //
@@ -196,7 +196,7 @@ public:
 //
         {
             std::unique_lock<std::mutex> lk(m);
-            cv.wait_for(lk, std::chrono::microseconds(1000));
+            cv.wait_for(lk, std::chrono::milliseconds(1000));
         }
 
 
@@ -219,7 +219,7 @@ public:
 //
         {
             std::unique_lock<std::mutex> lk(m);
-            cv.wait_for(lk, std::chrono::microseconds(1000));
+            cv.wait_for(lk, std::chrono::milliseconds(1000));
         }
 
         TS_ASSERT_EQUALS (4, cb_executed) ;
@@ -242,7 +242,7 @@ public:
 
         {
             std::unique_lock<std::mutex> lk(m);
-            cv.wait_for(lk, std::chrono::microseconds(1000));
+            cv.wait_for(lk, std::chrono::milliseconds(1000));
         }
         TS_ASSERT_EQUALS (5, cb_executed);
 
@@ -262,7 +262,7 @@ public:
 //
         {
             std::unique_lock<std::mutex> lk(m);
-            cv.wait_for(lk, std::chrono::microseconds(1000));
+            cv.wait_for(lk, std::chrono::milliseconds(1000));
         }
 
         TS_ASSERT_EQUALS (6, cb_executed);
@@ -292,7 +292,7 @@ public:
 
         {
             std::unique_lock<std::mutex> lk(m);
-            cv.wait_for(lk, std::chrono::microseconds(1000));
+            cv.wait_for(lk, std::chrono::milliseconds(1000));
         }
 
         TS_ASSERT_EQUALS (8, cb_executed);
@@ -301,7 +301,7 @@ public:
 
         {
             std::unique_lock<std::mutex> lk(m);
-            cv.wait_for(lk, std::chrono::microseconds(1000));
+            cv.wait_for(lk, std::chrono::milliseconds(1000));
         }
         TS_ASSERT_EQUALS (9, cb_executed);
 
