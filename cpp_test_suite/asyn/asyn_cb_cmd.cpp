@@ -136,7 +136,7 @@ int main(int argc, char **argv)
 			{
 				device->get_asynch_replies(200);
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Command not yet arrived" << std::endl;
 				nb_not_arrived++;
@@ -216,7 +216,7 @@ int main(int argc, char **argv)
 			{
 				device->get_asynch_replies(500);
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Command not yet arrived" << std::endl;
 				nb_not_arrived++;
@@ -300,7 +300,7 @@ int main(int argc, char **argv)
 			{
 				device->get_asynch_replies(500);
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Command not yet arrived" << std::endl;
 				nb_not_arrived++;

@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 				assert( sh == 12 );
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				finish = false;
 				coutv << "Attribute not yet read" << std::endl;
@@ -110,7 +110,7 @@ int main(int argc, char **argv)
 				assert( s == 12 );
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Attribute not yet read" << std::endl;
 				nb_not_arrived++;
@@ -169,7 +169,7 @@ int main(int argc, char **argv)
 				finish = true;
 				delete received;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				finish = false;
 				nb_not_arrived++;
@@ -211,7 +211,7 @@ int main(int argc, char **argv)
 				finish = true;
 				delete received;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Attributes not yet read" << std::endl;
 				nb_not_arrived++;
@@ -306,7 +306,7 @@ int main(int argc, char **argv)
 					(*received)[1] >> sh;
 				delete received;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				finish = false;
 				nb_not_arrived++;
@@ -341,7 +341,7 @@ int main(int argc, char **argv)
 				received = device->read_attributes_reply(id,500);
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Attributes not yet read" << std::endl;
 			}

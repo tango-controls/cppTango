@@ -141,8 +141,7 @@ public:
 ///@privatesection
   //- default ctor
   GroupReply ();
-  //- copy ctor
-  GroupReply (const GroupReply& src);
+
   //- ctor
   GroupReply (const std::string& dev_name,
               const std::string& obj_name,

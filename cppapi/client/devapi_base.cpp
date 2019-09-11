@@ -4104,7 +4104,7 @@ AttributeInfoList *DeviceProxy::get_attribute_config(std::vector<std::string> &a
                                               desc.str(),
                                               (const char *) "DeviceProxy::get_attribute_config()");
         }
-        catch (Tango::DevFailed)
+        catch (Tango::DevFailed&)
         {
             delete dev_attr_config;
             throw;
@@ -4334,7 +4334,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(std::vector<std::strin
                                               desc.str(),
                                               (const char *) "DeviceProxy::get_attribute_config()");
         }
-        catch (Tango::DevFailed)
+        catch (Tango::DevFailed&)
         {
             delete dev_attr_config;
             throw;
@@ -5087,7 +5087,7 @@ PipeInfoList *DeviceProxy::get_pipe_config(std::vector<std::string> &pipe_string
             ApiCommExcept::re_throw_exception(ce, "API_CommunicationFailed",
                                               desc.str(), "DeviceProxy::get_pipe_config()");
         }
-        catch (Tango::DevFailed)
+        catch (Tango::DevFailed&)
         {
             delete dev_pipe_config;
             throw;

@@ -198,16 +198,7 @@ GroupReply::GroupReply ()
 {
 
 }
-//-----------------------------------------------------------------------------
-GroupReply::GroupReply (const GroupReply& _src)
- : dev_name_m(_src.dev_name_m),
-   obj_name_m(_src.obj_name_m),
-   has_failed_m(_src.has_failed_m),
-   group_element_enabled_m(_src.group_element_enabled_m),
-   exception_m(_src.exception_m)
-{
 
-}
 //-----------------------------------------------------------------------------
 GroupReply::GroupReply (const std::string& _dev_name,
                         const std::string& _obj_name,

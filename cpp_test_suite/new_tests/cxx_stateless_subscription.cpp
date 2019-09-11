@@ -123,8 +123,7 @@ public:
 //
     void test_re_subscribe_and_check(void) {
         string att_name("event_change_tst");
-        int eventID;
-        TS_ASSERT_THROWS_NOTHING(eventID = device2->subscribe_event(att_name, Tango::CHANGE_EVENT, &eventCallback, true));
+        TS_ASSERT_THROWS_NOTHING(device2->subscribe_event(att_name, Tango::CHANGE_EVENT, &eventCallback, true));
 
 //
 // Wait for connection and event

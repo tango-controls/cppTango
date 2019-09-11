@@ -191,8 +191,7 @@ if(NOT WIN32)
         message("The compiler ${CMAKE_CXX_COMPILER} has no C++11/14 support. You may not benefit from performance optimizations.")
     endif()
 
-    #setup for GNU CXX compiler
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         message("found GNU compiler ...")
         if(CMAKE_BUILD_TYPE MATCHES RELEASE)
             message("setup for release build ...")

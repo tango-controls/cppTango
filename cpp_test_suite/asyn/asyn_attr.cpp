@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 				assert( db == 5.55 );
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				finish = false;
 				coutv << "Attribute not yet read" << std::endl;
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
 				assert( enc_data.encoded_data.length() == 4 );
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				finish = false;
 				coutv << "Attribute not yet read" << std::endl;
@@ -136,7 +136,7 @@ int main(int argc, char **argv)
 				assert( l == 5.55 );
 				finish = true;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Attribute not yet read" << std::endl;
 				nb_not_arrived++;
@@ -191,7 +191,7 @@ int main(int argc, char **argv)
 				finish = true;
 				delete received;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				finish = false;
 				nb_not_arrived++;
@@ -233,7 +233,7 @@ int main(int argc, char **argv)
 				finish = true;
 				delete received;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Attribute not yet read" << std::endl;
 				nb_not_arrived++;
@@ -313,7 +313,7 @@ int main(int argc, char **argv)
 				double db;
 				(*received) >> db;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				finish = false;
 				nb_not_arrived++;
@@ -357,7 +357,7 @@ int main(int argc, char **argv)
 				double db;
 				(*received) >> db;
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				coutv << "Attribute not yet read" << std::endl;
 			}

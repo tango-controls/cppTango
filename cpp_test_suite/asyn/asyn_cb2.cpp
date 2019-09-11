@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 			{
 				device->get_asynch_replies(300);
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				nb_not_arrived++;
 				coutv << "Command not yet arrived" << std::endl;
@@ -233,7 +233,7 @@ int main(int argc, char **argv)
 			{
 				ApiUtil::instance()->get_asynch_replies(300);
 			}
-			catch (AsynReplyNotArrived )
+			catch (AsynReplyNotArrived&)
 			{
 				nb_not_arrived++;
 				coutv << "Command not yet arrived" << std::endl;

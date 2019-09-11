@@ -178,7 +178,6 @@ DevIntrCmdType DevIntrThread::get_command(DevLong tout)
 
 void DevIntrThread::execute_cmd()
 {
-	std::vector<std::string>::iterator pos;
 	bool need_exit = false;
 
 	switch (local_cmd.cmd_code)
@@ -241,7 +240,7 @@ void DevIntrThread::push_event()
 	cout4 << "Device interface change event thread pushing event!" << std::endl;
 
 	AutoTangoMonitor sync(dev,true);
-	
+
 	if (shared_data.interface.has_changed(dev) == true)
 	{
 		cout4 << "Device interface has changed" << std::endl;

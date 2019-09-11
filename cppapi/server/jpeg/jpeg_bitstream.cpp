@@ -373,6 +373,8 @@ void OutputBitStream::encode_block(short *block,HUFFMANTABLE *hDC,HUFFMANTABLE *
 //------------------------------------------------------------------------------
 // Sign extension
 
+#ifdef _WINDOWS
+
 static const int extend_test[16] =   /* entry n is 2**(n-1) */
   { 0, 0x0001, 0x0002, 0x0004, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080,
     0x0100, 0x0200, 0x0400, 0x0800, 0x1000, 0x2000, 0x4000 };
@@ -384,8 +386,8 @@ static const int extend_offset[16] = /* entry n is (~0u << n) | 1 */
     (int)(((~0u)<<13) | 1), (int)(((~0u)<<14) | 1), (int)(((~0u)<<15) | 1) };
 
 // Tables are slightly faster with Visual C++
-#ifdef _WINDOWS
 #define HUFF_EXTEND(x,s) s = ((x) < extend_test[s] ? (x) + extend_offset[s] : (x))
+
 #else
 #define HUFF_EXTEND(x,s)  s = ((x) < (1<<((s)-1)) ? (x) + (int)(((~0u)<<(s)) | 1) : (x))
 #endif

@@ -198,18 +198,18 @@ private:
 	static int ReadBufferSize;
 	static int MaxWordLength;
 
-
-	int 			length_buf;
-  	int 			pos_buf;
   	int 			CrtLine;
   	int 			StartLine;
   	char 			CurrentChar;
   	char 			NextChar;
 
-  	bool 			DELETE_ENTRY;
   	std::string 			word;
 
-	FileDatabaseExt	*ext;
+#ifdef HAS_UNIQUE_PTR
+    std::unique_ptr<FileDatabaseExt> ext;
+#else
+    FileDatabaseExt	*ext;
+#endif
 };
 
 } // end namespace Tango
