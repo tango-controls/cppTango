@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [Unreleased]
+### Fixed
+- Be compatible with all in-use cppzmq versions ([#530][pr-530], [#561][pr-561], [#273][i-273], [#499][i-499], [#535][i-535])
+
 ## [9.3.3] - 2019-03-29
 ### Added
 - Add asyn_reconnection test ([#502][pr-502])
@@ -193,6 +197,7 @@ where a client application might show out of date/incorrect values.
 [i-17]: https://github.com/tango-controls/cppTango/issues/17
 [i-244]: https://github.com/tango-controls/cppTango/issues/244
 [i-266]: https://github.com/tango-controls/cppTango/issues/266
+[i-273]: https://github.com/tango-controls/cppTango/issues/273
 [i-275]: https://github.com/tango-controls/cppTango/issues/275
 [i-315]: https://github.com/tango-controls/cppTango/issues/315
 [i-339]: https://github.com/tango-controls/cppTango/issues/339
@@ -265,6 +270,7 @@ where a client application might show out of date/incorrect values.
 [pr-488]: https://github.com/tango-controls/cppTango/pull/488
 [i-492]: https://github.com/tango-controls/cppTango/issues/492
 [pr-493]: https://github.com/tango-controls/cppTango/pull/493
+[i-499]: https://github.com/tango-controls/cppTango/issues/499
 [pr-502]: https://github.com/tango-controls/cppTango/pull/502
 [pr-503]: https://github.com/tango-controls/cppTango/pull/503
 [pr-508]: https://github.com/tango-controls/cppTango/pull/508
@@ -279,9 +285,11 @@ where a client application might show out of date/incorrect values.
 [pr-522]: https://github.com/tango-controls/cppTango/pull/522
 [pr-523]: https://github.com/tango-controls/cppTango/pull/523
 [pr-529]: https://github.com/tango-controls/cppTango/pull/529
+[pr-530]: https://github.com/tango-controls/cppTango/pull/530
 [pr-531]: https://github.com/tango-controls/cppTango/pull/531
 [i-532]: https://github.com/tango-controls/cppTango/issues/532
 [pr-533]: https://github.com/tango-controls/cppTango/pull/533
+[i-535]: https://github.com/tango-controls/cppTango/issues/535
 [pr-537]: https://github.com/tango-controls/cppTango/pull/537
 [pr-539]: https://github.com/tango-controls/cppTango/pull/539
 [i-541]: https://github.com/tango-controls/cppTango/issues/541
@@ -289,3 +297,4 @@ where a client application might show out of date/incorrect values.
 [pr-544]: https://github.com/tango-controls/cppTango/pull/544
 [i-546]: https://github.com/tango-controls/cppTango/issues/546
 [pr-549]: https://github.com/tango-controls/cppTango/pull/549
+[pr-561]: https://github.com/tango-controls/cppTango/pull/561
