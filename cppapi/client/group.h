@@ -153,11 +153,15 @@ public:
               bool group_element_enabled = true);
   //- dtor
   virtual ~GroupReply ();
-  //- group_element_enabled accessor
+///@publicsection
+/**
+ * Check if the group element corresponding to this reply is enabled.
+ *
+ * @return true if corresponding element is enabled, false otherwise
+ */
   inline bool group_element_enabled () const {
     return group_element_enabled_m;
   }
-///@publicsection
    //- enable/disable exception - returns the previous mode
 /**
  * Enable/Disable exception
@@ -1028,14 +1032,32 @@ public:
   std::vector<std::string> get_device_list (bool fwd = true);
   //-
 
+/**
+ * Enables group element
+ *
+ * Enables group element. The element will participate in all group operations.
+ *
+ * @param [in] device_name name of the element, can contain wildcards (*).
+ * If more than one device matches the pattern, only the first one will be enabled.
+ * @param [in] fwd flag to perform recursive search for the element in all sub-groups
+ */
+  void enable (const std::string& device_name, bool fwd = true);
+
+/**
+ * Disables group element
+ *
+ * Disables group element. The element will be excluded from all group operations.
+ *
+ * @param [in] device_name name of the element, can contain wildcards (*)
+ * If more than one device matches the pattern, only the first one will be disabled.
+ * @param [in] fwd flag to perform recursive search for the element in all sub-groups
+ */
+  void disable (const std::string& device_name, bool fwd = true);
+
 //@}
 ///@privatesection
   //-
   virtual Group* get_parent () const;
-  //-
-  void enable (const std::string& device_name, bool fwd = true);
-  //-
-  void disable (const std::string& device_name, bool fwd = true);
   //-
   bool is_enabled (const std::string& device_name, bool fwd = true) {
     GroupElement * ge = this->find_i(device_name, fwd);
