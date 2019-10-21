@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [Unreleased]
+## [9.3.4] - 2019-10-21
 ### Fixed
 - Be compatible with all in-use cppzmq versions ([#530][pr-530], [#561][pr-561], [#273][i-273], [#499][i-499], [#535][i-535])
 
@@ -177,6 +177,7 @@ where a client application might show out of date/incorrect values.
 - CPU load when device has large number of attributes ([#404][pr-404]) 
 - push event performance issue ([#244][i-244])
 
+[9.3.4]: https://github.com/tango-controls/cppTango/compare/9.3.3...9.3.4
 [9.3.3]: https://github.com/tango-controls/cppTango/compare/9.3.2...9.3.3
 [9.3.2]: https://github.com/tango-controls/cppTango/compare/9.3.1...9.3.2
 [9.3.1]: https://github.com/tango-controls/cppTango/compare/9.3.0...9.3.1
