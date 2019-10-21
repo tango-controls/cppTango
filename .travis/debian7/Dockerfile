@@ -1,14 +1,10 @@
-FROM debian:wheezy-backports
+FROM debian/eol:wheezy
 
 ARG APP_UID=2000
 
 ARG APP_GID=2000
 
 MAINTAINER TANGO Controls team <tango@esrf.fr>
-
-RUN echo "deb http://archive.debian.org/debian wheezy main contrib" > /etc/apt/sources.list
-
-RUN echo "deb http://security.debian.org/debian-security wheezy/updates main" > /etc/apt/sources.list.d/security.list
 
 RUN echo 'deb http://archive.debian.org/debian wheezy-backports main contrib' > /etc/apt/sources.list.d/backports.list
 
