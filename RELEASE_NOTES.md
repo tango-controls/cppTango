@@ -1,3 +1,13 @@
+# Tango C++ library 9.3.4 Release Notes
+October 21, 2019
+
+cppTango can now be built even with the zmq.hpp file provided by your favourite Linux distribution.
+
+Please refer to [CHANGELOG.md](https://github.com/tango-controls/cppTango/blob/9.3-backports/CHANGELOG.md) 
+for a detailed list of changes and references to corresponding Github issues and pull requests.
+
+You can see the source code comparison with Tango 9.3.3, as well as the commits and contributors on this page:
+https://github.com/tango-controls/cppTango/compare/9.3.3...9.3.4
 
 # Tango C++ library 9.3.3 Release Notes
 March 29, 2019
