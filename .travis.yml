@@ -50,7 +50,7 @@ before_script:
 
 script:
   - .travis/run.sh
-  - .travis/test.sh COVERALLS=OFF
+  - .travis/test.sh COVERALLS=${COVERALLS}
 
 after_success:
   - test ${SONAR_SCANNER} = "ON" && .travis/sonar.sh

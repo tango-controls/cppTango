@@ -8,13 +8,18 @@ MAINTAINER TANGO Controls team <tango@esrf.fr>
 
 RUN sed -i '/jessie-updates/d' /etc/apt/sources.list  # Now archived
 
-RUN apt-get update && apt-get install -y apt-utils
-
-RUN apt-get install -y build-essential cmake
-
-RUN apt-get install -y curl lsb-release
-
-RUN apt-get install -y omniidl libomniorb4-dev libcos4-dev libomnithread3-dev libzmq3-dev
+RUN apt-get update && apt-get install -y \
+  apt-utils                              \
+  build-essential                        \
+  cmake                                  \
+  curl                                   \
+  git                                    \
+  lsb-release                            \
+  omniidl                                \
+  libomniorb4-dev                        \
+  libcos4-dev                            \
+  libomnithread3-dev                     \
+  libzmq3-dev
 
 RUN groupadd -g "$APP_GID" tango
 

@@ -10,23 +10,23 @@ RUN echo 'deb http://archive.debian.org/debian wheezy-backports main contrib' > 
 
 RUN echo "Acquire::Check-Valid-Until false;" > /etc/apt/apt.conf
 
-RUN apt-get update && apt-get install -y apt-utils
+RUN apt-get update && apt-get install -y \
+  apt-utils                              \
+  build-essential                        \
+  curl                                   \
+  git                                    \
+  libcos4-dev                            \
+  libomniorb4-dev                        \
+  libomnithread3-dev                     \
+  libzmq3-dev                            \
+  lsb-release                            \
+  omniidl                                \
+  procps                                 \
+  wget
 
-RUN apt-get install -y build-essential
-
-RUN apt-get install -y procps
-
-RUN apt-get install -y wget
-
-RUN apt-get install -y curl lsb-release
-
-RUN wget --no-check-certificate https://cmake.org/files/v3.10/cmake-3.10.0-Linux-x86_64.sh -O /tmp/cmake-install.sh
-
-RUN chmod +x /tmp/cmake-install.sh
-
-RUN /tmp/cmake-install.sh --skip-license --exclude-subdir
-
-RUN apt-get install -y omniidl libomniorb4-dev libcos4-dev libomnithread3-dev libzmq3-dev
+RUN wget --no-check-certificate https://cmake.org/files/v3.10/cmake-3.10.0-Linux-x86_64.sh -O /tmp/cmake-install.sh \
+  && chmod +x /tmp/cmake-install.sh                                                                                 \
+  && /tmp/cmake-install.sh --skip-license --exclude-subdir
 
 RUN groupadd -g "$APP_GID" tango
 
