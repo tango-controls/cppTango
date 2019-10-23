@@ -1928,6 +1928,7 @@ void DevTest::read_Sub_device_tst(Tango::Attribute &att)
 			{
 				Tango::DeviceProxy *remote_dev;
 				remote_dev = new Tango::DeviceProxy(dev_list_sorted[1]->get_name());
+				(void) remote_dev;
 				attr_sub_device_tst = true;
 			}
 			catch (...)
