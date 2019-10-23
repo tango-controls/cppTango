@@ -18,6 +18,11 @@
 #   define CXXTEST_TEMPLATE_INSTANTIATION template<>
 #endif // _CXXTEST_OLD_TEMPLATE_SYNTAX
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wignored-qualifiers"
+#endif
+
 namespace CxxTest
 {
     //
@@ -373,5 +378,9 @@ namespace CxxTest
 
 #define CXXTEST_ENUM_MEMBER( MEMBER ) \
     case MEMBER: return #MEMBER;
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 #endif // __cxxtest__ValueTraits_h__
