@@ -901,9 +901,21 @@ public:
 //  and cmd_min_poll_period set to IOExcept,500
 //
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcatch-value"
+#endif
+
+#undef _TS_LAST_CATCH
+#define _TS_LAST_CATCH(b) _TS_CATCH_TYPE( (...), b )
+
         TS_ASSERT_THROWS(device->poll_command("IOExcept", 300), Tango::DevFailed);
 
         TS_ASSERT_THROWS(device->poll_command("IOExcept", 100), Tango::DevFailed);
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
         TS_ASSERT_THROWS_NOTHING(device->poll_command("IOExcept", 500));
 
