@@ -44,13 +44,6 @@
 
 #include <zmq.hpp>
 
-#ifdef ZMQ_VERSION
-	#if ZMQ_VERSION > 30201
-		#define ZMQ_HAS_DISCONNECT
-	#endif
-#endif
-
-
 namespace Tango
 {
 
