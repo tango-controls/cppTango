@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.12)
 include(CTest)
 
+option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+
 option(USE_PCH "Use precompiled header for server/tango.h" OFF)
 if (USE_PCH AND NOT (CMAKE_CXX_COMPILER_ID MATCHES "GNU|MSVC"))
     message(WARNING "Precompiled headers are not supported for selected compiler.")

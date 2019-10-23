@@ -202,6 +202,15 @@ if(NOT WIN32)
         endif()
     endif()
 endif()
+
+if(WARNINGS_AS_ERRORS)
+  if(WIN32)
+    add_compile_options(/WX)
+  else()
+    add_compile_options(-Werror)
+  endif()
+endif()
+
 include(GNUInstallDirs)
 include(configure/coveralls.cmake)
 
