@@ -146,6 +146,8 @@ const int   PUB_HWM                        = 1000;
 const int   SUB_HWM                        = 1000;
 const int   SUB_SEND_HWM                   = 10000;
 
+#cmakedefine TANGO_ZMQ_HAS_DISCONNECT
+
 //
 // Event when using a file as database stuff
 //
