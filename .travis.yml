@@ -49,8 +49,10 @@ before_script:
   - sudo mkdir /home/tango && sudo mkdir /home/tango/src && sudo mount --bind `pwd` /home/tango/src
 
 script:
+  - set -e
   - .travis/run.sh
   - .travis/test.sh COVERALLS=${COVERALLS}
+  - set +e
 
 after_success:
   - test ${SONAR_SCANNER} = "ON" && .travis/sonar.sh
