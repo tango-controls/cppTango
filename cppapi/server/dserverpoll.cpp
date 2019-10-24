@@ -1578,7 +1578,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 			db_info.name = "polled_cmd";
 			std::vector<std::string> &cmd_list = dev->get_polled_cmd();
 			std::vector<std::string>::iterator s_ite;
-			for (s_ite = cmd_list.begin();s_ite < cmd_list.end();++s_ite)
+			for (s_ite = cmd_list.begin();s_ite < cmd_list.end();s_ite += 2)
 			{
 				if (TG_strcasecmp((*s_ite).c_str(),obj_name.c_str()) == 0)
 				{
@@ -1588,7 +1588,6 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 					update_needed = true;
 					break;
 				}
-				++s_ite;
 			}
 			if (update_needed == false)
 			{
@@ -1611,7 +1610,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		{
 			std::vector<std::string> &attr_list = dev->get_polled_attr();
 			std::vector<std::string>::iterator s_ite;
-			for (s_ite = attr_list.begin();s_ite < attr_list.end();++s_ite)
+			for (s_ite = attr_list.begin();s_ite < attr_list.end();s_ite += 2)
 			{
 				if (TG_strcasecmp((*s_ite).c_str(),obj_name.c_str()) == 0)
 				{
@@ -1621,7 +1620,6 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 					update_needed = true;
 					break;
 				}
-				++s_ite;
 			}
 			if (update_needed == false)
 			{
