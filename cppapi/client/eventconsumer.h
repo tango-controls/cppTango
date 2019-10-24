@@ -757,11 +757,10 @@ public:
 				   EventType _event,
 				   CallBack *_callback,
 				   EventQueue *_ev_queue,
-				   bool _stateless,
 				   const std::string &_ev_name,
 				   int _id):omni_thread(),ev_cons(ec),device(_device),
 				   attribute(_attribute),et(_event),callback(_callback),ev_queue(_ev_queue),
-				   stateless(_stateless),ev_id(_id),event_name(_ev_name) {}
+				   ev_id(_id),event_name(_ev_name) {}
 
 	void run(void *);
 
@@ -772,7 +771,6 @@ private:
 	EventType       et;
 	CallBack        *callback;
 	EventQueue      *ev_queue;
-	bool            stateless;
 	int             ev_id;
 	std::string          event_name;
 };
