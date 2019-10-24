@@ -990,10 +990,6 @@ template std::ostream &operator<<(std::ostream &,DataElement<DevState> &);
 //template std::ostream &operator<<(std::ostream &,DataElement<DevEncoded> &);
 template std::ostream &operator<<(std::ostream &,DataElement<const std::string> &);
 
-#ifndef _TG_WINDOWS_
-template std::ostream &operator<<(std::ostream &,DataElement<DevString> &);
-#endif
-
 template std::ostream &operator<<(std::ostream &,DataElement<std::vector<DevBoolean> > &);
 template std::ostream &operator<<(std::ostream &,DataElement<std::vector<short> > &);
 template std::ostream &operator<<(std::ostream &,DataElement<std::vector<DevLong> > &);
