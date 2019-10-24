@@ -992,7 +992,6 @@ template std::ostream &operator<<(std::ostream &,DataElement<const std::string> 
 
 #ifndef _TG_WINDOWS_
 template std::ostream &operator<<(std::ostream &,DataElement<DevString> &);
-template std::ostream &operator<<(std::ostream &,DataElement<DevicePipeBlob> &);
 #endif
 
 template std::ostream &operator<<(std::ostream &,DataElement<std::vector<DevBoolean> > &);
