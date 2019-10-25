@@ -5,7 +5,7 @@
 #include <chrono>
 #include "cxx_common.h"
 
-#define BASIC_NB_POLL        16
+#define BASIC_NB_POLL        16u
 #define TEST_CLASS "devTest"
 
 #undef SUITE_NAME
@@ -170,7 +170,7 @@ public:
     void test_read_command_history_string(void) {
         auto d_hist = device->command_history("IOPollStr1", hist_depth);
 
-        TSM_ASSERT_LESS_THAN("Not enough data in the polling buffer, restart later", 4, d_hist->size());
+        TSM_ASSERT_LESS_THAN("Not enough data in the polling buffer, restart later", 4u, d_hist->size());
 
         CmdResult cr;
 
@@ -265,7 +265,7 @@ public:
     void test_command_history_array(void) {
         auto d_hist = device->command_history("IOPollArray2", hist_depth);
 
-        TSM_ASSERT_LESS_THAN("Not enough data in the polling buffer, restart later", 4, d_hist->size());
+        TSM_ASSERT_LESS_THAN("Not enough data in the polling buffer, restart later", 4u, d_hist->size());
 
         short first_val_first_rec;
         for (size_t i = 0; i < d_hist->size(); i++) {
@@ -366,7 +366,7 @@ public:
     void test_command_history_DevEncoded(void) {
         auto d_hist = device->command_history("OEncoded", hist_depth);
 
-        TSM_ASSERT_LESS_THAN("Not enough data in the polling buffer, restart later", 4, d_hist->size());
+        TSM_ASSERT_LESS_THAN("Not enough data in the polling buffer, restart later", 4u, d_hist->size());
 
         unsigned char first_val_enc;
         for (size_t i = 0; i < d_hist->size(); i++) {
@@ -757,7 +757,7 @@ public:
             cout << endl;
         }
 
-        TS_ASSERT(poll_str->size() == nb_polled);
+        TS_ASSERT_EQUALS(poll_str->size(), nb_polled);
 
         delete poll_str;
     }
@@ -811,7 +811,7 @@ public:
             cout << endl;
         }
 
-        TS_ASSERT(v_str.size() == nb_polled);
+        TS_ASSERT_EQUALS(v_str.size(), nb_polled);
     }
 
     void test_get_command_poll_period(void) {
@@ -880,7 +880,7 @@ public:
             cout << endl;
         }
 
-        auto nb_polled = BASIC_NB_POLL + 1;
+        std::size_t nb_polled = BASIC_NB_POLL + 1;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -890,7 +890,7 @@ public:
             }
         }
 
-        TS_ASSERT(poll_str->size() == nb_polled);
+        TS_ASSERT_EQUALS(poll_str->size(), nb_polled);
 
         delete poll_str;
     }
@@ -901,9 +901,21 @@ public:
 //  and cmd_min_poll_period set to IOExcept,500
 //
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcatch-value"
+#endif
+
+#undef _TS_LAST_CATCH
+#define _TS_LAST_CATCH(b) _TS_CATCH_TYPE( (...), b )
+
         TS_ASSERT_THROWS(device->poll_command("IOExcept", 300), Tango::DevFailed);
 
         TS_ASSERT_THROWS(device->poll_command("IOExcept", 100), Tango::DevFailed);
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
         TS_ASSERT_THROWS_NOTHING(device->poll_command("IOExcept", 500));
 
@@ -944,7 +956,7 @@ public:
             cout << endl;
         }
 
-        auto nb_polled = BASIC_NB_POLL;
+        std::size_t nb_polled = BASIC_NB_POLL;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -954,7 +966,7 @@ public:
             }
         }
 
-        TS_ASSERT(poll_str->size() == nb_polled);
+        TS_ASSERT_EQUALS(poll_str->size(), nb_polled);
 
         delete poll_str;
     }
@@ -1005,7 +1017,7 @@ public:
             cout << endl;
         }
 
-        auto nb_polled = BASIC_NB_POLL + 1;
+        std::size_t nb_polled = BASIC_NB_POLL + 1;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -1015,7 +1027,7 @@ public:
             }
         }
 
-        TS_ASSERT(poll_str->size() == nb_polled);
+        TS_ASSERT_EQUALS(poll_str->size(), nb_polled);
 
         delete poll_str;
     }
@@ -1040,7 +1052,7 @@ public:
             cout << endl;
         }
 
-        auto nb_polled = BASIC_NB_POLL;
+        std::size_t nb_polled = BASIC_NB_POLL;
         for (unsigned int i = 0; i < poll_str->size(); i++) {
             if ((*poll_str)[i].find("String_attr") != string::npos) {
                 nb_polled++;
@@ -1050,7 +1062,7 @@ public:
             }
         }
 
-        TS_ASSERT(poll_str->size() == nb_polled);
+        TS_ASSERT_EQUALS(poll_str->size(), nb_polled);
 
         delete poll_str;
     }

@@ -1600,6 +1600,7 @@ void *AcquisitionThread::run_undetached (TANGO_UNUSED(void *arg))
 		try
 		{
 			Tango::DeviceProxy *dev = new Tango::DeviceProxy(dev_list_sorted[1]->get_name());
+			(void) dev;
 		}
 		catch (...)
 		{
@@ -1647,6 +1648,7 @@ CORBA::Any *SubDeviceTst::execute(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO
 	try
 	{
 		omni_thread *acquisition_thread = new AcquisitionThread();
+		(void) acquisition_thread;
 
 		Tango::Util *tg = Tango::Util::instance();
 
@@ -1682,6 +1684,7 @@ CORBA::Any *SubDeviceTst::execute(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO
 
 			Tango::DeviceProxy *remote_dev;
 			remote_dev = new Tango::DeviceProxy(dev_list_sorted[2]->get_name());
+			(void) remote_dev;
 			connected = true;
 		}
 		else
@@ -1913,6 +1916,7 @@ bool SophisPollInDeviceTst::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), 
 CORBA::Any *SophisPollInDeviceTst::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
     ReynaldPollThread *rpt = new ReynaldPollThread(device);
+    (void) rpt;
 	(static_cast<DevTest *>(device))->IOSophisticatedPollInDevice();
 	return insert();
 }
