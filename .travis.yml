@@ -4,14 +4,11 @@ language: cpp
 
 env:
   matrix:
-    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=DEBUG SONAR_SCANNER=OFF COVERALLS=OFF
-    - OS_TYPE=debian9 CMAKE_BUILD_TYPE=RELEASE SONAR_SCANNER=OFF COVERALLS=OFF
-    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=Debug SONAR_SCANNER=ON COVERALLS=ON
-    - OS_TYPE=debian8 CMAKE_BUILD_TYPE=RELEASE SONAR_SCANNER=OFF COVERALLS=OFF
-    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=RELEASE SONAR_SCANNER=OFF COVERALLS=OFF
-#    - OS_TYPE=debian7 CMAKE_BUILD_TYPE=DEBUG
-#    - OS_TYPE=win32
-# etc
+    - OS_TYPE=debian10 CMAKE_BUILD_TYPE=Release SONAR_SCANNER=OFF COVERALLS=OFF STOCK_CPPZMQ=ON
+    - OS_TYPE=debian10 CMAKE_BUILD_TYPE=Debug   SONAR_SCANNER=OFF COVERALLS=OFF STOCK_CPPZMQ=ON
+    - OS_TYPE=debian9  CMAKE_BUILD_TYPE=Debug   SONAR_SCANNER=OFF COVERALLS=OFF STOCK_CPPZMQ=ON
+    - OS_TYPE=debian8  CMAKE_BUILD_TYPE=Debug   SONAR_SCANNER=ON  COVERALLS=ON  STOCK_CPPZMQ=OFF
+    - OS_TYPE=debian7  CMAKE_BUILD_TYPE=Debug   SONAR_SCANNER=OFF COVERALLS=OFF STOCK_CPPZMQ=ON
 
 notifications:
   email: false
@@ -35,7 +32,7 @@ before_install:
   - docker pull tangocs/mysql:9.2.2
   - docker pull tangocs/tango-cs:latest
   - git clone https://github.com/JoakimSoderberg/coveralls-cmake.git
-  - git clone -b v4.2.2 https://${CI_USER_TOKEN}@github.com/zeromq/cppzmq.git cppzmq
+  - (test ${STOCK_CPPZMQ} = "OFF" && git clone -b v4.2.2 https://${CI_USER_TOKEN}@github.com/zeromq/cppzmq.git cppzmq) || mkdir cppzmq
   - git clone -b tango-9-lts https://${CI_USER_TOKEN}@github.com/tango-controls/tango-idl.git idl
   - wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip && unzip build-wrapper-linux-x86.zip
 
@@ -47,12 +44,12 @@ before_script:
   - docker build --build-arg APP_UID=$(id -u) --build-arg APP_GID=$(id -g) -t cpp_tango .travis/${OS_TYPE}
   - docker run --name cpp_tango -e TANGO_HOST=${TANGO_HOST} -e BINTRAY_USER_NAME=tango-ci -e BINTRAY_API_KEY=${CI_BINTRAY_API_KEY} -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} --link tango_cs:tango_cs -v `pwd`:/home/tango/src -v `pwd`/idl:/home/tango/idl -v `pwd`/cppzmq:/home/tango/cppzmq -v `pwd`/coveralls-cmake:/home/tango/coveralls-cmake -v `pwd`/build-wrapper-linux-x86:/home/tango/build-wrapper-linux-x86 -dit cpp_tango
   - .travis/install_tango_idl.sh
-  - .travis/install_cppzmq.sh
+  - (test ${STOCK_CPPZMQ} = "OFF" && .travis/install_cppzmq.sh) || true
 #work around gcov ignored by sonar
   - sudo mkdir /home/tango && sudo mkdir /home/tango/src && sudo mount --bind `pwd` /home/tango/src
 
 script:
-  - .travis/${OS_TYPE}/run.sh
+  - .travis/run.sh
   - .travis/test.sh COVERALLS=OFF
 
 after_success:

@@ -1,16 +1,22 @@
 find_package (Threads REQUIRED)
 find_program(PYTHON_INTERPRETER NAMES python2 python)
 
+if(NOT PYTHON_INTERPRETER)
+  message(SEND_ERROR "Could not find python 2.")
+endif()
+
 macro(CXX_GENERATE_TEST name)
     message("Generate ${name}.cpp")
+    set(GENERATED_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${name}.cpp")
     execute_process(COMMAND "${PYTHON_INTERPRETER}" cxxtestgen.py
             --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
-            -o ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cpp
+            -o ${GENERATED_FILE}
             ../../new_tests/${name}.cpp
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin
+        RESULT_VARIABLE GENERATOR_OUTPUT)
 
-    if(${FAILED})
-        message(SEND_ERROR " Failed to generate ${name}.cpp. rv=${FAILED}")
+    if(NOT EXISTS ${GENERATED_FILE})
+      message(SEND_ERROR " Failed to generate ${name}.cpp due to \"${GENERATOR_OUTPUT}\".")
     endif()
 
     add_executable(${name} $<TARGET_OBJECTS:compare_test_object> ${name}.cpp)

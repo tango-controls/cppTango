@@ -44,30 +44,9 @@ Typical output:
 -- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/idl/tango.h
 ```
 
-## Ubuntu 16.04 compilation problem
+## Installing required cppzmq version on older systems
 
-When compiling on Ubuntu 16.04 or on Debian stretch, the following error can occur:
-
-```
-[ 17%] Building CXX object cppapi/client/CMakeFiles/client_objects.dir/zmqeventconsumer.cpp.o
-/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp: In member function ‘virtual void* Tango::ZmqEventConsumer::run_undetached(void*)’:
-/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp:186:18: error: cannot convert ‘zmq::socket_t’ to ‘void*’ in assignment
-  items[0].socket = *control_sock;
-                  ^
-/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp:187:18: error: cannot convert ‘zmq::socket_t’ to ‘void*’ in assignment
-  items[1].socket = *heartbeat_sub_sock;
-                  ^
-/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp:188:18: error: cannot convert ‘zmq::socket_t’ to ‘void*’ in assignment
-  items[2].socket = *event_sub_sock;
-                  ^
-/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp: In member function ‘bool Tango::ZmqEventConsumer::process_ctrl(zmq::message_t&, zmq::pollitem_t*, int&)’:
-/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp:1063:47: error: cannot convert ‘zmq::socket_t’ to ‘void*’ in assignment
-                 poll_list[old_poll_nb].socket = *tmp_sock;
-```
-
-This is due to incompatibility of zmq.hpp file provided in libzmq3-dev:4.1.7
-(ubuntu 16.04), i.e. it is not possible to compile cppTango using zmq.hpp file
-provided by libzmq3-dev:4.1.7 (ubuntu 16.04).
+On some debian versions, 7 (wheezy) and older, there is no compatible cppzmq version available.
 
 This requires installing [cppzmq](https://github.com/zeromq/cppzmq) via:
 
@@ -79,6 +58,16 @@ cd build
 cmake -DENABLE_DRAFTS=OFF -DCPPZMQ_BUILD_TESTS=OFF ..
 sudo make install
 ```
+
+And then pass `-DCPPZMQ_BASE=/usr/local` to cmake or use
+
+```
+mkdir build
+cd build
+configure CXXFLAGS="-I /usr/local/include" ..
+```
+
+when compiling via the tango source distribution.
 
 # Using pkg-config
 

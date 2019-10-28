@@ -151,6 +151,18 @@ Please install cppzmq (https://github.com/zeromq/cppzmq) on your system and/or u
 <OMNI_BASE>/include and system include directories).")
 endif()
 
+if(NOT WIN32)
+  try_compile(TANGO_ZMQ_HAS_DISCONNECT ${CMAKE_BINARY_DIR}/test_cppzmq_disconnect
+              SOURCES ${CMAKE_SOURCE_DIR}/configure/test_cppzmq_disconnect.cpp
+              COMPILE_DEFINITIONS "-I ${CPPZMQ_BASE}/include -I ${ZMQ_BASE}/include"
+              LINK_LIBRARIES "${ZMQ_PKG_LIBRARIES}")
+
+  message(STATUS "Check if zmq::socket has a disconnect method: ${TANGO_ZMQ_HAS_DISCONNECT}")
+else()
+  set(TANGO_ZMQ_HAS_DISCONNECT TRUE)
+  message(STATUS "Check if zmq::socket has a disconnect method: ${TANGO_ZMQ_HAS_DISCONNECT} (hardcoded)")
+endif(NOT WIN32)
+
 message("Verifying ${OMNIIDL_PATH}omniidl")
 if(WIN32)
     execute_process(COMMAND ${OMNIIDL_PATH}omniidl.exe -V RESULT_VARIABLE FAILED)
