@@ -588,6 +588,8 @@ private:
     int db_port,
     std::string& db_host,
     std::string& name_or_pattern_without_host);
+  static DeviceNames add_host_and_port_to_device_names(const DeviceNames&, std::string& db_host, int db_port);
+  static std::string build_full_device_name(const char*, int, const char*);
 
   //- forbidden methods
   GroupElementFactory();
