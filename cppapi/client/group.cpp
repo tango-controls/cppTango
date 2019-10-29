@@ -32,6 +32,7 @@
 //=============================================================================
 
 #include <group.h>
+#include <cstdio>
 
 //-----------------------------------------------------------------------------
 // LOCAL DEBUGGING MACRO
@@ -124,7 +125,33 @@ DeviceNames GroupElementFactory::resolve_remote_device_names(
     DeviceNames device_names;
     device_names.reserve(db_data.size());
     db_data >> device_names;
-    return device_names;
+    return add_host_and_port_to_device_names(device_names, db_host, db_port);
+}
+
+DeviceNames GroupElementFactory::add_host_and_port_to_device_names(
+    const DeviceNames& names,
+    std::string& host,
+    int port)
+{
+    DeviceNames full_names;
+    full_names.reserve(names.size());
+
+    for (DeviceNames::const_iterator name = names.begin(); name != names.end(); ++name)
+    {
+        full_names.push_back(build_full_device_name(host.c_str(), port, name->c_str()));
+    }
+
+    return full_names;
+}
+
+std::string GroupElementFactory::build_full_device_name(
+    const char* host,
+    int port,
+    const char* device_name)
+{
+    char buffer[255];
+    std::sprintf(buffer, "tango://%s:%d/%s", host, port, device_name);
+    return buffer;
 }
 
 void GroupElementFactory::parse_name (const std::string& p, std::string &db_host,int &db_port,std::string &dev_pattern)
