@@ -827,6 +827,39 @@ public:
 		CxxTest::TangoPrinter::restore_unset("double_attr_value");
 	}
 
+	/* Verifies that a group can contain devices from a remote TANGO_HOST
+	 * (a Tango instance different from client's default TANGO_HOST).
+	 * An issue was reported when resolving names containing wildcards. */
+
+	void test_use_devices_from_remote_tango_host()
+	{
+		const std::string original_tango_host = std::getenv("TANGO_HOST");
+		const std::string external_tango_host = std::getenv("TANGO_HOST2");
+
+		const bool force_update = true;
+
+		TS_ASSERT_EQUALS(0, setenv("TANGO_HOST", external_tango_host.c_str(), force_update));
+		ApiUtil::instance()->cleanup();
+
+		Group group("group");
+		group.add("tango://" + original_tango_host + "/" + device1_name + "*");
+
+		GroupCmdReplyList command_results = group.command_inout("State");
+		GroupCmdReply command_result = command_results[0];
+
+		TS_ASSERT(not command_results.has_failed());
+		TS_ASSERT_EQUALS(1u, command_results.size());
+
+		TS_ASSERT(not command_result.has_failed());
+
+		DevState state;
+		TS_ASSERT(command_result >> state);
+		TS_ASSERT_EQUALS(ON, state);
+
+		TS_ASSERT_EQUALS(0, setenv("TANGO_HOST", original_tango_host.c_str(), force_update));
+		ApiUtil::instance()->cleanup();
+	}
+
 };
 #undef cout
 #endif // GroupTestSuite_h
