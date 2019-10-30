@@ -13,50 +13,13 @@
 #include <unistd.h>
 #endif
 
+#include <TangoCallbackMock.h>
+
 #define	coutv	if (verbose == true) cout
 
 using namespace Tango;
 
 bool verbose = false;
-
-class EventCallBack : public Tango::CallBack
-{
-	void push_event(Tango::DevIntrChangeEventData*);
-
-public:
-	int cb_executed;
-	int cb_err;
-	size_t nb_cmd;
-	size_t nb_att;
-	bool dev_start;
-};
-
-void EventCallBack::push_event(Tango::DevIntrChangeEventData* event_data)
-{
-	cb_executed++;
-
-	try
-	{
-		coutv << "EventCallBack::push_event(): called device " << event_data->device_name << " event " << event_data->event << "\n";
-		if (!event_data->err)
-		{
-			coutv << "Received device interface change event for device " << event_data->device_name << std::endl;
-			nb_cmd = event_data->cmd_list.size();
-			nb_att = event_data->att_list.size();
-			dev_start = event_data->dev_started;
-		}
-		else
-		{
-			coutv << "Error send to callback" << std::endl;
-			Tango::Except::print_error_stack(event_data->errors);
-		}
-	}
-	catch (...)
-	{
-		coutv << "EventCallBack::push_event(): could not extract data !\n";
-	}
-
-}
 
 int main(int argc, char **argv)
 {
@@ -90,9 +53,7 @@ int main(int argc, char **argv)
 
 	try
 	{
-		EventCallBack cb;
-		cb.cb_executed = 0;
-		cb.cb_err = 0;
+		Tango::CallbackMock<Tango::DevIntrChangeEventData> cb{};
 
 //
 // subscribe to a data ready event
@@ -104,12 +65,15 @@ int main(int argc, char **argv)
 // The callback should have been executed once
 //
 
-		assert (cb.cb_executed == 1);
-		assert (cb.dev_start == true);
+		size_t old_cmd_nb = 0;
+		size_t old_att_nb = 0;
 
-		size_t old_cmd_nb = cb.nb_cmd;
-		size_t old_att_nb = cb.nb_att;
-		cb.dev_start = false;
+		cb.assert_called(0, [&](const decltype(cb)::Event& event) {
+			assert(not event.err);
+			assert(event.dev_started);
+			old_cmd_nb = event.cmd_list.size();
+			old_att_nb = event.att_list.size();
+		});
 
 		cout << "   subscribe_event --> OK" << std::endl;
 
@@ -122,11 +86,10 @@ int main(int argc, char **argv)
 		d_in << in;
 		device->command_inout("IOAddCommand",d_in);
 
-		Tango_sleep(1);
-
-		assert (cb.cb_executed == 2);
-		assert (cb.nb_cmd == old_cmd_nb + 1);
-		assert (cb.nb_att == old_att_nb);
+		cb.assert_called(1000, [&](const decltype(cb)::Event& event) {
+			assert(event.cmd_list.size() == old_cmd_nb + 1);
+			assert(event.att_list.size() == old_att_nb);
+		});
 
 //
 // Remove the dynamic command -> Should generate a device interface change event
@@ -134,11 +97,10 @@ int main(int argc, char **argv)
 
 		device->command_inout("IORemoveCommand",d_in);
 
-		Tango_sleep(1);
-
-		assert (cb.cb_executed == 3);
-		assert (cb.nb_cmd == old_cmd_nb);
-		assert (cb.nb_att == old_att_nb);
+		cb.assert_called(1000, [&](const decltype(cb)::Event& event) {
+			assert(event.cmd_list.size() == old_cmd_nb);
+			assert(event.att_list.size() == old_att_nb);
+		});
 
 //
 // Add dynamic commands in loop -> 1 event
@@ -148,11 +110,10 @@ int main(int argc, char **argv)
 		d_in << in;
 		device->command_inout("IOAddCommand",d_in);
 
-		Tango_sleep(1);
-
-		assert (cb.cb_executed == 4);
-		assert (cb.nb_cmd == old_cmd_nb + 3);
-		assert (cb.nb_att == old_att_nb);
+		cb.assert_called(1000, [&](const decltype(cb)::Event& event) {
+			assert(event.cmd_list.size() == old_cmd_nb + 3);
+			assert(event.att_list.size() == old_att_nb);
+		});
 
 		cout << "   Dev. interface change event after add/remove dynamic command --> OK" << std::endl;
 
@@ -161,20 +122,21 @@ int main(int argc, char **argv)
 //
 
 		device->command_inout("Init");
-		Tango_sleep(1);
 
-		assert (cb.cb_executed == 4);
+		Tango_sleep(1);
+		cb.assert_not_called();
+
 		std::string adm_name = device->adm_name();
 		DeviceProxy adm(adm_name);
 
 		Tango::DeviceData d_in_restart;
 		d_in_restart << device_name;
 		adm.command_inout("DevRestart",d_in_restart);
-		Tango_sleep(1);
 
-		assert (cb.cb_executed == 5);
-		assert (cb.nb_cmd == old_cmd_nb);
-		assert (cb.nb_att == old_att_nb);
+		cb.assert_called(1000, [&](const decltype(cb)::Event& event) {
+			assert(event.cmd_list.size() == old_cmd_nb);
+			assert(event.att_list.size() == old_att_nb);
+		});
 
 		cout << "   Dev. interface change event after Init or DevRestart command --> OK" << std::endl;
 
@@ -186,19 +148,20 @@ int main(int argc, char **argv)
 		d_in << in;
 		device->command_inout("IOAddCommand",d_in);
 
-		Tango_sleep(1);
-
-		assert (cb.cb_executed == 6);
-		assert (cb.nb_cmd == old_cmd_nb + 1);
-		assert (cb.nb_att == old_att_nb);
+		cb.assert_called(1000, [&](const decltype(cb)::Event& event) {
+			assert(event.cmd_list.size() == old_cmd_nb + 1);
+			assert(event.att_list.size() == old_att_nb);
+		});
 
 		adm.command_inout("RestartServer");
-		Tango_sleep(5);
 
-		assert (cb.cb_executed == 7);
-		assert (cb.nb_cmd == old_cmd_nb);
-		assert (cb.nb_att == old_att_nb);
-		assert (cb.dev_start == false);
+		cb.assert_called(5000, [&](const decltype(cb)::Event& event) {
+			assert(event.cmd_list.size() == old_cmd_nb);
+			assert(event.att_list.size() == old_att_nb);
+			assert(not event.dev_started);
+		});
+
+		cb.assert_not_called();
 
 		cout << "   Event sent after RestartServer command --> OK" << std::endl;
 
