@@ -61,7 +61,7 @@ before_script:
 script:
   - set -e
   - .travis/run.sh
-  - (test ${RUN_TESTS} = "ON" && .travis/test.sh COVERALLS=${COVERALLS}) || true
+  - .travis/test.sh
   - set +e
 
 after_success:
