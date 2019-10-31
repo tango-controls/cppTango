@@ -4,7 +4,7 @@ include(CTest)
 option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
 option(USE_PCH "Use precompiled header for server/tango.h" OFF)
-if (USE_PCH AND NOT (CMAKE_CXX_COMPILER_ID MATCHES "GNU|MSVC"))
+if (USE_PCH AND NOT (CMAKE_CXX_COMPILER_ID MATCHES "GNU|MSVC|Clang"))
     message(WARNING "Precompiled headers are not supported for selected compiler.")
     set(USE_PCH OFF)
 endif()
