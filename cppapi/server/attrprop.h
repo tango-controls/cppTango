@@ -555,8 +555,19 @@ public:
  */
 	MultiAttrProp()
 	{
+
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundefined-var-template"
+#endif
+
 		CmdArgType type = ranges_type2const<T>::enu; // restricts template initialisation to supported types
 		if(type){}; // prevents compiler warning about unused variable type
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
+
 	}
 //@}
 /**@name Class data members */
