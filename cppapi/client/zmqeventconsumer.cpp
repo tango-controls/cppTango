@@ -3614,7 +3614,7 @@ void ZmqAttrValUnion::operator<<= (TangoCdrMemoryStream& _n)
 // Get data length from cdr
 //
 
-       _CORBA_ULong length;
+       _CORBA_ULong length = 0ul;
         if (_pd__d != ATT_NO_DATA)
         {
             length <<= _n;
