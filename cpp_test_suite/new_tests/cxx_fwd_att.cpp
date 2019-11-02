@@ -702,7 +702,7 @@ public:
 
 	void test_event_on_a_forwarded_attribute()
 	{
-		int eve_id;
+		int eve_id = 0;
 		vector<string> filters;
 		EventCallBack cb(this);
 		cb.cb_executed = 0;
