@@ -817,7 +817,7 @@ public:
     void test_get_command_poll_period(void) {
 
         string cmd("IOExcept");
-        int per;
+        int per = 0;
         TS_ASSERT_THROWS_NOTHING(per = device->get_command_poll_period(cmd));
 
         if (verbose) {
