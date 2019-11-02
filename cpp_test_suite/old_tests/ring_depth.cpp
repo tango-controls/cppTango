@@ -102,7 +102,7 @@ int main(int argc, char **argv)
 		assert (poll_sta->size() == 3);
 
 		unsigned int i;
-		int index;
+		int index = -1;
 		for (i = 0;i < poll_sta->size();i++)
 		{
 			if ((*poll_sta)[i].find("name = State") != string::npos)
@@ -112,6 +112,7 @@ int main(int argc, char **argv)
 			}
 		}
 
+		assert (index >= 0);
 		string poll_cmd = (*poll_sta)[index];
 		string::size_type pos,end;
 		pos = poll_cmd.find("depth");
