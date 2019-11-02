@@ -47,7 +47,7 @@ void EventCallback::push_event(Tango::EventData *ed)
 
 int main(int argc, char *argv[])
 {
-    Tango::DeviceProxy *dev;
+    Tango::DeviceProxy *dev = Tango_nullptr;
     int eventID;
     const vector<string> filters;
     EventCallback *eventCallback = new EventCallback();
