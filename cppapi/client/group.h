@@ -576,20 +576,20 @@ class GroupElementFactory
 public:
   //- instanciatethe GroupElement which name matches the specified pattern with the specified timeout
   //- timeout = -1 => do not change the timeout
-  static GroupElements instanciate (const std::string& p, int tmo = -1);
+  static GroupElements instanciate (const std::string& name_or_pattern, int timeout_millis = -1);
 
 private:
   static void parse_name (const std::string& p, std::string &db_host, int &db_port, std::string &dev_pattern);
 
   static GroupElements create_group_elements(const DeviceNames&, int timeout_millis);
-  static DeviceNames resolve_device_names(const std::string&);
-  static DeviceNames resolve_local_device_names(const std::string&);
+  static DeviceNames resolve_device_names(const std::string& name_or_pattern);
+  static DeviceNames resolve_local_device_names(const std::string& name_or_pattern);
   static DeviceNames resolve_remote_device_names(
     int db_port,
     std::string& db_host,
     std::string& name_or_pattern_without_host);
   static DeviceNames add_host_and_port_to_device_names(const DeviceNames&, std::string& db_host, int db_port);
-  static std::string build_full_device_name(const char*, int, const char*);
+  static std::string build_full_device_name(const char* host, int port, const char* device_name);
 
   //- forbidden methods
   GroupElementFactory();
