@@ -32,7 +32,7 @@
 //=============================================================================
 
 #include <group.h>
-#include <cstdio>
+#include <sstream>
 
 //-----------------------------------------------------------------------------
 // LOCAL DEBUGGING MACRO
@@ -149,9 +149,9 @@ std::string GroupElementFactory::build_full_device_name(
     int port,
     const char* device_name)
 {
-    char buffer[255];
-    std::sprintf(buffer, "tango://%s:%d/%s", host, port, device_name);
-    return buffer;
+    std::ostringstream buffer;
+    buffer << "tango://" << host << ":" << port << "/" << device_name;
+    return buffer.str();
 }
 
 void GroupElementFactory::parse_name (const std::string& p, std::string &db_host,int &db_port,std::string &dev_pattern)
