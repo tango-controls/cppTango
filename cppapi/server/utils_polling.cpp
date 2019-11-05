@@ -1250,7 +1250,7 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 	std::vector<std::string> mod_conf = poll_pool_conf;
 
 //
-// First, get the list of devices instanciated in this server and check if the polled devices are defined within
+// First, get the list of devices instantiated in this server and check if the polled devices are defined within
 // the server
 //
 
@@ -1281,7 +1281,7 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 				continue;
 
 //
-// Check if the device is instanciated in this server
+// Check if the device is instantiated in this server
 //
 
 			std::string entry_lower(*iter_entry);
