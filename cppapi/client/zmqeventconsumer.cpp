@@ -446,7 +446,7 @@ void ZmqEventConsumer::process_heartbeat(zmq::message_t &received_event_name,zmq
 
         {
             omniORB::logger log;
-            log << "ZMQ: Endianess" << '\n';
+            log << "ZMQ: Endianness" << '\n';
         }
         omni::giopStream::dumpbuf((unsigned char *)received_endian.data(),received_endian.size());
 
@@ -536,7 +536,7 @@ void ZmqEventConsumer::process_event(zmq::message_t &received_event_name,zmq::me
 
         {
             omniORB::logger log;
-            log << "ZMQ: Endianess" << '\n';
+            log << "ZMQ: Endianness" << '\n';
         }
         omni::giopStream::dumpbuf((unsigned char *)received_endian.data(),received_endian.size());
 
@@ -614,7 +614,7 @@ void ZmqEventConsumer::process_event(zmq_msg_t &received_event_name,zmq_msg_t &r
 
         {
             omniORB::logger log;
-            log << "ZMQ: Endianess" << '\n';
+            log << "ZMQ: Endianness" << '\n';
         }
         omni::giopStream::dumpbuf((unsigned char *)zmq_msg_data(&received_endian),zmq_msg_size(&received_endian));
 

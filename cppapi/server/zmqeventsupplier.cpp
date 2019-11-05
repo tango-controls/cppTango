@@ -871,7 +871,7 @@ void ZmqEventSupplier::push_heartbeat_event()
 
                         {
                             omniORB::logger log;
-                            log << "ZMQ: Endianess" << '\n';
+                            log << "ZMQ: Endianness" << '\n';
                         }
                         omni::giopStream::dumpbuf((unsigned char *)endian_mess_heartbeat.data(),endian_mess_heartbeat.size());
 
@@ -1336,7 +1336,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,std::string event_type
 
             {
                 omniORB::logger log;
-                log << "ZMQ: Endianess" << '\n';
+                log << "ZMQ: Endianness" << '\n';
             }
             omni::giopStream::dumpbuf((unsigned char *)endian_mess.data(),endian_mess.size());
 
