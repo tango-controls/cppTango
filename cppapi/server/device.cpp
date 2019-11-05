@@ -1828,7 +1828,7 @@ char *DeviceImpl::status()
     try
     {
         AutoTangoMonitor sync(this);
-        cout4 << "DeviceImpl::status (attibute) arrived" << std::endl;
+        cout4 << "DeviceImpl::status (attribute) arrived" << std::endl;
 
 //
 //  Write the device name into the per thread data for
