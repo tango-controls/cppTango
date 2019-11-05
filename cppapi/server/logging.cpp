@@ -139,7 +139,7 @@ void Logging::init (const std::string& ds_name, // dserver name
     _VERBOSE(("\tTANGO_LOG_PATH is %s\n", Logging::_log_path.c_str()));
     // build logger name from dserver name
     std::string dserver_dev_name("dserver/" + ds_name);
-    // instanciate the logger
+    // instantiate the logger
     log4tango::Logger* logger = new log4tango::Logger(dserver_dev_name);
     // is logging level set from cmd line?
     bool level_set_from_cmd_line = (cmd_line_level >= kTANGO_CORE_CMD_LINE_LEVEL)
@@ -410,7 +410,7 @@ void Logging::add_logging_target(log4tango::Logger* logger,
     log4tango::Appender* appender = logger->get_appender(appender_name);
     if (!appender) {
       cout4 << "Adding logging target " << appender_name << " to " << logger->get_name() << endl;
-      // instanciate the appender (i.e. the target) and the layout (if needed)
+      // instantiate the appender (i.e. the target) and the layout (if needed)
       switch (ltg_type) {
         case LOG_CONSOLE: {
           appender = new CoutAppender(appender_name);
@@ -687,13 +687,13 @@ Tango::DevVarStringArray* Logging::get_logging_target (const std::string& dev_na
     log4tango::Logger *logger = dev->get_logger();
     if (logger == 0) {
       TangoSys_OMemStream o;
-      o << "Could not instanciate logger (out of memory error)" << ends;
+      o << "Could not instantiate logger (out of memory error)" << ends;
       Except::throw_exception((const char *)API_MemoryAllocation, o.str(),
                               (const char *)"Logging::get_logging_target");
     }
     // get logger's appender list
     log4tango::AppenderList al = logger->get_all_appenders();
-    // instanciate the returned value
+    // instantiate the returned value
     ret = new Tango::DevVarStringArray(al.size());
     if (ret == 0) {
       TangoSys_OMemStream o;

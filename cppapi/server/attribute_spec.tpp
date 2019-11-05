@@ -34,7 +34,7 @@
 #define _ATTRIBUTE_SPEC_TPP
 
 //
-// These methods are in a sepearte files because I did not find a way to explicitely instanciate specialized
+// These methods are in a sepearte files because I did not find a way to explicitely instantiate specialized
 // templates. Therefore, for template management we have three files:
 // 1 - A file with explicit template instanciation (templ_inst.cpp)
 // 2 - A file with template method definition (attribute.tpp for Attribute class)
