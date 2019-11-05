@@ -130,7 +130,7 @@ DeviceNames GroupElementFactory::resolve_remote_device_names(
 
 DeviceNames GroupElementFactory::add_host_and_port_to_device_names(
     const DeviceNames& names,
-    std::string& host,
+    const std::string& host,
     int port)
 {
     DeviceNames full_names;
@@ -138,16 +138,16 @@ DeviceNames GroupElementFactory::add_host_and_port_to_device_names(
 
     for (DeviceNames::const_iterator name = names.begin(); name != names.end(); ++name)
     {
-        full_names.push_back(build_full_device_name(host.c_str(), port, name->c_str()));
+        full_names.push_back(build_full_device_name(host, port, *name));
     }
 
     return full_names;
 }
 
 std::string GroupElementFactory::build_full_device_name(
-    const char* host,
+    const std::string& host,
     int port,
-    const char* device_name)
+    const std::string& device_name)
 {
     std::ostringstream buffer;
     buffer << "tango://" << host << ":" << port << "/" << device_name;
