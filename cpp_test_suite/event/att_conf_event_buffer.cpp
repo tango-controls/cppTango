@@ -184,7 +184,7 @@ int main(int argc, char **argv)
 
 
 //
-// Subscribe for attibute configuration events.
+// Subscribe for attribute configuration events.
 // Set-up the event buffers to keep only the last 5 received events
 //
 		cb.cb_executed = 0;
@@ -231,7 +231,7 @@ int main(int argc, char **argv)
 		cout << "   unsubscribe_event --> OK" << endl;
 
 //
-// Subscribe for attibute configuration events.
+// Subscribe for attribute configuration events.
 // Set-up the event buffers to keep all received events
 //
 		cb.cb_executed = 0;

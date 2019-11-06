@@ -111,7 +111,7 @@ EventQueue::~EventQueue()
 	}
 
 //
-// for attibute configuration events
+// for attribute configuration events
 //
 
 	else

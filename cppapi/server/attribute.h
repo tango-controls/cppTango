@@ -1594,7 +1594,7 @@ public:
 /**
  * Fire a change event for the attribute value. The event is pushed to the notification
  * daemon.
- * The attibute data must be set with one of the Attribute::set_value or
+ * The attribute data must be set with one of the Attribute::set_value or
  * Attribute::setvalue_date_quality methods before fireing the event.
  * The event is triggered with or without the change event criteria depending
  * on the configuration choosen with set_change_event().
@@ -1652,7 +1652,7 @@ public:
 /**
  * Fire an archive event for the attribute value. The event is pushed to the notification
  * daemon.
- * The attibute data must be set with one of the Attribute::set_value or
+ * The attribute data must be set with one of the Attribute::set_value or
  * Attribute::setvalue_date_quality methods before fireing the event.
  * The event is triggered with or without the archive event criteria depending
  * on the configuration choosen with set_archive_event().
@@ -1724,7 +1724,7 @@ public:
 /**
  * Fire a user event for the attribute value. The event is pushed to the notification
  * daemon.
- * The attibute data must be set with one of the Attribute::set_value or
+ * The attribute data must be set with one of the Attribute::set_value or
  * Attribute::setvalue_date_quality methods before fireing the event.
  * ATTENTION: The couple set_value() and fire_event() needs to be protected
  * against concurrent accesses to the same attribute. Such an access might happen during
