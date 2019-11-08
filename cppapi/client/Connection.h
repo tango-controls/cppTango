@@ -42,7 +42,7 @@
 /**
  * Base class for Tango device access
  *
- * Base class for Tango device access. This class is pure virtual and can be instanciated
+ * Base class for Tango device access. This class is pure virtual and can be instantiated
  * as is.
  *
  * $Author: taurel $

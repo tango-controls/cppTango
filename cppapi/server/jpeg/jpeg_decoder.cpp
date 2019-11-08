@@ -80,7 +80,7 @@ char *jpeg_get_error_msg(int code) {
     case 11: sprintf(retMsg,"Bad DHT index");break;
     case 12: sprintf(retMsg,"Bad SOS marker");break;
     case 13: sprintf(retMsg,"Bad component id");break;
-    case 14: sprintf(retMsg,"Only 8 bit precission supported");break;
+    case 14: sprintf(retMsg,"Only 8 bit precision supported");break;
     case 15: sprintf(retMsg,"Invalid image size (8192x8192 max)");break;
     case 16: sprintf(retMsg,"Too many components in frame");break;
     case 17: sprintf(retMsg,"Bad SOF marker");break;

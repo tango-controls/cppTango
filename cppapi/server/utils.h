@@ -163,7 +163,7 @@ public:
  *
  * This method returns a reference to the object of the Util class.
  * If the class singleton object has not been created, it will be
- * instanciated
+ * instantiated
  *
  * @param argc The process command line argument number
  * @param argv The process commandline arguments
@@ -176,7 +176,7 @@ public:
  *
  * This method returns a reference to the object of the Util class.
  * If the class singleton object has not been created, it will be
- * instanciated. This method must be used only for non-console mode windows
+ * instantiated. This method must be used only for non-console mode windows
  * device server
  *
  * @param AppInst The application instance
