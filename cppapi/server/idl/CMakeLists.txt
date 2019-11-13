@@ -28,7 +28,11 @@ if(${FAILED})
     message(SEND_ERROR " Failed to generate source files from idl. rv=${FAILED}")
 endif()
 
-FILE(GLOB ENHANCEMENTS Enhance*)
+SET(ENHANCEMENTS
+    EnhanceAttributeValue_4
+    EnhanceAttributeValue_5
+    EnhanceDevPipeData
+)
 
 MESSAGE( STATUS "CMAKE_CURRENT_BINARY_DIR: " ${CMAKE_CURRENT_BINARY_DIR} )
 MESSAGE( STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR} )
