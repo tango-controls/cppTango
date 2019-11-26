@@ -2322,6 +2322,7 @@ private:
 	void set_data_size();
 	void throw_min_max_value(std::string &,std::string &,MinMaxValueCheck);
 	void log_quality();
+	void log_alarm_quality() const;
 
     inline void init_string_prop(std::vector<AttrProperty> &prop_list, std::string& attr, const char* attr_name)
     {
