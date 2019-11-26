@@ -5399,22 +5399,19 @@ void Attribute::log_quality()
             switch(quality)
             {
                 case ATTR_INVALID:
-                if (dev->get_logger()->is_error_enabled())
-                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "INVALID quality for attribute " << name << endl;
-                break;
+                    DEV_ERROR_STREAM(dev) << "INVALID quality for attribute " << get_name() << std::endl;
+                    break;
 
                 case ATTR_CHANGING:
-                if (dev->get_logger()->is_info_enabled())
-                    dev->get_logger()->info_stream() << log4tango::LogInitiator::_begin_log << "CHANGING quality for attribute " << name << endl;
-                break;
+                    DEV_INFO_STREAM(dev) << "CHANGING quality for attribute " << get_name() << std::endl;
+                    break;
 
                 case ATTR_VALID:
-                if (dev->get_logger()->is_info_enabled())
-                    dev->get_logger()->info_stream() << log4tango::LogInitiator::_begin_log << "VALID quality for attribute " << name << endl;
-                break;
+                    DEV_INFO_STREAM(dev) << "INFO quality for attribute " << get_name() << std::endl;
+                    break;
 
                 default:
-                break;
+                    break;
             }
         }
         else
@@ -5426,28 +5423,23 @@ void Attribute::log_quality()
 
             if (alarm[min_level] == true)
             {
-                if (dev->get_logger()->is_error_enabled())
-                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "MIN ALARM for attribute " << name << endl;
+                DEV_ERROR_STREAM(dev) << "MIN ALARM for attribute " << get_name() << std::endl;
             }
             else if (alarm[max_level] == true)
             {
-                if (dev->get_logger()->is_error_enabled())
-                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "MAX ALARM for attribute " << name << endl;
+                DEV_ERROR_STREAM(dev) << "MAX ALARM for attribute " << get_name() << std::endl;
             }
             else if (alarm[rds] == true)
             {
-                if (dev->get_logger()->is_warn_enabled())
-                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "RDS (Read Different Set) ALARM for attribute " << name << endl;
+                DEV_WARN_STREAM(dev) << "RDS (Read Different Set) ALARM for attribute " << get_name() << std::endl;
             }
             else if (alarm[min_warn] == true)
             {
-               if (dev->get_logger()->is_warn_enabled())
-                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "MIN WARNING for attribute " << name << endl;
+                DEV_WARN_STREAM(dev) << "MIN WARNING for attribute " << get_name() << std::endl;
             }
             else if (alarm[max_warn] == true)
             {
-               if (dev->get_logger()->is_warn_enabled())
-                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "MAX WARNING for attribute " << name << endl;
+                DEV_WARN_STREAM(dev) << "MAX WARNING for attribute " << get_name() << std::endl;
             }
         }
     }
@@ -5462,28 +5454,23 @@ void Attribute::log_quality()
         {
             if (alarm[min_level] == true)
             {
-                if (dev->get_logger()->is_error_enabled())
-                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "MIN ALARM for attribute " << name << endl;
+                DEV_ERROR_STREAM(dev) << "MIN ALARM for attribute " << get_name() << std::endl;
             }
             else if (alarm[max_level] == true)
             {
-                if (dev->get_logger()->is_error_enabled())
-                    dev->get_logger()->error_stream() << log4tango::LogInitiator::_begin_log << "MAX ALARM for attribute " << name << endl;
+                DEV_ERROR_STREAM(dev) << "MAX ALARM for attribute " << get_name() << std::endl;
             }
             else if (alarm[rds] == true)
             {
-                if (dev->get_logger()->is_warn_enabled())
-                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "RDS (Read Different Set) ALARM for attribute " << name << endl;
+                DEV_WARN_STREAM(dev) << "RDS (Read Different Set) ALARM for attribute " << get_name() << std::endl;
             }
             else if (alarm[min_warn] == true)
             {
-               if (dev->get_logger()->is_warn_enabled())
-                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "MIN WARNING for attribute " << name << endl;
+                DEV_WARN_STREAM(dev) << "MIN WARNING for attribute " << get_name() << std::endl;
             }
             else if (alarm[max_warn] == true)
             {
-               if (dev->get_logger()->is_warn_enabled())
-                    dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "MAX WARNING for attribute " << name << endl;
+                DEV_WARN_STREAM(dev) << "MAX WARNING for attribute " << get_name() << std::endl;
             }
         }
     }
