@@ -5383,96 +5383,64 @@ void Attribute::log_quality()
         dev = tg->get_device_by_name(d_name);
     }
 
-//
-// Log something if the new quality is different than the old one
-//
+    const bool has_quality_changed = quality != old_quality;
+    const bool has_alarm_changed = alarm != old_alarm;
+    const bool is_alarm_set = alarm.any();
 
-    if (quality != old_quality)
+    if (has_quality_changed)
     {
-        if (alarm.any() == false)
+        if (! is_alarm_set)
         {
-
-//
-// No alarm detected
-//
-
-            switch(quality)
+            switch (quality)
             {
-                case ATTR_INVALID:
-                    DEV_ERROR_STREAM(dev) << "INVALID quality for attribute " << get_name() << std::endl;
-                    break;
+            case ATTR_INVALID:
+                DEV_ERROR_STREAM(dev) << "INVALID quality for attribute " << name << std::endl;
+                break;
 
-                case ATTR_CHANGING:
-                    DEV_INFO_STREAM(dev) << "CHANGING quality for attribute " << get_name() << std::endl;
-                    break;
+            case ATTR_CHANGING:
+                DEV_INFO_STREAM(dev) << "CHANGING quality for attribute " << name << std::endl;
+                break;
 
-                case ATTR_VALID:
-                    DEV_INFO_STREAM(dev) << "INFO quality for attribute " << get_name() << std::endl;
-                    break;
+            case ATTR_VALID:
+                DEV_INFO_STREAM(dev) << "INFO quality for attribute " << name << std::endl;
+                break;
 
-                default:
-                    break;
+            default:
+                break;
             }
         }
         else
         {
-
-//
-// Different log according to which alarm is set
-//
-
-            if (alarm[min_level] == true)
-            {
-                DEV_ERROR_STREAM(dev) << "MIN ALARM for attribute " << get_name() << std::endl;
-            }
-            else if (alarm[max_level] == true)
-            {
-                DEV_ERROR_STREAM(dev) << "MAX ALARM for attribute " << get_name() << std::endl;
-            }
-            else if (alarm[rds] == true)
-            {
-                DEV_WARN_STREAM(dev) << "RDS (Read Different Set) ALARM for attribute " << get_name() << std::endl;
-            }
-            else if (alarm[min_warn] == true)
-            {
-                DEV_WARN_STREAM(dev) << "MIN WARNING for attribute " << get_name() << std::endl;
-            }
-            else if (alarm[max_warn] == true)
-            {
-                DEV_WARN_STREAM(dev) << "MAX WARNING for attribute " << get_name() << std::endl;
-            }
+            log_alarm_quality();
         }
     }
-    else
+    else if (has_alarm_changed)
     {
+        log_alarm_quality();
+    }
+}
 
-//
-// The quality is the same but may be the alarm has changed
-//
-
-        if (alarm != old_alarm)
-        {
-            if (alarm[min_level] == true)
-            {
-                DEV_ERROR_STREAM(dev) << "MIN ALARM for attribute " << get_name() << std::endl;
-            }
-            else if (alarm[max_level] == true)
-            {
-                DEV_ERROR_STREAM(dev) << "MAX ALARM for attribute " << get_name() << std::endl;
-            }
-            else if (alarm[rds] == true)
-            {
-                DEV_WARN_STREAM(dev) << "RDS (Read Different Set) ALARM for attribute " << get_name() << std::endl;
-            }
-            else if (alarm[min_warn] == true)
-            {
-                DEV_WARN_STREAM(dev) << "MIN WARNING for attribute " << get_name() << std::endl;
-            }
-            else if (alarm[max_warn] == true)
-            {
-                DEV_WARN_STREAM(dev) << "MAX WARNING for attribute " << get_name() << std::endl;
-            }
-        }
+void Attribute::log_alarm_quality() const
+{
+    if (alarm[min_level])
+    {
+        DEV_ERROR_STREAM(dev) << "MIN ALARM for attribute " << name << std::endl;
+    }
+    else if (alarm[max_level])
+    {
+        DEV_ERROR_STREAM(dev) << "MAX ALARM for attribute " << name << std::endl;
+    }
+    else if (alarm[rds])
+    {
+        DEV_WARN_STREAM(dev) << "RDS (Read Different Set) ALARM for attribute " << name << std::endl;
+    }
+    else if (alarm[min_warn])
+    {
+        DEV_WARN_STREAM(dev) << "MIN WARNING for attribute " << name << std::endl;
+    }
+    else if (alarm[max_warn])
+    {
+        DEV_WARN_STREAM(dev) << "MAX WARNING for attribute " << name << std::endl;
     }
 }
 
