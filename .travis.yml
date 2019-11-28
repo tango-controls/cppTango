@@ -44,6 +44,7 @@ before_install:
   - git clone https://github.com/JoakimSoderberg/coveralls-cmake.git
   - (test ${STOCK_CPPZMQ} = "OFF" && git clone -b v4.2.2 https://${CI_USER_TOKEN}@github.com/zeromq/cppzmq.git cppzmq) || mkdir cppzmq
   - git clone -b tango-9-lts https://${CI_USER_TOKEN}@github.com/tango-controls/tango-idl.git idl
+  - git clone -b Release_1.14 https://github.com/tango-controls/tango_admin.git
   - wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip && unzip build-wrapper-linux-x86.zip
 
 before_script:
@@ -111,6 +112,7 @@ before_script:
       -v `pwd`:/home/tango/src
       -v `pwd`/idl:/home/tango/idl
       -v `pwd`/cppzmq:/home/tango/cppzmq
+      -v `pwd`/tango_admin:/home/tango/tango_admin
       -v `pwd`/coveralls-cmake:/home/tango/coveralls-cmake
       -v `pwd`/build-wrapper-linux-x86:/home/tango/build-wrapper-linux-x86
       -dit
@@ -123,6 +125,8 @@ before_script:
 script:
   - set -e
   - .travis/run.sh
+  - .travis/install_tango.sh
+  - .travis/install_tango_admin.sh
   - .travis/test.sh
   - set +e
 
