@@ -829,16 +829,15 @@ public:
 
 	/* Verifies that a group can contain devices from a remote TANGO_HOST
 	 * (a Tango instance different from client's default TANGO_HOST).
-	 * An issue was reported when resolving names containing wildcards. */
+	 * An issue was reported when resolving names containing wildcards.
+	 * Update: to simplify test setup, the scenario has been changed
+	 * to unset client's TANGO_HOST instead of providing different value. */
 
 	void test_use_devices_from_remote_tango_host()
 	{
 		const std::string original_tango_host = std::getenv("TANGO_HOST");
-		const std::string external_tango_host = std::getenv("TANGO_HOST2");
 
-		const bool force_update = true;
-
-		TS_ASSERT_EQUALS(0, setenv("TANGO_HOST", external_tango_host.c_str(), force_update));
+		TS_ASSERT_EQUALS(0, unsetenv("TANGO_HOST"));
 		ApiUtil::instance()->cleanup();
 
 		Group group("group");
@@ -856,6 +855,7 @@ public:
 		TS_ASSERT(command_result >> state);
 		TS_ASSERT_EQUALS(ON, state);
 
+		const bool force_update = true;
 		TS_ASSERT_EQUALS(0, setenv("TANGO_HOST", original_tango_host.c_str(), force_update));
 		ApiUtil::instance()->cleanup();
 	}
