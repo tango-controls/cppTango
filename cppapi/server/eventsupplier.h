@@ -43,6 +43,7 @@
 #define _EVENT_SUPPLIER_API_H
 
 #include <except.h>
+#include <atomic>
 
 #if defined (_TG_WINDOWS_) && defined (_USRDLL) && !defined(_TANGO_LIB)
 #define USE_stub_in_nt_dll
@@ -179,7 +180,7 @@ protected :
 	static omni_mutex		detect_mutex;
 
 private:
-	bool        one_subscription_cmd;
+    std::atomic_bool        one_subscription_cmd;
 };
 
 //---------------------------------------------------------------------
@@ -362,8 +363,8 @@ private :
 	std::map<std::string,unsigned int>    event_cptr;             // event counter map
 
 	std::list<ConnectedClient>       con_client;             // Connected clients
-	int                         double_send;            // Double send ctr
-	bool                        double_send_heartbeat;
+    std::atomic_int                         double_send;            // Double send ctr
+    std::atomic_bool                        double_send_heartbeat;
 
 	int							zmq_release;			// ZMQ lib release
 
