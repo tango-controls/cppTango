@@ -4003,6 +4003,7 @@ void Attribute::fire_change_event(DevFailed *except)
 		}
 		else
 		{
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
 
 //
 // Send event, if the read_attribute failed or if it is the first time
@@ -4455,6 +4456,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 		}
 		else
 		{
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
 
 //
 // Execute detect_change only to calculate the delta_change_rel and
