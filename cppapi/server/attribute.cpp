@@ -3773,9 +3773,12 @@ void Attribute::fire_change_event(DevFailed *except)
 		time_t change3_subscription,change4_subscription,change5_subscription;
 
 		now = time(NULL);
+		{
+		omni_mutex_lock oml(EventSupplier::get_event_mutex());
 		change3_subscription = now - event_change3_subscription;
 		change4_subscription = now - event_change4_subscription;
 		change5_subscription = now - event_change5_subscription;
+        }
 
 //
 // Get the event supplier(s)
