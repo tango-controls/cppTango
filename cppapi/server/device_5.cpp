@@ -41,6 +41,11 @@
 #include <device_3.tpp>
 
 
+namespace
+{
+    omni_mutex g_bb_mutex = {};
+}
+
 namespace Tango
 {
 
@@ -108,9 +113,12 @@ Tango::AttributeValueList_5* Device_5Impl::read_attributes_5(const Tango::DevVar
 // Record operation request in black box
 //
 
+	{
+	omni_mutex_lock oml(g_bb_mutex);
 	if (store_in_bb == true)
 		blackbox_ptr->insert_attr(names,cl_id,5,source);
 	store_in_bb = true;
+	}
 
 //
 // Build a sequence with the names of the attribute to be read. This is necessary in case of the "AllAttr" shortcut is
