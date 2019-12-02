@@ -36,6 +36,7 @@
 #include <attrdesc.h>
 #include <fwdattrdesc.h>
 #include <encoded_attribute.h>
+#include <atomic>
 
 #include <functional>
 #include <time.h>
@@ -2502,8 +2503,8 @@ protected:
     AttrSerialModel		attr_serial_model;				// Flag for attribute serialization model
     bool				dr_event_implmented;			// Flag true if fire data ready event is implemented
     bool				scalar_str_attr_release;		// Need memory freeing (scalar string attr, R/W att)
-    bool                notifd_event;                   // Set to true if event required using notifd
-    bool                zmq_event;                      // Set to true if event required using ZMQ
+    std::atomic_bool                notifd_event;                   // Set to true if event required using notifd
+    std::atomic_bool                zmq_event;                      // Set to true if event required using ZMQ
     std::vector<std::string>      mcast_event;                    // In case of multicasting used for event transport
     AttrQuality         old_quality;                    // Previous attribute quality
     std::bitset<numFlags>    old_alarm;                      // Previous attribute alarm
