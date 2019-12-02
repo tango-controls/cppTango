@@ -51,6 +51,11 @@
 
 using namespace CORBA;
 
+namespace
+{
+    omni_mutex g_ev_cptr_mutex = {};
+}
+
 namespace Tango {
 
 ZmqEventSupplier *ZmqEventSupplier::_instance = NULL;
@@ -773,6 +778,8 @@ void ZmqEventSupplier::init_event_cptr(std::string &event_name)
 {
     std::map<std::string,unsigned int>::iterator pos;
 
+    omni_mutex_lock oml(g_ev_cptr_mutex);
+
     pos = event_cptr.find(event_name);
     if (pos == event_cptr.end())
     {
@@ -1001,6 +1008,8 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,std::string event_type
 
 	cout3 << "ZmqEventSupplier::push_event(): called for attribute/pipe " << obj_name << std::endl;
 
+	/* create_event_socket(); */
+
 //
 // Get the mutex to synchronize the sending of events
 // This method may be called by several threads in case they are several
@@ -1065,9 +1074,18 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,std::string event_type
     std::map<std::string,unsigned int>::iterator ev_cptr_ite;
     unsigned int ev_ctr = 0;
 
+    bool ev_cptr_found = false;
+    unsigned int ev_cptr_value = 0;
+    {
+    omni_mutex_lock oml(g_ev_cptr_mutex);
     ev_cptr_ite = event_cptr.find(ctr_event_name);
-    if (ev_cptr_ite != event_cptr.end())
-        ev_ctr = ev_cptr_ite->second;
+    ev_cptr_found = ev_cptr_ite != event_cptr.end();
+    if (ev_cptr_found)
+        ev_cptr_value = ev_cptr_ite->second;
+    }
+
+    if (ev_cptr_found)
+        ev_ctr = ev_cptr_value;
     else
     {
 		bool print = false;
