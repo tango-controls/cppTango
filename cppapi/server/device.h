@@ -45,6 +45,7 @@
 #include <deviceclass.h>
 #include <devintr.h>
 #include <dintrthread.h>
+#include <atomic>
 
 namespace Tango
 {
@@ -3500,7 +3501,7 @@ protected:
     std::vector<std::string>				cmd_poll_ring_depth;
     std::vector<std::string>				attr_poll_ring_depth;
 
-    bool						store_in_bb;
+    std::atomic_bool						store_in_bb;
     TangoMonitor				poll_mon;		        // Polling list monitor
     TangoMonitor				att_conf_mon;		    // Attribute config monitor
     TangoMonitor				pipe_conf_mon;			// Pipe config monitor
