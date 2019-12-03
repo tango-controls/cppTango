@@ -4006,7 +4006,6 @@ void Attribute::fire_change_event(DevFailed *except)
 		}
 		else
 		{
-			omni_mutex_lock oml(EventSupplier::get_event_mutex());
 
 //
 // Send event, if the read_attribute failed or if it is the first time
@@ -4020,6 +4019,8 @@ void Attribute::fire_change_event(DevFailed *except)
 			bool force_change   = false;
 			bool quality_change = false;
 
+			{
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
 			if ((except != NULL) ||
 				(quality == Tango::ATTR_INVALID) ||
 				((except == NULL) && (prev_change_event.err == true)) ||
@@ -4028,11 +4029,15 @@ void Attribute::fire_change_event(DevFailed *except)
 			{
 				force_change = true;
 			}
+			}
 
 			std::vector<std::string> filterable_names;
 			std::vector<double> filterable_data;
 			std::vector<std::string> filterable_names_lg;
 			std::vector<long> filterable_data_lg;
+
+			{
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
 
 			if (except != NULL)
 			{
@@ -4068,6 +4073,7 @@ void Attribute::fire_change_event(DevFailed *except)
 				prev_change_event.err = false;
 			}
 			prev_change_event.inited = true;
+			}
 
 			filterable_names.push_back("forced_event");
 			if (force_change == true)
@@ -4087,7 +4093,6 @@ void Attribute::fire_change_event(DevFailed *except)
                 ad.attr_val_4 = send_attr_4;
             else
                 ad.attr_val_3 = send_attr;
-
 //
 // Finally push the event(s)
 //
@@ -4462,7 +4467,6 @@ void Attribute::fire_archive_event(DevFailed *except)
 		}
 		else
 		{
-			omni_mutex_lock oml(EventSupplier::get_event_mutex());
 
 //
 // Execute detect_change only to calculate the delta_change_rel and
@@ -4485,6 +4489,8 @@ void Attribute::fire_archive_event(DevFailed *except)
 			std::vector<std::string> filterable_names_lg;
 			std::vector<long> filterable_data_lg;
 
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
+			{
 			if (except != NULL)
 			{
 				prev_archive_event.err    = true;
@@ -4519,6 +4525,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 				prev_archive_event.err = false;
 			}
 			prev_archive_event.inited = true;
+			}
 
 			filterable_names.push_back("forced_event");
 			if (force_change == true)
