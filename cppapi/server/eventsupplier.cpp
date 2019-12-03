@@ -695,6 +695,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 
     if (attr.prev_archive_event.inited == false)
     {
+        omni_mutex_lock oml(detect_mutex);
         if (except != NULL)
         {
             attr.prev_archive_event.err = true;
@@ -769,11 +770,13 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 
         if (except != NULL)
         {
+            omni_mutex_lock oml(detect_mutex);
             attr.prev_archive_event.err = true;
             attr.prev_archive_event.except = *except;
         }
         else
         {
+            omni_mutex_lock oml(detect_mutex);
             if (attr_value.attr_val_5 != NULL)
             {
                 attr.prev_archive_event.value_4 = attr_value.attr_val_5->value;
@@ -801,6 +804,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         filterable_names_lg.push_back("counter");
         if (period_change == true)
         {
+            omni_mutex_lock oml(detect_mutex);
             attr.archive_periodic_counter++;
             attr.archive_last_periodic = now_ms;
             filterable_data_lg.push_back(attr.archive_periodic_counter);
