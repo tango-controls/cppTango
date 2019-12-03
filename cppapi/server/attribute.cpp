@@ -4202,9 +4202,12 @@ void Attribute::fire_archive_event(DevFailed *except)
 
 		now = time(NULL);
 
+		{
+		omni_mutex_lock oml(EventSupplier::get_event_mutex());
 		archive3_subscription = now - event_archive3_subscription;
 		archive4_subscription = now - event_archive4_subscription;
 		archive5_subscription = now - event_archive5_subscription;
+		}
 
 //
 // Get the event supplier(s)
