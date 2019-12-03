@@ -231,7 +231,10 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
 
     ret.archive = false;
     client_libs.clear();
+    {
+    omni_mutex_lock oml(event_mutex);
     client_libs = attr.get_client_lib(ARCHIVE_EVENT);    // We want a copy
+    }
 
     for (ite = client_libs.begin(); ite != client_libs.end(); ++ite)
     {
