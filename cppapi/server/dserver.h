@@ -170,7 +170,6 @@ private:
 	bool is_event_name(std::string &);
 	bool is_ip_address(std::string &);
 
-	bool			from_constructor;
 	std::vector<std::string>	mcast_event_prop;
 
 	DevLong         mcast_hops;

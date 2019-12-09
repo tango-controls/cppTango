@@ -1850,6 +1850,8 @@ void DServerClass::device_factory(const Tango::DevVarStringArray *devlist_ptr)
                                    Tango::ON,
                                    "The device is ON");
 
+		dserver->init_device();
+
 		device_list.push_back(dserver);
 
 //

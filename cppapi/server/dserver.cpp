@@ -100,10 +100,6 @@ DServer::DServer(DeviceClass *cl_ptr,const char *n,const char *d,Tango::DevState
 
 	polling_th_pool_size = DEFAULT_POLLING_THREADS_POOL_SIZE;
 	optimize_pool_usage = true;
-
-	from_constructor = true;
-	init_device();
-	from_constructor = false;
 }
 
 bool less_than (Command *a,Command *b)
