@@ -995,6 +995,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 //
 
 		std::string &dev_name = dev->get_name_lower();
+		cout4 << "DeviceClass::export_device::dev_name=" << dev_name << std::endl;
 		if ((get_device_factory_done() == false) && (dev_name.find("dserver") != 0))
 			dev->get_dev_monitor().get_monitor();
 
