@@ -1863,6 +1863,9 @@ void DServerClass::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 		else
 			export_device(device_list.back(),(*devlist_ptr)[i]);
 
+
+		dserver->server_init_hook();
+
 //
 // After the export of the admin device, the server is marked as started
 // and the database server connection timeout is set to the classical

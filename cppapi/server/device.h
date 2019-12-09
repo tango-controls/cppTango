@@ -452,6 +452,18 @@ public:
 	virtual void always_executed_hook(void) {};
 
 /**
+ * Hook method.
+ *
+ * Default method to implement an action necessary on a device after server has been initialized.
+ *
+ * @exception DevFailed This method does not throw exception but a
+ * redefined method can.
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+	virtual void server_init_hook() {};
+
+/**
  * Read the hardware to return attribute value(s).
  *
  * Default method to implement an action necessary on a device to read the

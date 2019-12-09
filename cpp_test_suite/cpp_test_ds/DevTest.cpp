@@ -217,6 +217,11 @@ void DevTest::always_executed_hook()
 
 }
 
+void DevTest::server_init_hook()
+{
+    cout2 << "In server_init_hook method" << std::endl;
+}
+
 //+----------------------------------------------------------------------------
 //
 // method : 		DevTest::state_cmd()

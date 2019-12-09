@@ -113,6 +113,8 @@ public :
 	std::vector<DeviceClass *> &get_class_list() {return class_list;}
 	virtual void init_device();
 
+	virtual void server_init_hook();
+
 	unsigned long get_poll_th_pool_size() {return polling_th_pool_size;}
 	void set_poll_th_pool_size(unsigned long val) {polling_th_pool_size = val;}
 	bool get_opt_pool_usage() {return optimize_pool_usage;}
