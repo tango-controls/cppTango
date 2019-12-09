@@ -64,21 +64,26 @@ See [INSTALL file](INSTALL.md).
 
 See [corresponding wiki page](https://github.com/tango-controls/cppTango/wiki/Contribution-Guide)
 
-# Usage workflow (draft)
+# Pull request acceptance and merging
 
+You have created a change to cppTango. 🎉
 
-1. In its most basic form, we adopt the githubflow : the default branch is master, which is always in a deployable state (i.e. must never be broken); work on new features is done using temporary feature branches (which may live in the same repo or in a fork)
-2. Reporting issues: use github issues
-3. Code contributions: use Pull requests. Pull requests can be associated with issues. Trivial fixes can even be done from the web (a temporary branch is created automatically to use the Pull request infrastructure)
-4. Code review: most projects (all except single-developer ones) should only allow commits to the master branch after peer review. This can be enforced by the convention that all commits to master must be done via a Pull request and the pull request approved by a person different from the author of the commit.
-5. Releases (named versions):
-  * Simple projects may be ok with just tagging certain (ideally, all) commits done to the master branch with a version number. With this system, only one release is actively maintained simultaneously.
+And now you want to get these changes merged? Very nice!
 
-  * More complex projects may require to simultaneously maintain more than one release (e.g. Tango may choose to support bugfixes in Tango9 even after Tango10 is released). In this case, releases may be done on release branches starting from master (see APPENDIX I for an example)
-6. Semantic versioning is recommended.
-7. Public automatic testing/continuous integration (e.g., via Travis) is recommended
-8. The main development should be done on the tango-controls hosted project (as opposed to using a private organization project and just pushing to the tango-controls repo from time to time). This allows for public visibility of the latest development and issues and encourages sharing and reuse. If a given organization needs special tweaks or has particular release/testing cycles, the recommendation is that the organization forks from the "canonical" repo
-
+In order to give you the best possible experience here are a few hints for the
+path forward:
+- All CI tests have to pass. If you have changed the behaviour of the code, you
+  should add new tests as well. You don't need to execute the tests locally,
+  CI is the reference anyway. So just create a PR and let CI handle that.
+- Make your PR easy to review. This starts with explaining what it wants to
+  achieve and ends with splitting the changes into logical commits where each
+  commit describes why it is changing the code.
+- Follow the coding style. This is at the moment messy at best, but still
+  we don't want to get worse.
+- Your PR needs two review approvals, including one from the code owners listed [here](https://github.com/tango-controls/cppTango/blob/9.3-backports/CodeOwners).
+- Be prepared to adapt your pull request to the review responses. Code review
+  is done for ensuring higher code quality and communicating implementations
+  details to newcomers and not for annoying anyone or slowing down development.
 
 # Links
 
