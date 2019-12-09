@@ -30,9 +30,14 @@
 
 # TANGO distributed control system - shared library
 
-TANGO is an object-oriented distributed control system. In TANGO all objects are representations of devices, which can be on the same computer or distributed over a network. Communication between devices can be synchronous, asynchronous or event driven.
+TANGO is an object-oriented distributed control system. In TANGO all objects
+are representations of devices, which can be on the same computer or
+distributed over a network. Communication between devices can be synchronous,
+asynchronous or event driven.
 
-The object model in TANGO supports methods, attributes and properties. TANGO provides an API which hides all the details of network access and provides object browsing, discovery, and security features.
+The object model in TANGO supports methods, attributes and properties. TANGO
+provides an API which hides all the details of network access and provides
+object browsing, discovery, and security features.
 
 For more information please visit [www.tango-controls.org](http://www.tango-controls.org).
 
