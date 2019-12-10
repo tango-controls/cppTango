@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
+
+project(cppTango)
+
 include(CTest)
 
 option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
