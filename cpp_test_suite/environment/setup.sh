@@ -30,15 +30,11 @@ function run_tango_container {
 }
 
 run_mysql_container mysql_db
-run_mysql_container mysql_db2
 run_tango_container tango_cs mysql_db
-run_tango_container tango_cs2 mysql_db2
 
 IPADDR=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' tango_cs)
-IPADDR2=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' tango_cs2)
 
 export TANGO_HOST=$IPADDR:10000
-export TANGO_HOST2=$IPADDR2:10000
 
 echo "TANGO_HOST=$TANGO_HOST"
 
@@ -47,13 +43,11 @@ echo "Create tango_host file"
 cat << EOF > tango_host
 #!/bin/bash
 export TANGO_HOST=$TANGO_HOST
-export TANGO_HOST2=$TANGO_HOST2
 EOF
 
 echo "Wait till tango-cs is online"
 if hash tango_admin 2>/dev/null; then
     tango_admin --ping-database 30
-    TANGO_HOST=$TANGO_HOST2 tango_admin --ping-database 30
 else
     sleep 30
 fi

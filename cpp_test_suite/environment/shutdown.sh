@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 echo "Shutdown test environment"
-docker stop tango_cs tango_cs2
-docker stop mysql_db mysql_db2
+docker stop tango_cs
+docker stop mysql_db
 
 echo "Revert tango_host file"
 echo "TANGO_HOST=$TANGO_HOST"
