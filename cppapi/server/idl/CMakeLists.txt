@@ -59,5 +59,12 @@ else(WIN32)
     add_library(idl_objects OBJECT ${SOURCES} tango.h)
     target_compile_options(idl_objects PRIVATE -fPIC)
     target_compile_definitions(idl_objects PRIVATE OMNI_UNLOADABLE_STUBS)
+
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+      target_compile_options(idl_objects PRIVATE -Wno-maybe-uninitialized -Wno-unused-parameter)
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      target_compile_options(idl_objects PRIVATE -Wno-sometimes-uninitialized -Wno-unused-variable)
+    endif()
+
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tango.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/idl")
 endif(WIN32)

@@ -909,7 +909,7 @@ DevAttrHistory_5 *FwdAttribute::read_root_att_history(long n)
 // Get data from root device (Reminder: we don't use the classical API. See above)
 //
 
-	DevAttrHistory_5 *hist_5;
+	DevAttrHistory_5 *hist_5 = Tango_nullptr;
 	int ctr = 0;
 
 	while (ctr < 2)
@@ -1013,7 +1013,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 	dvsa[0] = Tango::string_dup(get_fwd_att_name().c_str());
 
 	int ctr = 0;
-	AttributeValueList_5 *attr_value_list_5;
+	AttributeValueList_5 *attr_value_list_5 = Tango_nullptr;
 	Tango::AccessControlType local_act;
 
 	while (ctr < 2)

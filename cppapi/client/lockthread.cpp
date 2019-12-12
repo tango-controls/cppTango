@@ -108,8 +108,6 @@ void LockThread::run(TANGO_UNUSED(void *ptr))
 
 	while(1)
 	{
-		bool cmd_received;
-
 		try
 		{
 			if (sleep != 0)
@@ -121,16 +119,14 @@ void LockThread::run(TANGO_UNUSED(void *ptr))
 			{
 			case LOCK_COMMAND:
 				execute_cmd();
-				cmd_received = true;
 				break;
 
 			case LOCK_TIME_OUT:
 				one_more_lock();
-				cmd_received = false;
 				break;
 			}
 
-			compute_sleep_time(cmd_received);
+			compute_sleep_time(received == LOCK_COMMAND);
 		}
 		catch (omni_thread_fatal &)
 		{

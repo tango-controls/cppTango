@@ -103,7 +103,7 @@ public:
 		try
 		{
 			// Write one attribute
-			long id;
+			long id = 0;
 			DeviceAttribute send;
 
 			send.set_name("attr_asyn_write");
@@ -161,7 +161,7 @@ public:
         try
         {
 			// Write one attribute
-            long id;
+            long id = 0;
             DeviceAttribute send;
 
             send.set_name("attr_asyn_write");

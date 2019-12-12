@@ -71,7 +71,7 @@ void set_abs_change(std::string device_name, std::string attribute_name)
 
 int main(int argc, char *argv[])
 {
-    Tango::DeviceProxy *dev;
+    Tango::DeviceProxy *dev = Tango_nullptr;
     int eventID;
     const vector<string> filters;
     EventCallback *eventCallback = new EventCallback();
