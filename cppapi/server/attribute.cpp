@@ -1681,14 +1681,6 @@ bool Attribute::check_alarm()
 		return returned;
 	}
 
-// Skip alarm evaluation if no value for this attribute was provided during last read.
-
-	if (!get_value_flag())
-	{
-		DEV_WARN_STREAM(dev) << "Attribute has no value, skipping alarm evaluation for: " << get_name() << std::endl;
-		return false;
-	}
-
 //
 // Get the monitor protecting device att config
 //

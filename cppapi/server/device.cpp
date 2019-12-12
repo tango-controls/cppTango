@@ -1274,6 +1274,14 @@ Tango::DevState DeviceImpl::dev_state()
                     }
                     catch (Tango::DevFailed &)
                     {
+                        if (!att.get_value_flag())
+                        {
+                            WARN_STREAM
+                                << "Attribute has no value, forcing INVALID quality for: "
+                                << att.get_name() << std::endl;
+                            att.set_quality(Tango::ATTR_INVALID);
+                        }
+
                         for (j = 0; j < i; j++)
                         {
                             long idx;
