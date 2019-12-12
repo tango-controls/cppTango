@@ -80,7 +80,7 @@ path forward:
   commit describes why it is changing the code.
 - Follow the coding style. This is at the moment messy at best, but still
   we don't want to get worse.
-- Your PR needs two review approvals, including one from the code owners listed [here](https://github.com/tango-controls/cppTango/blob/tango-9-lts/CodeOwners).
+- Your PR needs two review approvals, including one from the code owners listed [here](https://github.com/tango-controls/cppTango/blob/tango-9-lts/CODEOWNERS).
 - Be prepared to adapt your pull request to the review responses. Code review
   is done for ensuring higher code quality and communicating implementations
   details to newcomers and not for annoying anyone or slowing down development.
