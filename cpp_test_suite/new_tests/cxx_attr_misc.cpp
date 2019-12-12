@@ -1022,6 +1022,13 @@ cout << "status = " << status << endl;
 		TS_ASSERT(strcmp(status,"The device is in ON state.") == 0);
 	}
 
+	void set_Long_attr_value(DevLong value)
+	{
+		DeviceData input;
+		input << value;
+		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOSetAttr", input));
+	}
+
 	void set_attribute_exception_flag(short attribute_disc, bool enabled)
 	{
 		std::vector<short> flags(2);
@@ -1054,14 +1061,16 @@ cout << "status = " << status << endl;
 	{
 		const short EXCEPTION_IN_Long_attr = 5;
 
-		assert_dev_state(Tango::ON);
+		set_Long_attr_value(2000);
+		assert_dev_state(Tango::ALARM);
 
 		set_attribute_exception_flag(EXCEPTION_IN_Long_attr, true);
-
 		assert_dev_state(Tango::ON);
 
 		set_attribute_exception_flag(EXCEPTION_IN_Long_attr, false);
+		assert_dev_state(Tango::ALARM);
 
+		set_Long_attr_value(1200);
 		assert_dev_state(Tango::ON);
 	}
 
