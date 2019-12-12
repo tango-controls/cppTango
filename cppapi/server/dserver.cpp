@@ -100,10 +100,6 @@ DServer::DServer(DeviceClass *cl_ptr,const char *n,const char *d,Tango::DevState
 
 	polling_th_pool_size = DEFAULT_POLLING_THREADS_POOL_SIZE;
 	optimize_pool_usage = true;
-
-	from_constructor = true;
-	init_device();
-	from_constructor = false;
 }
 
 bool less_than (Command *a,Command *b)
@@ -482,6 +478,61 @@ void DServer::init_device()
 		Tango::Util::instance()->set_svr_shutting_down(true);
 		throw;
 	}
+}
+
+void DServer::server_init_hook()
+{
+#ifdef HAS_RANGE_BASE_FOR
+    for (DeviceClass *dclass : this->get_class_list())
+    {
+        for (DeviceImpl *device : dclass->get_device_list())
+        {
+            cout4 << "Device " << device->get_name_lower() << " executes init_server_hook" << std::endl;
+            try
+            {
+                device->server_init_hook();
+            }
+            catch (const DevFailed &devFailed)
+            {
+                device->set_state(FAULT);
+
+                std::ostringstream ss;
+                ss << "Device[" << device->get_name_lower() << "] server_init_hook has failed due to DevFailed:"
+                   << std::endl;
+                ss << devFailed;
+
+                device->set_status(ss.str());
+            }
+        }
+    }
+#else
+    std::vector<DeviceClass*> &dclass_vector = this->get_class_list();
+    std::vector<DeviceClass*>::iterator dclass_vector_pos, dclass_vector_end;
+    for (dclass_vector_pos = dclass_vector.begin(), dclass_vector_end = dclass_vector.end(); dclass_vector_pos != dclass_vector_end; ++dclass_vector_pos)
+    {
+        std::vector<DeviceImpl*> &device_vector = (*dclass_vector_pos)->get_device_list();
+        std::vector<DeviceImpl*>::iterator device_vector_pos, device_vector_end;
+        for (device_vector_pos = device_vector.begin(), device_vector_end = device_vector.end(); device_vector_pos != device_vector_end; ++device_vector_pos)
+        {
+            DeviceImpl *device = *device_vector_pos;
+            cout4 << "Device " << device->get_name_lower() << " executes init_server_hook" << std::endl;
+            try
+            {
+                device->server_init_hook();
+            }
+            catch(const DevFailed& devFailed){
+                device->set_state(FAULT);
+
+                std::ostringstream ss;
+                ss << "Device[" << device->get_name_lower() << "] server_init_hook has failed due to DevFailed:"
+                   << std::endl;
+                ss << devFailed;
+
+                device->set_status(ss.str());
+            }
+        }
+    }
+#endif
 }
 
 //+----------------------------------------------------------------------------------------------------------------

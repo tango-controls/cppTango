@@ -37,6 +37,7 @@ public :
 	// virtual Tango_DevString& dev_InOutString(Tango_DevString DateToParse);
 	virtual Tango::ConstDevString dev_status();
 	virtual void always_executed_hook();
+    virtual void server_init_hook();
 	virtual void signal_handler(long signo);
 
 	virtual void init_device();

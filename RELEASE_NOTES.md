@@ -1,3 +1,7 @@
+# Tango C++ library 9.4.0 Release Notes
+UNRELEASED
+
+#498 - DeviceImpl::server_init_hook - device hook when DServer has been exported
 
 # Tango C++ library 9.3.3 Release Notes
 March 29, 2019

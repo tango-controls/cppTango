@@ -47,6 +47,22 @@ namespace Tango
 
 class DeviceImpl;
 
+/*
+ * Output operator overload for Tango::DevFailed
+ */
+static inline std::ostream &operator<<(std::ostream &ss, const Tango::DevFailed &devFailed)
+{
+    for (CORBA::ULong i = 0; i < devFailed.errors.length(); ++i)
+    {
+        const DevError &error = devFailed.errors[i];
+        ss << "\tOrigin: " << error.origin << std::endl;
+        ss << "\tSeverity: " << error.severity << std::endl;
+        ss << "\tReason: " << error.reason << std::endl;
+        ss << "\tDescription: " << error.desc << std::endl;
+    }
+    return ss;
+}
+
 //==================================================================================================================
 //
 // Class :
