@@ -6,16 +6,12 @@ then
   exit 0
 fi
 
-TEST_COMMAND="exec ctest --output-on-failure"
-if [ $COVERALLS = "ON" ]
-then
-    TEST_COMMAND="exec make coveralls"
-fi
+build_dir="/home/tango/src/build"
 
-echo "Test"
-echo "TEST_COMMAND=$TEST_COMMAND"
-docker exec cpp_tango /bin/sh -c "cd /home/tango/src/build; $TEST_COMMAND"
-if [ $? -ne "0" ]
-then
-    exit -1
+set -e
+
+if [[ "$COVERALLS" == "ON" ]]; then
+    docker exec -w "${build_dir}" cpp_tango make coveralls
+else
+    docker exec -w "${build_dir}" cpp_tango ../.travis/run_ctest.sh
 fi
