@@ -3827,9 +3827,13 @@ void Attribute::fire_change_event(DevFailed *except)
 		time_t change3_subscription,change4_subscription,change5_subscription;
 
 		now = time(NULL);
-		change3_subscription = now - event_change3_subscription;
-		change4_subscription = now - event_change4_subscription;
-		change5_subscription = now - event_change5_subscription;
+
+		{
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
+			change3_subscription = now - event_change3_subscription;
+			change4_subscription = now - event_change4_subscription;
+			change5_subscription = now - event_change5_subscription;
+		}
 
 //
 // Get the event supplier(s)
@@ -4232,9 +4236,12 @@ void Attribute::fire_archive_event(DevFailed *except)
 
 		now = time(NULL);
 
-		archive3_subscription = now - event_archive3_subscription;
-		archive4_subscription = now - event_archive4_subscription;
-		archive5_subscription = now - event_archive5_subscription;
+		{
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
+			archive3_subscription = now - event_archive3_subscription;
+			archive4_subscription = now - event_archive4_subscription;
+			archive5_subscription = now - event_archive5_subscription;
+		}
 
 //
 // Get the event supplier(s)
@@ -4658,9 +4665,12 @@ void Attribute::fire_event(std::vector<std::string> &filt_names,std::vector<doub
 
 		now = time(NULL);
 
-		user3_subscription = now - event_user3_subscription;
-		user4_subscription = now - event_user4_subscription;
-		user5_subscription = now - event_user5_subscription;
+		{
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
+			user3_subscription = now - event_user3_subscription;
+			user4_subscription = now - event_user4_subscription;
+			user5_subscription = now - event_user5_subscription;
+		}
 
 //
 // Get the event supplier(s)
@@ -4930,9 +4940,12 @@ void Attribute::fire_error_periodic_event(DevFailed *except)
 
 	now = time(NULL);
 
-	periodic3_subscription = now - event_periodic3_subscription;
-	periodic4_subscription = now - event_periodic4_subscription;
-	periodic5_subscription = now - event_periodic5_subscription;
+	{
+		omni_mutex_lock oml(EventSupplier::get_event_mutex());
+		periodic3_subscription = now - event_periodic3_subscription;
+		periodic4_subscription = now - event_periodic4_subscription;
+		periodic5_subscription = now - event_periodic5_subscription;
+	}
 
 	std::vector<int> client_libs = get_client_lib(PERIODIC_EVENT); 	// We want a copy
 
