@@ -64,6 +64,47 @@ static bool WantedProp_f(AttrProperty a,const char *n)
 	return (a.get_name() == n);
 }
 
+void LastAttrValue::store(
+    const AttributeValue_5* attr_5,
+    const AttributeValue_4* attr_4,
+    const AttributeValue_3* attr_3,
+    const AttributeValue* attr,
+    DevFailed* error)
+{
+    if (error)
+    {
+        except = *error;
+        err = true;
+    }
+    else
+    {
+        if (attr_5)
+        {
+            quality = attr_5->quality;
+            value_4 = attr_5->value;
+        }
+        else if (attr_4)
+        {
+            quality = attr_4->quality;
+            value_4 = attr_4->value;
+        }
+        else if (attr_3)
+        {
+            quality = attr_3->quality;
+            value = attr_3->value;
+        }
+        else if (attr)
+        {
+            quality = attr->quality;
+            value = attr->value;
+        }
+
+        err = false;
+    }
+
+    inited = true;
+}
+
 
 //--------------------------------------------------------------------------------------------------------------------
 //
@@ -4029,54 +4070,34 @@ void Attribute::fire_change_event(DevFailed *except)
 			bool force_change   = false;
 			bool quality_change = false;
 
-			if ((except != NULL) ||
-				(quality == Tango::ATTR_INVALID) ||
-				((except == NULL) && (prev_change_event.err == true)) ||
-				((quality != Tango::ATTR_INVALID) &&
-				(prev_change_event.quality == Tango::ATTR_INVALID)))
 			{
-				force_change = true;
+				omni_mutex_lock oml(EventSupplier::get_event_mutex());
+
+				const AttrQuality old_quality = prev_change_event.quality;
+
+				if (except
+				    || quality == Tango::ATTR_INVALID
+				    || ((! except) && prev_change_event.err)
+				    || (quality != Tango::ATTR_INVALID && old_quality == Tango::ATTR_INVALID))
+				{
+					force_change = true;
+				}
+
+				prev_change_event.store(
+				    send_attr_5,
+				    send_attr_4,
+				    send_attr,
+				    Tango_nullptr,
+				    except);
+
+				quality_change = (old_quality != prev_change_event.quality);
 			}
+
 
 			std::vector<std::string> filterable_names;
 			std::vector<double> filterable_data;
 			std::vector<std::string> filterable_names_lg;
 			std::vector<long> filterable_data_lg;
-
-			if (except != NULL)
-			{
-				prev_change_event.err    = true;
-				prev_change_event.except = *except;
-			}
-			else
-			{
-				Tango::AttrQuality the_quality;
-
-				if (send_attr_5 != NULL)
-				{
-					the_quality = send_attr_5->quality;
-					prev_change_event.value_4 = send_attr_5->value;
-				}
-				else if (send_attr_4 != NULL)
-				{
-					the_quality = send_attr_4->quality;
-					prev_change_event.value_4 = send_attr_4->value;
-				}
-				else
-				{
-					the_quality = send_attr->quality;
-					prev_change_event.value = send_attr->value;
-				}
-
-				if (prev_change_event.quality !=  the_quality)
-				{
-					quality_change = true;
-				}
-
-				prev_change_event.quality = the_quality;
-				prev_change_event.err = false;
-			}
-			prev_change_event.inited = true;
 
 			filterable_names.push_back("forced_event");
 			if (force_change == true)
@@ -4490,40 +4511,20 @@ void Attribute::fire_archive_event(DevFailed *except)
 			std::vector<std::string> filterable_names_lg;
 			std::vector<long> filterable_data_lg;
 
-			if (except != NULL)
 			{
-				prev_archive_event.err    = true;
-				prev_archive_event.except = *except;
+				omni_mutex_lock oml(EventSupplier::get_event_mutex());
+
+				const AttrQuality old_quality = prev_archive_event.quality;
+
+				prev_archive_event.store(
+				    send_attr_5,
+				    send_attr_4,
+				    send_attr,
+				    Tango_nullptr,
+				    except);
+
+				quality_change = (old_quality != prev_archive_event.quality);
 			}
-			else
-			{
-				Tango::AttrQuality the_quality;
-
-				if (send_attr_5 != nullptr)
-				{
-					prev_archive_event.value_4 = send_attr_5->value;
-					the_quality = send_attr_5->quality;
-				}
-				else if (send_attr_4 != nullptr)
-				{
-					prev_archive_event.value_4 = send_attr_4->value;
-					the_quality = send_attr_4->quality;
-				}
-				else
-				{
-					prev_archive_event.value = send_attr->value;
-					the_quality = send_attr->quality;
-				}
-
-				if (prev_archive_event.quality != the_quality)
-				{
-					quality_change = true;
-				}
-
-				prev_archive_event.quality = the_quality;
-				prev_archive_event.err = false;
-			}
-			prev_archive_event.inited = true;
 
 			filterable_names.push_back("forced_event");
 			if (force_change == true)

@@ -335,34 +335,12 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
 
     if (attr.prev_change_event.inited == false)
     {
-        if (except != NULL)
-        {
-            attr.prev_change_event.err = true;
-            attr.prev_change_event.except = *except;
-        }
-        else
-        {
-            if (attr_value.attr_val_5 != NULL)
-            {
-                attr.prev_change_event.value_4 = attr_value.attr_val_5->value;
-            }
-            else if (attr_value.attr_val_4 != NULL)
-            {
-                attr.prev_change_event.value_4 = attr_value.attr_val_4->value;
-            }
-            else if (attr_value.attr_val_3 != NULL)
-            {
-                attr.prev_change_event.value = attr_value.attr_val_3->value;
-            }
-            else
-            {
-                attr.prev_change_event.value = attr_value.attr_val->value;
-            }
-
-            attr.prev_change_event.quality = the_quality;
-            attr.prev_change_event.err = false;
-        }
-        attr.prev_change_event.inited = true;
+        attr.prev_change_event.store(
+            attr_value.attr_val_5,
+            attr_value.attr_val_4,
+            attr_value.attr_val_3,
+            attr_value.attr_val,
+            except);
         is_change = true;
     }
     else
@@ -401,32 +379,12 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
         std::vector<std::string> filterable_names_lg;
         std::vector<long> filterable_data_lg;
 
-        if (except != NULL)
-        {
-            attr.prev_change_event.err = true;
-            attr.prev_change_event.except = *except;
-        }
-        else
-        {
-            if (attr_value.attr_val_5 != NULL)
-            {
-                attr.prev_change_event.value_4 = attr_value.attr_val_5->value;
-            }
-            else if (attr_value.attr_val_4 != NULL)
-            {
-                attr.prev_change_event.value_4 = attr_value.attr_val_4->value;
-            }
-            else if (attr_value.attr_val_3 != NULL)
-            {
-                attr.prev_change_event.value = attr_value.attr_val_3->value;
-            }
-            else
-            {
-                attr.prev_change_event.value = attr_value.attr_val->value;
-            }
-            attr.prev_change_event.quality = the_quality;
-            attr.prev_change_event.err = false;
-        }
+        attr.prev_change_event.store(
+            attr_value.attr_val_5,
+            attr_value.attr_val_4,
+            attr_value.attr_val_3,
+            attr_value.attr_val,
+            except);
 
 //
 // Prepare to push the event
@@ -692,36 +650,15 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 
     if (attr.prev_archive_event.inited == false)
     {
-        if (except != NULL)
-        {
-            attr.prev_archive_event.err = true;
-            attr.prev_archive_event.except = *except;
-        }
-        else
-        {
-            if (attr_value.attr_val_5 != NULL)
-            {
-                attr.prev_archive_event.value_4 = attr_value.attr_val_5->value;
-            }
-            else if (attr_value.attr_val_4 != NULL)
-            {
-                attr.prev_archive_event.value_4 = attr_value.attr_val_4->value;
-            }
-            else if (attr_value.attr_val_3 != NULL)
-            {
-                attr.prev_archive_event.value = attr_value.attr_val_3->value;
-            }
-            else
-            {
-                attr.prev_archive_event.value = attr_value.attr_val->value;
-            }
+        attr.prev_archive_event.store(
+            attr_value.attr_val_5,
+            attr_value.attr_val_4,
+            attr_value.attr_val_3,
+            attr_value.attr_val,
+            except);
 
-            attr.prev_archive_event.quality = the_quality;
-            attr.prev_archive_event.err = false;
-        }
         attr.archive_last_periodic = now_ms;
         attr.archive_last_event = now_ms;
-        attr.prev_archive_event.inited = true;
         is_change = true;
     }
     else
@@ -764,32 +701,12 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 
         domain_name = device_impl->get_name() + "/" + attr_name;
 
-        if (except != NULL)
-        {
-            attr.prev_archive_event.err = true;
-            attr.prev_archive_event.except = *except;
-        }
-        else
-        {
-            if (attr_value.attr_val_5 != NULL)
-            {
-                attr.prev_archive_event.value_4 = attr_value.attr_val_5->value;
-            }
-            else if (attr_value.attr_val_4 != NULL)
-            {
-                attr.prev_archive_event.value_4 = attr_value.attr_val_4->value;
-            }
-            else if (attr_value.attr_val_3 != NULL)
-            {
-                attr.prev_archive_event.value = attr_value.attr_val_3->value;
-            }
-            else
-            {
-                attr.prev_archive_event.value = attr_value.attr_val->value;
-            }
-            attr.prev_archive_event.quality = the_quality;
-            attr.prev_archive_event.err = false;
-        }
+        attr.prev_archive_event.store(
+            attr_value.attr_val_5,
+            attr_value.attr_val_4,
+            attr_value.attr_val_3,
+            attr_value.attr_val,
+            except);
 
 //
 // Prepare to push the event
