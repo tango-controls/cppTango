@@ -43,8 +43,6 @@ namespace Tango
 
 omni_mutex        EventSupplier::event_mutex;
 
-omni_mutex        EventSupplier::detect_mutex;
-
 omni_mutex        EventSupplier::push_mutex;
 
 omni_condition    EventSupplier::push_cond(&EventSupplier::push_mutex);
@@ -1097,12 +1095,6 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
         the_new_quality = attr_value.attr_val->quality;
         the_new_any = &(attr_value.attr_val->value);
     }
-
-//
-// get the mutex to synchronize the sending of events
-//
-
-    omni_mutex_lock l(detect_mutex);
 
 //
 // Send event, if the read_attribute failed or if it is the first time that the read_attribute succeed after a failure.

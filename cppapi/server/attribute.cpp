@@ -4489,32 +4489,30 @@ void Attribute::fire_archive_event(DevFailed *except)
 		}
 		else
 		{
-
-//
-// Execute detect_change only to calculate the delta_change_rel and
-// delta_change_abs and force_change !
-//
-
 			bool force_change   = false;
 			bool quality_change = false;
 			double delta_change_rel = 0.0;
 			double delta_change_abs = 0.0;
 
-            if (event_supplier_nd != NULL)
-                event_supplier_nd->detect_change(*this, ad,true,delta_change_rel,delta_change_abs,except,force_change,dev);
-            else if (event_supplier_zmq != NULL)
-                event_supplier_zmq->detect_change(*this, ad,true,delta_change_rel,delta_change_abs,except,force_change,dev);
-
-
-			std::vector<std::string> filterable_names;
-			std::vector<double> filterable_data;
-			std::vector<std::string> filterable_names_lg;
-			std::vector<long> filterable_data_lg;
-
 			{
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
 
-				const AttrQuality old_quality = prev_archive_event.quality;
+				// Execute detect_change only to calculate the delta_change_rel and
+				// delta_change_abs and force_change !
+
+				if (event_supplier_nd || event_supplier_zmq)
+				{
+					EventSupplier* event_supplier = event_supplier_nd ? event_supplier_nd : event_supplier_zmq;
+					event_supplier->detect_change(
+					    *this,
+					    ad,
+					    true,
+					    delta_change_rel,
+					    delta_change_abs,
+					    except,
+					    force_change,
+					    dev);
+				}
 
 				prev_archive_event.store(
 				    send_attr_5,
@@ -4525,6 +4523,11 @@ void Attribute::fire_archive_event(DevFailed *except)
 
 				quality_change = (old_quality != prev_archive_event.quality);
 			}
+
+			std::vector<std::string> filterable_names;
+			std::vector<double> filterable_data;
+			std::vector<std::string> filterable_names_lg;
+			std::vector<long> filterable_data_lg;
 
 			filterable_names.push_back("forced_event");
 			if (force_change == true)
