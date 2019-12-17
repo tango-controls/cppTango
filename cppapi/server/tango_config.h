@@ -59,13 +59,21 @@
 //
 
 #ifdef _WIN32
-	#define		__WIN32__
-	#define		__x86__
-	#ifndef _WIN32_WINNT
-		#define		_WIN32_WINNT 0x0500
-	#endif
-	#define		__NT__
-	#define		__OSVERSION 4
+  #ifndef __WIN32__
+    #define __WIN32__
+  #endif
+  #ifndef __x86__
+    #define __x86__
+  #endif
+  #ifndef _WIN32_WINNT
+    #define _WIN32_WINNT 0x0500
+  #endif
+  #ifndef __NT__
+    #define __NT__
+  #endif
+  #ifndef __OSVERSION
+    #define __OSVERSION 4
+  #endif
 #endif
 
 //
