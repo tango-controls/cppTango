@@ -39,20 +39,20 @@ add_after_in_file(tango.h "typedef _CORBA_ConstrType_Variable_Var<AttributeValue
 
 add_after_in_file(tango.h "typedef _CORBA_ConstrType_Variable_Var<AttributeValue_5> _var_type;" "\n\n\
     //Added by Tango team\n\
-    virtual ~AttributeValue_5() {if (mut_ptr != NULL)mut_ptr->unlock();}\
-    AttributeValue_5() {mut_ptr=NULL;}\
-    void set_attr_mutex(omni_mutex *ptr) {mut_ptr=ptr;}\
-    void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}\
-    omni_mutex *get_attr_mutex() {return mut_ptr;}\
-    omni_mutex *mut_ptr;")
+    virtual ~AttributeValue_5() {if (mut_ptr != NULL)mut_ptr->unlock();}\n\
+    AttributeValue_5() {mut_ptr=NULL;}\n\
+    void set_attr_mutex(omni_mutex *ptr) {mut_ptr=ptr;}\n\
+    void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}\n\
+    omni_mutex *get_attr_mutex() {return mut_ptr;}\n\
+    omni_mutex *mut_ptr;\n")
 
 add_after_in_file(tango.h "typedef\ _CORBA_ConstrType_Variable_Var<DevPipeData> _var_type;" "\n\n\
     //Added by Tango team\n\
-    virtual ~DevPipeData() {if (mut_ptr != NULL)mut_ptr->unlock();}\
-    DevPipeData() {mut_ptr=NULL;}\
-    void set_pipe_mutex(omni_mutex *ptr) {mut_ptr=ptr;}\
-    void rel_pipe_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}\
-    omni_mutex *mut_ptr;")
+    virtual ~DevPipeData() {if (mut_ptr != NULL)mut_ptr->unlock();}\n\
+    DevPipeData() {mut_ptr=NULL;}\n\
+    void set_pipe_mutex(omni_mutex *ptr) {mut_ptr=ptr;}\n\
+    void rel_pipe_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}\n\
+    omni_mutex *mut_ptr;\n")
 
 set(SOURCES ${CMAKE_CURRENT_BINARY_DIR}/tangoSK.cpp
             ${CMAKE_CURRENT_BINARY_DIR}/tangoDynSK.cpp)
