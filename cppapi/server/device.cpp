@@ -2409,15 +2409,6 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
     }
 
 //
-// Get some event related data
-//
-
-    Tango::Util *tg = Tango::Util::instance();
-
-    EventSupplier *event_supplier_nd = NULL;
-    EventSupplier *event_supplier_zmq = NULL;
-
-//
 // Update attribute config first in database, then locally
 // Finally send attr conf. event
 //
@@ -2462,75 +2453,7 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
 // Send the event
 //
 
-            if (attr.use_notifd_event() == true)
-            {
-                event_supplier_nd = tg->get_notifd_event_supplier();
-            }
-            else
-            {
-                event_supplier_nd = NULL;
-            }
-
-            if (attr.use_zmq_event() == true)
-            {
-                event_supplier_zmq = tg->get_zmq_event_supplier();
-            }
-            else
-            {
-                event_supplier_zmq = NULL;
-            }
-
-            if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
-            {
-                std::string tmp_name(new_conf[i].name);
-
-                EventSupplier::SuppliedEventData ad;
-                ::memset(&ad, 0, sizeof(ad));
-
-                long vers = get_dev_idl_version();
-                if (vers <= 2)
-                {
-                    Tango::AttributeConfig_2 attr_conf_2;
-                    attr.get_properties(attr_conf_2);
-                    ad.attr_conf_2 = &attr_conf_2;
-                    if (event_supplier_nd != NULL)
-                    {
-                        event_supplier_nd->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, tmp_name);
-                    }
-                    if (event_supplier_zmq != NULL)
-                    {
-                        event_supplier_zmq->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, tmp_name);
-                    }
-                }
-                else if (vers <= 4)
-                {
-                    Tango::AttributeConfig_3 attr_conf_3;
-                    attr.get_properties(attr_conf_3);
-                    ad.attr_conf_3 = &attr_conf_3;
-                    if (event_supplier_nd != NULL)
-                    {
-                        event_supplier_nd->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, tmp_name);
-                    }
-                    if (event_supplier_zmq != NULL)
-                    {
-                        event_supplier_zmq->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, tmp_name);
-                    }
-                }
-                else
-                {
-                    Tango::AttributeConfig_5 attr_conf_5;
-                    attr.get_properties(attr_conf_5);
-                    ad.attr_conf_5 = &attr_conf_5;
-                    if (event_supplier_nd != NULL)
-                    {
-                        event_supplier_nd->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, tmp_name);
-                    }
-                    if (event_supplier_zmq != NULL)
-                    {
-                        event_supplier_zmq->push_att_conf_events(this, ad, (Tango::DevFailed *) NULL, tmp_name);
-                    }
-                }
-            }
+            push_att_conf_event(&attr);
         }
 
     }
