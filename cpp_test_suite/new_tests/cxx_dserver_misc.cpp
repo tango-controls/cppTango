@@ -14,6 +14,7 @@ using namespace std;
 #undef SUITE_NAME
 #define SUITE_NAME DServerMiscTestSuite
 
+template <typename TEvent>
 struct EventCallback : public Tango::CallBack
 {
     EventCallback()
@@ -21,7 +22,7 @@ struct EventCallback : public Tango::CallBack
         , num_of_error_events(0)
     {}
 
-    void push_event(Tango::EventData* event)
+    void push_event(TEvent* event)
     {
         num_of_all_events++;
         if (event->err)
@@ -237,7 +238,7 @@ cout << "str = " << str << endl;
      */
     void test_event_subscription_recovery_after_device_restart()
     {
-        EventCallback callback{};
+        EventCallback<Tango::EventData> callback{};
 
         std::string attribute_name = "event_change_tst";
 
@@ -263,6 +264,37 @@ cout << "str = " << str << endl;
         TS_ASSERT_EQUALS(0, callback.num_of_error_events);
     }
 
+    /* Tests that attribute configuration change event
+     * is sent to all subscribers after device restart.
+     */
+    void test_attr_conf_change_event_after_device_restart()
+    {
+        EventCallback<Tango::AttrConfEventData> callback{};
+
+        const std::string attribute_name = "event_change_tst";
+
+        int subscription = 0;
+        TS_ASSERT_THROWS_NOTHING(subscription = device1->subscribe_event(
+            attribute_name,
+            Tango::ATTR_CONF_EVENT,
+            &callback));
+
+        Tango_sleep(1);
+        TS_ASSERT_EQUALS(1, callback.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback.num_of_error_events);
+
+        {
+            Tango::DeviceData input{};
+            input << device1_name;
+            TS_ASSERT_THROWS_NOTHING(dserver->command_inout("DevRestart", input));
+        }
+
+        Tango_sleep(1);
+        TS_ASSERT_EQUALS(2, callback.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback.num_of_error_events);
+
+        TS_ASSERT_THROWS_NOTHING(device1->unsubscribe_event(subscription));
+    }
 };
 #undef cout
 #endif // DServerMiscTestSuite_h
