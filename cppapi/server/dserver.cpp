@@ -1119,6 +1119,14 @@ void DServer::restart(std::string &d_name)
 			event_supplier_zmq->push_dev_intr_change_event(new_dev,false,cmds_list,atts_list);
 		}
 	}
+
+// Attribute properties may have changed after the restart.
+// Push an attribute configuration event to all registered subscribers.
+
+	for (Attribute* attr : new_dev->get_device_attr()->get_attribute_list())
+	{
+		new_dev->push_att_conf_event(attr);
+	}
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
