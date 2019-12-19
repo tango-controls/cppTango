@@ -2,7 +2,7 @@
 
 if ! ctest \
     --output-on-failure \
-    --parallel 8
+    --parallel $(nproc)
 then
     if ! ctest \
         --output-on-failure \
