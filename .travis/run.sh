@@ -15,7 +15,7 @@ echo "############################"
 docker exec cpp_tango mkdir -p /home/tango/src/build
 
 # set defaults
-MAKEFLAGS=${MAKEFLAGS:- -j 2}
+MAKEFLAGS=${MAKEFLAGS:- -j $(nproc)}
 COVERALLS=${COVERALLS:-OFF}
 USE_PCH=${USE_PCH:-OFF}
 WARNINGS_AS_ERRORS=${WARNINGS_AS_ERRORS:-OFF}
@@ -38,7 +38,7 @@ then
   docker exec cpp_tango                                            \
     /home/tango/build-wrapper-linux-x86/build-wrapper-linux-x86-64 \
     --out-dir /home/tango/src/bw-output                            \
-    make -C /home/tango/src/build
+    make -C /home/tango/src/build $MAKEFLAGS
 else
-  docker exec cpp_tango make -C /home/tango/src/build
+  docker exec cpp_tango make -C /home/tango/src/build $MAKEFLAGS
 fi
