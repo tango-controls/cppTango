@@ -83,7 +83,7 @@ public:
   /**
    * Reopens the output destination of this Appender, e.g. the logfile 
    * or TCP socket.
-   * @returns false if an error occured during reopening, true otherwise.
+   * @returns false if an error occurred during reopening, true otherwise.
    **/
   virtual bool reopen (void);
 
