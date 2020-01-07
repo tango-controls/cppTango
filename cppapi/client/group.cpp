@@ -372,7 +372,7 @@ bool GroupCmdReply::extract (std::vector<DevLong>& vl, std::vector<std::string>&
 		    errors.length(1);
 		    errors[0].severity = Tango::ERR;
 		    errors[0].desc = Tango::string_dup("unknown exception caught");
-		    errors[0].reason = Tango::string_dup("an error occured while trying to extract data");
+		    errors[0].reason = Tango::string_dup("an error occurred while trying to extract data");
 		    errors[0].origin = Tango::string_dup("GroupCmdReply::extract");
         DevFailed df(errors);
         exception_m = df;
@@ -430,7 +430,7 @@ bool GroupCmdReply::extract (std::vector<double>& vd, std::vector<std::string>& 
 		    errors.length(1);
 		    errors[0].severity = Tango::ERR;
 		    errors[0].desc = Tango::string_dup("unknown exception caught");
-		    errors[0].reason = Tango::string_dup("an error occured while trying to extract data");
+		    errors[0].reason = Tango::string_dup("an error occurred while trying to extract data");
 		    errors[0].origin = Tango::string_dup("GroupCmdReply::extract");
         DevFailed df(errors);
         exception_m = df;

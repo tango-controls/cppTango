@@ -147,7 +147,7 @@ echo "*** The log4tango-config script installed by LOG4TANGO could not be found"
           echo "*** you may also be able to get things to work by modifying LD_LIBRARY_PATH"
           echo "***" ],
         [ echo "*** The test program failed to compile or link. See the file config.log for the"
-          echo "*** exact error that occured. This usually means LOG4TANGO was incorrectly installed"
+          echo "*** exact error that occurred. This usually means LOG4TANGO was incorrectly installed"
           echo "*** or that you have moved LOG4TANGO since it was installed. In the latter case, you"
           echo "*** may want to edit the log4tango-config script: $LOG4TANGO_CONFIG" ])
           CFLAGS="$ac_save_CFLAGS"
