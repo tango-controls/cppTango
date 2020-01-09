@@ -3181,6 +3181,14 @@ bool DeviceAttribute::operator >> (std::vector<DevState>& datum)
 	if ( ret == false)
 		return false;
 
+	if(d_state_filled)
+	{
+		datum.resize(1);
+		datum[0] = d_state;
+		d_state_filled = false;
+		return true;
+	}
+
 	if (StateSeq.operator->() != NULL)
 	{
 		if (StateSeq->length() != 0)
@@ -3193,7 +3201,7 @@ bool DeviceAttribute::operator >> (std::vector<DevState>& datum)
        	 	}
 		}
 		else
-			ret = false;
+			return false;
 	}
 	else
 	{
@@ -3573,6 +3581,15 @@ bool DeviceAttribute::operator >> (DevVarStateArray* &datum)
 	if ( ret == false)
 		return false;
 
+	if(d_state_filled)
+	{
+		Tango::DevState *tmp_ptr = new Tango::DevState[1];
+		*tmp_ptr = d_state;
+		datum = new DevVarStateArray(1,1,tmp_ptr,true);
+		d_state_filled = false;
+		return true;
+	}
+
 	if (StateSeq.operator->() != NULL)
 	{
 		if (StateSeq->length() != 0)
@@ -3580,7 +3597,7 @@ bool DeviceAttribute::operator >> (DevVarStateArray* &datum)
 			datum = StateSeq._retn();
 		}
 		else
-			ret = false;
+			return false;
 	}
 	else
 	{

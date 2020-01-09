@@ -438,6 +438,9 @@ void FwdTestClass::attribute_factory(std::vector<Tango::Attr *> &att_list)
 	FwdAttrImaStr	*att4 = new FwdAttrImaStr("fwd_ima_string_rw");
 	att_list.push_back(att4);
 
+	FwdAttrScaSta	*att5 = new FwdAttrScaSta("fwd_state");
+	att_list.push_back(att5);
+
 	/*----- PROTECTED REGION END -----*/	//	FwdTestClass::attribute_factory_before
 	//	Create a list of static attributes
 	create_static_attribute_list(get_class_attr()->get_attr_list());

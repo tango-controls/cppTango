@@ -796,6 +796,28 @@ public:
 		lo = device2->is_locked();
 		TS_ASSERT(lo == false);
 	}
+
+	void test_reading_state_forwarded_attribute(void)
+	{
+		DeviceAttribute state_attr;
+
+		// read attributes
+		TS_ASSERT_THROWS_NOTHING(state_attr = fwd_device->read_attribute("fwd_state"));
+		DevState the_state;
+		if(state_attr >> the_state)
+		{
+			TS_ASSERT(state_attr.name == "fwd_state");
+			TS_ASSERT(state_attr.quality == Tango::ATTR_VALID);
+			TS_ASSERT(state_attr.dim_x == 1);
+			TS_ASSERT(state_attr.dim_y == 0);
+			cout << "the_state = " << the_state << endl;
+			TS_ASSERT(the_state == Tango::ON);
+		}
+		else
+		{
+			TS_FAIL("Could not extract attribute value to DevState");
+		}
+	}
 };
 
 void FwdAttTestSuite::EventCallBack::push_event(Tango::EventData* event_data)
