@@ -167,6 +167,11 @@
 #define write_attribute(ATTR_NAME, VALUE)	 internal_write_attribute	(ATTR_NAME, VALUE, __FILE__, __LINE__)
 #define command(CMD_NAME)					 internal_command			(CMD_NAME,  __FILE__, __LINE__)
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+#endif
+
 // For VC++ 6 VA_ARG macro is not supported so ==>, we cannot override command_out functions
 #if (defined(_MSC_VER) && _MSC_VER < 1300)
 #define command_out internal_command_out
@@ -186,6 +191,10 @@
 #define command_inout internal_command_inout
 #else	// For compilers that support variable number of arguments
 #define command_inout(CMD_NAME,  ...) internal_command_inout (CMD_NAME,  ## __VA_ARGS__, __FILE__, __LINE__ )
+#endif
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 namespace Tango

@@ -1228,7 +1228,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
             subscribe_event_id++;
             int ret_event_id = subscribe_event_id;
 
-            DelayedEventSubThread *th = new DelayedEventSubThread(this,device,attribute,event,callback,ev_queue,stateless,event_name,ret_event_id);
+            DelayedEventSubThread *th = new DelayedEventSubThread(this,device,attribute,event,callback,ev_queue,event_name,ret_event_id);
             th->start();
 
             return ret_event_id;

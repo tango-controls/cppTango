@@ -1240,22 +1240,23 @@ struct ranges_const2type
 	static TANGO_CXX11_ABI std::string str;
 };
 
-#define RANGES_TYPE2CONST(type,constant) \
-	template <> \
-	struct ranges_type2const<type> \
-	{ \
-		static CmdArgType enu; \
-		TANGO_CXX11_ABI static std::string str; \
-	}; \
-	CmdArgType ranges_type2const<type>::enu = constant; \
-	TANGO_CXX11_ABI std::string ranges_type2const<type>::str = #type; \
-	template<> \
-	struct ranges_const2type<Tango::constant> \
-	{ \
-		typedef type Type; \
-		TANGO_CXX11_ABI static std::string str; \
-	}; \
-	TANGO_CXX11_ABI std::string ranges_const2type<Tango::constant>::str = #type;
+#define RANGES_TYPE2CONST(type,constant)                                       \
+  template <>                                                                  \
+  struct ranges_type2const<type>                                               \
+  {                                                                            \
+    static CmdArgType enu;                                                     \
+    TANGO_CXX11_ABI static std::string str;                                    \
+  };                                                                           \
+  CmdArgType ranges_type2const<type>::enu = constant;                          \
+  TANGO_CXX11_ABI std::string ranges_type2const<type>::str = #type;            \
+  template<>                                                                   \
+  struct ranges_const2type<Tango::constant>                                    \
+  {                                                                            \
+    typedef type Type;                                                         \
+    TANGO_CXX11_ABI static std::string str;                                    \
+  };                                                                           \
+                                                                               \
+  TANGO_CXX11_ABI std::string ranges_const2type<Tango::constant>::str = #type;
 
 
 } // End of Tango namespace
