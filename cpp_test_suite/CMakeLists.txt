@@ -4,6 +4,8 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O0 -g")
 
 configure_file(CTestCustom.cmake CTestCustom.cmake)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/test_utils)
+
 #TODO different OS
 set(SERV_NAME "DevTest")
 set(INST_NAME "test")
