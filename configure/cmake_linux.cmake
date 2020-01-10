@@ -4,8 +4,10 @@ add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:client_objects>
                             $<TARGET_OBJECTS:idl_objects>
                             $<TARGET_OBJECTS:jpeg_objects>
-                            $<TARGET_OBJECTS:jpeg_mmx_objects>
                             $<TARGET_OBJECTS:server_objects>)
+if (NOT PPC)
+    add_library(tango SHARED $<TARGET_OBJECTS:jpeg_mmx_objects>)
+endif (NOT PPC)
 target_link_libraries(tango PUBLIC ${ZMQ_PKG_LIBRARIES} ${OMNIORB_PKG_LIBRARIES} ${OMNICOS_PKG_LIBRARIES} ${OMNIDYN_PKG_LIBRARIES} ${CMAKE_DL_LIBS})
 target_compile_options(tango PRIVATE -fPIC)
 target_include_directories(tango PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS} ${OMNIDYN_PKG_INCLUDE_DIRS})
@@ -21,8 +23,10 @@ add_library(tango-static STATIC $<TARGET_OBJECTS:log4tango_objects>
                                 $<TARGET_OBJECTS:client_objects>
                                 $<TARGET_OBJECTS:idl_objects>
                                 $<TARGET_OBJECTS:jpeg_objects>
-                                $<TARGET_OBJECTS:jpeg_mmx_objects>
                                 $<TARGET_OBJECTS:server_objects>)
+if (NOT PPC)
+    add_library(tango-static STATIC $<TARGET_OBJECTS:jpeg_mmx_objects>)
+endif (NOT PPC)
 target_link_libraries(tango-static PUBLIC ${ZMQ_PKG_LIBRARIES} ${OMNIORB_PKG_LIBRARIES} ${OMNICOS_PKG_LIBRARIES} ${OMNIDYN_PKG_LIBRARIES} ${CMAKE_DL_LIBS})
 target_include_directories(tango-static PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS} ${OMNIDYN_PKG_INCLUDE_DIRS})
 target_compile_options(tango-static PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})

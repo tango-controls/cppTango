@@ -132,7 +132,9 @@ set(HEADERS attrdesc.h
 
 add_subdirectory(idl)
 add_subdirectory(jpeg)
-add_subdirectory(jpeg_mmx)
+if (NOT PPC)
+  add_subdirectory(jpeg_mmx)
+endif (NOT PPC)
 
 if(WIN32)
     set(SOURCES_WIN
