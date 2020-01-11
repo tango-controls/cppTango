@@ -406,15 +406,9 @@ void RootAttRegistry::RootAttConfCallBack::add_att(std::string &root_att_name,st
 
 		{
 			omni_mutex_lock oml(the_lock);
-#ifdef INIT_LIST
 			map_attrdesc.insert({root_att_name,nf});
 			if (the_local_dev != nullptr)
 				local_dis.insert({local_dev_name,the_local_dev});
-#else
-			map_attrdesc.insert(make_pair(root_att_name,nf));
-			if (the_local_dev != nullptr)
-				local_dis.insert(make_pair(local_dev_name,the_local_dev));
-#endif
 		}
 	}
 	catch (DevFailed &e) {}
@@ -710,11 +704,7 @@ void RootAttRegistry::add_root_att(std::string &device_name,std::string &att_nam
 			desc = desc + device_name + " is too old to support forwarded attribute. It requires IDL >= 5";
 			Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
 		}
-#ifdef INIT_LIST
 		dps.insert({device_name,the_dev});
-#else
-		dps.insert(make_pair(device_name,the_dev));
-#endif
 	}
 	else
 		the_dev = ite->second;
@@ -736,11 +726,7 @@ void RootAttRegistry::add_root_att(std::string &device_name,std::string &att_nam
 		try
 		{
 			event_id = the_dev->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,&cbp);
-#ifdef INIT_LIST
 			map_event_id.insert({a_name,event_id});
-#else
-			map_event_id.insert(make_pair(a_name,event_id));
-#endif
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -770,11 +756,7 @@ void RootAttRegistry::add_root_att(std::string &device_name,std::string &att_nam
 				attdesc->set_err_kind(FWD_WRONG_DEV);
 
 			event_id = the_dev->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,&cbp,true);
-#ifdef INIT_LIST
 			map_event_id.insert({a_name,event_id});
-#else
-			map_event_id.insert(make_pair(a_name,event_id));
-#endif
 
             cbp.update_err_kind(a_name,attdesc->get_err_kind());
 			Tango::Except::re_throw_exception(e,"API_DummyException","nothing","RootAttRegistry::add_root_att");

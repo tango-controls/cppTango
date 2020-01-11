@@ -275,11 +275,7 @@ void EventConsumer::get_cs_tango_host(Database *db)
 			{
 				if (alias_map.find(tg_host) == alias_map.end())
 				{
-#ifdef INIT_LIST
 					alias_map.insert({lower_vs,tg_host});
-#else
-					alias_map.insert(std::make_pair(lower_vs,tg_host));
-#endif
 				}
 			}
 		}
