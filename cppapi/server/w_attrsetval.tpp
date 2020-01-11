@@ -106,7 +106,6 @@ void WAttribute::get_write_value(const T *&ptr)
 template <typename T>
 void WAttribute::check_type(T &TANGO_UNUSED(dummy), const std::string &origin)
 {
-#ifdef HAS_UNDERLYING
 	bool short_enum = std::is_same<short,typename std::underlying_type<T>::type>::value;
 	bool uns_int_enum = std::is_same<unsigned int,typename std::underlying_type<T>::type>::value;
 
@@ -118,7 +117,6 @@ void WAttribute::check_type(T &TANGO_UNUSED(dummy), const std::string &origin)
 
 		Except::throw_exception(API_IncompatibleArgumentType,ss.str(),origin);
 	}
-#endif // HAS_UNDERLYING
 
 //
 // Check if the input type is an enum and if it is from the valid type

@@ -77,7 +77,6 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::set_value()");
 	}
 
-#ifdef HAS_UNDERLYING
 	bool short_enum = std::is_same<short,typename std::underlying_type<T>::type>::value;
 	bool uns_int_enum = std::is_same<unsigned int,typename std::underlying_type<T>::type>::value;
 
@@ -91,7 +90,6 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 
 		Except::throw_exception(API_IncompatibleArgumentType,ss.str(),"Attribute::set_value()");
 	}
-#endif // HAS_UNDERLYING
 
 //
 // Check if the input type is an enum and if it is from the valid type
