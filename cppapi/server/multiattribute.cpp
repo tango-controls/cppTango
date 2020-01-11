@@ -1148,7 +1148,6 @@ Attribute &MultiAttribute::get_attr_by_name(const char *attr_name)
     Attribute * attr = 0;
     std::string st(attr_name);
     std::transform(st.begin(),st.end(),st.begin(),::tolower);
-#ifdef HAS_MAP_AT
     try
     {
         attr = ext->attr_map.at(st).att_ptr;
@@ -1163,21 +1162,6 @@ Attribute &MultiAttribute::get_attr_by_name(const char *attr_name)
                                 o.str(),
                                 (const char *)"MultiAttribute::get_attr_by_name");
     }
-#else
-    std::map<std::string, MultiAttributeExt::AttributePtrAndIndex>::iterator it;
-    it = ext->attr_map.find(st);
-    if (it == ext->attr_map.end())
-    {
-        cout3 << "MultiAttribute::get_attr_by_name throwing exception" << std::endl;
-        TangoSys_OMemStream o;
-
-        o << attr_name << " attribute not found" << std::ends;
-        Except::throw_exception((const char *)API_AttrNotFound,
-                                o.str(),
-                                (const char *)"MultiAttribute::get_attr_by_name");
-    }
-    attr = it->second.att_ptr;
-#endif
     return *attr;
 }
 
@@ -1203,7 +1187,6 @@ WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
     Attribute * attr = 0;
     std::string st(attr_name);
     std::transform(st.begin(),st.end(),st.begin(),::tolower);
-#ifdef HAS_MAP_AT
     try
     {
         attr = ext->attr_map.at(st).att_ptr;
@@ -1218,21 +1201,6 @@ WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
                                 o.str(),
                                 (const char *)"MultiAttribute::get_w_attr_by_name");
     }
-#else
-    std::map<std::string, MultiAttributeExt::AttributePtrAndIndex>::iterator it;
-    it = ext->attr_map.find(st);
-    if (it == ext->attr_map.end())
-    {
-        cout3 << "MultiAttribute::get_attr_by_name throwing exception" << std::endl;
-        TangoSys_OMemStream o;
-
-        o << attr_name << " writable attribute not found" << std::ends;
-        Except::throw_exception((const char *)API_AttrNotFound,
-                                o.str(),
-                                (const char *)"MultiAttribute::get_w_attr_by_name");
-    }
-    attr = it->second.att_ptr;
-#endif
 
     if ((attr->get_writable() != Tango::WRITE) &&
         (attr->get_writable() != Tango::READ_WRITE))
@@ -1271,7 +1239,6 @@ long MultiAttribute::get_attr_ind_by_name(const char *attr_name)
     std::string st(attr_name);
 
     std::transform(st.begin(),st.end(),st.begin(),::tolower);
-#ifdef HAS_MAP_AT
     try
     {
         i = ext->attr_map.at(st).att_index_in_vector;
@@ -1286,21 +1253,6 @@ long MultiAttribute::get_attr_ind_by_name(const char *attr_name)
                                 o.str(),
                                 (const char *)"MultiAttribute::get_attr_ind_by_name");
     }
-#else
-    std::map<std::string, MultiAttributeExt::AttributePtrAndIndex>::iterator it;
-    it = ext->attr_map.find(st);
-    if (it == ext->attr_map.end())
-    {
-        cout3 << "MultiAttribute::get_attr_ind_by_name throwing exception" << std::endl;
-        TangoSys_OMemStream o;
-
-        o << attr_name << " attribute not found" << std::ends;
-        Except::throw_exception((const char *)API_AttrNotFound,
-                                o.str(),
-                                (const char *)"MultiAttribute::get_attr_ind_by_name");
-    }
-    i = it->second.att_index_in_vector;
-#endif
     return i;
 }
 
