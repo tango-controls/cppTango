@@ -388,11 +388,7 @@
 	#define TANGO_LONG32
 #endif
 
-#ifdef HAS_ATTRIBUTE_SPECIFIERS
-  #define TANGO_NORETURN [[noreturn]]
-#else
-  #define TANGO_NORETURN
-#endif
+#define TANGO_NORETURN [[noreturn]]
 
 // C++14 style constexpr
 #ifdef HAS_CONSTEXPR
