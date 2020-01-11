@@ -34,6 +34,7 @@
 #include <tango.h>
 #include <eventconsumer.h>
 #include <api_util.tpp>
+#include <thread>
 
 #ifndef _TG_WINDOWS_
 #include <sys/types.h>
@@ -43,9 +44,6 @@
 #include <netdb.h>
 #include <signal.h>
 #include <ifaddrs.h>
-#ifdef HAS_THREAD
-#include <thread>
-#endif
 #include <netinet/in.h>    // FreeBSD
 #else
 #include <ws2tcpip.h>
@@ -60,22 +58,15 @@ ApiUtil *ApiUtil::_instance = NULL;
 
 omni_mutex ApiUtil::inst_mutex;
 
-#ifdef HAS_THREAD
 void _killproc_()
 {
     ::exit(-1);
 }
-#endif // HAS_THREAD
 
 void _t_handler(TANGO_UNUSED(int signum))
 {
-#ifdef HAS_THREAD
     std::thread t(_killproc_);
     t.detach();
-#else
-    _KillProc_ *t = new _KillProc_;
-    t->start();
-#endif
     Tango_sleep(3);
 }
 
