@@ -91,7 +91,6 @@ DeviceDataHistory::DeviceDataHistory(const DeviceDataHistory &source)
     }
 }
 
-#ifdef HAS_RVALUE
 DeviceDataHistory::DeviceDataHistory(DeviceDataHistory &&source)
     : DeviceData(std::move(source)), ext_hist(Tango_nullptr)
 {
@@ -111,7 +110,6 @@ DeviceDataHistory::DeviceDataHistory(DeviceDataHistory &&source)
         ext_hist.reset();
     }
 }
-#endif
 
 //-----------------------------------------------------------------------------
 //
@@ -161,11 +159,7 @@ DeviceDataHistory &DeviceDataHistory::operator=(const DeviceDataHistory &rval)
 
         fail = rval.fail;
         time = rval.time;
-#ifdef HAS_RVALUE
         err = rval.err;
-#else
-        err = const_cast<DeviceDataHistory &>(rval).err._retn();
-#endif
 
         if (ref_ctr_ptr != NULL)
         {
@@ -201,7 +195,6 @@ DeviceDataHistory &DeviceDataHistory::operator=(const DeviceDataHistory &rval)
 //
 //-----------------------------------------------------------------------------
 
-#ifdef HAS_RVALUE
 DeviceDataHistory &DeviceDataHistory::operator=(DeviceDataHistory &&rval)
 {
 
@@ -254,7 +247,6 @@ DeviceDataHistory &DeviceDataHistory::operator=(DeviceDataHistory &&rval)
 
     return *this;
 }
-#endif
 
 //+-------------------------------------------------------------------------
 //
@@ -655,7 +647,6 @@ DeviceAttributeHistory::DeviceAttributeHistory(const DeviceAttributeHistory &sou
     }
 }
 
-#ifdef HAS_RVALUE
 DeviceAttributeHistory::DeviceAttributeHistory(DeviceAttributeHistory &&source)
     : DeviceAttribute(std::move(source)), ext_hist(Tango_nullptr)
 {
@@ -667,7 +658,6 @@ DeviceAttributeHistory::DeviceAttributeHistory(DeviceAttributeHistory &&source)
     }
 
 }
-#endif
 
 //-----------------------------------------------------------------------------
 //
@@ -717,7 +707,6 @@ DeviceAttributeHistory &DeviceAttributeHistory::operator=(const DeviceAttributeH
     return *this;
 }
 
-#ifdef HAS_RVALUE
 DeviceAttributeHistory &DeviceAttributeHistory::operator=(DeviceAttributeHistory &&rval)
 {
 
@@ -744,7 +733,6 @@ DeviceAttributeHistory &DeviceAttributeHistory::operator=(DeviceAttributeHistory
 
     return *this;
 }
-#endif
 
 //+-------------------------------------------------------------------------
 //

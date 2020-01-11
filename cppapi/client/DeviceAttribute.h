@@ -89,10 +89,8 @@ public :
 
 	DeviceAttribute(const DeviceAttribute&);
 	DeviceAttribute & operator=(const DeviceAttribute &);
-#ifdef HAS_RVALUE
 	DeviceAttribute(DeviceAttribute &&);
 	DeviceAttribute & operator=(DeviceAttribute &&);
-#endif
 
 	void deep_copy(const DeviceAttribute &);
 

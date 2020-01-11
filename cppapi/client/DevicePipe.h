@@ -613,10 +613,8 @@ public:
 	~DevicePipeBlob();
 	DevicePipeBlob(const DevicePipeBlob &);
 	DevicePipeBlob & operator=(const DevicePipeBlob &);
-#ifdef HAS_RVALUE
 	DevicePipeBlob(DevicePipeBlob &&);
 	DevicePipeBlob & operator=(DevicePipeBlob &&);
-#endif
 
 	DevicePipeBlob & operator << (DevBoolean &);
 //	DevicePipeBlob & operator << (short &);
@@ -1078,10 +1076,8 @@ public :
 ///@privatesection
 	DevicePipe(const DevicePipe &);
 	DevicePipe & operator=(const DevicePipe &);
-#ifdef HAS_RVALUE
 	DevicePipe(DevicePipe &&);
 	DevicePipe & operator=(DevicePipe &&);
-#endif
 	~DevicePipe();
 
 	void set_time(TimeVal &_ti) {time=_ti;}

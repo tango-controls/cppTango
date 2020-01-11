@@ -99,7 +99,6 @@ DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_nullp
 	time = source.time;
 	err_list = source.err_list;
 
-#ifdef HAS_RVALUE
     LongSeq = source.LongSeq;
     ShortSeq = source.ShortSeq;
     DoubleSeq = source.DoubleSeq;
@@ -113,35 +112,6 @@ DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_nullp
 	ULong64Seq = source.ULong64Seq;
 	StateSeq = source.StateSeq;
 	EncodedSeq = source.EncodedSeq;
-#else
-	DeviceAttribute &nc_source = const_cast<DeviceAttribute &>(source);
-	if (nc_source.LongSeq.operator->() != NULL)
-		LongSeq = nc_source.LongSeq._retn();
-	if (nc_source.ShortSeq.operator->() != NULL)
-		ShortSeq = nc_source.ShortSeq._retn();
-	if (nc_source.DoubleSeq.operator->() != NULL)
-		DoubleSeq = nc_source.DoubleSeq._retn();
-	if (nc_source.StringSeq.operator->() != NULL)
-		StringSeq = nc_source.StringSeq._retn();
-	if (nc_source.FloatSeq.operator->() != NULL)
-		FloatSeq = nc_source.FloatSeq._retn();
-	if (nc_source.BooleanSeq.operator->() != NULL)
-		BooleanSeq = nc_source.BooleanSeq._retn();
-	if (nc_source.UShortSeq.operator->() != NULL)
-		UShortSeq = nc_source.UShortSeq._retn();
-	if (nc_source.UCharSeq.operator->() != NULL)
-		UCharSeq = nc_source.UCharSeq._retn();
-	if (nc_source.Long64Seq.operator->() != NULL)
-		Long64Seq = nc_source.Long64Seq._retn();
-	if (nc_source.ULongSeq.operator->() != NULL)
-		ULongSeq = nc_source.ULongSeq._retn();
-	if (nc_source.ULong64Seq.operator->() != NULL)
-		ULong64Seq = nc_source.ULong64Seq._retn();
-	if (nc_source.StateSeq.operator->() != NULL)
-		StateSeq = nc_source.StateSeq._retn();
-	if (nc_source.EncodedSeq.operator->() != NULL)
-		EncodedSeq = nc_source.EncodedSeq._retn();
-#endif
 
 	d_state = source.d_state;
 	d_state_filled = source.d_state_filled;
@@ -159,7 +129,6 @@ DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_nullp
 //
 //-----------------------------------------------------------------------------
 
-#ifdef HAS_RVALUE
 DeviceAttribute::DeviceAttribute(DeviceAttribute &&source):ext(Tango_nullptr)
 {
 	name = std::move(source.name);
@@ -207,7 +176,6 @@ DeviceAttribute::DeviceAttribute(DeviceAttribute &&source):ext(Tango_nullptr)
     if (source.ext.get() != NULL)
         ext = std::move(source.ext);
 }
-#endif
 
 void DeviceAttribute::deep_copy(const DeviceAttribute & source)
 {
@@ -311,7 +279,6 @@ DeviceAttribute & DeviceAttribute::operator=(const DeviceAttribute &rval)
         time = rval.time;
         err_list = rval.err_list;
 
-#ifdef HAS_RVALUE
         LongSeq = rval.LongSeq;
         ShortSeq = rval.ShortSeq;
         DoubleSeq = rval.DoubleSeq;
@@ -325,74 +292,6 @@ DeviceAttribute & DeviceAttribute::operator=(const DeviceAttribute &rval)
         ULong64Seq = rval.ULong64Seq;
         StateSeq = rval.StateSeq;
         EncodedSeq = rval.EncodedSeq;
-#else
-        DeviceAttribute &nc_rval = const_cast<DeviceAttribute &>(rval);
-        if (nc_rval.LongSeq.operator->() != NULL)
-            LongSeq = nc_rval.LongSeq._retn();
-		else
-			LongSeq = NULL;
-
-        if (nc_rval.ShortSeq.operator->() != NULL)
-            ShortSeq = nc_rval.ShortSeq._retn();
-		else
-			ShortSeq = NULL;
-
-        if (nc_rval.DoubleSeq.operator->() != NULL)
-            DoubleSeq = nc_rval.DoubleSeq._retn();
-		else
-			DoubleSeq = NULL;
-
-        if (nc_rval.StringSeq.operator->() != NULL)
-            StringSeq = nc_rval.StringSeq._retn();
-		else
-			StringSeq = NULL;
-
-        if (nc_rval.FloatSeq.operator->() != NULL)
-            FloatSeq = nc_rval.FloatSeq._retn();
-		else
-			FloatSeq = NULL;
-
-        if (nc_rval.BooleanSeq.operator->() != NULL)
-            BooleanSeq = nc_rval.BooleanSeq._retn();
-		else
-			BooleanSeq = NULL;
-
-        if (nc_rval.UShortSeq.operator->() != NULL)
-            UShortSeq = nc_rval.UShortSeq._retn();
-		else
-			UShortSeq = NULL;
-
-        if (nc_rval.UCharSeq.operator->() != NULL)
-            UCharSeq = nc_rval.UCharSeq._retn();
-		else
-			UCharSeq = NULL;
-
-        if (nc_rval.Long64Seq.operator->() != NULL)
-            Long64Seq = nc_rval.Long64Seq._retn();
-		else
-			Long64Seq = NULL;
-
-        if (nc_rval.ULongSeq.operator->() != NULL)
-            ULongSeq = nc_rval.ULongSeq._retn();
-		else
-			ULongSeq = NULL;
-
-        if (nc_rval.ULong64Seq.operator->() != NULL)
-            ULong64Seq = nc_rval.ULong64Seq._retn();
-		else
-			ULong64Seq = NULL;
-
-        if (nc_rval.StateSeq.operator->() != NULL)
-            StateSeq = nc_rval.StateSeq._retn();
-		else
-			StateSeq = NULL;
-
-        if (nc_rval.EncodedSeq.operator->() != NULL)
-            EncodedSeq = nc_rval.EncodedSeq._retn();
-		else
-			EncodedSeq = NULL;
-
-#endif
 
         d_state = rval.d_state;
         d_state_filled = rval.d_state_filled;
@@ -415,7 +314,6 @@ DeviceAttribute & DeviceAttribute::operator=(const DeviceAttribute &rval)
 //
 //-----------------------------------------------------------------------------
 
-#ifdef HAS_RVALUE
 DeviceAttribute & DeviceAttribute::operator=(DeviceAttribute &&rval)
 {
 	name = std::move(rval.name);
@@ -507,7 +405,6 @@ DeviceAttribute & DeviceAttribute::operator=(DeviceAttribute &&rval)
 
 	return *this;
 }
-#endif
 
 void DeviceAttribute::init_common_class_members(const char * new_name, int x_dim = 1, int y_dim = 0)
 {

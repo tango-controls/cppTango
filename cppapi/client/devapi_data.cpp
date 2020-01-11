@@ -71,11 +71,7 @@ DeviceData::DeviceData()
 DeviceData::DeviceData(const DeviceData &source)
 {
     exceptions_flags = source.exceptions_flags;
-#ifdef HAS_RVALUE
     any = source.any;
-#else
-    any = const_cast<DeviceData &>(source).any._retn();
-#endif
 
     if (source.ext.get() != NULL)
     {
@@ -90,7 +86,6 @@ DeviceData::DeviceData(const DeviceData &source)
 //
 //-----------------------------------------------------------------------------
 
-#ifdef HAS_RVALUE
 DeviceData::DeviceData(DeviceData &&source)
     : ext(new DeviceDataExt)
 {
@@ -102,7 +97,6 @@ DeviceData::DeviceData(DeviceData &&source)
         ext = std::move(source.ext);
     }
 }
-#endif
 
 //-----------------------------------------------------------------------------
 //
@@ -115,11 +109,7 @@ DeviceData &DeviceData::operator=(const DeviceData &rval)
     if (this != &rval)
     {
         exceptions_flags = rval.exceptions_flags;
-#ifdef HAS_RVALUE
         any = rval.any;
-#else
-        any = const_cast<DeviceData &>(rval).any._retn();
-#endif
 
         if (rval.ext.get() != NULL)
         {
@@ -140,7 +130,6 @@ DeviceData &DeviceData::operator=(const DeviceData &rval)
 //
 //-----------------------------------------------------------------------------
 
-#ifdef HAS_RVALUE
 DeviceData &DeviceData::operator=(DeviceData &&rval)
 {
     exceptions_flags = rval.exceptions_flags;
@@ -157,7 +146,6 @@ DeviceData &DeviceData::operator=(DeviceData &&rval)
 
     return *this;
 }
-#endif
 
 //-----------------------------------------------------------------------------
 //
