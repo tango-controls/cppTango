@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
 
 project(cppTango)
+
+set(CXX_STANDARD_REQUIRED 11)
 
 include(CTest)
 
