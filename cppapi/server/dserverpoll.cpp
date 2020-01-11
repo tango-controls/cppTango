@@ -246,14 +246,8 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
 
 		if (i == nb_poll_obj - 1)
 		{
-#ifdef HAS_RANGE_BASE_FOR
 			for (auto &elem:root_dev_poll_status)
 				delete elem.second;
-#else
-			std::map<std::string,std::vector<std::string> *>::iterator pos;
-			for (pos = root_dev_poll_status.begin();pos != root_dev_poll_status.end();++pos)
-				delete pos->second;
-#endif
 		}
 
 //

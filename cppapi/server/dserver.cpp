@@ -482,7 +482,6 @@ void DServer::init_device()
 
 void DServer::server_init_hook()
 {
-#ifdef HAS_RANGE_BASE_FOR
     for (DeviceClass *dclass : this->get_class_list())
     {
         for (DeviceImpl *device : dclass->get_device_list())
@@ -505,34 +504,6 @@ void DServer::server_init_hook()
             }
         }
     }
-#else
-    std::vector<DeviceClass*> &dclass_vector = this->get_class_list();
-    std::vector<DeviceClass*>::iterator dclass_vector_pos, dclass_vector_end;
-    for (dclass_vector_pos = dclass_vector.begin(), dclass_vector_end = dclass_vector.end(); dclass_vector_pos != dclass_vector_end; ++dclass_vector_pos)
-    {
-        std::vector<DeviceImpl*> &device_vector = (*dclass_vector_pos)->get_device_list();
-        std::vector<DeviceImpl*>::iterator device_vector_pos, device_vector_end;
-        for (device_vector_pos = device_vector.begin(), device_vector_end = device_vector.end(); device_vector_pos != device_vector_end; ++device_vector_pos)
-        {
-            DeviceImpl *device = *device_vector_pos;
-            cout4 << "Device " << device->get_name_lower() << " executes init_server_hook" << std::endl;
-            try
-            {
-                device->server_init_hook();
-            }
-            catch(const DevFailed& devFailed){
-                device->set_state(FAULT);
-
-                std::ostringstream ss;
-                ss << "Device[" << device->get_name_lower() << "] server_init_hook has failed due to DevFailed:"
-                   << std::endl;
-                ss << devFailed;
-
-                device->set_status(ss.str());
-            }
-        }
-    }
-#endif
 }
 
 //+----------------------------------------------------------------------------------------------------------------
