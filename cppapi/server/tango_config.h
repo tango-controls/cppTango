@@ -130,16 +130,6 @@
 #endif /* _WINDOWS_ */
 
 //
-// Check GCC release
-//
-
-#ifndef _TG_WINDOWS_
-    #if __GNUC__ < 3
-        #error "Gcc too old to use Tango!"
-    #endif
-#endif
-
-//
 // Some C++11 feature
 // map::at() -> gcc 4.1.0 (See C++ Standard Library Defect Report 464)
 // Unique_ptr -> gcc 4.3
