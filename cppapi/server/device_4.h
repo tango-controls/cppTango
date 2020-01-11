@@ -336,11 +336,7 @@ private:
         ~Device_4ImplExt() {}
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<Device_4ImplExt>     ext_4;           // Class extension
-#else
-	Device_4ImplExt				    *ext_4;
-#endif
 
 };
 

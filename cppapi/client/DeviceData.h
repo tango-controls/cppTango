@@ -640,11 +640,7 @@ private:
         std::bitset<numFlags>    ext_state;
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DeviceDataExt>   ext;
-#else
-	DeviceDataExt		        *ext;			// Class extension
-#endif
 };
 
 

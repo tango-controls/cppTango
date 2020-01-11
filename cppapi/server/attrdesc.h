@@ -349,11 +349,7 @@ private:
     {
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<UserDefaultAttrPropExt>  ext;           // Class extension
-#else
-	UserDefaultAttrPropExt	            *ext;
-#endif
 };
 
 /**
@@ -603,11 +599,7 @@ private:
         AttrExt() {}
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<AttrExt>     ext;           // Class extension
-#else
-	AttrExt					*ext;
-#endif
 
     std::string					cl_name;
 };
@@ -709,11 +701,7 @@ private:
     {
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<SpectrumAttrExt>     ext;           // Class extension
-#else
-	SpectrumAttrExt		            *ext;
-#endif
 };
 
 
@@ -822,11 +810,7 @@ private:
     {
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<ImageAttrExt>    ext;           // Class extension
-#else
-	ImageAttrExt		        *ext;
-#endif
 };
 
 } // End of Tango namespace

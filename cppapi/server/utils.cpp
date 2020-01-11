@@ -1613,9 +1613,6 @@ Util::~Util()
 	}
 #endif
 
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 
 	delete cr_py_lock;
 }

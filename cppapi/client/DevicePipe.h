@@ -774,11 +774,7 @@ private:
         DevicePipeBlobExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DevicePipeBlobExt>   	ext;
-#else
-	DevicePipeBlobExt		        	*ext;				// Class extension
-#endif
 };
 
 
@@ -1104,11 +1100,7 @@ private:
         DevicePipeExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DevicePipeExt>   ext;
-#else
-	DevicePipeExt		        *ext;				// Class extension
-#endif
 };
 
 /****************************************************************************************

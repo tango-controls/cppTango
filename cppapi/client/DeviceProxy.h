@@ -129,11 +129,7 @@ private:
         std::string          orig_tango_host;
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DeviceProxyExt>  ext_proxy;
-#else
-	DeviceProxyExt		        *ext_proxy;		// Class extension
-#endif
 
     omni_mutex                  lock_mutex;
 

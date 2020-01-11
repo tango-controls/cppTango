@@ -62,11 +62,7 @@ private :
         DbDeviceExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DbDeviceExt>     ext;
-#else
-	DbDeviceExt	                *ext;
-#endif
 
 public :
 /**@name Constructors */

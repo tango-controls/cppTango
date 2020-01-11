@@ -791,9 +791,6 @@ DeviceClass::~DeviceClass()
 // Delete the class extension object
 //
 
-#ifndef HAS_UNIQUE_PTR
-	delete ext;
-#endif
 
 	cout4 << "Leaving DeviceClass destructor for class " << name << std::endl;
 }

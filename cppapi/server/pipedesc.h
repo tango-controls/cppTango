@@ -99,11 +99,7 @@ private:
     {
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<UserDefaultPipePropExt>  ext;           // Class extension
-#else
-	UserDefaultPipePropExt	            *ext;
-#endif
 };
 
 

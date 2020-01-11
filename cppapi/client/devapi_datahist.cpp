@@ -84,23 +84,11 @@ DeviceDataHistory::DeviceDataHistory(const DeviceDataHistory &source)
         (*ref_ctr_ptr)++;
     }
 
-#ifdef HAS_UNIQUE_PTR
     if (source.ext_hist.get() != NULL)
     {
         ext_hist.reset(new DeviceDataHistoryExt);
         *(ext_hist.get()) = *(source.ext_hist.get());
     }
-#else
-    if (source.ext_hist == NULL)
-    {
-        ext_hist = NULL;
-    }
-    else
-    {
-        ext_hist = new DeviceDataHistoryExt();
-        *ext_hist = *(source.ext_hist);
-    }
-#endif
 }
 
 #ifdef HAS_RVALUE
@@ -146,9 +134,6 @@ DeviceDataHistory::~DeviceDataHistory()
         }
     }
 
-#ifndef HAS_UNIQUE_PTR
-    delete ext_hist;
-#endif
 }
 
 
@@ -196,7 +181,6 @@ DeviceDataHistory &DeviceDataHistory::operator=(const DeviceDataHistory &rval)
         ref_ctr_ptr = rval.ref_ctr_ptr;
         (*ref_ctr_ptr)++;
 
-#ifdef HAS_UNIQUE_PTR
         if (rval.ext_hist.get() != NULL)
         {
             ext_hist.reset(new DeviceDataHistoryExt);
@@ -206,18 +190,6 @@ DeviceDataHistory &DeviceDataHistory::operator=(const DeviceDataHistory &rval)
         {
             ext_hist.reset();
         }
-#else
-        delete ext_hist;
-        if (rval.ext_hist != NULL)
-        {
-            ext_hist = new DeviceDataHistoryExt();
-            *ext_hist = *(rval.ext_hist);
-        }
-        else
-        {
-            ext_hist = NULL;
-        }
-#endif
     }
 
     return *this;
@@ -676,23 +648,11 @@ DeviceAttributeHistory::DeviceAttributeHistory(const DeviceAttributeHistory &sou
 {
     fail = source.fail;
 
-#ifdef HAS_UNIQUE_PTR
     if (source.ext_hist.get() != NULL)
     {
         ext_hist.reset(new DeviceAttributeHistoryExt);
         *(ext_hist.get()) = *(source.ext_hist.get());
     }
-#else
-    if (source.ext_hist == NULL)
-    {
-        ext_hist = NULL;
-    }
-    else
-    {
-        ext_hist = new DeviceAttributeHistoryExt();
-        *ext_hist = *(source.ext_hist);
-    }
-#endif
 }
 
 #ifdef HAS_RVALUE
@@ -717,9 +677,6 @@ DeviceAttributeHistory::DeviceAttributeHistory(DeviceAttributeHistory &&source)
 
 DeviceAttributeHistory::~DeviceAttributeHistory()
 {
-#ifndef HAS_UNIQUE_PTR
-    delete ext_hist;
-#endif
 }
 
 
@@ -746,7 +703,6 @@ DeviceAttributeHistory &DeviceAttributeHistory::operator=(const DeviceAttributeH
 
         fail = rval.fail;
 
-#ifdef HAS_UNIQUE_PTR
         if (rval.ext_hist.get() != NULL)
         {
             ext_hist.reset(new DeviceAttributeHistoryExt);
@@ -756,18 +712,6 @@ DeviceAttributeHistory &DeviceAttributeHistory::operator=(const DeviceAttributeH
         {
             ext_hist.reset();
         }
-#else
-        delete ext_hist;
-        if (rval.ext_hist != NULL)
-        {
-            ext_hist = new DeviceAttributeHistoryExt();
-            *ext_hist = *(rval.ext_hist);
-        }
-        else
-        {
-            ext_hist = NULL;
-        }
-#endif
     }
 
     return *this;

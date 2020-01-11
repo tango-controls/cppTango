@@ -1313,11 +1313,7 @@ protected :
         void deep_copy(const DeviceAttributeExt &);
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DeviceAttributeExt>  ext;
-#else
-	DeviceAttributeExt	            *ext;		// Class extension
-#endif
 
 private:
     void init_common_class_members(const char * name,int dim_x,int dim_y);

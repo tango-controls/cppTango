@@ -132,11 +132,7 @@ Connection::Connection(bool dummy)
 {
     if (dummy)
     {
-#ifdef HAS_UNIQUE_PTR
         ext.reset(new ConnectionExt());
-#else
-        ext = new ConnectionExt();
-#endif
     }
 }
 
@@ -148,9 +144,6 @@ Connection::Connection(bool dummy)
 
 Connection::~Connection()
 {
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -203,23 +196,11 @@ Connection::Connection(const Connection &sou)
 
     device_5 = sou.device_5;
 
-#ifdef HAS_UNIQUE_PTR
     if (sou.ext.get() != NULL)
     {
         ext.reset(new ConnectionExt);
         *(ext.get()) = *(sou.ext.get());
     }
-#else
-    if (sou.ext != NULL)
-    {
-        ext = new ConnectionExt();
-        *ext = *(sou.ext);
-    }
-    else
-    {
-        ext = NULL;
-    }
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -271,7 +252,6 @@ Connection &Connection::operator=(const Connection &rval)
 
     device_5 = rval.device_5;
 
-#ifdef HAS_UNIQUE_PTR
     if (rval.ext.get() != NULL)
     {
         ext.reset(new ConnectionExt);
@@ -281,17 +261,6 @@ Connection &Connection::operator=(const Connection &rval)
     {
         ext.reset(Tango_nullptr);
     }
-#else
-    if (rval.ext != NULL)
-    {
-        ext = new ConnectionExt();
-        *ext = *(rval.ext);
-    }
-    else
-    {
-        ext = NULL;
-    }
-#endif
 
     return *this;
 }
@@ -1944,23 +1913,11 @@ DeviceProxy::DeviceProxy(const DeviceProxy &sou)
 // Copy extension class
 //
 
-#ifdef HAS_UNIQUE_PTR
     if (sou.ext_proxy.get() != NULL)
     {
         ext_proxy.reset(new DeviceProxyExt);
         *(ext_proxy.get()) = *(sou.ext_proxy.get());
     }
-#else
-    if (sou.ext_proxy == NULL)
-    {
-        ext_proxy = NULL;
-    }
-    else
-    {
-        ext_proxy = new DeviceProxyExt();
-        *ext_proxy = *(sou.ext_proxy);
-    }
-#endif
 
 }
 
@@ -2020,7 +1977,6 @@ DeviceProxy &DeviceProxy::operator=(const DeviceProxy &rval)
             adm_device = NULL;
         }
 
-#ifdef HAS_UNIQUE_PTR
         if (rval.ext_proxy.get() != NULL)
         {
             ext_proxy.reset(new DeviceProxyExt);
@@ -2030,18 +1986,6 @@ DeviceProxy &DeviceProxy::operator=(const DeviceProxy &rval)
         {
             ext_proxy.reset();
         }
-#else
-        delete ext_proxy;
-        if (rval.ext_proxy != NULL)
-        {
-            ext_proxy = new DeviceProxyExt;
-            *ext_proxy = *(rval.ext_proxy);
-        }
-        else
-        {
-            ext_proxy = NULL;
-        }
-#endif
     }
 
     return *this;
@@ -2663,9 +2607,6 @@ DeviceProxy::~DeviceProxy()
 
     delete adm_device;
 
-#ifndef HAS_UNIQUE_PTR
-    delete ext_proxy;
-#endif
 }
 
 void DeviceProxy::unsubscribe_all_events()

@@ -240,11 +240,7 @@ private:
 
 	class AttrPropExt {};
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<AttrPropExt>		ext;           // Class extension
-#else
-    AttrPropExt					*ext;
-#endif
 };
 
 //===================================================================================================================
@@ -517,11 +513,7 @@ private:
 
 	class DoubleAttrPropExt {};
 
-#ifdef HAS_UNIQUE_PTR
 	std::unique_ptr<DoubleAttrPropExt>	ext;           // Class extension
-#else
-	DoubleAttrPropExt				*ext;
-#endif
 };
 
 //==================================================================================================================
@@ -665,11 +657,7 @@ private:
 
 	class MultiAttrPropExt {};
 
-#ifdef HAS_UNIQUE_PTR
 	std::unique_ptr<MultiAttrPropExt>	ext;           // Class extension
-#else
-	MultiAttrPropExt				*ext;
-#endif
 };
 
 } // End of Tango namespace

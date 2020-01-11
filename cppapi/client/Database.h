@@ -64,11 +64,7 @@ private :
 		std::string	orig_tango_host;
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DatabaseExt>     ext;
-#else
-	DatabaseExt			        *ext;
-#endif
 
 	bool				db_multi_svc;
 	std::vector<std::string>		multi_db_port;

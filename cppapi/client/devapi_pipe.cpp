@@ -73,21 +73,11 @@ DevicePipe::DevicePipe(const DevicePipe & source):ext(Tango_nullptr)
 	time = source.time;
 	the_root_blob = source.the_root_blob;
 
-#ifdef HAS_UNIQUE_PTR
     if (source.ext.get() != NULL)
     {
         ext.reset(new DevicePipeExt);
         *(ext.get()) = *(source.ext.get());
     }
-#else
-	if (source.ext != NULL)
-	{
-		ext = new DevicePipeExt();
-		*ext = *(source.ext);
-	}
-	else
-		ext = NULL;
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -104,21 +94,11 @@ DevicePipe &DevicePipe::operator=(const DevicePipe &rhs)
     	time = rhs.time;
 		the_root_blob = rhs.the_root_blob;
 
-#ifdef HAS_UNIQUE_PTR
 		if (rhs.ext.get() != NULL)
 		{
 			ext.reset(new DevicePipeExt);
 			*(ext.get()) = *(rhs.ext.get());
 		}
-#else
-		if (rhs.ext != NULL)
-		{
-			ext = new DevicePipeExt();
-			*ext = *(rhs.ext);
-		}
-		else
-			ext = NULL;
-#endif
     }
 	return *this;
 }
@@ -175,9 +155,6 @@ DevicePipe &DevicePipe::operator=(DevicePipe &&rhs)
 
 DevicePipe::~DevicePipe()
 {
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 }
 
 DevicePipe &DevicePipe::operator[](const std::string &_na)
@@ -233,9 +210,6 @@ DevicePipeBlob::~DevicePipeBlob()
 	if (extract_delete == true)
 		delete extract_elt_array;
 
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -275,21 +249,11 @@ DevicePipeBlob::DevicePipeBlob(const DevicePipeBlob & source):ext(Tango_nullptr)
 	}
 	extract_ctr = source.extract_ctr;
 
-#ifdef HAS_UNIQUE_PTR
     if (source.ext.get() != NULL)
     {
         ext.reset(new DevicePipeBlobExt);
         *(ext.get()) = *(source.ext.get());
     }
-#else
-	if (source.ext != NULL)
-	{
-		ext = new DevicePipeBlobExt();
-		*ext = *(source.ext);
-	}
-	else
-		ext = NULL;
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -331,7 +295,6 @@ DevicePipeBlob &DevicePipeBlob::operator=(const DevicePipeBlob &rhs)
 		}
 		extract_ctr = rhs.extract_ctr;
 
-#ifdef HAS_UNIQUE_PTR
         if (rhs.ext.get() != NULL)
         {
             ext.reset(new DevicePipeBlobExt);
@@ -339,16 +302,6 @@ DevicePipeBlob &DevicePipeBlob::operator=(const DevicePipeBlob &rhs)
         }
         else
             ext.reset();
-#else
-        delete ext;
-        if (rhs.ext != NULL)
-        {
-            ext = new DevicePipeBlobExt();
-            *ext = *(rhs.ext);
-        }
-        else
-            ext = NULL;
-#endif
     }
 	return *this;
 }

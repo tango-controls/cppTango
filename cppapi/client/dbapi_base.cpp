@@ -385,19 +385,10 @@ Database::Database(const Database &sou):Connection(sou),ext(Tango_nullptr)
 // Copy extension class
 //
 
-#ifdef HAS_UNIQUE_PTR
     if (sou.ext.get() != NULL)
     {
         ext.reset(new DatabaseExt);
     }
-#else
-	if (sou.ext == NULL)
-		ext = NULL;
-	else
-	{
-		ext = new DatabaseExt();
-	}
-#endif
 
 }
 
@@ -444,22 +435,12 @@ Database &Database::operator=(const Database &rval)
         access_service_defined = rval.access_service_defined;
         db_tg = rval.db_tg;
 
-#ifdef HAS_UNIQUE_PTR
         if (rval.ext.get() != NULL)
         {
             ext.reset(new DatabaseExt);
         }
         else
             ext.reset();
-#else
-        delete ext;
-        if (rval.ext != NULL)
-        {
-            ext = new DatabaseExt;
-        }
-        else
-            ext = NULL;
-#endif
     }
 
 	return *this;
@@ -559,9 +540,6 @@ Database::~Database()
 
     delete access_proxy;
 
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 }
 
 #ifdef _TG_WINDOWS_

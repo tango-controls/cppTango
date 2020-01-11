@@ -77,21 +77,11 @@ DeviceData::DeviceData(const DeviceData &source)
     any = const_cast<DeviceData &>(source).any._retn();
 #endif
 
-#ifdef HAS_UNIQUE_PTR
     if (source.ext.get() != NULL)
     {
         ext.reset(new DeviceDataExt);
         *(ext.get()) = *(source.ext.get());
     }
-#else
-    if (source.ext != NULL)
-    {
-        ext = new DeviceDataExt();
-        *ext = *(source.ext);
-    }
-    else
-        ext = NULL;
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -131,7 +121,6 @@ DeviceData &DeviceData::operator=(const DeviceData &rval)
         any = const_cast<DeviceData &>(rval).any._retn();
 #endif
 
-#ifdef HAS_UNIQUE_PTR
         if (rval.ext.get() != NULL)
         {
             ext.reset(new DeviceDataExt);
@@ -141,17 +130,6 @@ DeviceData &DeviceData::operator=(const DeviceData &rval)
         {
             ext.reset();
         }
-#else
-        delete ext;
-
-        if (rval.ext != NULL)
-        {
-            ext = new DeviceDataExt();
-            *ext = *(rval.ext);
-        }
-        else
-            ext = NULL;
-#endif
     }
     return *this;
 }
@@ -189,9 +167,6 @@ DeviceData &DeviceData::operator=(DeviceData &&rval)
 
 DeviceData::~DeviceData()
 {
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 }
 
 //-----------------------------------------------------------------------------

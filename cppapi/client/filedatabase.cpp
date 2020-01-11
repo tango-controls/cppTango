@@ -287,9 +287,6 @@ FileDatabase::~FileDatabase()
 		delete (*j);
 	}
 
-#ifndef HAS_UNIQUE_PTR
-	delete ext;
-#endif
 }
 
 // ****************************************************

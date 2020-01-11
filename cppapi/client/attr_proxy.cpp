@@ -290,20 +290,10 @@ AttributeProxy::AttributeProxy(const AttributeProxy &prev):ext(Tango_nullptr)
 		}
 	}
 
-#ifdef HAS_UNIQUE_PTR
     if (prev.ext.get() != NULL)
     {
         ext.reset(new AttributeProxyExt(prev.get_user_defined_name()));
     }
-#else
-	if (prev.ext != NULL)
-	{
-		ext = new AttributeProxyExt(prev.get_user_defined_name());
-		*ext = *(prev.ext);
-	}
-	else
-		ext = NULL;
-#endif
 
 }
 
@@ -367,20 +357,10 @@ AttributeProxy &AttributeProxy::operator=(const AttributeProxy &rval)
             }
         }
 
-#ifdef HAS_UNIQUE_PTR
         if (rval.ext.get() != NULL)
             ext.reset(new AttributeProxyExt(rval.get_user_defined_name()));
         else
             ext.reset();
-#else
-        if (rval.ext != NULL)
-        {
-            ext = new AttributeProxyExt(rval.get_user_defined_name());
-            *ext = *(rval.ext);
-        }
-        else
-            ext = NULL;
-#endif
     }
 
 	return *this;
@@ -798,9 +778,6 @@ AttributeProxy::~AttributeProxy()
 		delete db_attr;
     delete dev_proxy;
 
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 }
 
 //-----------------------------------------------------------------------------

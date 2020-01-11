@@ -103,11 +103,7 @@ public:
 /**
  * The object desctructor.
  */
-#ifdef HAS_UNIQUE_PTR
     virtual ~Pipe() {}
-#else
-	virtual ~Pipe() {delete ext;}
-#endif
 //@}
 
 /**@name Miscellaneous methods */
@@ -449,11 +445,7 @@ private:
         PipeExt() {}
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<PipeExt>          ext;           	// Class extension
-#else
-	PipeExt		                *ext;
-#endif
 
 	bool						value_flag;			// Flag set when pipe value is set
 	Tango::TimeVal				when;				// Date associated to the pipe

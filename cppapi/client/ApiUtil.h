@@ -240,11 +240,7 @@ private:
 	bool						exit_lock_installed;
 	bool						reset_already_executed_flag;
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<ApiUtilExt>      ext;
-#else
-	ApiUtilExt					*ext; 		// Class extension
-#endif
 
     NotifdEventConsumer         *notifd_event_consumer;
     TangoSys_Pid		        cl_pid;

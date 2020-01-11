@@ -603,11 +603,7 @@ private:
         DeviceDataHistoryExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DeviceDataHistoryExt>    ext_hist;
-#else
-	DeviceDataHistoryExt	            *ext_hist;		// Class extension
-#endif
 };
 
 typedef std::vector<DeviceDataHistory> DeviceDataHistoryList;
@@ -701,11 +697,7 @@ private:
         DeviceAttributeHistoryExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DeviceAttributeHistoryExt>   ext_hist;
-#else
-	DeviceAttributeHistoryExt	            *ext_hist;	// Class extension
-#endif
 };
 
 

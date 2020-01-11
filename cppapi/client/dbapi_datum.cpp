@@ -77,9 +77,6 @@ DbDatum::DbDatum():ext(Tango_nullptr)
 
 DbDatum::~DbDatum()
 {
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -110,17 +107,7 @@ DbDatum &DbDatum::operator=(const DbDatum &rval)
 	value_type = rval.value_type;
 	value_size = rval.value_size;
 	exceptions_flags = rval.exceptions_flags;
-#ifdef HAS_UNIQUE_PTR
 	ext.reset(new DbDatumExt);
-#else
-	if (rval.ext != NULL)
-	{
-	    if (ext != Tango_nullptr)
-            delete ext;
-		ext = new DbDatumExt;
-		*ext = *rval.ext;
-	}
-#endif
 
 	return *this;
 }

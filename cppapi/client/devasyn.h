@@ -100,11 +100,7 @@ private:
         CmdDoneEventExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<CmdDoneEventExt> ext;
-#else
-	CmdDoneEventExt		        *ext;
-#endif
 };
 
 /********************************************************************************
@@ -151,11 +147,7 @@ private:
         AttrReadEventExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<AttrReadEventExt>    ext;
-#else
-	AttrReadEventExt		        *ext;
-#endif
 };
 
 /********************************************************************************
@@ -199,11 +191,7 @@ private:
         AttrWrittenEventExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<AttrWrittenEventExt> ext;
-#else
-	AttrWrittenEventExt	            *ext;
-#endif
 };
 
 /********************************************************************************
@@ -330,11 +318,7 @@ private:
         CallBackExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<CallBackExt> ext;
-#else
-	CallBackExt		        *ext;
-#endif
 };
 
 //------------------------------------------------------------------------------

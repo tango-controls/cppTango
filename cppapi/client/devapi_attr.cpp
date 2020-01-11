@@ -146,21 +146,11 @@ DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_nullp
 	d_state = source.d_state;
 	d_state_filled = source.d_state_filled;
 
-#ifdef HAS_UNIQUE_PTR
     if (source.ext.get() != NULL)
     {
         ext.reset(new DeviceAttributeExt);
         *(ext.get()) = *(source.ext.get());
     }
-#else
-	if (source.ext != NULL)
-	{
-		ext = new DeviceAttributeExt();
-		*ext = *(source.ext);
-	}
-	else
-		ext = NULL;
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -250,7 +240,6 @@ void DeviceAttribute::deep_copy(const DeviceAttribute & source)
 	d_state = source.d_state;
 	d_state_filled = source.d_state_filled;
 
-#ifdef HAS_UNIQUE_PTR
     if (source.ext.get() != NULL)
     {
         ext.reset(new DeviceAttributeExt);
@@ -258,16 +247,6 @@ void DeviceAttribute::deep_copy(const DeviceAttribute & source)
     }
     else
         ext.reset();
-#else
-	if (source.ext != NULL)
-	{
-		if (ext == NULL)
-			ext = new DeviceAttributeExt();
-		ext->deep_copy(*source.ext);
-	}
-	else
-		ext = NULL;
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -418,7 +397,6 @@ DeviceAttribute & DeviceAttribute::operator=(const DeviceAttribute &rval)
         d_state = rval.d_state;
         d_state_filled = rval.d_state_filled;
 
-#ifdef HAS_UNIQUE_PTR
         if (rval.ext.get() != NULL)
         {
             ext.reset(new DeviceAttributeExt);
@@ -426,16 +404,6 @@ DeviceAttribute & DeviceAttribute::operator=(const DeviceAttribute &rval)
         }
         else
             ext.reset();
-#else
-        delete ext;
-        if (rval.ext != NULL)
-        {
-            ext = new DeviceAttributeExt();
-            *ext = *(rval.ext);
-        }
-        else
-            ext = NULL;
-#endif
     }
 
 	return *this;
@@ -1355,9 +1323,6 @@ DeviceAttribute::DeviceAttribute(const char *new_name, std::vector<DevState> &da
 
 DeviceAttribute::~DeviceAttribute()
 {
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 }
 
 //-----------------------------------------------------------------------------

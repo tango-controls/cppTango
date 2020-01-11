@@ -360,9 +360,6 @@ MultiAttribute::~MultiAttribute()
 	for(unsigned long i = 0;i < attr_list.size();i++)
 		delete attr_list[i];
 	ext->attr_map.clear();
-#ifndef HAS_UNIQUE_PTR
-	delete ext;
-#endif
 }
 
 //+-----------------------------------------------------------------------------------------------------------------

@@ -451,9 +451,6 @@ DeviceImpl::~DeviceImpl()
 // Delete the extension class instance
 //
 
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 
 //
 // Clear our ptr in the device class vector

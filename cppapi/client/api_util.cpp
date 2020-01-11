@@ -207,11 +207,7 @@ ApiUtil::~ApiUtil()
 
     bool event_was_used = false;
 
-#ifdef HAS_UNIQUE_PTR
     if (ext.get() != NULL)
-#else
-        if (ext != NULL)
-#endif
     {
         if ((notifd_event_consumer != NULL) || (zmq_event_consumer != NULL))
         {
@@ -220,9 +216,6 @@ ApiUtil::~ApiUtil()
             NotifdEventConsumer::cleanup();
             ZmqEventConsumer::cleanup();
         }
-#ifndef HAS_UNIQUE_PTR
-        delete ext;
-#endif
     }
 
 //

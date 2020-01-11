@@ -416,11 +416,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 	DeviceProxy *local_dev = static_cast<DeviceProxy *>(this);
 	CmdDoneEvent *cb_data = new CmdDoneEvent(local_dev,cmd_str,data_out,errors);
 
-#ifdef HAS_UNIQUE_PTR
 	std::unique_ptr<CmdDoneEvent> auto_cb_data(cb_data);
-#else
-	auto_ptr<CmdDoneEvent> auto_cb_data(cb_data);
-#endif
 	cb_ptr->cmd_ended(auto_cb_data.get());
 
 }
@@ -665,11 +661,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 	DeviceProxy *local_dev = static_cast<DeviceProxy *>(this);
 	AttrReadEvent *cb_data = new AttrReadEvent(local_dev,attr_names,dev_attr,errors);
 
-#ifdef HAS_UNIQUE_PTR
 	std::unique_ptr<AttrReadEvent> auto_cb_data(cb_data);
-#else
-	auto_ptr<AttrReadEvent> auto_cb_data(cb_data);
-#endif
 
 	cb_ptr->attr_read(auto_cb_data.get());
 
@@ -908,11 +900,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 	DeviceProxy *local_dev = static_cast<DeviceProxy *>(this);
 	AttrWrittenEvent *cb_data = new AttrWrittenEvent(local_dev,att_name,err_3);
 
-#ifdef HAS_UNIQUE_PTR
 	std::unique_ptr<AttrWrittenEvent> auto_cb_data(cb_data);
-#else
-	auto_ptr<AttrWrittenEvent> auto_cb_data(cb_data);
-#endif
 
 	cb_ptr->attr_written(auto_cb_data.get());
 

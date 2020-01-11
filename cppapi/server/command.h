@@ -216,11 +216,7 @@ public:
 /**
  * The object desctructor.
  */
-#ifdef HAS_UNIQUE_PTR
     virtual ~Command() {}
-#else
-	virtual ~Command() {delete ext;}
-#endif
 //@}
 
 /**@name Miscellaneous methods */
@@ -1244,11 +1240,7 @@ private:
 	void alloc_any(CORBA::Any *&);
 	void throw_bad_type(const char *);
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<CommandExt>          ext;           // Class extension
-#else
-	CommandExt		                *ext;
-#endif
 
 //
 // Ported from the extension class
@@ -1631,11 +1623,7 @@ private:
     };
 
 	void (DeviceImpl::*exe_ptr)();
-#ifdef HAS_UNIQUE_PTR
-    std::unique_ptr<TemplCommandExt>     ext;           // Class extension
-#else
-	TemplCommandExt		            *ext;
-#endif
+  std::unique_ptr<TemplCommandExt>     ext;           // Class extension
 
 protected:
 /**@name Class data members */
@@ -2004,11 +1992,7 @@ private:
     };
 
 	OUTARG (DeviceImpl::*exe_ptr_inout)(INARG);
-#ifdef HAS_UNIQUE_PTR
-    std::unique_ptr<TemplCommandInOut>       ext;           // Class extension
-#else
-	TemplCommandInOutExt		        *ext;
-#endif
+  std::unique_ptr<TemplCommandInOut>       ext;           // Class extension
 };
 
 //+-------------------------------------------------------------------------
@@ -2559,11 +2543,7 @@ private:
     };
 
 	void (DeviceImpl::*exe_ptr_in)(INARG);
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<TemplCommandInExt>    ext;           // Class extension
-#else
-	TemplCommandInExt		        *ext;
-#endif
 };
 
 //+-------------------------------------------------------------------------
@@ -3093,11 +3073,7 @@ private:
     };
 
 	OUTARG (DeviceImpl::*exe_ptr_out)();
-#ifdef HAS_UNIQUE_PTR
-    std::unique_ptr<TemplCommandOutExt>      ext;           // Class extension
-#else
-	TemplCommandOutExt		            *ext;
-#endif
+  std::unique_ptr<TemplCommandOutExt>      ext;           // Class extension
 };
 
 //+-------------------------------------------------------------------------
