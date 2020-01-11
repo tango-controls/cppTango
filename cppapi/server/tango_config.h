@@ -131,121 +131,21 @@
 
 //
 // Some C++11 feature
-// map::at() -> gcc 4.1.0 (See C++ Standard Library Defect Report 464)
-// Unique_ptr -> gcc 4.3
-// rvalues -> gcc 4.3
-// Lambda function -> gcc 4.5
-// nullptr -> gcc 4.6
-// attributes -> gcc 4.8
 // constexpr -> gcc 5.0 (C++14 style constexpr)
 
 #ifndef _TG_WINDOWS_
     #if defined(__GNUC__)
-        #if __GNUC__ == 4
-            #if __GNUC_MINOR__ > 0
-                #define HAS_MAP_AT
-            #endif
-            #if __GNUC_MINOR__ > 3
-                #define HAS_UNIQUE_PTR
-                #define HAS_RVALUE
-                #define HAS_THREAD
-                #define HAS_TYPE_TRAITS
-                #define HAS_VARIADIC_TEMPLATE
-            #endif
-            #if __GNUC_MINOR__ > 4
-                #define HAS_LAMBDA_FUNC
-                #define HAS_ISNAN_IN_STD
-            #endif
-            #if __GNUC_MINOR__ > 5
-                #define HAS_NULLPTR
-                #define HAS_RANGE_BASE_FOR
-                #define INIT_LIST
-            #endif
-            #if __GNUC_MINOR__ > 6
-                #define HAS_OVERRIDE
-            #endif
-            #if __GNUC_MINOR__ > 7
-                #define HAS_UNDERLYING
-                #define HAS_ATTRIBUTE_SPECIFIERS
-            #endif
-        #elif __GNUC__ > 4
-            #define HAS_UNIQUE_PTR
-            #define HAS_RVALUE
-            #define HAS_LAMBDA_FUNC
-            #define HAS_ISNAN_IN_STD
-            #define HAS_NULLPTR
-            #define HAS_RANGE_BASE_FOR
-            #define INIT_LIST
-            #define HAS_THREAD
-            #define HAS_TYPE_TRAITS
-            #define HAS_UNDERLYING
-            #define HAS_VARIADIC_TEMPLATE
-            #define HAS_MAP_AT
-            #define HAS_ATTRIBUTE_SPECIFIERS
+        #if __GNUC__ > 4
             #define HAS_CONSTEXPR
         #endif
         #if defined(__clang__)
             #if __clang_major__ > 3
-                #define HAS_UNIQUE_PTR
-                #define HAS_RVALUE
-                #define HAS_LAMBDA_FUNC
-                #define HAS_ISNAN_IN_STD
-                #define HAS_NULLPTR
-                #define HAS_RANGE_BASE_FOR
-                #define INIT_LIST
-                #define HAS_THREAD
-                #define HAS_TYPE_TRAITS
-                #define HAS_UNDERLYING
-                #define HAS_VARIADIC_TEMPLATE
-                #define HAS_MAP_AT
-                #define HAS_ATTRIBUTE_SPECIFIERS
                 #define HAS_CONSTEXPR
             #endif
         #endif
     #endif
 #else
-    #ifdef WIN32_VC10
-        #define HAS_UNIQUE_PTR
-        #define HAS_LAMBDA_FUNC
-        #define HAS_NULLPTR
-        #define HAS_RVALUE
-        #define HAS_TYPE_TRAITS
-        #define HAS_MAP_AT
-    #endif
-    #ifdef WIN32_VC11
-        #define HAS_UNIQUE_PTR
-        #define HAS_LAMBDA_FUNC
-        #define HAS_NULLPTR
-        #define HAS_RVALUE
-		#define HAS_RANGE_BASE_FOR
-        #define HAS_TYPE_TRAITS
-        #define HAS_UNDERLYING
-        #define HAS_MAP_AT
-    #endif
-    #ifdef WIN32_VC12
-        #define HAS_UNIQUE_PTR
-        #define HAS_LAMBDA_FUNC
-        #define HAS_NULLPTR
-        #define HAS_RVALUE
-		#define HAS_RANGE_BASE_FOR
-        #define HAS_TYPE_TRAITS
-        #define HAS_UNDERLYING
-        #define HAS_VARIADIC_TEMPLATE
-        #define HAS_MAP_AT
-        #define HAS_OVERRIDE
-    #endif
     #ifdef WIN32_VC14
-        #define HAS_UNIQUE_PTR
-        #define HAS_LAMBDA_FUNC
-        #define HAS_NULLPTR
-        #define HAS_RVALUE
-        #define HAS_RANGE_BASE_FOR
-        #define HAS_TYPE_TRAITS
-        #define HAS_UNDERLYING
-        #define HAS_VARIADIC_TEMPLATE
-        #define HAS_MAP_AT
-        #define HAS_ATTRIBUTE_SPECIFIERS
-        #define HAS_OVERRIDE
         #define HAS_CONSTEXPR
     #endif
 #endif
