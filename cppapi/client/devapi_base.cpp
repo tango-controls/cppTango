@@ -10120,22 +10120,11 @@ int DeviceProxy::get_tango_lib_version()
 // Tango 5 or 6. The beast we can do is to get the info that it is Tango 5.2 (or above)
 //
 
-#ifdef HAS_LAMBDA_FUNC
             auto pos = find_if((*cmd_list).begin(), (*cmd_list).end(),
                                [](Tango::CommandInfo &cc) -> bool
                                {
                                    return cc.cmd_name == "QueryWizardClassProperty";
                                });
-#else
-            std::vector<CommandInfo>::iterator pos, end;
-            for (pos = (*cmd_list).begin(), end = (*cmd_list).end(); pos != end; ++pos)
-            {
-                if (pos->cmd_name == "QueryWizardClassProperty")
-                {
-                    break;
-                }
-            }
-#endif
             if (pos != (*cmd_list).end())
             {
                 ret = 520;

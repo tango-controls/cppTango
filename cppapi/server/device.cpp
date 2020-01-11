@@ -6039,7 +6039,6 @@ Command &DeviceImpl::get_local_cmd_by_name(const std::string &cmd_name)
 {
     std::vector<Command *>::iterator pos;
 
-#ifdef HAS_LAMBDA_FUNC
     pos = find_if(command_list.begin(), command_list.end(),
                   [&](Command *cmd) -> bool
                   {
@@ -6051,10 +6050,6 @@ Command &DeviceImpl::get_local_cmd_by_name(const std::string &cmd_name)
                       std::transform(tmp_name.begin(), tmp_name.end(), tmp_name.begin(), ::tolower);
                       return cmd->get_lower_name() == tmp_name;
                   });
-#else
-                                                                                                                            pos = find_if(command_list.begin(),command_list.end(),
-				bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
-#endif
 
     if (pos == command_list.end())
     {
@@ -6082,7 +6077,6 @@ void DeviceImpl::remove_local_command(const std::string &cmd_name)
 {
     std::vector<Command *>::iterator pos;
 
-#ifdef HAS_LAMBDA_FUNC
     pos = find_if(command_list.begin(), command_list.end(),
                   [&](Command *cmd) -> bool
                   {
@@ -6092,10 +6086,6 @@ void DeviceImpl::remove_local_command(const std::string &cmd_name)
                       }
                       return cmd->get_lower_name() == cmd_name;
                   });
-#else
-                                                                                                                            pos = find_if(command_list.begin(),command_list.end(),
-				bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
-#endif
 
     if (pos == command_list.end())
     {

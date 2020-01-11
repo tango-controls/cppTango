@@ -293,7 +293,6 @@ void EventConsumer::get_cs_tango_host(Database *db)
 		for (unsigned int i = 0;i < vs.size();i++)
 		{
 			std::transform(vs[i].begin(),vs[i].end(),vs[i].begin(),::tolower);
-#ifdef HAS_LAMBDA_FUNC
 			pos = find_if(env_var_fqdn_prefix.begin(),env_var_fqdn_prefix.end(),
 					[&] (std::string str) -> bool
 					{
@@ -308,22 +307,6 @@ void EventConsumer::get_cs_tango_host(Database *db)
 				std::string prefix = "tango://" + vs[i] + '/' ;
 				env_var_fqdn_prefix.push_back(prefix);
 			}
-#else
-			unsigned int j;
-			for (j = 0;j < env_var_fqdn_prefix.size();++j)
-			{
-				if (env_var_fqdn_prefix[j].find(vs[i]) != std::string::npos)
-				{
-					break;
-				}
-			}
-
-			if (j == env_var_fqdn_prefix.size())
-			{
-				std::string prefix = "tango://" + vs[i] + '/';
-				env_var_fqdn_prefix.push_back(prefix);
-			}
-#endif
 		}
 	}
 	catch(...) {}

@@ -130,20 +130,11 @@ bool FwdAttr::validate_fwd_att(std::vector<AttrProperty> &prop_list,const std::s
 
 	try
 	{
-#ifdef HAS_LAMBDA_FUNC
 		auto pos = find_if(prop_list.begin(),prop_list.end(),
 					[] (AttrProperty &ap) -> bool
 					{
 						return ap.get_name() == RootAttrPropName;
 					});
-#else
-		std::vector<AttrProperty>::iterator pos;
-		for (pos = prop_list.begin();pos != prop_list.end();++pos)
-		{
-			if (pos->get_name() == RootAttrPropName)
-				break;
-		}
-#endif
 		if (pos != prop_list.end())
 		{
 			root_att_db = pos->get_value();
