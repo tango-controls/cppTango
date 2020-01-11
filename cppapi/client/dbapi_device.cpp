@@ -49,7 +49,7 @@ namespace Tango
 //
 //------------------------------------------------------------------------------------------------------------------
 
-DbDevice::DbDevice(std::string &dev_name, Database *dev_dbase):ext(Tango_nullptr)
+DbDevice::DbDevice(std::string &dev_name, Database *dev_dbase):ext(nullptr)
 {
 	name = dev_name;
 	dbase = dev_dbase;
@@ -67,7 +67,7 @@ DbDevice::DbDevice(std::string &dev_name, Database *dev_dbase):ext(Tango_nullptr
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-DbDevice::DbDevice(std::string &dev_name):ext(Tango_nullptr)
+DbDevice::DbDevice(std::string &dev_name):ext(nullptr)
 {
 	name = dev_name;
 	db_ind = ApiUtil::instance()->get_db_ind();
@@ -85,7 +85,7 @@ DbDevice::DbDevice(std::string &dev_name):ext(Tango_nullptr)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-DbDevice::DbDevice(std::string &dev_name,std::string &host,std::string &port_str):ext(Tango_nullptr)
+DbDevice::DbDevice(std::string &dev_name,std::string &host,std::string &port_str):ext(nullptr)
 {
 	name = dev_name;
 

@@ -62,7 +62,7 @@ public:
 /**
  * Constructs a newly allocated UserDefaultAttrProp object.
  */
-	UserDefaultFwdAttrProp():ext(Tango_nullptr) {}
+	UserDefaultFwdAttrProp():ext(nullptr) {}
 //@}
 
 /**@name Set default property methods */

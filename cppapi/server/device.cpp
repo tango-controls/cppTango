@@ -86,7 +86,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, const char *d_name,
       state_from_read(false), py_device(false), device_locked(false),
       locker_client(NULL), old_locker_client(NULL), lock_ctr(0),
       min_poll_period(0), run_att_conf_loop(true), force_alarm_state(false), with_fwd_att(false),
-      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(Tango_nullptr)
+      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(nullptr)
 {
     real_ctor();
 }
@@ -104,7 +104,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name, std::string &de
       state_from_read(false), py_device(false), device_locked(false),
       locker_client(NULL), old_locker_client(NULL), lock_ctr(0),
       min_poll_period(0), run_att_conf_loop(true), force_alarm_state(false), with_fwd_att(false),
-      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(Tango_nullptr)
+      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(nullptr)
 {
     real_ctor();
 }
@@ -120,7 +120,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name)
       state_from_read(false), py_device(false), device_locked(false),
       locker_client(NULL), old_locker_client(NULL), lock_ctr(0),
       min_poll_period(0), run_att_conf_loop(true), force_alarm_state(false), with_fwd_att(false),
-      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(Tango_nullptr)
+      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(nullptr)
 {
     desc = "A Tango device";
     device_state = Tango::UNKNOWN;
@@ -140,7 +140,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name, std::string &de
       state_from_read(false), py_device(false), device_locked(false),
       locker_client(NULL), old_locker_client(NULL), lock_ctr(0),
       min_poll_period(0), run_att_conf_loop(true), force_alarm_state(false), with_fwd_att(false),
-      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(Tango_nullptr)
+      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(nullptr)
 {
     desc = description;
     device_state = Tango::UNKNOWN;
@@ -5243,7 +5243,7 @@ void DeviceImpl::data_into_net_object(Attribute &att, AttributeIdlData &aid,
 
         case Tango::DEV_ENCODED :
         {
-            if (aid.data_3 != Tango_nullptr)
+            if (aid.data_3 != nullptr)
             {
                 (*aid.data_3)[index].err_list.length(1);
                 (*aid.data_3)[index].err_list[0].severity = Tango::ERR;
@@ -5258,7 +5258,7 @@ void DeviceImpl::data_into_net_object(Attribute &att, AttributeIdlData &aid,
             else
             {
                 Tango::DevVarEncodedArray *ptr = att.get_encoded_value();
-                if (aid.data_5 != Tango_nullptr)
+                if (aid.data_5 != nullptr)
                 {
                     (*aid.data_5)[index].value.encoded_att_value(dummy_encoded_att_value);
                     DevVarEncodedArray &the_seq = (*aid.data_5)[index].value.encoded_att_value();
@@ -5442,7 +5442,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
             break;
 
         case Tango::DEV_STATE :
-            if (aid.data_5 != Tango_nullptr)
+            if (aid.data_5 != nullptr)
             {
                 AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false);
                 if (att_val.value._d() == DEVICE_STATE)
@@ -5456,7 +5456,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
                     (*aid.data_5)[index].value.state_att_value(union_seq);
                 }
             }
-            else if (aid.data_4 != Tango_nullptr)
+            else if (aid.data_4 != nullptr)
             {
                 if (vers >= 5)
                 {
@@ -5548,7 +5548,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
             break;
 
         case Tango::DEV_ENCODED:
-            if (aid.data_5 != Tango_nullptr)
+            if (aid.data_5 != nullptr)
             {
                 AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false);
                 DevVarEncodedArray &polled_seq = att_val.value.encoded_att_value();
@@ -5567,7 +5567,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
                     the_seq[loop].encoded_data.replace(nb_data, nb_data, tmp_enc);
                 }
             }
-            else if (aid.data_4 != Tango_nullptr)
+            else if (aid.data_4 != nullptr)
             {
                 if (vers == 5)
                 {

@@ -60,7 +60,7 @@ namespace Tango
 
 
 FwdAttr::FwdAttr(const std::string &att_name,const std::string &root_attribute):
-ImageAttr(att_name.c_str()),full_root_att(root_attribute),fwd_wrongly_conf(false),err_kind(FWD_ERR_UNKNOWN),ext(Tango_nullptr)
+ImageAttr(att_name.c_str()),full_root_att(root_attribute),fwd_wrongly_conf(false),err_kind(FWD_ERR_UNKNOWN),ext(nullptr)
 {
 	writable = Tango::READ;			// Difficult to switch it to WT_UNKNOWN
 //	type = DATA_TYPE_UNKNOWN;
@@ -160,7 +160,7 @@ bool FwdAttr::validate_fwd_att(std::vector<AttrProperty> &prop_list,const std::s
 
                 try
                 {
-                    if (db != Tango_nullptr)
+                    if (db != nullptr)
                         db->put_device_attribute_property(dev_name,db_dat);
                 }
                 catch(...) {}
@@ -185,7 +185,7 @@ bool FwdAttr::validate_fwd_att(std::vector<AttrProperty> &prop_list,const std::s
 //
 
 	std::string fq;
-	if (db != Tango_nullptr)
+	if (db != nullptr)
 	{
 		fq = "tango://";
 		std::string &h = db->get_db_host();

@@ -1637,8 +1637,8 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 // For device interface change event
 //
 
-			AttributeInfoListEx *aie = Tango_nullptr;
-			CommandInfoList *cil = Tango_nullptr;
+			AttributeInfoListEx *aie = nullptr;
+			CommandInfoList *cil = nullptr;
 			DevErrorList err;
 			err.length(0);
 			std::string prefix = event_consumer->env_var_fqdn_prefix[0];
@@ -1655,9 +1655,9 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			catch (DevFailed &e)
 			{
 				delete aie;
-				aie = Tango_nullptr;
+				aie = nullptr;
 				delete cil;
-				cil = Tango_nullptr;
+				cil = nullptr;
 
 				err = e.errors;
 			}
@@ -1665,8 +1665,8 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 
 			unsigned int cb_nb = epos->second.callback_list.size();
 			unsigned int cb_ctr = 0;
-			CommandInfoList *cil_copy = Tango_nullptr;
-			AttributeInfoListEx *aie_copy = Tango_nullptr;
+			CommandInfoList *cil_copy = nullptr;
+			AttributeInfoListEx *aie_copy = nullptr;
 
 			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
 			{
@@ -1740,7 +1740,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 // For pipe event
 //
 
-			DevicePipe *dp = Tango_nullptr;
+			DevicePipe *dp = nullptr;
 			DevErrorList err;
 			err.length(0);
 

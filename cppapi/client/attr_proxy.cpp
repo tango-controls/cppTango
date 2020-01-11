@@ -87,7 +87,7 @@ void AttributeProxy::real_constructor (std::string &name)
 		{
 			ApiUtil *ui = ApiUtil::instance();
 			dev_proxy = new DeviceProxy(device_name);
-			if (alias_name.empty() == false && dev_proxy != Tango_nullptr)
+			if (alias_name.empty() == false && dev_proxy != nullptr)
 				device_name = dev_proxy->dev_name();
 			if (ui->in_server() == true)
 				db_attr = new DbAttribute(attr_name,device_name,Tango::Util::instance()->get_database());
@@ -225,13 +225,13 @@ void AttributeProxy::ctor_from_dp(const DeviceProxy *dev_ptr,std::string &att_na
 	}
 }
 
-AttributeProxy::AttributeProxy (const DeviceProxy *dev_ptr,const char *att_name):ext(Tango_nullptr)
+AttributeProxy::AttributeProxy (const DeviceProxy *dev_ptr,const char *att_name):ext(nullptr)
 {
 	std::string att_na(att_name);
 	ctor_from_dp(dev_ptr,att_na);
 }
 
-AttributeProxy::AttributeProxy (const DeviceProxy *dev_ptr,std::string &att_name):ext(Tango_nullptr)
+AttributeProxy::AttributeProxy (const DeviceProxy *dev_ptr,std::string &att_name):ext(nullptr)
 {
 	ctor_from_dp(dev_ptr,att_name);
 }
@@ -243,7 +243,7 @@ AttributeProxy::AttributeProxy (const DeviceProxy *dev_ptr,std::string &att_name
 //
 //-----------------------------------------------------------------------------
 
-AttributeProxy::AttributeProxy(const AttributeProxy &prev):ext(Tango_nullptr)
+AttributeProxy::AttributeProxy(const AttributeProxy &prev):ext(nullptr)
 {
 
 //

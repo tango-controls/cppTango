@@ -62,7 +62,7 @@ public:
 /**
  * Constructs a newly allocated UserDefaultPipeProp object.
  */
-	UserDefaultPipeProp():ext(Tango_nullptr) {}
+	UserDefaultPipeProp():ext(nullptr) {}
 //@}
 
 /**@name Set default property methods */

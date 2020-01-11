@@ -1429,7 +1429,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	std::vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(type,obj_name);
 	long tmp_upd = (*ite)->get_upd();
 
-	PollingThreadInfo *th_info = Tango_nullptr;
+	PollingThreadInfo *th_info = nullptr;
 	int poll_th_id = 0;
 	int th_id = omni_thread::self()->id();
 

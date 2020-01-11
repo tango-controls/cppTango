@@ -85,7 +85,7 @@ DeviceAttribute::DeviceAttribute():ext(new DeviceAttributeExt)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_nullptr)
+DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(nullptr)
 {
 	name = source.name;
 	exceptions_flags = source.exceptions_flags;
@@ -129,7 +129,7 @@ DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_nullp
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(DeviceAttribute &&source):ext(Tango_nullptr)
+DeviceAttribute::DeviceAttribute(DeviceAttribute &&source):ext(nullptr)
 {
 	name = std::move(source.name);
 	exceptions_flags = source.exceptions_flags;
@@ -331,67 +331,67 @@ DeviceAttribute & DeviceAttribute::operator=(DeviceAttribute &&rval)
 	if (rval.LongSeq.operator->() != NULL)
 		LongSeq = rval.LongSeq._retn();
 	else
-		LongSeq = Tango_nullptr;
+		LongSeq = nullptr;
 
 	if (rval.ShortSeq.operator->() != NULL)
 		ShortSeq = rval.ShortSeq._retn();
 	else
-		ShortSeq = Tango_nullptr;
+		ShortSeq = nullptr;
 
 	if (rval.DoubleSeq.operator->() != NULL)
 		DoubleSeq = rval.DoubleSeq._retn();
 	else
-		DoubleSeq = Tango_nullptr;
+		DoubleSeq = nullptr;
 
 	if (rval.StringSeq.operator->() != NULL)
 		StringSeq = rval.StringSeq._retn();
 	else
-		StringSeq = Tango_nullptr;
+		StringSeq = nullptr;
 
 	if (rval.FloatSeq.operator->() != NULL)
 		FloatSeq = rval.FloatSeq._retn();
 	else
-		FloatSeq = Tango_nullptr;
+		FloatSeq = nullptr;
 
 	if (rval.BooleanSeq.operator->() != NULL)
 		BooleanSeq = rval.BooleanSeq._retn();
 	else
-		BooleanSeq = Tango_nullptr;
+		BooleanSeq = nullptr;
 
 	if (rval.UShortSeq.operator->() != NULL)
 		UShortSeq = rval.UShortSeq._retn();
 	else
-		UShortSeq = Tango_nullptr;
+		UShortSeq = nullptr;
 
 	if (rval.UCharSeq.operator->() != NULL)
 		UCharSeq = rval.UCharSeq._retn();
 	else
-		UCharSeq = Tango_nullptr;
+		UCharSeq = nullptr;
 
 	if (rval.Long64Seq.operator->() != NULL)
 		Long64Seq = rval.Long64Seq._retn();
 	else
-		Long64Seq = Tango_nullptr;
+		Long64Seq = nullptr;
 
 	if (rval.ULongSeq.operator->() != NULL)
 		ULongSeq = rval.ULongSeq._retn();
 	else
-		ULongSeq = Tango_nullptr;
+		ULongSeq = nullptr;
 
 	if (rval.ULong64Seq.operator->() != NULL)
 		ULong64Seq = rval.ULong64Seq._retn();
 	else
-		ULong64Seq = Tango_nullptr;
+		ULong64Seq = nullptr;
 
 	if (rval.StateSeq.operator->() != NULL)
 		StateSeq = rval.StateSeq._retn();
 	else
-		StateSeq = Tango_nullptr;
+		StateSeq = nullptr;
 
 	if (rval.EncodedSeq.operator->() != NULL)
 		EncodedSeq = rval.EncodedSeq._retn();
 	else
-		EncodedSeq = Tango_nullptr;
+		EncodedSeq = nullptr;
 
 	d_state = rval.d_state;
 	d_state_filled = rval.d_state_filled;

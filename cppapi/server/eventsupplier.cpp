@@ -2643,14 +2643,14 @@ void EventSupplier::convert_att_event_to_5(struct EventSupplier::SuppliedEventDa
                                            struct EventSupplier::SuppliedEventData &sent_value,
                                            bool &need_free, Attribute &attr)
 {
-    if (attr_value.attr_val_3 != Tango_nullptr)
+    if (attr_value.attr_val_3 != nullptr)
     {
         AttributeValue_5 *tmp_attr_val_5 = new AttributeValue_5();
         attr.AttributeValue_3_2_AttributeValue_5(attr_value.attr_val_3, tmp_attr_val_5);
         sent_value.attr_val_5 = tmp_attr_val_5;
         need_free = true;
     }
-    else if (attr_value.attr_val_4 != Tango_nullptr)
+    else if (attr_value.attr_val_4 != nullptr)
     {
         AttributeValue_5 *tmp_attr_val_5 = new AttributeValue_5();
         attr.AttributeValue_4_2_AttributeValue_5(attr_value.attr_val_4, tmp_attr_val_5);
@@ -2667,14 +2667,14 @@ void EventSupplier::convert_att_event_to_4(struct EventSupplier::SuppliedEventDa
                                            struct EventSupplier::SuppliedEventData &sent_value,
                                            bool &need_free, Attribute &attr)
 {
-    if (attr_value.attr_val_3 != Tango_nullptr)
+    if (attr_value.attr_val_3 != nullptr)
     {
         AttributeValue_4 *tmp_attr_val_4 = new AttributeValue_4();
         attr.AttributeValue_3_2_AttributeValue_4(attr_value.attr_val_3, tmp_attr_val_4);
         sent_value.attr_val_4 = tmp_attr_val_4;
         need_free = true;
     }
-    else if (attr_value.attr_val_5 != Tango_nullptr)
+    else if (attr_value.attr_val_5 != nullptr)
     {
         AttributeValue_4 *tmp_attr_val_4 = new AttributeValue_4();
         attr.AttributeValue_5_2_AttributeValue_4(attr_value.attr_val_5, tmp_attr_val_4);
@@ -2691,14 +2691,14 @@ void EventSupplier::convert_att_event_to_3(struct EventSupplier::SuppliedEventDa
                                            struct EventSupplier::SuppliedEventData &sent_value,
                                            bool &need_free, Attribute &attr)
 {
-    if (attr_value.attr_val_4 != Tango_nullptr)
+    if (attr_value.attr_val_4 != nullptr)
     {
         AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
         attr.AttributeValue_4_2_AttributeValue_3(attr_value.attr_val_4, tmp_attr_val_3);
         sent_value.attr_val_3 = tmp_attr_val_3;
         need_free = true;
     }
-    else if (attr_value.attr_val_5 != Tango_nullptr)
+    else if (attr_value.attr_val_5 != nullptr)
     {
         AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
         attr.AttributeValue_5_2_AttributeValue_3(attr_value.attr_val_5, tmp_attr_val_3);

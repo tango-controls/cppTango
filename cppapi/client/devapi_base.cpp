@@ -127,7 +127,7 @@ Connection::Connection(ORB *orb_in)
 }
 
 Connection::Connection(bool dummy)
-    : ext(Tango_nullptr), tr_reco(true), prev_failed(false), prev_failed_t0(0.0),
+    : ext(nullptr), tr_reco(true), prev_failed(false), prev_failed_t0(0.0),
       user_connect_timeout(-1), tango_host_localhost(false)
 {
     if (dummy)
@@ -153,7 +153,7 @@ Connection::~Connection()
 //-----------------------------------------------------------------------------
 
 Connection::Connection(const Connection &sou)
-    : ext(Tango_nullptr)
+    : ext(nullptr)
 {
     dbase_used = sou.dbase_used;
     from_env_var = sou.from_env_var;
@@ -259,7 +259,7 @@ Connection &Connection::operator=(const Connection &rval)
     }
     else
     {
-        ext.reset(Tango_nullptr);
+        ext.reset(nullptr);
     }
 
     return *this;
@@ -1863,7 +1863,7 @@ void DeviceProxy::real_constructor(std::string &name, bool need_check_acc)
 //-----------------------------------------------------------------------------
 
 DeviceProxy::DeviceProxy(const DeviceProxy &sou)
-    : Connection(sou), ext_proxy(Tango_nullptr)
+    : Connection(sou), ext_proxy(nullptr)
 {
 
 //
@@ -5367,7 +5367,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
     }
 
     DevVarPipeDataEltArray *tmp_ptr = dev_pipe.get_root_blob().get_insert_data();
-    if (tmp_ptr == Tango_nullptr)
+    if (tmp_ptr == nullptr)
     {
         Except::throw_exception(API_PipeNoDataElement, "No data in pipe!", "DeviceProxy::write_pipe()");
     }

@@ -48,15 +48,15 @@ namespace Tango
 //
 //------------------------------------------------------------------------------------------------------------------
 
-DevicePipe::DevicePipe():ext(Tango_nullptr)
+DevicePipe::DevicePipe():ext(nullptr)
 {
 }
 
-DevicePipe::DevicePipe(const std::string &pipe_name):name(pipe_name),ext(Tango_nullptr)
+DevicePipe::DevicePipe(const std::string &pipe_name):name(pipe_name),ext(nullptr)
 {
 }
 
-DevicePipe::DevicePipe(const std::string &pipe_name,const std::string &root_blob_name):name(pipe_name),ext(Tango_nullptr)
+DevicePipe::DevicePipe(const std::string &pipe_name,const std::string &root_blob_name):name(pipe_name),ext(nullptr)
 {
 	the_root_blob.set_name(root_blob_name);
 }
@@ -67,7 +67,7 @@ DevicePipe::DevicePipe(const std::string &pipe_name,const std::string &root_blob
 //
 //-----------------------------------------------------------------------------
 
-DevicePipe::DevicePipe(const DevicePipe & source):ext(Tango_nullptr)
+DevicePipe::DevicePipe(const DevicePipe & source):ext(nullptr)
 {
 	name = source.name;
 	time = source.time;
@@ -109,7 +109,7 @@ DevicePipe &DevicePipe::operator=(const DevicePipe &rhs)
 //
 //-----------------------------------------------------------------------------
 
-DevicePipe::DevicePipe(DevicePipe && source):ext(Tango_nullptr)
+DevicePipe::DevicePipe(DevicePipe && source):ext(nullptr)
 {
 	name = std::move(source.name);
 	time = source.time;
@@ -175,8 +175,8 @@ DevicePipe &DevicePipe::operator[](const std::string &_na)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-DevicePipeBlob::DevicePipeBlob():failed(false),insert_elt_array(Tango_nullptr),insert_ctr(0),
-extract_elt_array(Tango_nullptr),extract_ctr(0),extract_delete(false),ext(Tango_nullptr)
+DevicePipeBlob::DevicePipeBlob():failed(false),insert_elt_array(nullptr),insert_ctr(0),
+extract_elt_array(nullptr),extract_ctr(0),extract_delete(false),ext(nullptr)
 {
 	exceptions_flags.set();
 	ext_state.reset();
@@ -186,8 +186,8 @@ extract_elt_array(Tango_nullptr),extract_ctr(0),extract_delete(false),ext(Tango_
 
 
 DevicePipeBlob::DevicePipeBlob(const std::string &blob_name):name(blob_name),failed(false),
-insert_elt_array(Tango_nullptr),insert_ctr(0),extract_elt_array(Tango_nullptr),extract_ctr(0),
-extract_delete(false),ext(Tango_nullptr)
+insert_elt_array(nullptr),insert_ctr(0),extract_elt_array(nullptr),extract_ctr(0),
+extract_delete(false),ext(nullptr)
 {
 	exceptions_flags.set();
 	ext_state.reset();
@@ -214,7 +214,7 @@ DevicePipeBlob::~DevicePipeBlob()
 //
 //-----------------------------------------------------------------------------
 
-DevicePipeBlob::DevicePipeBlob(const DevicePipeBlob & source):ext(Tango_nullptr)
+DevicePipeBlob::DevicePipeBlob(const DevicePipeBlob & source):ext(nullptr)
 {
 	name = source.name;
 	exceptions_flags = source.exceptions_flags;
@@ -223,16 +223,16 @@ DevicePipeBlob::DevicePipeBlob(const DevicePipeBlob & source):ext(Tango_nullptr)
 	insert_ind = source.insert_ind;
 	extract_ind = source.extract_ind;
 
-	if (source.insert_elt_array != Tango_nullptr)
+	if (source.insert_elt_array != nullptr)
     {
         insert_elt_array = new DevVarPipeDataEltArray();
 		(*insert_elt_array) = (*source.insert_elt_array);
     }
 	else
-		insert_elt_array = Tango_nullptr;
+		insert_elt_array = nullptr;
 	insert_ctr = source.insert_ctr;
 
-	if (source.extract_elt_array != Tango_nullptr)
+	if (source.extract_elt_array != nullptr)
 	{
 		DevVarPipeDataEltArray *tmp = new DevVarPipeDataEltArray();
 		*tmp = (*source.extract_elt_array);
@@ -269,16 +269,16 @@ DevicePipeBlob &DevicePipeBlob::operator=(const DevicePipeBlob &rhs)
 		insert_ind = rhs.insert_ind;
 		extract_ind = rhs.extract_ind;
 
-		if (rhs.insert_elt_array != Tango_nullptr)
+		if (rhs.insert_elt_array != nullptr)
         {
             insert_elt_array = new DevVarPipeDataEltArray();
 			(*insert_elt_array) = (*rhs.insert_elt_array);
         }
 		else
-			insert_elt_array = Tango_nullptr;
+			insert_elt_array = nullptr;
 		insert_ctr = rhs.insert_ctr;
 
-		if (rhs.extract_elt_array != Tango_nullptr)
+		if (rhs.extract_elt_array != nullptr)
 		{
 			DevVarPipeDataEltArray *tmp = new DevVarPipeDataEltArray();
 			*tmp = (*rhs.extract_elt_array);
@@ -308,7 +308,7 @@ DevicePipeBlob &DevicePipeBlob::operator=(const DevicePipeBlob &rhs)
 //
 //-----------------------------------------------------------------------------
 
-DevicePipeBlob::DevicePipeBlob(DevicePipeBlob && source):ext(Tango_nullptr)
+DevicePipeBlob::DevicePipeBlob(DevicePipeBlob && source):ext(nullptr)
 {
 	name = std::move(source.name);
 	exceptions_flags = source.exceptions_flags;
@@ -317,16 +317,16 @@ DevicePipeBlob::DevicePipeBlob(DevicePipeBlob && source):ext(Tango_nullptr)
 	insert_ind = source.insert_ind;
 	extract_ind = source.extract_ind;
 
-	if (source.insert_elt_array != Tango_nullptr)
+	if (source.insert_elt_array != nullptr)
     {
         insert_elt_array = new DevVarPipeDataEltArray();
 		(*insert_elt_array) = (*source.insert_elt_array);
     }
 	else
-		insert_elt_array = Tango_nullptr;
+		insert_elt_array = nullptr;
 	insert_ctr = source.insert_ctr;
 
-	if (source.extract_elt_array != Tango_nullptr)
+	if (source.extract_elt_array != nullptr)
 	{
 		DevVarPipeDataEltArray *tmp = new DevVarPipeDataEltArray();
 		*tmp = (*source.extract_elt_array);
@@ -360,17 +360,17 @@ DevicePipeBlob &DevicePipeBlob::operator=(DevicePipeBlob &&rhs)
 	insert_ind = rhs.insert_ind;
 	extract_ind = rhs.extract_ind;
 
-	if (rhs.insert_elt_array != Tango_nullptr)
+	if (rhs.insert_elt_array != nullptr)
 		insert_elt_array = rhs.insert_elt_array;
-	rhs.insert_elt_array = Tango_nullptr;
+	rhs.insert_elt_array = nullptr;
 	insert_ctr = rhs.insert_ctr;
 
 	if (extract_delete == true)
 		delete extract_elt_array;
 
-	if (rhs.extract_elt_array != Tango_nullptr)
+	if (rhs.extract_elt_array != nullptr)
 		extract_elt_array = rhs.extract_elt_array;
-	rhs.extract_elt_array = Tango_nullptr;
+	rhs.extract_elt_array = nullptr;
 	extract_delete = rhs.extract_delete;
 	extract_ctr = rhs.extract_ctr;
 
@@ -400,7 +400,7 @@ DevicePipeBlob &DevicePipeBlob::operator=(DevicePipeBlob &&rhs)
 
 std::vector<std::string> DevicePipeBlob::get_data_elt_names()
 {
-    if (extract_elt_array == Tango_nullptr)
+    if (extract_elt_array == nullptr)
     {
 		std::stringstream ss;
 
@@ -438,7 +438,7 @@ std::vector<std::string> DevicePipeBlob::get_data_elt_names()
 
 std::string DevicePipeBlob::get_data_elt_name(size_t _ind)
 {
-    if (extract_elt_array == Tango_nullptr)
+    if (extract_elt_array == nullptr)
     {
 		std::stringstream ss;
 
@@ -478,7 +478,7 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 {
 	int ret = 0;
 
-    if (extract_elt_array == Tango_nullptr)
+    if (extract_elt_array == nullptr)
     {
 		std::stringstream ss;
 
@@ -657,7 +657,7 @@ size_t DevicePipeBlob::get_extract_ind_from_name(const std::string &_na)
 	bool found = false;
 	size_t loop;
 
-	if (extract_elt_array == Tango_nullptr)
+	if (extract_elt_array == nullptr)
 	{
 		Except::throw_exception(API_PipeNoDataElement,
 								"No data element available for extraction",
@@ -703,7 +703,7 @@ size_t DevicePipeBlob::get_insert_ind_from_name(const std::string &_na)
 	bool found = false;
 	size_t loop;
 
-	if (insert_elt_array == Tango_nullptr)
+	if (insert_elt_array == nullptr)
 	{
 		Except::throw_exception(API_PipeNoDataElement,
 								"No data element available for insertion",
@@ -913,7 +913,7 @@ void DevicePipeBlob::set_data_elt_nb(size_t _nb)
 
 void DevicePipeBlob::set_current_delt_name(const std::string &_na)
 {
-    if (insert_elt_array == Tango_nullptr)
+    if (insert_elt_array == nullptr)
     {
         insert_elt_array = new DevVarPipeDataEltArray(10);
         insert_elt_array->length(1);
@@ -954,9 +954,9 @@ size_t DevicePipeBlob::get_data_elt_nb()
 {
     size_t ret;
 
-    if (extract_elt_array == Tango_nullptr)
+    if (extract_elt_array == nullptr)
     {
-        if (insert_elt_array == Tango_nullptr)
+        if (insert_elt_array == nullptr)
             ret = 0;
         else
             ret = insert_elt_array->length();
@@ -1044,7 +1044,7 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevString &datum)
 	failed = false;
 	ext_state.reset();
 
-	if (insert_elt_array == Tango_nullptr)
+	if (insert_elt_array == nullptr)
 		ext_state.set(blobdenamenotset_flag);
 	else if (insert_ctr == -1 && insert_ind == -1)
 		ext_state.set(mixing_flag);
@@ -1109,7 +1109,7 @@ DevicePipeBlob & DevicePipeBlob::operator<<(const std::string &datum)
 	failed = false;
 	ext_state.reset();
 
-	if (insert_elt_array == Tango_nullptr)
+	if (insert_elt_array == nullptr)
 		ext_state.set(blobdenamenotset_flag);
 	else if (insert_ctr == -1 && insert_ind == -1)
 		ext_state.set(mixing_flag);
@@ -1159,7 +1159,7 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevicePipeBlob &datum)
 	failed = false;
 	ext_state.reset();
 
-	if (insert_elt_array == Tango_nullptr)
+	if (insert_elt_array == nullptr)
 		ext_state.set(blobdenamenotset_flag);
 	else if (insert_ctr == -1 && insert_ind == -1)
 		ext_state.set(mixing_flag);
@@ -1171,7 +1171,7 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevicePipeBlob &datum)
 		else
 		{
 			DevVarPipeDataEltArray *tmp_ptr = datum.get_insert_data();
-			if (tmp_ptr != Tango_nullptr)
+			if (tmp_ptr != nullptr)
 			{
 				CORBA::ULong max,len;
 				max = tmp_ptr->maximum();
@@ -1217,7 +1217,7 @@ DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<DevBoolean> &datum)
 	failed = false;
 	ext_state.reset();
 
-	if (insert_elt_array == Tango_nullptr)
+	if (insert_elt_array == nullptr)
 		ext_state.set(blobdenamenotset_flag);
 	else if (insert_ctr == -1 && insert_ind == -1)
 		ext_state.set(mixing_flag);
@@ -1350,7 +1350,7 @@ DevicePipeBlob & DevicePipeBlob::operator<<(std::vector<std::string> &datum)
 	failed = false;
 	ext_state.reset();
 
-	if (insert_elt_array == Tango_nullptr)
+	if (insert_elt_array == nullptr)
 		ext_state.set(blobdenamenotset_flag);
 	else if (insert_ctr == -1 && insert_ind == -1)
 		ext_state.set(mixing_flag);
@@ -1662,7 +1662,7 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevString &datum)
 	failed = false;
 	ext_state.reset();
 
-    if (extract_elt_array == Tango_nullptr)
+    if (extract_elt_array == nullptr)
         ext_state.set(isempty_flag);
 	else if (extract_ctr > (int)extract_elt_array->length() - 1)
 		ext_state.set(notenoughde_flag);
@@ -1741,7 +1741,7 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevicePipeBlob &datum)
 	failed = false;
 	ext_state.reset();
 
-    if (extract_elt_array == Tango_nullptr)
+    if (extract_elt_array == nullptr)
         ext_state.set(isempty_flag);
 	else if (extract_ctr > (int)extract_elt_array->length() - 1)
 		ext_state.set(notenoughde_flag);
@@ -2067,7 +2067,7 @@ void DevicePipeBlob::throw_too_many(const std::string &_meth,bool _extract)
 	m_name = m_name + _meth;
 
 	delete insert_elt_array;
-	insert_elt_array = Tango_nullptr;
+	insert_elt_array = nullptr;
 	if (extract_delete == true)
 	{
 		delete extract_elt_array;
@@ -2207,7 +2207,7 @@ void DevicePipeBlob::print(std::ostream &o_str,int indent,bool insert_extract)
 	else
 		dvpdea = get_insert_data();
 
-	if (dvpdea != Tango_nullptr)
+	if (dvpdea != nullptr)
 	{
 		for (size_t ctr = 0;ctr < dvpdea->length();ctr++)
 		{
@@ -2390,7 +2390,7 @@ std::ostream &operator<<(std::ostream &o_str,DevicePipe &dd)
 //
 
 	DevicePipeBlob &dpb = dd.get_root_blob();
-	if (dpb.get_insert_data() == Tango_nullptr && dpb.get_extract_data() == Tango_nullptr)
+	if (dpb.get_insert_data() == nullptr && dpb.get_extract_data() == nullptr)
 		o_str << "DevicePipe is empty";
 	else
 	{

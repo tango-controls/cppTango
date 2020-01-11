@@ -3606,12 +3606,12 @@ inline void DeviceImpl::set_state(const Tango::DevState &new_state)
 #define DATA_IN_NET_OBJECT(A,B,C,D,E) \
 	do \
 	{ \
-		if (aid.data_5 != Tango_nullptr) \
+		if (aid.data_5 != nullptr) \
 		{ \
 			AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false); \
 			(*aid.data_5)[index].value.A(att_val.value.A()); \
 		} \
-		else if (aid.data_4 != Tango_nullptr) \
+		else if (aid.data_4 != nullptr) \
 		{ \
 			if (vers >= 5) \
 			{ \
@@ -3664,7 +3664,7 @@ inline void DeviceImpl::set_state(const Tango::DevState &new_state)
 	do \
 	{ \
 		Tango::A *ptr = att.B(); \
-		if (aid.data_5 != Tango_nullptr) \
+		if (aid.data_5 != nullptr) \
 		{ \
 			(*aid.data_5)[index].value.D(C); \
 			A &the_seq = (*aid.data_5)[index].value.D(); \
@@ -3672,7 +3672,7 @@ inline void DeviceImpl::set_state(const Tango::DevState &new_state)
 			if (ptr->release() == true) \
 				ptr->get_buffer(true); \
 		} \
-		else if (aid.data_4 != Tango_nullptr) \
+		else if (aid.data_4 != nullptr) \
 		{ \
 			(*aid.data_4)[index].value.D(C); \
 			A &the_seq = (*aid.data_4)[index].value.D(); \

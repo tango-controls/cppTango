@@ -78,7 +78,7 @@ namespace Tango
 //--------------------------------------------------------------------------------------------------------------------
 
 Device_5Impl::Device_5Impl(DeviceClass *device_class,std::string &dev_name):
-Device_4Impl(device_class,dev_name),ext_5(Tango_nullptr)
+Device_4Impl(device_class,dev_name),ext_5(nullptr)
 {
 	idl_version = 5;
 }
@@ -86,7 +86,7 @@ Device_4Impl(device_class,dev_name),ext_5(Tango_nullptr)
 Device_5Impl::Device_5Impl(DeviceClass *device_class,
 				std::string &dev_name,
 				std::string &desc):
-Device_4Impl(device_class,dev_name,desc),ext_5(Tango_nullptr)
+Device_4Impl(device_class,dev_name,desc),ext_5(nullptr)
 {
 	idl_version = 5;
 }
@@ -94,7 +94,7 @@ Device_4Impl(device_class,dev_name,desc),ext_5(Tango_nullptr)
 Device_5Impl::Device_5Impl(DeviceClass *device_class,
 				std::string &dev_name,std::string &desc,
 				Tango::DevState dev_state,std::string &dev_status):
-Device_4Impl(device_class,dev_name,desc,dev_state,dev_status),ext_5(Tango_nullptr)
+Device_4Impl(device_class,dev_name,desc,dev_state,dev_status),ext_5(nullptr)
 {
 	idl_version = 5;
 }
@@ -104,7 +104,7 @@ Device_5Impl::Device_5Impl(DeviceClass *device_class,
 				const char *desc,
 				Tango::DevState dev_state,
 				const char *dev_status):
-Device_4Impl(device_class,dev_name,desc,dev_state,dev_status),ext_5(Tango_nullptr)
+Device_4Impl(device_class,dev_name,desc,dev_state,dev_status),ext_5(nullptr)
 {
 	idl_version = 5;
 }
@@ -713,7 +713,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 
 	blackbox_ptr->insert_op(Op_Read_Attr_history_5);
 
-	Tango::DevAttrHistory_5 *back = Tango_nullptr;
+	Tango::DevAttrHistory_5 *back = nullptr;
 	std::vector<PollObj *> &poll_list = get_poll_obj_list();
 	long nb_poll = poll_list.size();
 
@@ -852,7 +852,7 @@ Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarString
 	cout4 << "Device_5Impl::get_pipe_config_5 arrived" << std::endl;
 
 	long nb_pipe = names.length();
-	Tango::PipeConfigList *back = Tango_nullptr;
+	Tango::PipeConfigList *back = nullptr;
 	bool all_pipe = false;
 
 //
@@ -1045,7 +1045,7 @@ void Device_5Impl::set_pipe_config_5(const Tango::PipeConfigList& new_conf,
 Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::ClntIdent &cl_id)
 {
 	cout4 << "Device_5Impl::read_pipe_5 arrived for pipe " << name << std::endl;
-	DevPipeData *back = Tango_nullptr;
+	DevPipeData *back = nullptr;
 
 //
 // Take dev monitor

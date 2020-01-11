@@ -2374,42 +2374,42 @@ CORBA::Any*  FileDatabase :: DbGetAttributeAliasList(CORBA::Any&)
 
 CORBA::Any* FileDatabase::DbGetClassPipeProperty(CORBA::Any&)
 {
-	CORBA::Any* ret = Tango_nullptr;
+	CORBA::Any* ret = nullptr;
 	Tango::Except::throw_exception(API_NotSupported,"Call to a Filedatabase not implemented.","DbGetClassPipeProperty");
 	return ret;
 }
 
 CORBA::Any* FileDatabase::DbGetDevicePipeProperty(CORBA::Any&)
 {
-	CORBA::Any* ret = Tango_nullptr;
+	CORBA::Any* ret = nullptr;
 	Tango::Except::throw_exception(API_NotSupported,"Call to a Filedatabase not implemented.","DbGetDevicePipeProperty");
 	return ret;
 }
 
 CORBA::Any* FileDatabase::DbDeleteClassPipeProperty(CORBA::Any&)
 {
-	CORBA::Any* ret = Tango_nullptr;
+	CORBA::Any* ret = nullptr;
 	Tango::Except::throw_exception(API_NotSupported,"Call to a Filedatabase not implemented.","DbDeleteClassPipeProperty");
 	return ret;
 }
 
 CORBA::Any* FileDatabase::DbDeleteDevicePipeProperty(CORBA::Any&)
 {
-	CORBA::Any* ret = Tango_nullptr;
+	CORBA::Any* ret = nullptr;
 	Tango::Except::throw_exception(API_NotSupported,"Call to a Filedatabase not implemented.","DbDeleteDevicePipeProperty");
 	return ret;
 }
 
 CORBA::Any* FileDatabase::DbPutClassPipeProperty(CORBA::Any&)
 {
-	CORBA::Any* ret = Tango_nullptr;
+	CORBA::Any* ret = nullptr;
 	Tango::Except::throw_exception(API_NotSupported,"Call to a Filedatabase not implemented.","DbPutClassPipeProperty");
 	return ret;
 }
 
 CORBA::Any* FileDatabase::DbPutDevicePipeProperty(CORBA::Any&)
 {
-	CORBA::Any* ret = Tango_nullptr;
+	CORBA::Any* ret = nullptr;
 	Tango::Except::throw_exception(API_NotSupported,"Call to a Filedatabase not implemented.","DbPutDevicePipeProperty");
 	return ret;
 }

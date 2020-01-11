@@ -84,7 +84,7 @@ namespace Tango
 //--------------------------------------------------------------------------
 
 Device_4Impl::Device_4Impl(DeviceClass *device_class,std::string &dev_name):
-Device_3Impl(device_class,dev_name),ext_4(Tango_nullptr)
+Device_3Impl(device_class,dev_name),ext_4(nullptr)
 {
 	idl_version = 4;
 }
@@ -92,7 +92,7 @@ Device_3Impl(device_class,dev_name),ext_4(Tango_nullptr)
 Device_4Impl::Device_4Impl(DeviceClass *device_class,
 			   std::string &dev_name,
 			   std::string &desc):
-Device_3Impl(device_class,dev_name,desc),ext_4(Tango_nullptr)
+Device_3Impl(device_class,dev_name,desc),ext_4(nullptr)
 {
 	idl_version = 4;
 }
@@ -100,7 +100,7 @@ Device_3Impl(device_class,dev_name,desc),ext_4(Tango_nullptr)
 Device_4Impl::Device_4Impl(DeviceClass *device_class,
 	           	   std::string &dev_name,std::string &desc,
 	           	   Tango::DevState dev_state,std::string &dev_status):
-Device_3Impl(device_class,dev_name,desc,dev_state,dev_status),ext_4(Tango_nullptr)
+Device_3Impl(device_class,dev_name,desc,dev_state,dev_status),ext_4(nullptr)
 {
 	idl_version = 4;
 }
@@ -110,7 +110,7 @@ Device_4Impl::Device_4Impl(DeviceClass *device_class,
 			   const char *desc,
 	           	   Tango::DevState dev_state,
 	           	   const char *dev_status):
-Device_3Impl(device_class,dev_name,desc,dev_state,dev_status),ext_4(Tango_nullptr)
+Device_3Impl(device_class,dev_name,desc,dev_state,dev_status),ext_4(nullptr)
 {
 	idl_version = 4;
 }

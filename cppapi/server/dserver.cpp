@@ -875,10 +875,10 @@ void DServer::restart(std::string &d_name)
 
 	if (dev_to_del->get_dev_idl_version() >= MIN_IDL_DEV_INTR)
 	{
-		ZmqEventSupplier *event_supplier_zmq = Tango_nullptr;
+		ZmqEventSupplier *event_supplier_zmq = nullptr;
 		event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
 
-		if (event_supplier_zmq != Tango_nullptr)
+		if (event_supplier_zmq != nullptr)
 			ev_client = event_supplier_zmq->any_dev_intr_client(dev_to_del);
 
 		if (ev_client == true)

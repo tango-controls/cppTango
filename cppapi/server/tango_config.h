@@ -290,15 +290,7 @@
 
 #define Tango_isnan(A)  std::isnan(A)
 
-//
-// Define a common NULL constant
-//
-
-#ifdef HAS_NULLPTR
-    #define Tango_nullptr   nullptr
-#else
-    #define Tango_nullptr   NULL
-#endif
+#define Tango_nullptr   nullptr
 
 //
 // Define a common sleep call

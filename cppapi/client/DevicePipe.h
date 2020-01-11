@@ -736,7 +736,7 @@ public:
 	const DevVarPipeDataEltArray *get_extract_data() {return extract_elt_array;}
 
 	void set_extract_data(const DevVarPipeDataEltArray *_ptr) {extract_elt_array=_ptr;}
-	void reset_insert_data_ptr() {insert_elt_array=Tango_nullptr;}
+	void reset_insert_data_ptr() {insert_elt_array=nullptr;}
 
 	void reset_extract_ctr() {extract_ctr=0;}
 	void set_extract_delete(bool _b) {extract_delete=_b;}
@@ -1192,7 +1192,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-    if (extract_elt_array == Tango_nullptr) \
+    if (extract_elt_array == nullptr) \
         ext_state.set(isempty_flag); \
 	else if (extract_ctr > (int)extract_elt_array->length() - 1) \
 		ext_state.set(notenoughde_flag); \
@@ -1256,7 +1256,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-    if (extract_elt_array == Tango_nullptr) \
+    if (extract_elt_array == nullptr) \
         ext_state.set(isempty_flag); \
 	else if (extract_ctr > (int)extract_elt_array->length() - 1) \
 		ext_state.set(notenoughde_flag); \
@@ -1320,7 +1320,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-    if (extract_elt_array == Tango_nullptr) \
+    if (extract_elt_array == nullptr) \
         ext_state.set(isempty_flag); \
 	else if (extract_ctr > (int)extract_elt_array->length() - 1) \
 		ext_state.set(notenoughde_flag); \
@@ -1386,7 +1386,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (insert_elt_array == Tango_nullptr) \
+	if (insert_elt_array == nullptr) \
 		ext_state.set(blobdenamenotset_flag); \
 	else if (insert_ctr == -1 && insert_ind == -1) \
 		ext_state.set(mixing_flag); \
@@ -1438,7 +1438,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (insert_elt_array == Tango_nullptr) \
+	if (insert_elt_array == nullptr) \
 		ext_state.set(blobdenamenotset_flag); \
 	else if (insert_ctr == -1 && insert_ind == -1) \
 		ext_state.set(mixing_flag); \
@@ -1492,7 +1492,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (insert_elt_array == Tango_nullptr) \
+	if (insert_elt_array == nullptr) \
 		ext_state.set(blobdenamenotset_flag); \
 	else if (insert_ctr == -1 && insert_ind == -1) \
 		ext_state.set(mixing_flag); \
@@ -1549,7 +1549,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (insert_elt_array == Tango_nullptr) \
+	if (insert_elt_array == nullptr) \
 		ext_state.set(blobdenamenotset_flag); \
 	else if (insert_ctr == -1 && insert_ind == -1) \
 		ext_state.set(mixing_flag); \

@@ -1219,9 +1219,9 @@ typedef struct _AttributeIdlData
 
 	_AttributeIdlData()
 	{
-		data_3 = Tango_nullptr;
-		data_4 = Tango_nullptr;
-		data_5 = Tango_nullptr;
+		data_3 = nullptr;
+		data_4 = nullptr;
+		data_5 = nullptr;
 	}
 }AttributeIdlData;
 
