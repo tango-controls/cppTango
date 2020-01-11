@@ -33,9 +33,7 @@
 #ifndef _WATTRSETVAL_TPP
 #define _WATTRSETVAL_TPP
 
-#ifdef HAS_TYPE_TRAITS
-	#include <type_traits>
-#endif
+#include <type_traits>
 
 namespace Tango
 {
@@ -126,13 +124,11 @@ void WAttribute::check_type(T &TANGO_UNUSED(dummy), const std::string &origin)
 // Check if the input type is an enum and if it is from the valid type
 //
 
-#ifdef HAS_TYPE_TRAITS
 	if (std::is_enum<T>::value == false)
 	{
 		Except::throw_exception(API_IncompatibleArgumentType,
 								"The input argument data type is not an enumeration",origin);
 	}
-#endif // HAS_TYPE_TRAITS
 
 	Tango::DeviceClass *dev_class;
 	try

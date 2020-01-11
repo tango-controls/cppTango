@@ -34,9 +34,7 @@
 #ifndef _DEVAPI_ATTR_TPP
 #define _DEVAPI_ATTR_TPP
 
-#ifdef HAS_TYPE_TRAITS
-	#include <type_traits>
-#endif
+#include <type_traits>
 
 namespace Tango
 {
@@ -427,7 +425,6 @@ bool DeviceAttribute::template_type_check(T &TANGO_UNUSED(_datum))
 	}
 #endif // HAS_UNDERLYING
 
-#ifdef HAS_TYPE_TRAITS
 	if (std::is_enum<T>::value == false)
 	{
 		if (exceptions_flags.test(wrongtype_flag))
@@ -439,7 +436,6 @@ bool DeviceAttribute::template_type_check(T &TANGO_UNUSED(_datum))
 
 		return false;
 	}
-#endif // HAS_TYPE_TRAITS
 
 	return true;
 }

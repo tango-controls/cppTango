@@ -34,9 +34,7 @@
 #ifndef _ATTRSETVAL_TPP
 #define _ATTRSETVAL_TPP
 
-#ifdef HAS_TYPE_TRAITS
-	#include <type_traits>
-#endif
+#include <type_traits>
 
 namespace Tango
 {
@@ -99,7 +97,6 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 // Check if the input type is an enum and if it is from the valid type
 //
 
-#ifdef HAS_TYPE_TRAITS
 	if (std::is_enum<T>::value == false)
 	{
 		SAFE_DELETE(enum_ptr);
@@ -107,7 +104,6 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 								"The input argument data type is not an enumeration",
 								"Attribute::set_value()");
 	}
-#endif // HAS_TYPE_TRAITS
 
 //
 // Check if enum labels are defined
