@@ -288,15 +288,7 @@
 // Define a common isnan call
 //
 
-#ifndef _TG_WINDOWS_
-    #ifdef HAS_ISNAN_IN_STD
-        #define Tango_isnan(A)  std::isnan(A)
-    #else
-        #define Tango_isnan(A) isnan(A)
-    #endif
-#else
-    #define Tango_isnan(A) _isnan(A)
-#endif
+#define Tango_isnan(A)  std::isnan(A)
 
 //
 // Define a common NULL constant
