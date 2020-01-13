@@ -132,7 +132,9 @@ set(HEADERS attrdesc.h
 
 add_subdirectory(idl)
 add_subdirectory(jpeg)
-add_subdirectory(jpeg_mmx)
+if (TANGO_JPEG_MMX)
+  add_subdirectory(jpeg_mmx)
+endif (TANGO_JPEG_MMX)
 
 if(WIN32)
     set(SOURCES_WIN
