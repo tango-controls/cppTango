@@ -59,7 +59,7 @@ struct _ShDevIntrTh
 	bool			cmd_pending;	// The new command flag
 	DevIntrCmdCode	cmd_code;		// The command code
 	bool			th_running;		// Thread running flag
-	#if _MSC_VER > 1900
+	#if _MSC_VER >= 1900
 	#ifdef interface
 	#undef interface
 	#endif
