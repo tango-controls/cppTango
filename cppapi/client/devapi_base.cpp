@@ -2115,14 +2115,6 @@ void DeviceProxy::parse_name(std::string &full_name)
         {
             name_wo_prot = full_name_low.substr(pos + 3);
         }
-        else if (protocol == TACO_PROTOCOL)
-        {
-            TangoSys_OMemStream desc;
-            desc << "Taco protocol is not supported" << std::ends;
-            ApiWrongNameExcept::throw_exception((const char *) "API_UnsupportedProtocol",
-                                                desc.str(),
-                                                (const char *) "DeviceProxy::parse_name()");
-        }
         else
         {
             TangoSys_OMemStream desc;
