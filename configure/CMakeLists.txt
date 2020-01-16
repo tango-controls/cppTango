@@ -210,5 +210,11 @@ if(NOT WIN32)
         endif()
     endif()
 endif()
+
+if (NOT TANGO_JPEG_MMX)
+  message("Building MMX support; use '-DTANGO_JPEG_MMX=false' to disable")
+  set(TANGO_JPEG_MMX true)
+endif (NOT TANGO_JPEG_MMX)
+
 include(GNUInstallDirs)
 include(configure/coveralls.cmake)
