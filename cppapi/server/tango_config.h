@@ -130,27 +130,6 @@
 #endif /* _WINDOWS_ */
 
 //
-// Some C++11 feature
-// constexpr -> gcc 5.0 (C++14 style constexpr)
-
-#ifndef _TG_WINDOWS_
-    #if defined(__GNUC__)
-        #if __GNUC__ > 4
-            #define HAS_CONSTEXPR
-        #endif
-        #if defined(__clang__)
-            #if __clang_major__ > 3
-                #define HAS_CONSTEXPR
-            #endif
-        #endif
-    #endif
-#else
-    #ifdef WIN32_VC14
-        #define HAS_CONSTEXPR
-    #endif
-#endif
-
-//
 // For gcc 5 new ABI
 //
 
@@ -283,12 +262,5 @@
 #endif
 
 #define TANGO_NORETURN [[noreturn]]
-
-// C++14 style constexpr
-#ifdef HAS_CONSTEXPR
-  #define TANGO_CONSTEXPR constexpr
-#else
-  #define TANGO_CONSTEXPR
-#endif
 
 #endif /* _TANGO_CONFIG_H */
