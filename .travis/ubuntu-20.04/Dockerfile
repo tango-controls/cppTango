@@ -18,11 +18,14 @@ RUN apt-get update && apt-get install -y \
   libzmq3-dev                            \
   lsb-release                            \
   omniidl                                \
-  python2
+  python2                                \
+  docker.io
 
 RUN groupadd -g "$APP_GID" tango
 
 RUN useradd -u "$APP_UID" -g "$APP_GID" -ms /bin/bash tango
+
+RUN usermod -a -G docker tango
 
 ENV PKG_CONFIG_PATH=/home/tango/lib/pkgconfig
 
