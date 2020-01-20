@@ -20,7 +20,6 @@ env:
     - OS_TYPE=debian10 CMAKE_BUILD_TYPE=Release
     - OS_TYPE=debian9
     - OS_TYPE=debian8 SONAR_SCANNER=ON COVERALLS=ON STOCK_CPPZMQ=OFF
-    - OS_TYPE=debian7
 
 notifications:
   email: false
