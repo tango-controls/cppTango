@@ -31,8 +31,7 @@ docker exec cpp_tango cmake                                \
   -DTANGO_USE_USING_NAMESPACE=${TANGO_USE_USING_NAMESPACE} \
   -DWARNINGS_AS_ERRORS=${WARNINGS_AS_ERRORS}               \
   -DCOVERALLS=${COVERALLS}                                 \
-  -DCOVERALLS_MODULE_PATH=${COVERALLS_MODULE_PATH}         \
-  -DCMAKE_CTEST_COMMAND="$([[ "$COVERALLS" == "ON" ]] && echo '/home/tango/src/.travis/run_ctest.sh' || echo 'ctest')"
+  -DCOVERALLS_MODULE_PATH=${COVERALLS_MODULE_PATH}
 
 if [[ "$COVERALLS" == "ON" ]]
 then

@@ -8,10 +8,18 @@ fi
 
 build_dir="/home/tango/src/build"
 
+function run_in_container {
+  docker exec \
+    -w "${build_dir}" \
+    -e CTEST_PARALLEL_LEVEL=$(nproc) \
+    -e CTEST_OUTPUT_ON_FAILURE=ON \
+    cpp_tango "$@"
+}
+
 set -e
 
 if [[ "$COVERALLS" == "ON" ]]; then
-    docker exec -w "${build_dir}" cpp_tango make coveralls
+  run_in_container make coveralls
 else
-    docker exec -w "${build_dir}" cpp_tango ../.travis/run_ctest.sh
+  run_in_container ctest
 fi
