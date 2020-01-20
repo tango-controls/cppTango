@@ -241,15 +241,9 @@
 //
 
 #ifdef _TG_WINDOWS_
-#define TANGO_UNUSED(var) var
+    #define TANGO_UNUSED(var) var
 #else
-	#if __GNUC__ == 3 && __GNUC_MINOR__ >= 4
-        #define TANGO_UNUSED(var) var __attribute__ ((unused))
-    #elif __GNUC__ > 3
-        #define TANGO_UNUSED(var) var __attribute__ ((unused))
-    #else
-        #define TANGO_UNUSED(var) var
-	#endif
+    #define TANGO_UNUSED(var) var __attribute__ ((unused))
 #endif
 
 //
