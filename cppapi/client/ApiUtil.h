@@ -252,10 +252,4 @@ private:
     template <typename T> static void attr_to_device_base(const T *,DeviceAttribute *);
 };
 
-class _KillProc_: public omni_thread
-{
-public:
-	void run(void *) {::exit(-1);}
-};
-
 #endif /* _APIUTIL_H */
