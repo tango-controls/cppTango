@@ -11,7 +11,6 @@ RUN sed -i '/jessie-updates/d' /etc/apt/sources.list  # Now archived
 RUN apt-get update && apt-get install -y \
   apt-utils                              \
   build-essential                        \
-  cmake                                  \
   curl                                   \
   git                                    \
   lsb-release                            \
@@ -19,7 +18,12 @@ RUN apt-get update && apt-get install -y \
   libomniorb4-dev                        \
   libcos4-dev                            \
   libomnithread3-dev                     \
-  libzmq3-dev
+  libzmq3-dev                            \
+  wget
+
+RUN wget --no-check-certificate https://cmake.org/files/v3.10/cmake-3.10.0-Linux-x86_64.sh -O /tmp/cmake-install.sh \
+  && chmod +x /tmp/cmake-install.sh                                                                                 \
+  && /tmp/cmake-install.sh --skip-license --exclude-subdir
 
 RUN apt-get install -y \
     apt-transport-https \
