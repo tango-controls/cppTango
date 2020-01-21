@@ -32,24 +32,7 @@
 #if defined(_MSC_VER)
     #define VSNPRINTF _vsnprintf
 #else
-#ifdef LOG4TANGO_HAVE_SNPRINTF
     #define VSNPRINTF vsnprintf
-#else
-/* use alternative snprintf() from http://www.ijs.si/software/snprintf/ */
-
-#define HAVE_SNPRINTF
-#define PREFER_PORTABLE_SNPRINTF
-
-#include <stdlib.h>
-#include <stdarg.h>
-
-extern "C" {
-#include "snprintf.c"
-}
-
-#define VSNPRINTF portable_vsnprintf
-
-#endif // LOG4TANGO_HAVE_SNPRINTF
 #endif // _MSC_VER
 
 namespace log4tango {

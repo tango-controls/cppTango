@@ -53,9 +53,6 @@ LOG4TANGO_CHECK_COMPILER_FEATURE("config/check_sstream.cpp" SSTREAM)
 #namespace
 LOG4TANGO_CHECK_COMPILER_FEATURE("config/check_namespace.cpp" NAMESPACES)
 
-#snprintf
-LOG4TANGO_CHECK_COMPILER_FEATURE("config/check_snprintf.cpp" SNPRINTF)
-
 #check types
 check_type_size(int64_t INT64_SIZE)
 if(WIN32)

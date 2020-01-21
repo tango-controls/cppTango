@@ -84,11 +84,6 @@ typedef __int64 int64_t;
 # define LOG4TANGO_HAVE_SSTREAM 1
 #endif
 
-/* define if the C library has snprintf */
-#ifndef LOG4TANGO_HAVE_SNPRINTF
-# define LOG4TANGO_HAVE_SNPRINTF 1
-#endif
-
 /* define to get around problems with ERROR in windows.h */
 #ifndef LOG4TANGO_FIX_ERROR_COLLISION
 # define LOG4TANGO_FIX_ERROR_COLLISION 1
