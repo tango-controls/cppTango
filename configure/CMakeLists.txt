@@ -3,9 +3,27 @@ include(FindDoxygen)
 include(GNUInstallDirs)
 
 if(NOT CMAKE_BUILD_TYPE)
-    message("No build type specified - default is Release")
     set(CMAKE_BUILD_TYPE Release)
 endif()
+
+#assuming build platform == target
+set(PLATFORM 32)
+if(WIN32)
+    if(CMAKE_CL_64)
+        set(PLATFORM 64)
+    endif(CMAKE_CL_64)
+else(WIN32)
+    if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+        set(PLATFORM 64)
+    endif()
+endif(WIN32)
+
+message(STATUS "CMake: version ${CMAKE_VERSION}")
+message(STATUS "Target platform: ${CMAKE_SYSTEM_NAME} ${PLATFORM}-bit")
+message(STATUS "C++ Compiler: ${CMAKE_CXX_COMPILER_ID} with version ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "C Compiler: ${CMAKE_C_COMPILER_ID} with version ${CMAKE_C_COMPILER_VERSION}")
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Environment: TANGO_HOST=$ENV{TANGO_HOST}")
 
 if(NOT TANGO_DEVICE_SERVER_PATH)
     #TODO windows
@@ -173,18 +191,6 @@ endif()
 if(${FAILED})
     message(SEND_ERROR " No omniidl was found! rv=${FAILED}")
 endif()
-
-#assuming build platform == target
-set(PLATFORM 32)
-if(WIN32)
-    if(CMAKE_CL_64)
-        set(PLATFORM 64)
-    endif(CMAKE_CL_64)
-else(WIN32)
-    if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-        set(PLATFORM 64)
-    endif()
-endif(WIN32)
 
 if(NOT WIN32)
     include(CheckCXXCompilerFlag)
