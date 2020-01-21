@@ -909,15 +909,6 @@ std::vector<PollObj *>::iterator DeviceImpl::get_polled_obj_by_type_name(
     o << obj_name << " not found in list of polled object" << std::ends;
     Except::throw_exception((const char *) API_PollObjNotFound, o.str(),
                             (const char *) "DeviceImpl::get_polled_obj_by_type_name");
-
-//
-// Only to make compiler quiet. Should never pass here
-//
-
-// exclude the return value for VC8+
-#if not defined(_TG_WINDOWS_) || (defined(_MSC_VER) && _MSC_VER < 1400)
-    return (std::vector<PollObj *>::iterator) NULL;
-#endif
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
