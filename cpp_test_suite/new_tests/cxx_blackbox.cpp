@@ -199,7 +199,7 @@ public:
 //				cout << "===> attr_prop: " << string(result.svalue[i].in()) << endl;
 				attr_prop = string(result.svalue[i].in());
 
-				AttributeProxy *my_attr = Tango_nullptr;
+				AttributeProxy *my_attr = nullptr;
 				TS_ASSERT_THROWS_NOTHING(my_attr = new AttributeProxy(attr_name));
 				TS_ASSERT_THROWS_NOTHING(my_attr->delete_property(attr_prop));
 				delete my_attr;

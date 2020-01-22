@@ -502,11 +502,7 @@ private:
 
 	std::vector<std::string>			allowed_cmds;
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DeviceClassExt>      ext;           // Class extension
-#else
-	DeviceClassExt			        *ext;
-#endif
 
 //
 // Ported from the extension class

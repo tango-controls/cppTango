@@ -34,9 +34,7 @@
 #ifndef _ATTRSETVAL_TPP
 #define _ATTRSETVAL_TPP
 
-#ifdef HAS_TYPE_TRAITS
-	#include <type_traits>
-#endif
+#include <type_traits>
 
 namespace Tango
 {
@@ -79,7 +77,6 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::set_value()");
 	}
 
-#ifdef HAS_UNDERLYING
 	bool short_enum = std::is_same<short,typename std::underlying_type<T>::type>::value;
 	bool uns_int_enum = std::is_same<unsigned int,typename std::underlying_type<T>::type>::value;
 
@@ -93,13 +90,11 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 
 		Except::throw_exception(API_IncompatibleArgumentType,ss.str(),"Attribute::set_value()");
 	}
-#endif // HAS_UNDERLYING
 
 //
 // Check if the input type is an enum and if it is from the valid type
 //
 
-#ifdef HAS_TYPE_TRAITS
 	if (std::is_enum<T>::value == false)
 	{
 		SAFE_DELETE(enum_ptr);
@@ -107,7 +102,6 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 								"The input argument data type is not an enumeration",
 								"Attribute::set_value()");
 	}
-#endif // HAS_TYPE_TRAITS
 
 //
 // Check if enum labels are defined

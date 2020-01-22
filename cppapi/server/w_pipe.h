@@ -77,11 +77,7 @@ public:
 /**
  * The object desctructor.
  */
-#ifdef HAS_UNIQUE_PTR
     virtual ~WPipe() {}
-#else
-	virtual ~WPipe() {delete w_ext;}
-#endif
 //@}
 
 /**@name Get/Set methods.
@@ -163,11 +159,7 @@ private:
         WPipeExt() {}
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<WPipeExt>			w_ext;           // Class extension
-#else
-	WPipeExt		 				*w_ext;
-#endif
 
 };
 

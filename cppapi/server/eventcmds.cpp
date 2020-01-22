@@ -672,7 +672,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 	}
 
     Tango::Util *tg = Tango::Util::instance();
-	Tango::DevVarLongStringArray *ret_data = Tango_nullptr;
+	Tango::DevVarLongStringArray *ret_data = nullptr;
 
     if (argin->length() == 1)
     {

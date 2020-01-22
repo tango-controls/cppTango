@@ -852,7 +852,7 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,std::string event_t
 // If we are called for IDL 5 (AttributeValue_5 or AttributeConfig_5), simply return. IDL 5 is only for ZMQ
 //
 
-	if (attr_value.attr_conf_5 != Tango_nullptr || attr_value.attr_val_5 != Tango_nullptr)
+	if (attr_value.attr_conf_5 != nullptr || attr_value.attr_val_5 != nullptr)
 		return;
 
 // get the mutex to synchronize the sending of events

@@ -78,10 +78,8 @@ public :
 //	DeviceData();
 	DeviceData(const DeviceData &);
 	DeviceData & operator=(const DeviceData &);
-#ifdef HAS_RVALUE
 	DeviceData(DeviceData &&);
 	DeviceData & operator=(DeviceData &&);
-#endif
 	virtual ~DeviceData();
 
 	CORBA::Any_var any;
@@ -640,11 +638,7 @@ private:
         std::bitset<numFlags>    ext_state;
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DeviceDataExt>   ext;
-#else
-	DeviceDataExt		        *ext;			// Class extension
-#endif
 };
 
 

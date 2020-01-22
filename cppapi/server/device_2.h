@@ -317,11 +317,7 @@ private:
     {
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<Device_2ImplExt>     ext_2;           // Class extension
-#else
-	Device_2ImplExt				    *ext_2;
-#endif
 };
 
 } // End of Tango namespace

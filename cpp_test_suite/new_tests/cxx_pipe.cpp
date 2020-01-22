@@ -271,7 +271,7 @@ public:
 		TS_ASSERT(de_names[4] == "DevVarStringArrayDE");
 
 		string str;
-		DevString ds = Tango_nullptr;
+		DevString ds = nullptr;
 		DevEncoded enc;
 		vector<string> v_str;
 		DevVarStringArray *dvsa = new DevVarStringArray();

@@ -62,7 +62,7 @@ public:
 /**
  * Constructs a newly allocated UserDefaultPipeProp object.
  */
-	UserDefaultPipeProp():ext(Tango_nullptr) {}
+	UserDefaultPipeProp():ext(nullptr) {}
 //@}
 
 /**@name Set default property methods */
@@ -99,11 +99,7 @@ private:
     {
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<UserDefaultPipePropExt>  ext;           // Class extension
-#else
-	UserDefaultPipePropExt	            *ext;
-#endif
 };
 
 

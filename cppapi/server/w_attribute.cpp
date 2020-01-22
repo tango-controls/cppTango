@@ -166,9 +166,6 @@ WAttribute::WAttribute(std::vector<AttrProperty> &prop_list,
 
 WAttribute::~WAttribute()
 {
-#ifndef HAS_UNIQUE_PTR
-    delete w_ext;
-#endif
     Tango::string_free(str_val);
     Tango::string_free(old_str_val);
 //	Tango::string_free(encoded_val.encoded_format);

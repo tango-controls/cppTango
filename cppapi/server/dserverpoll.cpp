@@ -246,14 +246,8 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
 
 		if (i == nb_poll_obj - 1)
 		{
-#ifdef HAS_RANGE_BASE_FOR
 			for (auto &elem:root_dev_poll_status)
 				delete elem.second;
-#else
-			std::map<std::string,std::vector<std::string> *>::iterator pos;
-			for (pos = root_dev_poll_status.begin();pos != root_dev_poll_status.end();++pos)
-				delete pos->second;
-#endif
 		}
 
 //
@@ -1429,7 +1423,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	std::vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(type,obj_name);
 	long tmp_upd = (*ite)->get_upd();
 
-	PollingThreadInfo *th_info = Tango_nullptr;
+	PollingThreadInfo *th_info = nullptr;
 	int poll_th_id = 0;
 	int th_id = omni_thread::self()->id();
 

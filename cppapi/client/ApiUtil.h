@@ -240,11 +240,7 @@ private:
 	bool						exit_lock_installed;
 	bool						reset_already_executed_flag;
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<ApiUtilExt>      ext;
-#else
-	ApiUtilExt					*ext; 		// Class extension
-#endif
 
     NotifdEventConsumer         *notifd_event_consumer;
     TangoSys_Pid		        cl_pid;
@@ -254,12 +250,6 @@ private:
     DevLong                     user_sub_hwm;
 
     template <typename T> static void attr_to_device_base(const T *,DeviceAttribute *);
-};
-
-class _KillProc_: public omni_thread
-{
-public:
-	void run(void *) {::exit(-1);}
 };
 
 #endif /* _APIUTIL_H */

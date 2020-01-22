@@ -245,30 +245,6 @@ private :
 #define     LARGE_DATA_THRESHOLD    2048
 #define     LARGE_DATA_THRESHOLD_ENCODED   LARGE_DATA_THRESHOLD * 4
 
-#ifndef HAS_LAMBDA_FUNC
-template <typename A1,typename A2,typename R>
-struct WantedClient : public std::binary_function<A1,A2,R>
-{
-	R operator() (A1 conn_client, A2 client) const
-	{
-		return conn_client.clnt == client;
-	}
-};
-
-template <typename A1,typename A2,typename R>
-struct OldClient : public std::binary_function<A1,A2,R>
-{
-	R operator() (A1 conn_client, A2 ti) const
-	{
-        if (ti > (conn_client.date + 500))
-        {
-            return true;
-        }
-        else
-            return false;
-	}
-};
-#endif
 
 class ZmqEventSupplier : public EventSupplier
 {

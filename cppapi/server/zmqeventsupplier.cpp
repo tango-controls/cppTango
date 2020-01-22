@@ -1628,16 +1628,11 @@ bool ZmqEventSupplier::update_connected_client(client_addr *cl)
 
     std::list<ConnectedClient>::iterator pos;
 
-#ifdef HAS_LAMBDA_FUNC
     pos = find_if(con_client.begin(),con_client.end(),
                   [&] (ConnectedClient &cc) -> bool
                   {
                       return (cc.clnt == *cl);
                   });
-#else
-    pos = find_if(con_client.begin(),con_client.end(),
-            std::bind2nd(WantedClient<ZmqEventSupplier::ConnectedClient,client_addr,bool>(),*cl));
-#endif
 
 //
 // Update date if client in list. Otherwise add client to list
@@ -1661,7 +1656,6 @@ bool ZmqEventSupplier::update_connected_client(client_addr *cl)
 // Remove presumly dead client
 //
 
-#ifdef HAS_LAMBDA_FUNC
 	con_client.remove_if([&] (ConnectedClient &cc) -> bool
                         {
                             if (now.tv_sec > (cc.date + 500))
@@ -1669,9 +1663,6 @@ bool ZmqEventSupplier::update_connected_client(client_addr *cl)
                             else
                                 return false;
                         });
-#else
-	con_client.remove_if(std::bind2nd(OldClient<ZmqEventSupplier::ConnectedClient,time_t,bool>(),now.tv_sec));
-#endif
 
 	return ret;
 }

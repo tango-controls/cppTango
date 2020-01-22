@@ -172,26 +172,9 @@
 #pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 #endif
 
-// For VC++ 6 VA_ARG macro is not supported so ==>, we cannot override command_out functions
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#define command_out internal_command_out
-#else	// For compilers that support variable number of arguments
 #define command_out(CMD_NAME, OUT, ...) internal_command_out (CMD_NAME, OUT, ## __VA_ARGS__, __FILE__, __LINE__ )
-#endif
-
-// For VC++ 6 VA_ARG macro is not supported so ==>, we cannot override command_in functions
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#define command_in internal_command_in
-#else	// For compilers that support variable number of arguments
 #define command_in(CMD_NAME, IN, ...) internal_command_in (CMD_NAME, IN, ## __VA_ARGS__, __FILE__, __LINE__ )
-#endif
-
-// For VC++ 6 VA_ARG macro is not supported so ==>, we cannot override command_inout functions
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#define command_inout internal_command_inout
-#else	// For compilers that support variable number of arguments
 #define command_inout(CMD_NAME,  ...) internal_command_inout (CMD_NAME,  ## __VA_ARGS__, __FILE__, __LINE__ )
-#endif
 
 #if defined(__clang__)
 #pragma clang diagnostic pop
@@ -290,9 +273,6 @@ namespace Tango
 		//  exec a DEV_VOID/DEV_VOID TANGO command on the underlying device
 		//  cmd_name : The name of the TANGO command
 		//---------------------------------------------------------------------------
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#undef command_inout	// Must avoid macro expansion
-#endif
 		void internal_command (const std::string& cmd_name,
 			std::string file,
 			int line)
@@ -314,9 +294,6 @@ namespace Tango
 					);
 			}
 		}
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#define command_inout internal_command_inout
-#endif
 		//---------------------------------------------------------------------------
 		//  CommandInOutHelper::command_inout
 		//  exec a ARG_OUT/ARG_IN TANGO command on the underlying device
@@ -329,9 +306,6 @@ namespace Tango
 		//  template arg _IN must be supported by DeviceData::operator<<
 		//  template arg _OUT must be supported by DeviceData::operator>>
 		//---------------------------------------------------------------------------
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#undef command_inout	// Must avoid macro expansion
-#endif
 
 		template <class _IN, class _OUT>
 			void internal_command_inout (const std::string& cmd_name, const _IN& argin, _OUT& argout, std::string file= __FILE__, int line= __LINE__)
@@ -364,9 +338,6 @@ namespace Tango
 					);
 			}
 		}
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#define command_inout internal_command_inout
-#endif
 		//---------------------------------------------------------------------------
 		//  CommandInOutHelper::command_inout
 		//  exec a DEVVAR<X>STRINGARRAY/DEVVAR<X>STRINGARRAY command on the underlying device
@@ -379,9 +350,6 @@ namespace Tango
 		//  template arg _IN must be supported by DeviceData::.insert
 		//  template arg _OUT must be supported by DeviceData::.insert
 		//---------------------------------------------------------------------------
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#undef command_inout	// Must avoid macro expansion
-#endif
 		template <class _IN, class _OUT>
 			void internal_command_inout (const std::string& cmd_name,
 			const std::vector<_IN>& _nv_in,
@@ -421,9 +389,6 @@ namespace Tango
 					);
 			}
 		}
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#define command_inout internal_command_inout
-#endif
 		//---------------------------------------------------------------------------
 		//  CommandInOutHelper::command_inout
 		//  Overloaded commands to  avoid usage of DevVarXX ARRAY for argout
@@ -431,9 +396,6 @@ namespace Tango
 		template <class _IN>
 			void internal_command_inout (const std::string& TANGO_UNUSED(cmd_name), const _IN& TANGO_UNUSED(argin), DevVarDoubleStringArray* TANGO_UNUSED(argout), std::string file= __FILE__, int line= __LINE__)
 		{
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#pragma message  (" TANGO WARNING ***** command_inout:Use only STL vector instead of DevVarDoubleStringArray *****")
-#endif
 			TangoSys_OMemStream o;
 			o << " [" << file << "::" << line << "]" << std::ends;
 			Tango::Except::throw_exception(static_cast<const char*>("TANGO_WRONG_DATA_ERROR"),
@@ -448,9 +410,6 @@ namespace Tango
 		template <class _IN>
 			void internal_command_inout (const std::string& TANGO_UNUSED(cmd_name), const _IN& TANGO_UNUSED(argin), DevVarLongStringArray* TANGO_UNUSED(argout), std::string file= __FILE__, int line= __LINE__)
 		{
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#pragma message  (" TANGO WARNING ***** command_inout:Use only STL vector instead of DevVarLongStringArray *****")
-#endif
 			TangoSys_OMemStream o;
 			o << " [" << file << "::" << line << "]" << std::ends;
 			Tango::Except::throw_exception(static_cast<const char*>("TANGO_WRONG_DATA_ERROR"),
@@ -464,9 +423,6 @@ namespace Tango
 		template <class _IN>
 			void internal_command_inout (const std::string& TANGO_UNUSED(cmd_name), const _IN& TANGO_UNUSED(argin), DevVarDoubleStringArray& TANGO_UNUSED(argout), std::string file= __FILE__, int line= __LINE__)
 		{
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#pragma message  (" TANGO WARNING ***** command_inout:Use only STL vector instead of DevVarDoubleStringArray *****")
-#endif
 			TangoSys_OMemStream o;
 			o << " [" << file << "::" << line << "]" << std::ends;
 			Tango::Except::throw_exception(static_cast<const char*>("TANGO_WRONG_DATA_ERROR"),
@@ -481,9 +437,6 @@ namespace Tango
 		template <class _IN>
 			void internal_command_inout (const std::string& TANGO_UNUSED(cmd_name), const _IN& TANGO_UNUSED(argin), DevVarLongStringArray& TANGO_UNUSED(argout), std::string file= __FILE__, int line= __LINE__)
 		{
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#pragma message  (" TANGO WARNING ***** command_inout:Use only STL vector instead of DevVarLongStringArray *****")
-#endif
 			TangoSys_OMemStream o;
 			o << " [" << file << "::" << line << "]" << std::ends;
 			Tango::Except::throw_exception(static_cast<const char*>("TANGO_WRONG_DATA_ERROR"),
@@ -502,9 +455,6 @@ namespace Tango
 		//---------------------------------------------------------------------------
 		//  template arg _IN must be supported by DeviceData::operator<<
 		//---------------------------------------------------------------------------
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#undef command_inout	// Must avoid macro expansion
-#endif
 		template <class _IN>
 			void internal_command_in (const std::string& cmd_name, const _IN& argin,  std::string file= __FILE__, int line= __LINE__)
 		{
@@ -525,9 +475,6 @@ namespace Tango
 					);
 			}
 		}
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#define command_inout internal_command_inout
-#endif
 		//---------------------------------------------------------------------------
 		//  CommandInOutHelper::command_in
 		//  exec a DEV_VOID/DEVVAR<X>STRINGARRAY command on the underlying device
@@ -537,9 +484,6 @@ namespace Tango
 		//---------------------------------------------------------------------------
 		//  template arg _IN must be supported by DeviceData::.insert
 		//---------------------------------------------------------------------------
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#undef command_inout	// Must avoid macro expansion
-#endif
 		template <class _IN>
 			void internal_command_in (const std::string& cmd_name,
 			const std::vector<_IN>& _nv_in,
@@ -564,9 +508,6 @@ namespace Tango
 			}
 		}
 
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#define command_inout internal_command_inout
-#endif
 		//---------------------------------------------------------------------------
 		//  CommandInOutHelper::command_out
 		//  exec a ARG_OUT/DEV_VOID TANGO command on the underlying device
@@ -575,9 +516,6 @@ namespace Tango
 		//---------------------------------------------------------------------------
 		//  template arg _OUT must be supported by DeviceData::operator>>
 		//---------------------------------------------------------------------------
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#undef command_inout	// Must avoid macro expansion
-#endif
 		template <class _OUT>
 			void internal_command_out (const std::string& cmd_name, _OUT& argout,  std::string file= __FILE__, int line= __LINE__)
 		{
@@ -608,9 +546,6 @@ namespace Tango
 					);
 			}
 		}
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#define command_inout internal_command_inout
-#endif
 
 		//---------------------------------------------------------------------------
 		//  CommandInOutHelper::command_out
@@ -619,9 +554,6 @@ namespace Tango
 		template <class _OUT>
 			void internal_command_out(_OUT TANGO_UNUSED(dummy), DevVarDoubleStringArray* TANGO_UNUSED(argout),  std::string file= __FILE__, int line= __LINE__)
 		{
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#pragma message  (" TANGO WARNING ***** command_out:Use only STL vector instead of DevVarDoubleStringArray *****")
-#endif
 			TangoSys_OMemStream o;
 			o << " [" << file << "::" << line << "]" << std::ends;
 
@@ -637,9 +569,6 @@ namespace Tango
 		template <class _OUT>
 			void internal_command_out (_OUT TANGO_UNUSED(dummy), DevVarLongStringArray* TANGO_UNUSED(argout),  std::string file= __FILE__, int line= __LINE__)
 		{
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#pragma message  (" TANGO WARNING ***** command_out:Use only STL vector instead of DevVarLongStringArray *****")
-#endif
 			TangoSys_OMemStream o;
 			o << " [" << file << "::" << line << "]" << std::ends;
 			Tango::Except::throw_exception(static_cast<const char*>("TANGO_WRONG_DATA_ERROR"),
@@ -653,9 +582,6 @@ namespace Tango
 		template <class _OUT>
 			void internal_command_out(_OUT TANGO_UNUSED(dummy), DevVarDoubleStringArray& TANGO_UNUSED(argout),  std::string file= __FILE__, int line= __LINE__)
 		{
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#pragma message  (" TANGO WARNING ***** command_out:Use only STL vector instead of DevVarDoubleStringArray *****")
-#endif
 			TangoSys_OMemStream o;
 			o << " [" << file << "::" << line << "]" << std::ends;
 			Tango::Except::throw_exception(static_cast<const char*>("TANGO_WRONG_DATA_ERROR"),
@@ -669,9 +595,6 @@ namespace Tango
 		template <class _OUT>
 			void internal_command_out (_OUT TANGO_UNUSED(dummy), DevVarLongStringArray& TANGO_UNUSED(argout),  std::string file= __FILE__, int line= __LINE__)
 		{
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#pragma message  (" TANGO WARNING ***** command_out:Use only STL vector instead of DevVarLongStringArray *****")
-#endif
 
 			TangoSys_OMemStream o;
 			o << " [" << file << "::" << line << "]" << std::ends;
@@ -688,9 +611,6 @@ namespace Tango
 		//---------------------------------------------------------------------------
 		//  template arg _OUT must be supported by DeviceData::.extract
 		//---------------------------------------------------------------------------
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#undef command_inout	// Must avoid macro expansion
-#endif
 		template <class _OUT>
 			void internal_command_out (const std::string& cmd_name,
 			std::vector<_OUT>& _nv_out,
@@ -724,9 +644,6 @@ namespace Tango
 					);
 			}
 		}
-#if (defined(_MSC_VER) && _MSC_VER < 1300)
-#define command_inout internal_command_inout
-#endif
 
 private:
 	//- placed here as a workaround due to CORBA::any_var limitations

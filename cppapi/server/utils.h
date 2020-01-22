@@ -982,11 +982,7 @@ private:
 
 	bool  							display_help;	// display help message flag
 	const std::vector<DeviceClass *>		*cl_list_ptr;	// Ptr to server device class list
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<UtilExt>             ext;           // Class extension
-#else
-	Util::UtilExt					*ext;			// Class extension
-#endif
 	std::vector<DeviceClass *>			cl_list;		// Full class list ptr
 
 //

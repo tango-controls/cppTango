@@ -172,11 +172,7 @@ private :
         DbServerExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DbServerExt> ext;
-#else
-	DbServerExt	            *ext;
-#endif
 
 public :
 /**@name Constructors */
@@ -282,11 +278,7 @@ private :
         DbClassExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DbClassExt>  ext;
-#else
-	DbClassExt	            *ext;
-#endif
 
 public :
 /**@name Constructors */
@@ -705,11 +697,7 @@ private :
         DbDatumExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DbDatumExt>  ext;
-#else
-	DbDatumExt			    *ext;
-#endif
 };
 
 /**********************************************************************

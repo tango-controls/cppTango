@@ -41,7 +41,7 @@ namespace Tango
 //
 
 template<>
-inline AttrProp<DevUChar>::AttrProp(const DevUChar &value) : val(value), is_value(true), ext(Tango_nullptr)
+inline AttrProp<DevUChar>::AttrProp(const DevUChar &value) : val(value), is_value(true), ext(nullptr)
 {
 	TangoSys_MemStream st;
 	st.precision(TANGO_FLOAT_PRECISION);
@@ -195,11 +195,7 @@ private:
 
 	class MultiAttrPropExt {};
 
-#ifdef HAS_UNIQUE_PTR
 	std::unique_ptr<MultiAttrPropExt>	ext;           // Class extension
-#else
-	MultiAttrPropExt				*ext;
-#endif
 };
 
 } // End of Tango namespace

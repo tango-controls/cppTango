@@ -318,11 +318,7 @@ private:
 	void add_user_default(std::vector<AttrProperty> &,std::vector<AttrProperty> &);
 	void check_associated(long,std::string &);
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<MultiAttributeExt>           ext;           // Class extension
-#else
-	MultiAttributeExt		                *ext;
-#endif
 };
 
 

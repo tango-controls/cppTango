@@ -613,10 +613,8 @@ public:
 	~DevicePipeBlob();
 	DevicePipeBlob(const DevicePipeBlob &);
 	DevicePipeBlob & operator=(const DevicePipeBlob &);
-#ifdef HAS_RVALUE
 	DevicePipeBlob(DevicePipeBlob &&);
 	DevicePipeBlob & operator=(DevicePipeBlob &&);
-#endif
 
 	DevicePipeBlob & operator << (DevBoolean &);
 //	DevicePipeBlob & operator << (short &);
@@ -738,7 +736,7 @@ public:
 	const DevVarPipeDataEltArray *get_extract_data() {return extract_elt_array;}
 
 	void set_extract_data(const DevVarPipeDataEltArray *_ptr) {extract_elt_array=_ptr;}
-	void reset_insert_data_ptr() {insert_elt_array=Tango_nullptr;}
+	void reset_insert_data_ptr() {insert_elt_array=nullptr;}
 
 	void reset_extract_ctr() {extract_ctr=0;}
 	void set_extract_delete(bool _b) {extract_delete=_b;}
@@ -774,11 +772,7 @@ private:
         DevicePipeBlobExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DevicePipeBlobExt>   	ext;
-#else
-	DevicePipeBlobExt		        	*ext;				// Class extension
-#endif
 };
 
 
@@ -1082,10 +1076,8 @@ public :
 ///@privatesection
 	DevicePipe(const DevicePipe &);
 	DevicePipe & operator=(const DevicePipe &);
-#ifdef HAS_RVALUE
 	DevicePipe(DevicePipe &&);
 	DevicePipe & operator=(DevicePipe &&);
-#endif
 	~DevicePipe();
 
 	void set_time(TimeVal &_ti) {time=_ti;}
@@ -1104,11 +1096,7 @@ private:
         DevicePipeExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DevicePipeExt>   ext;
-#else
-	DevicePipeExt		        *ext;				// Class extension
-#endif
 };
 
 /****************************************************************************************
@@ -1204,7 +1192,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-    if (extract_elt_array == Tango_nullptr) \
+    if (extract_elt_array == nullptr) \
         ext_state.set(isempty_flag); \
 	else if (extract_ctr > (int)extract_elt_array->length() - 1) \
 		ext_state.set(notenoughde_flag); \
@@ -1268,7 +1256,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-    if (extract_elt_array == Tango_nullptr) \
+    if (extract_elt_array == nullptr) \
         ext_state.set(isempty_flag); \
 	else if (extract_ctr > (int)extract_elt_array->length() - 1) \
 		ext_state.set(notenoughde_flag); \
@@ -1332,7 +1320,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-    if (extract_elt_array == Tango_nullptr) \
+    if (extract_elt_array == nullptr) \
         ext_state.set(isempty_flag); \
 	else if (extract_ctr > (int)extract_elt_array->length() - 1) \
 		ext_state.set(notenoughde_flag); \
@@ -1398,7 +1386,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (insert_elt_array == Tango_nullptr) \
+	if (insert_elt_array == nullptr) \
 		ext_state.set(blobdenamenotset_flag); \
 	else if (insert_ctr == -1 && insert_ind == -1) \
 		ext_state.set(mixing_flag); \
@@ -1450,7 +1438,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (insert_elt_array == Tango_nullptr) \
+	if (insert_elt_array == nullptr) \
 		ext_state.set(blobdenamenotset_flag); \
 	else if (insert_ctr == -1 && insert_ind == -1) \
 		ext_state.set(mixing_flag); \
@@ -1504,7 +1492,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (insert_elt_array == Tango_nullptr) \
+	if (insert_elt_array == nullptr) \
 		ext_state.set(blobdenamenotset_flag); \
 	else if (insert_ctr == -1 && insert_ind == -1) \
 		ext_state.set(mixing_flag); \
@@ -1561,7 +1549,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (insert_elt_array == Tango_nullptr) \
+	if (insert_elt_array == nullptr) \
 		ext_state.set(blobdenamenotset_flag); \
 	else if (insert_ctr == -1 && insert_ind == -1) \
 		ext_state.set(mixing_flag); \

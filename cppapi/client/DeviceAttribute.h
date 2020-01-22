@@ -89,10 +89,8 @@ public :
 
 	DeviceAttribute(const DeviceAttribute&);
 	DeviceAttribute & operator=(const DeviceAttribute &);
-#ifdef HAS_RVALUE
 	DeviceAttribute(DeviceAttribute &&);
 	DeviceAttribute & operator=(DeviceAttribute &&);
-#endif
 
 	void deep_copy(const DeviceAttribute &);
 
@@ -1313,11 +1311,7 @@ protected :
         void deep_copy(const DeviceAttributeExt &);
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DeviceAttributeExt>  ext;
-#else
-	DeviceAttributeExt	            *ext;		// Class extension
-#endif
 
 private:
     void init_common_class_members(const char * name,int dim_x,int dim_y);

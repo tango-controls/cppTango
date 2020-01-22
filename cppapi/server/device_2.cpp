@@ -68,7 +68,7 @@ namespace Tango
 //--------------------------------------------------------------------------
 
 Device_2Impl::Device_2Impl(DeviceClass *device_class,std::string &dev_name):
-DeviceImpl(device_class,dev_name),ext_2(Tango_nullptr)
+DeviceImpl(device_class,dev_name),ext_2(nullptr)
 {
 	idl_version = 2;
 }
@@ -76,7 +76,7 @@ DeviceImpl(device_class,dev_name),ext_2(Tango_nullptr)
 Device_2Impl::Device_2Impl(DeviceClass *device_class,
 			   std::string &dev_name,
 			   std::string &desc):
-DeviceImpl(device_class,dev_name,desc),ext_2(Tango_nullptr)
+DeviceImpl(device_class,dev_name,desc),ext_2(nullptr)
 {
 	idl_version = 2;
 }
@@ -84,7 +84,7 @@ DeviceImpl(device_class,dev_name,desc),ext_2(Tango_nullptr)
 Device_2Impl::Device_2Impl(DeviceClass *device_class,
 	           	   std::string &dev_name,std::string &desc,
 	           	   Tango::DevState dev_state,std::string &dev_status):
-DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(Tango_nullptr)
+DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(nullptr)
 {
 	idl_version = 2;
 }
@@ -94,7 +94,7 @@ Device_2Impl::Device_2Impl(DeviceClass *device_class,
                    const char *desc,
 	           	   Tango::DevState dev_state,
 	           	   const char *dev_status):
-DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(Tango_nullptr)
+DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(nullptr)
 {
 	idl_version = 2;
 }
@@ -1125,7 +1125,7 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 
 	long i;
 	bool found = false;
-	Command *cmd_ptr = Tango_nullptr;
+	Command *cmd_ptr = nullptr;
 	long nb_cmd = device_class->get_command_list().size();
 	for (i = 0;i < nb_cmd;i++)
 	{

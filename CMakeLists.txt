@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
 
 project(cppTango)
+
+set(CXX_STANDARD_REQUIRED 11)
 
 include(CTest)
 
@@ -29,7 +31,6 @@ endif()
 set(LIBRARY_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
 set(SO_VERSION "${MAJOR_VERSION}")
 
-message("System TANGO_HOST=$ENV{TANGO_HOST}")
 set(TANGO_HOST $ENV{TANGO_HOST})
 include(configure/CMakeLists.txt)
 

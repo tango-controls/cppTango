@@ -74,7 +74,7 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 				ite = map_attrdesc.find(att_name);
 				if (ite != map_attrdesc.end())
 				{
-					if (ite->second.fwd_attr == Tango_nullptr || ite->second.fwd_attr_cl == Tango_nullptr)
+					if (ite->second.fwd_attr == nullptr || ite->second.fwd_attr_cl == nullptr)
 					{
 //
 // Event received while everything is OK for the fwd attribute
@@ -90,7 +90,7 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 						else
 						{
 							Device_5Impl *the_dev = static_cast<Device_5Impl *>(ite3->second);
-							if (the_dev != Tango_nullptr)
+							if (the_dev != nullptr)
 							{
 
 //
@@ -100,7 +100,7 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 
 								FwdAttrConfEventData *ev_fwd = static_cast<FwdAttrConfEventData *>(ev);
 								AttributeConfig_5 *ptr = const_cast<AttributeConfig_5 *>(ev_fwd->get_fwd_attr_conf());
-								if (ptr == Tango_nullptr)
+								if (ptr == nullptr)
 								{
 									ptr = AttributeConfigList_5::allocbuf(1);
 									ApiUtil::AttributeInfoEx_to_AttributeConfig(ev->attr_conf,ptr);
@@ -165,7 +165,7 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 									MultiAttribute *m_att = the_dev->get_device_attr();
 									m_att->update(the_fwd_att,ite->second.local_name);
 
-									ite->second.fwd_attr = Tango_nullptr;
+									ite->second.fwd_attr = nullptr;
 
 									the_dev->rem_wrong_fwd_att(att_name);
 									the_dev->set_run_att_conf_loop(true);
@@ -217,7 +217,7 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 //
 
 							ite->second.fwd_attr_cl->init_conf(ev);
-							ite->second.fwd_attr_cl = Tango_nullptr;
+							ite->second.fwd_attr_cl = nullptr;
 						}
 					}
 				}
@@ -286,7 +286,7 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::EventData *ev)
 			const AttributeValue_5 *ptr = ev_fwd->get_av_5();
 			zmq::message_t *zmq_mess_ptr = ev_fwd->get_zmq_mess_ptr();
 
-			if (ptr != Tango_nullptr || zmq_mess_ptr != Tango_nullptr)
+			if (ptr != nullptr || zmq_mess_ptr != nullptr)
 			{
 
 //
@@ -294,12 +294,12 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::EventData *ev)
 //
 
 
-				if (ptr != Tango_nullptr)
+				if (ptr != nullptr)
 					ad.attr_val_5 = ptr;
 				else
 					ad.zmq_mess = zmq_mess_ptr;
 
-				zes->push_event(dev,event_name,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,Tango_nullptr,true);
+				zes->push_event(dev,event_name,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,nullptr,true);
 			}
 		}
 	}
@@ -378,7 +378,7 @@ void RootAttRegistry::RootAttConfCallBack::add_att(std::string &root_att_name,st
 	DeviceImpl *the_local_dev;
 	try
 	{
-		the_local_dev = Tango_nullptr;
+		the_local_dev = nullptr;
 
 		struct NameFwdAttr nf;
 		nf.local_name = local_dev_name;
@@ -406,15 +406,9 @@ void RootAttRegistry::RootAttConfCallBack::add_att(std::string &root_att_name,st
 
 		{
 			omni_mutex_lock oml(the_lock);
-#ifdef INIT_LIST
 			map_attrdesc.insert({root_att_name,nf});
 			if (the_local_dev != nullptr)
 				local_dis.insert({local_dev_name,the_local_dev});
-#else
-			map_attrdesc.insert(make_pair(root_att_name,nf));
-			if (the_local_dev != Tango_nullptr)
-				local_dis.insert(make_pair(local_dev_name,the_local_dev));
-#endif
 		}
 	}
 	catch (DevFailed &e) {}
@@ -502,7 +496,7 @@ void RootAttRegistry::RootAttConfCallBack::clear_attrdesc(std::string &root_att_
 	ite = map_attrdesc.find(root_att_name);
 	if (ite != map_attrdesc.end())
 	{
-		ite->second.fwd_attr = Tango_nullptr;
+		ite->second.fwd_attr = nullptr;
 	}
 	else
 	{
@@ -710,11 +704,7 @@ void RootAttRegistry::add_root_att(std::string &device_name,std::string &att_nam
 			desc = desc + device_name + " is too old to support forwarded attribute. It requires IDL >= 5";
 			Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
 		}
-#ifdef INIT_LIST
 		dps.insert({device_name,the_dev});
-#else
-		dps.insert(make_pair(device_name,the_dev));
-#endif
 	}
 	else
 		the_dev = ite->second;
@@ -736,11 +726,7 @@ void RootAttRegistry::add_root_att(std::string &device_name,std::string &att_nam
 		try
 		{
 			event_id = the_dev->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,&cbp);
-#ifdef INIT_LIST
 			map_event_id.insert({a_name,event_id});
-#else
-			map_event_id.insert(make_pair(a_name,event_id));
-#endif
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -770,11 +756,7 @@ void RootAttRegistry::add_root_att(std::string &device_name,std::string &att_nam
 				attdesc->set_err_kind(FWD_WRONG_DEV);
 
 			event_id = the_dev->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,&cbp,true);
-#ifdef INIT_LIST
 			map_event_id.insert({a_name,event_id});
-#else
-			map_event_id.insert(make_pair(a_name,event_id));
-#endif
 
             cbp.update_err_kind(a_name,attdesc->get_err_kind());
 			Tango::Except::re_throw_exception(e,"API_DummyException","nothing","RootAttRegistry::add_root_att");
@@ -847,18 +829,10 @@ void RootAttRegistry::remove_root_att(std::string &root_dev_name,std::string &ro
 
 		if (it != map_event_id_user.end())
 		{
-#ifdef HAS_RANGE_BASE_FOR
 			for (const auto &elem:it->second)
 			{
 				pos->second->unsubscribe_event(elem.event_id);
 			}
-#else
-			std::vector<UserEvent>::iterator posi;
-			for (posi = it->second.begin();posi != it->second.end();++posi)
-			{
-				pos->second->unsubscribe_event(posi->event_id);
-			}
-#endif
 			map_event_id_user.erase(it);
 		}
 	}
@@ -1075,7 +1049,6 @@ bool RootAttRegistry::is_event_subscribed(std::string &ev,EventType et)
 		pos = map_event_id_user.find(ev);
 		if (pos != map_event_id_user.end())
 		{
-#ifdef HAS_RANGE_BASE_FOR
 			for (const auto &elem:pos->second)
 			{
 				if (elem.event_type == et)
@@ -1084,17 +1057,6 @@ bool RootAttRegistry::is_event_subscribed(std::string &ev,EventType et)
 					break;
 				}
 			}
-#else
-			std::vector<UserEvent>::iterator posi;
-			for (posi = pos->second.begin();posi != pos->second.end();++posi)
-			{
-				if (posi->event_type == et)
-				{
-					ret = true;
-					break;
-				}
-			}
-#endif
 		}
 	}
 
