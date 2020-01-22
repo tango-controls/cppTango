@@ -73,6 +73,10 @@ before_script:
       -v /var/run/docker.sock:/var/run/docker.sock
       -dit
       cpp_tango
+  - >
+      docker exec -u root cpp_tango
+      groupadd -g $(grep docker /etc/group | awk -F ':' '{print $3}') dockerhost || true
+  - docker exec -u root cpp_tango usermod -a -G dockerhost tango || true
   - .travis/install_tango_idl.sh
   - (test ${STOCK_CPPZMQ} = "OFF" && .travis/install_cppzmq.sh) || true
 #work around gcov ignored by sonar
