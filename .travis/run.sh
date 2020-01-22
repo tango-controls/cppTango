@@ -23,10 +23,10 @@ COVERALLS_MODULE_PATH=/home/tango/coveralls-cmake/cmake
 
 if [[ "$WARNINGS_AS_ERRORS" == "ON" ]]
 then
-  export DEB_BUILD_MAINT_OPTIONS=hardening=+all
-  eval "$(dpkg-buildflags --export=sh)"
+  docker exec cpp_tango export DEB_BUILD_MAINT_OPTIONS=hardening=+all
+  docker exec cpp_tango eval "$(dpkg-buildflags --export=sh)"
   # output flags for debug purposes
-  dpkg-buildflags --status
+  docker exec cpp_tango dpkg-buildflags --status
 fi
 
 docker exec cpp_tango cmake                                \
