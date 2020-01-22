@@ -21,6 +21,14 @@ USE_PCH=${USE_PCH:-OFF}
 WARNINGS_AS_ERRORS=${WARNINGS_AS_ERRORS:-OFF}
 COVERALLS_MODULE_PATH=/home/tango/coveralls-cmake/cmake
 
+if [[ "$WARNINGS_AS_ERRORS" == "ON" ]]
+then
+  export DEB_BUILD_MAINT_OPTIONS=hardening=+all
+  eval "$(dpkg-buildflags --export=sh)"
+  # output flags for debug purposes
+  dpkg-buildflags --status
+fi
+
 docker exec cpp_tango cmake                                \
   -H/home/tango/src                                        \
   -B/home/tango/src/build                                  \
