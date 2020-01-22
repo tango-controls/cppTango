@@ -6,29 +6,20 @@ then
   exit 0
 fi
 
-TEST_COMMAND="exec ctest --output-on-failure"
-if [ $COVERALLS = "ON" ]
-then
-    TEST_COMMAND="exec make coveralls"
-fi
+build_dir="/home/tango/src/build"
 
-echo "PreTest"
-docker exec cpp_tango /bin/sh -c 'cd /home/tango/src/build/cpp_test_suite/environment; exec ./pre_test.sh'
-if [ $? -ne "0" ]
-then
-    exit -1
-fi
-echo "Test"
-echo "TEST_COMMAND=$TEST_COMMAND"
-docker exec cpp_tango /bin/sh -c "cd /home/tango/src/build; $TEST_COMMAND"
-if [ $? -ne "0" ]
-then
-    exit -1
-fi
+function run_in_container {
+  docker exec \
+    -w "${build_dir}" \
+    -e CTEST_PARALLEL_LEVEL=$(nproc) \
+    -e CTEST_OUTPUT_ON_FAILURE=ON \
+    cpp_tango "$@"
+}
 
-echo "PostTest"
-docker exec cpp_tango /bin/sh -c 'cd /home/tango/src/build/cpp_test_suite/environment; exec ./post_test.sh'
-if [ $? -ne "0" ]
-then
-    exit -1
+set -e
+
+if [[ "$COVERALLS" == "ON" ]]; then
+  run_in_container make coveralls
+else
+  run_in_container ctest
 fi

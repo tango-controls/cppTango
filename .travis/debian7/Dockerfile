@@ -28,9 +28,25 @@ RUN wget --no-check-certificate https://cmake.org/files/v3.10/cmake-3.10.0-Linux
   && chmod +x /tmp/cmake-install.sh                                                                                 \
   && /tmp/cmake-install.sh --skip-license --exclude-subdir
 
+RUN apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg2 \
+    software-properties-common \
+    python-software-properties \
+ && curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
+ && add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/debian wheezy stable" \
+ && sed -i -e '/^deb-src.*docker.*/d' /etc/apt/sources.list \
+ && apt-get update \
+ && apt-get install -y docker-ce
+
 RUN groupadd -g "$APP_GID" tango
 
 RUN useradd -u "$APP_UID" -g "$APP_GID" -ms /bin/bash tango
+
+RUN usermod -a -G docker tango
 
 ENV PKG_CONFIG_PATH=/home/tango/lib/pkgconfig
 
