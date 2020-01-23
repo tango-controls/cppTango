@@ -4081,8 +4081,8 @@ void Attribute::fire_change_event(DevFailed *except)
 
 				if (except
 				    || quality == Tango::ATTR_INVALID
-				    || ((! except) && prev_change_event.err)
-				    || (quality != Tango::ATTR_INVALID && old_quality == Tango::ATTR_INVALID))
+				    || prev_change_event.err
+				    || old_quality == Tango::ATTR_INVALID)
 				{
 					force_change = true;
 				}
