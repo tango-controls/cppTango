@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 2.8.12)
 include(CTest)
 
-enable_testing()
 #need to define the version of the library
 set(MAJOR_VERSION "9")
 set(MINOR_VERSION "3")
@@ -32,9 +31,10 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
 #source code
 add_subdirectory("log4tango")
 add_subdirectory("cppapi")
-if(NOT WIN32)
+
+if(BUILD_TESTING)
     add_subdirectory("cpp_test_suite")
-endif(NOT WIN32)
+endif()
 
 if(WIN32)
     include(configure/cmake_win.cmake)
