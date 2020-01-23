@@ -4017,54 +4017,58 @@ void Attribute::fire_change_event(DevFailed *except)
 			bool force_change   = false;
 			bool quality_change = false;
 
-			if ((except != NULL) ||
-				(quality == Tango::ATTR_INVALID) ||
-				((except == NULL) && (prev_change_event.err == true)) ||
-				((quality != Tango::ATTR_INVALID) &&
-				(prev_change_event.quality == Tango::ATTR_INVALID)))
-			{
-				force_change = true;
-			}
-
 			vector<string> filterable_names;
 			vector<double> filterable_data;
 			vector<string> filterable_names_lg;
 			vector<long> filterable_data_lg;
 
-			if (except != NULL)
 			{
-				prev_change_event.err    = true;
-				prev_change_event.except = *except;
-			}
-			else
-			{
-				Tango::AttrQuality the_quality;
+				omni_mutex_lock oml(EventSupplier::get_event_mutex());
 
-				if (send_attr_5 != NULL)
+				if ((except != NULL) ||
+					(quality == Tango::ATTR_INVALID) ||
+					((except == NULL) && (prev_change_event.err == true)) ||
+					((quality != Tango::ATTR_INVALID) &&
+					(prev_change_event.quality == Tango::ATTR_INVALID)))
 				{
-					the_quality = send_attr_5->quality;
-					prev_change_event.value_4 = send_attr_5->value;
+					force_change = true;
 				}
-				else if (send_attr_4 != NULL)
+
+				if (except != NULL)
 				{
-					the_quality = send_attr_4->quality;
-					prev_change_event.value_4 = send_attr_4->value;
+					prev_change_event.err    = true;
+					prev_change_event.except = *except;
 				}
 				else
 				{
-					the_quality = send_attr->quality;
-					prev_change_event.value = send_attr->value;
-				}
+					Tango::AttrQuality the_quality;
 
-				if (prev_change_event.quality !=  the_quality)
-				{
-					quality_change = true;
-				}
+					if (send_attr_5 != NULL)
+					{
+						the_quality = send_attr_5->quality;
+						prev_change_event.value_4 = send_attr_5->value;
+					}
+					else if (send_attr_4 != NULL)
+					{
+						the_quality = send_attr_4->quality;
+						prev_change_event.value_4 = send_attr_4->value;
+					}
+					else
+					{
+						the_quality = send_attr->quality;
+						prev_change_event.value = send_attr->value;
+					}
 
-				prev_change_event.quality = the_quality;
-				prev_change_event.err = false;
+					if (prev_change_event.quality !=  the_quality)
+					{
+						quality_change = true;
+					}
+
+					prev_change_event.quality = the_quality;
+					prev_change_event.err = false;
+				}
+				prev_change_event.inited = true;
 			}
-			prev_change_event.inited = true;
 
 			filterable_names.push_back("forced_event");
 			if (force_change == true)
@@ -4478,40 +4482,44 @@ void Attribute::fire_archive_event(DevFailed *except)
 			vector<string> filterable_names_lg;
 			vector<long> filterable_data_lg;
 
-			if (except != NULL)
 			{
-				prev_archive_event.err    = true;
-				prev_archive_event.except = *except;
-			}
-			else
-			{
-				Tango::AttrQuality the_quality;
+				omni_mutex_lock oml(EventSupplier::get_event_mutex());
 
-				if (send_attr_5 != Tango_nullptr)
+				if (except != NULL)
 				{
-					prev_archive_event.value_4 = send_attr_5->value;
-					the_quality = send_attr_5->quality;
-				}
-				else if (send_attr_4 != Tango_nullptr)
-				{
-					prev_archive_event.value_4 = send_attr_4->value;
-					the_quality = send_attr_4->quality;
+					prev_archive_event.err    = true;
+					prev_archive_event.except = *except;
 				}
 				else
 				{
-					prev_archive_event.value = send_attr->value;
-					the_quality = send_attr->quality;
-				}
+					Tango::AttrQuality the_quality;
 
-				if (prev_archive_event.quality != the_quality)
-				{
-					quality_change = true;
-				}
+					if (send_attr_5 != Tango_nullptr)
+					{
+						prev_archive_event.value_4 = send_attr_5->value;
+						the_quality = send_attr_5->quality;
+					}
+					else if (send_attr_4 != Tango_nullptr)
+					{
+						prev_archive_event.value_4 = send_attr_4->value;
+						the_quality = send_attr_4->quality;
+					}
+					else
+					{
+						prev_archive_event.value = send_attr->value;
+						the_quality = send_attr->quality;
+					}
 
-				prev_archive_event.quality = the_quality;
-				prev_archive_event.err = false;
+					if (prev_archive_event.quality != the_quality)
+					{
+						quality_change = true;
+					}
+
+					prev_archive_event.quality = the_quality;
+					prev_archive_event.err = false;
+				}
+				prev_archive_event.inited = true;
 			}
-			prev_archive_event.inited = true;
 
 			filterable_names.push_back("forced_event");
 			if (force_change == true)
