@@ -2,7 +2,7 @@
 
 set -e
 
-if [ $RUN_TESTS = "OFF" ]
+if [[ $RUN_TESTS == "OFF" ]]
 then
   echo "Skipping tests as requested"
   exit 0
