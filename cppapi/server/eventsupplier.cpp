@@ -1183,12 +1183,6 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
     }
 
 //
-// get the mutex to synchronize the sending of events
-//
-
-    omni_mutex_lock l(detect_mutex);
-
-//
 // Send event, if the read_attribute failed or if it is the first time that the read_attribute succeed after a failure.
 // Same thing if the attribute quality factor changes to INVALID
 //

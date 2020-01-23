@@ -174,9 +174,7 @@ protected :
 	static omni_mutex 		push_mutex;
 	static omni_condition	push_cond;
 
-	// Added a mutex to synchronize the access to
-	//	detect_event which is used
-	// from different threads
+	// Unused, replaced with event_mutex. Left for backward compatibility.
 	static omni_mutex		detect_mutex;
 
 private:

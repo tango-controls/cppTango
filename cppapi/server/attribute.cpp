@@ -4462,8 +4462,6 @@ void Attribute::fire_archive_event(DevFailed *except)
 		{
 
 //
-// Execute detect_change only to calculate the delta_change_rel and
-// delta_change_abs and force_change !
 //
 
 			bool force_change   = false;
@@ -4471,19 +4469,25 @@ void Attribute::fire_archive_event(DevFailed *except)
 			double delta_change_rel = 0.0;
 			double delta_change_abs = 0.0;
 
-            if (event_supplier_nd != NULL)
-                event_supplier_nd->detect_change(*this, ad,true,delta_change_rel,delta_change_abs,except,force_change,dev);
-            else if (event_supplier_zmq != NULL)
-                event_supplier_zmq->detect_change(*this, ad,true,delta_change_rel,delta_change_abs,except,force_change,dev);
-
-
-			vector<string> filterable_names;
-			vector<double> filterable_data;
-			vector<string> filterable_names_lg;
-			vector<long> filterable_data_lg;
-
 			{
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
+
+				// Execute detect_change only to calculate the delta_change_rel and
+				// delta_change_abs and force_change !
+
+				if (event_supplier_nd || event_supplier_zmq)
+				{
+					EventSupplier* event_supplier = event_supplier_nd ? event_supplier_nd : event_supplier_zmq;
+					event_supplier->detect_change(
+					    *this,
+					    ad,
+					    true,
+					    delta_change_rel,
+					    delta_change_abs,
+					    except,
+					    force_change,
+					    dev);
+				}
 
 				if (except != NULL)
 				{
@@ -4520,6 +4524,11 @@ void Attribute::fire_archive_event(DevFailed *except)
 				}
 				prev_archive_event.inited = true;
 			}
+
+			vector<string> filterable_names;
+			vector<double> filterable_data;
+			vector<string> filterable_names_lg;
+			vector<long> filterable_data_lg;
 
 			filterable_names.push_back("forced_event");
 			if (force_change == true)
