@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 if [ $RUN_TESTS = "OFF" ]
 then
   echo "Skipping tests as requested"
@@ -15,8 +17,6 @@ function run_in_container {
     -e CTEST_OUTPUT_ON_FAILURE=ON \
     cpp_tango "$@"
 }
-
-set -e
 
 if [[ "$COVERALLS" == "ON" ]]; then
   run_in_container make coveralls
