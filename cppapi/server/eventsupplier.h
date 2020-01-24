@@ -173,11 +173,6 @@ protected :
 	static omni_mutex 		push_mutex;
 	static omni_condition	push_cond;
 
-	// Added a mutex to synchronize the access to
-	//	detect_event which is used
-	// from different threads
-	static omni_mutex		detect_mutex;
-
 private:
 	bool        one_subscription_cmd;
 };
