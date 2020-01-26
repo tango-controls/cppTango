@@ -33,7 +33,7 @@ docker exec cpp_tango cmake                                \
   -DCOVERALLS=${COVERALLS}                                 \
   -DCOVERALLS_MODULE_PATH=${COVERALLS_MODULE_PATH}
 
-if [[ "$COVERALLS" == "ON" ]]
+if [[ "$SONAR_SCANNER" == "ON" ||  "$COVERALLS" == "ON" ]]
 then
   docker exec cpp_tango                                            \
     /home/tango/build-wrapper-linux-x86/build-wrapper-linux-x86-64 \
