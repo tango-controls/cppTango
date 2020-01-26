@@ -3,9 +3,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [9.3.4] - 2019-10-21
+## [9.3.4] - 2020-01-26
+
 ### Fixed
 - Be compatible with all in-use cppzmq versions ([#530][pr-530], [#561][pr-561], [#273][i-273], [#499][i-499], [#535][i-535])
+- Fix snprintf detection. Now the `LOG_*` macros work again ([#658][pr-658])
+- Various spelling errors (found by lintian) ([#647][pr-647], [#621][pr-621])
+- CMake fixes regarding `CMAKE_BUILD_TYPE` logic ([#629][pr-629])
+- Fix race conditions between polling threads and user threads pushing events ([#665][pr-655], [#511][i-511])
+- Avoid undefined interface warning msvc ([#664][pr-664])
+
+### Added
+- Document contributing process and use CODEOWNERS for easier review organization ([#639][pr-639])
+- Add testing with debian buster ([#597][pr-597])
 
 ## [9.3.3] - 2019-03-29
 
