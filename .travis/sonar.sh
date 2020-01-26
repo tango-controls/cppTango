@@ -8,4 +8,5 @@ fi
 echo "Using SONAR_PROPERTIES=$SONAR_PROPERTIES"
 git fetch --unshallow --quiet
 cd /home/tango/src
+export PATH=$PATH:$(ls -d $HOME/sonar-scanner*/bin)
 sonar-scanner $SONAR_PROPERTIES
