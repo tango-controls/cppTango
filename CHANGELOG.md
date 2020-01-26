@@ -8,16 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Be compatible with all in-use cppzmq versions ([#530][pr-530], [#561][pr-561], [#273][i-273], [#499][i-499], [#535][i-535])
 
 ## [9.3.3] - 2019-03-29
+
 ### Added
 - Add asyn_reconnection test ([#502][pr-502])
 - Add .gitignore ([#522][pr-522])
-- Add Visual Studio 2017 compatibility. Appveyor now builds for Visual Studio 2017 in addition to all the previously 
+- Add Visual Studio 2017 compatibility. Appveyor now builds for Visual Studio 2017 in addition to all the previously
 supported versions ([#533][pr-533])
 
 ### Changed
 - Replace CORBA::string_dup calls with Tango::string_dup ([#474][pr-474])
 - Replace CORBA::string_free calls with Tango::string_free ([#539][pr-539])
-- Make it possible to remove dynamic attributes from delete_device() by moving the location where the device is removed 
+- Make it possible to remove dynamic attributes from delete_device() by moving the location where the device is removed
 from the device list ([#518][pr-518])
 - Use python2 (if available) to run cxxtestgen ([#523][pr-523])
 - Switch to Travis Xenial infrastructure ([#516][pr-516])
@@ -25,28 +26,28 @@ from the device list ([#518][pr-518])
 - Improve install documentation ([#529][pr-529])
 - Install log4tango include files under *<install_prefix>*/include/tango/log4tango ([#517][pr-517])
 - Update Doxygen documentation ([#532][i-532], [#544][pr-544])
-- Update Debian 7 and Debian 8 Travis Docker files after Debian Wheezy end of life and jessie-updates removal 
+- Update Debian 7 and Debian 8 Travis Docker files after Debian Wheezy end of life and jessie-updates removal
   ([#546][i-546], [#549][pr-549])
 
 ### Fixed
-- Fix memory leak in get_device_property() on Windows when code compiled with Visual Studio 10 or older 
+- Fix memory leak in get_device_property() on Windows when code compiled with Visual Studio 10 or older
 ([#439][i-439], [#488][pr-488])
 - Fix cxx_fwd_att occasional failure ([#384][i-384], [#428][i-428], [#493][pr-493])
-- Fix "Change event subscription blind to change events right after device server restart" issue 
-([#359][i-359], [#503][pr-503]). 
-**This bug fix may trigger the reception of 2 consecutive events having possibly the same attribute value 
+- Fix "Change event subscription blind to change events right after device server restart" issue
+([#359][i-359], [#503][pr-503]).
+**This bug fix may trigger the reception of 2 consecutive events having possibly the same attribute value
 (but different timestamps) during the Device Server startup phase.**
 - Fix client crash in case of asynchronous write_attribute executed immediately after reconnection ([#502][pr-502])
-- Fix issue with dynamic attributes when a device is restarted on a device server exporting several devices which are 
+- Fix issue with dynamic attributes when a device is restarted on a device server exporting several devices which are
 creating dynamic attributes ([#458][i-458], [#508][pr-508])
-- Fix uncaught DevFailed exception in DeviceProxy destructor in cxx_stateless_subscription test case when using 
-ZMQ 4.2.3 ([#514][i-514]). Since [zeromq/libzmq@edb4ca1][libzmq-c-edb4ca1], peer disconnection triggers zmq_disconnect 
-on a zmq socket. 
-Further zmq_disconnect calls for such socket and endpoint will fail with errno set to ENOENT. 
+- Fix uncaught DevFailed exception in DeviceProxy destructor in cxx_stateless_subscription test case when using
+ZMQ 4.2.3 ([#514][i-514]). Since [zeromq/libzmq@edb4ca1][libzmq-c-edb4ca1], peer disconnection triggers zmq_disconnect
+on a zmq socket.
+Further zmq_disconnect calls for such socket and endpoint will fail with errno set to ENOENT.
 The patch provided in [#520][pr-520] ignores such failure.
 - Fixed a broken dependency on generated Debian package ([5c74e8d][c-5c74e8d])
 - Fix appveyor.yml after appveyor windows image update ([#537][pr-537])
-- Fix event compatibility issues with device servers exporting Device_4 devices. Fix bug with Pipe, Data Ready and 
+- Fix event compatibility issues with device servers exporting Device_4 devices. Fix bug with Pipe, Data Ready and
 Device Interface Change events. Fix event channel name issues in these different cases. ([#492][i-492], [#531][pr-531])
 - Fix WAttribute::rollback() for DevUshort WRITE attributes ([#541][i-541], [#542][pr-542])
 
@@ -69,15 +70,15 @@ Device Interface Change events. Fix event channel name issues in these different
 - Fix some event compatibility issues with device server <= Tango 8 ([#456][i-456])
 - Fix event field in EventData structure passed to user's callback (broken in Tango 9.3.0 and 9.3.1)
 - Fix attribute name in EventData structure passed to user's callback for Attribute Config events
-- Fix a bug occurring when an event is pushed at the same time as an event (re)subscription occurs 
+- Fix a bug occurring when an event is pushed at the same time as an event (re)subscription occurs
 ([#484][i-484], [#485][pr-485])
 - Fix event name (EventData.event) passed to client's Callback after Tango 9 attribute reconnection ([#486][pr-486])
 - Fix some doxygen warnings
 
 ## [9.3.1] - 2018-05-23 [unstable]
 ### Changed
-- Add -pedantic for GCC/Clang and debug mode ([#441][pr-441]). **This change can generate 
-  errors with very old compilers (e.g. gcc 3.4.6) when compiling the lib debug 
+- Add -pedantic for GCC/Clang and debug mode ([#441][pr-441]). **This change can generate
+  errors with very old compilers (e.g. gcc 3.4.6) when compiling the lib debug
   version.** Please remove manually -pedantic flag in configure/CMakeLists.txt if
   you need to compile the debug version on a very old compiler.
 - Generate static library ([#17][i-17])
@@ -96,18 +97,18 @@ Device Interface Change events. Fix event channel name issues in these different
 ### Fixed
 - Fix FQDN events ([#423][pr-423], [#315][i-315])
    Limitations:
-     - in case DeviceProxy is used for event subscription, client will get incorrect value 
-	 in the event callback if short domain name is used in env.TANGO_HOST 
+     - in case DeviceProxy is used for event subscription, client will get incorrect value
+	 in the event callback if short domain name is used in env.TANGO_HOST
 	 e.g. hzgc103 -> hzgc103.desy.de
 - Fix memory leak when pipe event is sent and there is no client ([#447][i-447],[#448][pr-448])
-- Set the ZMQ Receive Buffer High Water Mark only if it changes ([#444][i-444],[#445][pr-445]) 
-   to reduce the impact of a bug in ZMQ 4.2.0 and ZMQ 4.2.1 which was fixed in 
+- Set the ZMQ Receive Buffer High Water Mark only if it changes ([#444][i-444],[#445][pr-445])
+   to reduce the impact of a bug in ZMQ 4.2.0 and ZMQ 4.2.1 which was fixed in
    commit [zeromq/libzmq@edc770d][libzmq-c-edc770d].
 
 ## [9.2.8] - 2018-03-29 [unstable]
 ### Changed
-- Cmake release targets ([#438][pr-438]) 
-- **Install include files in <install_prefix>/include/tango directory instead of 
+- Cmake release targets ([#438][pr-438])
+- **Install include files in <install_prefix>/include/tango directory instead of
    <install_prefix>/include**.
 
 ### Fixed
@@ -115,7 +116,7 @@ Device Interface Change events. Fix event channel name issues in these different
 
 ## [9.2.7] - 2018-02-27 [unstable]
 ### Added
-- **Use CMake** 
+- **Use CMake**
 - Set CMake minimum requirement to CMake 2.8.12 ([#422][pr-422])
 - Add DevVarBooleanArray operators ([#347][pr-347])
 - Add support for NaN and inf in device properties ([#360][i-360], [#362][pr-362],[ #371][pr-371])
@@ -129,25 +130,25 @@ Device Interface Change events. Fix event channel name issues in these different
 ### Changed
 - DeviceAttribute::get_type() no longer throws an API_EmptyDeviceAttribute exception when the DeviceAttribute is empty.
   It returns DATA_TYPE_UNKNOWN instead ([#393][pr-393], [#509][i-509]).
-   
+
   **Warning! This change could lead to Segmentation fault** in code doing things like:
-```  
+```
     DeviceAttribute da;
     da = device->read_attribute("AnAttributeWithINVALIDQualityFactor");
     cout << "Type = " << Tango::CmdArgTypeName[da.get_type()] << endl;
 ```
   Please refer to [#510][i-510] for more details.
 - Improve ZmqEventSubscriptionChange command argin and argout descriptions ([355da96][c-355da96])
-- Generate files from IDL (**add a dependency to tango-idl repository. omniidl is required to be able to generate some 
+- Generate files from IDL (**add a dependency to tango-idl repository. omniidl is required to be able to generate some
   files from  CORBA IDL**)
 - Get exception message from event callback ([#431][pr-431])
 - Add a map in MultiAttribute object to improve performances ([#424][i-424], [#430][pr-430])
 - A small Doxygen improvement - take version from cmake ([#436][pr-436])
 - Reduce event subscription sleeps on linux ([#415][pr-415]).
 
-**Warning**: There is no guarantee that after a successful call to subscribe_event() that a subscriber will receive all 
-the events it is interested in. In some situations, some important events might be missed if they occur between the 
-subscribe_event() call and the ZMQ subscription reception on the ZMQ publisher side, potentially leading to situations 
+**Warning**: There is no guarantee that after a successful call to subscribe_event() that a subscriber will receive all
+the events it is interested in. In some situations, some important events might be missed if they occur between the
+subscribe_event() call and the ZMQ subscription reception on the ZMQ publisher side, potentially leading to situations
 where a client application might show out of date/incorrect values.
 - Tango 9 LTS fix[#395][i-395] (Inserting const C string in DeviceData) ([#396][pr-396])
 
@@ -174,7 +175,7 @@ where a client application might show out of date/incorrect values.
 - Fix build errors when using C++17 ([#405][pr-405], [#425][pr-425])
 - Fix issue with polling not starting automatically on dynamic attributes ([#427][pr-427])
 - Add noreturn to remove some compilation warnings ([#435][pr-435])
-- CPU load when device has large number of attributes ([#404][pr-404]) 
+- CPU load when device has large number of attributes ([#404][pr-404])
 - push event performance issue ([#244][i-244])
 
 [9.3.4]: https://github.com/tango-controls/cppTango/compare/9.3.3...9.3.4
