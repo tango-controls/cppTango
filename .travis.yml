@@ -36,8 +36,7 @@ addons:
     update: true
   sonarcloud:
     organization: "tango-controls"
-    token:
-      secure: ${SONAR_TOKEN}
+    token: ${SONAR_TOKEN}
 
 before_install:
   - docker pull tangocs/mysql:9.2.2
