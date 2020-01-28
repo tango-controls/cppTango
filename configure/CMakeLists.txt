@@ -212,3 +212,5 @@ if(NOT WIN32)
 endif()
 include(GNUInstallDirs)
 include(configure/coveralls.cmake)
+
+option(TANGO_JPEG_MMX "Build MMX support" ON)
