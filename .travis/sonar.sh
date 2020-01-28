@@ -12,4 +12,4 @@ echo "Using SONAR_PROPERTIES=$SONAR_PROPERTIES"
 
 git fetch --unshallow --quiet
 
-docker exec -w "/home/tango/src" cpp_tango /home/tango/sonar-scanner/bin/sonar-scanner -x $SONAR_PROPERTIES
+docker exec -w "/home/tango/src" cpp_tango /home/tango/sonar-scanner/bin/sonar-scanner -X $SONAR_PROPERTIES
