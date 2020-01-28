@@ -46,7 +46,7 @@ before_install:
   - (test ${STOCK_CPPZMQ} = "OFF" && git clone -b v4.2.2 https://${CI_USER_TOKEN}@github.com/zeromq/cppzmq.git cppzmq) || mkdir cppzmq
   - git clone -b tango-9-lts https://${CI_USER_TOKEN}@github.com/tango-controls/tango-idl.git idl
   - git clone -b Release_1.15 https://github.com/tango-controls/tango_admin.git
-  - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.1.0.1829-linux.zip && unzip sonar-scanner-cli-4.1.0.1829-linux.zip
+  - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.1.0.1829-linux.zip && unzip sonar-scanner-cli-4.1.0.1829-linux.zip && mv sonar-scanner* sonar-scanner
   - wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip && unzip build-wrapper-linux-x86.zip
 
 before_script:
@@ -70,6 +70,7 @@ before_script:
       -v `pwd`/tango_admin:/home/tango/tango_admin
       -v `pwd`/coveralls-cmake:/home/tango/coveralls-cmake
       -v `pwd`/build-wrapper-linux-x86:/home/tango/build-wrapper-linux-x86
+      -v `pwd`/sonar-scanner:/home/tango/sonar-scanner
       -v /var/run/docker.sock:/var/run/docker.sock
       -dit
       cpp_tango
@@ -79,8 +80,6 @@ before_script:
   - docker exec -u root cpp_tango usermod -a -G dockerhost tango || true
   - .travis/install_tango_idl.sh
   - (test ${STOCK_CPPZMQ} = "OFF" && .travis/install_cppzmq.sh) || true
-#work around gcov ignored by sonar
-  - sudo mkdir /home/tango && sudo mkdir /home/tango/src && sudo mount --bind `pwd` /home/tango/src
 
 script:
   - set -e

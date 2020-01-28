@@ -12,9 +12,4 @@ echo "Using SONAR_PROPERTIES=$SONAR_PROPERTIES"
 
 git fetch --unshallow --quiet
 
-export PATH=$PATH:$(ls -d $HOME/sonar-scanner*/bin)
-echo $PATH
-ls -l $HOME
-
-cd /home/tango/src
-sonar-scanner $SONAR_PROPERTIES
+docker exec -w "/home/tango/src" cpp_tango /home/tango/sonar-scanner/bin/sonar-scanner $SONAR_PROPERTIES
