@@ -64,6 +64,7 @@ before_script:
       -e BINTRAY_USER_NAME=tango-ci
       -e BINTRAY_API_KEY=${CI_BINTRAY_API_KEY}
       -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN}
+      -e SONAR_TOKEN=${SONAR_TOKEN}
       -v `pwd`:/home/tango/src
       -v `pwd`/idl:/home/tango/idl
       -v `pwd`/cppzmq:/home/tango/cppzmq
