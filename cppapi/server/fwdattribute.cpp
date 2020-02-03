@@ -649,7 +649,7 @@ void FwdAttribute::upd_att_config(const Tango::AttributeConfig_5 &conf)
 // Send new config to root attribute if received configuration if different than the one we already have
 //
 
-	if (new_att_conf(Tango_nullptr,&conf) == true)
+	if (new_att_conf(nullptr,&conf) == true)
 	{
 		AttributeInfoListEx aile;
 		AttributeInfoEx aie;
@@ -676,7 +676,7 @@ void FwdAttribute::upd_att_config(const Tango::AttributeConfig_3 &conf)
 // Send new config to root attribute if received configuration if different than the one we already have
 //
 
-	if (new_att_conf(&conf,Tango_nullptr) == true)
+	if (new_att_conf(&conf,nullptr) == true)
 	{
 		AttributeInfoListEx aile;
 		AttributeInfoEx aie;
@@ -714,7 +714,7 @@ bool FwdAttribute::new_att_conf(const Tango::AttributeConfig_3 *conf3,const Tang
 {
 	bool ret = false;
 
-	if (conf3 != Tango_nullptr)
+	if (conf3 != nullptr)
 	{
 		ret = new_att_conf_base(*conf3);
 	}
@@ -909,7 +909,7 @@ DevAttrHistory_5 *FwdAttribute::read_root_att_history(long n)
 // Get data from root device (Reminder: we don't use the classical API. See above)
 //
 
-	DevAttrHistory_5 *hist_5 = Tango_nullptr;
+	DevAttrHistory_5 *hist_5 = nullptr;
 	int ctr = 0;
 
 	while (ctr < 2)
@@ -1013,7 +1013,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 	dvsa[0] = Tango::string_dup(get_fwd_att_name().c_str());
 
 	int ctr = 0;
-	AttributeValueList_5 *attr_value_list_5 = Tango_nullptr;
+	AttributeValueList_5 *attr_value_list_5 = nullptr;
 	Tango::AccessControlType local_act;
 
 	while (ctr < 2)

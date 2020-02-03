@@ -102,7 +102,7 @@ typedef union _Attr_Value
 }Attr_Value;
 
 
-typedef struct last_attr_value
+struct LastAttrValue
 {
 	bool 				inited;
 	Tango::AttrQuality 	quality;
@@ -110,7 +110,13 @@ typedef struct last_attr_value
 	bool 				err;
 	DevFailed 			except;
 	AttrValUnion		value_4;
-} LastAttrValue;
+	void store(
+	    const AttributeValue_5*,
+	    const AttributeValue_4*,
+	    const AttributeValue_3*,
+	    const AttributeValue*,
+	    DevFailed*);
+};
 
 typedef enum prop_type
 {

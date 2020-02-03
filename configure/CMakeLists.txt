@@ -3,9 +3,27 @@ include(FindDoxygen)
 include(GNUInstallDirs)
 
 if(NOT CMAKE_BUILD_TYPE)
-    message("No build type specified - default is Release")
     set(CMAKE_BUILD_TYPE Release)
 endif()
+
+#assuming build platform == target
+set(PLATFORM 32)
+if(WIN32)
+    if(CMAKE_CL_64)
+        set(PLATFORM 64)
+    endif(CMAKE_CL_64)
+else(WIN32)
+    if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+        set(PLATFORM 64)
+    endif()
+endif(WIN32)
+
+message(STATUS "CMake: version ${CMAKE_VERSION}")
+message(STATUS "Target platform: ${CMAKE_SYSTEM_NAME} ${PLATFORM}-bit")
+message(STATUS "C++ Compiler: ${CMAKE_CXX_COMPILER_ID} with version ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "C Compiler: ${CMAKE_C_COMPILER_ID} with version ${CMAKE_C_COMPILER_VERSION}")
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Environment: TANGO_HOST=$ENV{TANGO_HOST}")
 
 if(NOT TANGO_DEVICE_SERVER_PATH)
     #TODO windows
@@ -174,34 +192,14 @@ if(${FAILED})
     message(SEND_ERROR " No omniidl was found! rv=${FAILED}")
 endif()
 
-#assuming build platform == target
-set(PLATFORM 32)
-if(WIN32)
-    if(CMAKE_CL_64)
-        set(PLATFORM 64)
-    endif(CMAKE_CL_64)
-else(WIN32)
-    if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-        set(PLATFORM 64)
-    endif()
-endif(WIN32)
-
 if(NOT WIN32)
     include(CheckCXXCompilerFlag)
     # C++17 and higher support is currently not possible as omniorb uses
     # throw specifications and these are not supported anymore.
     CHECK_CXX_COMPILER_FLAG("-std=c++14" COMPILER_SUPPORTS_CXX14)
-    CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-    CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
     CHECK_CXX_COMPILER_FLAG("-Og" COMPILER_SUPPORTS_OG)
     if(COMPILER_SUPPORTS_CXX14)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-    elseif(COMPILER_SUPPORTS_CXX11)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-    elseif(COMPILER_SUPPORTS_CXX0X)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-    else()
-        message("The compiler ${CMAKE_CXX_COMPILER} has no C++11/14 support. You may not benefit from performance optimizations.")
     endif()
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
@@ -228,6 +226,14 @@ if(WARNINGS_AS_ERRORS)
     add_compile_options(-Werror)
   endif()
 endif()
+
+if(cxx_relaxed_constexpr IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+  set(TANGO_CXX_HAS_RELAXED_CONSTEXPR TRUE)
+else()
+  set(TANGO_CXX_HAS_RELAXED_CONSTEXPR FALSE)
+endif()
+
+message(STATUS "Check if the compiler supports C++14 relaxed constexpr: ${TANGO_CXX_HAS_RELAXED_CONSTEXPR}")
 
 include(GNUInstallDirs)
 include(configure/coveralls.cmake)

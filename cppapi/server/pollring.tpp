@@ -235,7 +235,7 @@ void PollRing::get_attr_history(long n,T *ptr,long type)
 	long error_nb = 0;
 
 	long vers;
-	if (ring[index].attr_value_4 == Tango_nullptr)
+	if (ring[index].attr_value_4 == nullptr)
 		vers = 5;
 	else
 		vers = 4;

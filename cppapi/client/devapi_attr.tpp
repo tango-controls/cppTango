@@ -34,9 +34,7 @@
 #ifndef _DEVAPI_ATTR_TPP
 #define _DEVAPI_ATTR_TPP
 
-#ifdef HAS_TYPE_TRAITS
-	#include <type_traits>
-#endif
+#include <type_traits>
 
 namespace Tango
 {
@@ -410,7 +408,6 @@ void DeviceAttribute::insert(std::vector<T> &_datum,int _x,int _y)
 template <typename T>
 bool DeviceAttribute::template_type_check(T &TANGO_UNUSED(_datum))
 {
-#ifdef HAS_UNDERLYING
 	bool short_enum = std::is_same<short,typename std::underlying_type<T>::type>::value;
 	bool uns_int_enum = std::is_same<unsigned int,typename std::underlying_type<T>::type>::value;
 
@@ -425,9 +422,7 @@ bool DeviceAttribute::template_type_check(T &TANGO_UNUSED(_datum))
 
 		return false;
 	}
-#endif // HAS_UNDERLYING
 
-#ifdef HAS_TYPE_TRAITS
 	if (std::is_enum<T>::value == false)
 	{
 		if (exceptions_flags.test(wrongtype_flag))
@@ -439,7 +434,6 @@ bool DeviceAttribute::template_type_check(T &TANGO_UNUSED(_datum))
 
 		return false;
 	}
-#endif // HAS_TYPE_TRAITS
 
 	return true;
 }

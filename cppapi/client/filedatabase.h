@@ -205,11 +205,7 @@ private:
 
   	std::string 			word;
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<FileDatabaseExt> ext;
-#else
-    FileDatabaseExt	*ext;
-#endif
 };
 
 } // end namespace Tango

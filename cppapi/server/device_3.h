@@ -162,11 +162,7 @@ public:
 /**
  * The device desctructor.
  */
-#ifdef HAS_UNIQUE_PTR
     virtual ~Device_3Impl() {}
-#else
-	virtual ~Device_3Impl() {delete ext_3;}
-#endif
 //@}
 
 
@@ -338,11 +334,7 @@ private:
 
     void real_ctor();
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<Device_3ImplExt>     ext_3;           // Class extension
-#else
-	Device_3ImplExt                 *ext_3;
-#endif
 };
 
 } // End of Tango namespace

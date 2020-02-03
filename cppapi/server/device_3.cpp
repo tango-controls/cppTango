@@ -442,9 +442,9 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					else
 						index = idx[i];
 
-					if (aid.data_5 != Tango_nullptr)
+					if (aid.data_5 != nullptr)
 						error_from_devfailed((*aid.data_5)[index],e,names[i]);
-					else if (aid.data_4 != Tango_nullptr)
+					else if (aid.data_4 != nullptr)
 						error_from_devfailed((*aid.data_4)[index],e,names[i]);
 					else
 						error_from_devfailed((*aid.data_3)[index],e,names[i]);
@@ -516,7 +516,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 // Take the attribute mutex before calling the user read method
 //
 
-					if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (aid.data_4 != Tango_nullptr || aid.data_5 != Tango_nullptr))
+					if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (aid.data_4 != nullptr || aid.data_5 != nullptr))
 					{
 						cout4 << "Locking attribute mutex for attribute " << att.get_name() << std::endl;
 						omni_mutex *attr_mut = att.get_attr_mutex();
@@ -565,7 +565,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 					wanted_attr[i].failed = true;
 
-					if (aid.data_5 != Tango_nullptr)
+					if (aid.data_5 != nullptr)
 					{
 						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
 						{
@@ -575,7 +575,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						}
 						error_from_devfailed((*aid.data_5)[index],e,names[wanted_attr[i].idx_in_names]);
 					}
-					else if (aid.data_4 != Tango_nullptr)
+					else if (aid.data_4 != nullptr)
 					{
 						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
 						{
@@ -605,7 +605,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					del[0].reason = Tango::string_dup("API_CorbaSysException ");
 					del[0].desc = Tango::string_dup("Unforseen exception when trying to read attribute. It was even not a Tango DevFailed exception");
 
-					if (aid.data_5 != Tango_nullptr)
+					if (aid.data_5 != nullptr)
 					{
 						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
 						{
@@ -615,7 +615,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						}
 						error_from_errorlist((*aid.data_5)[index],del,names[wanted_attr[i].idx_in_names]);
 					}
-					else if (aid.data_4 != Tango_nullptr)
+					else if (aid.data_4 != nullptr)
 					{
 						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
 						{
@@ -669,7 +669,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 				wanted_w_attr[i].failed = true;
 				AttrSerialModel atsm = att.get_attr_serial_model();
 
-				if (aid.data_5 != Tango_nullptr)
+				if (aid.data_5 != nullptr)
 				{
 					if ((atsm != ATTR_NO_SYNC) && (w_type == Tango::READ_WITH_WRITE))
 					{
@@ -679,7 +679,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					}
 					error_from_devfailed((*aid.data_5)[index],e,names[wanted_w_attr[i].idx_in_names]);
 				}
-				else if (aid.data_4 != Tango_nullptr)
+				else if (aid.data_4 != nullptr)
 				{
 					if ((atsm != ATTR_NO_SYNC) && (w_type == Tango::READ_WITH_WRITE))
 					{
@@ -701,7 +701,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 //
 
 		Tango::DevState d_state = Tango::UNKNOWN;
-		Tango::ConstDevString d_status = Tango_nullptr;
+		Tango::ConstDevString d_status = nullptr;
 
 		if (state_wanted == true)
 		{
@@ -722,9 +722,9 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
                 catch (Tango::DevFailed &e)
                 {
                     state_from_read = false;
-                    if (aid.data_5 != Tango_nullptr)
+                    if (aid.data_5 != nullptr)
                         error_from_devfailed((*aid.data_5)[state_idx],e,names[state_idx]);
-                    else if (aid.data_4 != Tango_nullptr)
+                    else if (aid.data_4 != nullptr)
                         error_from_devfailed((*aid.data_4)[state_idx],e,names[state_idx]);
                     else
                         error_from_devfailed((*aid.data_3)[state_idx],e,names[state_idx]);
@@ -732,9 +732,9 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
             }
             else
             {
-                if (aid.data_5 != Tango_nullptr)
+                if (aid.data_5 != nullptr)
                     error_from_errorlist((*aid.data_5)[state_idx],(*aid.data_5)[wanted_attr[id].idx_in_names].err_list,names[state_idx]);
-                else if (aid.data_4 != Tango_nullptr)
+                else if (aid.data_4 != nullptr)
                     error_from_errorlist((*aid.data_4)[state_idx],(*aid.data_4)[wanted_attr[id].idx_in_names].err_list,names[state_idx]);
                 else
                     error_from_errorlist((*aid.data_3)[state_idx],(*aid.data_3)[wanted_attr[id].idx_in_names].err_list,names[state_idx]);
@@ -752,9 +752,9 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 			}
 			catch (Tango::DevFailed &e)
 			{
-				if (aid.data_5 != Tango_nullptr)
+				if (aid.data_5 != nullptr)
 					error_from_devfailed((*aid.data_5)[status_idx],e,names[status_idx]);
-				else if (aid.data_4 != Tango_nullptr)
+				else if (aid.data_4 != nullptr)
 					error_from_devfailed((*aid.data_4)[status_idx],e,names[status_idx]);
 				else
 					error_from_devfailed((*aid.data_3)[status_idx],e,names[status_idx]);
@@ -775,21 +775,21 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 				index = idx[i];
 
 			unsigned long nb_err;
-			if (aid.data_5 != Tango_nullptr)
+			if (aid.data_5 != nullptr)
 				nb_err = (*aid.data_5)[index].err_list.length();
-			else if (aid.data_4 != Tango_nullptr)
+			else if (aid.data_4 != nullptr)
 				nb_err = (*aid.data_4)[index].err_list.length();
 			else
 				nb_err = (*aid.data_3)[index].err_list.length();
 
 			if ((state_wanted == true) && (state_idx == i))
 			{
-				if (aid.data_5 != Tango_nullptr)
+				if (aid.data_5 != nullptr)
 				{
 					if (nb_err == 0)
 						state2attr(d_state,(*aid.data_5)[index]);
 				}
-				else if (aid.data_4 != Tango_nullptr)
+				else if (aid.data_4 != nullptr)
 				{
 					if (nb_err == 0)
 						state2attr(d_state,(*aid.data_4)[index]);
@@ -804,12 +804,12 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 			if ((status_wanted == true) && (status_idx == i))
 			{
-				if (aid.data_5 != Tango_nullptr)
+				if (aid.data_5 != nullptr)
 				{
 					if (nb_err == 0)
 						status2attr(d_status,(*aid.data_5)[index]);
 				}
-				else if (aid.data_4 != Tango_nullptr)
+				else if (aid.data_4 != nullptr)
 				{
 					if (nb_err == 0)
 						status2attr(d_status,(*aid.data_4)[index]);
@@ -916,7 +916,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 								att.set_time();
 
 							AttrSerialModel atsm = att.get_attr_serial_model();
-							if (aid.data_5 != Tango_nullptr)
+							if (aid.data_5 != nullptr)
 							{
 								if ((atsm != ATTR_NO_SYNC) && ((att.is_fwd_att() == true) || (w_type != Tango::WRITE)))
 								{
@@ -930,7 +930,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 								(*aid.data_5)[index].data_format = att.get_data_format();
 								(*aid.data_5)[index].data_type = att.get_data_type();
 							}
-							else if (aid.data_4 != Tango_nullptr)
+							else if (aid.data_4 != nullptr)
 							{
 								if ((atsm != ATTR_NO_SYNC) && ((att.is_fwd_att() == true) || (w_type != Tango::WRITE)))
 								{
@@ -950,7 +950,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						}
 						catch (Tango::DevFailed &e)
 						{
-							if (aid.data_5 != Tango_nullptr)
+							if (aid.data_5 != nullptr)
 							{
 								cout4 << "Asking CORBA structure to release attribute mutex for attribute " << att.get_name() << std::endl;
 								if (att.get_writable() != Tango::WRITE)
@@ -959,7 +959,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 								}
 								error_from_devfailed((*aid.data_5)[index],e,att.get_name().c_str());
 							}
-							else if (aid.data_4 != Tango_nullptr)
+							else if (aid.data_4 != nullptr)
 							{
 								cout4 << "Asking CORBA structure to release attribute mutex for attribute " << att.get_name() << std::endl;
 								if (att.get_writable() != Tango::WRITE)
@@ -982,7 +982,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 					AttrSerialModel atsm = att.get_attr_serial_model();
 
-					if (aid.data_5 != Tango_nullptr)
+					if (aid.data_5 != nullptr)
 					{
 						if ((atsm != ATTR_NO_SYNC) && (att.get_writable() != Tango::WRITE))
 						{
@@ -995,7 +995,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						(*aid.data_5)[index].data_format = att.get_data_format();
 						(*aid.data_5)[index].data_type = att.get_data_type();
 					}
-					else if (aid.data_4 != Tango_nullptr)
+					else if (aid.data_4 != nullptr)
 					{
 						if ((atsm != ATTR_NO_SYNC) && (att.get_writable() != Tango::WRITE))
 						{
@@ -1091,9 +1091,9 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (aid.data_5 != Tango_nullptr)
+			if (aid.data_5 != nullptr)
 				error_from_devfailed((*aid.data_5)[i],e,names[i]);
-			else if (aid.data_4 != Tango_nullptr)
+			else if (aid.data_4 != nullptr)
 				error_from_devfailed((*aid.data_4)[i],e,names[i]);
 			else
 				error_from_devfailed((*aid.data_3)[i],e,names[i]);
@@ -1156,12 +1156,12 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 	for (i = 0;i < nb_names;i++)
 	{
 
-		if (aid.data_5 != Tango_nullptr)
+		if (aid.data_5 != nullptr)
 		{
 			if ((*aid.data_5)[i].err_list.length() != 0)
 				continue;
 		}
-		else if (aid.data_4 != Tango_nullptr)
+		else if (aid.data_4 != nullptr)
 		{
 			if ((*aid.data_4)[i].err_list.length() != 0)
 				continue;
@@ -1204,12 +1204,12 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			const char *ori = "Device_3Impl::read_attributes_from_cache";
 			const char *reas = API_NoDataYet;
 
-			if (aid.data_5 != Tango_nullptr)
+			if (aid.data_5 != nullptr)
 			{
 				one_error((*aid.data_5)[i],reas,ori,s,names[i]);
 				(*aid.data_5)[i].data_format = FMT_UNKNOWN;
 			}
-			else if (aid.data_4 != Tango_nullptr)
+			else if (aid.data_4 != nullptr)
 			{
 				one_error((*aid.data_4)[i],reas,ori,s,names[i]);
 				(*aid.data_4)[i].data_format = FMT_UNKNOWN;
@@ -1233,9 +1233,9 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			const char *ori = "Device_3Impl::read_attributes_from_cache";
 			const char *reas = API_NoDataYet;
 
-			if (aid.data_5 != Tango_nullptr)
+			if (aid.data_5 != nullptr)
 				one_error((*aid.data_5)[i],reas,ori,s,names[i]);
-			else if (aid.data_4 != Tango_nullptr)
+			else if (aid.data_4 != nullptr)
 				one_error((*aid.data_4)[i],reas,ori,s,names[i]);
 			else
 				one_error((*aid.data_3)[i],reas,ori,s,names[i]);
@@ -1274,9 +1274,9 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				const char *ori = "Device_3Impl::read_attributes_from_cache";
 				const char *reas = API_NotUpdatedAnyMore;
 
-				if (aid.data_5 != Tango_nullptr)
+				if (aid.data_5 != nullptr)
 					one_error((*aid.data_5)[i],reas,ori,s,names[i]);
-				else if (aid.data_4 != Tango_nullptr)
+				else if (aid.data_4 != nullptr)
 					one_error((*aid.data_4)[i],reas,ori,s,names[i]);
 				else
 					one_error((*aid.data_3)[i],reas,ori,s,names[i]);
@@ -1341,14 +1341,14 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 // Init remaining structure members according to IDL client (aid.xxxx) and IDL device (vers)
 //
 
-				if (aid.data_5 != Tango_nullptr)
+				if (aid.data_5 != nullptr)
 				{
 					AttributeValue_5 &att_val = polled_attr->get_last_attr_value_5(false);
 					init_polled_out_data((*aid.data_5)[i],att_val);
 					(*aid.data_5)[i].data_format = att_val.data_format;
 					(*aid.data_5)[i].data_type = att_val.data_type;
 				}
-				else if (aid.data_4 != Tango_nullptr)
+				else if (aid.data_4 != nullptr)
 				{
 					if (vers >= 5)
 					{
@@ -1385,9 +1385,9 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (aid.data_5 != Tango_nullptr)
+			if (aid.data_5 != nullptr)
 				error_from_devfailed((*aid.data_5)[i],e,names[i]);
-			else if (aid.data_4 != Tango_nullptr)
+			else if (aid.data_4 != nullptr)
 				error_from_devfailed((*aid.data_4)[i],e,names[i]);
 			else
 				error_from_devfailed((*aid.data_3)[i],e,names[i]);

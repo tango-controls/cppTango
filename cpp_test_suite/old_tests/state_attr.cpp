@@ -478,7 +478,7 @@ int main(int argc, char **argv)
 	build_f_name(file_name);
 	start_logging(adm_name,file_name);
 
-	AttributeInfoListEx *att_conf2 = Tango_nullptr;
+	AttributeInfoListEx *att_conf2 = nullptr;
 
 	try
 	{

@@ -519,10 +519,8 @@ public :
 	DeviceDataHistory(int, int *,DevCmdHistoryList *);
 	DeviceDataHistory(const DeviceDataHistory &);
 	DeviceDataHistory & operator=(const DeviceDataHistory &);
-#ifdef HAS_RVALUE
 	DeviceDataHistory(DeviceDataHistory &&);
 	DeviceDataHistory &operator=(DeviceDataHistory &&);
-#endif
 
 	~DeviceDataHistory();
 
@@ -603,11 +601,7 @@ private:
         DeviceDataHistoryExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DeviceDataHistoryExt>    ext_hist;
-#else
-	DeviceDataHistoryExt	            *ext_hist;		// Class extension
-#endif
 };
 
 typedef std::vector<DeviceDataHistory> DeviceDataHistoryList;
@@ -641,10 +635,8 @@ public :
 	DeviceAttributeHistory(int, DevAttrHistoryList_3_var &);
 	DeviceAttributeHistory(const DeviceAttributeHistory &);
 	DeviceAttributeHistory & operator=(const DeviceAttributeHistory &);
-#ifdef HAS_RVALUE
 	DeviceAttributeHistory(DeviceAttributeHistory &&);
 	DeviceAttributeHistory &operator=(DeviceAttributeHistory &&);
-#endif
 
 	~DeviceAttributeHistory();
 ///@publicsection
@@ -701,11 +693,7 @@ private:
         DeviceAttributeHistoryExt() {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DeviceAttributeHistoryExt>   ext_hist;
-#else
-	DeviceAttributeHistoryExt	            *ext_hist;	// Class extension
-#endif
 };
 
 

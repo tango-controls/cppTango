@@ -212,13 +212,13 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 // Get device interface only if necessary (some client(s) listening on device interface change event)
 //
 
-	ZmqEventSupplier *event_supplier_zmq = Tango_nullptr;
+	ZmqEventSupplier *event_supplier_zmq = nullptr;
 	event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
 	DevIntr di;
 
 	bool ev_client = false;
 
-	if (event_supplier_zmq != Tango_nullptr)
+	if (event_supplier_zmq != nullptr)
 	{
 		ev_client = event_supplier_zmq->any_dev_intr_client(device);
 	}

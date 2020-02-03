@@ -86,7 +86,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, const char *d_name,
       state_from_read(false), py_device(false), device_locked(false),
       locker_client(NULL), old_locker_client(NULL), lock_ctr(0),
       min_poll_period(0), run_att_conf_loop(true), force_alarm_state(false), with_fwd_att(false),
-      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(Tango_nullptr)
+      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(nullptr)
 {
     real_ctor();
 }
@@ -104,7 +104,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name, std::string &de
       state_from_read(false), py_device(false), device_locked(false),
       locker_client(NULL), old_locker_client(NULL), lock_ctr(0),
       min_poll_period(0), run_att_conf_loop(true), force_alarm_state(false), with_fwd_att(false),
-      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(Tango_nullptr)
+      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(nullptr)
 {
     real_ctor();
 }
@@ -120,7 +120,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name)
       state_from_read(false), py_device(false), device_locked(false),
       locker_client(NULL), old_locker_client(NULL), lock_ctr(0),
       min_poll_period(0), run_att_conf_loop(true), force_alarm_state(false), with_fwd_att(false),
-      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(Tango_nullptr)
+      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(nullptr)
 {
     desc = "A Tango device";
     device_state = Tango::UNKNOWN;
@@ -140,7 +140,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name, std::string &de
       state_from_read(false), py_device(false), device_locked(false),
       locker_client(NULL), old_locker_client(NULL), lock_ctr(0),
       min_poll_period(0), run_att_conf_loop(true), force_alarm_state(false), with_fwd_att(false),
-      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(Tango_nullptr)
+      event_intr_change_subscription(0), intr_change_ev(false), devintr_thread(nullptr)
 {
     desc = description;
     device_state = Tango::UNKNOWN;
@@ -451,9 +451,6 @@ DeviceImpl::~DeviceImpl()
 // Delete the extension class instance
 //
 
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 
 //
 // Clear our ptr in the device class vector
@@ -912,15 +909,6 @@ std::vector<PollObj *>::iterator DeviceImpl::get_polled_obj_by_type_name(
     o << obj_name << " not found in list of polled object" << std::ends;
     Except::throw_exception((const char *) API_PollObjNotFound, o.str(),
                             (const char *) "DeviceImpl::get_polled_obj_by_type_name");
-
-//
-// Only to make compiler quiet. Should never pass here
-//
-
-// exclude the return value for VC8+
-#if not defined(_TG_WINDOWS_) || (defined(_MSC_VER) && _MSC_VER < 1400)
-    return (std::vector<PollObj *>::iterator) NULL;
-#endif
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -5246,7 +5234,7 @@ void DeviceImpl::data_into_net_object(Attribute &att, AttributeIdlData &aid,
 
         case Tango::DEV_ENCODED :
         {
-            if (aid.data_3 != Tango_nullptr)
+            if (aid.data_3 != nullptr)
             {
                 (*aid.data_3)[index].err_list.length(1);
                 (*aid.data_3)[index].err_list[0].severity = Tango::ERR;
@@ -5261,7 +5249,7 @@ void DeviceImpl::data_into_net_object(Attribute &att, AttributeIdlData &aid,
             else
             {
                 Tango::DevVarEncodedArray *ptr = att.get_encoded_value();
-                if (aid.data_5 != Tango_nullptr)
+                if (aid.data_5 != nullptr)
                 {
                     (*aid.data_5)[index].value.encoded_att_value(dummy_encoded_att_value);
                     DevVarEncodedArray &the_seq = (*aid.data_5)[index].value.encoded_att_value();
@@ -5445,7 +5433,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
             break;
 
         case Tango::DEV_STATE :
-            if (aid.data_5 != Tango_nullptr)
+            if (aid.data_5 != nullptr)
             {
                 AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false);
                 if (att_val.value._d() == DEVICE_STATE)
@@ -5459,7 +5447,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
                     (*aid.data_5)[index].value.state_att_value(union_seq);
                 }
             }
-            else if (aid.data_4 != Tango_nullptr)
+            else if (aid.data_4 != nullptr)
             {
                 if (vers >= 5)
                 {
@@ -5551,7 +5539,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
             break;
 
         case Tango::DEV_ENCODED:
-            if (aid.data_5 != Tango_nullptr)
+            if (aid.data_5 != nullptr)
             {
                 AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false);
                 DevVarEncodedArray &polled_seq = att_val.value.encoded_att_value();
@@ -5570,7 +5558,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
                     the_seq[loop].encoded_data.replace(nb_data, nb_data, tmp_enc);
                 }
             }
-            else if (aid.data_4 != Tango_nullptr)
+            else if (aid.data_4 != nullptr)
             {
                 if (vers == 5)
                 {
@@ -6042,7 +6030,6 @@ Command &DeviceImpl::get_local_cmd_by_name(const std::string &cmd_name)
 {
     std::vector<Command *>::iterator pos;
 
-#ifdef HAS_LAMBDA_FUNC
     pos = find_if(command_list.begin(), command_list.end(),
                   [&](Command *cmd) -> bool
                   {
@@ -6054,10 +6041,6 @@ Command &DeviceImpl::get_local_cmd_by_name(const std::string &cmd_name)
                       std::transform(tmp_name.begin(), tmp_name.end(), tmp_name.begin(), ::tolower);
                       return cmd->get_lower_name() == tmp_name;
                   });
-#else
-                                                                                                                            pos = find_if(command_list.begin(),command_list.end(),
-				bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
-#endif
 
     if (pos == command_list.end())
     {
@@ -6085,7 +6068,6 @@ void DeviceImpl::remove_local_command(const std::string &cmd_name)
 {
     std::vector<Command *>::iterator pos;
 
-#ifdef HAS_LAMBDA_FUNC
     pos = find_if(command_list.begin(), command_list.end(),
                   [&](Command *cmd) -> bool
                   {
@@ -6095,10 +6077,6 @@ void DeviceImpl::remove_local_command(const std::string &cmd_name)
                       }
                       return cmd->get_lower_name() == cmd_name;
                   });
-#else
-                                                                                                                            pos = find_if(command_list.begin(),command_list.end(),
-				bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
-#endif
 
     if (pos == command_list.end())
     {

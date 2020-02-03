@@ -41,28 +41,6 @@
 namespace Tango
 {
 
-#ifndef HAS_LAMBDA_FUNC
-//
-// Binary function objects to be used by the find_if algorithm.
-// The find_if algo. want to have a predicate, this means that the return value
-// must be a boolean (R is its name).
-// The find_if algo. needs a unary predicate. This function object is a binary
-// function object. It must be used with the bind2nd function adapter
-//
-
-template <typename A1,typename A2,typename R>
-struct WantedCmd : public binary_function<A1,A2,R>
-{
-	R operator() (A1 cmd_ptr, A2 name) const
-	{
-		if (::strlen(name) != cmd_ptr->get_lower_name().size())
-			return false;
-        std::string tmp_name(name);
-		std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
-		return cmd_ptr->get_lower_name() == tmp_name;
-	}
-};
-#endif
 
 typedef bool (DeviceImpl::*ALLO_PTR)(const CORBA::Any &);
 
@@ -216,11 +194,7 @@ public:
 /**
  * The object desctructor.
  */
-#ifdef HAS_UNIQUE_PTR
     virtual ~Command() {}
-#else
-	virtual ~Command() {delete ext;}
-#endif
 //@}
 
 /**@name Miscellaneous methods */
@@ -1244,11 +1218,7 @@ private:
 	void alloc_any(CORBA::Any *&);
 	void throw_bad_type(const char *);
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<CommandExt>          ext;           // Class extension
-#else
-	CommandExt		                *ext;
-#endif
 
 //
 // Ported from the extension class
@@ -1295,7 +1265,7 @@ public:
  *
  * The default constructor
  */
-	TemplCommand():ext(Tango_nullptr) {}
+	TemplCommand():ext(nullptr) {}
 
 /**
  * Constructs a newly allocated TemplCommand object for a command with a
@@ -1631,11 +1601,7 @@ private:
     };
 
 	void (DeviceImpl::*exe_ptr)();
-#ifdef HAS_UNIQUE_PTR
-    std::unique_ptr<TemplCommandExt>     ext;           // Class extension
-#else
-	TemplCommandExt		            *ext;
-#endif
+  std::unique_ptr<TemplCommandExt>     ext;           // Class extension
 
 protected:
 /**@name Class data members */
@@ -2004,11 +1970,7 @@ private:
     };
 
 	OUTARG (DeviceImpl::*exe_ptr_inout)(INARG);
-#ifdef HAS_UNIQUE_PTR
-    std::unique_ptr<TemplCommandInOut>       ext;           // Class extension
-#else
-	TemplCommandInOutExt		        *ext;
-#endif
+  std::unique_ptr<TemplCommandInOut>       ext;           // Class extension
 };
 
 //+-------------------------------------------------------------------------
@@ -2021,7 +1983,7 @@ private:
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceImpl::*f)(INARG))
-:TemplCommand(s),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2029,7 +1991,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceI
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &))
-:TemplCommand(s),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2037,7 +1999,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceI
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG))
-:TemplCommand(s),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2045,7 +2007,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (Device
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &))
-:TemplCommand(s),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2053,7 +2015,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (Device
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceImpl::*f)(INARG),const char *in_desc,const char *out_desc)
-:TemplCommand(s,in_desc,out_desc),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2061,7 +2023,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceI
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),const char *in_desc,const char *out_desc)
-:TemplCommand(s,in_desc,out_desc),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2069,7 +2031,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceI
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),std::string &in_desc,std::string &out_desc)
-:TemplCommand(s,in_desc,out_desc),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2077,7 +2039,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (Device
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),std::string &in_desc,std::string &out_desc)
-:TemplCommand(s,in_desc,out_desc),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2085,7 +2047,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (Device
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceImpl::*f)(INARG),Tango::DispLevel level)
-:TemplCommand(s,level),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s,level),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2093,7 +2055,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceI
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
-:TemplCommand(s,level),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s,level),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2101,7 +2063,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceI
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),Tango::DispLevel level)
-:TemplCommand(s,level),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s,level),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2109,7 +2071,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (Device
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
-:TemplCommand(s,level),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s,level),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2117,7 +2079,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (Device
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceImpl::*f)(INARG),const char *in_desc,const char *out_desc,Tango::DispLevel level)
-:TemplCommand(s,in_desc,out_desc,level),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc,level),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2125,7 +2087,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceI
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),const char *in_desc,const char *out_desc,Tango::DispLevel level)
-:TemplCommand(s,in_desc,out_desc,level),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc,level),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2133,7 +2095,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(const char *s,OUTARG (DeviceI
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),std::string &in_desc,std::string &out_desc,Tango::DispLevel level)
-:TemplCommand(s,in_desc,out_desc,level),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc,level),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2141,7 +2103,7 @@ TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (Device
 
 template <typename INARG,typename OUTARG>
 TemplCommandInOut<INARG,OUTARG>::TemplCommandInOut(std::string &s,OUTARG (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),std::string &in_desc,std::string &out_desc,Tango::DispLevel level)
-:TemplCommand(s,in_desc,out_desc,level),exe_ptr_inout(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc,level),exe_ptr_inout(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2559,11 +2521,7 @@ private:
     };
 
 	void (DeviceImpl::*exe_ptr_in)(INARG);
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<TemplCommandInExt>    ext;           // Class extension
-#else
-	TemplCommandInExt		        *ext;
-#endif
 };
 
 //+-------------------------------------------------------------------------
@@ -2576,7 +2534,7 @@ private:
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG))
-:TemplCommand(s),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2584,7 +2542,7 @@ TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG)
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &))
-:TemplCommand(s),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2592,7 +2550,7 @@ TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG)
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG))
-:TemplCommand(s),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2600,7 +2558,7 @@ TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &))
-:TemplCommand(s),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2608,7 +2566,7 @@ TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG),const char *in_desc,const char *out_desc)
-:TemplCommand(s,in_desc,out_desc),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2616,7 +2574,7 @@ TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG)
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),const char *in_desc,const char *out_desc)
-:TemplCommand(s,in_desc,out_desc),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2624,7 +2582,7 @@ TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG)
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),std::string &in_desc,std::string &out_desc)
-:TemplCommand(s,in_desc,out_desc),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2632,7 +2590,7 @@ TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),std::string &in_desc,std::string &out_desc)
-:TemplCommand(s,in_desc,out_desc),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2640,7 +2598,7 @@ TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG),Tango::DispLevel level)
-:TemplCommand(s,level),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s,level),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2648,7 +2606,7 @@ TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG)
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
-:TemplCommand(s,level),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s,level),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2656,7 +2614,7 @@ TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG)
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),Tango::DispLevel level)
-:TemplCommand(s,level),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s,level),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2664,7 +2622,7 @@ TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
-:TemplCommand(s,level),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s,level),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2672,7 +2630,7 @@ TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG),const char *in_desc,const char *out_desc,Tango::DispLevel level)
-:TemplCommand(s,in_desc,out_desc,level),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc,level),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2680,7 +2638,7 @@ TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG)
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),const char *in_desc,const char *out_desc,Tango::DispLevel level)
-:TemplCommand(s,in_desc,out_desc,level),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc,level),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -2688,7 +2646,7 @@ TemplCommandIn<INARG>::TemplCommandIn(const char *s,void (DeviceImpl::*f)(INARG)
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),std::string &in_desc,std::string &out_desc,Tango::DispLevel level)
-:TemplCommand(s,in_desc,out_desc,level),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc,level),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -2696,7 +2654,7 @@ TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG
 
 template <typename INARG>
 TemplCommandIn<INARG>::TemplCommandIn(std::string &s,void (DeviceImpl::*f)(INARG),bool (DeviceImpl::*a)(const CORBA::Any &),std::string &in_desc,std::string &out_desc,Tango::DispLevel level)
-:TemplCommand(s,in_desc,out_desc,level),exe_ptr_in(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc,level),exe_ptr_in(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -3093,11 +3051,7 @@ private:
     };
 
 	OUTARG (DeviceImpl::*exe_ptr_out)();
-#ifdef HAS_UNIQUE_PTR
-    std::unique_ptr<TemplCommandOutExt>      ext;           // Class extension
-#else
-	TemplCommandOutExt		            *ext;
-#endif
+  std::unique_ptr<TemplCommandOutExt>      ext;           // Class extension
 };
 
 //+-------------------------------------------------------------------------
@@ -3110,7 +3064,7 @@ private:
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)())
-:TemplCommand(s),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -3118,7 +3072,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)()
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &))
-:TemplCommand(s),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -3126,7 +3080,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)()
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)())
-:TemplCommand(s),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -3134,7 +3088,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &))
-:TemplCommand(s),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -3142,7 +3096,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)(),const char *in_desc,const char *out_desc)
-:TemplCommand(s,in_desc,out_desc),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -3150,7 +3104,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)()
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),const char *in_desc,const char *out_desc)
-:TemplCommand(s,in_desc,out_desc),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -3158,7 +3112,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)()
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),std::string &in_desc,std::string &out_desc)
-:TemplCommand(s,in_desc,out_desc),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -3166,7 +3120,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),std::string &in_desc,std::string &out_desc)
-:TemplCommand(s,in_desc,out_desc),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -3174,7 +3128,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)(),Tango::DispLevel level)
-:TemplCommand(s,level),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s,level),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -3182,7 +3136,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)()
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
-:TemplCommand(s,level),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s,level),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -3190,7 +3144,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)()
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),Tango::DispLevel level)
-:TemplCommand(s,level),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s,level),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -3198,7 +3152,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
-:TemplCommand(s,level),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s,level),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -3206,7 +3160,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)(),const char *in_desc,const char *out_desc,Tango::DispLevel level)
-:TemplCommand(s,in_desc,out_desc,level),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc,level),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -3214,7 +3168,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)()
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),const char *in_desc,const char *out_desc,Tango::DispLevel level)
-:TemplCommand(s,in_desc,out_desc,level),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc,level),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();
@@ -3222,7 +3176,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(const char *s,OUTARG (DeviceImpl::*f)()
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),std::string &in_desc,std::string &out_desc,Tango::DispLevel level)
-:TemplCommand(s,in_desc,out_desc,level),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc,level),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = NULL;
 	init_types();
@@ -3230,7 +3184,7 @@ TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(
 
 template <typename OUTARG>
 TemplCommandOut<OUTARG>::TemplCommandOut(std::string &s,OUTARG (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),std::string &in_desc,std::string &out_desc,Tango::DispLevel level)
-:TemplCommand(s,in_desc,out_desc,level),exe_ptr_out(f),ext(Tango_nullptr)
+:TemplCommand(s,in_desc,out_desc,level),exe_ptr_out(f),ext(nullptr)
 {
 	allowed_ptr = a;
 	init_types();

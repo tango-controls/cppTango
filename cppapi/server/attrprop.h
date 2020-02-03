@@ -71,13 +71,13 @@ public:
 /**
  * Default constructor.
  */
-	AttrProp() : is_value(false),ext(Tango_nullptr) {}
+	AttrProp() : is_value(false),ext(nullptr) {}
 /**
  * Create a new AttrProp object.
  *
  * @param value The attribute property value.
  */
-	AttrProp(const T &value) : val(value), is_value(true), ext(Tango_nullptr)
+	AttrProp(const T &value) : val(value), is_value(true), ext(nullptr)
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
@@ -89,13 +89,13 @@ public:
  *
  * @param value_str The 'C string' representation of attribute property.
  */
-	AttrProp(const char *value_str) : str(std::string(value_str)), is_value(false), ext(Tango_nullptr) {}
+	AttrProp(const char *value_str) : str(std::string(value_str)), is_value(false), ext(nullptr) {}
 /**
  * Create a new AttrProp object.
  *
  * @param value_str The string representation of attribute property value.
  */
-	AttrProp(const std::string &value_str) : str(value_str), is_value(false), ext(Tango_nullptr) {}
+	AttrProp(const std::string &value_str) : str(value_str), is_value(false), ext(nullptr) {}
 //@}
 
 /**@name Assignment operators
@@ -240,11 +240,7 @@ private:
 
 	class AttrPropExt {};
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<AttrPropExt>		ext;           // Class extension
-#else
-    AttrPropExt					*ext;
-#endif
 };
 
 //===================================================================================================================
@@ -517,11 +513,7 @@ private:
 
 	class DoubleAttrPropExt {};
 
-#ifdef HAS_UNIQUE_PTR
 	std::unique_ptr<DoubleAttrPropExt>	ext;           // Class extension
-#else
-	DoubleAttrPropExt				*ext;
-#endif
 };
 
 //==================================================================================================================
@@ -665,11 +657,7 @@ private:
 
 	class MultiAttrPropExt {};
 
-#ifdef HAS_UNIQUE_PTR
 	std::unique_ptr<MultiAttrPropExt>	ext;           // Class extension
-#else
-	MultiAttrPropExt				*ext;
-#endif
 };
 
 } // End of Tango namespace

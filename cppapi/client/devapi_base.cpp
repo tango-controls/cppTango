@@ -127,16 +127,12 @@ Connection::Connection(ORB *orb_in)
 }
 
 Connection::Connection(bool dummy)
-    : ext(Tango_nullptr), tr_reco(true), prev_failed(false), prev_failed_t0(0.0),
+    : ext(nullptr), tr_reco(true), prev_failed(false), prev_failed_t0(0.0),
       user_connect_timeout(-1), tango_host_localhost(false)
 {
     if (dummy)
     {
-#ifdef HAS_UNIQUE_PTR
         ext.reset(new ConnectionExt());
-#else
-        ext = new ConnectionExt();
-#endif
     }
 }
 
@@ -148,9 +144,6 @@ Connection::Connection(bool dummy)
 
 Connection::~Connection()
 {
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -160,7 +153,7 @@ Connection::~Connection()
 //-----------------------------------------------------------------------------
 
 Connection::Connection(const Connection &sou)
-    : ext(Tango_nullptr)
+    : ext(nullptr)
 {
     dbase_used = sou.dbase_used;
     from_env_var = sou.from_env_var;
@@ -203,23 +196,11 @@ Connection::Connection(const Connection &sou)
 
     device_5 = sou.device_5;
 
-#ifdef HAS_UNIQUE_PTR
     if (sou.ext.get() != NULL)
     {
         ext.reset(new ConnectionExt);
         *(ext.get()) = *(sou.ext.get());
     }
-#else
-    if (sou.ext != NULL)
-    {
-        ext = new ConnectionExt();
-        *ext = *(sou.ext);
-    }
-    else
-    {
-        ext = NULL;
-    }
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -271,7 +252,6 @@ Connection &Connection::operator=(const Connection &rval)
 
     device_5 = rval.device_5;
 
-#ifdef HAS_UNIQUE_PTR
     if (rval.ext.get() != NULL)
     {
         ext.reset(new ConnectionExt);
@@ -279,19 +259,8 @@ Connection &Connection::operator=(const Connection &rval)
     }
     else
     {
-        ext.reset(Tango_nullptr);
+        ext.reset(nullptr);
     }
-#else
-    if (rval.ext != NULL)
-    {
-        ext = new ConnectionExt();
-        *ext = *(rval.ext);
-    }
-    else
-    {
-        ext = NULL;
-    }
-#endif
 
     return *this;
 }
@@ -1894,7 +1863,7 @@ void DeviceProxy::real_constructor(std::string &name, bool need_check_acc)
 //-----------------------------------------------------------------------------
 
 DeviceProxy::DeviceProxy(const DeviceProxy &sou)
-    : Connection(sou), ext_proxy(Tango_nullptr)
+    : Connection(sou), ext_proxy(nullptr)
 {
 
 //
@@ -1944,23 +1913,11 @@ DeviceProxy::DeviceProxy(const DeviceProxy &sou)
 // Copy extension class
 //
 
-#ifdef HAS_UNIQUE_PTR
     if (sou.ext_proxy.get() != NULL)
     {
         ext_proxy.reset(new DeviceProxyExt);
         *(ext_proxy.get()) = *(sou.ext_proxy.get());
     }
-#else
-    if (sou.ext_proxy == NULL)
-    {
-        ext_proxy = NULL;
-    }
-    else
-    {
-        ext_proxy = new DeviceProxyExt();
-        *ext_proxy = *(sou.ext_proxy);
-    }
-#endif
 
 }
 
@@ -2020,7 +1977,6 @@ DeviceProxy &DeviceProxy::operator=(const DeviceProxy &rval)
             adm_device = NULL;
         }
 
-#ifdef HAS_UNIQUE_PTR
         if (rval.ext_proxy.get() != NULL)
         {
             ext_proxy.reset(new DeviceProxyExt);
@@ -2030,18 +1986,6 @@ DeviceProxy &DeviceProxy::operator=(const DeviceProxy &rval)
         {
             ext_proxy.reset();
         }
-#else
-        delete ext_proxy;
-        if (rval.ext_proxy != NULL)
-        {
-            ext_proxy = new DeviceProxyExt;
-            *ext_proxy = *(rval.ext_proxy);
-        }
-        else
-        {
-            ext_proxy = NULL;
-        }
-#endif
     }
 
     return *this;
@@ -2663,9 +2607,6 @@ DeviceProxy::~DeviceProxy()
 
     delete adm_device;
 
-#ifndef HAS_UNIQUE_PTR
-    delete ext_proxy;
-#endif
 }
 
 void DeviceProxy::unsubscribe_all_events()
@@ -5426,7 +5367,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
     }
 
     DevVarPipeDataEltArray *tmp_ptr = dev_pipe.get_root_blob().get_insert_data();
-    if (tmp_ptr == Tango_nullptr)
+    if (tmp_ptr == nullptr)
     {
         Except::throw_exception(API_PipeNoDataElement, "No data in pipe!", "DeviceProxy::write_pipe()");
     }
@@ -10179,22 +10120,11 @@ int DeviceProxy::get_tango_lib_version()
 // Tango 5 or 6. The beast we can do is to get the info that it is Tango 5.2 (or above)
 //
 
-#ifdef HAS_LAMBDA_FUNC
             auto pos = find_if((*cmd_list).begin(), (*cmd_list).end(),
                                [](Tango::CommandInfo &cc) -> bool
                                {
                                    return cc.cmd_name == "QueryWizardClassProperty";
                                });
-#else
-            std::vector<CommandInfo>::iterator pos, end;
-            for (pos = (*cmd_list).begin(), end = (*cmd_list).end(); pos != end; ++pos)
-            {
-                if (pos->cmd_name == "QueryWizardClassProperty")
-                {
-                    break;
-                }
-            }
-#endif
             if (pos != (*cmd_list).end())
             {
                 ret = 520;
@@ -10216,7 +10146,6 @@ int DeviceProxy::get_tango_lib_version()
             bool ecs = false;
             bool zesc = false;
 
-#ifdef HAS_RANGE_BASE_FOR
             for (const auto &cmd : *cmd_list)
             {
                 if (cmd.cmd_name == "EventConfirmSubscription")
@@ -10230,22 +10159,6 @@ int DeviceProxy::get_tango_lib_version()
                     zesc = true;
                 }
             }
-#else
-            std::vector<CommandInfo>::iterator pos, pos_end;
-            for (pos = (*cmd_list).begin(), pos_end = (*cmd_list).end(); pos != pos_end; ++pos)
-            {
-                if (pos->cmd_name == "EventConfirmSubscription")
-                {
-                    ecs = true;
-                    break;
-                }
-
-                if (pos->cmd_name == "ZmqEventSubscriptionChange")
-                {
-                    zesc = true;
-                }
-            }
-#endif
             if (ecs == true)
             {
                 ret = 810;

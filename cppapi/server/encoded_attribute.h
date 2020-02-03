@@ -231,11 +231,7 @@ private:
     int					    buf_elt_nb;
     bool					manage_exclusion;
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<EncodedAttributeExt>     ext;           // Class extension
-#else
-    EncodedAttributeExt	                *ext;
-#endif
 
 };
 
