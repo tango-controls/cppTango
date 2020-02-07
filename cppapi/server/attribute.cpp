@@ -5313,7 +5313,7 @@ DeviceClass *Attribute::get_att_device_class(std::string &dev_name)
                 // Check whether our device is listed in this class
                 for (size_t i = 0; i < dev_list.size(); ++i)
                 {
-                    if (dev_list[i]->name() == dev_name)
+                    if (dev_list[i]->get_name() == dev_name)
                     {
                         // Our device is listed in this class, returns the corresponding DeviceClass pointer
                         return tmp_cl_list[loop];
