@@ -63,6 +63,38 @@ ZmqEventSupplier *ZmqEventSupplier::_instance = NULL;
 /*		       															*/
 /************************************************************************/
 
+ZmqEventSupplier::Future::Future():is_ready_(false),mutex(),cond(&mutex)
+{
+
+}
+void ZmqEventSupplier::Future::set()
+{
+    omni_mutex_lock lk(mutex);
+    is_ready_ = true;
+    cond.signal();
+    
+}
+
+void ZmqEventSupplier::Future::wait()
+{
+    if(!is_ready_)
+    {
+        omni_mutex_lock lk(mutex);
+        cond.wait();
+    }
+}
+void ZmqEventSupplier::Future::reset()
+{
+    omni_mutex_lock lk(mutex);
+    is_ready_ = false;
+}
+bool ZmqEventSupplier::Future::is_ready()
+{
+    return is_ready_;
+}
+
+        
+
 
 ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),event_pub_sock(NULL),
 name_specified(false),double_send(0),double_send_heartbeat(false)
@@ -977,13 +1009,10 @@ void tg_unlock(TANGO_UNUSED(void *data),void *hint)
 		th_id = omni_thread::create_dummy();
 
     ZmqEventSupplier *ev = (ZmqEventSupplier *)hint;
-    omni_mutex &the_mut = ev->get_push_mutex();
-    omni_condition &the_cond = ev->get_push_cond();
 
 	if (th_id->id() != ev->get_calling_th())
 	{
-		omni_mutex_lock oml(the_mut);
-		the_cond.signal();
+		ev->get_unlock_future().set();
 	}
 	else
 	{
@@ -1531,7 +1560,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,std::string event_type
 		{
 			if (require_wait == true)
 			{
-				push_cond.wait();
+				unlock_future.wait();
 			}
 
 			push_mutex.release();

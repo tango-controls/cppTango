@@ -247,6 +247,20 @@ public :
 	TANGO_IMP_EXP static ZmqEventSupplier *create(Util *);
 	virtual ~ZmqEventSupplier();
 
+
+    class Future
+    {
+    public:
+    	Future();
+    	void set();
+    	void wait();
+    	void reset();
+    	bool is_ready();
+    private:
+    	bool is_ready_;
+    	omni_mutex 		mutex;
+		omni_condition	cond;
+    };
 //------------------ Push event -------------------------------
 
 	void push_heartbeat_event();
@@ -273,6 +287,8 @@ public :
     int get_calling_th() {return calling_th;}
     void set_require_wait(bool bo) {require_wait=bo;}
 
+    Future& get_unlock_future(){return unlock_future;};
+
     std::string create_full_event_name(DeviceImpl *device_impl,
                                   const std::string &event_type,
                                   const std::string &obj_name_lower,
@@ -296,6 +312,9 @@ private :
         client_addr             clnt;
         time_t                  date;
     };
+
+
+    Future unlock_future; //
 
 	zmq::context_t              zmq_context;            // ZMQ context
 	zmq::socket_t               *heartbeat_pub_sock;    // heartbeat publisher socket
