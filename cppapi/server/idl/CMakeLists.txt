@@ -6,16 +6,16 @@ message("Using IDL=${IDL_PKG_INCLUDE_DIRS}")
 find_program(OMNIIDL NAMES omniidl
                      PATHS ${OMNIIDL_PATH})
 
-if(${OMNIIDL-NOTFOUND})
+if(NOT OMNIIDL)
   message(FATAL_ERROR "Could not find omniidl")
 endif()
 
 execute_process(COMMAND ${OMNIIDL} -I${IDL_PKG_INCLUDE_DIRS} -bcxx -Wbh=.h -Wbs=SK.cpp -Wbd=DynSK.cpp -Wba ${IDL_PKG_INCLUDE_DIRS}/tango.idl
                 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                RESULT_VARIABLE FAILED)
+                RESULT_VARIABLE OMNIIDL_RETURN_CODE)
 
-if(${FAILED})
-    message(SEND_ERROR " Failed to generate source files from idl. rv=${FAILED}")
+if(OMNIIDL_RETURN_CODE)
+    message(SEND_ERROR " Failed to generate source files from idl. rv=${OMNIIDL_RETURN_CODE}")
 endif()
 
 function(replace_in_file FILENAME SEARCH NEW_CONTENT)
