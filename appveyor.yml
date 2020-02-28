@@ -195,3 +195,20 @@ artifacts:
   - path: ./*.exe
   - path: ./*.zip
   - path: ./*.msi
+
+deploy:
+- provider: GitHub
+  tag: $(APPVEYOR_REPO_TAG_NAME)
+  description: "Release $(APPVEYOR_REPO_TAG_NAME)"
+  auth_token:
+    # User: cppTango-bot
+    # Personal Access token with repo scope, encrypted via https://ci.appveyor.com/tools/encrypt
+    secure: KnvPAbdhmiTQxTLOGq7nyNs6d1JYbKVKspPgigzQ3fDrI+nkaxqWCw6UmRkS2Gqe
+  artifact: /.*/
+  repository: tango-controls/cppTango
+  draft: true
+  prerelease: true
+  force_update: true
+  # deploy on tag push only
+  on:
+    APPVEYOR_REPO_TAG: true
