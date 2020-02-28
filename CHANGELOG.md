@@ -3,19 +3,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [9.3.4] - 2020-01-26
+## [9.3.4] - 2020-xx-xx (TODO: update date just before releasing)
 
 ### Fixed
 - Be compatible with all in-use cppzmq versions ([#530][pr-530], [#561][pr-561], [#273][i-273], [#499][i-499], [#535][i-535])
 - Fix snprintf detection. Now the `LOG_*` macros work again ([#658][pr-658])
 - Various spelling errors (found by lintian) ([#647][pr-647], [#621][pr-621])
 - CMake fixes regarding `CMAKE_BUILD_TYPE` logic ([#629][pr-629])
-- Fix race conditions between polling threads and user threads pushing events ([#665][pr-655], [#511][i-511])
+- Fix race conditions between polling threads and user threads pushing events ([#665][pr-665], [#511][i-511])
 - Avoid undefined interface warning msvc ([#664][pr-664])
+- travis.yml: remove deprecated skip_cleanup ([#683](pr-683))
+- Fix memory leak in Attribute::get_att_device_class() ([#677](pr-677))
 
 ### Added
 - Document contributing process and use CODEOWNERS for easier review organization ([#639][pr-639])
 - Add testing with debian buster ([#597][pr-597])
+- Add CMake option to disable building the test suite ([#689](pr-689))
+- Add CMake switch to disable building MMX ([#674](pr-674))
 
 ## [9.3.3] - 2019-03-29
 
@@ -288,6 +292,7 @@ where a client application might show out of date/incorrect values.
 [pr-508]: https://github.com/tango-controls/cppTango/pull/508
 [i-509]: https://github.com/tango-controls/cppTango/issues/509
 [i-510]: https://github.com/tango-controls/cppTango/issues/510
+[i-511]: https://github.com/tango-controls/cppTango/issues/511
 [i-514]: https://github.com/tango-controls/cppTango/issues/514
 [pr-516]: https://github.com/tango-controls/cppTango/pull/516
 [pr-517]: https://github.com/tango-controls/cppTango/pull/517
@@ -310,3 +315,13 @@ where a client application might show out of date/incorrect values.
 [i-546]: https://github.com/tango-controls/cppTango/issues/546
 [pr-549]: https://github.com/tango-controls/cppTango/pull/549
 [pr-561]: https://github.com/tango-controls/cppTango/pull/561
+[pr-597]: https://github.com/tango-controls/cppTango/pull/597
+[pr-621]: https://github.com/tango-controls/cppTango/pull/621
+[pr-629]: https://github.com/tango-controls/cppTango/pull/629
+[pr-639]: https://github.com/tango-controls/cppTango/pull/639
+[pr-647]: https://github.com/tango-controls/cppTango/pull/647
+[pr-658]: https://github.com/tango-controls/cppTango/pull/658
+[pr-664]: https://github.com/tango-controls/cppTango/pull/664
+[pr-665]: https://github.com/tango-controls/cppTango/pull/665
+[pr-677]: https://github.com/tango-controls/cppTango/pull/677
+[pr-683]: https://github.com/tango-controls/cppTango/pull/683
