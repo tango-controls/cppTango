@@ -28,6 +28,7 @@
 - `-DCMAKE_VERBOSE_MAKEFILE=true`
 - `-DTANGO_USE_USING_NAMESPACE=<ON|OFF>` choose `OFF` for modern builds
 - `-DUSE_PCH=<ON|OFF>`
+- `-DBUILD_TESTING=<ON|OFF>` Build the test suite (`ON` by default)
 
 Typical output:
 
