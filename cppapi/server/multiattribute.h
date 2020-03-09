@@ -38,27 +38,13 @@
 #define _MULTIATTRIBUTE_H
 
 #include <tango.h>
+#include "event_subscription_state.h"
 
 namespace Tango
 {
 
 class AttrProperty;
 class DeviceClass;
-
-struct EventPar
-{
-	std::string attribute_name;
-	std::vector<int>		change;
-	std::vector<int>		archive;
-	bool			quality;
-	std::vector<int>		periodic;
-	std::vector<int>		user;
-	std::vector<int>		att_conf;
-	bool			data_ready;
-	bool			dev_intr_change;
-	bool        	notifd;
-	bool        	zmq;
-};
 
 //=============================================================================
 //
@@ -280,8 +266,8 @@ public:
 	void remove_attribute(std::string &,bool);
 	std::vector<long> &get_w_attr_list() {return writable_attr_list;}
 	bool is_att_quality_alarmed();
-	void get_event_param(std::vector<EventPar> &);
-	void set_event_param(std::vector<EventPar> &);
+	void get_event_param(EventSubscriptionStates&);
+	void set_event_param(const EventSubscriptionStates&);
 	void add_alarmed_quality_factor(std::string &);
 	void add_default(std::vector<AttrProperty> &,std::string &,std::string &,long);
 	void add_attr(Attribute *att);

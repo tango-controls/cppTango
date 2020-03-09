@@ -1449,7 +1449,7 @@ void MultiAttribute::read_alarm(std::string &status)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::get_event_param(std::vector<EventPar> &eve)
+void MultiAttribute::get_event_param(EventSubscriptionStates& eve)
 {
 	unsigned int i;
 
@@ -1508,7 +1508,7 @@ void MultiAttribute::get_event_param(std::vector<EventPar> &eve)
 
 		if (once_more == true)
 		{
-			EventPar ep;
+			EventSubscriptionState ep;
 
 			if (attr_list[i]->use_notifd_event() == true)
                 ep.notifd = true;
@@ -1548,7 +1548,7 @@ void MultiAttribute::get_event_param(std::vector<EventPar> &eve)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::set_event_param(std::vector<EventPar> &eve)
+void MultiAttribute::set_event_param(const EventSubscriptionStates& eve)
 {
 	for (size_t i = 0;i < eve.size();i++)
 	{
@@ -1558,7 +1558,7 @@ void MultiAttribute::set_event_param(std::vector<EventPar> &eve)
 
 			{
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				std::vector<int>::iterator ite;
+				std::vector<int>::const_iterator ite;
 
 				if (eve[i].change.empty() == false)
 				{
