@@ -424,7 +424,6 @@ enum cb_sub_model
 #define 	CONNECTION_NOTOK	0
 
 #define		PROT_SEP			"://"
-#define		TACO_PROTOCOL		"taco"
 #define		TANGO_PROTOCOL		"tango"
 
 #define		MODIFIER			'#'
