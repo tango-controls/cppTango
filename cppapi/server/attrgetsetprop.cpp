@@ -1320,12 +1320,12 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 		{
 			WAttribute *w_att = static_cast<WAttribute *>(this);
 			std::string mem_value;
-			if (strcmp(prop_name,"min_value") == 0 || strcmp(prop_name,"min_alarm") == 0)
+			if (strcmp(prop_name,"min_value") == 0)
 			{
 				if ((w_att->is_memorized() == true) && (w_att->mem_value_below_above(MIN,mem_value) == true))
 					throw_min_max_value(d_name,mem_value,MIN);
 			}
-			else if (strcmp(prop_name,"max_value") == 0 || strcmp(prop_name,"max_alarm") == 0)
+			else if (strcmp(prop_name,"max_value") == 0)
 			{
 				if ((w_att->is_memorized() == true) && (w_att->mem_value_below_above(MAX,mem_value) == true))
 					throw_min_max_value(d_name,mem_value,MAX);
