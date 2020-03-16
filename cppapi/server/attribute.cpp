@@ -5912,21 +5912,18 @@ bool Attribute::data_ready_event_subscribed()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::set_client_lib(int _l,std::string &ev_name)
+void Attribute::set_client_lib(int client_lib_version, EventType event_type)
 {
-	cout4 << "Attribute::set_client_lib(" << _l << "," << ev_name << ")" << std::endl;
-	int i;
-	for (i = 0; i < numEventType; i++)
-	{
-		if (ev_name == EventName[i])
-		{
-			break;
-		}
-	}
+	cout4 << "Attribute::set_client_lib("
+		<< client_lib_version << ","
+		<< EventName[event_type] << ")" << std::endl;
 
-	if (count(client_lib[i].begin(), client_lib[i].end(), _l) == 0)
+	if (0 == count(
+	    client_lib[event_type].begin(),
+	    client_lib[event_type].end(),
+	    client_lib_version))
 	{
-		client_lib[i].push_back(_l);
+		client_lib[event_type].push_back(client_lib_version);
 	}
 }
 
