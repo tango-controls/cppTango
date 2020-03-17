@@ -53,7 +53,6 @@ set(HEADERS accessproxy.h
             event.tpp
             devapi_attr.tpp
             devapi_utils.tpp
-            api_util.tpp
             devapi_pipe.tpp)
 
 add_subdirectory(helpers)
