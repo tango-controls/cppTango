@@ -171,6 +171,43 @@ void attribute_value_to_device_attribute_3(
     }
 }
 
+template <typename AttributeValueT>
+void attribute_value_to_device_attribute_5(
+    AttributeValueT& attr_value,
+    DeviceAttribute& dev_attr)
+{
+    copy_attribute_value_fields_to_device_attribute(attr_value, dev_attr);
+    dev_attr.data_format = attr_value.data_format;
+
+    if (attr_value.quality == Tango::ATTR_INVALID)
+    {
+        return;
+    }
+
+    switch(attr_value.value._d())
+    {
+    case ATT_BOOL:      return convert_attribute_value_to_device_attribute<ATT_BOOL>(attr_value, dev_attr);
+    case ATT_SHORT:     return convert_attribute_value_to_device_attribute<ATT_SHORT>(attr_value, dev_attr);
+    case ATT_LONG:      return convert_attribute_value_to_device_attribute<ATT_LONG>(attr_value, dev_attr);
+    case ATT_LONG64:    return convert_attribute_value_to_device_attribute<ATT_LONG64>(attr_value, dev_attr);
+    case ATT_FLOAT:     return convert_attribute_value_to_device_attribute<ATT_FLOAT>(attr_value, dev_attr);
+    case ATT_DOUBLE:    return convert_attribute_value_to_device_attribute<ATT_DOUBLE>(attr_value, dev_attr);
+    case ATT_UCHAR:     return convert_attribute_value_to_device_attribute<ATT_UCHAR>(attr_value, dev_attr);
+    case ATT_USHORT:    return convert_attribute_value_to_device_attribute<ATT_USHORT>(attr_value, dev_attr);
+    case ATT_ULONG:     return convert_attribute_value_to_device_attribute<ATT_ULONG>(attr_value, dev_attr);
+    case ATT_ULONG64:   return convert_attribute_value_to_device_attribute<ATT_ULONG64>(attr_value, dev_attr);
+    case ATT_STRING:    return convert_attribute_value_to_device_attribute<ATT_STRING>(attr_value, dev_attr);
+    case ATT_STATE:     return convert_attribute_value_to_device_attribute<ATT_STATE>(attr_value, dev_attr);
+    case ATT_ENCODED:   return convert_attribute_value_to_device_attribute<ATT_ENCODED>(attr_value, dev_attr);
+    case DEVICE_STATE:
+        dev_attr.d_state = attr_value.value.dev_state_att();
+        dev_attr.d_state_filled = true;
+        break;
+    case ATT_NO_DATA:
+        break;
+    }
+}
+
 } // namespace
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -1000,7 +1037,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeVa
 
 void ApiUtil::attr_to_device(const AttributeValue_4 *attr_value_4, TANGO_UNUSED(long vers), DeviceAttribute *dev_attr)
 {
-    attr_to_device_base(attr_value_4, dev_attr);
+    attribute_value_to_device_attribute_5(const_cast<AttributeValue_4&>(*attr_value_4), *dev_attr);
 
 //
 // Warning: Since Tango 9, data type SHORT is used for both short attribute and enumeration attribute!
@@ -1013,7 +1050,9 @@ void ApiUtil::attr_to_device(const AttributeValue_4 *attr_value_4, TANGO_UNUSED(
 
 void ApiUtil::attr_to_device(const AttributeValue_5 *attr_value_5, TANGO_UNUSED(long vers), DeviceAttribute *dev_attr)
 {
-    attr_to_device_base(attr_value_5, dev_attr);
+    // const must be dropped because underlying sequence may be released.
+    // Signature cannot be corrected because this is a public method.
+    attribute_value_to_device_attribute_5(const_cast<AttributeValue_5&>(*attr_value_5), *dev_attr);
     dev_attr->data_type = attr_value_5->data_type;
 }
 
@@ -2134,48 +2173,5 @@ std::ostream &operator<<(std::ostream &o_str, PipeInfo &p)
 
     return o_str;
 }
-
-template <typename AttributeValueT>
-inline void ApiUtil::attr_to_device_base(
-    const AttributeValueT *attr_value_const,
-    DeviceAttribute *device_attr)
-{
-    // const must be dropped because underlying sequence may be released.
-    // Signature cannot be corrected because this is a public method.
-    auto& attr_value = const_cast<AttributeValueT&>(*attr_value_const);
-    auto& dev_attr = *device_attr;
-
-    copy_attribute_value_fields_to_device_attribute(attr_value, dev_attr);
-    dev_attr.data_format = attr_value.data_format;
-
-    if (attr_value.quality == Tango::ATTR_INVALID)
-    {
-        return;
-    }
-
-    switch(attr_value.value._d())
-    {
-    case ATT_BOOL:      return convert_attribute_value_to_device_attribute<ATT_BOOL>(attr_value, dev_attr);
-    case ATT_SHORT:     return convert_attribute_value_to_device_attribute<ATT_SHORT>(attr_value, dev_attr);
-    case ATT_LONG:      return convert_attribute_value_to_device_attribute<ATT_LONG>(attr_value, dev_attr);
-    case ATT_LONG64:    return convert_attribute_value_to_device_attribute<ATT_LONG64>(attr_value, dev_attr);
-    case ATT_FLOAT:     return convert_attribute_value_to_device_attribute<ATT_FLOAT>(attr_value, dev_attr);
-    case ATT_DOUBLE:    return convert_attribute_value_to_device_attribute<ATT_DOUBLE>(attr_value, dev_attr);
-    case ATT_UCHAR:     return convert_attribute_value_to_device_attribute<ATT_UCHAR>(attr_value, dev_attr);
-    case ATT_USHORT:    return convert_attribute_value_to_device_attribute<ATT_USHORT>(attr_value, dev_attr);
-    case ATT_ULONG:     return convert_attribute_value_to_device_attribute<ATT_ULONG>(attr_value, dev_attr);
-    case ATT_ULONG64:   return convert_attribute_value_to_device_attribute<ATT_ULONG64>(attr_value, dev_attr);
-    case ATT_STRING:    return convert_attribute_value_to_device_attribute<ATT_STRING>(attr_value, dev_attr);
-    case ATT_STATE:     return convert_attribute_value_to_device_attribute<ATT_STATE>(attr_value, dev_attr);
-    case ATT_ENCODED:   return convert_attribute_value_to_device_attribute<ATT_ENCODED>(attr_value, dev_attr);
-    case DEVICE_STATE:
-        dev_attr.d_state = attr_value.value.dev_state_att();
-        dev_attr.d_state_filled = true;
-        break;
-    case ATT_NO_DATA:
-        break;
-	}
-}
-
 
 } // End of tango namespace
