@@ -99,6 +99,78 @@ void convert_attribute_value_to_device_attribute(
     }
 }
 
+template <typename AttributeValueT>
+void copy_attribute_value_fields_to_device_attribute(
+    const AttributeValueT& attr_val,
+    DeviceAttribute& dev_attr)
+{
+    dev_attr.name = attr_val.name;
+    dev_attr.quality = attr_val.quality;
+    dev_attr.time = attr_val.time;
+    dev_attr.dim_x = attr_val.r_dim.dim_x;
+    dev_attr.dim_y = attr_val.r_dim.dim_y;
+    dev_attr.set_w_dim_x(attr_val.w_dim.dim_x);
+    dev_attr.set_w_dim_y(attr_val.w_dim.dim_y);
+    dev_attr.err_list = new DevErrorList(attr_val.err_list);
+}
+
+template <>
+void copy_attribute_value_fields_to_device_attribute<AttributeValue>(
+    const AttributeValue& attr_val,
+    DeviceAttribute& dev_attr)
+{
+    dev_attr.name = attr_val.name;
+    dev_attr.quality = attr_val.quality;
+    dev_attr.time = attr_val.time;
+    dev_attr.dim_x = attr_val.dim_x;
+    dev_attr.dim_y = attr_val.dim_y;
+}
+
+template <typename AttributeValueT>
+void attribute_value_to_device_attribute_3(
+    AttributeValueT& attr_value,
+    DeviceAttribute& dev_attr)
+{
+    copy_attribute_value_fields_to_device_attribute(attr_value, dev_attr);
+
+    if (dev_attr.quality == Tango::ATTR_INVALID)
+    {
+        return;
+    }
+
+    const auto type = attr_value.value.type();
+
+    if (type->kind() == CORBA::tk_enum)
+    {
+        attr_value.value >>= dev_attr.d_state;
+        dev_attr.d_state_filled = true;
+        return;
+    }
+
+    const auto type_alias = type->content_type();
+    const auto type_seq = type_alias->content_type();
+
+    dev_attr.data_type = Tango::DEV_SHORT;
+
+    switch (type_seq->kind())
+    {
+    case CORBA::tk_boolean:     return convert_attribute_value_to_device_attribute<ATT_BOOL>(attr_value, dev_attr);
+    case CORBA::tk_short:       return convert_attribute_value_to_device_attribute<ATT_SHORT>(attr_value, dev_attr);
+    case CORBA::tk_long:        return convert_attribute_value_to_device_attribute<ATT_LONG>(attr_value, dev_attr);
+    case CORBA::tk_longlong:    return convert_attribute_value_to_device_attribute<ATT_LONG64>(attr_value, dev_attr);
+    case CORBA::tk_float:       return convert_attribute_value_to_device_attribute<ATT_FLOAT>(attr_value, dev_attr);
+    case CORBA::tk_double:      return convert_attribute_value_to_device_attribute<ATT_DOUBLE>(attr_value, dev_attr);
+    case CORBA::tk_octet:       return convert_attribute_value_to_device_attribute<ATT_UCHAR>(attr_value, dev_attr);
+    case CORBA::tk_ushort:      return convert_attribute_value_to_device_attribute<ATT_USHORT>(attr_value, dev_attr);
+    case CORBA::tk_ulong:       return convert_attribute_value_to_device_attribute<ATT_ULONG>(attr_value, dev_attr);
+    case CORBA::tk_ulonglong:   return convert_attribute_value_to_device_attribute<ATT_ULONG64>(attr_value, dev_attr);
+    case CORBA::tk_string:      return convert_attribute_value_to_device_attribute<ATT_STRING>(attr_value, dev_attr);
+    case CORBA::tk_enum:        return convert_attribute_value_to_device_attribute<ATT_STATE>(attr_value, dev_attr);
+    default:
+        break;
+    }
+}
+
 } // namespace
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -916,357 +988,13 @@ void ApiUtil::clean_locking_threads(bool clean)
 void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeValue_3 *attr_value_3,
                              long vers, DeviceAttribute *dev_attr)
 {
-
-    const DevVarLongArray *tmp_seq_lo;
-    CORBA::Long *tmp_lo;
-    const DevVarShortArray *tmp_seq_sh;
-    CORBA::Short *tmp_sh;
-    const DevVarDoubleArray *tmp_seq_db;
-    CORBA::Double *tmp_db;
-    const DevVarStringArray *tmp_seq_str;
-    char **tmp_str;
-    const DevVarFloatArray *tmp_seq_fl;
-    CORBA::Float *tmp_fl;
-    const DevVarBooleanArray *tmp_seq_boo;
-    CORBA::Boolean *tmp_boo;
-    const DevVarUShortArray *tmp_seq_ush;
-    CORBA::UShort *tmp_ush;
-    const DevVarCharArray *tmp_seq_uch;
-    CORBA::Octet *tmp_uch;
-    const DevVarLong64Array *tmp_seq_64;
-    CORBA::LongLong *tmp_lolo;
-    const DevVarULongArray *tmp_seq_ulo;
-    CORBA::ULong *tmp_ulo;
-    const DevVarULong64Array *tmp_seq_u64;
-    CORBA::ULongLong *tmp_ulolo;
-    const DevVarStateArray *tmp_seq_state;
-    Tango::DevState *tmp_state;
-
-    CORBA::ULong max, len;
-
     if (vers == 3)
     {
-        dev_attr->name = attr_value_3->name;
-        dev_attr->quality = attr_value_3->quality;
-        dev_attr->time = attr_value_3->time;
-        dev_attr->dim_x = attr_value_3->r_dim.dim_x;
-        dev_attr->dim_y = attr_value_3->r_dim.dim_y;
-        dev_attr->set_w_dim_x(attr_value_3->w_dim.dim_x);
-        dev_attr->set_w_dim_y(attr_value_3->w_dim.dim_y);
-        dev_attr->err_list = new DevErrorList(attr_value_3->err_list);
+        attribute_value_to_device_attribute_3(const_cast<AttributeValue_3&>(*attr_value_3), *dev_attr);
     }
     else
     {
-        dev_attr->name = attr_value->name;
-        dev_attr->quality = attr_value->quality;
-        dev_attr->time = attr_value->time;
-        dev_attr->dim_x = attr_value->dim_x;
-        dev_attr->dim_y = attr_value->dim_y;
-    }
-
-    if (dev_attr->quality != Tango::ATTR_INVALID)
-    {
-        CORBA::TypeCode_var ty;
-        if (vers == 3)
-        {
-            ty = attr_value_3->value.type();
-        }
-        else
-        {
-            ty = attr_value->value.type();
-        }
-
-        if (ty->kind() == CORBA::tk_enum)
-        {
-            attr_value_3->value >>= dev_attr->d_state;
-            dev_attr->d_state_filled = true;
-            return;
-        }
-
-        CORBA::TypeCode_var ty_alias = ty->content_type();
-        CORBA::TypeCode_var ty_seq = ty_alias->content_type();
-        switch (ty_seq->kind())
-        {
-            case CORBA::tk_long:
-                if (vers == 3)
-                {
-                    attr_value_3->value >>= tmp_seq_lo;
-                }
-                else
-                {
-                    attr_value->value >>= tmp_seq_lo;
-                }
-                max = tmp_seq_lo->maximum();
-                len = tmp_seq_lo->length();
-                if (tmp_seq_lo->release() == true)
-                {
-                    tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((CORBA::Boolean) true);
-                    dev_attr->LongSeq = new DevVarLongArray(max, len, tmp_lo, true);
-                }
-                else
-                {
-                    tmp_lo = const_cast<CORBA::Long *>(tmp_seq_lo->get_buffer());
-                    dev_attr->LongSeq = new DevVarLongArray(max, len, tmp_lo, false);
-                }
-                break;
-
-            case CORBA::tk_longlong:
-                if (vers == 3)
-                {
-                    attr_value_3->value >>= tmp_seq_64;
-                }
-                else
-                {
-                    attr_value->value >>= tmp_seq_64;
-                }
-                max = tmp_seq_64->maximum();
-                len = tmp_seq_64->length();
-                if (tmp_seq_64->release() == true)
-                {
-                    tmp_lolo = (const_cast<DevVarLong64Array *>(tmp_seq_64))->get_buffer((CORBA::Boolean) true);
-                    dev_attr->Long64Seq = new DevVarLong64Array(max, len, tmp_lolo, true);
-                }
-                else
-                {
-                    tmp_lolo = const_cast<CORBA::LongLong *>(tmp_seq_64->get_buffer());
-                    dev_attr->Long64Seq = new DevVarLong64Array(max, len, tmp_lolo, false);
-                }
-                break;
-
-            case CORBA::tk_short:
-                if (vers == 3)
-                {
-                    attr_value_3->value >>= tmp_seq_sh;
-                }
-                else
-                {
-                    attr_value->value >>= tmp_seq_sh;
-                }
-                max = tmp_seq_sh->maximum();
-                len = tmp_seq_sh->length();
-                if (tmp_seq_sh->release() == true)
-                {
-                    tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((CORBA::Boolean) true);
-                    dev_attr->ShortSeq = new DevVarShortArray(max, len, tmp_sh, true);
-                }
-                else
-                {
-                    tmp_sh = const_cast<CORBA::Short *>(tmp_seq_sh->get_buffer());
-                    dev_attr->ShortSeq = new DevVarShortArray(max, len, tmp_sh, false);
-                }
-                break;
-
-            case CORBA::tk_double:
-                if (vers == 3)
-                {
-                    attr_value_3->value >>= tmp_seq_db;
-                }
-                else
-                {
-                    attr_value->value >>= tmp_seq_db;
-                }
-                max = tmp_seq_db->maximum();
-                len = tmp_seq_db->length();
-                if (tmp_seq_db->release() == true)
-                {
-                    tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((CORBA::Boolean) true);
-                    dev_attr->DoubleSeq = new DevVarDoubleArray(max, len, tmp_db, true);
-                }
-                else
-                {
-                    tmp_db = const_cast<CORBA::Double *>(tmp_seq_db->get_buffer());
-                    dev_attr->DoubleSeq = new DevVarDoubleArray(max, len, tmp_db, false);
-                }
-                break;
-
-            case CORBA::tk_string:
-                if (vers == 3)
-                {
-                    attr_value_3->value >>= tmp_seq_str;
-                }
-                else
-                {
-                    attr_value->value >>= tmp_seq_str;
-                }
-                max = tmp_seq_str->maximum();
-                len = tmp_seq_str->length();
-                if (tmp_seq_str->release() == true)
-                {
-                    tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((CORBA::Boolean) true);
-                    dev_attr->StringSeq = new DevVarStringArray(max, len, tmp_str, true);
-                }
-                else
-                {
-                    tmp_str = const_cast<char **>(tmp_seq_str->get_buffer());
-                    dev_attr->StringSeq = new DevVarStringArray(max, len, tmp_str, false);
-                }
-                break;
-
-            case CORBA::tk_float:
-                if (vers == 3)
-                {
-                    attr_value_3->value >>= tmp_seq_fl;
-                }
-                else
-                {
-                    attr_value->value >>= tmp_seq_fl;
-                }
-                max = tmp_seq_fl->maximum();
-                len = tmp_seq_fl->length();
-                if (tmp_seq_fl->release() == true)
-                {
-                    tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((CORBA::Boolean) true);
-                    dev_attr->FloatSeq = new DevVarFloatArray(max, len, tmp_fl, true);
-                }
-                else
-                {
-                    tmp_fl = const_cast<CORBA::Float *>(tmp_seq_fl->get_buffer());
-                    dev_attr->FloatSeq = new DevVarFloatArray(max, len, tmp_fl, false);
-                }
-                break;
-
-            case CORBA::tk_boolean:
-                if (vers == 3)
-                {
-                    attr_value_3->value >>= tmp_seq_boo;
-                }
-                else
-                {
-                    attr_value->value >>= tmp_seq_boo;
-                }
-                max = tmp_seq_boo->maximum();
-                len = tmp_seq_boo->length();
-                if (tmp_seq_boo->release() == true)
-                {
-                    tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((CORBA::Boolean) true);
-                    dev_attr->BooleanSeq = new DevVarBooleanArray(max, len, tmp_boo, true);
-                }
-                else
-                {
-                    tmp_boo = const_cast<CORBA::Boolean *>(tmp_seq_boo->get_buffer());
-                    dev_attr->BooleanSeq = new DevVarBooleanArray(max, len, tmp_boo, false);
-                }
-                break;
-
-            case CORBA::tk_ushort:
-                if (vers == 3)
-                {
-                    attr_value_3->value >>= tmp_seq_ush;
-                }
-                else
-                {
-                    attr_value->value >>= tmp_seq_ush;
-                }
-                max = tmp_seq_ush->maximum();
-                len = tmp_seq_ush->length();
-                if (tmp_seq_ush->release() == true)
-                {
-                    tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((CORBA::Boolean) true);
-                    dev_attr->UShortSeq = new DevVarUShortArray(max, len, tmp_ush, true);
-                }
-                else
-                {
-                    tmp_ush = const_cast<CORBA::UShort *>(tmp_seq_ush->get_buffer());
-                    dev_attr->UShortSeq = new DevVarUShortArray(max, len, tmp_ush, false);
-                }
-                break;
-
-            case CORBA::tk_octet:
-                if (vers == 3)
-                {
-                    attr_value_3->value >>= tmp_seq_uch;
-                }
-                else
-                {
-                    attr_value->value >>= tmp_seq_uch;
-                }
-                max = tmp_seq_uch->maximum();
-                len = tmp_seq_uch->length();
-                if (tmp_seq_uch->release() == true)
-                {
-                    tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((CORBA::Boolean) true);
-                    dev_attr->UCharSeq = new DevVarCharArray(max, len, tmp_uch, true);
-                }
-                else
-                {
-                    tmp_uch = const_cast<CORBA::Octet *>(tmp_seq_uch->get_buffer());
-                    dev_attr->UCharSeq = new DevVarCharArray(max, len, tmp_uch, false);
-                }
-                break;
-
-            case CORBA::tk_ulong:
-                if (vers == 3)
-                {
-                    attr_value_3->value >>= tmp_seq_ulo;
-                }
-                else
-                {
-                    attr_value->value >>= tmp_seq_ulo;
-                }
-                max = tmp_seq_ulo->maximum();
-                len = tmp_seq_ulo->length();
-                if (tmp_seq_ulo->release() == true)
-                {
-                    tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((CORBA::Boolean) true);
-                    dev_attr->ULongSeq = new DevVarULongArray(max, len, tmp_ulo, true);
-                }
-                else
-                {
-                    tmp_ulo = const_cast<CORBA::ULong *>(tmp_seq_ulo->get_buffer());
-                    dev_attr->ULongSeq = new DevVarULongArray(max, len, tmp_ulo, false);
-                }
-                break;
-
-            case CORBA::tk_ulonglong:
-                if (vers == 3)
-                {
-                    attr_value_3->value >>= tmp_seq_u64;
-                }
-                else
-                {
-                    attr_value->value >>= tmp_seq_u64;
-                }
-                max = tmp_seq_u64->maximum();
-                len = tmp_seq_u64->length();
-                if (tmp_seq_u64->release() == true)
-                {
-                    tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_u64))->get_buffer((CORBA::Boolean) true);
-                    dev_attr->ULong64Seq = new DevVarULong64Array(max, len, tmp_ulolo, true);
-                }
-                else
-                {
-                    tmp_ulolo = const_cast<CORBA::ULongLong *>(tmp_seq_u64->get_buffer());
-                    dev_attr->ULong64Seq = new DevVarULong64Array(max, len, tmp_ulolo, false);
-                }
-                break;
-
-            case CORBA::tk_enum:
-                if (vers == 3)
-                {
-                    attr_value_3->value >>= tmp_seq_state;
-                }
-                else
-                {
-                    attr_value->value >>= tmp_seq_state;
-                }
-                max = tmp_seq_state->maximum();
-                len = tmp_seq_state->length();
-                if (tmp_seq_state->release() == true)
-                {
-                    tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean) true);
-                    dev_attr->StateSeq = new DevVarStateArray(max, len, tmp_state, true);
-                }
-                else
-                {
-                    tmp_state = const_cast<Tango::DevState *>(tmp_seq_state->get_buffer());
-                    dev_attr->StateSeq = new DevVarStateArray(max, len, tmp_state, false);
-                }
-                break;
-
-            default:
-                break;
-        }
-        dev_attr->data_type = Tango::DEV_SHORT;
+        attribute_value_to_device_attribute_3(const_cast<AttributeValue&>(*attr_value), *dev_attr);
     }
 }
 
@@ -2417,15 +2145,8 @@ inline void ApiUtil::attr_to_device_base(
     auto& attr_value = const_cast<AttributeValueT&>(*attr_value_const);
     auto& dev_attr = *device_attr;
 
-    dev_attr.name = attr_value.name;
-    dev_attr.quality = attr_value.quality;
+    copy_attribute_value_fields_to_device_attribute(attr_value, dev_attr);
     dev_attr.data_format = attr_value.data_format;
-    dev_attr.time = attr_value.time;
-    dev_attr.dim_x = attr_value.r_dim.dim_x;
-    dev_attr.dim_y = attr_value.r_dim.dim_y;
-    dev_attr.set_w_dim_x(attr_value.w_dim.dim_x);
-    dev_attr.set_w_dim_y(attr_value.w_dim.dim_y);
-    dev_attr.err_list = new DevErrorList(attr_value.err_list);
 
     if (attr_value.quality == Tango::ATTR_INVALID)
     {
@@ -2455,5 +2176,6 @@ inline void ApiUtil::attr_to_device_base(
         break;
 	}
 }
+
 
 } // End of tango namespace

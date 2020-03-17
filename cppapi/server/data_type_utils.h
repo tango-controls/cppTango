@@ -89,6 +89,14 @@ typename TangoTypeTraits<Type>::SeqType& attr_val_union_get(AttrValUnion& u)
     return (u.*TangoTypeOps<Type>::attr_val_union_get)();
 }
 
+template <AttributeDataType Type>
+typename TangoTypeTraits<Type>::SeqType& attr_val_union_get(::CORBA::Any& a)
+{
+    typename TangoTypeTraits<Type>::SeqType* seq;
+    a >>= seq;
+    return *seq;
+}
+
 } // namespace Tango
 
 #endif
