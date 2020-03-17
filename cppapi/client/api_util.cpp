@@ -95,7 +95,7 @@ void convert_attribute_value_to_device_attribute(
     else
     {
         auto* buffer = seq.get_buffer();
-        dev_attr_seq<Type>(dev_attr) = new typename Traits::SeqType(maximum, length, buffer, not owner);
+        dev_attr_seq<Type>(dev_attr) = new typename Traits::SeqType(maximum, length, buffer, !owner);
     }
 }
 
