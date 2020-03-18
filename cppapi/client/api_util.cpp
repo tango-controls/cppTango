@@ -94,8 +94,12 @@ void convert_attribute_value_to_device_attribute(
     }
     else
     {
-        auto* buffer = seq.get_buffer();
-        dev_attr_seq<Type>(dev_attr) = new typename Traits::SeqType(maximum, length, buffer, !owner);
+        // If release() is false, sequence received from CORBA call does not
+        // own the memory. This can happen only if client and server are
+        // located within the same process. We refuse to use such a sequence
+        // and create a copy to prevent direct access to server's memory.
+
+        dev_attr_seq<Type>(dev_attr) = new typename Traits::SeqType(seq);
     }
 }
 
