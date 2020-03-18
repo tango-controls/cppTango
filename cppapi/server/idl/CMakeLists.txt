@@ -1,56 +1,68 @@
-message("Remove tango.h, tangoSK.cpp and tangoDynSK.cpp from idl if exist")
-
-execute_process(COMMAND rm tango.h tangoSK.cpp tangoDynSK.cpp
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-
 message("Generate tango.h, tangoSK.cpp and tangoDynSK.cpp from idl")
 
 message("Using OMNIIDL_PATH=${OMNIIDL_PATH}")
 message("Using IDL=${IDL_PKG_INCLUDE_DIRS}")
 
-MESSAGE( STATUS "OMNIIDL_PATH: " ${OMNIIDL_PATH} )
+find_program(OMNIIDL NAMES omniidl
+                     PATHS ${OMNIIDL_PATH})
 
-if(WIN32)
-    set_source_files_properties(tangoDynSK.cpp PROPERTIES COMPILE_DEFINITIONS _OMNIORB_STUB_DLL)
-    set_source_files_properties(tangoDynSK.cpp PROPERTIES COMPILE_DEFINITIONS __NT__)
-    set_source_files_properties(tangoSK.cpp PROPERTIES COMPILE_DEFINITIONS _OMNIORB_STUB_DLL)
-    set_source_files_properties(tangoSK.cpp PROPERTIES COMPILE_DEFINITIONS __NT__)
-    execute_process(COMMAND ${OMNIIDL_PATH}/omniidl.exe -I${IDL_PKG_INCLUDE_DIRS} -bcxx -Wbh=.h -Wbs=SK.cpp -Wbd=DynSK.cpp -Wba ${IDL_PKG_INCLUDE_DIRS}/tango.idl
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                    RESULT_VARIABLE FAILED)
-else(WIN32)
-    execute_process(COMMAND ${OMNIIDL_PATH}omniidl -I${IDL_PKG_INCLUDE_DIRS} -bcxx -Wbh=.h -Wbs=SK.cpp -Wbd=DynSK.cpp -Wba ${IDL_PKG_INCLUDE_DIRS}/tango.idl
-                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                    RESULT_VARIABLE FAILED)
-endif(WIN32)
-
-if(${FAILED})
-    message(SEND_ERROR " Failed to generate source files from idl. rv=${FAILED}")
+if(NOT OMNIIDL)
+  message(FATAL_ERROR "Could not find omniidl")
 endif()
 
-FILE(GLOB ENHANCEMENTS Enhance*)
+execute_process(COMMAND ${OMNIIDL} -I${IDL_PKG_INCLUDE_DIRS} -bcxx -Wbh=.h -Wbs=SK.cpp -Wbd=DynSK.cpp -Wba ${IDL_PKG_INCLUDE_DIRS}/tango.idl
+                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                RESULT_VARIABLE OMNIIDL_RETURN_CODE)
 
-MESSAGE( STATUS "CMAKE_CURRENT_BINARY_DIR: " ${CMAKE_CURRENT_BINARY_DIR} )
-MESSAGE( STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR} )
-MESSAGE( STATUS "CMAKE_INCLUDE_PATH: " ${CMAKE_INCLUDE_PATH} )
+if(OMNIIDL_RETURN_CODE)
+    message(SEND_ERROR " Failed to generate source files from idl. rv=${OMNIIDL_RETURN_CODE}")
+endif()
 
-foreach(ENHANCEMENT ${ENHANCEMENTS})
-    message("Applying enhancement ${ENHANCEMENT}")
-    execute_process(COMMAND sed -i -f ${ENHANCEMENT} tango.h
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                RESULT_VARIABLE FAILED)
+function(replace_in_file FILENAME SEARCH NEW_CONTENT)
+    file(READ "${CMAKE_CURRENT_BINARY_DIR}/${FILENAME}" ORIGINAL_DATA)
+    string(REPLACE "${SEARCH}" "${NEW_CONTENT}" REPLACED_DATA "${ORIGINAL_DATA}")
+    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/${FILENAME}" "${REPLACED_DATA}")
+endfunction()
 
-        #non-zero
-    if(${FAILED})
-        message(SEND_ERROR " Failed to apply ${ENHANCEMENT}. rv=${FAILED}")
-    endif()
-endforeach(ENHANCEMENT)
+function(add_after_in_file FILENAME SEARCH CONTENT)
+    replace_in_file(${FILENAME} "${SEARCH}" "${SEARCH} ${CONTENT}")
+endfunction()
 
-set(SOURCES tangoSK.cpp
-            tangoDynSK.cpp)
+add_after_in_file(tango.h "typedef _CORBA_ConstrType_Variable_Var<AttributeValue_4> _var_type;" "\n\n\
+    //Added by Tango team\n\
+    virtual ~AttributeValue_4() {if (mut_ptr != NULL)mut_ptr->unlock();}\n\
+    AttributeValue_4() {mut_ptr=NULL;}\n\
+    void set_attr_mutex(omni_mutex *ptr) {mut_ptr=ptr;}\n\
+    void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}\n\
+    omni_mutex *get_attr_mutex() {return mut_ptr;}\n\
+    omni_mutex *mut_ptr;\n")
 
+add_after_in_file(tango.h "typedef _CORBA_ConstrType_Variable_Var<AttributeValue_5> _var_type;" "\n\n\
+    //Added by Tango team\n\
+    virtual ~AttributeValue_5() {if (mut_ptr != NULL)mut_ptr->unlock();}\n\
+    AttributeValue_5() {mut_ptr=NULL;}\n\
+    void set_attr_mutex(omni_mutex *ptr) {mut_ptr=ptr;}\n\
+    void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}\n\
+    omni_mutex *get_attr_mutex() {return mut_ptr;}\n\
+    omni_mutex *mut_ptr;\n")
+
+add_after_in_file(tango.h "typedef\ _CORBA_ConstrType_Variable_Var<DevPipeData> _var_type;" "\n\n\
+    //Added by Tango team\n\
+    virtual ~DevPipeData() {if (mut_ptr != NULL)mut_ptr->unlock();}\n\
+    DevPipeData() {mut_ptr=NULL;}\n\
+    void set_pipe_mutex(omni_mutex *ptr) {mut_ptr=ptr;}\n\
+    void rel_pipe_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}\n\
+    omni_mutex *mut_ptr;\n")
+
+set(SOURCES ${CMAKE_CURRENT_BINARY_DIR}/tangoSK.cpp
+            ${CMAKE_CURRENT_BINARY_DIR}/tangoDynSK.cpp)
 
 if(WIN32)
+    foreach(file ${SOURCES})
+        set_source_files_properties(${file} PROPERTIES COMPILE_DEFINITIONS _OMNIORB_STUB_DLL)
+        set_source_files_properties(${file} PROPERTIES COMPILE_DEFINITIONS __NT__)
+    endforeach(file)
+
     add_library(idl_objects_dyn OBJECT ${SOURCES})
     add_library(idl_objects_sta OBJECT ${SOURCES})
     target_compile_definitions(idl_objects_dyn PRIVATE "${dyn_defs};__x86__;__NT__;__OSVERSION__=4;__WIN32__;_WIN32_WINNT=0x0400;")
@@ -61,10 +73,17 @@ if(WIN32)
     else()
         target_compile_options(idl_objects_sta PRIVATE "/MT")
     endif()
-    install(FILES tango.h DESTINATION include/idl)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tango.h DESTINATION include/idl)
 else(WIN32)
     add_library(idl_objects OBJECT ${SOURCES} tango.h)
     target_compile_options(idl_objects PRIVATE -fPIC)
     target_compile_definitions(idl_objects PRIVATE OMNI_UNLOADABLE_STUBS)
-    install(FILES tango.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/idl")
+
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+      target_compile_options(idl_objects PRIVATE -Wno-maybe-uninitialized -Wno-unused-parameter)
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      target_compile_options(idl_objects PRIVATE -Wno-sometimes-uninitialized -Wno-unused-variable -Wno-unused-parameter)
+    endif()
+
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/tango.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/idl")
 endif(WIN32)

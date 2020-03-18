@@ -39,27 +39,6 @@
 namespace Tango
 {
 
-#ifndef HAS_LAMBDA_FUNC
-//
-// Binary function objects to be used by the find_if algorithm.
-// The find_if algo. want to have a predicate, this means that the return value must be a boolean (R is its name).
-// The find_if algo. needs a unary predicate. This function object is a binary function object.
-// It must be used with the bind2nd function adapter
-//
-
-template <typename A1,typename A2,typename R>
-struct WantedPipe : public binary_function<A1,A2,R>
-{
-	R operator() (A1 pipe_ptr, A2 name) const
-	{
-		if (::strlen(name) != pipe_ptr->get_lower_name().size())
-			return false;
-        std::string tmp_name(name);
-		std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
-		return pipe_ptr->get_lower_name() == tmp_name;
-	}
-};
-#endif
 
 
 /**
@@ -103,11 +82,7 @@ public:
 /**
  * The object desctructor.
  */
-#ifdef HAS_UNIQUE_PTR
     virtual ~Pipe() {}
-#else
-	virtual ~Pipe() {delete ext;}
-#endif
 //@}
 
 /**@name Miscellaneous methods */
@@ -449,11 +424,7 @@ private:
         PipeExt() {}
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<PipeExt>          ext;           	// Class extension
-#else
-	PipeExt		                *ext;
-#endif
 
 	bool						value_flag;			// Flag set when pipe value is set
 	Tango::TimeVal				when;				// Date associated to the pipe

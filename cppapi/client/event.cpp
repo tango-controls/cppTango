@@ -275,11 +275,7 @@ void EventConsumer::get_cs_tango_host(Database *db)
 			{
 				if (alias_map.find(tg_host) == alias_map.end())
 				{
-#ifdef INIT_LIST
 					alias_map.insert({lower_vs,tg_host});
-#else
-					alias_map.insert(std::make_pair(lower_vs,tg_host));
-#endif
 				}
 			}
 		}
@@ -293,7 +289,6 @@ void EventConsumer::get_cs_tango_host(Database *db)
 		for (unsigned int i = 0;i < vs.size();i++)
 		{
 			std::transform(vs[i].begin(),vs[i].end(),vs[i].begin(),::tolower);
-#ifdef HAS_LAMBDA_FUNC
 			pos = find_if(env_var_fqdn_prefix.begin(),env_var_fqdn_prefix.end(),
 					[&] (std::string str) -> bool
 					{
@@ -308,22 +303,6 @@ void EventConsumer::get_cs_tango_host(Database *db)
 				std::string prefix = "tango://" + vs[i] + '/' ;
 				env_var_fqdn_prefix.push_back(prefix);
 			}
-#else
-			unsigned int j;
-			for (j = 0;j < env_var_fqdn_prefix.size();++j)
-			{
-				if (env_var_fqdn_prefix[j].find(vs[i]) != std::string::npos)
-				{
-					break;
-				}
-			}
-
-			if (j == env_var_fqdn_prefix.size())
-			{
-				std::string prefix = "tango://" + vs[i] + '/';
-				env_var_fqdn_prefix.push_back(prefix);
-			}
-#endif
 		}
 	}
 	catch(...) {}
@@ -1228,7 +1207,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
             subscribe_event_id++;
             int ret_event_id = subscribe_event_id;
 
-            DelayedEventSubThread *th = new DelayedEventSubThread(this,device,attribute,event,callback,ev_queue,stateless,event_name,ret_event_id);
+            DelayedEventSubThread *th = new DelayedEventSubThread(this,device,attribute,event,callback,ev_queue,event_name,ret_event_id);
             th->start();
 
             return ret_event_id;
@@ -3155,8 +3134,8 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		else
             domain_name = device_name + '/' + obj_name_lower;
 
-		AttributeValue_5 *av_5 = Tango_nullptr;
-		DeviceAttribute *da = Tango_nullptr;
+		AttributeValue_5 *av_5 = nullptr;
+		DeviceAttribute *da = nullptr;
 		FwdEventData *event_data;
 
 		try
@@ -3293,8 +3272,8 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 	{
 		DevErrorList err;
 		err.length(0);
-		CommandInfoList *c_list = Tango_nullptr;
-		AttributeInfoListEx *a_list = Tango_nullptr;
+		CommandInfoList *c_list = nullptr;
+		AttributeInfoListEx *a_list = nullptr;
 		std::string ev_name(EventName[INTERFACE_CHANGE_EVENT]);
 
 		try
@@ -3305,9 +3284,9 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		catch (DevFailed &e)
 		{
 			delete c_list;
-			c_list = Tango_nullptr;
+			c_list = nullptr;
 			delete a_list;
-			a_list = Tango_nullptr;
+			a_list = nullptr;
 
 			err = e.errors;
 		}
@@ -3365,7 +3344,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		else
             domain_name = device_name + '/' + obj_name_lower;
 
-		DevicePipe *da = Tango_nullptr;
+		DevicePipe *da = nullptr;
 		PipeEventData *event_data;
 
 		try
@@ -3613,17 +3592,17 @@ void EventData::set_time()
 #endif
 }
 
-FwdEventData::FwdEventData():EventData(),av_5(Tango_nullptr),event_data(Tango_nullptr)
+FwdEventData::FwdEventData():EventData(),av_5(nullptr),event_data(nullptr)
 {
 }
 
 FwdEventData::FwdEventData(DeviceProxy *dev,std::string &_s1,std::string &_s2,Tango::DeviceAttribute *_da,DevErrorList &_del) :
-                  EventData(dev,_s1,_s2,_da,_del),av_5(Tango_nullptr),event_data(Tango_nullptr)
+                  EventData(dev,_s1,_s2,_da,_del),av_5(nullptr),event_data(nullptr)
 {
 }
 
 FwdEventData::FwdEventData(DeviceProxy *dev,std::string &_s1,std::string &_s2,Tango::DeviceAttribute *_da,DevErrorList &_del,zmq::message_t *_m) :
-                  EventData(dev,_s1,_s2,_da,_del),av_5(Tango_nullptr),event_data(_m)
+                  EventData(dev,_s1,_s2,_da,_del),av_5(nullptr),event_data(_m)
 {
 }
 /************************************************************************/
@@ -3742,14 +3721,14 @@ void AttrConfEventData::set_time()
 #endif
 }
 
-FwdAttrConfEventData::FwdAttrConfEventData():AttrConfEventData(),fwd_attr_conf(Tango_nullptr)
+FwdAttrConfEventData::FwdAttrConfEventData():AttrConfEventData(),fwd_attr_conf(nullptr)
 {
 }
 
 
 FwdAttrConfEventData::FwdAttrConfEventData(DeviceProxy *dev,std::string &nam,std::string &evt,
                   Tango::AttributeInfoEx *attr_conf_in,DevErrorList &errors_in) :
-                  AttrConfEventData(dev,nam,evt,attr_conf_in,errors_in),fwd_attr_conf(Tango_nullptr)
+                  AttrConfEventData(dev,nam,evt,attr_conf_in,errors_in),fwd_attr_conf(nullptr)
 {
 }
 

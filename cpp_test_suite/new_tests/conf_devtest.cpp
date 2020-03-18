@@ -63,17 +63,10 @@ int main(int argc, char **argv) {
 
     try {
         db->add_server(str, db_dev_infos);
-#ifdef HAS_RANGE_BASE_FOR
         for(auto info : db_dev_infos){
             cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
                  info._class << std::endl;
         }
-#else
-        for(size_t i = 0; i < db_dev_infos.size(); i++){
-			cout << "Added test server : " << str << " -> " << db_dev_infos[i].name
-			     << ", class : " << db_dev_infos[i]._class << std::endl;
-        }
-#endif
         cout << std::endl;
     }
     catch (...) {
@@ -92,17 +85,10 @@ int main(int argc, char **argv) {
 
     try {
         db->add_server(str, db_dev_infos);
-#ifdef HAS_RANGE_BASE_FOR
         for(auto info : db_dev_infos){
             cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
                  info._class << std::endl;
         }
-#else
-        for(size_t i = 0; i < db_dev_infos.size(); i++){
-			cout << "Added test server : " << str << " -> " << db_dev_infos[i].name
-			     << ", class : " << db_dev_infos[i]._class << std::endl;
-        }
-#endif
         cout << std::endl;
     }
     catch (...) {
@@ -118,17 +104,10 @@ int main(int argc, char **argv) {
     db_dev_infos.push_back(fwdTestInfo);
     try {
         db->add_server(str, db_dev_infos);
-#ifdef HAS_RANGE_BASE_FOR
         for(auto info : db_dev_infos){
             cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
                  info._class << std::endl;
         }
-#else
-        for(size_t i = 0; i < db_dev_infos.size(); i++){
-			cout << "Added test server : " << str << " -> " << db_dev_infos[i].name
-			     << ", class : " << db_dev_infos[i]._class << std::endl;
-        }
-#endif
         cout << std::endl;
     }
     catch (...) {
@@ -478,7 +457,13 @@ int main(int argc, char **argv) {
     db_data.push_back(fwd_att4);
     db_data.push_back(root_att4);
 
-
+    Tango::DbDatum fwd_att5("fwd_state");
+    Tango::DbDatum root_att5("__root_att");
+    fwd_att5 << (short) 1;
+    r_name = device2_name + "/state";;
+    root_att5 << r_name;
+    db_data.push_back(fwd_att5);
+    db_data.push_back(root_att5);
 
     try {
         db->put_device_attribute_property(fwd_dev_name, db_data);

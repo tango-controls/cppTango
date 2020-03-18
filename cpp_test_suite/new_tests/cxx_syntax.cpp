@@ -149,7 +149,7 @@ public:
 	void test_connect_to_a_device_via_its_alias_as_my_alias(void)
 	{
 		TS_ASSERT(check_proxy(device_alias) == 2);
-		DeviceProxy *device;
+		DeviceProxy *device = nullptr;
 		TS_ASSERT_THROWS_NOTHING(device = new DeviceProxy(device_alias));
 		TS_ASSERT(device->name() == device1_name);
 
@@ -168,7 +168,7 @@ public:
 	{
 		string device_name = tango_host + "/" + device_alias;
 		TS_ASSERT(check_proxy(device_name) == 2);
-		DeviceProxy *device;
+		DeviceProxy *device = nullptr;
 		TS_ASSERT_THROWS_NOTHING(device = new DeviceProxy(device_name));
 		TS_ASSERT(device->name() == device1_name);
 
@@ -226,7 +226,7 @@ public:
 	void test_connect_to_an_attribute_via_its_alias_as_attribute_alias(void)
 	{
 		TS_ASSERT(attr_check_proxy(attribute_alias) == 3);
-		AttributeProxy *attribute;
+		AttributeProxy *attribute = nullptr;
 		TS_ASSERT_THROWS_NOTHING(attribute = new AttributeProxy(attribute_alias));
 		TS_ASSERT(attribute->get_device_proxy()->name() == device1_name);
 		delete attribute;
@@ -238,7 +238,7 @@ public:
 	{
 		string attribute_name = tango_host + "/" + attribute_alias;
 		TS_ASSERT(attr_check_proxy(attribute_name) == 3);
-		AttributeProxy *attribute;
+		AttributeProxy *attribute = nullptr;
 		TS_ASSERT_THROWS_NOTHING(attribute = new AttributeProxy(attribute_name));
 		TS_ASSERT(attribute->get_device_proxy()->name() == device1_name);
 		delete attribute;
@@ -248,12 +248,12 @@ public:
 
 	void test_check_alias_call(void)
 	{
-		DeviceProxy *device1;
+		DeviceProxy *device1 = nullptr;
 		TS_ASSERT_THROWS_NOTHING(device1 = new DeviceProxy(device1_name));
 		TS_ASSERT(device1->alias() == device_alias);
 		delete device1;
 
-		DeviceProxy *device2;
+		DeviceProxy *device2 = nullptr;
 		TS_ASSERT_THROWS_NOTHING(device2 = new DeviceProxy(device2_name));
 		TS_ASSERT_THROWS_ASSERT(device2->alias(), Tango::DevFailed &e,
 						TS_ASSERT(string(e.errors[0].reason.in()) == "DB_AliasNotDefined"

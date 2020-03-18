@@ -1242,7 +1242,6 @@ void ZmqEventConsumer::connect_event_channel(std::string &channel_name,TANGO_UNU
 
 	std::string prefix = channel_name.substr(0,channel_name.find('/',8) + 1);
 	bool found = false;
-#ifdef HAS_RANGE_BASE_FOR
 	for (const auto &elem:env_var_fqdn_prefix)
 	{
 		if (elem == prefix)
@@ -1251,17 +1250,6 @@ void ZmqEventConsumer::connect_event_channel(std::string &channel_name,TANGO_UNU
 			break;
 		}
 	}
-#else
-	std::vector<std::string>::iterator ite;
-	for (ite = env_var_fqdn_prefix.begin();ite != env_var_fqdn_prefix.end();++ite)
-	{
-		if (*ite == prefix)
-		{
-			found = true;
-			break;
-		}
-	}
-#endif
 
 	if (found == false && db != NULL)
 	{
@@ -3614,7 +3602,7 @@ void ZmqAttrValUnion::operator<<= (TangoCdrMemoryStream& _n)
 // Get data length from cdr
 //
 
-       _CORBA_ULong length;
+       _CORBA_ULong length = 0ul;
         if (_pd__d != ATT_NO_DATA)
         {
             length <<= _n;

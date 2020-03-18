@@ -1,4 +1,9 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
+
+project(cppTango)
+
+set(CXX_STANDARD_REQUIRED 11)
+
 include(CTest)
 
 option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
@@ -9,11 +14,10 @@ if (USE_PCH AND NOT (CMAKE_CXX_COMPILER_ID MATCHES "GNU|MSVC|Clang"))
     set(USE_PCH OFF)
 endif()
 
-enable_testing()
 #need to define the version of the library
 set(MAJOR_VERSION "9")
-set(MINOR_VERSION "3")
-set(PATCH_VERSION "3")
+set(MINOR_VERSION "4")
+set(PATCH_VERSION "0")
 
 if(WIN32)
     include(configure/cmake_win_defs.cmake)
@@ -24,9 +28,8 @@ endif()
 
 #convenient versions
 set(LIBRARY_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
-set(SO_VERSION "${MAJOR_VERSION}")
+set(SO_VERSION "${MAJOR_VERSION}${MINOR_VERSION}")
 
-message("System TANGO_HOST=$ENV{TANGO_HOST}")
 set(TANGO_HOST $ENV{TANGO_HOST})
 include(configure/CMakeLists.txt)
 
@@ -42,9 +45,10 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
 #source code
 add_subdirectory("log4tango")
 add_subdirectory("cppapi")
-if(NOT WIN32)
+
+if(BUILD_TESTING)
     add_subdirectory("cpp_test_suite")
-endif(NOT WIN32)
+endif()
 
 if(WIN32)
     include(configure/cmake_win.cmake)

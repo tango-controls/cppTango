@@ -28,6 +28,7 @@
 - `-DCMAKE_VERBOSE_MAKEFILE=true`
 - `-DTANGO_USE_USING_NAMESPACE=<ON|OFF>` choose `OFF` for modern builds
 - `-DUSE_PCH=<ON|OFF>`
+- `-DBUILD_TESTING=<ON|OFF>` Build the test suite (`ON` by default)
 
 Typical output:
 
@@ -112,128 +113,94 @@ $ cmake ..
 $ make
 ```
 
-### Start TANGO environment
-
-```
-$ make start-tango
-Setup test environment
-557e3c8a3daa2b75aac4fe04562bac32570db0ace08edd06a23cebaa7fd86f5e
-CONTAINER=27bad3659305155c33d99505c4836b616d9c2a6de3431229e79b71a020f18455
-TANGO_HOST=172.17.0.3:10000
-Create tango_host file
-Wait till tango-cs is online
-```
-
-This process takes ~30 s
-
 ### Run tests
 
+From `build/` directory run:
+
 ```
-$ make run-tests
-TANGO_HOST=172.17.0.3:10000
-Run conf_devtest
-Added test server : DevTest/test -> test/debian8/10, class : DevTest
-Added test server : DevTest/test -> test/debian8/11, class : DevTest
-Added test server : DevTest/test -> test/debian8/12, class : DevTest
+$ ctest --output-on-failure --parallel 4
 
-Added test server : FwdTest/test -> test/fwd_debian8/10, class : FwdTest
+Test project /home/tango-cs/Documents/cppTango/build
+      Start 54: old_tests::ring_depth
+      Start 66: asyn::asyn_cmd
+      Start 77: event::per_event
+      Start 83: event::user_event
+ 1/93 Test #83: event::user_event .................   Passed   22.65 sec
 
-Added pseudo server : DsCache/test -> test/cache1/1, class : CacheTest1
-Added pseudo server : DsCache/test -> test/cache1/2, class : CacheTest1
-Added pseudo server : DsCache/test -> test/cache2/1, class : CacheTest2
+...
 
-<snip>
+90/93 Test  #1: log4tango_test ....................   Passed    0.20 sec
+91/93 Test #39: CXX::cxx_nan_inf_in_prop ..........   Passed   13.28 sec
+92/93 Test #43: old_tests::attr_types .............   Passed   12.89 sec
+93/93 Test #14: CXX::cxx_attr_conf ................   Passed   12.81 sec
 
+100% tests passed, 0 tests failed out of 93
+
+Total Test time (real) = 546.93 sec
+```
+
+Test output and device server logs are collected in `build/cpp_test_suite/test_results`.
+
+For more details on testing with CTest, [see the guide](https://cmake.org/Wiki/CMake/Testing_With_CTest).
+
+### Run individual tests
+
+```
+$ ctest -R old_tests::attr_misc -V
+
+UpdateCTestConfiguration  from :/home/tango-cs/Documents/cppTango/build/DartConfiguration.tcl
+Parse Config file:/home/tango-cs/Documents/cppTango/build/DartConfiguration.tcl
+UpdateCTestConfiguration  from :/home/tango-cs/Documents/cppTango/build/DartConfiguration.tcl
+Parse Config file:/home/tango-cs/Documents/cppTango/build/DartConfiguration.tcl
+Test project /home/tango-cs/Documents/cppTango/build
 Constructing a list of tests
 Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
 Checking test dependency graph...
 Checking test dependency graph end
-test 1
-      Start  1: log4tango_test
+test 49
+    Start 49: old_tests::attr_misc
 
-<snip>
-
-100% tests passed, 0 tests failed out of 59
-
-Total Test time (real) = 843.30 sec
-
-Run command: /home/tango/src/build/cpp_test_suite/environment/post_test.sh
-```
-
-The whole test suite takes ~ 15 min
-
-### Setup and run individual tests
-
-To run individual tests use TANGO_HOST provided by the `start-tango` target.
-
-Make sure TANGO_HOST is set correctly:
-
-```
-$ cd build
-$ cat tango_host
-#!/bin/bash
-export TANGO_HOST=172.17.0.3:10000
-```
-
-TANGO_HOST must be the same as what `start-tango` has returned.
-
-```
-$ . tango_host
-```
-
-Now run some test:
-
-```
-$ ctest -R attr_misc -V
-UpdateCTestConfiguration  from :/storage/Projects/org.tango/git/cppTango/build/DartConfiguration.tcl
-Parse Config file:/storage/Projects/org.tango/git/cppTango/build/DartConfiguration.tcl
- Add coverage exclude regular expressions.
-UpdateCTestConfiguration  from :/storage/Projects/org.tango/git/cppTango/build/DartConfiguration.tcl
-Parse Config file:/storage/Projects/org.tango/git/cppTango/build/DartConfiguration.tcl
-Test project /storage/Projects/org.tango/git/cppTango/build
-Run command: /storage/Projects/org.tango/git/cppTango/build/cpp_test_suite/environment/pre_test.sh
-TANGO_HOST=172.17.0.3:10000
-Run conf_devtest
-<snip>
-Constructing a list of tests
-Done constructing a list of tests
-Checking test dependency graph...
-Checking test dependency graph end
-test 12
-    Start 12: old_tests::attr_misc
-
-12: Test command: /storage/Projects/org.tango/git/cppTango/build/cpp_test_suite/old_tests/attr_misc "test/debian8/10"
-12: Test timeout computed to be: 1500
-12:
-12: new DeviceProxy(test/debian8/10) returned
-12:
-12:    Setting/Getting attribute info --> OK
-12:    Writing outside attribute limits --> OK
-12:    Min alarm detection (on a float spectrum) --> OK
-12:    Reset min alarm detection --> OK
-12:    Max alarm detection (on a float spectrum) --> OK
-12:    Reset max alarm detection --> OK
-12:    Min alarm detection (on a unsigned short spectrum) --> OK
-12:    Reset min alarm detection --> OK
-12:    Max alarm detection (on a unsigned short spectrum) --> OK
-12:    Reset max alarm detection --> OK
-12:    Setting/Getting V5 attribute info --> OK
-12:    Alarm, Warning level detection --> OK
-12:    Exception when trying to change "hard coded" properties --> OK
-1/1 Test #12: old_tests::attr_misc .............   Passed    0.29 sec
+49: Test command: /home/tango-cs/Documents/cppTango/build/cpp_test_suite/environment/run_with_fixture.sh "/home/tango-cs/Documents/cppTango/build/cpp_test_suite/old_tests/attr_misc" "test/debian8/10"
+49: Test timeout computed to be: 1500
+49:
+49: new DeviceProxy(test/debian8/10) returned
+49:
+49:    Setting/Getting attribute info --> OK
+49:    Writing outside attribute limits --> OK
+49:    Min alarm detection (on a float spectrum) --> OK
+49:    Reset min alarm detection --> OK
+49:    Max alarm detection (on a float spectrum) --> OK
+49:    Reset max alarm detection --> OK
+49:    Min alarm detection (on a unsigned short spectrum) --> OK
+49:    Reset min alarm detection --> OK
+49:    Max alarm detection (on a unsigned short spectrum) --> OK
+49:    Reset max alarm detection --> OK
+49:    Setting/Getting V5 attribute info --> OK
+49:    Alarm, Warning level detection --> OK
+49:    Exception when trying to change "hard coded" properties --> OK
+1/1 Test #49: old_tests::attr_misc .............   Passed    8.55 sec
 
 The following tests passed:
         old_tests::attr_misc
 
 100% tests passed, 0 tests failed out of 1
 
-Total Test time (real) =   0.33 sec
+Total Test time (real) =   8.56 sec
 ```
 
-See [CTest guide](https://cmake.org/Wiki/CMake/Testing_With_CTest)
+### Setting environment up manually
 
-### Stop TANGO environment
+The test runner automatically starts database and all required
+device servers for each test. If you want to set up the environment
+manually, from `build/` directory run:
 
-```
-$ make stop-tango
+```bash
+source ./cpp_test_suite/environment/setup_database.sh  # source to get TANGO_HOST
+./cpp_test_suite/environment/setup_devices.sh
+# attach the debugger or perform some additional configuration
+TANGO_TEST_CASE_SKIP_FIXTURE=1 ctest -V -R ds_cache
+killall DevTest FwdTest
+docker stop tango_cs mysql_db
 ```

@@ -55,14 +55,14 @@ namespace Tango
 //
 //------------------------------------------------------------------------------------------------------------------
 
-DbClass::DbClass(std::string class_name, Database *class_dbase):ext(Tango_nullptr)
+DbClass::DbClass(std::string class_name, Database *class_dbase):ext(nullptr)
 {
 	name = std::string(class_name);
 	dbase = class_dbase;
 	ext_dbase = true;
 }
 
-DbClass::DbClass(std::string class_name):ext(Tango_nullptr)
+DbClass::DbClass(std::string class_name):ext(nullptr)
 {
 	name = std::string(class_name);
 	db_ind = ApiUtil::instance()->get_db_ind();

@@ -63,7 +63,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 
 	std::string tango_host_env_var;
 	int ret;
-	filedb = Tango_nullptr;
+	filedb = nullptr;
 	serv_version = 0;
 
 	ret = get_env_var(EnvVariable,tango_host_env_var);
@@ -97,7 +97,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 // get host and port from environment variable TANGO_HOST
 //
 	char *tango_host_env_c_str;
-	filedb = Tango_nullptr;
+	filedb = nullptr;
 	serv_version = 0;
 
 	if (get_tango_host_from_reg(&tango_host_env_c_str,ds_exec_name,ds_inst_name) == -1)
@@ -140,7 +140,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 
 void Database::check_tango_host(const char *tango_host_env_c_str)
 {
-	filedb = Tango_nullptr;
+	filedb = nullptr;
 	std::string tango_host_env(tango_host_env_c_str);
 	std::string::size_type separator;
 
@@ -307,7 +307,7 @@ Database::Database(std::string&in_host, int in_port, ORB *orb_in) : Connection(o
 ext(new DatabaseExt),
 access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {
-	filedb = Tango_nullptr;
+	filedb = nullptr;
 	serv_version = 0;
 	db_multi_svc = false;
 
@@ -351,7 +351,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 //
 //-----------------------------------------------------------------------------
 
-Database::Database(const Database &sou):Connection(sou),ext(Tango_nullptr)
+Database::Database(const Database &sou):Connection(sou),ext(nullptr)
 {
 
 //
@@ -362,14 +362,14 @@ Database::Database(const Database &sou):Connection(sou),ext(Tango_nullptr)
 	multi_db_port = sou.multi_db_port;
 	multi_db_host = sou.multi_db_host;
 	file_name = sou.file_name;
-	if (sou.filedb == Tango_nullptr)
-        filedb = Tango_nullptr;
+	if (sou.filedb == nullptr)
+        filedb = nullptr;
     else
         filedb = new FileDatabase(file_name);
     serv_version = sou.serv_version;
 
-    if (sou.access_proxy == Tango_nullptr)
-		access_proxy = Tango_nullptr;
+    if (sou.access_proxy == nullptr)
+		access_proxy = nullptr;
     else
 		access_proxy = new AccessProxy(sou.access_proxy->name().c_str());
 	access_checked = sou.access_checked;
@@ -385,19 +385,10 @@ Database::Database(const Database &sou):Connection(sou),ext(Tango_nullptr)
 // Copy extension class
 //
 
-#ifdef HAS_UNIQUE_PTR
     if (sou.ext.get() != NULL)
     {
         ext.reset(new DatabaseExt);
     }
-#else
-	if (sou.ext == NULL)
-		ext = NULL;
-	else
-	{
-		ext = new DatabaseExt();
-	}
-#endif
 
 }
 
@@ -425,14 +416,14 @@ Database &Database::operator=(const Database &rval)
         serv_version = rval.serv_version;
 
         delete filedb;
-        if (rval.filedb == Tango_nullptr)
-            filedb = Tango_nullptr;
+        if (rval.filedb == nullptr)
+            filedb = nullptr;
         else
             filedb = new FileDatabase(file_name);
 
         delete access_proxy;
-        if (rval.access_proxy == Tango_nullptr)
-            access_proxy = Tango_nullptr;
+        if (rval.access_proxy == nullptr)
+            access_proxy = nullptr;
         else
             access_proxy = new AccessProxy(rval.access_proxy->name().c_str());
         access_checked = rval.access_checked;
@@ -444,22 +435,12 @@ Database &Database::operator=(const Database &rval)
         access_service_defined = rval.access_service_defined;
         db_tg = rval.db_tg;
 
-#ifdef HAS_UNIQUE_PTR
         if (rval.ext.get() != NULL)
         {
             ext.reset(new DatabaseExt);
         }
         else
             ext.reset();
-#else
-        delete ext;
-        if (rval.ext != NULL)
-        {
-            ext = new DatabaseExt;
-        }
-        else
-            ext = NULL;
-#endif
     }
 
 	return *this;
@@ -559,9 +540,6 @@ Database::~Database()
 
     delete access_proxy;
 
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 }
 
 #ifdef _TG_WINDOWS_

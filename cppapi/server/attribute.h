@@ -102,7 +102,7 @@ typedef union _Attr_Value
 }Attr_Value;
 
 
-typedef struct last_attr_value
+struct LastAttrValue
 {
 	bool 				inited;
 	Tango::AttrQuality 	quality;
@@ -110,7 +110,13 @@ typedef struct last_attr_value
 	bool 				err;
 	DevFailed 			except;
 	AttrValUnion		value_4;
-} LastAttrValue;
+	void store(
+	    const AttributeValue_5*,
+	    const AttributeValue_4*,
+	    const AttributeValue_3*,
+	    const AttributeValue*,
+	    DevFailed*);
+};
 
 typedef enum prop_type
 {
@@ -2302,9 +2308,9 @@ public:
 	bool is_mem_exception() {return att_mem_exception;}
 	virtual bool is_fwd_att() {return false;}
 
-	void set_client_lib(int,std::string &);
+	void set_client_lib(int, EventType);
 	std::vector<int> &get_client_lib(EventType _et) {return client_lib[_et];}
-	void remove_client_lib(int,const std::string &);
+	void remove_client_lib(int, const std::string &);
 
 	void add_config_5_specific(AttributeConfig_5 &);
 	void add_startup_exception(std::string,const DevFailed &);
@@ -2322,6 +2328,7 @@ private:
 	void set_data_size();
 	void throw_min_max_value(std::string &,std::string &,MinMaxValueCheck);
 	void log_quality();
+	void log_alarm_quality() const;
 
     inline void init_string_prop(std::vector<AttrProperty> &prop_list, std::string& attr, const char* attr_name)
     {

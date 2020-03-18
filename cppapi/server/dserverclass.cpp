@@ -1844,13 +1844,15 @@ void DServerClass::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 //
 // Create device and add it into the device list
 //
+		DServer *dserver = new DServer(this,
+                                   (*devlist_ptr)[i],
+                                   "A device server device !!",
+                                   Tango::ON,
+                                   "The device is ON");
 
-		device_list.push_back(new DServer(this,
-						  (*devlist_ptr)[i],
-						  "A device server device !!",
-						  Tango::ON,
-						  "The device is ON"));
+		dserver->init_device();
 
+		device_list.push_back(dserver);
 
 //
 // Export device to the outside world
@@ -1860,6 +1862,9 @@ void DServerClass::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 			export_device(device_list.back());
 		else
 			export_device(device_list.back(),(*devlist_ptr)[i]);
+
+
+		dserver->server_init_hook();
 
 //
 // After the export of the admin device, the server is marked as started

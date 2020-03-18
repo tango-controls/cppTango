@@ -1456,7 +1456,7 @@ void Attribute::set_value(Tango::DevState *p_data,long x,long y,bool release)
 				*tmp_ptr = *p_data;
 				value.state_seq = new Tango::DevVarStateArray(data_size,data_size,tmp_ptr,release);
 				if (is_fwd_att() == true)
-					delete p_data;
+					delete [] p_data;
 				else
 					delete p_data;
 			}

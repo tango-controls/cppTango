@@ -12,13 +12,14 @@ env:
     - CMAKE_BUILD_TYPE=Debug
     - TANGO_USE_USING_NAMESPACE=ON
   matrix:
-    - OS_TYPE=gcc-latest RUN_TESTS=OFF WARNINGS_AS_ERRORS=ON TANGO_USE_USING_NAMESPACE=OFF
+    - OS_TYPE=llvm-latest RUN_TESTS=OFF WARNINGS_AS_ERRORS=ON TANGO_USE_USING_NAMESPACE=OFF USE_PCH=OFF
+    - OS_TYPE=gcc-latest RUN_TESTS=OFF WARNINGS_AS_ERRORS=ON TANGO_USE_USING_NAMESPACE=OFF USE_PCH=OFF
+    - OS_TYPE=ubuntu-20.04
     - OS_TYPE=debian10
     - OS_TYPE=debian10 USE_PCH=OFF RUN_TESTS=OFF
     - OS_TYPE=debian10 CMAKE_BUILD_TYPE=Release
     - OS_TYPE=debian9
-    - OS_TYPE=debian8 STOCK_CPPZMQ=OFF
-    - OS_TYPE=debian7
+    - OS_TYPE=debian8 SONAR_SCANNER=ON COVERALLS=ON STOCK_CPPZMQ=OFF
 
 notifications:
   email: false
@@ -44,77 +45,37 @@ before_install:
   - git clone https://github.com/JoakimSoderberg/coveralls-cmake.git
   - (test ${STOCK_CPPZMQ} = "OFF" && git clone -b v4.2.2 https://${CI_USER_TOKEN}@github.com/zeromq/cppzmq.git cppzmq) || mkdir cppzmq
   - git clone -b tango-9-lts https://${CI_USER_TOKEN}@github.com/tango-controls/tango-idl.git idl
+  - git clone -b Release_1.15 https://github.com/tango-controls/tango_admin.git
   - wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip && unzip build-wrapper-linux-x86.zip
 
 before_script:
   - >
-      docker run
-      --rm
-      --name mysql_db
-      -e MYSQL_ROOT_PASSWORD=root
-      -e MYSQL_INITDB_SKIP_TZINFO=1
-      -d
-      tangocs/mysql:9.2.2
-      --sql-mode=""
-      --innodb=OFF
-      --default-storage-engine=MyISAM
-  - >
-      docker run
-      --rm
-      --name mysql_db2
-      -e MYSQL_ROOT_PASSWORD=root
-      -e MYSQL_INITDB_SKIP_TZINFO=1
-      -d
-      tangocs/mysql:9.2.2
-      --sql-mode=""
-      --innodb=OFF
-      --default-storage-engine=MyISAM
-  - >
-      docker run
-      --rm
-      --name tango_cs
-      -e TANGO_HOST=127.0.0.1:10000
-      -e MYSQL_HOST=mysql_db:3306
-      -e MYSQL_USER=tango
-      -e MYSQL_PASSWORD=tango
-      -e MYSQL_DATABASE=tango
-      --link mysql_db:mysq_db
-      -d
-      tangocs/tango-cs:latest
-  - >
-      docker run
-      --rm
-      --name tango_cs2
-      -e TANGO_HOST=127.0.0.1:10000
-      -e MYSQL_HOST=mysql_db2:3306
-      -e MYSQL_USER=tango
-      -e MYSQL_PASSWORD=tango
-      -e MYSQL_DATABASE=tango
-      --link mysql_db2:mysq_db2
-      -d
-      tangocs/tango-cs:latest
-  - TANGO_HOST_IP=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' tango_cs)
-  - TANGO_HOST_IP2=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' tango_cs2)
-  - TANGO_HOST=${TANGO_HOST_IP}:10000
-  - docker build --build-arg APP_UID=$(id -u) --build-arg APP_GID=$(id -g) -t cpp_tango .travis/${OS_TYPE}
+      docker build
+      --build-arg APP_UID=$(id -u)
+      --build-arg APP_GID=$(id -g)
+      -t cpp_tango
+      .travis/${OS_TYPE}
   - >
       docker run
       --rm
       --name cpp_tango
       -e TANGO_HOST=${TANGO_HOST}
-      -e TANGO_HOST2=${TANGO_HOST_IP2}:10000
       -e BINTRAY_USER_NAME=tango-ci
       -e BINTRAY_API_KEY=${CI_BINTRAY_API_KEY}
       -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN}
-      --link tango_cs
-      --link tango_cs2
       -v `pwd`:/home/tango/src
       -v `pwd`/idl:/home/tango/idl
       -v `pwd`/cppzmq:/home/tango/cppzmq
+      -v `pwd`/tango_admin:/home/tango/tango_admin
       -v `pwd`/coveralls-cmake:/home/tango/coveralls-cmake
       -v `pwd`/build-wrapper-linux-x86:/home/tango/build-wrapper-linux-x86
+      -v /var/run/docker.sock:/var/run/docker.sock
       -dit
       cpp_tango
+  - >
+      docker exec -u root cpp_tango
+      groupadd -g $(grep docker /etc/group | awk -F ':' '{print $3}') dockerhost || true
+  - docker exec -u root cpp_tango usermod -a -G dockerhost tango || true
   - .travis/install_tango_idl.sh
   - (test ${STOCK_CPPZMQ} = "OFF" && .travis/install_cppzmq.sh) || true
 #work around gcov ignored by sonar
@@ -123,6 +84,8 @@ before_script:
 script:
   - set -e
   - .travis/run.sh
+  - .travis/install_tango.sh
+  - .travis/install_tango_admin.sh
   - .travis/test.sh
   - set +e
 
@@ -132,11 +95,8 @@ after_success:
 deploy:
   - provider: script
     script: bash .travis/deploy.sh
-    skip_cleanup: true
     on:
       tags: true
 
 after-script:
   - docker stop cpp_tango
-  - docker stop tango_cs tango_cs2
-  - docker stop mysql_db mysql_db2

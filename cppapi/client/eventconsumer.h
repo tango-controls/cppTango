@@ -518,34 +518,27 @@ public :
 	static NotifdEventConsumer *create();
     TANGO_IMP_EXP static void cleanup() {if (_instance != NULL){_instance=NULL;}}
 
-	void push_structured_event(const CosNotification::StructuredEvent&);
-	virtual void cleanup_EventChannel_map();
+	void push_structured_event(const CosNotification::StructuredEvent&) override;
+	virtual void cleanup_EventChannel_map() override;
 
-	void disconnect_structured_push_consumer();
-	void offer_change(const CosNotification::EventTypeSeq &,const CosNotification::EventTypeSeq &);
+	void disconnect_structured_push_consumer() override;
+	void offer_change(const CosNotification::EventTypeSeq &,const CosNotification::EventTypeSeq &) override;
 
-    virtual void get_subscription_command_name(std::string &cmd) {cmd="EventSubscriptionChange";}
+    virtual void get_subscription_command_name(std::string &cmd) override {cmd="EventSubscriptionChange";}
 
 	CORBA::ORB_var 					orb_;
 
 protected :
 	NotifdEventConsumer(ApiUtil *ptr);
-	virtual void connect_event_channel(std::string &,Database *,bool,DeviceData &);
-    virtual void connect_event_system(std::string &,std::string &,std::string &e,const std::vector<std::string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t);
+	virtual void connect_event_channel(std::string &,Database *,bool,DeviceData &) override;
+  virtual void connect_event_system(std::string &,std::string &,std::string &e,const std::vector<std::string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t) override;
 
-    virtual void set_channel_type(EventChannelStruct &ecs) {ecs.channel_type = NOTIFD;}
-	virtual void zmq_specific(DeviceData &,std::string &,DeviceProxy *,const std::string &) {}
-#ifdef HAS_OVERRIDE
+  virtual void set_channel_type(EventChannelStruct &ecs) override {ecs.channel_type = NOTIFD;}
+	virtual void zmq_specific(DeviceData &,std::string &,DeviceProxy *,const std::string &) override {}
 	ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
 	                                                 const std::string &local_callback_key,
 	                                                 const std::string &adm_name,
 	                                                 bool device_from_env_var) override;
-#else
-	virtual ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
-	                                                         const std::string &local_callback_key,
-	                                                         const std::string &adm_name,
-	                                                         bool device_from_env_var);
-#endif
 
 private :
 
@@ -558,7 +551,7 @@ private :
 	CosNotifyChannelAdmin::StructuredProxyPushSupplier_var	structuredProxyPushSupplier;
 	CosNotifyChannelAdmin::EventChannelFactory_var 			eventChannelFactory;
 
-	void *run_undetached(void *arg);
+	void *run_undetached(void *arg) override;
 };
 
 
@@ -573,12 +566,12 @@ class ZmqEventConsumer : public EventConsumer ,
 {
 public :
 	static ZmqEventConsumer *create();
-    TANGO_IMP_EXP static void cleanup() {if (_instance != NULL){_instance=NULL;}}
+  TANGO_IMP_EXP static void cleanup() {if (_instance != NULL){_instance=NULL;}}
 
-	virtual void cleanup_EventChannel_map();
-    virtual void get_subscription_command_name(std::string &cmd) {cmd="ZmqEventSubscriptionChange";}
+  virtual void cleanup_EventChannel_map() override;
+  virtual void get_subscription_command_name(std::string &cmd) override {cmd="ZmqEventSubscriptionChange";}
 
-    void get_subscribed_event_ids(DeviceProxy *,std::vector<int> &);
+  void get_subscribed_event_ids(DeviceProxy *,std::vector<int> &);
 
 	enum UserDataEventType
 	{
@@ -597,25 +590,18 @@ public :
 
 protected :
 	ZmqEventConsumer(ApiUtil *ptr);
-	virtual void connect_event_channel(std::string &,Database *,bool,DeviceData &);
-    virtual void disconnect_event_channel(std::string &channel_name,std::string &endpoint,std::string &endpoint_event);
-    virtual void connect_event_system(std::string &,std::string &,std::string &e,const std::vector<std::string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t);
-    virtual void disconnect_event(std::string &,std::string &);
+	virtual void connect_event_channel(std::string &,Database *,bool,DeviceData &) override;
+  virtual void disconnect_event_channel(std::string &channel_name,std::string &endpoint,std::string &endpoint_event) override;
+  virtual void connect_event_system(std::string &,std::string &,std::string &e,const std::vector<std::string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t) override;
+  virtual void disconnect_event(std::string &,std::string &) override;
 
-    virtual void set_channel_type(EventChannelStruct &ecs) {ecs.channel_type = ZMQ;}
-	virtual void zmq_specific(DeviceData &,std::string &,DeviceProxy *,const std::string &);
+  virtual void set_channel_type(EventChannelStruct &ecs) override {ecs.channel_type = ZMQ;}
+	virtual void zmq_specific(DeviceData &,std::string &,DeviceProxy *,const std::string &) override;
 
-#ifdef HAS_OVERRIDE
 	ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
 	                                                 const std::string &local_callback_key,
 	                                                 const std::string &adm_name,
 	                                                 bool device_from_env_var) override;
-#else
-	virtual ReceivedFromAdmin initialize_received_from_admin(const Tango::DevVarLongStringArray *pArray,
-	                                                         const std::string &local_callback_key,
-	                                                         const std::string &adm_name,
-	                                                         bool device_from_env_var);
-#endif
 
 private :
 	TANGO_IMP static ZmqEventConsumer       *_instance;
@@ -646,7 +632,7 @@ private :
     bool									ctrl_socket_bound;
 
 
-	void *run_undetached(void *arg);
+	void *run_undetached(void *arg) override;
 	void push_heartbeat_event(std::string &);
     void push_zmq_event(std::string &,unsigned char,zmq::message_t &,bool,const DevULong &);
     bool process_ctrl(zmq::message_t &,zmq::pollitem_t *,int &);
@@ -711,7 +697,7 @@ protected :
 	KeepAliveThCmd		&shared_cmd;
 
 private :
-	void *run_undetached(void *arg);
+	void *run_undetached(void *arg) override;
 	bool reconnect_to_channel(EvChanIte &,EventConsumer *);
 	void reconnect_to_event(EvChanIte &,EventConsumer *);
 	void re_subscribe_event(EvCbIte &,EvChanIte &);
@@ -757,11 +743,10 @@ public:
 				   EventType _event,
 				   CallBack *_callback,
 				   EventQueue *_ev_queue,
-				   bool _stateless,
 				   const std::string &_ev_name,
 				   int _id):omni_thread(),ev_cons(ec),device(_device),
 				   attribute(_attribute),et(_event),callback(_callback),ev_queue(_ev_queue),
-				   stateless(_stateless),ev_id(_id),event_name(_ev_name) {}
+				   ev_id(_id),event_name(_ev_name) {}
 
 	void run(void *);
 
@@ -772,7 +757,6 @@ private:
 	EventType       et;
 	CallBack        *callback;
 	EventQueue      *ev_queue;
-	bool            stateless;
 	int             ev_id;
 	std::string          event_name;
 };

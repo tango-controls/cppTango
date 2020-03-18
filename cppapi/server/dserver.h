@@ -38,6 +38,7 @@
 #define _DSERVER_H
 
 #include <tango.h>
+#include "event_subscription_state.h"
 
 namespace Tango
 {
@@ -113,6 +114,8 @@ public :
 	std::vector<DeviceClass *> &get_class_list() {return class_list;}
 	virtual void init_device();
 
+	virtual void server_init_hook();
+
 	unsigned long get_poll_th_pool_size() {return polling_th_pool_size;}
 	void set_poll_th_pool_size(unsigned long val) {polling_th_pool_size = val;}
 	bool get_opt_pool_usage() {return optimize_pool_usage;}
@@ -126,8 +129,8 @@ public :
 	void _create_cpp_class(const char *c1,const char *c2) {this->create_cpp_class(c1,c2);}
 
 	void mcast_event_for_att(std::string &,std::string &,std::vector<std::string> &);
-	void mem_event_par(std::map<std::string, std::vector<EventPar> > &);
-	void apply_event_par(std::map<std::string,std::vector<EventPar> > &);
+	void mem_event_par(ServerEventSubscriptionState&);
+	void apply_event_par(const ServerEventSubscriptionState&);
 
 	void mem_devices_interface(std::map<std::string,DevIntr> &);
 	void changed_devices_interface(std::map<std::string,DevIntr> &);
@@ -170,7 +173,6 @@ private:
 	bool is_event_name(std::string &);
 	bool is_ip_address(std::string &);
 
-	bool			from_constructor;
 	std::vector<std::string>	mcast_event_prop;
 
 	DevLong         mcast_hops;

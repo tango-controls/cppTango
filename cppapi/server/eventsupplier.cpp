@@ -43,8 +43,6 @@ namespace Tango
 
 omni_mutex        EventSupplier::event_mutex;
 
-omni_mutex        EventSupplier::detect_mutex;
-
 omni_mutex        EventSupplier::push_mutex;
 
 omni_condition    EventSupplier::push_cond(&EventSupplier::push_mutex);
@@ -335,34 +333,12 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
 
     if (attr.prev_change_event.inited == false)
     {
-        if (except != NULL)
-        {
-            attr.prev_change_event.err = true;
-            attr.prev_change_event.except = *except;
-        }
-        else
-        {
-            if (attr_value.attr_val_5 != NULL)
-            {
-                attr.prev_change_event.value_4 = attr_value.attr_val_5->value;
-            }
-            else if (attr_value.attr_val_4 != NULL)
-            {
-                attr.prev_change_event.value_4 = attr_value.attr_val_4->value;
-            }
-            else if (attr_value.attr_val_3 != NULL)
-            {
-                attr.prev_change_event.value = attr_value.attr_val_3->value;
-            }
-            else
-            {
-                attr.prev_change_event.value = attr_value.attr_val->value;
-            }
-
-            attr.prev_change_event.quality = the_quality;
-            attr.prev_change_event.err = false;
-        }
-        attr.prev_change_event.inited = true;
+        attr.prev_change_event.store(
+            attr_value.attr_val_5,
+            attr_value.attr_val_4,
+            attr_value.attr_val_3,
+            attr_value.attr_val,
+            except);
         is_change = true;
     }
     else
@@ -401,32 +377,12 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
         std::vector<std::string> filterable_names_lg;
         std::vector<long> filterable_data_lg;
 
-        if (except != NULL)
-        {
-            attr.prev_change_event.err = true;
-            attr.prev_change_event.except = *except;
-        }
-        else
-        {
-            if (attr_value.attr_val_5 != NULL)
-            {
-                attr.prev_change_event.value_4 = attr_value.attr_val_5->value;
-            }
-            else if (attr_value.attr_val_4 != NULL)
-            {
-                attr.prev_change_event.value_4 = attr_value.attr_val_4->value;
-            }
-            else if (attr_value.attr_val_3 != NULL)
-            {
-                attr.prev_change_event.value = attr_value.attr_val_3->value;
-            }
-            else
-            {
-                attr.prev_change_event.value = attr_value.attr_val->value;
-            }
-            attr.prev_change_event.quality = the_quality;
-            attr.prev_change_event.err = false;
-        }
+        attr.prev_change_event.store(
+            attr_value.attr_val_5,
+            attr_value.attr_val_4,
+            attr_value.attr_val_3,
+            attr_value.attr_val,
+            except);
 
 //
 // Prepare to push the event
@@ -692,36 +648,15 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 
     if (attr.prev_archive_event.inited == false)
     {
-        if (except != NULL)
-        {
-            attr.prev_archive_event.err = true;
-            attr.prev_archive_event.except = *except;
-        }
-        else
-        {
-            if (attr_value.attr_val_5 != NULL)
-            {
-                attr.prev_archive_event.value_4 = attr_value.attr_val_5->value;
-            }
-            else if (attr_value.attr_val_4 != NULL)
-            {
-                attr.prev_archive_event.value_4 = attr_value.attr_val_4->value;
-            }
-            else if (attr_value.attr_val_3 != NULL)
-            {
-                attr.prev_archive_event.value = attr_value.attr_val_3->value;
-            }
-            else
-            {
-                attr.prev_archive_event.value = attr_value.attr_val->value;
-            }
+        attr.prev_archive_event.store(
+            attr_value.attr_val_5,
+            attr_value.attr_val_4,
+            attr_value.attr_val_3,
+            attr_value.attr_val,
+            except);
 
-            attr.prev_archive_event.quality = the_quality;
-            attr.prev_archive_event.err = false;
-        }
         attr.archive_last_periodic = now_ms;
         attr.archive_last_event = now_ms;
-        attr.prev_archive_event.inited = true;
         is_change = true;
     }
     else
@@ -764,32 +699,12 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 
         domain_name = device_impl->get_name() + "/" + attr_name;
 
-        if (except != NULL)
-        {
-            attr.prev_archive_event.err = true;
-            attr.prev_archive_event.except = *except;
-        }
-        else
-        {
-            if (attr_value.attr_val_5 != NULL)
-            {
-                attr.prev_archive_event.value_4 = attr_value.attr_val_5->value;
-            }
-            else if (attr_value.attr_val_4 != NULL)
-            {
-                attr.prev_archive_event.value_4 = attr_value.attr_val_4->value;
-            }
-            else if (attr_value.attr_val_3 != NULL)
-            {
-                attr.prev_archive_event.value = attr_value.attr_val_3->value;
-            }
-            else
-            {
-                attr.prev_archive_event.value = attr_value.attr_val->value;
-            }
-            attr.prev_archive_event.quality = the_quality;
-            attr.prev_archive_event.err = false;
-        }
+        attr.prev_archive_event.store(
+            attr_value.attr_val_5,
+            attr_value.attr_val_4,
+            attr_value.attr_val_3,
+            attr_value.attr_val,
+            except);
 
 //
 // Prepare to push the event
@@ -1180,12 +1095,6 @@ bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &att
         the_new_quality = attr_value.attr_val->quality;
         the_new_any = &(attr_value.attr_val->value);
     }
-
-//
-// get the mutex to synchronize the sending of events
-//
-
-    omni_mutex_lock l(detect_mutex);
 
 //
 // Send event, if the read_attribute failed or if it is the first time that the read_attribute succeed after a failure.
@@ -2643,14 +2552,14 @@ void EventSupplier::convert_att_event_to_5(struct EventSupplier::SuppliedEventDa
                                            struct EventSupplier::SuppliedEventData &sent_value,
                                            bool &need_free, Attribute &attr)
 {
-    if (attr_value.attr_val_3 != Tango_nullptr)
+    if (attr_value.attr_val_3 != nullptr)
     {
         AttributeValue_5 *tmp_attr_val_5 = new AttributeValue_5();
         attr.AttributeValue_3_2_AttributeValue_5(attr_value.attr_val_3, tmp_attr_val_5);
         sent_value.attr_val_5 = tmp_attr_val_5;
         need_free = true;
     }
-    else if (attr_value.attr_val_4 != Tango_nullptr)
+    else if (attr_value.attr_val_4 != nullptr)
     {
         AttributeValue_5 *tmp_attr_val_5 = new AttributeValue_5();
         attr.AttributeValue_4_2_AttributeValue_5(attr_value.attr_val_4, tmp_attr_val_5);
@@ -2667,14 +2576,14 @@ void EventSupplier::convert_att_event_to_4(struct EventSupplier::SuppliedEventDa
                                            struct EventSupplier::SuppliedEventData &sent_value,
                                            bool &need_free, Attribute &attr)
 {
-    if (attr_value.attr_val_3 != Tango_nullptr)
+    if (attr_value.attr_val_3 != nullptr)
     {
         AttributeValue_4 *tmp_attr_val_4 = new AttributeValue_4();
         attr.AttributeValue_3_2_AttributeValue_4(attr_value.attr_val_3, tmp_attr_val_4);
         sent_value.attr_val_4 = tmp_attr_val_4;
         need_free = true;
     }
-    else if (attr_value.attr_val_5 != Tango_nullptr)
+    else if (attr_value.attr_val_5 != nullptr)
     {
         AttributeValue_4 *tmp_attr_val_4 = new AttributeValue_4();
         attr.AttributeValue_5_2_AttributeValue_4(attr_value.attr_val_5, tmp_attr_val_4);
@@ -2691,14 +2600,14 @@ void EventSupplier::convert_att_event_to_3(struct EventSupplier::SuppliedEventDa
                                            struct EventSupplier::SuppliedEventData &sent_value,
                                            bool &need_free, Attribute &attr)
 {
-    if (attr_value.attr_val_4 != Tango_nullptr)
+    if (attr_value.attr_val_4 != nullptr)
     {
         AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
         attr.AttributeValue_4_2_AttributeValue_3(attr_value.attr_val_4, tmp_attr_val_3);
         sent_value.attr_val_3 = tmp_attr_val_3;
         need_free = true;
     }
-    else if (attr_value.attr_val_5 != Tango_nullptr)
+    else if (attr_value.attr_val_5 != nullptr)
     {
         AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
         attr.AttributeValue_5_2_AttributeValue_3(attr_value.attr_val_5, tmp_attr_val_3);

@@ -140,6 +140,16 @@ int main(int argc, char **argv)
 
 		eve_id = device->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,1,filters);
 
+		{
+			Tango::DevVarDoubleArray dvda(2);
+			dvda.length(2);
+			dvda[0] = 0.0;
+			dvda[1] = 0.0;
+			DeviceData d_in;
+			d_in << dvda;
+			device->command_inout("IOSetWAttrLimit", d_in);
+		}
+
 //
 // Send 10 attribute configuration events
 //

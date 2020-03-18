@@ -360,9 +360,6 @@ MultiAttribute::~MultiAttribute()
 	for(unsigned long i = 0;i < attr_list.size();i++)
 		delete attr_list[i];
 	ext->attr_map.clear();
-#ifndef HAS_UNIQUE_PTR
-	delete ext;
-#endif
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -1151,7 +1148,6 @@ Attribute &MultiAttribute::get_attr_by_name(const char *attr_name)
     Attribute * attr = 0;
     std::string st(attr_name);
     std::transform(st.begin(),st.end(),st.begin(),::tolower);
-#ifdef HAS_MAP_AT
     try
     {
         attr = ext->attr_map.at(st).att_ptr;
@@ -1166,21 +1162,6 @@ Attribute &MultiAttribute::get_attr_by_name(const char *attr_name)
                                 o.str(),
                                 (const char *)"MultiAttribute::get_attr_by_name");
     }
-#else
-    std::map<std::string, MultiAttributeExt::AttributePtrAndIndex>::iterator it;
-    it = ext->attr_map.find(st);
-    if (it == ext->attr_map.end())
-    {
-        cout3 << "MultiAttribute::get_attr_by_name throwing exception" << std::endl;
-        TangoSys_OMemStream o;
-
-        o << attr_name << " attribute not found" << std::ends;
-        Except::throw_exception((const char *)API_AttrNotFound,
-                                o.str(),
-                                (const char *)"MultiAttribute::get_attr_by_name");
-    }
-    attr = it->second.att_ptr;
-#endif
     return *attr;
 }
 
@@ -1206,7 +1187,6 @@ WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
     Attribute * attr = 0;
     std::string st(attr_name);
     std::transform(st.begin(),st.end(),st.begin(),::tolower);
-#ifdef HAS_MAP_AT
     try
     {
         attr = ext->attr_map.at(st).att_ptr;
@@ -1221,21 +1201,6 @@ WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
                                 o.str(),
                                 (const char *)"MultiAttribute::get_w_attr_by_name");
     }
-#else
-    std::map<std::string, MultiAttributeExt::AttributePtrAndIndex>::iterator it;
-    it = ext->attr_map.find(st);
-    if (it == ext->attr_map.end())
-    {
-        cout3 << "MultiAttribute::get_attr_by_name throwing exception" << std::endl;
-        TangoSys_OMemStream o;
-
-        o << attr_name << " writable attribute not found" << std::ends;
-        Except::throw_exception((const char *)API_AttrNotFound,
-                                o.str(),
-                                (const char *)"MultiAttribute::get_w_attr_by_name");
-    }
-    attr = it->second.att_ptr;
-#endif
 
     if ((attr->get_writable() != Tango::WRITE) &&
         (attr->get_writable() != Tango::READ_WRITE))
@@ -1274,7 +1239,6 @@ long MultiAttribute::get_attr_ind_by_name(const char *attr_name)
     std::string st(attr_name);
 
     std::transform(st.begin(),st.end(),st.begin(),::tolower);
-#ifdef HAS_MAP_AT
     try
     {
         i = ext->attr_map.at(st).att_index_in_vector;
@@ -1289,21 +1253,6 @@ long MultiAttribute::get_attr_ind_by_name(const char *attr_name)
                                 o.str(),
                                 (const char *)"MultiAttribute::get_attr_ind_by_name");
     }
-#else
-    std::map<std::string, MultiAttributeExt::AttributePtrAndIndex>::iterator it;
-    it = ext->attr_map.find(st);
-    if (it == ext->attr_map.end())
-    {
-        cout3 << "MultiAttribute::get_attr_ind_by_name throwing exception" << std::endl;
-        TangoSys_OMemStream o;
-
-        o << attr_name << " attribute not found" << std::ends;
-        Except::throw_exception((const char *)API_AttrNotFound,
-                                o.str(),
-                                (const char *)"MultiAttribute::get_attr_ind_by_name");
-    }
-    i = it->second.att_index_in_vector;
-#endif
     return i;
 }
 
@@ -1500,7 +1449,7 @@ void MultiAttribute::read_alarm(std::string &status)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::get_event_param(std::vector<EventPar> &eve)
+void MultiAttribute::get_event_param(EventSubscriptionStates& eve)
 {
 	unsigned int i;
 
@@ -1559,7 +1508,7 @@ void MultiAttribute::get_event_param(std::vector<EventPar> &eve)
 
 		if (once_more == true)
 		{
-			EventPar ep;
+			EventSubscriptionState ep;
 
 			if (attr_list[i]->use_notifd_event() == true)
                 ep.notifd = true;
@@ -1571,7 +1520,7 @@ void MultiAttribute::get_event_param(std::vector<EventPar> &eve)
             else
                 ep.zmq = false;
 
-			ep.attr_id = i;
+			ep.attribute_name = attr_list[i]->get_name();
 			ep.change = ch;
 			ep.quality = qu;
 			ep.archive = ar;
@@ -1599,46 +1548,61 @@ void MultiAttribute::get_event_param(std::vector<EventPar> &eve)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::set_event_param(std::vector<EventPar> &eve)
+void MultiAttribute::set_event_param(const EventSubscriptionStates& eve)
 {
 	for (size_t i = 0;i < eve.size();i++)
 	{
-		if (eve[i].attr_id != -1)
+		if (! eve[i].attribute_name.empty())
 		{
-			Tango::Attribute &att = get_attr_by_ind(eve[i].attr_id);
+			Tango::Attribute &att = get_attr_by_name(eve[i].attribute_name.c_str());
 
 			{
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				std::vector<int>::iterator ite;
+				std::vector<int>::const_iterator ite;
 
 				if (eve[i].change.empty() == false)
 				{
 					for (ite = eve[i].change.begin();ite != eve[i].change.end();++ite)
+					{
 						att.set_change_event_sub(*ite);
+						att.set_client_lib(*ite, CHANGE_EVENT);
+					}
 				}
 
 				if (eve[i].periodic.empty() == false)
 				{
 					for (ite = eve[i].periodic.begin();ite != eve[i].periodic.end();++ite)
+					{
 						att.set_periodic_event_sub(*ite);
+						att.set_client_lib(*ite, PERIODIC_EVENT);
+					}
 				}
 
 				if (eve[i].archive.empty() == false)
 				{
 					for (ite = eve[i].archive.begin();ite != eve[i].archive.end();++ite)
+					{
 						att.set_archive_event_sub(*ite);
+						att.set_client_lib(*ite, ARCHIVE_EVENT);
+					}
 				}
 
 				if (eve[i].att_conf.empty() == false)
 				{
 					for (ite = eve[i].att_conf.begin();ite != eve[i].att_conf.end();++ite)
+					{
 						att.set_att_conf_event_sub(*ite);
+						att.set_client_lib(*ite, ATTR_CONF_EVENT);
+					}
 				}
 
 				if (eve[i].user.empty() == false)
 				{
 					for (ite = eve[i].user.begin();ite != eve[i].user.end();++ite)
+					{
 						att.set_user_event_sub(*ite);
+						att.set_client_lib(*ite, USER_EVENT);
+					}
 				}
 
 				if (eve[i].quality == true)

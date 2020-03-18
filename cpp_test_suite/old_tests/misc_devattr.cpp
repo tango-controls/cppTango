@@ -99,7 +99,6 @@ int main()
 
 // Test move assignement
 
-#ifdef  HAS_RVALUE
 	DeviceAttribute d_ma;
 	float fl_move = 2.0;
 	d_ma << fl_move;
@@ -113,7 +112,6 @@ int main()
 	assert (fl_move == fl_move_out );
 
 	cout << "   Move assignement --> OK" << endl;
-#endif
 
 	return 0;		
 }

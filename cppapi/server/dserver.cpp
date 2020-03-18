@@ -100,10 +100,6 @@ DServer::DServer(DeviceClass *cl_ptr,const char *n,const char *d,Tango::DevState
 
 	polling_th_pool_size = DEFAULT_POLLING_THREADS_POOL_SIZE;
 	optimize_pool_usage = true;
-
-	from_constructor = true;
-	init_device();
-	from_constructor = false;
 }
 
 bool less_than (Command *a,Command *b)
@@ -484,6 +480,32 @@ void DServer::init_device()
 	}
 }
 
+void DServer::server_init_hook()
+{
+    for (DeviceClass *dclass : this->get_class_list())
+    {
+        for (DeviceImpl *device : dclass->get_device_list())
+        {
+            cout4 << "Device " << device->get_name_lower() << " executes init_server_hook" << std::endl;
+            try
+            {
+                device->server_init_hook();
+            }
+            catch (const DevFailed &devFailed)
+            {
+                device->set_state(FAULT);
+
+                std::ostringstream ss;
+                ss << "Device[" << device->get_name_lower() << "] server_init_hook has failed due to DevFailed:"
+                   << std::endl;
+                ss << devFailed;
+
+                device->set_status(ss.str());
+            }
+        }
+    }
+}
+
 //+----------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -824,10 +846,10 @@ void DServer::restart(std::string &d_name)
 
 	if (dev_to_del->get_dev_idl_version() >= MIN_IDL_DEV_INTR)
 	{
-		ZmqEventSupplier *event_supplier_zmq = Tango_nullptr;
+		ZmqEventSupplier *event_supplier_zmq = nullptr;
 		event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
 
-		if (event_supplier_zmq != Tango_nullptr)
+		if (event_supplier_zmq != nullptr)
 			ev_client = event_supplier_zmq->any_dev_intr_client(dev_to_del);
 
 		if (ev_client == true)
@@ -860,7 +882,7 @@ void DServer::restart(std::string &d_name)
 
 	std::vector<PollObj *> &p_obj = dev_to_del->get_poll_obj_list();
 	std::vector<Pol> dev_pol;
-	std::vector<EventPar> eve;
+	EventSubscriptionStates eve;
 
 	for (i = 0;i < p_obj.size();i++)
 	{
@@ -1171,7 +1193,7 @@ void ServRestartThread::run(void *ptr)
 // Memorize event parameters and devices interface
 //
 
-	std::map<std::string,std::vector<EventPar> > map_events;
+	ServerEventSubscriptionState map_events;
 	std::map<std::string,DevIntr> map_dev_inter;
 
 	dev->mem_event_par(map_events);
@@ -1955,14 +1977,14 @@ void DServer::mcast_event_for_att(std::string &dev_name,std::string &att_name,st
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::mem_event_par(std::map<std::string,std::vector<EventPar> > &_map)
+void DServer::mem_event_par(ServerEventSubscriptionState& _map)
 {
 	for (size_t i = 0;i < class_list.size();i++)
 	{
 		std::vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
 		for (size_t j = 0;j < dev_list.size();j++)
 		{
-			std::vector<EventPar> eve;
+			EventSubscriptionStates eve;
 			dev_list[j]->get_device_attr()->get_event_param(eve);
 			dev_list[j]->get_event_param(eve);
 
@@ -1988,7 +2010,7 @@ void DServer::mem_event_par(std::map<std::string,std::vector<EventPar> > &_map)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::apply_event_par(std::map<std::string,std::vector<EventPar> > &_map)
+void DServer::apply_event_par(const ServerEventSubscriptionState& _map)
 {
 	for (size_t i = 0;i < class_list.size();i++)
 	{
@@ -1996,8 +2018,8 @@ void DServer::apply_event_par(std::map<std::string,std::vector<EventPar> > &_map
 		for (size_t j = 0;j < dev_list.size();j++)
 		{
 			std::string &dev_name = dev_list[j]->get_name();
-			std::map<std::string,std::vector<EventPar> >::iterator ite;
-			ite = _map.find(dev_name);
+
+			const auto ite = _map.find(dev_name);
 
 			if (ite != _map.end())
 			{

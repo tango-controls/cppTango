@@ -173,11 +173,6 @@ protected :
 	static omni_mutex 		push_mutex;
 	static omni_condition	push_cond;
 
-	// Added a mutex to synchronize the access to
-	//	detect_event which is used
-	// from different threads
-	static omni_mutex		detect_mutex;
-
 private:
 	bool        one_subscription_cmd;
 };
@@ -245,30 +240,6 @@ private :
 #define     LARGE_DATA_THRESHOLD    2048
 #define     LARGE_DATA_THRESHOLD_ENCODED   LARGE_DATA_THRESHOLD * 4
 
-#ifndef HAS_LAMBDA_FUNC
-template <typename A1,typename A2,typename R>
-struct WantedClient : public std::binary_function<A1,A2,R>
-{
-	R operator() (A1 conn_client, A2 client) const
-	{
-		return conn_client.clnt == client;
-	}
-};
-
-template <typename A1,typename A2,typename R>
-struct OldClient : public std::binary_function<A1,A2,R>
-{
-	R operator() (A1 conn_client, A2 ti) const
-	{
-        if (ti > (conn_client.date + 500))
-        {
-            return true;
-        }
-        else
-            return false;
-	}
-};
-#endif
 
 class ZmqEventSupplier : public EventSupplier
 {

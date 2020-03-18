@@ -83,11 +83,7 @@ private :
         AttributeProxyExt(const std::string& name):user_defined_name(name) {};
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<AttributeProxyExt>   ext;
-#else
-	AttributeProxyExt	            *ext;     		// Class extension
-#endif
 
 public :
     std::string get_user_defined_name() const { return ext->user_defined_name; }

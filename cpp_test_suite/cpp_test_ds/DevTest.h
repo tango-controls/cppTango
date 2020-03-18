@@ -37,6 +37,7 @@ public :
 	// virtual Tango_DevString& dev_InOutString(Tango_DevString DateToParse);
 	virtual Tango::ConstDevString dev_status();
 	virtual void always_executed_hook();
+    virtual void server_init_hook();
 	virtual void signal_handler(long signo);
 
 	virtual void init_device();
@@ -289,6 +290,7 @@ protected :
 
 	bool 				Short_attr_except;
 	bool 				Short_attr_w_except;
+	bool 				Long_attr_except;
 	bool 				event_change_attr_except;
 	bool 				event_quality_attr_except;
 	bool 				event_throw_out_of_sync;

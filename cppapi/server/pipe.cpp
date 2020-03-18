@@ -836,7 +836,7 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 		ad.pipe_val->data_blob.name = bl_name.c_str();
 
 	DevVarPipeDataEltArray *tmp_ptr = p_data->get_insert_data();
-	if (tmp_ptr == Tango_nullptr)
+	if (tmp_ptr == nullptr)
 	{
 		Except::throw_exception(API_PipeNoDataElement,"No data in DevicePipeBlob!","Pipe::fire_event()");
 	}

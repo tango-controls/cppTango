@@ -62,7 +62,7 @@ public:
 /**
  * Constructs a newly allocated UserDefaultAttrProp object.
  */
-	UserDefaultFwdAttrProp():ext(Tango_nullptr) {}
+	UserDefaultFwdAttrProp():ext(nullptr) {}
 //@}
 
 /**@name Set default property methods */
@@ -88,11 +88,7 @@ private:
     {
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<UserDefaultFwdAttrPropExt>  	ext;           // Class extension
-#else
-	UserDefaultFwdAttrPropExt	            *ext;
-#endif
 };
 
 class MultiAttribute;
@@ -170,11 +166,7 @@ private:
     {
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<FwdAttrExt>    	ext;           // Class extension
-#else
-	FwdAttrExt		        	*ext;
-#endif
 };
 
 

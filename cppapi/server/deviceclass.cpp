@@ -791,9 +791,6 @@ DeviceClass::~DeviceClass()
 // Delete the class extension object
 //
 
-#ifndef HAS_UNIQUE_PTR
-	delete ext;
-#endif
 
 	cout4 << "Leaving DeviceClass destructor for class " << name << std::endl;
 }
@@ -995,6 +992,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 //
 
 		std::string &dev_name = dev->get_name_lower();
+		cout4 << "DeviceClass::export_device::dev_name=" << dev_name << std::endl;
 		if ((get_device_factory_done() == false) && (dev_name.find("dserver") != 0))
 			dev->get_dev_monitor().get_monitor();
 
@@ -1535,7 +1533,6 @@ Command &DeviceClass::get_cmd_by_name(const std::string &cmd_name)
 {
 	std::vector<Command *>::iterator pos;
 
-#ifdef HAS_LAMBDA_FUNC
 	pos = find_if(command_list.begin(),command_list.end(),
 					[&] (Command *cmd) -> bool
 					{
@@ -1545,10 +1542,6 @@ Command &DeviceClass::get_cmd_by_name(const std::string &cmd_name)
 						std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
 						return cmd->get_lower_name() == tmp_name;
 					});
-#else
-	pos = find_if(command_list.begin(),command_list.end(),
-				std::bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
-#endif
 
 	if (pos == command_list.end())
 	{
@@ -1593,7 +1586,6 @@ Pipe &DeviceClass::get_pipe_by_name(const std::string &pipe_name,const std::stri
 
 	std::vector<Pipe *>::iterator pos;
 
-#ifdef HAS_LAMBDA_FUNC
 	pos = find_if(ite->second.begin(),ite->second.end(),
 					[&] (Pipe *pi) -> bool
 					{
@@ -1603,10 +1595,6 @@ Pipe &DeviceClass::get_pipe_by_name(const std::string &pipe_name,const std::stri
 						std::transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
 						return pi->get_lower_name() == tmp_name;
 					});
-#else
-	pos = find_if(ite->second.begin(),ite->second.end(),
-				std::bind2nd(WantedPipe<Pipe *,const char *,bool>(),pipe_name.c_str()));
-#endif
 
 	if (pos == ite->second.end())
 	{
@@ -1638,7 +1626,6 @@ void DeviceClass::remove_command(const std::string &cmd_name)
 {
 	std::vector<Command *>::iterator pos;
 
-#ifdef HAS_LAMBDA_FUNC
 	pos = find_if(command_list.begin(),command_list.end(),
 					[&] (Command *cmd) -> bool
 					{
@@ -1646,10 +1633,6 @@ void DeviceClass::remove_command(const std::string &cmd_name)
 							return false;
 						return cmd->get_lower_name() == cmd_name;
 					});
-#else
-	pos = find_if(command_list.begin(),command_list.end(),
-				std::bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
-#endif
 
 	if (pos == command_list.end())
 	{

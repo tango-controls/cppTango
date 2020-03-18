@@ -147,7 +147,7 @@ void Util::polling_configure()
 // A loop on each command
 //
 
-			for (k = 0;k < poll_cmd_list.size();k++)
+			for (k = 0;k < poll_cmd_list.size();k += 2)
 			{
 				DevVarLongStringArray *send = new DevVarLongStringArray();
 				send->lvalue.length(1);
@@ -182,14 +182,13 @@ void Util::polling_configure()
 				}
 
 				v_poll_cmd.push_back(send);
-				k++;
 			}
 
 //
 // A loop on each attribute
 //
 
-			for (k = 0;k < poll_attr_list.size();k++)
+			for (k = 0;k < poll_attr_list.size();k += 2)
 			{
 				DevVarLongStringArray *send = new DevVarLongStringArray();
 				send->lvalue.length(1);
@@ -231,8 +230,6 @@ void Util::polling_configure()
 					}
 					v_poll_cmd.push_back(send);
 				}
-
-				k++;
 			}
 
 //

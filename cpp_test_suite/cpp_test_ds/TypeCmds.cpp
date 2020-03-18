@@ -1,9 +1,5 @@
 #include "TypeCmds.h"
 
-#define DEV_DEBUG_STREAM(dev) \
-  if (dev->get_logger()->is_debug_enabled())\
-    dev->get_logger()->debug_stream()
-
 //+----------------------------------------------------------------------------
 //
 // method : 		IOVoid::IOVoid()

@@ -349,16 +349,8 @@ void PollThread::execute_cmd()
         bool found = false;
         if (new_type == POLL_ATTR && wo.dev->get_dev_idl_version() >= 4 && polling_bef_9 == false)
         {
-#ifdef HAS_LAMBDA_FUNC
             ite = find_if(works.begin(),works.end(),
                 [&] (const WorkItem &wi) {return wi.dev == local_cmd.dev && wi.update == new_upd && wi.type == new_type;});
-#else
-            for (ite = works.begin();ite != works.end();++ite)
-            {
-                if (ite->dev == local_cmd.dev && ite->update == new_upd && ite->type == new_type)
-                    break;
-            }
-#endif
             if (ite != works.end())
             {
                  ite->name.push_back((*wo.poll_list)[local_cmd.index]->get_name());
@@ -1099,16 +1091,8 @@ void PollThread::add_insert_in_list(WorkItem &new_work)
     if (new_work.type == POLL_ATTR && new_work.dev->get_dev_idl_version() >= 4 && polling_bef_9 == false)
     {
         std::list<WorkItem>::iterator ite;
-#ifdef HAS_LAMBDA_FUNC
         ite = find_if(works.begin(),works.end(),
                 [&] (const WorkItem &wi) {return wi.dev == new_work.dev && wi.update == new_work.update && wi.type == new_work.type;});
-#else
-        for (ite = works.begin();ite != works.end();++ite)
-        {
-            if (ite->dev == new_work.dev && ite->update == new_work.update && ite->type == new_work.type)
-                break;
-        }
-#endif
 
         if (ite != works.end())
         {

@@ -581,10 +581,13 @@ void DServer::event_subscription(std::string &dev_name,std::string &obj_name,std
 //
 
 		if (client_lib != 0)
-        {
-            omni_mutex_lock oml(EventSupplier::get_event_mutex());
-			attribute.set_client_lib(client_lib,event);
-        }
+		{
+			EventType event_type = CHANGE_EVENT;
+			tg->event_name_2_event_type(event, event_type);
+
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
+			attribute.set_client_lib(client_lib, event_type);
+		}
 	}
 	else if (event == EventName[PIPE_EVENT])
 	{
@@ -672,7 +675,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 	}
 
     Tango::Util *tg = Tango::Util::instance();
-	Tango::DevVarLongStringArray *ret_data = Tango_nullptr;
+	Tango::DevVarLongStringArray *ret_data = nullptr;
 
     if (argin->length() == 1)
     {

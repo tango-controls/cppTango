@@ -71,27 +71,13 @@ DeviceData::DeviceData()
 DeviceData::DeviceData(const DeviceData &source)
 {
     exceptions_flags = source.exceptions_flags;
-#ifdef HAS_RVALUE
     any = source.any;
-#else
-    any = const_cast<DeviceData &>(source).any._retn();
-#endif
 
-#ifdef HAS_UNIQUE_PTR
     if (source.ext.get() != NULL)
     {
         ext.reset(new DeviceDataExt);
         *(ext.get()) = *(source.ext.get());
     }
-#else
-    if (source.ext != NULL)
-    {
-        ext = new DeviceDataExt();
-        *ext = *(source.ext);
-    }
-    else
-        ext = NULL;
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -100,7 +86,6 @@ DeviceData::DeviceData(const DeviceData &source)
 //
 //-----------------------------------------------------------------------------
 
-#ifdef HAS_RVALUE
 DeviceData::DeviceData(DeviceData &&source)
     : ext(new DeviceDataExt)
 {
@@ -112,7 +97,6 @@ DeviceData::DeviceData(DeviceData &&source)
         ext = std::move(source.ext);
     }
 }
-#endif
 
 //-----------------------------------------------------------------------------
 //
@@ -125,13 +109,8 @@ DeviceData &DeviceData::operator=(const DeviceData &rval)
     if (this != &rval)
     {
         exceptions_flags = rval.exceptions_flags;
-#ifdef HAS_RVALUE
         any = rval.any;
-#else
-        any = const_cast<DeviceData &>(rval).any._retn();
-#endif
 
-#ifdef HAS_UNIQUE_PTR
         if (rval.ext.get() != NULL)
         {
             ext.reset(new DeviceDataExt);
@@ -141,17 +120,6 @@ DeviceData &DeviceData::operator=(const DeviceData &rval)
         {
             ext.reset();
         }
-#else
-        delete ext;
-
-        if (rval.ext != NULL)
-        {
-            ext = new DeviceDataExt();
-            *ext = *(rval.ext);
-        }
-        else
-            ext = NULL;
-#endif
     }
     return *this;
 }
@@ -162,7 +130,6 @@ DeviceData &DeviceData::operator=(const DeviceData &rval)
 //
 //-----------------------------------------------------------------------------
 
-#ifdef HAS_RVALUE
 DeviceData &DeviceData::operator=(DeviceData &&rval)
 {
     exceptions_flags = rval.exceptions_flags;
@@ -179,7 +146,6 @@ DeviceData &DeviceData::operator=(DeviceData &&rval)
 
     return *this;
 }
-#endif
 
 //-----------------------------------------------------------------------------
 //
@@ -189,9 +155,6 @@ DeviceData &DeviceData::operator=(DeviceData &&rval)
 
 DeviceData::~DeviceData()
 {
-#ifndef HAS_UNIQUE_PTR
-    delete ext;
-#endif
 }
 
 //-----------------------------------------------------------------------------

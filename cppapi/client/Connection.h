@@ -117,11 +117,7 @@ protected :
         bool            has_alt_adr;
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<ConnectionExt>   ext;
-#else
-	ConnectionExt		        *ext; 	// Class extension
-#endif
 
     bool				tr_reco;
     Tango::Device_3_var device_3;

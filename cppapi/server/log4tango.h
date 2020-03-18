@@ -64,33 +64,39 @@
 #define LOG_DEBUG(X) \
     get_logger()->debug X
 
-#define FATAL_STREAM \
-  if (get_logger()->is_fatal_enabled()) \
-    get_logger()->fatal_stream() \
+#define DEV_FATAL_STREAM(device) \
+  if (device->get_logger()->is_fatal_enabled()) \
+    device->get_logger()->fatal_stream() \
       << log4tango::LogInitiator::_begin_log
 
-#define ERROR_STREAM \
-  if (get_logger()->is_error_enabled()) \
-    get_logger()->error_stream() \
+#define DEV_ERROR_STREAM(device) \
+  if (device->get_logger()->is_error_enabled()) \
+    device->get_logger()->error_stream() \
       << log4tango::LogInitiator::_begin_log
 
-#define WARN_STREAM \
-  if (get_logger()->is_warn_enabled()) \
-    get_logger()->warn_stream() \
+#define DEV_WARN_STREAM(device) \
+  if (device->get_logger()->is_warn_enabled()) \
+    device->get_logger()->warn_stream() \
       << log4tango::LogInitiator::_begin_log
 
-#define INFO_STREAM \
-  if (get_logger()->is_info_enabled()) \
-    get_logger()->info_stream() \
+#define DEV_INFO_STREAM(device) \
+  if (device->get_logger()->is_info_enabled()) \
+    device->get_logger()->info_stream() \
       << log4tango::LogInitiator::_begin_log
 
-#define DEBUG_STREAM \
-  if (get_logger()->is_debug_enabled()) \
-    get_logger()->debug_stream() \
+#define DEV_DEBUG_STREAM(device) \
+  if (device->get_logger()->is_debug_enabled()) \
+    device->get_logger()->debug_stream() \
       << log4tango::LogInitiator::_begin_log
 
 #define ENDLOG \
   log4tango::LogSeparator::_end_log
+
+#define FATAL_STREAM DEV_FATAL_STREAM(this)
+#define ERROR_STREAM DEV_ERROR_STREAM(this)
+#define WARN_STREAM DEV_WARN_STREAM(this)
+#define INFO_STREAM DEV_INFO_STREAM(this)
+#define DEBUG_STREAM DEV_DEBUG_STREAM(this)
 
 //-------------------------------------------------------------
 // A CLASS TO LOG IN THE NAME OF DEVICE (USING DEV'S LOGGER)

@@ -175,7 +175,7 @@ public:
   static bool enable_exception (bool exception_mode = true);
   //- has_failed accessor
 /**
- * Check if an error has occured
+ * Check if an error has occurred
  *
  * Returns a boolean set to true if the command executed on the group
  * element has failed. Otherwise, returns false
@@ -408,7 +408,7 @@ public:
 ///@publicsection
   //- has_failed accessor
 /**
- * Check if an error has occured
+ * Check if an error has occurred
  *
  * Returns a boolean set to true if the write_attribute executed on the group has failed
  * for any device member of the hierarchy. Otherwise, returns false
@@ -472,7 +472,7 @@ public:
 ///@publicsection
   //- has_failed accessor method
 /**
- * Check if an error has occured
+ * Check if an error has occurred
  *
  * Returns a boolean set to true if the command executed on the group has failed
  * for any device member of the hierarchy. Otherwise, returns false
@@ -535,7 +535,7 @@ public:
 ///@publicsection
   //- has_failed accessor method
 /**
- * Check if an error has occured
+ * Check if an error has occurred
  *
  * Returns a boolean set to true if the read_attribute executed on the group has failed
  * for any device member of the hierarchy. Otherwise, returns false
@@ -1773,7 +1773,7 @@ bool GroupCmdReply::operator>> (T& dest)
         errors.length(1);
         errors[0].severity = Tango::ERR;
         errors[0].desc = Tango::string_dup("unknown exception caught");
-        errors[0].reason = Tango::string_dup("an error occured while trying to extract data");
+        errors[0].reason = Tango::string_dup("an error occurred while trying to extract data");
         errors[0].origin = Tango::string_dup("GroupCmdReply::operator>>");
         DevFailed df(errors);
         GroupReply::exception_m = df;
@@ -1836,7 +1836,7 @@ bool GroupAttrReply::operator>> (T& dest)
 	      errors.length(1);
 	      errors[0].severity = Tango::ERR;
 	      errors[0].desc = Tango::string_dup("unknown exception caught");
-	      errors[0].reason = Tango::string_dup("an error occured while trying to extract data");
+	      errors[0].reason = Tango::string_dup("an error occurred while trying to extract data");
 	      errors[0].origin = Tango::string_dup("GroupAttrReply::operator>>");
         DevFailed df(errors);
         GroupReply::exception_m = df;

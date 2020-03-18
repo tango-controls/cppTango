@@ -129,11 +129,7 @@ private:
         std::string          orig_tango_host;
     };
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DeviceProxyExt>  ext_proxy;
-#else
-	DeviceProxyExt		        *ext_proxy;		// Class extension
-#endif
 
     omni_mutex                  lock_mutex;
 
@@ -199,7 +195,7 @@ public :
 	DeviceProxy & operator=(const DeviceProxy &);
 	virtual ~DeviceProxy();
 
-	DeviceProxy():Connection((CORBA::ORB *)NULL),db_dev(NULL),adm_device(NULL),lock_ctr(0),ext_proxy(Tango_nullptr)
+	DeviceProxy():Connection((CORBA::ORB *)NULL),db_dev(NULL),adm_device(NULL),lock_ctr(0),ext_proxy(nullptr)
 	{dbase_used = false;}
 /// @publicsection
 

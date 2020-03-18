@@ -45,6 +45,7 @@
 #include <deviceclass.h>
 #include <devintr.h>
 #include <dintrthread.h>
+#include "event_subscription_state.h"
 
 namespace Tango
 {
@@ -450,6 +451,18 @@ public:
  * <b>DevFailed</b> exception specification
  */
 	virtual void always_executed_hook(void) {};
+
+/**
+ * Hook method.
+ *
+ * Default method to implement an action necessary on a device after server has been initialized.
+ *
+ * @exception DevFailed This method does not throw exception but a
+ * redefined method can.
+ * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+	virtual void server_init_hook() {};
 
 /**
  * Read the hardware to return attribute value(s).
@@ -3411,8 +3424,8 @@ public:
 	void disable_intr_change_ev() {intr_change_ev = false;}
 	bool is_intr_change_ev_enable() {return intr_change_ev;}
 
-	void get_event_param(std::vector<EventPar> &);
-	void set_event_param(std::vector<EventPar> &);
+	void get_event_param(EventSubscriptionStates&);
+	void set_event_param(const EventSubscriptionStates&);
 
 	void set_client_lib(int _l) {if (count(client_lib.begin(),client_lib.end(),_l)==0)client_lib.push_back(_l);}
 
@@ -3451,11 +3464,7 @@ protected:
 	void init_attr_poll_period();
 	void init_poll_no_db();
 
-#ifdef HAS_UNIQUE_PTR
     std::unique_ptr<DeviceImplExt>       ext;           // Class extension
-#else
-	DeviceImplExt		            *ext;
-#endif
 
 	DevVarShortArray			dummy_short_att_value;
 	DevVarLongArray				dummy_long_att_value;
@@ -3598,12 +3607,12 @@ inline void DeviceImpl::set_state(const Tango::DevState &new_state)
 #define DATA_IN_NET_OBJECT(A,B,C,D,E) \
 	do \
 	{ \
-		if (aid.data_5 != Tango_nullptr) \
+		if (aid.data_5 != nullptr) \
 		{ \
 			AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false); \
 			(*aid.data_5)[index].value.A(att_val.value.A()); \
 		} \
-		else if (aid.data_4 != Tango_nullptr) \
+		else if (aid.data_4 != nullptr) \
 		{ \
 			if (vers >= 5) \
 			{ \
@@ -3656,7 +3665,7 @@ inline void DeviceImpl::set_state(const Tango::DevState &new_state)
 	do \
 	{ \
 		Tango::A *ptr = att.B(); \
-		if (aid.data_5 != Tango_nullptr) \
+		if (aid.data_5 != nullptr) \
 		{ \
 			(*aid.data_5)[index].value.D(C); \
 			A &the_seq = (*aid.data_5)[index].value.D(); \
@@ -3664,7 +3673,7 @@ inline void DeviceImpl::set_state(const Tango::DevState &new_state)
 			if (ptr->release() == true) \
 				ptr->get_buffer(true); \
 		} \
-		else if (aid.data_4 != Tango_nullptr) \
+		else if (aid.data_4 != nullptr) \
 		{ \
 			(*aid.data_4)[index].value.D(C); \
 			A &the_seq = (*aid.data_4)[index].value.D(); \

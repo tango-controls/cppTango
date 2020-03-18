@@ -48,7 +48,7 @@ namespace Tango
 //-----------------------------------------------------------------------------
 
 DeviceDataHistory::DeviceDataHistory()
-    : DeviceData(), ext_hist(Tango_nullptr)
+    : DeviceData(), ext_hist(nullptr)
 {
     fail = false;
     err = new DevErrorList();
@@ -57,7 +57,7 @@ DeviceDataHistory::DeviceDataHistory()
 }
 
 DeviceDataHistory::DeviceDataHistory(int n, int *ref, DevCmdHistoryList *ptr)
-    : ext_hist(Tango_nullptr)
+    : ext_hist(nullptr)
 {
     ref_ctr_ptr = ref;
     seq_ptr = ptr;
@@ -71,7 +71,7 @@ DeviceDataHistory::DeviceDataHistory(int n, int *ref, DevCmdHistoryList *ptr)
 }
 
 DeviceDataHistory::DeviceDataHistory(const DeviceDataHistory &source)
-    : DeviceData(source), ext_hist(Tango_nullptr)
+    : DeviceData(source), ext_hist(nullptr)
 {
     fail = source.fail;
     time = source.time;
@@ -84,28 +84,15 @@ DeviceDataHistory::DeviceDataHistory(const DeviceDataHistory &source)
         (*ref_ctr_ptr)++;
     }
 
-#ifdef HAS_UNIQUE_PTR
     if (source.ext_hist.get() != NULL)
     {
         ext_hist.reset(new DeviceDataHistoryExt);
         *(ext_hist.get()) = *(source.ext_hist.get());
     }
-#else
-    if (source.ext_hist == NULL)
-    {
-        ext_hist = NULL;
-    }
-    else
-    {
-        ext_hist = new DeviceDataHistoryExt();
-        *ext_hist = *(source.ext_hist);
-    }
-#endif
 }
 
-#ifdef HAS_RVALUE
 DeviceDataHistory::DeviceDataHistory(DeviceDataHistory &&source)
-    : DeviceData(std::move(source)), ext_hist(Tango_nullptr)
+    : DeviceData(std::move(source)), ext_hist(nullptr)
 {
     fail = source.fail;
     time = source.time;
@@ -123,7 +110,6 @@ DeviceDataHistory::DeviceDataHistory(DeviceDataHistory &&source)
         ext_hist.reset();
     }
 }
-#endif
 
 //-----------------------------------------------------------------------------
 //
@@ -146,9 +132,6 @@ DeviceDataHistory::~DeviceDataHistory()
         }
     }
 
-#ifndef HAS_UNIQUE_PTR
-    delete ext_hist;
-#endif
 }
 
 
@@ -176,11 +159,7 @@ DeviceDataHistory &DeviceDataHistory::operator=(const DeviceDataHistory &rval)
 
         fail = rval.fail;
         time = rval.time;
-#ifdef HAS_RVALUE
         err = rval.err;
-#else
-        err = const_cast<DeviceDataHistory &>(rval).err._retn();
-#endif
 
         if (ref_ctr_ptr != NULL)
         {
@@ -196,7 +175,6 @@ DeviceDataHistory &DeviceDataHistory::operator=(const DeviceDataHistory &rval)
         ref_ctr_ptr = rval.ref_ctr_ptr;
         (*ref_ctr_ptr)++;
 
-#ifdef HAS_UNIQUE_PTR
         if (rval.ext_hist.get() != NULL)
         {
             ext_hist.reset(new DeviceDataHistoryExt);
@@ -206,18 +184,6 @@ DeviceDataHistory &DeviceDataHistory::operator=(const DeviceDataHistory &rval)
         {
             ext_hist.reset();
         }
-#else
-        delete ext_hist;
-        if (rval.ext_hist != NULL)
-        {
-            ext_hist = new DeviceDataHistoryExt();
-            *ext_hist = *(rval.ext_hist);
-        }
-        else
-        {
-            ext_hist = NULL;
-        }
-#endif
     }
 
     return *this;
@@ -229,7 +195,6 @@ DeviceDataHistory &DeviceDataHistory::operator=(const DeviceDataHistory &rval)
 //
 //-----------------------------------------------------------------------------
 
-#ifdef HAS_RVALUE
 DeviceDataHistory &DeviceDataHistory::operator=(DeviceDataHistory &&rval)
 {
 
@@ -282,7 +247,6 @@ DeviceDataHistory &DeviceDataHistory::operator=(DeviceDataHistory &&rval)
 
     return *this;
 }
-#endif
 
 //+-------------------------------------------------------------------------
 //
@@ -365,14 +329,14 @@ std::ostream &operator<<(std::ostream &o_str, DeviceDataHistory &dh)
 //-----------------------------------------------------------------------------
 
 DeviceAttributeHistory::DeviceAttributeHistory()
-    : DeviceAttribute(), ext_hist(Tango_nullptr)
+    : DeviceAttribute(), ext_hist(nullptr)
 {
     fail = false;
     err_list = new DevErrorList();
 }
 
 DeviceAttributeHistory::DeviceAttributeHistory(int n, DevAttrHistoryList_var &seq)
-    : ext_hist(Tango_nullptr)
+    : ext_hist(nullptr)
 {
     fail = seq[n].attr_failed;
 
@@ -521,7 +485,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n, DevAttrHistoryList_var &se
 }
 
 DeviceAttributeHistory::DeviceAttributeHistory(int n, DevAttrHistoryList_3_var &seq)
-    : ext_hist(Tango_nullptr)
+    : ext_hist(nullptr)
 {
     fail = seq[n].attr_failed;
 
@@ -672,32 +636,19 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n, DevAttrHistoryList_3_var &
 }
 
 DeviceAttributeHistory::DeviceAttributeHistory(const DeviceAttributeHistory &source)
-    : DeviceAttribute(source), ext_hist(Tango_nullptr)
+    : DeviceAttribute(source), ext_hist(nullptr)
 {
     fail = source.fail;
 
-#ifdef HAS_UNIQUE_PTR
     if (source.ext_hist.get() != NULL)
     {
         ext_hist.reset(new DeviceAttributeHistoryExt);
         *(ext_hist.get()) = *(source.ext_hist.get());
     }
-#else
-    if (source.ext_hist == NULL)
-    {
-        ext_hist = NULL;
-    }
-    else
-    {
-        ext_hist = new DeviceAttributeHistoryExt();
-        *ext_hist = *(source.ext_hist);
-    }
-#endif
 }
 
-#ifdef HAS_RVALUE
 DeviceAttributeHistory::DeviceAttributeHistory(DeviceAttributeHistory &&source)
-    : DeviceAttribute(std::move(source)), ext_hist(Tango_nullptr)
+    : DeviceAttribute(std::move(source)), ext_hist(nullptr)
 {
     fail = source.fail;
 
@@ -707,7 +658,6 @@ DeviceAttributeHistory::DeviceAttributeHistory(DeviceAttributeHistory &&source)
     }
 
 }
-#endif
 
 //-----------------------------------------------------------------------------
 //
@@ -717,9 +667,6 @@ DeviceAttributeHistory::DeviceAttributeHistory(DeviceAttributeHistory &&source)
 
 DeviceAttributeHistory::~DeviceAttributeHistory()
 {
-#ifndef HAS_UNIQUE_PTR
-    delete ext_hist;
-#endif
 }
 
 
@@ -746,7 +693,6 @@ DeviceAttributeHistory &DeviceAttributeHistory::operator=(const DeviceAttributeH
 
         fail = rval.fail;
 
-#ifdef HAS_UNIQUE_PTR
         if (rval.ext_hist.get() != NULL)
         {
             ext_hist.reset(new DeviceAttributeHistoryExt);
@@ -756,24 +702,11 @@ DeviceAttributeHistory &DeviceAttributeHistory::operator=(const DeviceAttributeH
         {
             ext_hist.reset();
         }
-#else
-        delete ext_hist;
-        if (rval.ext_hist != NULL)
-        {
-            ext_hist = new DeviceAttributeHistoryExt();
-            *ext_hist = *(rval.ext_hist);
-        }
-        else
-        {
-            ext_hist = NULL;
-        }
-#endif
     }
 
     return *this;
 }
 
-#ifdef HAS_RVALUE
 DeviceAttributeHistory &DeviceAttributeHistory::operator=(DeviceAttributeHistory &&rval)
 {
 
@@ -800,7 +733,6 @@ DeviceAttributeHistory &DeviceAttributeHistory::operator=(DeviceAttributeHistory
 
     return *this;
 }
-#endif
 
 //+-------------------------------------------------------------------------
 //

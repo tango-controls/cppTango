@@ -231,7 +231,7 @@ void check_attribute_data_type(DeviceProxy *device,std::string &att_name, const 
 	std::string requested_type(data_type);
 	if (requested_type != "Error")
 	{
-		std::string received_type(CmdArgTypeName[cb.data_type]);
+		std::string received_type(data_type_to_string(cb.data_type));
 		assert (received_type == requested_type);
 	}
 
