@@ -1029,6 +1029,63 @@ cout << "status = " << status << endl;
 		dout >> status;
 		TS_ASSERT(strcmp(status,"The device is in ON state.") == 0);
 	}
+
+	void set_Long_attr_value(DevLong value)
+	{
+		DeviceData input;
+		input << value;
+		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOSetAttr", input));
+	}
+
+	void set_attribute_exception_flag(short attribute_disc, bool enabled)
+	{
+		std::vector<short> flags(2);
+		flags[0] = attribute_disc;
+		flags[1] = enabled ? 1 : 0;
+		DeviceData data;
+		data << flags;
+		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOAttrThrowEx", data));
+	}
+
+	void __assert_dev_state(DevState expected, const char* file, const char* line)
+	{
+		std::string message = std::string("Called from ") + file + ":" + line;
+
+		DevState state;
+		DeviceData data;
+		TSM_ASSERT_THROWS_NOTHING(message, data = device1->command_inout("State"));
+		data >> state;
+		TSM_ASSERT_EQUALS(message, expected, state);
+	}
+
+#define __QUOTE(x) #x
+#define QUOTE(x) __QUOTE(x)
+#define assert_dev_state(expected) __assert_dev_state(expected, __FILE__, QUOTE(__LINE__))
+
+// Verifies that device state is set correctly when alarm is configured for an attribute
+// but no value is provided for this attribute in user callback (e.g. an exception is thrown).
+
+	void test_alarm_on_attribute_exception_during_read(void)
+	{
+		const short EXCEPTION_IN_Long_attr = 5;
+
+		set_Long_attr_value(2000);
+		assert_dev_state(Tango::ALARM);
+
+		set_attribute_exception_flag(EXCEPTION_IN_Long_attr, true);
+		assert_dev_state(Tango::ON);
+
+		set_attribute_exception_flag(EXCEPTION_IN_Long_attr, false);
+		assert_dev_state(Tango::ALARM);
+
+		set_Long_attr_value(1200);
+		assert_dev_state(Tango::ON);
+	}
+
+#undef assert_dev_state
+#undef QUOTE
+#undef __QUOTE
+
 };
 #undef cout
 #endif // AttrMiscTestSuite_h
