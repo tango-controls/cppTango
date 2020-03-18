@@ -14,7 +14,7 @@ void convert_attribute_value_to_device_attribute(
 {
     using Traits = TangoTypeTraits<Type>;
 
-    auto& seq = attr_val_union_get<Type>(attr_val.value);
+    auto& seq = attr_val_seq_get<Type>(attr_val);
     const auto length = seq.length();
     const auto maximum = seq.maximum();
 

@@ -97,6 +97,24 @@ typename TangoTypeTraits<Type>::SeqType& attr_val_union_get(::CORBA::Any& a)
     return *seq;
 }
 
+template <AttributeDataType Type, typename AttributeValueT>
+typename TangoTypeTraits<Type>::SeqType& attr_val_seq_get(AttributeValueT& av)
+{
+    return attr_val_union_get<Type>(av.value);
+}
+
+template <AttributeDataType Type>
+typename TangoTypeTraits<Type>::SeqType& attr_val_seq_get(ZmqAttributeValue_5& av)
+{
+    return attr_val_union_get<Type>(av.zvalue);
+}
+
+template <AttributeDataType Type>
+typename TangoTypeTraits<Type>::SeqType& attr_val_seq_get(ZmqAttributeValue_4& av)
+{
+    return attr_val_union_get<Type>(av.zvalue);
+}
+
 } // namespace Tango
 
 #endif
