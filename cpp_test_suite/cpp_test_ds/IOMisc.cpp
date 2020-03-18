@@ -4491,3 +4491,14 @@ CORBA::Any *PushStateStatusChangeEvent::execute(Tango::DeviceImpl *device, TANGO
 	return insert();
 }
 
+bool CheckLocationTransparency::is_allowed(Tango::DeviceImpl* device, const CORBA::Any&)
+{
+    return device->get_state() == Tango::ON;
+}
+
+CORBA::Any* CheckLocationTransparency::execute(Tango::DeviceImpl* device, const CORBA::Any&)
+{
+    auto& dev = static_cast<DevTest&>(*device);
+    auto result = dev.cmd_check_location_transparency();
+    return insert(result);
+}

@@ -440,6 +440,16 @@ public:
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
 };
 
+class CheckLocationTransparency : public Tango::Command
+{
+public:
+    using Tango::Command::Command;
+    ~CheckLocationTransparency() = default;
+
+    bool is_allowed(Tango::DeviceImpl*, const CORBA::Any&);
+    CORBA::Any* execute(Tango::DeviceImpl*, const CORBA::Any&);
+};
+
 class ReynaldPollThread : public omni_thread
 {
 public :
