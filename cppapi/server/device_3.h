@@ -334,6 +334,45 @@ private:
 
     void real_ctor();
 
+    void call_read_attr_hardware_if_needed(
+        const std::vector<AttIdx>&,
+        bool state_wanted);
+    void update_readable_attribute_value(
+        const Tango::DevVarStringArray&,
+        Tango::AttributeIdlData&,
+        bool second_try,
+        std::vector<long>& idx,
+        AttIdx&);
+    void update_writable_attribute_value(
+        const Tango::DevVarStringArray&,
+        Tango::AttributeIdlData&,
+        bool second_try,
+        std::vector<long>& idx,
+        AttIdx&);
+    void read_state_and_status(
+        const Tango::DevVarStringArray&,
+        Tango::AttributeIdlData&,
+        std::vector<AttIdx>&,
+        bool state_wanted,
+        bool status_wanted,
+        int state_idx,
+        int status_idx,
+        Tango::DevState&,
+        Tango::ConstDevString&);
+    void store_attribute_for_network_transfer(
+        const Tango::DevVarStringArray&,
+        Tango::AttributeIdlData&,
+        bool second_try,
+        std::vector<long>& idx,
+        bool state_wanted,
+        bool status_wanted,
+        int state_idx,
+        int status_idx,
+        int attribute_index,
+        Tango::DevState&,
+        Tango::ConstDevString&);
+
+
     std::unique_ptr<Device_3ImplExt>     ext_3;           // Class extension
 };
 
