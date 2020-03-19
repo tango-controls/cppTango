@@ -1190,6 +1190,26 @@ public:
 		{(static_cast<DevTest *>(dev))->read_RPipeDE(*this);}
 };
 
+class ReadWithPushAttr1 : public Tango::Attr
+{
+public:
+    ReadWithPushAttr1() : Attr("ReadWithPushAttr1", Tango::DEV_SHORT, Tango::READ) {};
+    ~ReadWithPushAttr1() {};
+
+    virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+    {(static_cast<DevTest *>(dev))->read_ReadWithPushAttr1(att);}
+};
+
+class ReadWithPushAttr2 : public Tango::Attr
+{
+public:
+    ReadWithPushAttr2() : Attr("ReadWithPushAttr2", Tango::DEV_SHORT, Tango::READ) {};
+    ~ReadWithPushAttr2() {};
+
+    virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+    {(static_cast<DevTest *>(dev))->read_ReadWithPushAttr2(att);}
+};
+
 // ----------------------------------------------------------------------------
 
 

@@ -896,6 +896,10 @@ void DevTestClass::attribute_factory(std::vector<Tango::Attr *> &att_list)
 
   att_list.push_back(new DynEnumAttr());
   att_list.push_back(new ReynaldPollAttr());
+
+  att_list.push_back(new ReadWithPushAttr1());
+  att_list.back()->set_change_event(true, false);
+  att_list.push_back(new ReadWithPushAttr2());
 }
 
 void DevTestClass::pipe_factory()

@@ -157,6 +157,8 @@ public :
 	void read_DynEnum_attr(Tango::Attribute &att);
 	void read_ReynaldPoll_attr(Tango::Attribute &att);
 	void read_attr_asyn_write(Tango::Attribute &att);
+	void read_ReadWithPushAttr1(Tango::Attribute&);
+	void read_ReadWithPushAttr2(Tango::Attribute&);
 
 	void write_Short_attr_rw(Tango::WAttribute &att);
 	void write_Long64_attr_rw(Tango::WAttribute &att);
@@ -365,6 +367,8 @@ protected :
     double                                  Reynald_val;
 
     Tango::DevLong                          attr_asyn_write_val;
+    Tango::DevShort attr_with_push_1;
+    Tango::DevShort attr_with_push_2;
 };
 
 #endif

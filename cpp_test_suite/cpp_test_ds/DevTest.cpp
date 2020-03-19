@@ -2642,3 +2642,20 @@ void DevTest::cmd_push_state_status_event()
 	set_change_event("Status",false,false);
 }
 
+void DevTest::read_ReadWithPushAttr1(Tango::Attribute& att)
+{
+    cout << "[DevTest::read_attr] attribute name ReadWithPushAttr1" << std::endl;
+    attr_with_push_1 = 13;
+    att.set_value(&attr_with_push_1);
+}
+
+void DevTest::read_ReadWithPushAttr2(Tango::Attribute& att)
+{
+    cout << "[DevTest::read_attr] attribute name ReadWithPushAttr2" << std::endl;
+
+    Tango::DevShort new_value = 15;
+    push_change_event("ReadWithPushAttr1", &new_value, 1);
+
+    attr_with_push_2 = 17;
+    att.set_value(&attr_with_push_2);
+}
