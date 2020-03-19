@@ -334,6 +334,11 @@ private:
 
     void real_ctor();
 
+    void handle_read_attributes(
+        const Tango::DevVarStringArray&,
+        Tango::AttributeIdlData&,
+        bool second_try,
+        std::vector<long> &idx);
     void call_read_attr_hardware_if_needed(
         const std::vector<AttIdx>&,
         bool state_wanted);

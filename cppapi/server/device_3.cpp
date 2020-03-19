@@ -322,209 +322,206 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 //  During device access inside the same server, the thread stays the same!
 //
 
-	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
-	std::string last_associated_device = sub.get_associated_device();
-	sub.set_associated_device(get_name());
+    SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
+    std::string last_associated_device = sub.get_associated_device();
+    sub.set_associated_device(get_name());
 
-//
-// Catch all exceptions to set back the associated device after execution
-//
+    try
+    {
+        handle_read_attributes(names, aid, second_try, idx);
+    }
+    catch (...)
+    {
+        sub.set_associated_device(last_associated_device);
+        throw;
+    }
 
-	try
-	{
+    sub.set_associated_device(last_associated_device);
 
+    cout4 << "Leaving Device_3Impl::read_attributes_no_except" << std::endl;
+}
+
+void Device_3Impl::handle_read_attributes(
+    const Tango::DevVarStringArray& names,
+    Tango::AttributeIdlData& aid,
+    bool second_try,
+    std::vector<long> &idx)
+{
 //
 // Retrieve index of wanted attributes in the device attribute list and clear their value set flag
 //
 
-		long nb_names = names.length();
-		std::vector<AttIdx> wanted_attr;
-		std::vector<AttIdx> wanted_w_attr;
-		bool state_wanted = false;
-		bool status_wanted = false;
-		long state_idx,status_idx;
-		long i;
+    long nb_names = names.length();
+    std::vector<AttIdx> wanted_attr;
+    std::vector<AttIdx> wanted_w_attr;
+    bool state_wanted = false;
+    bool status_wanted = false;
+    long state_idx,status_idx;
+    long i;
 
-		state_idx = status_idx = -1;
+    state_idx = status_idx = -1;
 
-		for (i = 0;i < nb_names;i++)
-		{
-			AttIdx x;
-			x.idx_in_names = i;
-			std::string att_name(names[i]);
-			std::transform(att_name.begin(),att_name.end(),att_name.begin(),::tolower);
+    for (i = 0;i < nb_names;i++)
+    {
+        AttIdx x;
+        x.idx_in_names = i;
+        std::string att_name(names[i]);
+        std::transform(att_name.begin(),att_name.end(),att_name.begin(),::tolower);
 
-			if (att_name == "state")
-			{
-				x.idx_in_multi_attr = -1;
-				x.failed = false;
-				wanted_attr.push_back(x);
-				state_wanted = true;
-				state_idx = i;
-			}
-			else if (att_name == "status")
-			{
-				x.idx_in_multi_attr = -1;
-				x.failed = false;
-				wanted_attr.push_back(x);
-				status_wanted = true;
-				status_idx = i;
-			}
-			else
-			{
-				try
-				{
-				    long j;
+        if (att_name == "state")
+        {
+            x.idx_in_multi_attr = -1;
+            x.failed = false;
+            wanted_attr.push_back(x);
+            state_wanted = true;
+            state_idx = i;
+        }
+        else if (att_name == "status")
+        {
+            x.idx_in_multi_attr = -1;
+            x.failed = false;
+            wanted_attr.push_back(x);
+            status_wanted = true;
+            status_idx = i;
+        }
+        else
+        {
+            try
+            {
+                long j;
 
-					j = dev_attr->get_attr_ind_by_name(names[i]);
-					if ((dev_attr->get_attr_by_ind(j).get_writable() == Tango::READ_WRITE) ||
-				    	(dev_attr->get_attr_by_ind(j).get_writable() == Tango::READ_WITH_WRITE))
-					{
-						x.idx_in_multi_attr = j;
-						x.failed = false;
-						Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
-						if(att.is_startup_exception())
-							att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
-						wanted_w_attr.push_back(x);
-						wanted_attr.push_back(x);
-						att.get_when().tv_sec = 0;
-                        att.save_alarm_quality();
-					}
-					else
-					{
-						if (dev_attr->get_attr_by_ind(j).get_writable() == Tango::WRITE)
-						{
+                j = dev_attr->get_attr_ind_by_name(names[i]);
+                if ((dev_attr->get_attr_by_ind(j).get_writable() == Tango::READ_WRITE) ||
+                    (dev_attr->get_attr_by_ind(j).get_writable() == Tango::READ_WITH_WRITE))
+                {
+                    x.idx_in_multi_attr = j;
+                    x.failed = false;
+                    Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
+                    if(att.is_startup_exception())
+                        att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
+                    wanted_w_attr.push_back(x);
+                    wanted_attr.push_back(x);
+                    att.get_when().tv_sec = 0;
+                    att.save_alarm_quality();
+                }
+                else
+                {
+                    if (dev_attr->get_attr_by_ind(j).get_writable() == Tango::WRITE)
+                    {
 
 //
 // If the attribute is a forwarded one, force reading it from  the root device. Another client could have
 // written its value
 //
 
-							if (dev_attr->get_attr_by_ind(j).is_fwd_att() == true)
-							{
-								x.idx_in_multi_attr = j;
-								x.failed = false;
-								Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
-								if(att.is_startup_exception())
-									att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
-								wanted_attr.push_back(x);
-								att.get_when().tv_sec = 0;
-								att.save_alarm_quality();
-							}
-							else
-							{
-								x.idx_in_multi_attr = j	;
-								x.failed = false;
-								Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
-								if(att.is_startup_exception())
-									att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
-								wanted_w_attr.push_back(x);
-							}
-						}
-						else
-						{
-							x.idx_in_multi_attr = j;
-							x.failed = false;
-							Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
-							if(att.is_startup_exception())
-								att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
-							wanted_attr.push_back(x);
-							att.get_when().tv_sec = 0;
+                        if (dev_attr->get_attr_by_ind(j).is_fwd_att() == true)
+                        {
+                            x.idx_in_multi_attr = j;
+                            x.failed = false;
+                            Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
+                            if(att.is_startup_exception())
+                                att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
+                            wanted_attr.push_back(x);
+                            att.get_when().tv_sec = 0;
                             att.save_alarm_quality();
-						}
-					}
-				}
-				catch (Tango::DevFailed &e)
-				{
-					long index;
-					if (second_try == false)
-						index = i;
-					else
-						index = idx[i];
+                        }
+                        else
+                        {
+                            x.idx_in_multi_attr = j	;
+                            x.failed = false;
+                            Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
+                            if(att.is_startup_exception())
+                                att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
+                            wanted_w_attr.push_back(x);
+                        }
+                    }
+                    else
+                    {
+                        x.idx_in_multi_attr = j;
+                        x.failed = false;
+                        Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
+                        if(att.is_startup_exception())
+                            att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
+                        wanted_attr.push_back(x);
+                        att.get_when().tv_sec = 0;
+                        att.save_alarm_quality();
+                    }
+                }
+            }
+            catch (Tango::DevFailed &e)
+            {
+                long index;
+                if (second_try == false)
+                    index = i;
+                else
+                    index = idx[i];
 
-					if (aid.data_5 != nullptr)
-						error_from_devfailed((*aid.data_5)[index],e,names[i]);
-					else if (aid.data_4 != nullptr)
-						error_from_devfailed((*aid.data_4)[index],e,names[i]);
-					else
-						error_from_devfailed((*aid.data_3)[index],e,names[i]);
-				}
-			}
-		}
-
-		long nb_wanted_attr = wanted_attr.size();
-		long nb_wanted_w_attr = wanted_w_attr.size();
-
-        always_executed_hook();
-
-        call_read_attr_hardware_if_needed(wanted_attr, state_wanted);
-
-        for (i = 0;i < nb_wanted_attr;i++)
-        {
-            update_readable_attribute_value(names, aid, second_try, idx, wanted_attr[i]);
+                if (aid.data_5 != nullptr)
+                    error_from_devfailed((*aid.data_5)[index],e,names[i]);
+                else if (aid.data_4 != nullptr)
+                    error_from_devfailed((*aid.data_4)[index],e,names[i]);
+                else
+                    error_from_devfailed((*aid.data_3)[index],e,names[i]);
+            }
         }
+    }
 
-        for (i = 0;i < nb_wanted_w_attr;i++)
-        {
-            update_writable_attribute_value(names, aid, second_try, idx, wanted_w_attr[i]);
-        }
+    long nb_wanted_attr = wanted_attr.size();
+    long nb_wanted_w_attr = wanted_w_attr.size();
 
-        Tango::DevState d_state = Tango::UNKNOWN;
-        Tango::ConstDevString d_status = nullptr;
-        read_state_and_status(
+    always_executed_hook();
+
+    call_read_attr_hardware_if_needed(wanted_attr, state_wanted);
+
+    for (i = 0;i < nb_wanted_attr;i++)
+    {
+        update_readable_attribute_value(names, aid, second_try, idx, wanted_attr[i]);
+    }
+
+    for (i = 0;i < nb_wanted_w_attr;i++)
+    {
+        update_writable_attribute_value(names, aid, second_try, idx, wanted_w_attr[i]);
+    }
+
+    Tango::DevState d_state = Tango::UNKNOWN;
+    Tango::ConstDevString d_status = nullptr;
+    read_state_and_status(
+        names,
+        aid,
+        wanted_attr,
+        state_wanted,
+        status_wanted,
+        state_idx,
+        status_idx,
+        d_state,
+        d_status);
+
+    for (i = 0;i < nb_names;i++)
+    {
+        store_attribute_for_network_transfer(
             names,
             aid,
-            wanted_attr,
+            second_try,
+            idx,
             state_wanted,
             status_wanted,
             state_idx,
             status_idx,
+            i,
             d_state,
             d_status);
-
-        for (i = 0;i < nb_names;i++)
-        {
-            store_attribute_for_network_transfer(
-                names,
-                aid,
-                second_try,
-                idx,
-                state_wanted,
-                status_wanted,
-                state_idx,
-                status_idx,
-                i,
-                d_state,
-                d_status);
-        }
-	}
-	catch (...)
-	{
-//
-// Set back the device attribution for the thread and rethrow the exception.
-//
-		sub.set_associated_device(last_associated_device);
-		throw;
-	}
-
-//
-// Set back the device attribution for the thread
-//
-
-	sub.set_associated_device(last_associated_device);
-
-	cout4 << "Leaving Device_3Impl::read_attributes_no_except" << std::endl;
+    }
 }
-
-//
-// Read the hardware for readable attribute but not for state/status
-// Warning:  If the state is one of the wanted attribute, check and eventually add all the alarmed attributes index
-//
 
 void Device_3Impl::call_read_attr_hardware_if_needed(
     const std::vector<AttIdx>& wanted_attr,
     bool state_wanted)
 {
+//
+// Read the hardware for readable attribute but not for state/status
+// Warning:  If the state is one of the wanted attribute, check and eventually add all the alarmed attributes index
+//
+
     const int nb_wanted_attr = wanted_attr.size();
 
     if (nb_wanted_attr != 0)
