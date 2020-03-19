@@ -3906,7 +3906,7 @@ void Attribute::fire_change_event(DevFailed *except)
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-//						set_value_flag (false);
+						set_value_flag (false);
 					}
 				}
 			}
@@ -3932,7 +3932,7 @@ void Attribute::fire_change_event(DevFailed *except)
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-//						set_value_flag (false);
+						set_value_flag (false);
 					}
 				}
 			}
@@ -4166,7 +4166,7 @@ void Attribute::fire_change_event(DevFailed *except)
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-//				set_value_flag (false);
+				set_value_flag (false);
 			}
 		}
 	}
@@ -4189,7 +4189,7 @@ void Attribute::fire_change_event(DevFailed *except)
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-//				set_value_flag (false);
+				set_value_flag (false);
 			}
 		}
 
@@ -4321,7 +4321,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-//						set_value_flag (false);
+						set_value_flag (false);
 					}
                 }
             }
@@ -4355,7 +4355,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-//						set_value_flag (false);
+						set_value_flag (false);
 					}
                 }
             }
@@ -4592,7 +4592,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-//				set_value_flag (false);
+				set_value_flag (false);
 			}
 		}
 	}
@@ -4616,7 +4616,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-//				set_value_flag (false);
+				set_value_flag (false);
 			}
 		}
 
@@ -4754,7 +4754,7 @@ void Attribute::fire_event(std::vector<std::string> &filt_names,std::vector<doub
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-//						set_value_flag (false);
+						set_value_flag (false);
 					}
 				}
 			}
@@ -4881,7 +4881,7 @@ void Attribute::fire_event(std::vector<std::string> &filt_names,std::vector<doub
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-//				set_value_flag (false);
+				set_value_flag (false);
 			}
 		}
 	}
@@ -4905,7 +4905,7 @@ void Attribute::fire_event(std::vector<std::string> &filt_names,std::vector<doub
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-//				set_value_flag (false);
+				set_value_flag (false);
 			}
 		}
 
