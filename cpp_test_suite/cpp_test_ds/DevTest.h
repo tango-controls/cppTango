@@ -159,6 +159,7 @@ public :
 	void read_attr_asyn_write(Tango::Attribute &att);
 	void read_ReadWithPushAttr1(Tango::Attribute&);
 	void read_ReadWithPushAttr2(Tango::Attribute&);
+	void read_PushItselfAfterSetAttr(Tango::Attribute&);
 
 	void write_Short_attr_rw(Tango::WAttribute &att);
 	void write_Long64_attr_rw(Tango::WAttribute &att);
@@ -369,6 +370,7 @@ protected :
     Tango::DevLong                          attr_asyn_write_val;
     Tango::DevShort attr_with_push_1;
     Tango::DevShort attr_with_push_2;
+    Tango::DevShort attr_push_itself_after_set;
 };
 
 #endif

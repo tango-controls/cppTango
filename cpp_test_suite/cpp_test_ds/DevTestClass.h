@@ -1210,6 +1210,16 @@ public:
     {(static_cast<DevTest *>(dev))->read_ReadWithPushAttr2(att);}
 };
 
+class PushItselfAfterSetAttr : public Tango::Attr
+{
+public:
+    PushItselfAfterSetAttr() : Attr("PushItselfAfterSetAttr", Tango::DEV_SHORT, Tango::READ) {};
+    ~PushItselfAfterSetAttr() {};
+
+    virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+    {(static_cast<DevTest *>(dev))->read_PushItselfAfterSetAttr(att);}
+};
+
 // ----------------------------------------------------------------------------
 
 

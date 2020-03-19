@@ -2659,3 +2659,12 @@ void DevTest::read_ReadWithPushAttr2(Tango::Attribute& att)
     attr_with_push_2 = 17;
     att.set_value(&attr_with_push_2);
 }
+
+void DevTest::read_PushItselfAfterSetAttr(Tango::Attribute& att)
+{
+    cout << "[DevTest::read_attr] attribute name PushItselfAfterSetAttr" << std::endl;
+
+    Tango::DevShort value = 15;
+    att.set_value(&value);
+    push_change_event(att.get_name(), &value);
+}

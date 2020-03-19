@@ -1114,6 +1114,9 @@ cout << "status = " << status << endl;
         std::vector<std::string> attributes = {"ReadWithPushAttr2", "ReadWithPushAttr1"};
         std::vector<DeviceAttribute>* result = nullptr;
         TS_ASSERT_THROWS_NOTHING(result = device1->read_attributes(attributes));
+        Tango::DevShort out;
+        TS_ASSERT_THROWS_NOTHING((*result)[0] >> out);
+        TS_ASSERT_THROWS_NOTHING((*result)[1] >> out);
         delete result;
     }
 
@@ -1122,8 +1125,30 @@ cout << "status = " << status << endl;
         std::vector<std::string> attributes = {"ReadWithPushAttr1", "ReadWithPushAttr2"};
         std::vector<DeviceAttribute>* result = nullptr;
         TS_ASSERT_THROWS_NOTHING(result = device1->read_attributes(attributes));
+        Tango::DevShort out;
+        TS_ASSERT_THROWS_NOTHING((*result)[0] >> out);
+        TS_ASSERT_THROWS_NOTHING((*result)[1] >> out);
         delete result;
     }
+
+/*
+ * Test that if attribute pushes an event for itself from its read callback
+ * and push_event is called after set_value, an exception is raised. Such
+ * scenario was reported to cause a crash (#443).
+ */
+
+    void test_read_attribute_that_pushes_event_for_itself_after_calling_set_value()
+    {
+        DeviceAttribute result;
+        TS_ASSERT_THROWS_NOTHING(result = device1->read_attribute("PushItselfAfterSetAttr"));
+
+        Tango::DevShort out;
+        TS_ASSERT_THROWS_ASSERT(
+            result >> out,
+            Tango::DevFailed& e,
+            TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrValueNotSet"));
+    }
+
 };
 #undef cout
 #endif // AttrMiscTestSuite_h
