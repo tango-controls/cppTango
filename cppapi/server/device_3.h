@@ -354,28 +354,19 @@ private:
         bool second_try,
         std::vector<long>& idx,
         AttIdx&);
-    void read_state_and_status(
-        const Tango::DevVarStringArray&,
+    void read_and_store_state_for_network_transfer(
+        const char* name,
         Tango::AttributeIdlData&,
-        std::vector<AttIdx>&,
-        bool state_wanted,
-        bool status_wanted,
         int state_idx,
-        int status_idx,
-        Tango::DevState&,
-        Tango::ConstDevString&);
+        std::vector<AttIdx>&);
+    void read_and_store_status_for_network_transfer(
+        const char* name,
+        Tango::AttributeIdlData&,
+        int status_idx);
     void store_attribute_for_network_transfer(
-        const Tango::DevVarStringArray&,
+        const char* name,
         Tango::AttributeIdlData&,
-        bool second_try,
-        std::vector<long>& idx,
-        bool state_wanted,
-        bool status_wanted,
-        int state_idx,
-        int status_idx,
-        int attribute_index,
-        Tango::DevState&,
-        Tango::ConstDevString&);
+        int index);
 
 
     std::unique_ptr<Device_3ImplExt>     ext_3;           // Class extension
