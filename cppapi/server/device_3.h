@@ -334,6 +334,13 @@ private:
         Tango::AttributeIdlData&,
         bool second_try,
         std::vector<long> &idx);
+    std::vector<AttIdx> collect_attributes_to_read(
+        const Tango::DevVarStringArray&,
+        Tango::AttributeIdlData&,
+        bool second_try,
+        const std::vector<long>& idx,
+        long& state_index,
+        long& status_index);
     void call_read_attr_hardware_if_needed(
         const std::vector<AttIdx>&,
         bool state_wanted);

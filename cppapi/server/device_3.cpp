@@ -386,98 +386,58 @@ void Device_3Impl::handle_read_attributes(
     bool second_try,
     std::vector<long> &idx)
 {
-//
-// Retrieve index of wanted attributes in the device attribute list and clear their value set flag
-//
+    constexpr long STATE_STATUS_NOT_FOUND = -1;
 
-    long nb_names = names.length();
+    long state_idx = STATE_STATUS_NOT_FOUND;
+    long status_idx = STATE_STATUS_NOT_FOUND;
+
+    const auto attributes = collect_attributes_to_read(
+        names,
+        aid,
+        second_try,
+        idx,
+        state_idx,
+        status_idx);
+
+    const bool state_wanted = state_idx != STATE_STATUS_NOT_FOUND;
+    const bool status_wanted = status_idx != STATE_STATUS_NOT_FOUND;
+
     std::vector<AttIdx> wanted_attr;
     std::vector<AttIdx> wanted_w_attr;
-    bool state_wanted = false;
-    bool status_wanted = false;
-    long state_idx,status_idx;
-    long i;
 
-    state_idx = status_idx = -1;
-
-    for (i = 0;i < nb_names;i++)
+    for (auto& entry : attributes)
     {
-        AttIdx x;
-        x.idx_in_names = i;
-        std::string att_name(names[i]);
-        std::transform(att_name.begin(),att_name.end(),att_name.begin(),::tolower);
+        Attribute& att = dev_attr->get_attr_by_ind(entry.idx_in_multi_attr);
 
-        if (att_name == "state")
+        const auto writable = att.get_writable();
+
+        if (writable == Tango::READ_WRITE || writable == Tango::READ_WITH_WRITE)
         {
-            x.idx_in_multi_attr = -1;
-            wanted_attr.push_back(x);
-            state_wanted = true;
-            state_idx = i;
+            wanted_w_attr.push_back(entry);
+            wanted_attr.push_back(entry);
+            att.get_when().tv_sec = 0;
+            att.save_alarm_quality();
         }
-        else if (att_name == "status")
+        else if (writable == Tango::WRITE)
         {
-            x.idx_in_multi_attr = -1;
-            wanted_attr.push_back(x);
-            status_wanted = true;
-            status_idx = i;
+            if (att.is_fwd_att())
+            {
+                // If the attribute is a forwarded one, force reading it from
+                // the root device. Another client could have written its value
+                wanted_attr.push_back(entry);
+                att.get_when().tv_sec = 0;
+                att.save_alarm_quality();
+            }
+            else
+            {
+                wanted_w_attr.push_back(entry);
+            }
         }
         else
         {
-            try
-            {
-                long j = dev_attr->get_attr_ind_by_name(names[i]);
-                Attribute& att = dev_attr->get_attr_by_ind(j);
-
-                if (att.is_startup_exception())
-                {
-                    att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
-                }
-
-                x.idx_in_multi_attr = j;
-
-                const auto writable = att.get_writable();
-
-                if (writable == Tango::READ_WRITE || writable == Tango::READ_WITH_WRITE)
-                {
-                    wanted_w_attr.push_back(x);
-                    wanted_attr.push_back(x);
-                    att.get_when().tv_sec = 0;
-                    att.save_alarm_quality();
-                }
-                else if (writable == Tango::WRITE)
-                {
-                    if (dev_attr->get_attr_by_ind(j).is_fwd_att() == true)
-                    {
-//
-// If the attribute is a forwarded one, force reading it from  the root device. Another client could have
-// written its value
-//
-                        wanted_attr.push_back(x);
-                        att.get_when().tv_sec = 0;
-                        att.save_alarm_quality();
-                    }
-                    else
-                    {
-                        wanted_w_attr.push_back(x);
-                    }
-                }
-                else
-                {
-                    wanted_attr.push_back(x);
-                    att.get_when().tv_sec = 0;
-                    att.save_alarm_quality();
-                }
-            }
-            catch (Tango::DevFailed &e)
-            {
-                long index;
-                if (second_try == false)
-                    index = i;
-                else
-                    index = idx[i];
-
-                store_error(aid, index, e, names[i]);
-            }
+            wanted_attr.push_back(entry);
+            att.get_when().tv_sec = 0;
+            att.save_alarm_quality();
         }
     }
 
@@ -485,7 +445,8 @@ void Device_3Impl::handle_read_attributes(
 
     call_read_attr_hardware_if_needed(wanted_attr, state_wanted);
 
-    for (i = 0;i < nb_names;i++)
+    const long num_of_names = names.length();
+    for (long i = 0; i < num_of_names; i++)
     {
         if (i == state_idx || i == status_idx)
         {
@@ -526,6 +487,60 @@ void Device_3Impl::handle_read_attributes(
         const long index = second_try ? idx[status_idx] : status_idx;
         read_and_store_status_for_network_transfer(names[status_idx], aid, index);
     }
+}
+
+std::vector<AttIdx> Device_3Impl::collect_attributes_to_read(
+    const Tango::DevVarStringArray& names,
+    Tango::AttributeIdlData& data,
+    bool second_try,
+    const std::vector<long>& idx,
+    long& state_index,
+    long& status_index)
+{
+    const auto num_of_names = names.length();
+
+    std::vector<AttIdx> result{};
+    result.reserve(num_of_names);
+
+    for (long i = 0; i < num_of_names; ++i)
+    {
+        std::string name(names[i]);
+        std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+
+        if (name == "state")
+        {
+            state_index = i;
+        }
+        else if (name == "status")
+        {
+            status_index = i;
+        }
+        else
+        {
+            try
+            {
+                const auto attr_index = dev_attr->get_attr_ind_by_name(name.c_str());
+                Attribute& attr = dev_attr->get_attr_by_ind(attr_index);
+
+                if (attr.is_startup_exception())
+                {
+                    attr.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
+                }
+
+                AttIdx entry{};
+                entry.idx_in_names = i;
+                entry.idx_in_multi_attr = attr_index;
+                result.push_back(entry);
+            }
+            catch (const Tango::DevFailed& error)
+            {
+                const long index = second_try ? idx[i] : i;
+                store_error(data, index, error, name.c_str());
+            }
+        }
+    }
+
+    return result;
 }
 
 void Device_3Impl::call_read_attr_hardware_if_needed(
