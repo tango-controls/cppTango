@@ -297,24 +297,6 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 }
 
 template <typename T>
-inline void Device_3Impl::error_from_devfailed(T &back,DevFailed &e,const char *na)
-{
-	back.err_list = e.errors;
-	back.quality = ATTR_INVALID;
-	back.name = Tango::string_dup(na);
-	clear_att_dim(back);
-}
-
-template <typename T>
-inline void Device_3Impl::error_from_errorlist(T &back,DevErrorList &e,const char *na)
-{
-	back.err_list = e;
-	back.quality = ATTR_INVALID;
-	back.name = Tango::string_dup(na);
-	clear_att_dim(back);
-}
-
-template <typename T>
 inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,std::string &mess,Attribute &att)
 {
 	back.err_list.length(1);

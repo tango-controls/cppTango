@@ -64,6 +64,30 @@ bool is_error_stored(const Tango::AttributeIdlData& data, int index)
     return errors.length() > 0;
 }
 
+template <typename AttributeValueT>
+void store_error(AttributeValueT& attr_val, const DevErrorList& errors, const char* name)
+{
+    attr_val.err_list = errors;
+    attr_val.quality = ATTR_INVALID;
+    attr_val.name = Tango::string_dup(name);
+    clear_att_dim(attr_val);
+}
+
+void store_error(Tango::AttributeIdlData& data, int index, const Tango::DevErrorList& errors, const char* name)
+{
+    if (data.data_5)
+        store_error((*data.data_5)[index], errors, name);
+    else if (data.data_4)
+        store_error((*data.data_4)[index], errors, name);
+    else
+        store_error((*data.data_3)[index], errors, name);
+}
+
+void store_error(Tango::AttributeIdlData& data, int index, const Tango::DevFailed& dev_failed, const char* name)
+{
+    store_error(data, index, dev_failed.errors, name);
+}
+
 } // namespace
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -465,12 +489,7 @@ void Device_3Impl::handle_read_attributes(
                 else
                     index = idx[i];
 
-                if (aid.data_5 != nullptr)
-                    error_from_devfailed((*aid.data_5)[index],e,names[i]);
-                else if (aid.data_4 != nullptr)
-                    error_from_devfailed((*aid.data_4)[index],e,names[i]);
-                else
-                    error_from_devfailed((*aid.data_3)[index],e,names[i]);
+                store_error(aid, index, e, names[i]);
             }
         }
     }
@@ -641,6 +660,8 @@ void Device_3Impl::update_readable_attribute_value(
         else
             index = idx[wanted_attr.idx_in_names];
 
+        store_error(aid, index, e, names[wanted_attr.idx_in_names]);
+
         if (aid.data_5 != nullptr)
         {
             if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
@@ -649,7 +670,6 @@ void Device_3Impl::update_readable_attribute_value(
                 omni_mutex *attr_mut = att.get_attr_mutex();
                 attr_mut->unlock();
             }
-            error_from_devfailed((*aid.data_5)[index],e,names[wanted_attr.idx_in_names]);
         }
         else if (aid.data_4 != nullptr)
         {
@@ -659,10 +679,7 @@ void Device_3Impl::update_readable_attribute_value(
                 omni_mutex *attr_mut = att.get_attr_mutex();
                 attr_mut->unlock();
             }
-            error_from_devfailed((*aid.data_4)[index],e,names[wanted_attr.idx_in_names]);
         }
-        else
-            error_from_devfailed((*aid.data_3)[index],e,names[wanted_attr.idx_in_names]);
     }
     catch (...)
     {
@@ -680,6 +697,8 @@ void Device_3Impl::update_readable_attribute_value(
         del[0].reason = Tango::string_dup("API_CorbaSysException ");
         del[0].desc = Tango::string_dup("Unforseen exception when trying to read attribute. It was even not a Tango DevFailed exception");
 
+        store_error(aid, index, del, names[wanted_attr.idx_in_names]);
+
         if (aid.data_5 != nullptr)
         {
             if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
@@ -688,7 +707,6 @@ void Device_3Impl::update_readable_attribute_value(
                 omni_mutex *attr_mut = att.get_attr_mutex();
                 attr_mut->unlock();
             }
-            error_from_errorlist((*aid.data_5)[index],del,names[wanted_attr.idx_in_names]);
         }
         else if (aid.data_4 != nullptr)
         {
@@ -698,10 +716,7 @@ void Device_3Impl::update_readable_attribute_value(
                 omni_mutex *attr_mut = att.get_attr_mutex();
                 attr_mut->unlock();
             }
-            error_from_errorlist((*aid.data_4)[index],del,names[wanted_attr.idx_in_names]);
         }
-        else
-            error_from_errorlist((*aid.data_3)[index],del,names[wanted_attr.idx_in_names]);
     }
 }
 
@@ -745,6 +760,8 @@ void Device_3Impl::update_writable_attribute_value(
         else
             index = idx[wanted_w_attr.idx_in_names];
 
+        store_error(aid, index, e, names[wanted_w_attr.idx_in_names]);
+
         AttrSerialModel atsm = att.get_attr_serial_model();
 
         if (aid.data_5 != nullptr)
@@ -755,7 +772,6 @@ void Device_3Impl::update_writable_attribute_value(
                 omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
                 attr_mut->unlock();
             }
-            error_from_devfailed((*aid.data_5)[index],e,names[wanted_w_attr.idx_in_names]);
         }
         else if (aid.data_4 != nullptr)
         {
@@ -765,10 +781,7 @@ void Device_3Impl::update_writable_attribute_value(
                 omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
                 attr_mut->unlock();
             }
-            error_from_devfailed((*aid.data_4)[index],e,names[wanted_w_attr.idx_in_names]);
         }
-        else
-            error_from_devfailed((*aid.data_3)[index],e,names[wanted_w_attr.idx_in_names]);
     }
 }
 
@@ -799,12 +812,7 @@ void Device_3Impl::read_and_store_state_for_network_transfer(
     catch (Tango::DevFailed &e)
     {
         state_from_read = false;
-        if (aid.data_5 != nullptr)
-            error_from_devfailed((*aid.data_5)[state_idx], e, name);
-        else if (aid.data_4 != nullptr)
-            error_from_devfailed((*aid.data_4)[state_idx], e, name);
-        else
-            error_from_devfailed((*aid.data_3)[state_idx], e, name);
+        store_error(aid, state_idx, e, name);
     }
 
     if (is_error_stored(aid, state_idx))
@@ -842,12 +850,7 @@ void Device_3Impl::read_and_store_status_for_network_transfer(
     }
     catch (Tango::DevFailed &e)
     {
-        if (aid.data_5 != nullptr)
-            error_from_devfailed((*aid.data_5)[status_idx], e, name);
-        else if (aid.data_4 != nullptr)
-            error_from_devfailed((*aid.data_4)[status_idx], e, name);
-        else
-            error_from_devfailed((*aid.data_3)[status_idx], e, name);
+        store_error(aid, status_idx, e, name);
     }
 
     if (is_error_stored(aid, status_idx))
@@ -1010,6 +1013,8 @@ void Device_3Impl::store_attribute_for_network_transfer(
             }
             catch (Tango::DevFailed &e)
             {
+                store_error(aid, index, e, att.get_name().c_str());
+
                 if (aid.data_5 != nullptr)
                 {
                     cout4 << "Asking CORBA structure to release attribute mutex for attribute " << att.get_name() << std::endl;
@@ -1017,7 +1022,6 @@ void Device_3Impl::store_attribute_for_network_transfer(
                     {
                         REL_ATT_MUTEX_5(aid.data_5,index,att);
                     }
-                    error_from_devfailed((*aid.data_5)[index],e,att.get_name().c_str());
                 }
                 else if (aid.data_4 != nullptr)
                 {
@@ -1026,10 +1030,7 @@ void Device_3Impl::store_attribute_for_network_transfer(
                     {
                         REL_ATT_MUTEX(aid.data_4,index,att);
                     }
-                    error_from_devfailed((*aid.data_4)[index],e,att.get_name().c_str());
                 }
-                else
-                    error_from_devfailed((*aid.data_3)[index],e,att.get_name().c_str());
             }
         }
     }
@@ -1130,12 +1131,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (aid.data_5 != nullptr)
-				error_from_devfailed((*aid.data_5)[i],e,names[i]);
-			else if (aid.data_4 != nullptr)
-				error_from_devfailed((*aid.data_4)[i],e,names[i]);
-			else
-				error_from_devfailed((*aid.data_3)[i],e,names[i]);
+			store_error(aid, i, e, names[i]);
 		}
 	}
 
@@ -1424,12 +1420,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (aid.data_5 != nullptr)
-				error_from_devfailed((*aid.data_5)[i],e,names[i]);
-			else if (aid.data_4 != nullptr)
-				error_from_devfailed((*aid.data_4)[i],e,names[i]);
-			else
-				error_from_devfailed((*aid.data_3)[i],e,names[i]);
+			store_error(aid, i, e, names[i]);
 		}
 	}
 }

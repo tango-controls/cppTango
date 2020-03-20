@@ -306,9 +306,6 @@ protected:
 	template <typename T,typename V>
 	void set_attribute_config_3_local(const T &,const V &,bool,int);
 
-	template <typename T> void error_from_devfailed(T &,DevFailed &,const char *);
-	template <typename T> void error_from_errorlist(T &,DevErrorList &,const char *);
-
 	template <typename T> void one_error(T &,const char *,const char *,std::string &,Attribute &);
 	template <typename T> void one_error(T &,const char *,const char *,std::string &,const char *);
 
