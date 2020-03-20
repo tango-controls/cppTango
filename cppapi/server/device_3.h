@@ -63,7 +63,6 @@ struct AttIdx
 {
 	long	idx_in_names;
 	long	idx_in_multi_attr;
-	bool	failed;
 };
 
 /**
@@ -294,7 +293,6 @@ protected:
 	void read_attributes_no_except(const Tango::DevVarStringArray&,Tango::AttributeIdlData &,bool,std::vector<long> &);
 	void write_attributes_in_db(std::vector<long> &,std::vector<AttIdx> &);
 	void add_alarmed(std::vector<long> &);
-	long reading_state_necessary(std::vector<AttIdx> &);
 	void state2attr(Tango::DevState,Tango::AttributeValue_3 &);
 	void state2attr(Tango::DevState,Tango::AttributeValue_4 &);
 	void state2attr(Tango::DevState,Tango::AttributeValue_5 &);
