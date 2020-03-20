@@ -425,60 +425,47 @@ void Device_3Impl::handle_read_attributes(
         {
             try
             {
-                long j;
+                long j = dev_attr->get_attr_ind_by_name(names[i]);
+                Attribute& att = dev_attr->get_attr_by_ind(j);
 
-                j = dev_attr->get_attr_ind_by_name(names[i]);
-                if ((dev_attr->get_attr_by_ind(j).get_writable() == Tango::READ_WRITE) ||
-                    (dev_attr->get_attr_by_ind(j).get_writable() == Tango::READ_WITH_WRITE))
+                if (att.is_startup_exception())
                 {
-                    x.idx_in_multi_attr = j;
-                    Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
-                    if(att.is_startup_exception())
-                        att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
+                    att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
+                }
+
+                x.idx_in_multi_attr = j;
+
+                const auto writable = att.get_writable();
+
+                if (writable == Tango::READ_WRITE || writable == Tango::READ_WITH_WRITE)
+                {
                     wanted_w_attr.push_back(x);
                     wanted_attr.push_back(x);
                     att.get_when().tv_sec = 0;
                     att.save_alarm_quality();
                 }
-                else
+                else if (writable == Tango::WRITE)
                 {
-                    if (dev_attr->get_attr_by_ind(j).get_writable() == Tango::WRITE)
+                    if (dev_attr->get_attr_by_ind(j).is_fwd_att() == true)
                     {
-
 //
 // If the attribute is a forwarded one, force reading it from  the root device. Another client could have
 // written its value
 //
-
-                        if (dev_attr->get_attr_by_ind(j).is_fwd_att() == true)
-                        {
-                            x.idx_in_multi_attr = j;
-                            Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
-                            if(att.is_startup_exception())
-                                att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
-                            wanted_attr.push_back(x);
-                            att.get_when().tv_sec = 0;
-                            att.save_alarm_quality();
-                        }
-                        else
-                        {
-                            x.idx_in_multi_attr = j	;
-                            Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
-                            if(att.is_startup_exception())
-                                att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
-                            wanted_w_attr.push_back(x);
-                        }
-                    }
-                    else
-                    {
-                        x.idx_in_multi_attr = j;
-                        Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
-                        if(att.is_startup_exception())
-                            att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
                         wanted_attr.push_back(x);
                         att.get_when().tv_sec = 0;
                         att.save_alarm_quality();
                     }
+                    else
+                    {
+                        wanted_w_attr.push_back(x);
+                    }
+                }
+                else
+                {
+                    wanted_attr.push_back(x);
+                    att.get_when().tv_sec = 0;
+                    att.save_alarm_quality();
                 }
             }
             catch (Tango::DevFailed &e)
