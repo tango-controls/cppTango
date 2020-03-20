@@ -579,17 +579,8 @@ void Device_3Impl::update_readable_attribute_value(
     Tango::AttributeIdlData& aid,
     bool second_try,
     std::vector<long>& idx,
-	AttIdx& wanted_attr)
+    AttIdx& wanted_attr)
 {
-//
-// Set attr value (for readable attribute) but not for state/status
-//
-
-    if (wanted_attr.idx_in_multi_attr == -1)
-    {
-        return;
-    }
-
     Attribute &att = dev_attr->get_attr_by_ind(wanted_attr.idx_in_multi_attr);
     bool is_allowed_failed = false;
 
