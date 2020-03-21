@@ -413,38 +413,28 @@ void Device_3Impl::handle_read_attributes(
         Attribute& att = *entry.first;
         const long index = entry.second;
 
-        const auto writable = att.get_writable();
+        const auto access_mode = att.get_writable();
+        const bool is_forwarded = att.is_fwd_att();
 
-        if (writable == Tango::READ_WRITE || writable == Tango::READ_WITH_WRITE)
+        // If the attribute is a forwarded one, force reading it from
+        // the root device. Another client could have written its value
+        const bool is_readable = access_mode != Tango::WRITE || is_forwarded;
+        const bool is_writable =
+            access_mode == Tango::READ_WRITE ||
+            access_mode == Tango::READ_WITH_WRITE ||
+            (access_mode == Tango::WRITE && ! is_forwarded);
+
+        if (is_readable)
         {
             att.get_when().tv_sec = 0;
             att.save_alarm_quality();
 
             update_readable_attribute_value(att, aid, index);
+        }
+
+        if (is_writable)
+        {
             update_writable_attribute_value(att, aid, index);
-        }
-        else if (writable == Tango::WRITE)
-        {
-            if (att.is_fwd_att())
-            {
-                // If the attribute is a forwarded one, force reading it from
-                // the root device. Another client could have written its value
-                att.get_when().tv_sec = 0;
-                att.save_alarm_quality();
-
-                update_readable_attribute_value(att, aid, index);
-            }
-            else
-            {
-                update_writable_attribute_value(att, aid, index);
-            }
-        }
-        else
-        {
-            att.get_when().tv_sec = 0;
-            att.save_alarm_quality();
-
-            update_readable_attribute_value(att, aid, index);
         }
 
         store_attribute_for_network_transfer(att, aid, index);
