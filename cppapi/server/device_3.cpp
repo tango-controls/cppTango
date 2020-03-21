@@ -349,12 +349,12 @@ Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVar
 //-------------------------------------------------------------------------------------------------------------------
 
 
-void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& names,
-					     Tango::AttributeIdlData &aid,
-					     bool second_try,
-					     std::vector<long> &idx)
+void Device_3Impl::read_attributes_no_except(
+    const Tango::DevVarStringArray& names,
+    Tango::AttributeIdlData &aid,
+    bool second_try,
+    std::vector<long>& names_to_data_idx_mapping)
 {
-
 //
 //  Write the device name into the per thread data for sub device diagnostics.
 //  Keep the old name, to put it back at the end!
@@ -367,7 +367,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
     try
     {
-        handle_read_attributes(names, aid, second_try, idx);
+        handle_read_attributes(names, aid, second_try, names_to_data_idx_mapping);
     }
     catch (...)
     {
@@ -384,7 +384,7 @@ void Device_3Impl::handle_read_attributes(
     const Tango::DevVarStringArray& names,
     Tango::AttributeIdlData& aid,
     bool second_try,
-    std::vector<long> &idx)
+    std::vector<long>& names_to_data_idx_mapping)
 {
     constexpr long STATE_STATUS_NOT_FOUND = -1;
 
@@ -395,7 +395,7 @@ void Device_3Impl::handle_read_attributes(
         names,
         aid,
         second_try,
-        idx,
+        names_to_data_idx_mapping,
         state_idx,
         status_idx);
 
@@ -410,9 +410,8 @@ void Device_3Impl::handle_read_attributes(
 
     for (auto& entry : attributes)
     {
-        const long index = second_try ? idx[entry.idx_in_names] : entry.idx_in_names;
-
-        Attribute& att = dev_attr->get_attr_by_ind(entry.idx_in_multi_attr);
+        Attribute& att = *entry.first;
+        const long index = entry.second;
 
         const auto writable = att.get_writable();
 
@@ -453,45 +452,42 @@ void Device_3Impl::handle_read_attributes(
 
     if (state_wanted)
     {
-        const long index = second_try ? idx[state_idx] : state_idx;
-        read_and_store_state_for_network_transfer(
-            aid,
-            index,
-            readable_attributes);
+        read_and_store_state_for_network_transfer(aid, state_idx, readable_attributes);
     }
 
     if (status_wanted)
     {
-        const long index = second_try ? idx[status_idx] : status_idx;
-        read_and_store_status_for_network_transfer(aid, index);
+        read_and_store_status_for_network_transfer(aid, status_idx);
     }
 }
 
-std::vector<AttIdx> Device_3Impl::collect_attributes_to_read(
+AttributeAndIndexInDataPairs Device_3Impl::collect_attributes_to_read(
     const Tango::DevVarStringArray& names,
     Tango::AttributeIdlData& data,
     bool second_try,
-    const std::vector<long>& idx,
-    long& state_index,
-    long& status_index)
+    std::vector<long>& names_to_data_idx_mapping,
+    long& state_index_in_data,
+    long& status_index_in_data)
 {
     const auto num_of_names = names.length();
 
-    std::vector<AttIdx> result{};
+    AttributeAndIndexInDataPairs result{};
     result.reserve(num_of_names);
 
     for (long i = 0; i < num_of_names; ++i)
     {
+        const long index = second_try ? names_to_data_idx_mapping[i] : i;
+
         std::string name(names[i]);
         std::transform(name.begin(), name.end(), name.begin(), ::tolower);
 
         if (name == "state")
         {
-            state_index = i;
+            state_index_in_data = index;
         }
         else if (name == "status")
         {
-            status_index = i;
+            status_index_in_data = index;
         }
         else
         {
@@ -505,14 +501,10 @@ std::vector<AttIdx> Device_3Impl::collect_attributes_to_read(
                     attr.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
                 }
 
-                AttIdx entry{};
-                entry.idx_in_names = i;
-                entry.idx_in_multi_attr = attr_index;
-                result.push_back(entry);
+                result.emplace_back(&attr, index);
             }
             catch (const Tango::DevFailed& error)
             {
-                const long index = second_try ? idx[i] : i;
                 store_error(data, index, error, name.c_str());
             }
         }
@@ -522,13 +514,13 @@ std::vector<AttIdx> Device_3Impl::collect_attributes_to_read(
 }
 
 AttributeIndices Device_3Impl::get_readable_attributes(
-    const std::vector<AttIdx>& attributes)
+    const AttributeAndIndexInDataPairs& attributes)
 {
     AttributeIndices result{};
     result.reserve(attributes.size());
     for (auto& entry : attributes)
     {
-        Attribute& att = dev_attr->get_attr_by_ind(entry.idx_in_multi_attr);
+        Attribute& att = *entry.first;
         if (att.get_writable() != Tango::WRITE || att.is_fwd_att())
         {
             result.push_back(att.get_attr_idx());
@@ -742,7 +734,7 @@ void Device_3Impl::update_writable_attribute_value(
 
 void Device_3Impl::read_and_store_state_for_network_transfer(
     Tango::AttributeIdlData& aid,
-    int index_in_data,
+    long index_in_data,
     const AttributeIndices& wanted_attr)
 {
 //
@@ -790,7 +782,7 @@ void Device_3Impl::read_and_store_state_for_network_transfer(
 
 void Device_3Impl::read_and_store_status_for_network_transfer(
     Tango::AttributeIdlData& aid,
-    int index_in_data)
+    long index_in_data)
 {
     Tango::ConstDevString d_status = nullptr;
 

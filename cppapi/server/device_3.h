@@ -65,6 +65,8 @@ struct AttIdx
 	long	idx_in_multi_attr;
 };
 
+using AttributeAndIndexInDataPairs = std::vector<std::pair<Attribute*, long>>;
+
 /**
  * Base class for all TANGO device since version 3.
  *
@@ -333,26 +335,21 @@ private:
         const Tango::DevVarStringArray&,
         Tango::AttributeIdlData&,
         bool second_try,
-        std::vector<long> &idx);
-    std::vector<AttIdx> collect_attributes_to_read(
+        std::vector<long>& names_to_data_idx_mapping);
+    AttributeAndIndexInDataPairs collect_attributes_to_read(
         const Tango::DevVarStringArray&,
         Tango::AttributeIdlData&,
         bool second_try,
-        const std::vector<long>& idx,
-        long& state_index,
-        long& status_index);
-    AttributeIndices get_readable_attributes(const std::vector<AttIdx>& attributes);
+        std::vector<long>& names_to_data_idx_mapping,
+        long& state_index_in_data,
+        long& status_index_in_data);
+    AttributeIndices get_readable_attributes(const AttributeAndIndexInDataPairs&);
     void call_read_attr_hardware_if_needed(const AttributeIndices&, bool state_wanted);
     void update_readable_attribute_value(Attribute&, AttributeIdlData&, long index_in_data);
     void update_writable_attribute_value(Attribute&, AttributeIdlData&, long index_in_data);
     void store_attribute_for_network_transfer(Attribute&, AttributeIdlData&, long index_in_data);
-    void read_and_store_state_for_network_transfer(
-        Tango::AttributeIdlData&,
-        int state_idx,
-        const AttributeIndices&);
-    void read_and_store_status_for_network_transfer(
-        Tango::AttributeIdlData&,
-        int status_idx);
+    void read_and_store_state_for_network_transfer(AttributeIdlData&, long index_in_data, const AttributeIndices&);
+    void read_and_store_status_for_network_transfer(AttributeIdlData&, long index_in_data);
 
 
     std::unique_ptr<Device_3ImplExt>     ext_3;           // Class extension
