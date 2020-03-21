@@ -351,45 +351,8 @@ void Device_3Impl::read_attributes_no_except(
     AttributeIdlData& data,
     const AttributeIndicesInData& name_to_data_mapping)
 {
-//
-//  Write the device name into the per thread data for sub device diagnostics.
-//  Keep the old name, to put it back at the end!
-//  During device access inside the same server, the thread stays the same!
-//
+    SubDevDiag::ContextManager sub_dev_diag_context{get_name()};
 
-    SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
-    std::string last_associated_device = sub.get_associated_device();
-    sub.set_associated_device(get_name());
-
-    try
-    {
-        handle_read_attributes(names, data, name_to_data_mapping);
-    }
-    catch (...)
-    {
-        sub.set_associated_device(last_associated_device);
-        throw;
-    }
-
-    sub.set_associated_device(last_associated_device);
-
-    cout4 << "Leaving Device_3Impl::read_attributes_no_except" << std::endl;
-}
-
-void Device_3Impl::read_attributes_no_except(
-    const AttributeNames& names,
-    AttributeIdlData& data)
-{
-    AttributeIndicesInData indices(names.length());
-    std::iota(indices.begin(), indices.end(), 0);
-    read_attributes_no_except(names, data, indices);
-}
-
-void Device_3Impl::handle_read_attributes(
-    const AttributeNames& names,
-    AttributeIdlData& data,
-    const AttributeIndicesInData& name_to_data_mapping)
-{
     constexpr long STATE_STATUS_NOT_FOUND = -1;
 
     long state_idx = STATE_STATUS_NOT_FOUND;
@@ -452,6 +415,15 @@ void Device_3Impl::handle_read_attributes(
     {
         read_and_store_status_for_network_transfer(data, status_idx);
     }
+}
+
+void Device_3Impl::read_attributes_no_except(
+    const AttributeNames& names,
+    AttributeIdlData& data)
+{
+    AttributeIndicesInData indices(names.length());
+    std::iota(indices.begin(), indices.end(), 0);
+    read_attributes_no_except(names, data, indices);
 }
 
 AttributeAndIndexInDataPairs Device_3Impl::collect_attributes_to_read(

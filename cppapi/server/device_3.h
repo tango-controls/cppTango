@@ -334,7 +334,6 @@ private:
 
     void real_ctor();
 
-    void handle_read_attributes(const AttributeNames&, AttributeIdlData&, const AttributeIndicesInData&);
     AttributeAndIndexInDataPairs collect_attributes_to_read(
         const AttributeNames&,
         AttributeIdlData&,
