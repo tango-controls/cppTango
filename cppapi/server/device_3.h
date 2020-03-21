@@ -343,31 +343,16 @@ private:
         long& status_index);
     AttributeIndices get_readable_attributes(const std::vector<AttIdx>& attributes);
     void call_read_attr_hardware_if_needed(const AttributeIndices&, bool state_wanted);
-    void update_readable_attribute_value(
-        const Tango::DevVarStringArray&,
-        Tango::AttributeIdlData&,
-        bool second_try,
-        std::vector<long>& idx,
-        const AttIdx&);
-    void update_writable_attribute_value(
-        const Tango::DevVarStringArray&,
-        Tango::AttributeIdlData&,
-        bool second_try,
-        std::vector<long>& idx,
-        const AttIdx&);
+    void update_readable_attribute_value(Attribute&, AttributeIdlData&, long index_in_data);
+    void update_writable_attribute_value(Attribute&, AttributeIdlData&, long index_in_data);
+    void store_attribute_for_network_transfer(Attribute&, AttributeIdlData&, long index_in_data);
     void read_and_store_state_for_network_transfer(
-        const char* name,
         Tango::AttributeIdlData&,
         int state_idx,
         const AttributeIndices&);
     void read_and_store_status_for_network_transfer(
-        const char* name,
         Tango::AttributeIdlData&,
         int status_idx);
-    void store_attribute_for_network_transfer(
-        const char* name,
-        Tango::AttributeIdlData&,
-        int index);
 
 
     std::unique_ptr<Device_3ImplExt>     ext_3;           // Class extension
