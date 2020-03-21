@@ -292,14 +292,14 @@ protected:
 /// @privatesection
 	void read_attributes_no_except(const Tango::DevVarStringArray&,Tango::AttributeIdlData &,bool,std::vector<long> &);
 	void write_attributes_in_db(std::vector<long> &,std::vector<AttIdx> &);
-	void add_alarmed(std::vector<long> &);
+	void add_alarmed(AttributeIndices&);
 	void state2attr(Tango::DevState,Tango::AttributeValue_3 &);
 	void state2attr(Tango::DevState,Tango::AttributeValue_4 &);
 	void state2attr(Tango::DevState,Tango::AttributeValue_5 &);
 	void status2attr(Tango::ConstDevString,Tango::AttributeValue_3 &);
 	void status2attr(Tango::ConstDevString,Tango::AttributeValue_4 &);
 	void status2attr(Tango::ConstDevString,Tango::AttributeValue_5 &);
-	void alarmed_not_read(std::vector<AttIdx> &);
+	void alarmed_not_read(const AttributeIndices&);
 
 	void write_attributes_34(const Tango::AttributeValueList *,const Tango::AttributeValueList_4 *);
 
@@ -341,9 +341,8 @@ private:
         const std::vector<long>& idx,
         long& state_index,
         long& status_index);
-    void call_read_attr_hardware_if_needed(
-        const std::vector<AttIdx>&,
-        bool state_wanted);
+    AttributeIndices get_readable_attributes(const std::vector<AttIdx>& attributes);
+    void call_read_attr_hardware_if_needed(const AttributeIndices&, bool state_wanted);
     void update_readable_attribute_value(
         const Tango::DevVarStringArray&,
         Tango::AttributeIdlData&,
@@ -360,7 +359,7 @@ private:
         const char* name,
         Tango::AttributeIdlData&,
         int state_idx,
-        std::vector<AttIdx>&);
+        const AttributeIndices&);
     void read_and_store_status_for_network_transfer(
         const char* name,
         Tango::AttributeIdlData&,

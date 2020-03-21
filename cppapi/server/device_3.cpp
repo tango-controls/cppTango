@@ -405,6 +405,12 @@ void Device_3Impl::handle_read_attributes(
     std::vector<AttIdx> wanted_attr;
     std::vector<AttIdx> wanted_w_attr;
 
+    auto readable_attributes = get_readable_attributes(attributes);
+
+    always_executed_hook();
+
+    call_read_attr_hardware_if_needed(readable_attributes, state_wanted);
+
     for (auto& entry : attributes)
     {
         Attribute& att = dev_attr->get_attr_by_ind(entry.idx_in_multi_attr);
@@ -441,10 +447,6 @@ void Device_3Impl::handle_read_attributes(
         }
     }
 
-    always_executed_hook();
-
-    call_read_attr_hardware_if_needed(wanted_attr, state_wanted);
-
     const long num_of_names = names.length();
     for (long i = 0; i < num_of_names; i++)
     {
@@ -479,7 +481,7 @@ void Device_3Impl::handle_read_attributes(
             names[state_idx],
             aid,
             index,
-            wanted_attr);
+            readable_attributes);
     }
 
     if (status_wanted)
@@ -543,8 +545,24 @@ std::vector<AttIdx> Device_3Impl::collect_attributes_to_read(
     return result;
 }
 
+AttributeIndices Device_3Impl::get_readable_attributes(
+    const std::vector<AttIdx>& attributes)
+{
+    AttributeIndices result{};
+    result.reserve(attributes.size());
+    for (auto& entry : attributes)
+    {
+        Attribute& att = dev_attr->get_attr_by_ind(entry.idx_in_multi_attr);
+        if (att.get_writable() != Tango::WRITE || att.is_fwd_att())
+        {
+            result.push_back(att.get_attr_idx());
+        }
+    }
+    return result;
+}
+
 void Device_3Impl::call_read_attr_hardware_if_needed(
-    const std::vector<AttIdx>& wanted_attr,
+    const AttributeIndices& wanted_attr,
     bool state_wanted)
 {
 //
@@ -552,28 +570,20 @@ void Device_3Impl::call_read_attr_hardware_if_needed(
 // Warning:  If the state is one of the wanted attribute, check and eventually add all the alarmed attributes index
 //
 
-    const int nb_wanted_attr = wanted_attr.size();
+    auto attributes_to_read = wanted_attr;
 
-    if (nb_wanted_attr != 0)
-    {
-        return;
-    }
-
-    std::vector<long> tmp_idx;
-    for (int i = 0;i < nb_wanted_attr;i++)
-    {
-        long ii = wanted_attr[i].idx_in_multi_attr;
-        if (ii != -1)
-            tmp_idx.push_back(ii);
-    }
-    if (state_wanted == true)
+    if (state_wanted)
     {
         if ((device_state == Tango::ON) || (device_state == Tango::ALARM))
-            add_alarmed(tmp_idx);
+        {
+            add_alarmed(attributes_to_read);
+        }
     }
 
-    if (tmp_idx.empty() == false)
-        read_attr_hardware(tmp_idx);
+    if (!attributes_to_read.empty())
+    {
+        read_attr_hardware(attributes_to_read);
+    }
 }
 
 void Device_3Impl::update_readable_attribute_value(
@@ -782,7 +792,7 @@ void Device_3Impl::read_and_store_state_for_network_transfer(
     const char* name,
     Tango::AttributeIdlData& aid,
     int state_idx,
-    std::vector<AttIdx>& wanted_attr)
+    const AttributeIndices& wanted_attr)
 {
 //
 // If necessary, read state and/or status
@@ -2547,7 +2557,7 @@ void Device_3Impl::get_attr_props(const char *attr_name,std::vector<AttrProperty
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Device_3Impl::add_alarmed(std::vector<long> &att_list)
+void Device_3Impl::add_alarmed(AttributeIndices& att_list)
 {
 	std::vector<long> &alarmed_list = dev_attr->get_alarm_list();
 	long nb_wanted_attr = alarmed_list.size();
@@ -2595,7 +2605,7 @@ void Device_3Impl::add_alarmed(std::vector<long> &att_list)
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-void Device_3Impl::alarmed_not_read(std::vector<AttIdx> &wanted_attr)
+void Device_3Impl::alarmed_not_read(const AttributeIndices& wanted_attr)
 {
 	std::vector<long> &alarmed_list = dev_attr->get_alarm_list();
 	long nb_alarmed_attr = alarmed_list.size();
@@ -2608,7 +2618,7 @@ void Device_3Impl::alarmed_not_read(std::vector<AttIdx> &wanted_attr)
 		bool found = false;
 		for (int j = 0;j < nb_attr;j++)
 		{
-			if (alarmed_list[i] == wanted_attr[j].idx_in_multi_attr)
+			if (alarmed_list[i] == wanted_attr[j])
 			{
 				found = true;
 				break;
