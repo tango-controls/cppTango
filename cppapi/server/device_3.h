@@ -348,13 +348,13 @@ private:
         Tango::AttributeIdlData&,
         bool second_try,
         std::vector<long>& idx,
-        AttIdx&);
+        const AttIdx&);
     void update_writable_attribute_value(
         const Tango::DevVarStringArray&,
         Tango::AttributeIdlData&,
         bool second_try,
         std::vector<long>& idx,
-        AttIdx&);
+        const AttIdx&);
     void read_and_store_state_for_network_transfer(
         const char* name,
         Tango::AttributeIdlData&,
