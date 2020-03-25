@@ -440,8 +440,8 @@ void Attribute::add_config_5_specific(AttributeConfig_5 &conf)
 
 void Attribute::set_properties(const Tango::AttributeConfig &conf,std::string &dev_name,TANGO_UNUSED(bool from_ds),std::vector<AttPropDb> &v_db)
 {
-    if (name_lower == "state" || name_lower == "status")
-        return;
+	if (name_lower == "state" || name_lower == "status")
+		return;
 
 //
 // Check if the caller try to change "hard coded" properties. Throw exception in case of
