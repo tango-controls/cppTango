@@ -133,14 +133,14 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 			client_release = 3;
 	}
 
-    event_subscription(dev_name,attr_name,action,event,attr_name_lower,NOTIFD,mcast,rate,ivl,NULL,client_release);
+	event_subscription(dev_name,attr_name,action,event,attr_name_lower,NOTIFD,mcast,rate,ivl,NULL,client_release);
 
 //
 // Init one subscription command flag in Eventsupplier
 //
 
-    if (ev != NULL && ev->get_one_subscription_cmd() == false)
-        ev->set_one_subscription_cmd(true);
+	if (ev != NULL && ev->get_one_subscription_cmd() == false)
+		ev->set_one_subscription_cmd(true);
 
 //
 // Return to caller
