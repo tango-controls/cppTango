@@ -1075,8 +1075,17 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
         case ZMQ_DELAY_EVENT:
         {
-            old_poll_nb = poll_nb;
-            poll_nb = 1;
+            // If poll_nb == 1, then we are already in a situation where events are being delayed
+            // and we are currently only taking care of messages received on the control socket
+            // No need to update old_poll_nb in this case because it is already correct
+            // otherwise this would lead to issues like https://github.com/tango-controls/cppTango/issues/686
+            // where events would no longer be received if someone subscribes or unsubscribes to events in
+            // an event callback and when the callback is executed during a subscribe_event call
+            if (poll_nb != 1)
+            {
+                old_poll_nb = poll_nb;
+                poll_nb = 1;
+            }
         }
         break;
 
