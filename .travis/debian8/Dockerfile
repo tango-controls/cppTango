@@ -6,6 +6,8 @@ ARG APP_GID=2000
 
 MAINTAINER TANGO Controls team <tango@esrf.fr>
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN sed -i '/jessie-updates/d' /etc/apt/sources.list  # Now archived
 
 RUN apt-get update && apt-get install -y \

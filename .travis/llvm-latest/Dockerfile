@@ -8,6 +8,8 @@ ARG APP_GID=2000
 
 MAINTAINER TANGO Controls team <tango@esrf.fr>
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -y \
   apt-utils                              \
   build-essential                        \
