@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [9.3.4] - 2020-xx-xx (TODO: update date just before releasing)
+## [9.3.4] - 2020-04-01
 
 ### Fixed
 - Be compatible with all in-use cppzmq versions ([#530][pr-530], [#561][pr-561], [#273][i-273], [#499][i-499], [#535][i-535])
@@ -12,14 +12,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - CMake fixes regarding `CMAKE_BUILD_TYPE` logic ([#629][pr-629])
 - Fix race conditions between polling threads and user threads pushing events ([#665][pr-665], [#511][i-511])
 - Avoid undefined interface warning msvc ([#664][pr-664])
-- travis.yml: remove deprecated skip_cleanup ([#683](pr-683))
-- Fix memory leak in Attribute::get_att_device_class() ([#677](pr-677))
+- travis.yml: remove deprecated skip_cleanup ([#683][pr-683])
+- Fix memory leak in Attribute::get_att_device_class() ([#677][pr-677])
+- Fix crash during alarm state evaluation if attribute value is not set ([#330][i-330], [#681][pr-681])
 
 ### Added
 - Document contributing process and use CODEOWNERS for easier review organization ([#639][pr-639])
 - Add testing with debian buster ([#597][pr-597])
-- Add CMake option to disable building the test suite ([#689](pr-689))
-- Add CMake switch to disable building MMX ([#674](pr-674))
+- Add CMake option to disable building the test suite ([#689][pr-689])
+- Add CMake switch to disable building MMX ([#674][pr-674])
+- appveyor.yml: Add inline deployment on tag push ([#690][pr-690])
 
 ## [9.3.3] - 2019-03-29
 
@@ -216,6 +218,7 @@ where a client application might show out of date/incorrect values.
 [i-273]: https://github.com/tango-controls/cppTango/issues/273
 [i-275]: https://github.com/tango-controls/cppTango/issues/275
 [i-315]: https://github.com/tango-controls/cppTango/issues/315
+[i-330]: https://github.com/tango-controls/cppTango/issues/330
 [i-339]: https://github.com/tango-controls/cppTango/issues/339
 [pr-342]: https://github.com/tango-controls/cppTango/pull/342
 [pr-347]: https://github.com/tango-controls/cppTango/pull/347
@@ -323,5 +326,9 @@ where a client application might show out of date/incorrect values.
 [pr-658]: https://github.com/tango-controls/cppTango/pull/658
 [pr-664]: https://github.com/tango-controls/cppTango/pull/664
 [pr-665]: https://github.com/tango-controls/cppTango/pull/665
+[pr-674]: https://github.com/tango-controls/cppTango/pull/674
 [pr-677]: https://github.com/tango-controls/cppTango/pull/677
+[pr-681]: https://github.com/tango-controls/cppTango/pull/681
 [pr-683]: https://github.com/tango-controls/cppTango/pull/683
+[pr-689]: https://github.com/tango-controls/cppTango/pull/689
+[pr-690]: https://github.com/tango-controls/cppTango/pull/690
