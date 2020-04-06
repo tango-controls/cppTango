@@ -1586,6 +1586,91 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 	}
 }
 
+void MultiAttribute::get_event_param(vector<EventSubscriptionState> &eve)
+{
+	unsigned int i;
+
+	for (i = 0;i < attr_list.size();i++)
+	{
+		bool once_more = false;
+		vector<int> ch;
+		vector<int> ar;
+		vector<int> pe;
+		vector<int> us;
+		vector<int> ac;
+		bool dr = false;
+		bool qu = false;
+
+		if (attr_list[i]->change_event_subscribed() == true)
+		{
+			once_more = true;
+			ch = attr_list[i]->get_client_lib(CHANGE_EVENT);
+		}
+
+		if (attr_list[i]->quality_event_subscribed() == true)
+		{
+			once_more = true;
+			qu = true;
+		}
+
+		if (attr_list[i]->periodic_event_subscribed() == true)
+		{
+			once_more = true;
+			pe = attr_list[i]->get_client_lib(PERIODIC_EVENT);
+		}
+
+		if (attr_list[i]->archive_event_subscribed() == true)
+		{
+			once_more = true;
+			ar = attr_list[i]->get_client_lib(ARCHIVE_EVENT);
+		}
+
+		if (attr_list[i]->user_event_subscribed() == true)
+		{
+			once_more = true;
+			us = attr_list[i]->get_client_lib(USER_EVENT);
+		}
+
+		if (attr_list[i]->attr_conf_event_subscribed() == true)
+		{
+			once_more = true;
+			ac = attr_list[i]->get_client_lib(ATTR_CONF_EVENT);
+		}
+
+		if (attr_list[i]->data_ready_event_subscribed() == true)
+		{
+			once_more = true;
+			dr = true;
+		}
+
+		if (once_more == true)
+		{
+			EventSubscriptionState ep;
+
+			if (attr_list[i]->use_notifd_event() == true)
+				ep.notifd = true;
+			else
+				ep.notifd = false;
+
+			if (attr_list[i]->use_zmq_event() == true)
+				ep.zmq = true;
+			else
+				ep.zmq = false;
+
+			ep.attribute_name = attr_list[i]->get_name();;
+			ep.change = ch;
+			ep.quality = qu;
+			ep.archive = ar;
+			ep.periodic = pe;
+			ep.user = us;
+			ep.att_conf = ac;
+			ep.data_ready = dr;
+
+			eve.push_back(ep);
+		}
+	}
+}
+
 //+-----------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -1607,6 +1692,82 @@ void MultiAttribute::set_event_param(vector<EventPar> &eve)
 		if (eve[i].attr_id != -1)
 		{
 			Tango::Attribute &att = get_attr_by_ind(eve[i].attr_id);
+
+			{
+				omni_mutex_lock oml(EventSupplier::get_event_mutex());
+				vector<int>::iterator ite;
+
+				if (eve[i].change.empty() == false)
+				{
+					std::string event_name = EventName[CHANGE_EVENT];
+					for (ite = eve[i].change.begin();ite != eve[i].change.end();++ite)
+					{
+						att.set_change_event_sub(*ite);
+						att.set_client_lib(*ite, event_name);
+					}
+				}
+
+				if (eve[i].periodic.empty() == false)
+				{
+					std::string event_name = EventName[PERIODIC_EVENT];
+					for (ite = eve[i].periodic.begin();ite != eve[i].periodic.end();++ite)
+					{
+						att.set_periodic_event_sub(*ite);
+						att.set_client_lib(*ite, event_name);
+					}
+				}
+
+				if (eve[i].archive.empty() == false)
+				{
+					std::string event_name = EventName[ARCHIVE_EVENT];
+					for (ite = eve[i].archive.begin();ite != eve[i].archive.end();++ite)
+					{
+						att.set_archive_event_sub(*ite);
+						att.set_client_lib(*ite, event_name);
+					}
+				}
+
+				if (eve[i].att_conf.empty() == false)
+				{
+					std::string event_name = EventName[ATTR_CONF_EVENT];
+					for (ite = eve[i].att_conf.begin();ite != eve[i].att_conf.end();++ite)
+					{
+						att.set_att_conf_event_sub(*ite);
+						att.set_client_lib(*ite, event_name);
+					}
+				}
+
+				if (eve[i].user.empty() == false)
+				{
+					std::string event_name = EventName[USER_EVENT];
+					for (ite = eve[i].user.begin();ite != eve[i].user.end();++ite)
+					{
+						att.set_user_event_sub(*ite);
+						att.set_client_lib(*ite, event_name);
+					}
+				}
+
+				if (eve[i].quality == true)
+					att.set_quality_event_sub();
+				if (eve[i].data_ready == true)
+					att.set_data_ready_event_sub();
+			}
+
+			if (eve[i].notifd == true)
+				att.set_use_notifd_event();
+			if (eve[i].zmq == true)
+				att.set_use_zmq_event();
+		}
+	}
+}
+
+void MultiAttribute::set_event_param(vector<EventSubscriptionState> &eve)
+{
+	for (size_t i = 0;i < eve.size();i++)
+	{
+		if (! eve[i].attribute_name.empty())
+		{
+			Tango::Attribute &att = get_attr_by_name(eve[i].attribute_name.c_str());
 
 			{
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());

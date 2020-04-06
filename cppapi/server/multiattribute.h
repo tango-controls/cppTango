@@ -61,6 +61,13 @@ struct EventPar
 	bool        	zmq;
 };
 
+// This structure is intended to be used in place of EventPar. Field attribute_name
+// replaces attr_id. EventPar is left untouched for backward compatibility with 9.3.
+struct EventSubscriptionState : public EventPar
+{
+    std::string attribute_name;
+};
+
 //=============================================================================
 //
 //			The MultiAttribute class
@@ -283,8 +290,10 @@ public:
 	void remove_attribute(string &,bool);
 	vector<long> &get_w_attr_list() {return writable_attr_list;}
 	bool is_att_quality_alarmed();
-	void get_event_param(vector<EventPar> &);
-	void set_event_param(vector<EventPar> &);
+	void get_event_param(vector<EventPar> &); // Deprecated, use EventSubscriptionState overload
+	void set_event_param(vector<EventPar> &); // Deprecated, use EventSubscriptionState overload
+	void get_event_param(vector<EventSubscriptionState> &);
+	void set_event_param(vector<EventSubscriptionState> &);
 	void add_alarmed_quality_factor(string &);
 	void add_default(vector<AttrProperty> &,string &,string &,long);
 	void add_attr(Attribute *att);
