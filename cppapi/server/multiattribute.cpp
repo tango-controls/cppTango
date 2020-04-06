@@ -1614,32 +1614,52 @@ void MultiAttribute::set_event_param(vector<EventPar> &eve)
 
 				if (eve[i].change.empty() == false)
 				{
+					std::string event_name = EventName[CHANGE_EVENT];
 					for (ite = eve[i].change.begin();ite != eve[i].change.end();++ite)
+					{
 						att.set_change_event_sub(*ite);
+						att.set_client_lib(*ite, event_name);
+					}
 				}
 
 				if (eve[i].periodic.empty() == false)
 				{
+					std::string event_name = EventName[PERIODIC_EVENT];
 					for (ite = eve[i].periodic.begin();ite != eve[i].periodic.end();++ite)
+					{
 						att.set_periodic_event_sub(*ite);
+						att.set_client_lib(*ite, event_name);
+					}
 				}
 
 				if (eve[i].archive.empty() == false)
 				{
+					std::string event_name = EventName[ARCHIVE_EVENT];
 					for (ite = eve[i].archive.begin();ite != eve[i].archive.end();++ite)
+					{
 						att.set_archive_event_sub(*ite);
+						att.set_client_lib(*ite, event_name);
+					}
 				}
 
 				if (eve[i].att_conf.empty() == false)
 				{
+					std::string event_name = EventName[ATTR_CONF_EVENT];
 					for (ite = eve[i].att_conf.begin();ite != eve[i].att_conf.end();++ite)
+					{
 						att.set_att_conf_event_sub(*ite);
+						att.set_client_lib(*ite, event_name);
+					}
 				}
 
 				if (eve[i].user.empty() == false)
 				{
+					std::string event_name = EventName[USER_EVENT];
 					for (ite = eve[i].user.begin();ite != eve[i].user.end();++ite)
+					{
 						att.set_user_event_sub(*ite);
+						att.set_client_lib(*ite, event_name);
+					}
 				}
 
 				if (eve[i].quality == true)
