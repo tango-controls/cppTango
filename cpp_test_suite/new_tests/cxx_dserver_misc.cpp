@@ -314,7 +314,8 @@ cout << "str = " << str << endl;
 
         EventCallback<Tango::EventData> callback{};
 
-        TS_ASSERT_THROWS_NOTHING(device1->subscribe_event(
+        int subscription = 0;
+        TS_ASSERT_THROWS_NOTHING(subscription = device1->subscribe_event(
             attribute_name,
             Tango::ARCHIVE_EVENT,
             &callback));
@@ -338,6 +339,44 @@ cout << "str = " << str << endl;
         std::this_thread::sleep_for(poll_period);
         TS_ASSERT_EQUALS(1, callback.num_of_error_events);
         TS_ASSERT_EQUALS(5, callback.num_of_all_events);
+
+        TS_ASSERT_THROWS_NOTHING(device1->unsubscribe_event(subscription));
+    }
+
+/*
+ * Tests that subscriber can receive pipe events immediately after
+ * server is restarted due to RestartServer admin device command
+ * without a need to wait for re-subscription.
+ */
+    void test_pipe_event_subscription_recovery_after_restart_server_command()
+    {
+        EventCallback<Tango::PipeEventData> callback{};
+
+        TS_ASSERT_THROWS_NOTHING(device1->subscribe_event(
+            "RWPipe",
+            Tango::PIPE_EVENT,
+            &callback));
+
+        TS_ASSERT_THROWS_NOTHING(push_pipe_event());
+        Tango_sleep(1);
+        TS_ASSERT_EQUALS(2, callback.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback.num_of_error_events);
+
+        TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer"));
+        Tango_sleep(5);
+
+        TS_ASSERT_THROWS_NOTHING(push_pipe_event());
+        Tango_sleep(1);
+        TS_ASSERT_EQUALS(3, callback.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback.num_of_error_events);
+    }
+
+    void push_pipe_event()
+    {
+        Tango::DevShort event_type = 0;
+        Tango::DeviceData data;
+        data << event_type;
+        device1->command_inout("PushPipeEvent", data);
     }
 };
 #undef cout
