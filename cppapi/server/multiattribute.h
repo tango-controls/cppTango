@@ -266,8 +266,8 @@ public:
 	void remove_attribute(std::string &,bool);
 	std::vector<long> &get_w_attr_list() {return writable_attr_list;}
 	bool is_att_quality_alarmed();
-	void get_event_param(EventSubscriptionStates&);
-	void set_event_param(const EventSubscriptionStates&);
+	AttributeEventSubscriptionStates get_event_subscription_states();
+	void set_event_subscription_states(const AttributeEventSubscriptionStates&);
 	void add_alarmed_quality_factor(std::string &);
 	void add_default(std::vector<AttrProperty> &,std::string &,std::string &,long);
 	void add_attr(Attribute *att);

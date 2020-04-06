@@ -882,7 +882,6 @@ void DServer::restart(std::string &d_name)
 
 	std::vector<PollObj *> &p_obj = dev_to_del->get_poll_obj_list();
 	std::vector<Pol> dev_pol;
-	EventSubscriptionStates eve;
 
 	for (i = 0;i < p_obj.size();i++)
 	{
@@ -893,8 +892,7 @@ void DServer::restart(std::string &d_name)
 		dev_pol.push_back(tmp);
 	}
 
-	dev_to_del->get_device_attr()->get_event_param(eve);
-	dev_to_del->get_event_param(eve);
+	auto events_state = dev_to_del->get_event_subscription_state();
 
 //
 // Also get device locker parameters if device locked
@@ -1065,9 +1063,7 @@ void DServer::restart(std::string &d_name)
 // Re-set classical event parameters (if needed)
 //
 
-	Tango::MultiAttribute *m_attr = new_dev->get_device_attr();
-	m_attr->set_event_param(eve);
-	new_dev->set_event_param(eve);
+	new_dev->set_event_subscription_state(events_state);
 
 //
 // Re-set multicast event parameters
@@ -1201,10 +1197,10 @@ void ServRestartThread::run(void *ptr)
 // Memorize event parameters and devices interface
 //
 
-	ServerEventSubscriptionState map_events;
 	std::map<std::string,DevIntr> map_dev_inter;
 
-	dev->mem_event_par(map_events);
+	auto events_state = dev->get_event_subscription_state();
+
 	dev->mem_devices_interface(map_dev_inter);
 
 //
@@ -1261,7 +1257,7 @@ void ServRestartThread::run(void *ptr)
 // Reset event params and send event(s) if some device interface has changed
 //
 
-	dev->apply_event_par(map_events);
+	dev->set_event_subscription_state(events_state);
 	dev->changed_devices_interface(map_dev_inter);
 
 //
@@ -1974,7 +1970,7 @@ void DServer::mcast_event_for_att(std::string &dev_name,std::string &att_name,st
 //+-----------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		DServer::mem_event_par()
+//		DServer::get_event_subscription_state()
 //
 // description :
 //		Store event parameters for all class/devices in a DS. This is necessary in case of command RestartServer
@@ -1985,29 +1981,30 @@ void DServer::mcast_event_for_att(std::string &dev_name,std::string &att_name,st
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::mem_event_par(ServerEventSubscriptionState& _map)
+ServerEventSubscriptionState DServer::get_event_subscription_state()
 {
-	for (size_t i = 0;i < class_list.size();i++)
-	{
-		std::vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
-		for (size_t j = 0;j < dev_list.size();j++)
-		{
-			EventSubscriptionStates eve;
-			dev_list[j]->get_device_attr()->get_event_param(eve);
-			dev_list[j]->get_event_param(eve);
+    ServerEventSubscriptionState result{};
 
-			if (eve.size() != 0)
-			{
-				_map.insert(make_pair(dev_list[j]->get_name(),eve));
-			}
-		}
-	}
+    for (const auto& device_class : class_list)
+    {
+        for (const auto& device : device_class->get_device_list())
+        {
+            auto events = device->get_event_subscription_state();
+
+            if (events.has_dev_intr_change_event_clients ||
+                ! events.attribute_events.empty())
+
+            result.emplace(device->get_name(), std::move(events));
+        }
+    }
+
+    return result;
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		DServer::apply_event_par()
+//		DServer::set_event_subscription_state()
 //
 // description :
 //		Apply event parameters for all class/devices in a DS. This is necessary in case of command RestartServer
@@ -2018,24 +2015,19 @@ void DServer::mem_event_par(ServerEventSubscriptionState& _map)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::apply_event_par(const ServerEventSubscriptionState& _map)
+void DServer::set_event_subscription_state(const ServerEventSubscriptionState& events)
 {
-	for (size_t i = 0;i < class_list.size();i++)
-	{
-		std::vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
-		for (size_t j = 0;j < dev_list.size();j++)
-		{
-			std::string &dev_name = dev_list[j]->get_name();
-
-			const auto ite = _map.find(dev_name);
-
-			if (ite != _map.end())
-			{
-				dev_list[j]->get_device_attr()->set_event_param(ite->second);
-				dev_list[j]->set_event_param(ite->second);
-			}
-		}
-	}
+    for (const auto& device_class : class_list)
+    {
+        for (const auto& device : device_class->get_device_list())
+        {
+            const auto device_events = events.find(device->get_name());
+            if (device_events != events.end())
+            {
+                device->set_event_subscription_state(device_events->second);
+            }
+        }
+    }
 }
 
 //+-----------------------------------------------------------------------------------------------------------------

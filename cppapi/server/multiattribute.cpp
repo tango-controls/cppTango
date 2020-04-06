@@ -1452,106 +1452,83 @@ void MultiAttribute::read_alarm(std::string &status)
 //+-----------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		MultiAttribute::get_event_param
+//		MultiAttribute::get_event_subscription_states
 //
 // description :
 //		Return event info for each attribute with events subscribed
 //
-// argument :
-// 		in :
-//			- eve : One structure in this vector for each attribute with events subscribed
-//
 //------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::get_event_param(EventSubscriptionStates& eve)
+AttributeEventSubscriptionStates MultiAttribute::get_event_subscription_states()
 {
-	unsigned int i;
+    AttributeEventSubscriptionStates result{};
+    result.reserve(attr_list.size());
 
-	for (i = 0;i < attr_list.size();i++)
-	{
-		bool once_more = false;
-		std::vector<int> ch;
-		std::vector<int> ar;
-		std::vector<int> pe;
-		std::vector<int> us;
-		std::vector<int> ac;
-		bool dr = false;
-		bool qu = false;
+    for (auto& attribute : attr_list)
+    {
+        auto& att = *attribute;
 
-		if (attr_list[i]->change_event_subscribed() == true)
-		{
-			once_more = true;
-			ch = attr_list[i]->get_client_lib(CHANGE_EVENT);
-		}
+        AttributeEventSubscriptionState events{};
+        bool filled = false;
 
-		if (attr_list[i]->quality_event_subscribed() == true)
-		{
-			once_more = true;
-			qu = true;
-		}
+        if (att.change_event_subscribed())
+        {
+            events.change_event_clients = att.get_client_lib(CHANGE_EVENT);
+            filled = true;
+        }
 
-		if (attr_list[i]->periodic_event_subscribed() == true)
-		{
-			once_more = true;
-			pe = attr_list[i]->get_client_lib(PERIODIC_EVENT);
-		}
+        if (att.quality_event_subscribed())
+        {
+            events.has_quality_event_clients = true;
+            filled = true;
+        }
 
-		if (attr_list[i]->archive_event_subscribed() == true)
-		{
-			once_more = true;
-			ar = attr_list[i]->get_client_lib(ARCHIVE_EVENT);
-		}
+        if (att.periodic_event_subscribed())
+        {
+            events.periodic_event_clients = att.get_client_lib(PERIODIC_EVENT);
+            filled = true;
+        }
 
-		if (attr_list[i]->user_event_subscribed() == true)
-		{
-			once_more = true;
-			us = attr_list[i]->get_client_lib(USER_EVENT);
-		}
+        if (att.archive_event_subscribed())
+        {
+            events.archive_event_clients = att.get_client_lib(ARCHIVE_EVENT);
+            filled = true;
+        }
 
-		if (attr_list[i]->attr_conf_event_subscribed() == true)
-		{
-			once_more = true;
-			ac = attr_list[i]->get_client_lib(ATTR_CONF_EVENT);
-		}
+        if (att.user_event_subscribed())
+        {
+            events.user_event_clients = att.get_client_lib(USER_EVENT);
+            filled = true;
+        }
 
-		if (attr_list[i]->data_ready_event_subscribed() == true)
-		{
-			once_more = true;
-			dr = true;
-		}
+        if (att.attr_conf_event_subscribed())
+        {
+            events.attr_conf_event_clients = att.get_client_lib(ATTR_CONF_EVENT);
+            filled = true;
+        }
 
-		if (once_more == true)
-		{
-			EventSubscriptionState ep;
+        if (att.data_ready_event_subscribed())
+        {
+            events.has_data_ready_event_clients = true;
+            filled = true;
+        }
 
-			if (attr_list[i]->use_notifd_event() == true)
-                ep.notifd = true;
-            else
-                ep.notifd = false;
+        if (filled)
+        {
+            events.attribute_name = att.get_name();
+            events.has_zmq_event_channel = att.use_zmq_event();
+            events.has_notifd_event_channel = att.use_notifd_event();
+            result.push_back(std::move(events));
+        }
+    }
 
-            if (attr_list[i]->use_zmq_event() == true)
-                ep.zmq = true;
-            else
-                ep.zmq = false;
-
-			ep.attribute_name = attr_list[i]->get_name();
-			ep.change = ch;
-			ep.quality = qu;
-			ep.archive = ar;
-			ep.periodic = pe;
-			ep.user = us;
-			ep.att_conf = ac;
-			ep.data_ready = dr;
-
-			eve.push_back(ep);
-		}
-	}
+    return result;
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		MultiAttribute::set_event_param
+//		MultiAttribute::set_event_subscription_states
 //
 // description :
 //		Set event info for each attribute with events subscribed
@@ -1562,75 +1539,64 @@ void MultiAttribute::get_event_param(EventSubscriptionStates& eve)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::set_event_param(const EventSubscriptionStates& eve)
+void MultiAttribute::set_event_subscription_states(const AttributeEventSubscriptionStates& eve)
 {
-	for (size_t i = 0;i < eve.size();i++)
-	{
-		if (! eve[i].attribute_name.empty())
-		{
-			Tango::Attribute &att = get_attr_by_name(eve[i].attribute_name.c_str());
+    for (const auto& events : eve)
+    {
+        Tango::Attribute& att = get_attr_by_name(events.attribute_name.c_str());
 
-			{
-				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				std::vector<int>::const_iterator ite;
+        omni_mutex_lock oml(EventSupplier::get_event_mutex());
 
-				if (eve[i].change.empty() == false)
-				{
-					for (ite = eve[i].change.begin();ite != eve[i].change.end();++ite)
-					{
-						att.set_change_event_sub(*ite);
-						att.set_client_lib(*ite, CHANGE_EVENT);
-					}
-				}
+        for (const auto& client_version : events.change_event_clients)
+        {
+            att.set_change_event_sub(client_version);
+            att.set_client_lib(client_version, CHANGE_EVENT);
+        }
 
-				if (eve[i].periodic.empty() == false)
-				{
-					for (ite = eve[i].periodic.begin();ite != eve[i].periodic.end();++ite)
-					{
-						att.set_periodic_event_sub(*ite);
-						att.set_client_lib(*ite, PERIODIC_EVENT);
-					}
-				}
+        for (const auto& client_version : events.periodic_event_clients)
+        {
+            att.set_periodic_event_sub(client_version);
+            att.set_client_lib(client_version, PERIODIC_EVENT);
+        }
 
-				if (eve[i].archive.empty() == false)
-				{
-					for (ite = eve[i].archive.begin();ite != eve[i].archive.end();++ite)
-					{
-						att.set_archive_event_sub(*ite);
-						att.set_client_lib(*ite, ARCHIVE_EVENT);
-					}
-				}
+        for (const auto& client_version : events.archive_event_clients)
+        {
+            att.set_archive_event_sub(client_version);
+            att.set_client_lib(client_version, ARCHIVE_EVENT);
+        }
 
-				if (eve[i].att_conf.empty() == false)
-				{
-					for (ite = eve[i].att_conf.begin();ite != eve[i].att_conf.end();++ite)
-					{
-						att.set_att_conf_event_sub(*ite);
-						att.set_client_lib(*ite, ATTR_CONF_EVENT);
-					}
-				}
+        for (const auto& client_version : events.attr_conf_event_clients)
+        {
+            att.set_att_conf_event_sub(client_version);
+            att.set_client_lib(client_version, ATTR_CONF_EVENT);
+        }
 
-				if (eve[i].user.empty() == false)
-				{
-					for (ite = eve[i].user.begin();ite != eve[i].user.end();++ite)
-					{
-						att.set_user_event_sub(*ite);
-						att.set_client_lib(*ite, USER_EVENT);
-					}
-				}
+        for (const auto& client_version : events.user_event_clients)
+        {
+            att.set_user_event_sub(client_version);
+            att.set_client_lib(client_version, USER_EVENT);
+        }
 
-				if (eve[i].quality == true)
-					att.set_quality_event_sub();
-				if (eve[i].data_ready == true)
-					att.set_data_ready_event_sub();
-			}
+        if (events.has_quality_event_clients)
+        {
+            att.set_quality_event_sub();
+        }
 
-			if (eve[i].notifd == true)
-				att.set_use_notifd_event();
-			if (eve[i].zmq == true)
-				att.set_use_zmq_event();
-		}
-	}
+        if (events.has_data_ready_event_clients)
+        {
+            att.set_data_ready_event_sub();
+        }
+
+        if (events.has_notifd_event_channel)
+        {
+            att.set_use_notifd_event();
+        }
+
+        if (events.has_zmq_event_channel)
+        {
+            att.set_use_zmq_event();
+        }
+    }
 }
 
 //+------------------------------------------------------------------------------------------------------------------

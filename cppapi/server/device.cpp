@@ -6018,40 +6018,28 @@ void DeviceImpl::remove_local_command(const std::string &cmd_name)
 //+-----------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		DeviceImpl::get_event_param
+//		DeviceImpl::get_event_subscription_states
 //
 // description :
 //		Return event info for the device with events subscribed
 //
-// argument :
-// 		out :
-//			- eve : One structure in this vector for each device event subsribed
-//
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::get_event_param(EventSubscriptionStates& eve)
+DeviceEventSubscriptionState DeviceImpl::get_event_subscription_state()
 {
     ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
 
-    if (event_supplier_zmq->any_dev_intr_client(this) == true)
-    {
-        EventSubscriptionState ep;
+    DeviceEventSubscriptionState events{};
+    events.has_dev_intr_change_event_clients = event_supplier_zmq->any_dev_intr_client(this);
+    events.attribute_events = dev_attr->get_event_subscription_states();
 
-        ep.notifd = false;
-        ep.zmq = true;
-        ep.attribute_name = "";
-        ep.quality = false;
-        ep.data_ready = false;
-        ep.dev_intr_change = true;
-
-        eve.push_back(ep);
-    }
+    return events;
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		DeviceImpl::set_event_param
+//		DeviceImpl::set_event_subscription_state
 //
 // description :
 //      Set device interface change event subscription time
@@ -6062,19 +6050,14 @@ void DeviceImpl::get_event_param(EventSubscriptionStates& eve)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::set_event_param(const EventSubscriptionStates& eve)
+void DeviceImpl::set_event_subscription_state(const DeviceEventSubscriptionState& events)
 {
-    for (size_t loop = 0; loop < eve.size(); loop++)
+    if (events.has_dev_intr_change_event_clients)
     {
-        if (eve[loop].attribute_name.empty())
-        {
-            if (eve[loop].dev_intr_change == true)
-            {
-                set_event_intr_change_subscription(time(NULL));
-            }
-            break;
-        }
+        set_event_intr_change_subscription(time(NULL));
     }
+
+    dev_attr->set_event_subscription_states(events.attribute_events);
 }
 
 //+-----------------------------------------------------------------------------------------------------------------

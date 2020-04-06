@@ -3419,13 +3419,13 @@ public:
 	void remove_local_command(const std::string &);
 
 	void set_event_intr_change_subscription(time_t _t) {event_intr_change_subscription=_t;}
-	time_t get_event_intr_change_subscription() {return event_intr_change_subscription;}
+	time_t get_event_intr_change_subscription() const {return event_intr_change_subscription;}
 	void enable_intr_change_ev() {intr_change_ev = true;}
 	void disable_intr_change_ev() {intr_change_ev = false;}
 	bool is_intr_change_ev_enable() {return intr_change_ev;}
 
-	void get_event_param(EventSubscriptionStates&);
-	void set_event_param(const EventSubscriptionStates&);
+	DeviceEventSubscriptionState get_event_subscription_state();
+	void set_event_subscription_state(const DeviceEventSubscriptionState&);
 
 	void set_client_lib(int _l) {if (count(client_lib.begin(),client_lib.end(),_l)==0)client_lib.push_back(_l);}
 
