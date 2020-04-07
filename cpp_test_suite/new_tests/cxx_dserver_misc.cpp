@@ -369,6 +369,17 @@ cout << "str = " << str << endl;
         Tango_sleep(1);
         TS_ASSERT_EQUALS(3, callback.num_of_all_events);
         TS_ASSERT_EQUALS(0, callback.num_of_error_events);
+
+        {
+            Tango::DeviceData input{};
+            input << device1_name;
+            TS_ASSERT_THROWS_NOTHING(dserver->command_inout("DevRestart", input));
+        }
+
+        TS_ASSERT_THROWS_NOTHING(push_pipe_event());
+        Tango_sleep(1);
+        TS_ASSERT_EQUALS(4, callback.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback.num_of_error_events);
     }
 
     void push_pipe_event()
