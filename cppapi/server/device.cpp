@@ -6032,6 +6032,7 @@ DeviceEventSubscriptionState DeviceImpl::get_event_subscription_state()
     DeviceEventSubscriptionState events{};
     events.has_dev_intr_change_event_clients = event_supplier_zmq->any_dev_intr_client(this);
     events.attribute_events = dev_attr->get_event_subscription_states();
+    events.pipe_events = get_pipe_event_subscription_states();
 
     return events;
 }
@@ -6058,6 +6059,7 @@ void DeviceImpl::set_event_subscription_state(const DeviceEventSubscriptionState
     }
 
     dev_attr->set_event_subscription_states(events.attribute_events);
+    set_pipe_event_subscription_states(events.pipe_events);
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -6371,6 +6373,44 @@ void DeviceImpl::set_pipe_prop(std::vector<PipeProperty> &dev_prop, Pipe *pi_ptr
     }
 
     cout4 << "Leaving set_pipe_prop() method" << std::endl;
+}
+
+PipeEventSubscriptionStates DeviceImpl::get_pipe_event_subscription_states()
+{
+    PipeEventSubscriptionStates result{};
+
+    try
+    {
+        for (const auto& pipe : device_class->get_pipe_list(device_name_lower))
+        {
+            if (pipe->is_pipe_event_subscribed())
+            {
+                PipeEventSubscriptionState events{};
+                events.pipe_name = pipe->get_name();
+                events.has_pipe_event_clients = true;
+                result.push_back(std::move(events));
+            }
+        }
+    }
+    catch (const DevFailed&)
+    {
+        // No pipes for this device, sliently ignore
+    }
+
+    return result;
+}
+
+void DeviceImpl::set_pipe_event_subscription_states(const PipeEventSubscriptionStates& events)
+{
+    for (const auto& pipe_events : events)
+    {
+        auto& pipe = device_class->get_pipe_by_name(pipe_events.pipe_name, device_name_lower);
+        if (pipe_events.has_pipe_event_clients)
+        {
+            const auto now = time(nullptr);
+            pipe.set_event_subscription(now);
+        }
+    }
 }
 
 } // End of Tango namespace

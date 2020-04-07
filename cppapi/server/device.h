@@ -3441,6 +3441,9 @@ public:
 
 private:
 
+    PipeEventSubscriptionStates get_pipe_event_subscription_states();
+    void set_pipe_event_subscription_states(const PipeEventSubscriptionStates&);
+
 //
 // The extension class
 //

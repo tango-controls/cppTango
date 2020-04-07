@@ -30,11 +30,21 @@ struct AttributeEventSubscriptionState
 
 using AttributeEventSubscriptionStates = std::vector<AttributeEventSubscriptionState>;
 
+struct PipeEventSubscriptionState
+{
+    std::string pipe_name;
+
+    bool has_pipe_event_clients = false;
+};
+
+using PipeEventSubscriptionStates = std::vector<PipeEventSubscriptionState>;
+
 struct DeviceEventSubscriptionState
 {
     bool has_dev_intr_change_event_clients;
 
     AttributeEventSubscriptionStates attribute_events;
+    PipeEventSubscriptionStates pipe_events;
 };
 
 using ServerEventSubscriptionState = std::map<std::string, DeviceEventSubscriptionState>;
