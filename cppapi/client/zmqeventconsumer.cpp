@@ -698,6 +698,9 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 {
     bool ret = false;
 
+    // static variable to count the number of ZMQ_DELAY_EVENT requests currently in progress:
+    static int nb_current_delay_event_requests = 0;
+
 //
 // For debug and logging purposes
 //
@@ -1086,12 +1089,21 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
                 old_poll_nb = poll_nb;
                 poll_nb = 1;
             }
+            nb_current_delay_event_requests++;
         }
         break;
 
         case ZMQ_RELEASE_EVENT:
         {
-            poll_nb = old_poll_nb;
+            if(nb_current_delay_event_requests >= 1)
+            {
+                nb_current_delay_event_requests--;
+            }
+            if(nb_current_delay_event_requests == 0)
+            {
+                // Stop delaying events only if there is no other ZMQ_DELAY_EVENT command requested
+                poll_nb = old_poll_nb;
+            }
         }
         break;
 
