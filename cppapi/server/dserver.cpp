@@ -1102,9 +1102,11 @@ void DServer::restart(string &d_name)
 // Attribute properties may have changed after the restart.
 // Push an attribute configuration event to all registered subscribers.
 
-	for (Attribute* attr : new_dev->get_device_attr()->get_attribute_list())
+	vector<Tango::Attribute*>& dev_att_list = new_dev->get_device_attr()->get_attribute_list();
+	vector<Tango::Attribute*>::iterator ite_att;
+	for (ite_att = dev_att_list.begin(); ite_att != dev_att_list.end() ; ++ite_att)
 	{
-		new_dev->push_att_conf_event(attr);
+		new_dev->push_att_conf_event(*ite_att);
 	}
 }
 
