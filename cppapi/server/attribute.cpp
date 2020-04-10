@@ -4461,6 +4461,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 #else
 			gettimeofday(&now_timeval,NULL);
 #endif
+			now_timeval.tv_sec = now_timeval.tv_sec - DELTA_T;
 
 //
 // Eventually push the event (if detected)
