@@ -882,7 +882,7 @@ void DServer::restart(std::string &d_name)
 
 	std::vector<PollObj *> &p_obj = dev_to_del->get_poll_obj_list();
 	std::vector<Pol> dev_pol;
-	std::vector<EventPar> eve;
+	EventSubscriptionStates eve;
 
 	for (i = 0;i < p_obj.size();i++)
 	{
@@ -1193,7 +1193,7 @@ void ServRestartThread::run(void *ptr)
 // Memorize event parameters and devices interface
 //
 
-	std::map<std::string,std::vector<EventPar> > map_events;
+	ServerEventSubscriptionState map_events;
 	std::map<std::string,DevIntr> map_dev_inter;
 
 	dev->mem_event_par(map_events);
@@ -1977,14 +1977,14 @@ void DServer::mcast_event_for_att(std::string &dev_name,std::string &att_name,st
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::mem_event_par(std::map<std::string,std::vector<EventPar> > &_map)
+void DServer::mem_event_par(ServerEventSubscriptionState& _map)
 {
 	for (size_t i = 0;i < class_list.size();i++)
 	{
 		std::vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
 		for (size_t j = 0;j < dev_list.size();j++)
 		{
-			std::vector<EventPar> eve;
+			EventSubscriptionStates eve;
 			dev_list[j]->get_device_attr()->get_event_param(eve);
 			dev_list[j]->get_event_param(eve);
 
@@ -2010,7 +2010,7 @@ void DServer::mem_event_par(std::map<std::string,std::vector<EventPar> > &_map)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::apply_event_par(std::map<std::string,std::vector<EventPar> > &_map)
+void DServer::apply_event_par(const ServerEventSubscriptionState& _map)
 {
 	for (size_t i = 0;i < class_list.size();i++)
 	{
@@ -2018,8 +2018,8 @@ void DServer::apply_event_par(std::map<std::string,std::vector<EventPar> > &_map
 		for (size_t j = 0;j < dev_list.size();j++)
 		{
 			std::string &dev_name = dev_list[j]->get_name();
-			std::map<std::string,std::vector<EventPar> >::iterator ite;
-			ite = _map.find(dev_name);
+
+			const auto ite = _map.find(dev_name);
 
 			if (ite != _map.end())
 			{

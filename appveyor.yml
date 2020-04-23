@@ -135,16 +135,17 @@ install:
   - cmd: cd "C:\projects\cppTango"
   - cmd: set BOOST_ROOT=%BOOST_ROOT%
   - cmd: set ZMQ_BASE=C:/projects/zeromq/
+  - cmd: set CPPZMQ_BASE=C:/projects/zeromq/
   - cmd: set IDL_BASE=%IDL_BIN%
   - cmd: set OMNI_BASE=C:/projects/omniorb/
   - cmd: set PTHREAD_WIN=C:/projects/pthreads-win32/
   - cmd: if not defined USE_PCH set USE_PCH=OFF
   #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE .
   #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE .
-  - cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DIDL_BASE="%IDL_BASE%" -DOMNI_BASE="%OMNI_BASE%" -DZMQ_BASE="%ZMQ_BASE%" -DPTHREAD_WIN=%PTHREAD_WIN% -DUSE_PCH=%USE_PCH% .
+  - cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DIDL_BASE="%IDL_BASE%" -DOMNI_BASE="%OMNI_BASE%" -DZMQ_BASE="%ZMQ_BASE%" -DCPPZMQ_BASE="%CPPZMQ_BASE%" -DPTHREAD_WIN=%PTHREAD_WIN% -DUSE_PCH=%USE_PCH% -DBUILD_TESTING=OFF .
   - cmd: cd c:/projects/debug_build
   #- cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DBUILD_SHARED_LIBS=TRUE -DCMAKE_BUILD_TYPE=Debug .
-  - cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DCMAKE_BUILD_TYPE=Debug -DIDL_BASE="%IDL_BASE%" -DOMNI_BASE="%OMNI_BASE%" -DZMQ_BASE="%ZMQ_BASE%" -DPTHREAD_WIN=%PTHREAD_WIN% -DUSE_PCH=%USE_PCH% .
+  - cmd: cmake -G "%CMAKE_GENERATOR%" -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE -DCMAKE_BUILD_TYPE=Debug -DIDL_BASE="%IDL_BASE%" -DOMNI_BASE="%OMNI_BASE%" -DZMQ_BASE="%ZMQ_BASE%" -DCPPZMQ_BASE="%CPPZMQ_BASE%" -DPTHREAD_WIN=%PTHREAD_WIN% -DUSE_PCH=%USE_PCH% -DBUILD_TESTING=OFF .
 
 clone_folder: C:\projects\cppTango
 
@@ -189,9 +190,26 @@ on_finish:
 
 on_failure:
   #RDP for failure
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  # - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 artifacts:
   - path: ./*.exe
   - path: ./*.zip
   - path: ./*.msi
+
+deploy:
+- provider: GitHub
+  tag: $(APPVEYOR_REPO_TAG_NAME)
+  description: "Release $(APPVEYOR_REPO_TAG_NAME)"
+  auth_token:
+    # User: cppTango-bot
+    # Personal Access token with repo scope, encrypted via https://ci.appveyor.com/tools/encrypt
+    secure: KnvPAbdhmiTQxTLOGq7nyNs6d1JYbKVKspPgigzQ3fDrI+nkaxqWCw6UmRkS2Gqe
+  artifact: /.*/
+  repository: tango-controls/cppTango
+  draft: true
+  prerelease: true
+  force_update: true
+  # deploy on tag push only
+  on:
+    APPVEYOR_REPO_TAG: true

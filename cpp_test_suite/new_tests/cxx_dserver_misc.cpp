@@ -6,6 +6,26 @@
 #undef SUITE_NAME
 #define SUITE_NAME DServerMiscTestSuite
 
+struct EventCallback : public Tango::CallBack
+{
+    EventCallback()
+        : num_of_all_events(0)
+        , num_of_error_events(0)
+    {}
+
+    void push_event(Tango::EventData* event)
+    {
+        num_of_all_events++;
+        if (event->err)
+        {
+            num_of_error_events++;
+        }
+    }
+
+    int num_of_all_events;
+    int num_of_error_events;
+};
+
 class DServerMiscTestSuite: public CxxTest::TestSuite
 {
 protected:
@@ -203,6 +223,38 @@ cout << "str = " << str << endl;
 		TS_ASSERT(dserver->info().server_id == full_ds_name);
 		TS_ASSERT(dserver->info().server_version == server_version);
 	}
+
+    /* Tests that subscriber can receive events immediately after
+     * a device restart without a need to wait for re-subscription.
+     */
+    void test_event_subscription_recovery_after_device_restart()
+    {
+        EventCallback callback{};
+
+        std::string attribute_name = "event_change_tst";
+
+        TS_ASSERT_THROWS_NOTHING(device1->subscribe_event(
+            attribute_name,
+            Tango::USER_EVENT,
+            &callback));
+
+        TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOPushEvent"));
+        Tango_sleep(2);
+        TS_ASSERT_EQUALS(2, callback.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback.num_of_error_events);
+
+        {
+            Tango::DeviceData input{};
+            input << device1_name;
+            TS_ASSERT_THROWS_NOTHING(dserver->command_inout("DevRestart", input));
+        }
+
+        TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOPushEvent"));
+        Tango_sleep(2);
+        TS_ASSERT_EQUALS(3, callback.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback.num_of_error_events);
+    }
+
 };
 #undef cout
 #endif // DServerMiscTestSuite_h

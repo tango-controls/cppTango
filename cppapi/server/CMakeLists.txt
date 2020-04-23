@@ -128,7 +128,8 @@ set(HEADERS attrdesc.h
             w_pipe.tpp
             subdev_diag.h
             encoded_attribute.h
-            encoded_format.h)
+            encoded_format.h
+            event_subscription_state.h)
 
 add_subdirectory(idl)
 add_subdirectory(jpeg)

@@ -1449,7 +1449,7 @@ void MultiAttribute::read_alarm(std::string &status)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::get_event_param(std::vector<EventPar> &eve)
+void MultiAttribute::get_event_param(EventSubscriptionStates& eve)
 {
 	unsigned int i;
 
@@ -1508,7 +1508,7 @@ void MultiAttribute::get_event_param(std::vector<EventPar> &eve)
 
 		if (once_more == true)
 		{
-			EventPar ep;
+			EventSubscriptionState ep;
 
 			if (attr_list[i]->use_notifd_event() == true)
                 ep.notifd = true;
@@ -1520,7 +1520,7 @@ void MultiAttribute::get_event_param(std::vector<EventPar> &eve)
             else
                 ep.zmq = false;
 
-			ep.attr_id = i;
+			ep.attribute_name = attr_list[i]->get_name();
 			ep.change = ch;
 			ep.quality = qu;
 			ep.archive = ar;
@@ -1548,46 +1548,61 @@ void MultiAttribute::get_event_param(std::vector<EventPar> &eve)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::set_event_param(std::vector<EventPar> &eve)
+void MultiAttribute::set_event_param(const EventSubscriptionStates& eve)
 {
 	for (size_t i = 0;i < eve.size();i++)
 	{
-		if (eve[i].attr_id != -1)
+		if (! eve[i].attribute_name.empty())
 		{
-			Tango::Attribute &att = get_attr_by_ind(eve[i].attr_id);
+			Tango::Attribute &att = get_attr_by_name(eve[i].attribute_name.c_str());
 
 			{
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				std::vector<int>::iterator ite;
+				std::vector<int>::const_iterator ite;
 
 				if (eve[i].change.empty() == false)
 				{
 					for (ite = eve[i].change.begin();ite != eve[i].change.end();++ite)
+					{
 						att.set_change_event_sub(*ite);
+						att.set_client_lib(*ite, CHANGE_EVENT);
+					}
 				}
 
 				if (eve[i].periodic.empty() == false)
 				{
 					for (ite = eve[i].periodic.begin();ite != eve[i].periodic.end();++ite)
+					{
 						att.set_periodic_event_sub(*ite);
+						att.set_client_lib(*ite, PERIODIC_EVENT);
+					}
 				}
 
 				if (eve[i].archive.empty() == false)
 				{
 					for (ite = eve[i].archive.begin();ite != eve[i].archive.end();++ite)
+					{
 						att.set_archive_event_sub(*ite);
+						att.set_client_lib(*ite, ARCHIVE_EVENT);
+					}
 				}
 
 				if (eve[i].att_conf.empty() == false)
 				{
 					for (ite = eve[i].att_conf.begin();ite != eve[i].att_conf.end();++ite)
+					{
 						att.set_att_conf_event_sub(*ite);
+						att.set_client_lib(*ite, ATTR_CONF_EVENT);
+					}
 				}
 
 				if (eve[i].user.empty() == false)
 				{
 					for (ite = eve[i].user.begin();ite != eve[i].user.end();++ite)
+					{
 						att.set_user_event_sub(*ite);
+						att.set_client_lib(*ite, USER_EVENT);
+					}
 				}
 
 				if (eve[i].quality == true)

@@ -14,7 +14,6 @@ if (USE_PCH AND NOT (CMAKE_CXX_COMPILER_ID MATCHES "GNU|MSVC|Clang"))
     set(USE_PCH OFF)
 endif()
 
-enable_testing()
 #need to define the version of the library
 set(MAJOR_VERSION "9")
 set(MINOR_VERSION "4")
@@ -29,7 +28,7 @@ endif()
 
 #convenient versions
 set(LIBRARY_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
-set(SO_VERSION "${MAJOR_VERSION}")
+set(SO_VERSION "${MAJOR_VERSION}${MINOR_VERSION}")
 
 set(TANGO_HOST $ENV{TANGO_HOST})
 include(configure/CMakeLists.txt)
@@ -46,9 +45,10 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
 #source code
 add_subdirectory("log4tango")
 add_subdirectory("cppapi")
-if(NOT WIN32)
+
+if(BUILD_TESTING)
     add_subdirectory("cpp_test_suite")
-endif(NOT WIN32)
+endif()
 
 if(WIN32)
     include(configure/cmake_win.cmake)

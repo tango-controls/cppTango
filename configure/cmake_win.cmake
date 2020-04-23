@@ -165,8 +165,8 @@ install(DIRECTORY $ENV{OMNI_BASE}/include/omniVms DESTINATION include COMPONENT 
 install(FILES $ENV{OMNI_BASE}/include/omniconfig.h DESTINATION include COMPONENT headers)
 install(FILES $ENV{OMNI_BASE}/include/omnithread.h DESTINATION include COMPONENT headers)
 install(FILES $ENV{ZMQ_BASE}/include/zmq.h DESTINATION include COMPONENT headers)
-install(FILES $ENV{ZMQ_BASE}/include/zmq.hpp DESTINATION include COMPONENT headers)
-install(FILES $ENV{ZMQ_BASE}/include/zmq_addon.hpp DESTINATION include COMPONENT headers)
+install(FILES $ENV{CPPZMQ_BASE}/include/zmq.hpp DESTINATION include COMPONENT headers)
+install(FILES $ENV{CPPZMQ_BASE}/include/zmq_addon.hpp DESTINATION include COMPONENT headers)
 install(FILES $ENV{ZMQ_BASE}/include/zmq_utils.h DESTINATION include COMPONENT headers)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

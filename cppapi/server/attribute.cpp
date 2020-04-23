@@ -5313,7 +5313,7 @@ DeviceClass *Attribute::get_att_device_class(std::string &dev_name)
                 // Check whether our device is listed in this class
                 for (size_t i = 0; i < dev_list.size(); ++i)
                 {
-                    if (dev_list[i]->name() == dev_name)
+                    if (dev_list[i]->get_name() == dev_name)
                     {
                         // Our device is listed in this class, returns the corresponding DeviceClass pointer
                         return tmp_cl_list[loop];
@@ -5912,21 +5912,18 @@ bool Attribute::data_ready_event_subscribed()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::set_client_lib(int _l,std::string &ev_name)
+void Attribute::set_client_lib(int client_lib_version, EventType event_type)
 {
-	cout4 << "Attribute::set_client_lib(" << _l << "," << ev_name << ")" << std::endl;
-	int i;
-	for (i = 0; i < numEventType; i++)
-	{
-		if (ev_name == EventName[i])
-		{
-			break;
-		}
-	}
+	cout4 << "Attribute::set_client_lib("
+		<< client_lib_version << ","
+		<< EventName[event_type] << ")" << std::endl;
 
-	if (count(client_lib[i].begin(), client_lib[i].end(), _l) == 0)
+	if (0 == count(
+	    client_lib[event_type].begin(),
+	    client_lib[event_type].end(),
+	    client_lib_version))
 	{
-		client_lib[i].push_back(_l);
+		client_lib[event_type].push_back(client_lib_version);
 	}
 }
 
