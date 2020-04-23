@@ -1078,6 +1078,30 @@ cout << "status = " << status << endl;
 #undef QUOTE
 #undef __QUOTE
 
+/*
+ * Test for changing alarm treshold to value lower than currently read from
+ * hardware. Attribute should have alarm quality after property change.
+ */
+
+    void test_change_max_alarm_threshold_below_current_value()
+    {
+        const char* attr_name = "Short_attr_rw";
+        const DevShort attr_value = 20;
+
+        DeviceAttribute value(attr_name, attr_value);
+        TS_ASSERT_THROWS_NOTHING(device1->write_attribute(value));
+
+        TS_ASSERT_EQUALS(Tango::ON, device1->state());
+        TS_ASSERT_EQUALS(Tango::ATTR_VALID, device1->read_attribute(attr_name).get_quality());
+
+        auto config = device1->get_attribute_config(attr_name);
+        config.alarms.max_alarm = std::to_string(attr_value - 1);
+        AttributeInfoListEx config_in = { config };
+        TS_ASSERT_THROWS_NOTHING(device1->set_attribute_config(config_in));
+
+        TS_ASSERT_EQUALS(Tango::ALARM, device1->state());
+        TS_ASSERT_EQUALS(Tango::ATTR_ALARM, device1->read_attribute(attr_name).get_quality());
+    }
 };
 #undef cout
 #endif // AttrMiscTestSuite_h

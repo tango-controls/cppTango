@@ -166,6 +166,54 @@ public:
 		TS_ASSERT(s_val_2 == 10);
 	}
 
+/*
+ * Test for changing min and max alarm threshold of a  memorized attribute
+ * with neither min_ nor max_value specified. Such scenario used to fail
+ * (#401), with misleading error message claiming that memorized value
+ * is above new limit.
+ */
+
+    void test_change_max_alarm_threshold_of_memorized_attribute()
+    {
+        const char* attr_name = "Short_attr_w";
+        const DevShort attr_value = 20;
+
+        unset_attribute_min_max_value(attr_name);
+
+        DeviceAttribute value(attr_name, attr_value);
+        TS_ASSERT_THROWS_NOTHING(device1->write_attribute(value));
+
+        auto config = device1->get_attribute_config(attr_name);
+        config.alarms.max_alarm = std::to_string(attr_value + 1);
+        AttributeInfoListEx config_in = { config };
+        TS_ASSERT_THROWS_NOTHING(device1->set_attribute_config(config_in));
+    }
+
+    void test_change_min_alarm_threshold_of_memorized_attribute()
+    {
+        const char* attr_name = "Short_attr_w";
+        const DevShort attr_value = -20;
+
+        unset_attribute_min_max_value(attr_name);
+
+        DeviceAttribute value(attr_name, attr_value);
+        TS_ASSERT_THROWS_NOTHING(device1->write_attribute(value));
+
+        auto config = device1->get_attribute_config(attr_name);
+        config.alarms.min_alarm = std::to_string(attr_value - 1);
+        AttributeInfoListEx config_in = { config };
+        TS_ASSERT_THROWS_NOTHING(device1->set_attribute_config(config_in));
+    }
+
+    void unset_attribute_min_max_value(const char* attr_name)
+    {
+        auto config = device1->get_attribute_config(attr_name);
+        config.min_value = AlrmValueNotSpec;
+        config.max_value = AlrmValueNotSpec;
+        AttributeInfoListEx config_in = { config };
+        TS_ASSERT_THROWS_NOTHING(device1->set_attribute_config(config_in));
+    }
 };
+
 #undef cout
 #endif // MemAttrTestSuite_h
