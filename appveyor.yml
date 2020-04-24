@@ -336,7 +336,7 @@ deploy:
   auth_token:
     # User: cppTango-bot
     # Personal Access token with repo scope, encrypted via https://ci.appveyor.com/tools/encrypt
-    secure: KnvPAbdhmiTQxTLOGq7nyNs6d1JYbKVKspPgigzQ3fDrI+nkaxqWCw6UmRkS2Gqe
+    secure: KNHPeojJrtKOT/EifgS/5GO7URZw2uOU2ZfHnRwIgg4tjffBbv9iFgh/xkwF1XWC
   artifact: /.*/
   repository: tango-controls/cppTango
   draft: true

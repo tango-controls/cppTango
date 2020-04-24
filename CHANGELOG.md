@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [9.3.4] - 2020-04-01
+## [9.3.4] - 2020-04-23
 
 ### Fixed
 - Be compatible with all in-use cppzmq versions ([#530][pr-530], [#561][pr-561], [#273][i-273], [#499][i-499], [#535][i-535])
@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - travis.yml: remove deprecated skip_cleanup ([#683][pr-683])
 - Fix memory leak in Attribute::get_att_device_class() ([#677][pr-677])
 - Fix crash during alarm state evaluation if attribute value is not set ([#330][i-330], [#681][pr-681])
+- Fix issue where unsubscribing in push_events led to API_EventTimeout ([#686][i-686], [#699][pr-699])
 
 ### Added
 - Document contributing process and use CODEOWNERS for easier review organization ([#639][pr-639])
@@ -330,5 +331,7 @@ where a client application might show out of date/incorrect values.
 [pr-677]: https://github.com/tango-controls/cppTango/pull/677
 [pr-681]: https://github.com/tango-controls/cppTango/pull/681
 [pr-683]: https://github.com/tango-controls/cppTango/pull/683
+[i-686]: https://github.com/tango-controls/cppTango/issues/686
 [pr-689]: https://github.com/tango-controls/cppTango/pull/689
 [pr-690]: https://github.com/tango-controls/cppTango/pull/690
+[pr-699]: https://github.com/tango-controls/cppTango/pull/699
