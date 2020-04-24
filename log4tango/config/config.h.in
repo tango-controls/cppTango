@@ -22,9 +22,6 @@
 /* define if the compiler implements namespaces */
 #cmakedefine LOG4TANGO_HAVE_NAMESPACES
 
-/* define if the C library has snprintf */
-#cmakedefine LOG4TANGO_HAVE_SNPRINTF
-
 /* define if the compiler has stringstream */
 #cmakedefine LOG4TANGO_HAVE_SSTREAM
 
