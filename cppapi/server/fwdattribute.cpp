@@ -133,10 +133,10 @@ void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
 // Enum labels (in case of)
 //
 
-    enum_labels.clear();
-    size_t enum_labels_nb = conf.enum_labels.length();
-    for (size_t loop = 0;loop < enum_labels_nb;loop++)
-        enum_labels.push_back(conf.enum_labels[loop].in());
+	enum_labels.clear();
+	size_t enum_labels_nb = conf.enum_labels.length();
+	for (size_t loop = 0;loop < enum_labels_nb;loop++)
+		enum_labels.push_back(conf.enum_labels[loop].in());
 
 //
 // min alarm
