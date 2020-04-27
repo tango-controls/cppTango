@@ -1,4 +1,5 @@
 //
+//
 // PThreads.cpp
 //
 // Copyright (C) :  2000 - 2002
@@ -53,7 +54,7 @@ std::string get_thread_id (void)
 long thread_id (void) 
 {
 #ifndef __darwin__
-	#ifndef __freebsd__
+	#if (!defined (__FreeBSD__) && !defined( __OpenBSD__) )
 		return static_cast<long>(::pthread_self());
 	#else
 		return reinterpret_cast<long>(::pthread_self());

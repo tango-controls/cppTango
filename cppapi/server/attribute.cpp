@@ -1282,7 +1282,7 @@ void Attribute::build_check_enum_labels(std::string &labs)
 
 void Attribute::add_startup_exception(std::string prop_name,const DevFailed &except)
 {
-	startup_exceptions.insert(std::pair<std::string,const DevFailed>(prop_name,except));
+	startup_exceptions.insert(std::pair<std::string, DevFailed>(prop_name,except));
 	check_startup_exceptions = true;
 }
 
@@ -1306,7 +1306,7 @@ void Attribute::delete_startup_exception(std::string prop_name,std::string dev_n
 {
 	if(check_startup_exceptions == true)
 	{
-		std::map<std::string,const DevFailed>::iterator it = startup_exceptions.find(prop_name);
+		std::map<std::string, DevFailed>::iterator it = startup_exceptions.find(prop_name);
 		if(it != startup_exceptions.end())
 			startup_exceptions.erase(it);
 		if(startup_exceptions.empty() == true)

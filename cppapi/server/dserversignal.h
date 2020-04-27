@@ -150,7 +150,7 @@ private:
 	}
 #endif
 
-#if (defined __GLIBC__ || defined __darwin__ || defined __freebsd__)
+#if (defined __GLIBC__ || defined __darwin__ || defined __FreeBSD__ || defined __OpenBSD__)
 	static inline bool auth_signal(TANGO_UNUSED(long s)) {return true;}
 #endif
 

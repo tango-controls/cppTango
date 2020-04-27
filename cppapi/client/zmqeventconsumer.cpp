@@ -50,6 +50,9 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
+#if defined(__OpenBSD__) || defined(__FreeBSD__)
+#include <netinet/in.h>
+#endif
 #endif
 
 using namespace CORBA;
