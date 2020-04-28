@@ -43,14 +43,6 @@ std::string get_thread_id (void)
   return std::string(buffer);
 }
 
-//+----------------------------------------------------------------------------
-// method : thread_id
-//----------------------------------------------------------------------------- 
-long thread_id (void) 
-{
-  return static_cast<long>(::GetCurrentThreadId());
-}
-
 } // namespace threading
 
 } // namespace log4tango

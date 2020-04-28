@@ -30,6 +30,7 @@
 
 #include <log4tango/Portability.hh>
 #include <string>
+#include <thread>
 
 #include <log4tango/Level.hh>
 #include <log4tango/TimeStamp.hh>
@@ -92,7 +93,7 @@ public:
   std::string thread_name;
 
   /** id of thread in which this logging event was generated */
-  long thread_id;
+  std::thread::id thread_id;
 
   /** The number of seconds elapsed since the epoch 
       (1/1/1970 00:00:00 UTC) until logging event was created. */

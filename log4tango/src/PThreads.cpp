@@ -49,23 +49,6 @@ std::string get_thread_id (void)
 }
 
 //+----------------------------------------------------------------------------
-// method : thread_id
-//----------------------------------------------------------------------------- 
-long thread_id (void) 
-{
-#ifndef __darwin__
-	#if (!defined (__FreeBSD__) && !defined( __OpenBSD__) )
-		return static_cast<long>(::pthread_self());
-	#else
-		return reinterpret_cast<long>(::pthread_self());
-	#endif
-#else
-	pthread_t thread = ::pthread_self();
-	return thread->__sig;
-#endif
-}
-
-//+----------------------------------------------------------------------------
 // method : RecursiveMutex::RecursiveMutex
 //----------------------------------------------------------------------------- 
 RecursiveMutex::RecursiveMutex (void)
