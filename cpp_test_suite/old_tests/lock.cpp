@@ -8,10 +8,8 @@
 #ifdef WIN32
 #include <process.h>
 #define WEXITSTATUS(w) w
-#elif defined(__OpenBSD__)
-#include <sys/wait.h>
 #else
-#include <wait.h>
+#include <sys/wait.h>
 #endif
 
 #include "locked_device_cmd.h"
