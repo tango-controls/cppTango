@@ -1261,21 +1261,29 @@ void ZmqEventConsumer::connect_event_channel(std::string &channel_name,TANGO_UNU
 // If the server has returned several possible ZMQ endpoints (because several NIC boards on server host), check which
 // one is correct
 //
+    size_t nb_endpoints = ev_svr_data->svalue.length();
 
-    size_t nb_endpoint = ev_svr_data->svalue.length();
-    nb_endpoint = nb_endpoint >> 1;
+    Tango::DevLong server_tango_lib_version = ev_svr_data->lvalue[0];
+    if(server_tango_lib_version >= 930)
+    {
+        // ZmqEventSubscriptionChange returns the ZMQ message filters used for the attribute
+        // and for the heartbeat events at the end of the string array part of the returned DevVarLongStringArray
+        nb_endpoints -= 2;
+    }
+
+    nb_endpoints = nb_endpoints >> 1;
     size_t valid_endpoint = 0;
 
-    if (nb_endpoint != 1)
+    if (nb_endpoints != 1)
     {
-        for (valid_endpoint = 0;valid_endpoint < nb_endpoint;valid_endpoint++)
+        for (valid_endpoint = 0; valid_endpoint < nb_endpoints; valid_endpoint++)
         {
             std::string endpoint(ev_svr_data->svalue[valid_endpoint << 1]);
             if (check_zmq_endpoint(endpoint) == true)
                 break;
         }
 
-        if (valid_endpoint == nb_endpoint)
+        if (valid_endpoint == nb_endpoints)
         {
             std::stringstream o;
 
