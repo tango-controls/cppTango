@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 '''Usage: %s [OPTIONS] <input file(s)>
 Generate test source file for CxxTest.
 
