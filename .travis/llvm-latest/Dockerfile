@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y \
   libzmq3-dev                            \
   lsb-release                            \
   omniidl                                \
-  python2
+  python3
 
 RUN curl https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&                                                  \
     echo "deb http://apt.llvm.org/buster/ llvm-toolchain-buster-${LLVM_VERSION} main" | tee -a /etc/apt/sources.list && \

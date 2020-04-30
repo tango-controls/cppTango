@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
   libzmq3-dev                            \
   lsb-release                            \
   omniidl                                \
-  python2                                \
+  python3                                \
   docker.io
 
 RUN groupadd -g "$APP_GID" tango
