@@ -318,7 +318,7 @@ int main(int argc, char **argv)
 		assert ( cb.attr_failed == true );
 		assert ( nb_not_arrived >= 2);
 		assert ( cb.nb_attr == 1);
-		assert ( cb.faulty_attr_nb = 1);
+		assert ( cb.faulty_attr_nb == 1);
 
 		cout << "   Device exception with non blocking get_asynch_replies --> OK" << std::endl;
 
@@ -349,7 +349,7 @@ int main(int argc, char **argv)
 		assert( cb.attr_failed == true );
 		assert(cb.cb_executed == 1);
 		assert( nb_not_arrived >= 2);
-		assert( cb.nb_attr = 1);
+		assert( cb.nb_attr == 1);
 
 		cout << "   Device exception with blocking get_asynch_replies with call timeout --> OK" << std::endl;
 
@@ -367,7 +367,7 @@ int main(int argc, char **argv)
 
 		assert(cb.attr_failed == true );
 		assert(cb.cb_executed == 1);
-		assert( cb.nb_attr = 1);
+		assert( cb.nb_attr == 1);
 
 		cout << "   Device exception with blocking get_asynch_replies --> OK" << std::endl;
 
