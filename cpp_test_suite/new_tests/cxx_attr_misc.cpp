@@ -1101,6 +1101,11 @@ cout << "status = " << status << endl;
 
         TS_ASSERT_EQUALS(Tango::ALARM, device1->state());
         TS_ASSERT_EQUALS(Tango::ATTR_ALARM, device1->read_attribute(attr_name).get_quality());
+
+        DeviceAttribute default_value(attr_name, DevShort(0));
+        TS_ASSERT_THROWS_NOTHING(device1->write_attribute(default_value));
+
+        TS_ASSERT_EQUALS(Tango::ON, device1->state());
     }
 
 /*
