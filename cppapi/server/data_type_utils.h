@@ -77,11 +77,7 @@ ENTRY(ATT_STATE,    StateSeq,   state_att_value)
 ENTRY(ATT_ENCODED,  EncodedSeq, encoded_att_value)
 #undef ENTRY
 
-template <AttributeDataType Type>
-typename TangoTypeTraits<Type>::SeqVarType& dev_attr_seq(DeviceAttribute& da)
-{
-    return da.*TangoTypeOps<Type>::dev_attr_seq;
-}
+namespace detail {
 
 template <AttributeDataType Type>
 typename TangoTypeTraits<Type>::SeqType& attr_val_union_get(AttrValUnion& u)
@@ -97,7 +93,10 @@ typename TangoTypeTraits<Type>::SeqType& attr_val_union_get(::CORBA::Any& a)
     return *seq;
 }
 
-/* Access value union stored in (Zmq)AttributeValue_N.
+} // namespace detail
+
+/*
+ * Access value union stored in (Zmq)AttributeValue_N.
  * Returns AttrValUnion& (for AttributeValue_4 and better) or ::CORBA::Any&.
  */
 template <typename AttributeValueT>
@@ -111,10 +110,24 @@ inline AttrValUnion& attr_val_union(ZmqAttributeValue_5& av) { return av.zvalue;
 inline const AttrValUnion& attr_val_union(const ZmqAttributeValue_4& av) { return av.zvalue; }
 inline const AttrValUnion& attr_val_union(const ZmqAttributeValue_5& av) { return av.zvalue; }
 
+/*
+ * Access underlying sequence stored in (Zmq)AttributeValue_N.
+ * Returns DevVar*Array with corresponding sequence.
+ */
 template <AttributeDataType Type, typename AttributeValueT>
-typename TangoTypeTraits<Type>::SeqType& attr_val_seq_get(AttributeValueT& av)
+typename TangoTypeTraits<Type>::SeqType& attr_val_seq(AttributeValueT& av)
 {
-    return attr_val_union_get<Type>(attr_val_union(av));
+    return detail::attr_val_union_get<Type>(attr_val_union(av));
+}
+
+/*
+ * Access underlying sequence stored in DeviceAttribute.
+ * Returns DevVar*Array_var with corresponding sequence.
+ */
+template <AttributeDataType Type>
+typename TangoTypeTraits<Type>::SeqVarType& dev_attr_seq(DeviceAttribute& da)
+{
+    return da.*TangoTypeOps<Type>::dev_attr_seq;
 }
 
 } // namespace Tango

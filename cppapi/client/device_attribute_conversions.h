@@ -14,17 +14,19 @@ void convert_attribute_value_to_device_attribute(
 {
     using Traits = TangoTypeTraits<Type>;
 
-    auto& seq = attr_val_seq_get<Type>(attr_val);
-    const auto length = seq.length();
-    const auto maximum = seq.maximum();
+    auto& src = attr_val_seq<Type>(attr_val);
+    auto& dest = dev_attr_seq<Type>(dev_attr);
+
+    const auto length = src.length();
+    const auto maximum = src.maximum();
 
     constexpr bool orphan = true;
     constexpr bool owner = true;
 
-    if (seq.release())
+    if (src.release())
     {
-        auto* buffer = seq.get_buffer(orphan);
-        dev_attr_seq<Type>(dev_attr) = new typename Traits::SeqType(maximum, length, buffer, owner);
+        auto* buffer = src.get_buffer(orphan);
+        dest = new typename Traits::SeqType(maximum, length, buffer, owner);
     }
     else
     {
@@ -35,12 +37,12 @@ void convert_attribute_value_to_device_attribute(
             // located within the same process. We refuse to use such a sequence
             // and create a copy to prevent direct access to server's memory.
 
-            dev_attr_seq<Type>(dev_attr) = new typename Traits::SeqType(seq);
+            dest = new typename Traits::SeqType(src);
         }
         else
         {
-            auto* buffer = seq.get_buffer();
-            dev_attr_seq<Type>(dev_attr) = new typename Traits::SeqType(maximum, length, buffer, !owner);
+            auto* buffer = src.get_buffer();
+            dest = new typename Traits::SeqType(maximum, length, buffer, !owner);
         }
     }
 }
