@@ -24,18 +24,11 @@ set(SOURCES
                 PThreads.cpp
                 PortabilityImpl.hh
                 PortabilityImpl.cpp)
-if(WIN32)
-    add_library(log4tango_objects_dyn OBJECT ${SOURCES})
-    add_library(log4tango_objects_sta OBJECT ${SOURCES})
-    target_compile_definitions(log4tango_objects_dyn PRIVATE "${dyn_defs}")
-    target_compile_definitions(log4tango_objects_sta PRIVATE "${static_defs}")
 
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        target_compile_options(log4tango_objects_sta PRIVATE "/MTd")
-    else()
-        target_compile_options(log4tango_objects_sta PRIVATE "/MT")
-    endif()
+add_library(log4tango_objects OBJECT ${SOURCES})
+
+if(WIN32)
+    target_compile_definitions(log4tango_objects PRIVATE "${windows_defs}")
 else(WIN32)
-    add_library(log4tango_objects OBJECT ${SOURCES})
     target_compile_options(log4tango_objects PRIVATE -fPIC)
 endif(WIN32)
