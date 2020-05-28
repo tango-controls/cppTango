@@ -885,21 +885,19 @@ void ApiUtil::clean_locking_threads(bool clean)
 void ApiUtil::attr_to_device(const AttributeValue *attr_value, const AttributeValue_3 *attr_value_3,
                              long vers, DeviceAttribute *dev_attr)
 {
-    constexpr bool copy_seq = true;
     if (vers == 3)
     {
-        attribute_value_to_device_attribute_3<copy_seq>(const_cast<AttributeValue_3&>(*attr_value_3), *dev_attr);
+        attribute_value_to_device_attribute_3_copy(const_cast<AttributeValue_3&>(*attr_value_3), *dev_attr);
     }
     else
     {
-        attribute_value_to_device_attribute_3<copy_seq>(const_cast<AttributeValue&>(*attr_value), *dev_attr);
+        attribute_value_to_device_attribute_3_copy(const_cast<AttributeValue&>(*attr_value), *dev_attr);
     }
 }
 
 void ApiUtil::attr_to_device(const AttributeValue_4 *attr_value_4, TANGO_UNUSED(long vers), DeviceAttribute *dev_attr)
 {
-    constexpr bool copy_seq = true;
-    attribute_value_to_device_attribute_5<copy_seq>(const_cast<AttributeValue_4&>(*attr_value_4), *dev_attr);
+    attribute_value_to_device_attribute_5_copy(const_cast<AttributeValue_4&>(*attr_value_4), *dev_attr);
 
 //
 // Warning: Since Tango 9, data type SHORT is used for both short attribute and enumeration attribute!
@@ -914,8 +912,7 @@ void ApiUtil::attr_to_device(const AttributeValue_5 *attr_value_5, TANGO_UNUSED(
 {
     // const must be dropped because underlying sequence may be released.
     // Signature cannot be corrected because this is a public method.
-    constexpr bool copy_seq = true;
-    attribute_value_to_device_attribute_5<copy_seq>(const_cast<AttributeValue_5&>(*attr_value_5), *dev_attr);
+    attribute_value_to_device_attribute_5_copy(const_cast<AttributeValue_5&>(*attr_value_5), *dev_attr);
     dev_attr->data_type = attr_value_5->data_type;
 }
 
