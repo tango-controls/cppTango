@@ -7,12 +7,14 @@
 namespace Tango
 {
 
+namespace detail {
+
 template <bool CopySeq, AttributeDataType Type, typename AttributeValueT>
-void convert_attribute_value_to_device_attribute(
+void move_seq_att_val_to_dev_attr(
     AttributeValueT& attr_val,
     DeviceAttribute& dev_attr)
 {
-    using Traits = TangoTypeTraits<Type>;
+    using SeqType = typename TangoTypeTraits<Type>::SeqType;
 
     auto& src = attr_val_seq<Type>(attr_val);
     auto& dest = dev_attr_seq<Type>(dev_attr);
@@ -26,7 +28,7 @@ void convert_attribute_value_to_device_attribute(
     if (src.release())
     {
         auto* buffer = src.get_buffer(orphan);
-        dest = new typename Traits::SeqType(maximum, length, buffer, owner);
+        dest = new SeqType(maximum, length, buffer, owner);
     }
     else
     {
@@ -37,12 +39,12 @@ void convert_attribute_value_to_device_attribute(
             // located within the same process. We refuse to use such a sequence
             // and create a copy to prevent direct access to server's memory.
 
-            dest = new typename Traits::SeqType(src);
+            dest = new SeqType(src);
         }
         else
         {
             auto* buffer = src.get_buffer();
-            dest = new typename Traits::SeqType(maximum, length, buffer, !owner);
+            dest = new SeqType(maximum, length, buffer, !owner);
         }
     }
 }
@@ -74,11 +76,15 @@ inline void copy_attribute_value_fields_to_device_attribute<AttributeValue>(
     dev_attr.dim_y = attr_val.dim_y;
 }
 
+} // namespace detail
+
 template <bool CopySeq, typename AttributeValueT>
 void attribute_value_to_device_attribute_3(
     AttributeValueT& attr_value,
     DeviceAttribute& dev_attr)
 {
+    using namespace detail;
+
     copy_attribute_value_fields_to_device_attribute(attr_value, dev_attr);
 
     if (dev_attr.quality == Tango::ATTR_INVALID)
@@ -102,18 +108,18 @@ void attribute_value_to_device_attribute_3(
 
     switch (type_seq->kind())
     {
-    case CORBA::tk_boolean:     return convert_attribute_value_to_device_attribute<CopySeq, ATT_BOOL>(attr_value, dev_attr);
-    case CORBA::tk_short:       return convert_attribute_value_to_device_attribute<CopySeq, ATT_SHORT>(attr_value, dev_attr);
-    case CORBA::tk_long:        return convert_attribute_value_to_device_attribute<CopySeq, ATT_LONG>(attr_value, dev_attr);
-    case CORBA::tk_longlong:    return convert_attribute_value_to_device_attribute<CopySeq, ATT_LONG64>(attr_value, dev_attr);
-    case CORBA::tk_float:       return convert_attribute_value_to_device_attribute<CopySeq, ATT_FLOAT>(attr_value, dev_attr);
-    case CORBA::tk_double:      return convert_attribute_value_to_device_attribute<CopySeq, ATT_DOUBLE>(attr_value, dev_attr);
-    case CORBA::tk_octet:       return convert_attribute_value_to_device_attribute<CopySeq, ATT_UCHAR>(attr_value, dev_attr);
-    case CORBA::tk_ushort:      return convert_attribute_value_to_device_attribute<CopySeq, ATT_USHORT>(attr_value, dev_attr);
-    case CORBA::tk_ulong:       return convert_attribute_value_to_device_attribute<CopySeq, ATT_ULONG>(attr_value, dev_attr);
-    case CORBA::tk_ulonglong:   return convert_attribute_value_to_device_attribute<CopySeq, ATT_ULONG64>(attr_value, dev_attr);
-    case CORBA::tk_string:      return convert_attribute_value_to_device_attribute<CopySeq, ATT_STRING>(attr_value, dev_attr);
-    case CORBA::tk_enum:        return convert_attribute_value_to_device_attribute<CopySeq, ATT_STATE>(attr_value, dev_attr);
+    case CORBA::tk_boolean:     return move_seq_att_val_to_dev_attr<CopySeq, ATT_BOOL>(attr_value, dev_attr);
+    case CORBA::tk_short:       return move_seq_att_val_to_dev_attr<CopySeq, ATT_SHORT>(attr_value, dev_attr);
+    case CORBA::tk_long:        return move_seq_att_val_to_dev_attr<CopySeq, ATT_LONG>(attr_value, dev_attr);
+    case CORBA::tk_longlong:    return move_seq_att_val_to_dev_attr<CopySeq, ATT_LONG64>(attr_value, dev_attr);
+    case CORBA::tk_float:       return move_seq_att_val_to_dev_attr<CopySeq, ATT_FLOAT>(attr_value, dev_attr);
+    case CORBA::tk_double:      return move_seq_att_val_to_dev_attr<CopySeq, ATT_DOUBLE>(attr_value, dev_attr);
+    case CORBA::tk_octet:       return move_seq_att_val_to_dev_attr<CopySeq, ATT_UCHAR>(attr_value, dev_attr);
+    case CORBA::tk_ushort:      return move_seq_att_val_to_dev_attr<CopySeq, ATT_USHORT>(attr_value, dev_attr);
+    case CORBA::tk_ulong:       return move_seq_att_val_to_dev_attr<CopySeq, ATT_ULONG>(attr_value, dev_attr);
+    case CORBA::tk_ulonglong:   return move_seq_att_val_to_dev_attr<CopySeq, ATT_ULONG64>(attr_value, dev_attr);
+    case CORBA::tk_string:      return move_seq_att_val_to_dev_attr<CopySeq, ATT_STRING>(attr_value, dev_attr);
+    case CORBA::tk_enum:        return move_seq_att_val_to_dev_attr<CopySeq, ATT_STATE>(attr_value, dev_attr);
     default:
         break;
     }
@@ -124,6 +130,8 @@ void attribute_value_to_device_attribute_5(
     AttributeValueT& attr_value,
     DeviceAttribute& dev_attr)
 {
+    using namespace detail;
+
     copy_attribute_value_fields_to_device_attribute(attr_value, dev_attr);
     dev_attr.data_format = attr_value.data_format;
 
@@ -134,19 +142,19 @@ void attribute_value_to_device_attribute_5(
 
     switch (attr_val_union(attr_value)._d())
     {
-    case ATT_BOOL:      return convert_attribute_value_to_device_attribute<CopySeq, ATT_BOOL>(attr_value, dev_attr);
-    case ATT_SHORT:     return convert_attribute_value_to_device_attribute<CopySeq, ATT_SHORT>(attr_value, dev_attr);
-    case ATT_LONG:      return convert_attribute_value_to_device_attribute<CopySeq, ATT_LONG>(attr_value, dev_attr);
-    case ATT_LONG64:    return convert_attribute_value_to_device_attribute<CopySeq, ATT_LONG64>(attr_value, dev_attr);
-    case ATT_FLOAT:     return convert_attribute_value_to_device_attribute<CopySeq, ATT_FLOAT>(attr_value, dev_attr);
-    case ATT_DOUBLE:    return convert_attribute_value_to_device_attribute<CopySeq, ATT_DOUBLE>(attr_value, dev_attr);
-    case ATT_UCHAR:     return convert_attribute_value_to_device_attribute<CopySeq, ATT_UCHAR>(attr_value, dev_attr);
-    case ATT_USHORT:    return convert_attribute_value_to_device_attribute<CopySeq, ATT_USHORT>(attr_value, dev_attr);
-    case ATT_ULONG:     return convert_attribute_value_to_device_attribute<CopySeq, ATT_ULONG>(attr_value, dev_attr);
-    case ATT_ULONG64:   return convert_attribute_value_to_device_attribute<CopySeq, ATT_ULONG64>(attr_value, dev_attr);
-    case ATT_STRING:    return convert_attribute_value_to_device_attribute<CopySeq, ATT_STRING>(attr_value, dev_attr);
-    case ATT_STATE:     return convert_attribute_value_to_device_attribute<CopySeq, ATT_STATE>(attr_value, dev_attr);
-    case ATT_ENCODED:   return convert_attribute_value_to_device_attribute<CopySeq, ATT_ENCODED>(attr_value, dev_attr);
+    case ATT_BOOL:      return move_seq_att_val_to_dev_attr<CopySeq, ATT_BOOL>(attr_value, dev_attr);
+    case ATT_SHORT:     return move_seq_att_val_to_dev_attr<CopySeq, ATT_SHORT>(attr_value, dev_attr);
+    case ATT_LONG:      return move_seq_att_val_to_dev_attr<CopySeq, ATT_LONG>(attr_value, dev_attr);
+    case ATT_LONG64:    return move_seq_att_val_to_dev_attr<CopySeq, ATT_LONG64>(attr_value, dev_attr);
+    case ATT_FLOAT:     return move_seq_att_val_to_dev_attr<CopySeq, ATT_FLOAT>(attr_value, dev_attr);
+    case ATT_DOUBLE:    return move_seq_att_val_to_dev_attr<CopySeq, ATT_DOUBLE>(attr_value, dev_attr);
+    case ATT_UCHAR:     return move_seq_att_val_to_dev_attr<CopySeq, ATT_UCHAR>(attr_value, dev_attr);
+    case ATT_USHORT:    return move_seq_att_val_to_dev_attr<CopySeq, ATT_USHORT>(attr_value, dev_attr);
+    case ATT_ULONG:     return move_seq_att_val_to_dev_attr<CopySeq, ATT_ULONG>(attr_value, dev_attr);
+    case ATT_ULONG64:   return move_seq_att_val_to_dev_attr<CopySeq, ATT_ULONG64>(attr_value, dev_attr);
+    case ATT_STRING:    return move_seq_att_val_to_dev_attr<CopySeq, ATT_STRING>(attr_value, dev_attr);
+    case ATT_STATE:     return move_seq_att_val_to_dev_attr<CopySeq, ATT_STATE>(attr_value, dev_attr);
+    case ATT_ENCODED:   return move_seq_att_val_to_dev_attr<CopySeq, ATT_ENCODED>(attr_value, dev_attr);
     case DEVICE_STATE:
         dev_attr.d_state = attr_val_union(attr_value).dev_state_att();
         dev_attr.d_state_filled = true;
