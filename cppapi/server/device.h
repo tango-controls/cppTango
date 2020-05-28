@@ -3414,8 +3414,10 @@ public:
 	void disable_intr_change_ev() {intr_change_ev = false;}
 	bool is_intr_change_ev_enable() {return intr_change_ev;}
 
-	void get_event_param(vector<EventPar> &);
-	void set_event_param(vector<EventPar> &);
+	void get_event_param(vector<EventPar> &); // Deprecated, use EventSubscriptionState overload
+	void set_event_param(vector<EventPar> &); // Deprecated, use EventSubscriptionState overload
+	void get_event_param(vector<EventSubscriptionState>&);
+	void set_event_param(vector<EventSubscriptionState>&);
 
 	void set_client_lib(int _l) {if (count(client_lib.begin(),client_lib.end(),_l)==0)client_lib.push_back(_l);}
 

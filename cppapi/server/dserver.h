@@ -127,8 +127,10 @@ public :
 	void _create_cpp_class(const char *c1,const char *c2) {this->create_cpp_class(c1,c2);}
 
 	void mcast_event_for_att(string &,string &,vector<string> &);
-	void mem_event_par(map<string, vector<EventPar> > &);
-	void apply_event_par(map<string,vector<EventPar> > &);
+	void mem_event_par(map<string, vector<EventPar> > &); // Deprecated, use EventSubscriptionState overload
+	void apply_event_par(map<string,vector<EventPar> > &); // Deprecated, use EventSubscriptionState overload
+	void mem_event_par(map<string, vector<EventSubscriptionState> >&);
+	void apply_event_par(map<string,vector<EventSubscriptionState> >&);
 
 	void mem_devices_interface(map<string,DevIntr> &);
 	void changed_devices_interface(map<string,DevIntr> &);
@@ -158,6 +160,7 @@ protected :
 	static ClassFactoryFuncPtr 		class_factory_func_ptr;
 
 private:
+
 #if ((defined _TG_WINDOWS_) && (defined TANGO_HAS_DLL) && !(defined _TANGO_LIB))
 	__declspec(dllexport) void class_factory();
 #else

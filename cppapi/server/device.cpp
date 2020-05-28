@@ -6148,6 +6148,25 @@ void DeviceImpl::get_event_param(vector<EventPar> &eve)
     }
 }
 
+void DeviceImpl::get_event_param(vector<EventSubscriptionState> &eve)
+{
+    ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
+
+    if (event_supplier_zmq->any_dev_intr_client(this) == true)
+    {
+        EventSubscriptionState ep;
+
+        ep.notifd = false;
+        ep.zmq = true;
+        ep.attribute_name = "";
+        ep.quality = false;
+        ep.data_ready = false;
+        ep.dev_intr_change = true;
+
+        eve.push_back(ep);
+    }
+}
+
 //+-----------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -6167,6 +6186,21 @@ void DeviceImpl::set_event_param(vector<EventPar> &eve)
     for (size_t loop = 0; loop < eve.size(); loop++)
     {
         if (eve[loop].attr_id == -1)
+        {
+            if (eve[loop].dev_intr_change == true)
+            {
+                set_event_intr_change_subscription(time(NULL));
+            }
+            break;
+        }
+    }
+}
+
+void DeviceImpl::set_event_param(vector<EventSubscriptionState> &eve)
+{
+    for (size_t loop = 0; loop < eve.size(); loop++)
+    {
+        if (eve[loop].attribute_name.empty())
         {
             if (eve[loop].dev_intr_change == true)
             {

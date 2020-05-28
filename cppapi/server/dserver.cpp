@@ -861,7 +861,7 @@ void DServer::restart(string &d_name)
 
 	vector<PollObj *> &p_obj = dev_to_del->get_poll_obj_list();
 	vector<Pol> dev_pol;
-	vector<EventPar> eve;
+	vector<EventSubscriptionState> eve;
 
 	for (i = 0;i < p_obj.size();i++)
 	{
@@ -1098,6 +1098,16 @@ void DServer::restart(string &d_name)
 			event_supplier_zmq->push_dev_intr_change_event(new_dev,false,cmds_list,atts_list);
 		}
 	}
+
+// Attribute properties may have changed after the restart.
+// Push an attribute configuration event to all registered subscribers.
+
+	vector<Tango::Attribute*>& dev_att_list = new_dev->get_device_attr()->get_attribute_list();
+	vector<Tango::Attribute*>::iterator ite_att;
+	for (ite_att = dev_att_list.begin(); ite_att != dev_att_list.end() ; ++ite_att)
+	{
+		new_dev->push_att_conf_event(*ite_att);
+	}
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -1172,7 +1182,7 @@ void ServRestartThread::run(void *ptr)
 // Memorize event parameters and devices interface
 //
 
-	map<string,vector<EventPar> > map_events;
+	map<string,vector<EventSubscriptionState> > map_events;
 	map<string,DevIntr> map_dev_inter;
 
 	dev->mem_event_par(map_events);
@@ -1204,22 +1214,22 @@ void ServRestartThread::run(void *ptr)
 	dev->set_poll_th_pool_size(DEFAULT_POLLING_THREADS_POOL_SIZE);
 
     tg->set_svr_starting(true);
-	
+
 	vector<DeviceClass *> empty_class;
 	tg->set_class_list(&empty_class);
-	
+
 	{
 		AutoPyLock PyLo;
 		dev->init_device();
 	}
-	
+
 //
 // Set the class list pointer in the Util class and add the DServer object class
 //
 
 	tg->set_class_list(&(dev->get_class_list()));
 	tg->add_class_to_list(dev->get_device_class());
-	
+
 	tg->set_svr_starting(false);
 
 //
@@ -1975,6 +1985,25 @@ void DServer::mem_event_par(map<string,vector<EventPar> > &_map)
 	}
 }
 
+void DServer::mem_event_par(map<string,vector<EventSubscriptionState> > &_map)
+{
+	for (size_t i = 0;i < class_list.size();i++)
+	{
+		vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
+		for (size_t j = 0;j < dev_list.size();j++)
+		{
+			vector<EventSubscriptionState> eve;
+			dev_list[j]->get_device_attr()->get_event_param(eve);
+			dev_list[j]->get_event_param(eve);
+
+			if (eve.size() != 0)
+			{
+				_map.insert(make_pair(dev_list[j]->get_name(),eve));
+			}
+		}
+	}
+}
+
 //+-----------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -1998,6 +2027,26 @@ void DServer::apply_event_par(map<string,vector<EventPar> > &_map)
 		{
 			string &dev_name = dev_list[j]->get_name();
 			map<string,vector<EventPar> >::iterator ite;
+			ite = _map.find(dev_name);
+
+			if (ite != _map.end())
+			{
+				dev_list[j]->get_device_attr()->set_event_param(ite->second);
+				dev_list[j]->set_event_param(ite->second);
+			}
+		}
+	}
+}
+
+void DServer::apply_event_par(map<string,vector<EventSubscriptionState> > &_map)
+{
+	for (size_t i = 0;i < class_list.size();i++)
+	{
+		vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
+		for (size_t j = 0;j < dev_list.size();j++)
+		{
+			string &dev_name = dev_list[j]->get_name();
+			map<string,vector<EventSubscriptionState> >::iterator ite;
 			ite = _map.find(dev_name);
 
 			if (ite != _map.end())
