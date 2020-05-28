@@ -139,19 +139,15 @@ if(WIN32)
         coutbuf.cpp
         ntservice.cpp
         w32win.cpp)
-          
-    add_library(server_objects_dyn OBJECT ${SOURCES} ${SOURCES_WIN})
-    add_library(server_objects_sta OBJECT ${SOURCES} ${SOURCES_WIN})
-    target_compile_definitions(server_objects_dyn PRIVATE "${dyn_defs}")
-    target_compile_definitions(server_objects_sta PRIVATE "${static_defs}")
 
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        target_compile_options(server_objects_sta PRIVATE "/MTd")
-    else()
-        target_compile_options(server_objects_sta PRIVATE "/MT")
-    endif()
+    list(APPEND SOURCES ${SOURCES_WIN})
+endif()
+
+add_library(server_objects OBJECT ${SOURCES})
+
+if(WIN32)
+    target_compile_definitions(server_objects PRIVATE "${windows_defs}")
 else(WIN32)
-    add_library(server_objects OBJECT ${SOURCES})
     target_compile_options(server_objects PRIVATE -fPIC)
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
         target_compile_definitions(server_objects PRIVATE _REENTRANT _TANGO_LIB)
