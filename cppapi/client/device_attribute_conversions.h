@@ -130,7 +130,7 @@ void attribute_value_to_device_attribute_5(
         return;
     }
 
-    switch (attr_val_seq_type(attr_value))
+    switch (attr_val_union(attr_value)._d())
     {
     case ATT_BOOL:      return convert_attribute_value_to_device_attribute<CopySeq, ATT_BOOL>(attr_value, dev_attr);
     case ATT_SHORT:     return convert_attribute_value_to_device_attribute<CopySeq, ATT_SHORT>(attr_value, dev_attr);
@@ -146,7 +146,7 @@ void attribute_value_to_device_attribute_5(
     case ATT_STATE:     return convert_attribute_value_to_device_attribute<CopySeq, ATT_STATE>(attr_value, dev_attr);
     case ATT_ENCODED:   return convert_attribute_value_to_device_attribute<CopySeq, ATT_ENCODED>(attr_value, dev_attr);
     case DEVICE_STATE:
-        dev_attr.d_state = attr_value.value.dev_state_att();
+        dev_attr.d_state = attr_val_union(attr_value).dev_state_att();
         dev_attr.d_state_filled = true;
         break;
     case ATT_NO_DATA:

@@ -97,40 +97,31 @@ typename TangoTypeTraits<Type>::SeqType& attr_val_union_get(::CORBA::Any& a)
     return *seq;
 }
 
+/* Allows to access value union stored in (Zmq)AttributeValue_N.
+ * Returns AttrValUnion& (for AttributeValue_4 and better) or ::CORBA::Any&.
+ */
+template <typename AttributeValueT>
+auto attr_val_union(AttributeValueT& av) -> decltype(av.value)&
+{
+    return av.value;
+}
+
+template <>
+inline AttrValUnion& attr_val_union<ZmqAttributeValue_5>(ZmqAttributeValue_5& av)
+{
+    return av.zvalue;
+}
+
+template <>
+inline AttrValUnion& attr_val_union<ZmqAttributeValue_4>(ZmqAttributeValue_4& av)
+{
+    return av.zvalue;
+}
+
 template <AttributeDataType Type, typename AttributeValueT>
 typename TangoTypeTraits<Type>::SeqType& attr_val_seq_get(AttributeValueT& av)
 {
-    return attr_val_union_get<Type>(av.value);
-}
-
-template <AttributeDataType Type>
-typename TangoTypeTraits<Type>::SeqType& attr_val_seq_get(ZmqAttributeValue_5& av)
-{
-    return attr_val_union_get<Type>(av.zvalue);
-}
-
-template <AttributeDataType Type>
-typename TangoTypeTraits<Type>::SeqType& attr_val_seq_get(ZmqAttributeValue_4& av)
-{
-    return attr_val_union_get<Type>(av.zvalue);
-}
-
-template <typename AttributeValueT>
-AttributeDataType attr_val_seq_type(const AttributeValueT& av)
-{
-    return av.value._d();
-}
-
-template <>
-inline AttributeDataType attr_val_seq_type<ZmqAttributeValue_5>(const ZmqAttributeValue_5& av)
-{
-    return av.zvalue._d();
-}
-
-template <>
-inline AttributeDataType attr_val_seq_type<ZmqAttributeValue_4>(const ZmqAttributeValue_4& av)
-{
-    return av.zvalue._d();
+    return attr_val_union_get<Type>(attr_val_union(av));
 }
 
 } // namespace Tango
