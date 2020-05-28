@@ -46,7 +46,7 @@ LoggingEvent::LoggingEvent (const std::string& _logger_name,
     level(_level)
 {
   //-- thread_name = threading::get_thread_id();
-  thread_id =  threading::thread_id();
+  thread_id =  std::this_thread::get_id();
 }
 
 LoggingEvent::LoggingEvent (const LoggingEvent& _src)

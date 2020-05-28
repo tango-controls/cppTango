@@ -1,4 +1,5 @@
 //
+//
 // PThreads.cpp
 //
 // Copyright (C) :  2000 - 2002
@@ -45,23 +46,6 @@ std::string get_thread_id (void)
   std::ostringstream oss;
   oss << ::pthread_self();
   return oss.str();
-}
-
-//+----------------------------------------------------------------------------
-// method : thread_id
-//----------------------------------------------------------------------------- 
-long thread_id (void) 
-{
-#ifndef __darwin__
-	#ifndef __freebsd__
-		return static_cast<long>(::pthread_self());
-	#else
-		return reinterpret_cast<long>(::pthread_self());
-	#endif
-#else
-	pthread_t thread = ::pthread_self();
-	return thread->__sig;
-#endif
 }
 
 //+----------------------------------------------------------------------------

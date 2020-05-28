@@ -50,6 +50,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
+#include <netinet/in.h> // Needed for systems that do not include this file from arpa/inet.h
 #endif
 
 using namespace CORBA;
@@ -4103,4 +4104,3 @@ void DelayEvent::release()
 }
 
 } /* End of Tango namespace */
-

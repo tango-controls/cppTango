@@ -66,7 +66,7 @@ struct LockedDevice
 	std::string			dev_name;		// The locked device name
 	DevLong			validity;		// The locked device validity
 
-	bool operator<(LockedDevice &arg) {return validity < arg.validity;}
+	bool operator<(const LockedDevice &arg) const {return validity < arg.validity;} 
 };
 
 enum LockCmdType

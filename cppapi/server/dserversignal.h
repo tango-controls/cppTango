@@ -150,14 +150,6 @@ private:
 	}
 #endif
 
-#if (defined __GLIBC__ || defined __darwin__ || defined __freebsd__)
-	static inline bool auth_signal(TANGO_UNUSED(long s)) {return true;}
-#endif
-
-#ifdef _TG_WINDOWS_
-	static inline bool auth_signal(long s) {return true;}
-#endif
-
 	static std::string 			sig_name[_NSIG];
 
 };

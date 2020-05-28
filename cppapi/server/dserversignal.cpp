@@ -269,15 +269,6 @@ void DServerSignal::register_class_signal(long signo,bool handler,DeviceClass *c
 				        (const char *)"DServerSignal::register_class_signal");
 	}
 
-	if (auth_signal(signo) == false)
-	{
-		TangoSys_OMemStream o;
-		o << "Signal " << sig_name[signo] << "is not authorized with your OS" << std::ends;
-		Except::throw_exception((const char *)API_SignalOutOfRange,
-				        o.str(),
-				        (const char *)"DServerSignal::register_class_signal");
-	}
-
 #ifndef _TG_WINDOWS_
 	if ((auto_signal(signo) == true) && (handler == true))
 	{
@@ -380,15 +371,6 @@ void DServerSignal::register_dev_signal(long signo,bool handler,DeviceImpl *dev_
 	{
 		TangoSys_OMemStream o;
 		o << "Signal number " << signo << " out of range" << std::ends;
-		Except::throw_exception((const char *)API_SignalOutOfRange,
-				      o.str(),
-				      (const char *)"DServerSignal::register_dev_signal");
-	}
-
-	if (auth_signal(signo) == false)
-	{
-		TangoSys_OMemStream o;
-		o << "Signal " << sig_name[signo] << "is not authorized with your OS" << std::ends;
 		Except::throw_exception((const char *)API_SignalOutOfRange,
 				      o.str(),
 				      (const char *)"DServerSignal::register_dev_signal");

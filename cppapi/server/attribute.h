@@ -2514,7 +2514,7 @@ protected:
     std::vector<std::string>      mcast_event;                    // In case of multicasting used for event transport
     AttrQuality         old_quality;                    // Previous attribute quality
     std::bitset<numFlags>    old_alarm;                      // Previous attribute alarm
-    std::map<std::string,const DevFailed> startup_exceptions;		// Map containing exceptions related to attribute configuration raised during the server startup sequence
+    std::map<std::string, DevFailed> startup_exceptions;		// Map containing exceptions related to attribute configuration raised during the server startup sequence
     bool 				check_startup_exceptions;		// Flag set to true if there is at least one exception in startup_exceptions map
     bool 				startup_exceptions_clear;		// Flag set to true when the cause for the device startup exceptions has been fixed
 	bool				att_mem_exception;				// Flag set to true if the attribute is writable and
@@ -2570,7 +2570,7 @@ inline void Attribute::throw_startup_exception(const char* origin)
 		std::string err_msg;
 		std::vector<std::string> event_exceptions;
 		std::vector<std::string> opt_exceptions;
-		for(std::map<std::string,const DevFailed>::iterator it = startup_exceptions.begin(); it != startup_exceptions.end(); ++it)
+		for(std::map<std::string, DevFailed>::const_iterator it = startup_exceptions.begin(); it != startup_exceptions.end(); ++it)
 		{
 			if(it->first == "event_period" || it->first == "archive_period" || it->first == "rel_change" || it->first == "abs_change" || it->first == "archive_rel_change" || it->first == "archive_abs_change")
 				event_exceptions.push_back(it->first);

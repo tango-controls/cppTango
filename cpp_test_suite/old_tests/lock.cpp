@@ -9,7 +9,7 @@
 #include <process.h>
 #define WEXITSTATUS(w) w
 #else
-#include <wait.h>
+#include <sys/wait.h>
 #endif
 
 #include "locked_device_cmd.h"
