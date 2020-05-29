@@ -182,7 +182,7 @@ void attribute_value_to_device_attribute_3_nocopy(
     DeviceAttribute& dev_attr)
 {
     constexpr bool copy_seq = true;
-    attribute_value_to_device_attribute_3(attr_value, dev_attr, not copy_seq);
+    attribute_value_to_device_attribute_3(attr_value, dev_attr, !copy_seq);
 }
 
 template <typename AttributeValueT>
@@ -200,7 +200,7 @@ void attribute_value_to_device_attribute_5_nocopy(
     DeviceAttribute& dev_attr)
 {
     constexpr bool copy_seq = true;
-    attribute_value_to_device_attribute_5(attr_value, dev_attr, not copy_seq);
+    attribute_value_to_device_attribute_5(attr_value, dev_attr, !copy_seq);
 }
 
 } // namespace Tango
