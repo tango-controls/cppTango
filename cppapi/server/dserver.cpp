@@ -1993,8 +1993,9 @@ ServerEventSubscriptionState DServer::get_event_subscription_state()
 
             if (events.has_dev_intr_change_event_clients ||
                 ! events.attribute_events.empty())
-
-            result.emplace(device->get_name(), std::move(events));
+            {
+                result.emplace(device->get_name(), std::move(events));
+            }
         }
     }
 
