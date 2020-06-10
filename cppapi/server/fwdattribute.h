@@ -48,7 +48,7 @@ public:
 	FwdAttribute(std::vector<AttrProperty> &,Attr &,std::string &,long);
 	~FwdAttribute();
 
-	virtual bool is_fwd_att() {return true;}
+	virtual bool is_fwd_att() const {return true;}
 	std::string &get_fwd_dev_name() {return fwd_dev_name;}
 	std::string &get_fwd_att_name() {return fwd_att_name;}
 

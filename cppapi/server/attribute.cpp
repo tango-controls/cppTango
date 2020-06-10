@@ -5956,6 +5956,21 @@ void Attribute::remove_client_lib(int _l,const std::string &ev_name)
 		client_lib[i].erase(pos);
 }
 
+bool Attribute::is_readable() const
+{
+    // If the attribute is a forwarded one, force reading it from
+    // the root device. Another client could have written its value
+    return get_writable() != Tango::WRITE || is_fwd_att();
+}
+
+bool Attribute::is_writable() const
+{
+    const auto access_mode = get_writable();
+    return access_mode == Tango::READ_WRITE
+        || access_mode == Tango::READ_WITH_WRITE
+        || (access_mode == Tango::WRITE && ! is_fwd_att());
+}
+
 //-------------------------------------------------------------------------------------------------------------------
 //
 // operator overloading : 	<<

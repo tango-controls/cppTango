@@ -304,7 +304,7 @@ public:
  *
  * @return The attribute write type.
  */
-	Tango::AttrWriteType get_writable() {return writable;}
+	Tango::AttrWriteType get_writable() const {return writable;}
 /**
  * Get attribute name
  *
@@ -2306,7 +2306,7 @@ public:
 	void throw_startup_exception(const char*);
 
 	bool is_mem_exception() {return att_mem_exception;}
-	virtual bool is_fwd_att() {return false;}
+	virtual bool is_fwd_att() const {return false;}
 
 	void set_client_lib(int, EventType);
 	std::vector<int> &get_client_lib(EventType _et) {return client_lib[_et];}
@@ -2316,6 +2316,9 @@ public:
 	void add_startup_exception(std::string,const DevFailed &);
 
 	void fire_error_periodic_event(DevFailed *);
+
+	bool is_readable() const;
+	bool is_writable() const;
 
 #ifndef TANGO_HAS_LOG4TANGO
 	friend std::ostream &operator<<(std::ostream &,Attribute &);

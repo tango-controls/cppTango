@@ -370,6 +370,16 @@ void Device_3Impl::read_attributes_no_except(
 
     auto readable_attributes = get_readable_attributes(attributes);
 
+    for (auto& entry : attributes)
+    {
+        Attribute& att = *entry.first;
+        if (att.is_readable())
+        {
+            att.get_when().tv_sec = 0;
+            att.save_alarm_quality();
+        }
+    }
+
     always_executed_hook();
 
     call_read_attr_hardware_if_needed(readable_attributes, state_wanted);
@@ -379,26 +389,12 @@ void Device_3Impl::read_attributes_no_except(
         Attribute& att = *entry.first;
         const long index = entry.second;
 
-        const auto access_mode = att.get_writable();
-        const bool is_forwarded = att.is_fwd_att();
-
-        // If the attribute is a forwarded one, force reading it from
-        // the root device. Another client could have written its value
-        const bool is_readable = access_mode != Tango::WRITE || is_forwarded;
-        const bool is_writable =
-            access_mode == Tango::READ_WRITE ||
-            access_mode == Tango::READ_WITH_WRITE ||
-            (access_mode == Tango::WRITE && ! is_forwarded);
-
-        if (is_readable)
+        if (att.is_readable())
         {
-            att.get_when().tv_sec = 0;
-            att.save_alarm_quality();
-
             update_readable_attribute_value(att, data, index);
         }
 
-        if (is_writable)
+        if (att.is_writable())
         {
             update_writable_attribute_value(att, data, index);
         }
