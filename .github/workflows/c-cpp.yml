@@ -1,0 +1,55 @@
+name: C++ CI
+
+env:
+  CI_TARGET_BRANCH: ${{ github.base_ref }}
+  # According to https://help.github.com/en/actions/reference/virtual-environments-for-github-hosted-runners
+  # every VM has a 2-core CPU
+  CMAKE_BUILD_PARALLEL_LEVEL: 2
+
+on:
+  pull_request:
+    branches:
+      - tango-9-lts
+
+jobs:
+  abi-api-compliance-check:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout cppTango
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Checkout tango-idl
+      uses: actions/checkout@v2
+      with:
+        repository: tango-controls/tango-idl
+        path: idl
+        ref: tango-9-lts
+    - name: Build cpp_tango docker image
+      run: |
+          docker build                 \
+          --build-arg APP_UID=$(id -u) \
+          --build-arg APP_GID=$(id -g) \
+          -t cpp_tango                 \
+          .travis/gcc-latest
+    - name: Run cpp_tango docker image
+      run: |
+          docker run                                   \
+          --rm                                         \
+          --name cpp_tango                             \
+          -v `pwd`:/home/tango/src                     \
+          -v `pwd`/idl:/home/tango/idl                 \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -dit                                         \
+          cpp_tango
+    - name: Install tango-idl
+      run: .travis/install_tango_idl.sh
+    - name: Check ABI/API compliance
+      run: docker exec -w /home/tango/src cpp_tango .travis/check-ABI-API-compliance.sh || true
+    - name: Upload compliance report
+      uses: actions/upload-artifact@v1
+      with:
+        name: ABI-API compliance report
+        path: compat_reports
