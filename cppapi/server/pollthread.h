@@ -38,6 +38,7 @@
 #include <tango.h>
 #include <pollobj.h>
 #include <utils.h>
+#include <tango_optional.h>
 
 #include <list>
 
@@ -112,7 +113,7 @@ public:
 	void set_polling_bef_9(bool _v) {polling_bef_9 = _v;}
 
 protected:
-	PollCmdType get_command(long);
+	PollCmdType get_command();
 	void one_more_poll();
 	void one_more_trigg();
 	void compute_new_date(struct timeval &,int);
@@ -148,7 +149,7 @@ protected:
 #endif
 	struct timeval		now;
 	struct timeval		after;
-	long				sleep;
+	tango_optional<long>				sleep;
 	bool				polling_stop;
 
 private:

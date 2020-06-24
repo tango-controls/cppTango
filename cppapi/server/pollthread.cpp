@@ -158,10 +158,7 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 	{
 		try
 		{
-			if (sleep != 0)
-				received = get_command(sleep);
-			else
-				received = POLL_TIME_OUT;
+			received = get_command();
 
 //
 // Create the per thread data if it is not already done (For Python DS)
@@ -256,17 +253,18 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 //		with a timeout. If the thread is awaken due to the timeout, false is returned.
 //		If the work list is empty, the thread waits for ever.
 //
-// args :
-//		in :
-// 			- tout : Timeout to be used when waiting on monitor
-//
 // returns :
 // 		The method returns true if the thread has been awaken due to a new command sent by the main thread
 //
 //------------------------------------------------------------------------------------------------------------------
 
-PollCmdType PollThread::get_command(long tout)
+PollCmdType PollThread::get_command()
 {
+	if (sleep.has_value() && *sleep == 0)
+	{
+		return POLL_TIME_OUT;
+	}
+
 	omni_mutex_lock sync(p_mon);
 	PollCmdType ret;
 
@@ -280,8 +278,8 @@ PollCmdType PollThread::get_command(long tout)
 			p_mon.wait();
 		else
 		{
-			if (tout != -1)
-				p_mon.wait(tout);
+			if (sleep.has_value())
+				p_mon.wait(*sleep);
 		}
 	}
 
@@ -1366,7 +1364,7 @@ void PollThread::compute_sleep_time()
                     }
                     else
                         previous_nb_late = nb_late;
-                    sleep = -1;
+                    sleep = tango_nullopt;
                 }
             }
         }
@@ -1388,7 +1386,7 @@ void PollThread::compute_sleep_time()
             if (diff < 0)
             {
                 if (fabs(diff) < DISCARD_THRESHOLD)
-                    sleep = -1;
+                    sleep = tango_nullopt;
                 else
                 {
                     while((diff < 0) && (fabs(diff) > DISCARD_THRESHOLD))
@@ -1408,7 +1406,7 @@ void PollThread::compute_sleep_time()
                     }
 
                     if (fabs(diff) < DISCARD_THRESHOLD)
-                        sleep = -1;
+                        sleep = tango_nullopt;
                     else
                         sleep = (long)(diff * 1000);
                 }
@@ -1417,7 +1415,14 @@ void PollThread::compute_sleep_time()
                 sleep = (long)(diff * 1000);
         }
 
-		cout5 << "Sleep for : " << sleep << std::endl;
+        if (sleep.has_value())
+        {
+            cout5 << "Sleep for : " << *sleep << std::endl;
+        }
+        else
+        {
+            cout5 << "Sleep for : -1 (undefined)" << std::endl;
+        }
 	}
 }
 
