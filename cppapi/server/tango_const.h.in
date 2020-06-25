@@ -123,8 +123,6 @@ const char* const DEFAULT_OMNI_CONF_FILE   = "/etc/omniORB.cfg";
 const int   EVENT_HEARTBEAT_PERIOD         = 10;
 const int   EVENT_RESUBSCRIBE_PERIOD       = 600;
 const int   DEFAULT_EVENT_PERIOD           = 1000;
-const double   DELTA_PERIODIC              = 0.98;  // Using a delta of 2% only for times < 5000 ms
-const int   DELTA_PERIODIC_LONG            = 100;   // For times > 5000ms only keep a delta of 100ms
 const char* const HEARTBEAT                = "Event heartbeat";
 
 //

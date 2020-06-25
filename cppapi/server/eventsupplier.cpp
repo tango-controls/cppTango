@@ -38,8 +38,36 @@
 #include <float.h>
 #endif // _TG_WINDOWS_
 
+#include <cmath>
+
 namespace Tango
 {
+
+namespace
+{
+
+PollClock::duration get_minimal_event_reporting_period(PollClock::duration polling_period)
+{
+//
+// Specify the precision interval for the event period testing 2% are used for periods < 5000 ms and
+// 100ms are used for periods > 5000 ms.
+//
+    constexpr auto DELTA_PERIODIC = 0.98;
+    constexpr auto DELTA_PERIODIC_LONG = std::chrono::milliseconds(100);
+    constexpr auto PERIODIC_LONG_THRESHOLD = std::chrono::milliseconds(5000);
+
+    if (polling_period >= PERIODIC_LONG_THRESHOLD)
+    {
+        return polling_period - DELTA_PERIODIC_LONG;
+    }
+    else
+    {
+        auto ticks = std::round(polling_period.count() * DELTA_PERIODIC);
+        return PollClock::duration{PollClock::duration::rep(ticks)};
+    }
+}
+
+} // namespace
 
 omni_mutex        EventSupplier::event_mutex;
 
@@ -570,51 +598,27 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 //
     auto ms_since_last_periodic = time_bef_attr - attr.archive_last_periodic;
 
-    int arch_period;
     TangoMonitor &mon1 = device_impl->get_att_conf_monitor();
     mon1.get_monitor();
-    arch_period = attr.archive_period;
+    int arch_period_ms = attr.archive_period;
     mon1.rel_monitor();
 
 //
-// Specify the precision interval for the archive period testing 2% are used for periods < 5000 ms and
-// 100ms are used for periods > 5000 ms.
 // If the attribute archive period is INT_MAX, this means that the user does not want the periodic part of the
 // archive event
 //
 
-    if (arch_period != INT_MAX)
+    if (arch_period_ms != INT_MAX)
     {
-        if (arch_period >= 5000)
-        {
-            arch_period = arch_period - DELTA_PERIODIC_LONG;
-        }
-        else
-        {
-#ifdef _TG_WINDOWS_
-            double tmp = (double) arch_period * DELTA_PERIODIC;
-            double int_part, eve_round;
-            double frac = modf(tmp, &int_part);
-            if (frac >= 0.5)
-            {
-                eve_round = ceil(tmp);
-            }
-            else
-            {
-                eve_round = floor(tmp);
-            }
-#else
-            double eve_round = round((double) arch_period * DELTA_PERIODIC);
-#endif
-            arch_period = (int) eve_round;
-        }
+        auto arch_period = get_minimal_event_reporting_period(std::chrono::milliseconds(arch_period_ms));
 
-        cout3 << "EventSupplier::detect_and_push_archive_event(): ms_since_last_periodic = "
-              << std::fixed << std::chrono::nanoseconds(ms_since_last_periodic).count() / 1e6 << " ms"
-              << ", arch_period = " << arch_period << ", attr.prev_archive_event.inited = "
-              << attr.prev_archive_event.inited << std::endl;
+        cout3 << "EventSupplier::detect_and_push_archive_event():"
+              << " ms_since_last_periodic = " << std::fixed << std::chrono::nanoseconds(ms_since_last_periodic).count() / 1e6 << " ms"
+              << ", arch_period = " << std::fixed << std::chrono::nanoseconds(arch_period).count() / 1e6 << " ms"
+              << ", attr.prev_archive_event.inited = " << attr.prev_archive_event.inited
+              << std::endl;
 
-        if ((ms_since_last_periodic > std::chrono::milliseconds(arch_period)) && (attr.prev_archive_event.inited == true))
+        if ((ms_since_last_periodic > arch_period) && (attr.prev_archive_event.inited == true))
         {
             is_change = true;
             period_change = true;
@@ -850,40 +854,12 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
 // get the event period
 //
 
-    int eve_period;
     TangoMonitor &mon1 = device_impl->get_att_conf_monitor();
     mon1.get_monitor();
-    eve_period = attr.event_period;
+    int eve_period_ms = attr.event_period;
     mon1.rel_monitor();
 
-//
-// Specify the precision interval for the event period testing 2% are used for periods < 5000 ms and
-// 100ms are used for periods > 5000 ms.
-//
-
-    if (eve_period >= 5000)
-    {
-        eve_period = eve_period - DELTA_PERIODIC_LONG;
-    }
-    else
-    {
-#ifdef _TG_WINDOWS_
-        double tmp = (double) eve_period * DELTA_PERIODIC;
-        double int_part, eve_round;
-        double frac = modf(tmp, &int_part);
-        if (frac >= 0.5)
-        {
-            eve_round = ceil(tmp);
-        }
-        else
-        {
-            eve_round = floor(tmp);
-        }
-#else
-        double eve_round = round((double) eve_period * DELTA_PERIODIC);
-#endif
-        eve_period = (int) eve_round;
-    }
+    auto eve_period = get_minimal_event_reporting_period(std::chrono::milliseconds(eve_period_ms));
 
 //
 // calculate the time
@@ -898,11 +874,12 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
 //
     auto ms_since_last_periodic = time_bef_attr - attr.last_periodic;
 
-    cout3 << "EventSupplier::detect_and_push_is_periodic_event(): delta since last periodic "
-          << std::fixed << std::chrono::nanoseconds(ms_since_last_periodic).count() / 1e6 << " ms"
-          << " event_period " << eve_period << " for " << device_impl->get_name() + "/" + attr_name << std::endl;
+    cout3 << "EventSupplier::detect_and_push_is_periodic_event():"
+          << " delta since last periodic " << std::fixed << std::chrono::nanoseconds(ms_since_last_periodic).count() / 1e6 << " ms"
+          << ", event_period " << std::fixed << std::chrono::nanoseconds(eve_period).count() / 1e6 << " ms"
+          << " for " << device_impl->get_name() + "/" + attr_name << std::endl;
 
-    if (ms_since_last_periodic > std::chrono::milliseconds(eve_period))
+    if (ms_since_last_periodic > eve_period)
     {
 
 //
