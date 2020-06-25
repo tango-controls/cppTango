@@ -50,6 +50,21 @@ extern omni_thread::key_t key_py_data;
 namespace Tango
 {
 
+namespace
+{
+
+constexpr auto TIME_NEEDED_HEARTBEAT = std::chrono::microseconds(2000);
+constexpr int POLL_LOOP_NB = 500;
+constexpr auto DISCARD_THRESHOLD = std::chrono::milliseconds(20);
+
+template <typename Dur>
+Dur duration_abs(Dur d)
+{
+    return d >= Dur::zero() ? d : -d;
+}
+
+} // namespace
+
 DeviceImpl *PollThread::dev_to_del = NULL;
 std::string PollThread::name_to_del = "";
 PollObjType PollThread::type_to_del = Tango::POLL_CMD;
@@ -655,7 +670,7 @@ void PollThread::execute_cmd()
 		wo.type = EVENT_HEARTBEAT;
 		wo.update = std::chrono::milliseconds(9000);
 		wo.name.push_back(std::string("Event heartbeat"));
-		wo.needed_time = std::chrono::microseconds(TIME_HEARTBEAT);
+		wo.needed_time = TIME_NEEDED_HEARTBEAT;
 
 		wo.wake_up_date = now;
 		insert_in_list(wo);
@@ -1238,10 +1253,10 @@ void PollThread::compute_sleep_time()
             for (ite = works.begin();ite != works.end();++ite)
             {
                 auto next = ite->wake_up_date;
-                auto diff_dur = next - after;
-                auto diff_s = std::chrono::duration_cast<std::chrono::nanoseconds>(diff_dur).count() / 1e9;
-                if (diff_s < 0 && fabs(diff_s) > DISCARD_THRESHOLD)
+                if ((after - next) > DISCARD_THRESHOLD)
+                {
                     nb_late++;
+                }
             }
 
 //
@@ -1292,21 +1307,23 @@ void PollThread::compute_sleep_time()
             previous_nb_late = 0;
 
             auto next = works.front().wake_up_date;
-            auto diff_dur = next - after;
-            auto diff_s = std::chrono::duration_cast<std::chrono::nanoseconds>(diff_dur).count() / 1e9;
 
-            if (diff_s < 0)
+            if (next < after)
             {
-                if (fabs(diff_s) < DISCARD_THRESHOLD)
+                if (after - next < DISCARD_THRESHOLD)
+                {
                     sleep = tango_nullopt;
+                }
                 else
                 {
-                    while((diff_s < 0) && (fabs(diff_s) > DISCARD_THRESHOLD))
+                    while (after - next > DISCARD_THRESHOLD)
                     {
                         cout5 << "Discard one elt !!!!!!!!!!!!!" << std::endl;
                         WorkItem tmp = works.front();
                         if (tmp.type == POLL_ATTR)
+                        {
                             err_out_of_sync(tmp);
+                        }
 
                         tmp.wake_up_date += tmp.update;
                         insert_in_list(tmp);
@@ -1314,21 +1331,21 @@ void PollThread::compute_sleep_time()
                         tune_ctr--;
 
                         next = works.front().wake_up_date;
-                        diff_dur = next - after;
-                        diff_s = std::chrono::duration_cast<std::chrono::nanoseconds>(diff_dur).count() / 1e9;
                     }
 
-                    if (fabs(diff_s) < DISCARD_THRESHOLD)
+                    if (duration_abs(next - after) < DISCARD_THRESHOLD)
+                    {
                         sleep = tango_nullopt;
+                    }
                     else
                     {
-                        sleep = diff_dur;
+                        sleep = next - after;
                     }
                 }
             }
             else
             {
-                sleep = diff_dur;
+                sleep = next - after;
             }
         }
 
