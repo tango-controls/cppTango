@@ -43,12 +43,15 @@ inline PollClock::time_point wall_time_to_poll_time(WallClock::time_point wall)
 
 inline TimeVal make_TimeVal(PollClock::time_point poll_tp)
 {
+    constexpr std::chrono::nanoseconds::rep NANOS_IN_SEC = 1000*1000*1000;
+    constexpr std::chrono::nanoseconds::rep NANOS_IN_USEC = 1000;
+
     auto wall_tp = __detail::poll_time_to_wall_time(poll_tp);
     auto time_ns = std::chrono::nanoseconds(wall_tp.time_since_epoch()).count();
     TimeVal tv{};
-    tv.tv_sec = time_ns / 1000000000;
-    tv.tv_usec = (time_ns % 1000000000) / 1000.0;
-    tv.tv_nsec = 0; // Intentionally set to 0
+    tv.tv_sec = time_ns / NANOS_IN_SEC;
+    tv.tv_usec = (time_ns % NANOS_IN_SEC) / NANOS_IN_USEC;
+    tv.tv_nsec = (time_ns % NANOS_IN_SEC) % NANOS_IN_USEC;
     return tv;
 }
 
