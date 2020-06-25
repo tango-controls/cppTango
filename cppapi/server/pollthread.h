@@ -62,26 +62,26 @@ namespace Tango
 
 struct PollThCmd
 {
-	bool			cmd_pending;	// The new command flag
-	bool			trigger;		// The external trigger flag
-	PollCmdCode		cmd_code;		// The command code
-	DeviceImpl		*dev;			// The device pointer (servant)
-	long			index;			// Index in the device poll_list
-	std::string			name;			// Object name
-	PollObjType		type;			// Object type (cmd/attr)
-	PollClock::duration				new_upd;		// New update period (For upd period com.)
+	bool cmd_pending;               // The new command flag
+	bool trigger;                   // The external trigger flag
+	PollCmdCode cmd_code;           // The command code
+	DeviceImpl* dev;                // The device pointer (servant)
+	long index;	                    // Index in the device poll_list
+	std::string name;               // Object name
+	PollObjType type;               // Object type (cmd/attr)
+	PollClock::duration new_upd;    // New update period (For upd period com.)
 };
 
 
 struct WorkItem
 {
-	DeviceImpl			*dev;			// The device pointer (servant)
-	std::vector<PollObj *> 	*poll_list;		// The device poll list
-	PollClock::time_point		wake_up_date;	// The next wake up date
-	PollClock::duration 		update;			// The update period (mS)
-	PollObjType			type;			// Object type (command/attr)
-	std::vector<std::string>		name;			// Object name(s)
-	PollClock::duration needed_time;	// Time needed to execute action
+	DeviceImpl* dev;                    // The device pointer (servant)
+	std::vector<PollObj*>* poll_list;   // The device poll list
+	PollClock::time_point wake_up_date; // The next wake up date
+	PollClock::duration update;         // The update period (mS)
+	PollObjType type;                   // Object type (command/attr)
+	std::vector<std::string> name;      // Object name(s)
+	PollClock::duration needed_time;    // Time needed to execute action
 };
 
 enum PollCmdType

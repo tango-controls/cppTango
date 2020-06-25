@@ -55,12 +55,12 @@ class RingElt
 public:
 	RingElt();
 
-	CORBA::Any					*cmd_result;
-	Tango::AttributeValueList	*attr_value;
-	Tango::AttributeValueList_3	*attr_value_3;
-	Tango::AttributeValueList_4	*attr_value_4;
-	Tango::AttributeValueList_5	*attr_value_5;
-	Tango::DevFailed			*except;
+	CORBA::Any* cmd_result;
+	Tango::AttributeValueList * attr_value;
+	Tango::AttributeValueList_3* attr_value_3;
+	Tango::AttributeValueList_4* attr_value_4;
+	Tango::AttributeValueList_5* attr_value_5;
+	Tango::DevFailed* except;
 	PollClock::time_point when;
 };
 
