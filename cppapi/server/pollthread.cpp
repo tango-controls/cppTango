@@ -548,8 +548,7 @@ void PollThread::execute_cmd()
 
                 if (found == false)
                 {
-                    rem_upd.push_back(local_cmd.new_upd);
-                    rem_name.push_back(PollThread::name_to_del);
+                    rem_upd.emplace_back(local_cmd.new_upd, PollThread::name_to_del);
                 }
 
             }
@@ -638,10 +637,9 @@ void PollThread::execute_cmd()
 				insert_in_list(wo);
 			}
 			else
-            {
-				auto_upd.push_back(local_cmd.new_upd);
-				auto_name.push_back(name_to_del);
-            }
+			{
+				auto_upd.emplace_back(local_cmd.new_upd, name_to_del);
+			}
 		}
 		break;
     }
@@ -771,11 +769,11 @@ void PollThread::one_more_poll()
 // For case where the polling thread itself modify the polling period of the object it already polls
 //
 
-	if (auto_upd.empty() == false)
-	{
-        for (size_t loop = 0;loop < auto_upd.size();loop++)
+    if (auto_upd.empty() == false)
+    {
+        for (const auto& entry : auto_upd)
         {
-            std::vector<std::string>::iterator pos = remove(tmp.name.begin(),tmp.name.end(),auto_name[loop]);
+            auto pos = remove(tmp.name.begin(),tmp.name.end(), entry.second);
             tmp.name.erase(pos,tmp.name.end());
         }
 
@@ -785,12 +783,10 @@ void PollThread::one_more_poll()
             insert_in_list(tmp);
         }
 
-        std::list<WorkItem>::iterator ite;
-
-        for (size_t loop = 0;loop < auto_upd.size();loop++)
+        for (const auto& entry : auto_upd)
         {
             size_t nb_elt = works.size();
-            ite = works.begin();
+            auto ite = works.begin();
 
             bool found = false;
 
@@ -798,9 +794,9 @@ void PollThread::one_more_poll()
             {
                 if (ite->dev == tmp.dev &&
                     ite->type == tmp.type &&
-                    ite->update == auto_upd[loop])
+                    ite->update == entry.first)
                 {
-                    ite->name.push_back(auto_name[loop]);
+                    ite->name.push_back(entry.second);
                     found = true;
                     break;
                 }
@@ -810,8 +806,8 @@ void PollThread::one_more_poll()
             if (found == false)
             {
                 WorkItem new_tmp;
-                new_tmp.update = auto_upd[loop];
-                new_tmp.name.push_back(auto_name[loop]);
+                new_tmp.update = entry.first;
+                new_tmp.name.push_back(entry.second);
                 new_tmp.dev = tmp.dev;
                 new_tmp.poll_list = tmp.poll_list;
                 new_tmp.type = tmp.type;
@@ -822,9 +818,8 @@ void PollThread::one_more_poll()
             }
         }
 
-		auto_upd.clear();
-		auto_name.clear();
-	}
+        auto_upd.clear();
+    }
 
 //
 // Compute new polling date and insert work in list
@@ -834,10 +829,10 @@ void PollThread::one_more_poll()
     {
         if (rem_upd.empty() == false)
         {
-            for (size_t loop = 0;loop < rem_upd.size();loop++)
+            for (const auto& entry : rem_upd)
             {
-                std::vector<std::string>::iterator pos = remove(tmp.name.begin(),tmp.name.end(),rem_name[loop]);
-                tmp.name.erase(pos,tmp.name.end());
+                auto pos = remove(tmp.name.begin(), tmp.name.end(), entry.second);
+                tmp.name.erase(pos, tmp.name.end());
             }
 
             if (tmp.name.empty() == false)
@@ -847,7 +842,6 @@ void PollThread::one_more_poll()
             }
 
             rem_upd.clear();
-            rem_name.clear();
         }
         else
         {
@@ -856,7 +850,7 @@ void PollThread::one_more_poll()
         }
     }
 
-	tune_ctr--;
+    tune_ctr--;
 }
 
 //+---------------------------------------------------------------------------------------------------------------

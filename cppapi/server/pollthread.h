@@ -42,6 +42,7 @@
 #include <poll_clock.h>
 
 #include <list>
+#include <utility>
 
 #ifdef _TG_WINDOWS_
 	#include <sys/types.h>
@@ -161,10 +162,8 @@ private:
 	u_int               previous_nb_late;
 	bool                polling_bef_9;
 
-	std::vector<PollClock::duration> auto_upd;
-	std::vector<std::string> auto_name;
-	std::vector<PollClock::duration> rem_upd;
-	std::vector<std::string> rem_name;
+	std::vector<std::pair<PollClock::duration, std::string>> auto_upd;
+	std::vector<std::pair<PollClock::duration, std::string>> rem_upd;
 
 	ClntIdent 			dummy_cl_id;
 	CppClntIdent 		cci;
