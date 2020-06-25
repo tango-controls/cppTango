@@ -27,6 +27,7 @@
 #ifndef _DEVICEPROXY_H
 #define _DEVICEPROXY_H
 
+#include <chrono>
 
 /****************************************************************************************
  * 																						*
@@ -75,7 +76,7 @@ private :
 	void redo_synch_write_call(TgRequest &);
 	void write_attribute(const AttributeValueList &);
 	void write_attribute(const AttributeValueList_4 &);
-	void create_locking_thread(ApiUtil *,DevLong);
+	void create_locking_thread(ApiUtil *, std::chrono::seconds);
 	void local_import(std::string &);
 	void unsubscribe_all_events();
 

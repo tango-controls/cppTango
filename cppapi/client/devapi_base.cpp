@@ -8814,7 +8814,7 @@ void DeviceProxy::lock(int lock_validity)
         std::map<std::string, LockingThread>::iterator pos = au->lock_threads.find(adm_dev_name);
         if (pos == au->lock_threads.end())
         {
-            create_locking_thread(au, lock_validity);
+            create_locking_thread(au, std::chrono::seconds(lock_validity));
         }
         else
         {
@@ -8830,7 +8830,7 @@ void DeviceProxy::lock(int lock_validity)
                 delete pos->second.mon;
                 au->lock_threads.erase(pos);
 
-                create_locking_thread(au, lock_validity);
+                create_locking_thread(au, std::chrono::seconds(lock_validity));
             }
             else
             {
@@ -8854,7 +8854,7 @@ void DeviceProxy::lock(int lock_validity)
                 pos->second.shared->dev_name = device_name;
                 {
                     omni_mutex_lock guard(lock_mutex);
-                    pos->second.shared->lock_validity = lock_valid;
+                    pos->second.shared->lock_validity = std::chrono::seconds(lock_valid);
                 }
 
                 pos->second.mon->signal();
@@ -9030,7 +9030,7 @@ void DeviceProxy::unlock(bool force)
 //
 //-----------------------------------------------------------------------------
 
-void DeviceProxy::create_locking_thread(ApiUtil *au, DevLong dl)
+void DeviceProxy::create_locking_thread(ApiUtil *au, std::chrono::seconds dl)
 {
 
     LockingThread lt;

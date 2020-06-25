@@ -61,7 +61,7 @@ namespace Tango
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-LockThread::LockThread(LockThCmd &cmd,TangoMonitor &m,DeviceProxy *adm,std::string &dev,DevLong per):
+LockThread::LockThread(LockThCmd &cmd,TangoMonitor &m,DeviceProxy *adm,std::string &dev, LockClock::duration per):
 shared_cmd(cmd),p_mon(m),admin_proxy(adm)
 {
 	LockedDevice ld;
@@ -71,10 +71,8 @@ shared_cmd(cmd),p_mon(m),admin_proxy(adm)
 
 	local_cmd.cmd_pending = false;
 
-	DevLong tmp_usec = (per * 1000000) - 500000;
-	period = tmp_usec;
-	period_ms = tmp_usec / 1000;
-	sleep = period_ms;
+	period = per - std::chrono::microseconds(500000);
+	sleep = period;
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -91,16 +89,7 @@ void LockThread::run(TANGO_UNUSED(void *ptr))
 {
 	LockCmdType received;
 
-#ifdef _TG_WINDOWS_
-	struct _timeb now_win;
-
-	_ftime(&now_win);
-	next_work.tv_sec = (unsigned long)now_win.time;
-	next_work.tv_usec = (long)now_win.millitm * 1000;
-#else
-	gettimeofday(&next_work,NULL);
-#endif
-	T_ADD(next_work,period);
+	next_work = LockClock::now() + period;
 
 //
 // The infinite loop
@@ -110,10 +99,7 @@ void LockThread::run(TANGO_UNUSED(void *ptr))
 	{
 		try
 		{
-			if (sleep != 0)
-				received = get_command(sleep);
-			else
-				received = LOCK_TIME_OUT;
+			received = get_command();
 
 			switch (received)
 			{
@@ -151,17 +137,18 @@ void LockThread::run(TANGO_UNUSED(void *ptr))
 //		with a timeout. If the thread is awaken due to the timeout, false is returned. If the work list is empty,
 //		the thread waits for ever.
 //
-// argument :
-//		in :
-//			- tout : The timeout in mS
-//
 // returns :
 //		The command type enum: Is it a real command or a time-out
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-LockCmdType LockThread::get_command(DevLong tout)
+LockCmdType LockThread::get_command()
 {
+	if (sleep.has_value() && *sleep == LockClock::duration::zero())
+	{
+		return LOCK_TIME_OUT;
+	}
+
 	omni_mutex_lock sync(p_mon);
 	LockCmdType ret;
 
@@ -175,8 +162,8 @@ LockCmdType LockThread::get_command(DevLong tout)
 			p_mon.wait();
 		else
 		{
-			if (tout != -1)
-				p_mon.wait(tout);
+			if (sleep.has_value())
+				p_mon.wait(std::chrono::duration_cast<std::chrono::milliseconds>(*sleep).count());
 		}
 	}
 
@@ -441,9 +428,7 @@ void LockThread::update_th_period()
 // Compute new thread period
 //
 
-	DevLong tmp_usec = (ite->validity * 1000000) - 500000;
-	period = tmp_usec;
-	period_ms = tmp_usec / 1000;
+	period = ite->validity - std::chrono::microseconds(500000);
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -461,37 +446,16 @@ void LockThread::compute_sleep_time(bool cmd)
 
 	if (cmd == false)
 	{
-		sleep = period_ms;
-#ifdef _TG_WINDOWS_
-		struct _timeb now_win;
-
-		_ftime(&now_win);
-		next_work.tv_sec = (unsigned long)now_win.time;
-		next_work.tv_usec = (long)now_win.millitm * 1000;
-#else
-		gettimeofday(&next_work,NULL);
-#endif
-		T_ADD(next_work,period);
+		sleep = period;
+		next_work = PollClock::now() + period;
 	}
 	else
 	{
-		struct timeval now;
-		long diff;
-
-#ifdef _TG_WINDOWS_
-		struct _timeb now_win;
-
-		_ftime(&now_win);
-		now.tv_sec = (unsigned long)now_win.time;
-		now.tv_usec = (long)now_win.millitm * 1000;
-#else
-		gettimeofday(&now,NULL);
-#endif
-		T_DIFF(now,next_work,diff);
-		if (diff < 0)
-			sleep = -1;
+		auto diff = next_work - PollClock::now();
+		if (diff < PollClock::duration::zero())
+			sleep = tango_nullopt;
 		else
-			sleep = diff / 1000;
+			sleep = diff;
 	}
 }
 

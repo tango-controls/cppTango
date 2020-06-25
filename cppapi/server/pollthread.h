@@ -174,47 +174,6 @@ public:
 	static PollObjType	type_to_del;
 };
 
-//
-// Three macros
-//
-
-#define T_DIFF(A,B,C)                                                      \
-  do                                                                       \
-  {                                                                        \
-    long delta_sec = B.tv_sec - A.tv_sec;                                  \
-    if (delta_sec == 0)                                                    \
-      C = B.tv_usec - A.tv_usec;                                           \
-    else                                                                   \
-    {                                                                      \
-      C = ((delta_sec - 1) * 1000000) + (1000000 - A.tv_usec) + B.tv_usec; \
-    }                                                                      \
-  }                                                                        \
-  while(0)
-
-#define T_ADD(A,B)                     \
-  do                                   \
-  {                                    \
-    A.tv_usec = A.tv_usec + B;         \
-    while (A.tv_usec > 1000000)        \
-    {                                  \
-      A.tv_sec++;                      \
-      A.tv_usec = A.tv_usec - 1000000; \
-    }                                  \
-  }                                    \
-  while(0)
-
-#define T_DEC(A,B)                     \
-  do                                   \
-  {                                    \
-    A.tv_usec = A.tv_usec - B;         \
-    if (A.tv_usec < 0)                 \
-    {                                  \
-      A.tv_sec--;                      \
-      A.tv_usec = 1000000 + A.tv_usec; \
-    }                                  \
-  }                                    \
-  while(0)
-
 } // End of Tango namespace
 
 #endif /* _POLLTHREAD_ */
