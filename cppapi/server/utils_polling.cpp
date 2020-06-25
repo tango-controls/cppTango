@@ -34,6 +34,7 @@
 #endif
 
 #include <tango.h>
+#include <poll_clock.h>
 
 #include <iostream>
 #include <algorithm>
@@ -469,8 +470,8 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const std::string &name)
 // Check that it is an externally triggered polling object. If it is not the case, throw exception
 //
 
-	long tmp_upd = (*ite)->get_upd();
-	if (tmp_upd != 0)
+	auto tmp_upd = (*ite)->get_upd();
+	if (tmp_upd != PollClock::duration::zero())
 	{
 		TangoSys_OMemStream o;
 
@@ -627,8 +628,8 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const std::string &name)
 // Check that it is an externally triggered polling object. If it is not the case, throw exception
 //
 
-	long tmp_upd = (*ite)->get_upd();
-	if (tmp_upd != 0)
+	auto tmp_upd = (*ite)->get_upd();
+	if (tmp_upd != PollClock::duration::zero())
 	{
 		TangoSys_OMemStream o;
 

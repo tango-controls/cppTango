@@ -38,6 +38,7 @@
 #include <device_3.h>
 #include <eventsupplier.h>
 #include <device_3.tpp>
+#include <poll_clock.h>
 #include <new>
 
 
@@ -838,8 +839,8 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							std::transform(att_name.begin(),att_name.end(),att_name.begin(),::tolower);
 
 							std::vector<PollObj *>::iterator ite = get_polled_obj_by_type_name(Tango::POLL_ATTR,att_name);
-							long upd = (*ite)->get_upd();
-							if (upd == 0)
+							auto upd = (*ite)->get_upd();
+							if (upd == PollClock::duration::zero())
 							{
 								o << "Attribute ";
 								o << att.get_name();
@@ -1248,22 +1249,12 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 // Skip this test for object with external polling triggering (upd = 0)
 //
 
-		long tmp_upd = polled_attr->get_upd();
-		if (tmp_upd != 0)
+		auto tmp_upd = polled_attr->get_upd();
+		if (tmp_upd != PollClock::duration::zero())
 		{
-			double last = polled_attr->get_last_insert_date();
-			struct timeval now;
-#ifdef _TG_WINDOWS_
-			struct _timeb now_win;
-			_ftime(&now_win);
-			now.tv_sec = (unsigned long)now_win.time;
-			now.tv_usec = (long)now_win.millitm * 1000;
-#else
-			gettimeofday(&now,NULL);
-#endif
-			now.tv_sec = now.tv_sec - DELTA_T;
-			double now_d = (double)now.tv_sec + ((double)now.tv_usec / 1000000);
-			double diff_d = now_d - last;
+			auto last = polled_attr->get_last_insert_date();
+			auto now = PollClock::now();
+			auto diff_d = now - last;
 			if (diff_d > polled_attr->get_authorized_delta())
 			{
 				TangoSys_OMemStream o;

@@ -39,6 +39,7 @@
 
 #include <tango.h>
 #include <pollring.h>
+#include <poll_clock.h>
 
 namespace Tango
 {
@@ -63,18 +64,18 @@ namespace Tango
 class PollObj: public omni_mutex
 {
 public:
-	PollObj(DeviceImpl *,PollObjType,const std::string &,int);
-	PollObj(DeviceImpl *,PollObjType,const std::string &,int,long);
+	PollObj(DeviceImpl *,PollObjType,const std::string &, PollClock::duration);
+	PollObj(DeviceImpl *,PollObjType,const std::string &, PollClock::duration, long);
 
-	void insert_data(CORBA::Any *,struct timeval &,struct timeval &);
-	void insert_data(Tango::AttributeValueList *,struct timeval &,struct timeval &);
-	void insert_data(Tango::AttributeValueList_3 *,struct timeval &,struct timeval &);
-	void insert_data(Tango::AttributeValueList_4 *,struct timeval &,struct timeval &);
-	void insert_data(Tango::AttributeValueList_5 *,struct timeval &,struct timeval &);
-	void insert_except(Tango::DevFailed *,struct timeval &,struct timeval &);
+	void insert_data(CORBA::Any *,                  PollClock::time_point, PollClock::duration);
+	void insert_data(Tango::AttributeValueList *,   PollClock::time_point, PollClock::duration);
+	void insert_data(Tango::AttributeValueList_3 *, PollClock::time_point, PollClock::duration);
+	void insert_data(Tango::AttributeValueList_4 *, PollClock::time_point, PollClock::duration);
+	void insert_data(Tango::AttributeValueList_5 *, PollClock::time_point, PollClock::duration);
+	void insert_except(Tango::DevFailed *,          PollClock::time_point, PollClock::duration);
 
-	double get_authorized_delta() {return max_delta_t;}
-	void update_upd(int);
+	PollClock::duration get_authorized_delta() {return max_delta_t;}
+	void update_upd(PollClock::duration);
 
 	CORBA::Any *get_last_cmd_result();
 	Tango::AttributeValue &get_last_attr_value(bool);
@@ -85,23 +86,20 @@ public:
 	bool is_ring_empty() {omni_mutex_lock sync(*this);return is_ring_empty_i();}
 	bool is_ring_empty_i() {return ring.is_empty();}
 
-	long get_upd() {omni_mutex_lock sync(*this);return get_upd_i();}
-	long get_upd_i() {return ((upd.tv_sec * 1000) + (upd.tv_usec / 1000));}
+	PollClock::duration get_upd() {omni_mutex_lock sync(*this);return get_upd_i();}
+	PollClock::duration get_upd_i() { return upd; }
 
 	std::string &get_name() {omni_mutex_lock sync(*this);return get_name_i();}
 	std::string &get_name_i() {return name;}
 
-	inline double get_needed_time() {omni_mutex_lock sync(*this);return get_needed_time_i();}
-	inline double get_needed_time_i()
-	{
-		return ((needed_time.tv_sec * 1000) + (needed_time.tv_usec / 1000.0));
-	}
+	PollClock::duration get_needed_time() {omni_mutex_lock sync(*this);return get_needed_time_i();}
+	PollClock::duration get_needed_time_i() { return needed_time; }
 
 	inline PollObjType get_type() {omni_mutex_lock sync(*this);return get_type_i();}
 	inline PollObjType get_type_i() {return type;}
 
-	double get_last_insert_date() {omni_mutex_lock sync(*this);return get_last_insert_date_i();}
-	double get_last_insert_date_i();
+	PollClock::time_point get_last_insert_date() {omni_mutex_lock sync(*this);return get_last_insert_date_i();}
+	PollClock::time_point get_last_insert_date_i();
 
 	bool is_last_an_error() {omni_mutex_lock sync(*this);return is_last_an_error_i();}
 	bool is_last_an_error_i() {return ring.is_last_an_error();}
@@ -112,8 +110,8 @@ public:
 	Tango::DevFailed *get_last_except_i() {return ring.get_last_except();}
 	Tango::DevErrorList &get_last_attr_error_i() {return ring.get_last_attr_error();}
 
-	void get_delta_t(std::vector<double> &vd, long nb) {omni_mutex_lock sync(*this);get_delta_t_i(vd,nb);}
-	void get_delta_t_i(std::vector<double> &vd,long nb) {ring.get_delta_t(vd,nb);}
+	std::vector<PollClock::duration> get_delta_t(long nb) {omni_mutex_lock sync(*this); return get_delta_t_i(nb);}
+	std::vector<PollClock::duration> get_delta_t_i(long nb) {return ring.get_delta_t(nb);}
 
 	long get_elt_nb_in_buffer() {omni_mutex_lock sync(*this);return get_elt_nb_in_buffer_i();}
 	long get_elt_nb_in_buffer_i() {return ring.get_nb_elt();}
@@ -134,9 +132,9 @@ protected:
 	DeviceImpl			*dev;
 	PollObjType			type;
 	std::string 				name;
-	struct timeval		upd;
-	struct timeval		needed_time;
-	double				max_delta_t;
+	PollClock::duration upd;
+	PollClock::duration needed_time;
+	PollClock::duration max_delta_t;
 	PollRing			ring;
 	bool				fwd;
 };

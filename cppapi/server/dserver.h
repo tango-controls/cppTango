@@ -39,6 +39,7 @@
 
 #include <tango.h>
 #include "event_subscription_state.h"
+#include <poll_clock.h>
 
 namespace Tango
 {
@@ -203,9 +204,9 @@ public:
 
 struct Pol
 {
-	PollObjType 	type;
-	long			upd;
-	std::string 			name;
+	PollObjType type;
+	PollClock::duration upd;
+	std::string name;
 };
 
 

@@ -1014,7 +1014,7 @@ void DServer::restart(std::string &d_name)
 // Send command to the polling thread
 //
 
-		send->lvalue[0] = dev_pol[i].upd;
+		send->lvalue[0] = std::chrono::duration_cast<std::chrono::milliseconds>(dev_pol[i].upd).count();
 		send->svalue[0] = Tango::string_dup(name[0]);
 		if (dev_pol[i].type == Tango::POLL_CMD)
 			send->svalue[1] = Tango::string_dup("command");

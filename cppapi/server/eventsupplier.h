@@ -43,6 +43,7 @@
 #define _EVENT_SUPPLIER_API_H
 
 #include <except.h>
+#include <poll_clock.h>
 
 #if defined (_TG_WINDOWS_) && defined (_USRDLL) && !defined(_TANGO_LIB)
 #define USE_stub_in_nt_dll
@@ -111,23 +112,55 @@ public :
         zmq::message_t	  		  *zmq_mess;
     };
 
-	SendEventType detect_and_push_events(DeviceImpl *,struct SuppliedEventData &,DevFailed *,std::string &,struct timeval *);
+	SendEventType detect_and_push_events(
+		DeviceImpl *,
+	    struct SuppliedEventData &,
+	    DevFailed *,
+	    std::string &,
+	    PollClock::time_point);
 
 //------------------ Change event ---------------------------
 
-	bool detect_change(Attribute &,struct SuppliedEventData &,bool,double &,double &,DevFailed *,bool &,DeviceImpl *);
+	bool detect_change(
+	    Attribute &,
+	    struct SuppliedEventData &,
+	    bool,
+	    double &,
+	    double &,
+	    DevFailed *,
+	    bool &,
+	    DeviceImpl *);
 
 //------------------ Detect, push change event --------------
 
-	bool detect_and_push_change_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,std::string &,DevFailed *,bool user_push = false);
+	bool detect_and_push_change_event(
+	    DeviceImpl *,
+	    struct SuppliedEventData &,
+	    Attribute &,
+	    std::string &,
+	    DevFailed *,
+	    bool user_push = false);
 
 //------------------ Detect, push archive event --------------
 
-	bool detect_and_push_archive_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,std::string &,DevFailed *,struct timeval *,bool user_push = false);
+	bool detect_and_push_archive_event(
+	    DeviceImpl *,
+	    struct SuppliedEventData &,
+	    Attribute &,
+	    std::string &,
+	    DevFailed *,
+	    PollClock::time_point,
+	    bool user_push = false);
 
 //------------------ Detect, push periodic event -------------
 
-	bool detect_and_push_periodic_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,std::string &,DevFailed *,struct timeval *);
+	bool detect_and_push_periodic_event(
+	    DeviceImpl *,
+	    struct SuppliedEventData &,
+	    Attribute &,
+	    std::string &,
+	    DevFailed *,
+	    PollClock::time_point);
 
 //------------------ Push event -------------------------------
 
@@ -153,10 +186,6 @@ public :
 	void set_one_subscription_cmd(bool val) {one_subscription_cmd = val;}
 
 protected :
-	inline int timeval_diff(TimeVal before, TimeVal after)
-	{
-		return ((after.tv_sec-before.tv_sec)*1000000 + after.tv_usec - before.tv_usec);
-	}
 
 	static std::string 		    fqdn_prefix;
 

@@ -43,6 +43,7 @@
 #include <classattribute.h>
 #include <eventsupplier.h>
 #include <apiexcept.h>
+#include <poll_clock.h>
 
 #ifdef TANGO_HAS_LOG4TANGO
 #include <logging.h>
@@ -2810,8 +2811,8 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
                         std::transform(att_name.begin(), att_name.end(), att_name.begin(), ::tolower);
 
                         std::vector<PollObj *>::iterator ite = get_polled_obj_by_type_name(Tango::POLL_ATTR, att_name);
-                        long upd = (*ite)->get_upd();
-                        if (upd == 0)
+                        auto upd = (*ite)->get_upd();
+                        if (upd == PollClock::duration::zero())
                         {
                             o << "Attribute ";
                             o << att.get_name();

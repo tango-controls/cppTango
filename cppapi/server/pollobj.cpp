@@ -69,40 +69,28 @@ namespace Tango
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-PollObj::PollObj(DeviceImpl *d,PollObjType ty,const std::string &na,int user_upd)
-:dev(d),type(ty),name(na),ring(),fwd(false)
+PollObj::PollObj(DeviceImpl *d, PollObjType ty, const std::string &na, PollClock::duration user_upd) :
+	dev(d),
+	type(ty),
+	name(na),
+	upd(user_upd),
+	needed_time(),
+	max_delta_t(upd * dev->get_poll_old_factor()),
+	ring(),
+	fwd(false)
 {
-	needed_time.tv_sec = 0;
-	needed_time.tv_usec = 0;
-	if (user_upd < 1000)
-	{
-		upd.tv_usec = user_upd * 1000;
-		upd.tv_sec = 0;
-	}
-	else
-	{
-		upd.tv_sec = user_upd / 1000;
-		upd.tv_usec = (user_upd - (upd.tv_sec * 1000)) * 1000;
-	}
-	max_delta_t = (double)(user_upd / 1000.0) * dev->get_poll_old_factor();
 }
 
-PollObj::PollObj(DeviceImpl *d,PollObjType ty,const std::string &na,int user_upd,long r_depth)
-:dev(d),type(ty),name(na),ring(r_depth),fwd(false)
+PollObj::PollObj(DeviceImpl *d, PollObjType ty, const std::string &na, PollClock::duration user_upd, long r_depth) :
+	dev(d),
+	type(ty),
+	name(na),
+	upd(user_upd),
+	needed_time(),
+	max_delta_t(upd * dev->get_poll_old_factor()),
+	ring(r_depth),
+	fwd(false)
 {
-	needed_time.tv_sec = 0;
-	needed_time.tv_usec = 0;
-	if (user_upd < 1000)
-	{
-		upd.tv_usec = user_upd * 1000;
-		upd.tv_sec = 0;
-	}
-	else
-	{
-		upd.tv_sec = user_upd / 1000;
-		upd.tv_usec = (user_upd - (upd.tv_sec * 1000)) * 1000;
-	}
-	max_delta_t = (double)(user_upd / 1000.0) * dev->get_poll_old_factor();
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -121,7 +109,7 @@ PollObj::PollObj(DeviceImpl *d,PollObjType ty,const std::string &na,int user_upd
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void PollObj::insert_data(CORBA::Any *res,struct timeval &when,struct timeval &needed)
+void PollObj::insert_data(CORBA::Any *res, PollClock::time_point when, PollClock::duration needed)
 {
 	omni_mutex_lock sync(*this);
 
@@ -129,7 +117,7 @@ void PollObj::insert_data(CORBA::Any *res,struct timeval &when,struct timeval &n
 	needed_time = needed;
 }
 
-void PollObj::insert_data(Tango::AttributeValueList *res,struct timeval &when,struct timeval &needed)
+void PollObj::insert_data(Tango::AttributeValueList *res, PollClock::time_point when, PollClock::duration needed)
 {
 	omni_mutex_lock sync(*this);
 
@@ -137,7 +125,7 @@ void PollObj::insert_data(Tango::AttributeValueList *res,struct timeval &when,st
 	needed_time = needed;
 }
 
-void PollObj::insert_data(Tango::AttributeValueList_3 *res,struct timeval &when,struct timeval &needed)
+void PollObj::insert_data(Tango::AttributeValueList_3 *res, PollClock::time_point when, PollClock::duration needed)
 {
 	omni_mutex_lock sync(*this);
 
@@ -145,7 +133,7 @@ void PollObj::insert_data(Tango::AttributeValueList_3 *res,struct timeval &when,
 	needed_time = needed;
 }
 
-void PollObj::insert_data(Tango::AttributeValueList_4 *res,struct timeval &when,struct timeval &needed)
+void PollObj::insert_data(Tango::AttributeValueList_4 *res, PollClock::time_point when, PollClock::duration needed)
 {
 	omni_mutex_lock sync(*this);
 
@@ -153,7 +141,7 @@ void PollObj::insert_data(Tango::AttributeValueList_4 *res,struct timeval &when,
 	needed_time = needed;
 }
 
-void PollObj::insert_data(Tango::AttributeValueList_5 *res,struct timeval &when,struct timeval &needed)
+void PollObj::insert_data(Tango::AttributeValueList_5 *res, PollClock::time_point when, PollClock::duration needed)
 {
 	omni_mutex_lock sync(*this);
 
@@ -178,8 +166,8 @@ void PollObj::insert_data(Tango::AttributeValueList_5 *res,struct timeval &when,
 //-------------------------------------------------------------------------------------------------------------------
 
 void PollObj::insert_except(Tango::DevFailed *res,
-			    struct timeval &when,
-			    struct timeval &needed)
+			    PollClock::time_point when,
+			    PollClock::duration needed)
 {
 	omni_mutex_lock sync(*this);
 
@@ -198,11 +186,9 @@ void PollObj::insert_except(Tango::DevFailed *res,
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-double PollObj::get_last_insert_date_i()
+PollClock::time_point PollObj::get_last_insert_date_i()
 {
-	struct timeval last = ring.get_last_insert_date();
-	double last_d = (double)last.tv_sec + ((double)last.tv_usec / 1000000);
-	return last_d;
+	return ring.get_last_insert_date();
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -280,19 +266,10 @@ Tango::AttributeValue_5 &PollObj::get_last_attr_value_5(bool lock)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void PollObj::update_upd(int new_upd)
+void PollObj::update_upd(PollClock::duration new_upd)
 {
-	if (new_upd < 1000)
-	{
-		upd.tv_usec = new_upd * 1000;
-		upd.tv_sec = 0;
-	}
-	else
-	{
-		upd.tv_sec = new_upd / 1000;
-		upd.tv_usec = (new_upd - (upd.tv_sec * 1000)) * 1000;
-	}
-	max_delta_t = (double)(new_upd / 1000.0) * dev->get_poll_old_factor();
+	upd = new_upd;
+	max_delta_t = new_upd * dev->get_poll_old_factor();
 }
 
 //-------------------------------------------------------------------------------------------------------------------

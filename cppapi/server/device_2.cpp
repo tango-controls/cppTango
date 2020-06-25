@@ -42,6 +42,7 @@
 
 #include <tango.h>
 #include <device_2.h>
+#include <poll_clock.h>
 #include <new>
 
 #ifdef _TG_WINDOWS_
@@ -332,22 +333,12 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 // Skip this test for object with external polling triggering (upd = 0)
 //
 
-			long tmp_upd = polled_cmd->get_upd();
-			if (tmp_upd != 0)
+			auto tmp_upd = polled_cmd->get_upd();
+			if (tmp_upd != PollClock::duration::zero())
 			{
-				double last = polled_cmd->get_last_insert_date();
-				struct timeval now;
-#ifdef _TG_WINDOWS_
-				struct _timeb now_win;
-				_ftime(&now_win);
-				now.tv_sec = (unsigned long)now_win.time;
-				now.tv_usec = (long)now_win.millitm * 1000;
-#else
-				gettimeofday(&now,NULL);
-#endif
-				now.tv_sec = now.tv_sec - DELTA_T;
-				double now_d = (double)now.tv_sec + ((double)now.tv_usec / 1000000);
-				double diff_d = now_d - last;
+				auto last = polled_cmd->get_last_insert_date();
+				auto now = PollClock::now();
+				auto diff_d = now - last;
 				if (diff_d > polled_cmd->get_authorized_delta())
 				{
 					TangoSys_OMemStream o;
@@ -737,22 +728,12 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 // Skip this test for object with external polling triggering (upd = 0)
 //
 
-					long tmp_upd = polled_attr->get_upd();
-					if (tmp_upd != 0)
+					auto tmp_upd = polled_attr->get_upd();
+					if (tmp_upd != PollClock::duration::zero())
 					{
-						double last = polled_attr->get_last_insert_date();
-						struct timeval now;
-#ifdef _TG_WINDOWS_
-						struct _timeb now_win;
-						_ftime(&now_win);
-						now.tv_sec = (unsigned long)now_win.time;
-						now.tv_usec = (long)now_win.millitm;
-#else
-						gettimeofday(&now,NULL);
-#endif
-						now.tv_sec = now.tv_sec - DELTA_T;
-						double now_d = (double)now.tv_sec + ((double)now.tv_usec / 1000000);
-						double diff_d = now_d - last;
+						auto last = polled_attr->get_last_insert_date();
+						auto now = PollClock::now();
+						auto diff_d = now - last;
 						if (diff_d > polled_attr->get_authorized_delta())
 						{
 							delete back;

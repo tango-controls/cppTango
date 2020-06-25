@@ -69,7 +69,7 @@ struct PollThCmd
 	long			index;			// Index in the device poll_list
 	std::string			name;			// Object name
 	PollObjType		type;			// Object type (cmd/attr)
-	int				new_upd;		// New update period (For upd period com.)
+	PollClock::duration				new_upd;		// New update period (For upd period com.)
 };
 
 
@@ -77,11 +77,11 @@ struct WorkItem
 {
 	DeviceImpl			*dev;			// The device pointer (servant)
 	std::vector<PollObj *> 	*poll_list;		// The device poll list
-	struct timeval		wake_up_date;	// The next wake up date
-	int 				update;			// The update period (mS)
+	PollClock::time_point		wake_up_date;	// The next wake up date
+	PollClock::duration 		update;			// The update period (mS)
 	PollObjType			type;			// Object type (command/attr)
 	std::vector<std::string>		name;			// Object name(s)
-	struct timeval		needed_time;	// Time needed to execute action
+	PollClock::duration needed_time;	// Time needed to execute action
 };
 
 enum PollCmdType
@@ -117,9 +117,7 @@ protected:
 	PollCmdType get_command();
 	void one_more_poll();
 	void one_more_trigg();
-	void compute_new_date(struct timeval &,int);
 	void compute_sleep_time();
-	void time_diff(struct timeval &,struct timeval &,struct timeval &);
 	void poll_cmd(WorkItem &);
 	void poll_attr(WorkItem &);
 	void eve_heartbeat();
@@ -129,7 +127,7 @@ protected:
 	void print_list();
 	void insert_in_list(WorkItem &);
 	void add_insert_in_list(WorkItem &);
-	void tune_list(bool,long);
+	void tune_list(bool);
 	void err_out_of_sync(WorkItem &);
 
     template <typename T> void robb_data(T &,T &);
@@ -143,14 +141,10 @@ protected:
 
 	PollThCmd			local_cmd;
 
-#ifdef _TG_WINDOWS_
-	struct _timeb		now_win;
-	struct _timeb		after_win;
-	double				ctr_frequency;
-#endif
-	struct timeval		now;
-	struct timeval		after;
-	tango_optional<long>				sleep;
+	PollClock::time_point now;
+	PollClock::time_point after;
+	tango_optional<PollClock::duration> sleep;
+
 	bool				polling_stop;
 
 private:
@@ -162,14 +156,15 @@ private:
 	AttributeValue_5	dummy_att5;
 	long				tune_ctr;
 	bool				need_two_tuning;
-	std::vector<long>		auto_upd;
-	std::vector<std::string>      auto_name;
-	std::vector<long>        rem_upd;
-	std::vector<std::string>      rem_name;
 	bool				send_heartbeat;
 	u_int				heartbeat_ctr;
 	u_int               previous_nb_late;
 	bool                polling_bef_9;
+
+	std::vector<PollClock::duration> auto_upd;
+	std::vector<std::string> auto_name;
+	std::vector<PollClock::duration> rem_upd;
+	std::vector<std::string> rem_name;
 
 	ClntIdent 			dummy_cl_id;
 	CppClntIdent 		cci;

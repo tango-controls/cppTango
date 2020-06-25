@@ -71,7 +71,7 @@ PollObjType PollThread::type_to_del = Tango::POLL_CMD;
 //------------------------------------------------------------------------------------------------------------------
 
 PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cmd(cmd),p_mon(m),
-					    sleep(1),polling_stop(true),
+					    sleep(std::chrono::milliseconds(1)),polling_stop(true),
 					    attr_names(1),tune_ctr(1),
 					    need_two_tuning(false),send_heartbeat(heartbeat),heartbeat_ctr(0)
 {
@@ -86,16 +86,6 @@ PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cm
 
 	if (heartbeat == true)
 		polling_stop = false;
-
-#ifdef _TG_WINDOWS_
-	LARGE_INTEGER f;
-	BOOL is_ctr;
-	is_ctr = QueryPerformanceFrequency(&f);
-	if (is_ctr != 0)
-		ctr_frequency = 1000000.0 / (double)f.QuadPart;
-	else
-		ctr_frequency = 0.0;
-#endif
 
     dummy_att5.value.union_no_data(true);
     dummy_att5.quality = ATTR_INVALID;
@@ -133,19 +123,11 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 		wo.dev = NULL;
 		wo.poll_list = NULL;
 		wo.type = STORE_SUBDEV;
-		wo.update = 30*60*1000;			// check ervery 30 minutes
+		wo.update = std::chrono::minutes(30);
 		wo.name.push_back(std::string("Sub device property storage"));
-		wo.needed_time.tv_sec  = 0;
-		wo.needed_time.tv_usec = 0;
+		wo.needed_time = PollClock::duration::zero();
 
-#ifdef _TG_WINDOWS_
-		_ftime(&now_win);
-		now.tv_sec = (unsigned long)now_win.time;
-		now.tv_usec = (long)now_win.millitm * 1000;
-#else
-		gettimeofday(&now,NULL);
-#endif
-		now.tv_sec = now.tv_sec - DELTA_T;
+		now = PollClock::now();
 		wo.wake_up_date = now;
 		insert_in_list(wo);
 	}
@@ -170,14 +152,7 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 				per_thread_data_created = true;
 			}
 
-#ifdef _TG_WINDOWS_
-			_ftime(&now_win);
-			now.tv_sec = (unsigned long)now_win.time;
-			now.tv_usec = (long)now_win.millitm * 1000;
-#else
-			gettimeofday(&now,NULL);
-#endif
-			now.tv_sec = now.tv_sec - DELTA_T;
+			now = PollClock::now();
 
 			switch (received)
 			{
@@ -194,18 +169,11 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 				break;
 			}
 
-#ifdef _TG_WINDOWS_
-			_ftime(&after_win);
-			after.tv_sec = (unsigned long)after_win.time;
-			after.tv_usec = (long)after_win.millitm * 1000;
-#else
-			gettimeofday(&after,NULL);
-#endif
-			after.tv_sec = after.tv_sec - DELTA_T;
+			after = PollClock::now();
 
 			if (tune_ctr <= 0)
 			{
-				tune_list(true,0);
+				tune_list(true);
 				if (need_two_tuning == true)
 				{
 					unsigned long nb_works = works.size();
@@ -260,7 +228,7 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 
 PollCmdType PollThread::get_command()
 {
-	if (sleep.has_value() && *sleep == 0)
+	if (sleep.has_value() && *sleep == PollClock::duration::zero())
 	{
 		return POLL_TIME_OUT;
 	}
@@ -279,7 +247,7 @@ PollCmdType PollThread::get_command()
 		else
 		{
 			if (sleep.has_value())
-				p_mon.wait(*sleep);
+				p_mon.wait(std::chrono::duration_cast<std::chrono::milliseconds>(*sleep).count());
 		}
 	}
 
@@ -341,7 +309,7 @@ void PollThread::execute_cmd()
 
         wo.dev = local_cmd.dev;
         wo.poll_list = &(wo.dev->get_poll_obj_list());
-        int new_upd = (*wo.poll_list)[local_cmd.index]->get_upd();
+        auto new_upd = (*wo.poll_list)[local_cmd.index]->get_upd();
         PollObjType new_type = (*wo.poll_list)[local_cmd.index]->get_type();
 
         bool found = false;
@@ -361,16 +329,17 @@ void PollThread::execute_cmd()
             wo.type = new_type;
             wo.update = new_upd;
             wo.name.push_back((*wo.poll_list)[local_cmd.index]->get_name());
-            wo.needed_time.tv_sec = 0;
-            wo.needed_time.tv_usec = 0;
+            wo.needed_time = PollClock::duration::zero();
 
-            if (wo.update != 0)
+            if (wo.update != PollClock::duration::zero())
             {
                 wo.wake_up_date = now;
-                if (local_cmd.new_upd != 0)
+                if (local_cmd.new_upd != PollClock::duration::zero())
                 {
-                    cout5 << "Received a delta from now of " << local_cmd.new_upd << std::endl;
-                    T_ADD(wo.wake_up_date,local_cmd.new_upd * 1000);
+                    cout5 << "Received a delta from now of "
+                        << std::fixed << std::chrono::nanoseconds(local_cmd.new_upd).count() / 1e6 << " ms"
+                        << std::endl;
+                    wo.wake_up_date += local_cmd.new_upd;
                 }
                 insert_in_list(wo);
                 unsigned long nb_works = works.size();
@@ -379,8 +348,7 @@ void PollThread::execute_cmd()
             }
             else
             {
-                wo.wake_up_date.tv_sec = 0;
-                wo.wake_up_date.tv_usec = 0;
+                wo.wake_up_date = {};
                 ext_trig_works.push_back(wo);
             }
         }
@@ -524,7 +492,7 @@ void PollThread::execute_cmd()
 
 		bool found_in_work_list = false;
 
-        if (local_cmd.new_upd != 0)
+        if (local_cmd.new_upd != PollClock::duration::zero())
         {
             WorkItem tmp_work;
             size_t i,nb_elt;
@@ -571,9 +539,8 @@ void PollThread::execute_cmd()
                 tmp_work.type = PollThread::type_to_del;
                 tmp_work.update = local_cmd.new_upd;
                 tmp_work.name.push_back(PollThread::name_to_del);
-                tmp_work.needed_time.tv_sec = 0;
-                tmp_work.needed_time.tv_usec = 0;
-                compute_new_date(now,local_cmd.new_upd);
+                tmp_work.needed_time = PollClock::duration::zero();
+                now += local_cmd.new_upd;
                 tmp_work.wake_up_date = now;
                 add_insert_in_list(tmp_work);
                 tune_ctr = 0;
@@ -629,8 +596,7 @@ void PollThread::execute_cmd()
             wo.type = (*wo.poll_list)[local_cmd.index]->get_type();
             wo.update = (*wo.poll_list)[local_cmd.index]->get_upd();
             wo.name.push_back((*wo.poll_list)[local_cmd.index]->get_name());
-            wo.wake_up_date.tv_sec = 0;
-            wo.wake_up_date.tv_usec = 0;
+            wo.wake_up_date = {};
 
             ext_trig_works.push_back(wo);
         }
@@ -689,10 +655,9 @@ void PollThread::execute_cmd()
 		wo.dev = NULL;
 		wo.poll_list = NULL;
 		wo.type = EVENT_HEARTBEAT;
-		wo.update = 9000;
+		wo.update = std::chrono::milliseconds(9000);
 		wo.name.push_back(std::string("Event heartbeat"));
-		wo.needed_time.tv_sec = 0;
-		wo.needed_time.tv_usec = TIME_HEARTBEAT;
+		wo.needed_time = std::chrono::microseconds(TIME_HEARTBEAT);
 
 		wo.wake_up_date = now;
 		insert_in_list(wo);
@@ -816,7 +781,7 @@ void PollThread::one_more_poll()
 
         if (tmp.name.empty() == false)
         {
-            compute_new_date(tmp.wake_up_date,tmp.update);
+            tmp.wake_up_date += tmp.update;
             insert_in_list(tmp);
         }
 
@@ -850,9 +815,8 @@ void PollThread::one_more_poll()
                 new_tmp.dev = tmp.dev;
                 new_tmp.poll_list = tmp.poll_list;
                 new_tmp.type = tmp.type;
-                new_tmp.needed_time.tv_sec = 0;
-                new_tmp.needed_time.tv_usec = 0;
-                compute_new_date(now,local_cmd.new_upd);
+                new_tmp.needed_time = PollClock::duration::zero();
+                now += local_cmd.new_upd;
                 new_tmp.wake_up_date = now;
                 insert_in_list(new_tmp);
             }
@@ -878,7 +842,7 @@ void PollThread::one_more_poll()
 
             if (tmp.name.empty() == false)
             {
-                compute_new_date(tmp.wake_up_date,tmp.update);
+                tmp.wake_up_date += tmp.update;
                 insert_in_list(tmp);
             }
 
@@ -887,7 +851,7 @@ void PollThread::one_more_poll()
         }
         else
         {
-            compute_new_date(tmp.wake_up_date,tmp.update);
+            tmp.wake_up_date += tmp.update;
             insert_in_list(tmp);
         }
     }
@@ -995,33 +959,37 @@ void PollThread::print_list()
 		{
 			if ( ite->type != STORE_SUBDEV)
 			{
-			    std::string obj_list;
+				std::string obj_list;
 				for (size_t ctr = 0;ctr < ite->name.size();ctr++)
 				{
-                    obj_list = obj_list + ite->name[ctr];
-                    if (ctr < (ite->name.size() - 1))
-                        obj_list = obj_list + ", ";
+					obj_list = obj_list + ite->name[ctr];
+					if (ctr < (ite->name.size() - 1))
+					{
+						obj_list = obj_list + ", ";
+					}
 				}
 
-				cout5 << "Dev name = " << ite->dev->get_name() << ", obj name = " << obj_list
-                     << ", next wake_up at " << + ite->wake_up_date.tv_sec
-					<< "," << std::setw(6) << std::setfill('0')
-					<< ite->wake_up_date.tv_usec << std::endl;
+				cout5 << "Dev name = " << ite->dev->get_name() << ", obj name = " << obj_list << ", next wake_up at "
+					<< std::fixed << std::chrono::nanoseconds(ite->wake_up_date.time_since_epoch()).count() / 1e9 << " s "
+					<< std::fixed << "(in " << std::chrono::nanoseconds(ite->wake_up_date - PollClock::now()).count() / 1e6 << " ms)"
+					<< std::endl;
 			}
 			else
 			{
-				cout5 <<  ite->name[0]
-					<< ", next wake_up at " << + ite->wake_up_date.tv_sec
-					<< "," << std::setw(6) << std::setfill('0')
-					<< ite->wake_up_date.tv_usec << std::endl;
+				cout5 << ite->name[0] << ", next wake_up at "
+					<< std::fixed << std::chrono::nanoseconds(ite->wake_up_date.time_since_epoch()).count() / 1e9 << " s "
+					<< std::fixed << "(in " << std::chrono::nanoseconds(ite->wake_up_date - PollClock::now()).count() / 1e6 << " ms)"
+					<< std::endl;
 			}
 		}
 		else
 		{
-			cout5 << "Event heartbeat, next wake_up at " << + ite->wake_up_date.tv_sec
-          		<< "," << std::setw(6) << std::setfill('0')
-          		<< ite->wake_up_date.tv_usec << std::endl;
+			cout5 << "Event heartbeat, next wake_up at "
+			<< std::fixed << std::chrono::nanoseconds(ite->wake_up_date.time_since_epoch()).count() / 1e9 << " s "
+			<< std::fixed << "(in " << std::chrono::nanoseconds(ite->wake_up_date - PollClock::now()).count() / 1e6 << " ms)"
+			<< std::endl;
 		}
+
 		++ite;
 	}
 }
@@ -1046,17 +1014,9 @@ void PollThread::insert_in_list(WorkItem &new_work)
 	std::list<WorkItem>::iterator ite;
 	for (ite = works.begin();ite != works.end();++ite)
 	{
-		if (ite->wake_up_date.tv_sec < new_work.wake_up_date.tv_sec)
-			continue;
-		else if (ite->wake_up_date.tv_sec == new_work.wake_up_date.tv_sec)
+		if (ite->wake_up_date < new_work.wake_up_date)
 		{
-			if (ite->wake_up_date.tv_usec < new_work.wake_up_date.tv_usec)
-				continue;
-			else
-			{
-				works.insert(ite,new_work);
-				return;
-			}
+			continue;
 		}
 		else
 		{
@@ -1115,11 +1075,10 @@ void PollThread::add_insert_in_list(WorkItem &new_work)
 //		in :
 // 			- from_needed : Set to true if the delta between work should be at least equal to the
 //							time needed to execute the previous work
-//			- min_delta : Min. delta between polling works when from_needed is false
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void PollThread::tune_list(bool from_needed, long min_delta)
+void PollThread::tune_list(bool from_needed)
 {
 	std::list<WorkItem>::iterator ite,ite_next,ite_prev;
 
@@ -1146,10 +1105,10 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 
 		for (ite = works.begin();ite != works.end();++ite)
 		{
-			long needed_time_usec = (ite->needed_time.tv_sec * 1000000) + ite->needed_time.tv_usec;
+			long needed_time_usec = std::chrono::duration_cast<std::chrono::microseconds>(ite->needed_time).count();
 			needed_sum = needed_sum + (unsigned long)needed_time_usec;
 
-			unsigned long update_usec = (unsigned long)ite->update * 1000;
+			unsigned long update_usec = std::chrono::duration_cast<std::chrono::microseconds>(ite->update).count();
 
 			if (ite == works.begin())
 			{
@@ -1189,8 +1148,7 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 //		 the delta computed from the smallest upd and the obj number
 //
 
-		Tango::DevULong64 now_us = ((Tango::DevULong64)now.tv_sec * 1000000LL) + (Tango::DevULong64)now.tv_usec;
-		Tango::DevULong64 next_tuning = now_us + (POLL_LOOP_NB * (Tango::DevULong64)min_upd);
+		auto next_tuning = now + std::chrono::microseconds(POLL_LOOP_NB * min_upd);
 
 		std::list<WorkItem> new_works;
 		new_works.push_front(works.front());
@@ -1200,26 +1158,25 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 
 		for (++ite;ite != works.end();++ite,++ite_prev)
 		{
-			Tango::DevULong64 needed_time_usec = ((Tango::DevULong64)ite_prev->needed_time.tv_sec * 1000000) + (Tango::DevULong64)ite_prev->needed_time.tv_usec;
+			auto needed_time_usec = ite_prev->needed_time;
 			WorkItem wo = *ite;
-			Tango::DevULong64 next_work = ((Tango::DevULong64)wo.wake_up_date.tv_sec * 1000000LL) + (Tango::DevULong64)wo.wake_up_date.tv_usec;
+			auto next_work = wo.wake_up_date;
 
-			Tango::DevULong64 next_prev;
+			PollClock::time_point next_prev;
 			if (next_work < next_tuning)
 			{
-				Tango::DevULong64 prev_obj_work = ((Tango::DevULong64)ite_prev->wake_up_date.tv_sec * 1000000LL) + (Tango::DevULong64)ite_prev->wake_up_date.tv_usec;
+				auto prev_obj_work = ite_prev->wake_up_date;
 				if (next_work > prev_obj_work)
 				{
-					Tango::DevULong64 n = (next_work - prev_obj_work) / ((Tango::DevULong64)ite_prev->update * 1000LL);
-					next_prev = prev_obj_work + (n * (ite_prev->update * 1000LL));
+					auto n = (next_work - prev_obj_work) / ite_prev->update;
+					next_prev = prev_obj_work + (n * ite_prev->update);
 				}
 				else
 					next_prev = prev_obj_work;
 
-				wo.wake_up_date.tv_sec = (long)(next_prev / 1000000LL);
-				wo.wake_up_date.tv_usec = (long)(next_prev % 1000000LL);
+				wo.wake_up_date = next_prev;
 
-				T_ADD(wo.wake_up_date,needed_time_usec + max_delta_needed);
+				wo.wake_up_date += (needed_time_usec + std::chrono::microseconds(max_delta_needed));
 			}
 			new_works.push_back(wo);
 		}
@@ -1238,15 +1195,14 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 
 		for (unsigned int i = 1;i < nb_works;i++)
 		{
-			long diff;
-			T_DIFF(ite->wake_up_date,ite_next->wake_up_date,diff);
+			auto diff = ite_next->wake_up_date - ite->wake_up_date;
 
 //
 // If delta time between works is less than min, shift following work
 //
 
-			if (diff < min_delta)
-				T_ADD(ite_next->wake_up_date,min_delta - diff);
+			if (diff < PollClock::duration::zero())
+				ite_next->wake_up_date -= diff;
 
 			++ite;
 			++ite_next;
@@ -1256,42 +1212,6 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 	cout4 << "Tuning list done" << std::endl;
 	print_list();
 }
-
-//+----------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		PollThread::compute_new_date
-//
-// description :
-//		This method computes the new poll date.
-//
-// args :
-//		in :
-// 			- time : The actual date
-//			- upd : The polling update period (mS)
-//
-//------------------------------------------------------------------------------------------------------------------
-
-void PollThread::compute_new_date(struct timeval &time,int upd)
-{
-	double ori_d = (double)time.tv_sec + ((double)time.tv_usec / 1000000);
-	double new_d = ori_d + ((double)(upd) / 1000);
-	time.tv_sec = (long)new_d;
-	time.tv_usec = (long)((new_d - time.tv_sec) * 1000000);
-}
-
-void PollThread::time_diff(struct timeval &before,
-			   struct timeval &after_t,
-			   struct timeval &result)
-{
-	double bef_d = (double)before.tv_sec + ((double)before.tv_usec / 1000000);
-	double aft_d = (double)after_t.tv_sec + ((double)after_t.tv_usec / 1000000);
-	double diff_d = aft_d - bef_d;
-
-	result.tv_sec = (long)diff_d;
-	result.tv_usec = (long)((diff_d - result.tv_sec) * 1000000);
-}
-
 
 //+----------------------------------------------------------------------------------------------------------------
 //
@@ -1310,9 +1230,6 @@ void PollThread::compute_sleep_time()
 
 	if (works.empty() == false)
 	{
-		double next,after_d,diff;
-		after_d = (double)after.tv_sec + ((double)after.tv_usec / 1000000);
-
         bool discard = false;
         u_int nb_late = 0;
 
@@ -1327,9 +1244,10 @@ void PollThread::compute_sleep_time()
 
             for (ite = works.begin();ite != works.end();++ite)
             {
-                next = (double)ite->wake_up_date.tv_sec + ((double)ite->wake_up_date.tv_usec / 1000000);
-                diff = next - after_d;
-                if (diff < 0 && fabs(diff) > DISCARD_THRESHOLD)
+                auto next = ite->wake_up_date;
+                auto diff_dur = next - after;
+                auto diff_s = std::chrono::duration_cast<std::chrono::nanoseconds>(diff_dur).count() / 1e9;
+                if (diff_s < 0 && fabs(diff_s) > DISCARD_THRESHOLD)
                     nb_late++;
             }
 
@@ -1380,44 +1298,50 @@ void PollThread::compute_sleep_time()
         {
             previous_nb_late = 0;
 
-            next = (double)works.front().wake_up_date.tv_sec + ((double)works.front().wake_up_date.tv_usec / 1000000);
-            diff = next - after_d;
+            auto next = works.front().wake_up_date;
+            auto diff_dur = next - after;
+            auto diff_s = std::chrono::duration_cast<std::chrono::nanoseconds>(diff_dur).count() / 1e9;
 
-            if (diff < 0)
+            if (diff_s < 0)
             {
-                if (fabs(diff) < DISCARD_THRESHOLD)
+                if (fabs(diff_s) < DISCARD_THRESHOLD)
                     sleep = tango_nullopt;
                 else
                 {
-                    while((diff < 0) && (fabs(diff) > DISCARD_THRESHOLD))
+                    while((diff_s < 0) && (fabs(diff_s) > DISCARD_THRESHOLD))
                     {
                         cout5 << "Discard one elt !!!!!!!!!!!!!" << std::endl;
                         WorkItem tmp = works.front();
                         if (tmp.type == POLL_ATTR)
                             err_out_of_sync(tmp);
 
-                        compute_new_date(tmp.wake_up_date,tmp.update);
+                        tmp.wake_up_date += tmp.update;
                         insert_in_list(tmp);
                         works.pop_front();
                         tune_ctr--;
 
-                        next = (double)works.front().wake_up_date.tv_sec + ((double)works.front().wake_up_date.tv_usec / 1000000);
-                        diff = next - after_d;
+                        next = works.front().wake_up_date;
+                        diff_dur = next - after;
+                        diff_s = std::chrono::duration_cast<std::chrono::nanoseconds>(diff_dur).count() / 1e9;
                     }
 
-                    if (fabs(diff) < DISCARD_THRESHOLD)
+                    if (fabs(diff_s) < DISCARD_THRESHOLD)
                         sleep = tango_nullopt;
                     else
-                        sleep = (long)(diff * 1000);
+                    {
+                        sleep = diff_dur;
+                    }
                 }
             }
             else
-                sleep = (long)(diff * 1000);
+            {
+                sleep = diff_dur;
+            }
         }
 
         if (sleep.has_value())
         {
-            cout5 << "Sleep for : " << *sleep << std::endl;
+            cout5 << "Sleep for : " << std::fixed << std::chrono::nanoseconds(*sleep).count() / 1e9 << "s" << std::endl;
         }
         else
         {
@@ -1491,7 +1415,12 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 
             SendEventType send_event;
             if (event_supplier_nd != NULL)
-                send_event = event_supplier_nd->detect_and_push_events(to_do.dev,ad,&except,to_do.name[ctr],(struct timeval *)NULL);
+                send_event = event_supplier_nd->detect_and_push_events(
+                    to_do.dev,
+                    ad,
+                    &except,
+                    to_do.name[ctr],
+                    PollClock::now());
             if (event_supplier_zmq != NULL)
             {
                 if (event_supplier_nd != NULL)
@@ -1509,7 +1438,12 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
                         event_supplier_zmq->push_event_loop(to_do.dev,PERIODIC_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,&except);
                 }
                 else
-                    event_supplier_zmq->detect_and_push_events(to_do.dev,ad,&except,to_do.name[ctr],(struct timeval *)NULL);
+                    event_supplier_zmq->detect_and_push_events(
+                        to_do.dev,
+                        ad,
+                        &except,
+                        to_do.name[ctr],
+                        PollClock::now());
             }
         }
 	}
@@ -1532,96 +1466,32 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 
 void PollThread::poll_cmd(WorkItem &to_do)
 {
-	cout5 << "----------> Time = " << now.tv_sec << ","
-        << std::setw(6) << std::setfill('0') << now.tv_usec
-        << " Dev name = " << to_do.dev->get_name()
-        << ", Cmd name = " << to_do.name[0] << std::endl;
+	cout5 << "----------> Time = " << std::fixed << std::chrono::nanoseconds(now.time_since_epoch()).count() / 1e9 << " s"
+		<< ", Dev name = " << to_do.dev->get_name()
+		<< ", Cmd name = " << to_do.name[0]
+		<< std::endl;
 
 	CORBA::Any *argout = NULL;
 	Tango::DevFailed *save_except = NULL;
-	struct timeval before_cmd,after_cmd,needed_time;
-#ifdef _TG_WINDOWS_
-	struct _timeb before_win,after_win;
-	LARGE_INTEGER before,after;
-#endif
 
 	std::vector<PollObj *>::iterator ite;
 	bool cmd_failed = false;
+
+	auto before_cmd = PollClock::now();
+
 	try
 	{
-#ifdef _TG_WINDOWS_
-		if (ctr_frequency != 0)
-			QueryPerformanceCounter(&before);
-		_ftime(&before_win);
-		before_cmd.tv_sec = (unsigned long)before_win.time;
-		before_cmd.tv_usec = (long)before_win.millitm * 1000;
-#else
-		gettimeofday(&before_cmd,NULL);
-#endif
-		before_cmd.tv_sec = before_cmd.tv_sec - DELTA_T;
-
-//
-// Execute the command
-//
-
 		argout = to_do.dev->command_inout(to_do.name[0].c_str(),in_any);
-
-#ifdef _TG_WINDOWS_
-		if (ctr_frequency != 0)
-		{
-			QueryPerformanceCounter(&after);
-
-			needed_time.tv_sec = 0;
-			needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-			to_do.needed_time = needed_time;
-		}
-		else
-		{
-			_ftime(&after_win);
-			after_cmd.tv_sec = (unsigned long)after_win.time;
-			after_cmd.tv_usec = (long)after_win.millitm * 1000;
-
-			after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-			time_diff(before_cmd,after_cmd,needed_time);
-			to_do.needed_time = needed_time;
-		}
-#else
-		gettimeofday(&after_cmd,NULL);
-		after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-		time_diff(before_cmd,after_cmd,needed_time);
-		to_do.needed_time = needed_time;
-#endif
 	}
 	catch (Tango::DevFailed &e)
 	{
 		cmd_failed = true;
-#ifdef _TG_WINDOWS_
-		if (ctr_frequency != 0)
-		{
-			QueryPerformanceCounter(&after);
-
-			needed_time.tv_sec = 0;
-			needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-			to_do.needed_time = needed_time;
-		}
-		else
-		{
-			_ftime(&after_win);
-			after_cmd.tv_sec = (unsigned long)after_win.time;
-			after_cmd.tv_usec = (long)after_win.millitm * 1000;
-
-			after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-			time_diff(before_cmd,after_cmd,needed_time);
-			to_do.needed_time = needed_time;
-		}
-#else
-		gettimeofday(&after_cmd,NULL);
-		after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-		time_diff(before_cmd,after_cmd,needed_time);
-		to_do.needed_time = needed_time;
-#endif
 		save_except = new Tango::DevFailed(e);
 	}
+
+	auto after_cmd = PollClock::now();
+	auto needed_time = after_cmd - before_cmd;
+	to_do.needed_time = needed_time;
 
 //
 // Insert result in polling buffer and simply forget this command if it is not possible to insert the result in
@@ -1673,16 +1543,11 @@ void PollThread::poll_attr(WorkItem &to_do)
             att_list = att_list + ", ";
     }
 
-	cout5 << "----------> Time = " << now.tv_sec << ","
-	      << std::setw(6) << std::setfill('0') << now.tv_usec
-	      << " Dev name = " << to_do.dev->get_name()
-        << ", Attr name = " << att_list << std::endl;
+	cout5 << "----------> Time = " << std::fixed << std::chrono::nanoseconds(now.time_since_epoch()).count() / 1e9 << " s"
+		<< ", Dev name = " << to_do.dev->get_name()
+		<< ", Attr name = " << att_list
+		<< std::endl;
 
-	struct timeval before_cmd,after_cmd,needed_time;
-#ifdef _TG_WINDOWS_
-	struct _timeb before_win,after_win;
-	LARGE_INTEGER before,after;
-#endif
 	Tango::AttributeValueList *argout = NULL;
 	Tango::AttributeValueList_3 *argout_3 = NULL;
 	Tango::AttributeValueList_4 *argout_4 = NULL;
@@ -1693,27 +1558,17 @@ void PollThread::poll_attr(WorkItem &to_do)
 	std::map<size_t,Tango::DevFailed *> map_except;
 
 	long idl_vers = to_do.dev->get_dev_idl_version();
+
+	attr_names.length(nb_obj);
+	for (size_t ctr = 0;ctr < nb_obj;ctr++)
+	{
+		attr_names[ctr] = to_do.name[ctr].c_str();
+	}
+
+	auto before_cmd = PollClock::now();
+
 	try
 	{
-#ifdef _TG_WINDOWS_
-		if (ctr_frequency != 0)
-			QueryPerformanceCounter(&before);
-		_ftime(&before_win);
-		before_cmd.tv_sec = (unsigned long)before_win.time;
-		before_cmd.tv_usec = (long)before_win.millitm * 1000;
-#else
-		gettimeofday(&before_cmd,NULL);
-#endif
-		before_cmd.tv_sec = before_cmd.tv_sec - DELTA_T;
-
-//
-// Read the attributes
-//
-
-        attr_names.length(nb_obj);
-        for (size_t ctr = 0;ctr < nb_obj;ctr++)
-            attr_names[ctr] = to_do.name[ctr].c_str();
-
 		if (idl_vers >= 5)
 			argout_5 = (static_cast<Device_5Impl *>(to_do.dev))->read_attributes_5(attr_names,Tango::DEV,dummy_cl_id);
 		else if (idl_vers == 4)
@@ -1722,64 +1577,16 @@ void PollThread::poll_attr(WorkItem &to_do)
 			argout_3 = (static_cast<Device_3Impl *>(to_do.dev))->read_attributes_3(attr_names,Tango::DEV);
 		else
 			argout = to_do.dev->read_attributes(attr_names);
-
-#ifdef _TG_WINDOWS_
-		if (ctr_frequency != 0)
-		{
-			QueryPerformanceCounter(&after);
-
-			needed_time.tv_sec = 0;
-			needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-			to_do.needed_time = needed_time;
-		}
-		else
-		{
-			_ftime(&after_win);
-			after_cmd.tv_sec = (unsigned long)after_win.time;
-			after_cmd.tv_usec = (long)after_win.millitm  * 1000;
-
-			after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-			time_diff(before_cmd,after_cmd,needed_time);
-			to_do.needed_time = needed_time;
-		}
-#else
-		gettimeofday(&after_cmd,NULL);
-		after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-		time_diff(before_cmd,after_cmd,needed_time);
-		to_do.needed_time = needed_time;
-#endif
 	}
 	catch (Tango::DevFailed &e)
 	{
 		attr_failed = true;
-#ifdef _TG_WINDOWS_
-		if (ctr_frequency != 0)
-		{
-			QueryPerformanceCounter(&after);
-
-			needed_time.tv_sec = 0;
-			needed_time.tv_usec = (long)((double)(after.QuadPart - before.QuadPart) * ctr_frequency);
-			to_do.needed_time = needed_time;
-		}
-		else
-		{
-			_ftime(&after_win);
-			after_cmd.tv_sec = (unsigned long)after_win.time;
-			after_cmd.tv_usec = (long)after_win.millitm * 1000;
-
-			after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-			time_diff(before_cmd,after_cmd,needed_time);
-			to_do.needed_time = needed_time;
-		}
-#else
-		gettimeofday(&after_cmd,NULL);
-		after_cmd.tv_sec = after_cmd.tv_sec - DELTA_T;
-		time_diff(before_cmd,after_cmd,needed_time);
-		to_do.needed_time = needed_time;
-#endif
-
 		save_except = new Tango::DevFailed(e);
 	}
+
+	auto after_cmd = PollClock::now();
+	auto needed_time = after_cmd - before_cmd;
+	to_do.needed_time = needed_time;
 
 //
 // Starting with IDl release 3, an attribute in error is not an exception any more. Re-create one.
@@ -1886,7 +1693,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 
                 SendEventType send_event;
                 if (event_supplier_nd != NULL)
-                    send_event = event_supplier_nd->detect_and_push_events(to_do.dev,ad,save_except,to_do.name[ctr],&before_cmd);
+                    send_event = event_supplier_nd->detect_and_push_events(to_do.dev,ad,save_except,to_do.name[ctr], before_cmd);
                 if (event_supplier_zmq != NULL)
                 {
                     if (event_supplier_nd != NULL)
@@ -1904,7 +1711,7 @@ void PollThread::poll_attr(WorkItem &to_do)
                             event_supplier_zmq->push_event_loop(to_do.dev,PERIODIC_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
                     }
                     else
-                        event_supplier_zmq->detect_and_push_events(to_do.dev,ad,save_except,to_do.name[ctr],&before_cmd);
+                        event_supplier_zmq->detect_and_push_events(to_do.dev,ad,save_except,to_do.name[ctr], before_cmd);
                 }
             }
             else
@@ -1936,7 +1743,7 @@ void PollThread::poll_attr(WorkItem &to_do)
                     tmp_except = ite2->second;
 
                 if (event_supplier_nd != NULL)
-                    send_event = event_supplier_nd->detect_and_push_events(to_do.dev,ad,tmp_except,to_do.name[ctr],&before_cmd);
+                    send_event = event_supplier_nd->detect_and_push_events(to_do.dev,ad,tmp_except,to_do.name[ctr], before_cmd);
                 if (event_supplier_zmq != NULL)
                 {
                     if (event_supplier_nd != NULL)
@@ -1954,7 +1761,7 @@ void PollThread::poll_attr(WorkItem &to_do)
                             event_supplier_zmq->push_event_loop(to_do.dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,tmp_except);
                     }
                     else
-                        event_supplier_zmq->detect_and_push_events(to_do.dev,ad,tmp_except,to_do.name[ctr],&before_cmd);
+                        event_supplier_zmq->detect_and_push_events(to_do.dev,ad,tmp_except,to_do.name[ctr], before_cmd);
                 }
             }
 		}
@@ -2085,9 +1892,8 @@ void PollThread::poll_attr(WorkItem &to_do)
 
 void PollThread::eve_heartbeat()
 {
-	cout5 << "----------> Time = " << now.tv_sec << ","
-	      << std::setw(6) << std::setfill('0') << now.tv_usec
-	      << " Sending event heartbeat" << std::endl;
+	cout5 << "----------> Time = " << std::fixed << std::chrono::nanoseconds(now.time_since_epoch()).count() / 1e9 << " s"
+		<< " Sending event heartbeat" << std::endl;
 
 	EventSupplier *event_supplier;
 	event_supplier = Util::instance()->get_zmq_event_supplier();
@@ -2117,9 +1923,8 @@ void PollThread::store_subdev()
 {
 	static bool ignore_call = true;
 
-	cout5 << "----------> Time = " << now.tv_sec << ","
-	      << std::setw(6) << std::setfill('0') << now.tv_usec
-	      << " Store sub device property data if needed!" << std::endl;
+	cout5 << "----------> Time = " << std::fixed << std::chrono::nanoseconds(now.time_since_epoch()).count() / 1e9 << " s"
+		<< " Store sub device property data if needed!" << std::endl;
 
 
 	if ( !ignore_call )

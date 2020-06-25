@@ -124,14 +124,33 @@ void LastAttrValue::store(
 //--------------------------------------------------------------------------------------------------------------------
 
 Attribute::Attribute(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::string &dev_name,long idx)
-:date(true),quality(Tango::ATTR_VALID),check_min_value(false),check_max_value(false),
- enum_nb(0),loc_enum_ptr(nullptr),poll_period(0),event_period(0),archive_period(0),last_periodic(0.0),
- archive_last_periodic(0.0),periodic_counter(0),archive_periodic_counter(0),
- archive_last_event(0.0),dev(NULL),change_event_implmented(false),
- archive_event_implmented(false),check_change_event_criteria(true),
- check_archive_event_criteria(true),dr_event_implmented(false),
- scalar_str_attr_release(false),notifd_event(false),zmq_event(false),
- check_startup_exceptions(false),startup_exceptions_clear(true),att_mem_exception(false)
+:
+    date(true),
+    quality(Tango::ATTR_VALID),
+    check_min_value(false),
+    check_max_value(false),
+    enum_nb(0),
+    loc_enum_ptr(nullptr),
+    poll_period(0),
+    event_period(0),
+    archive_period(0),
+    periodic_counter(0),
+    archive_periodic_counter(0),
+    last_periodic(),
+    archive_last_periodic(),
+    archive_last_event(),
+    dev(NULL),
+    change_event_implmented(false),
+    archive_event_implmented(false),
+    check_change_event_criteria(true),
+    check_archive_event_criteria(true),
+    dr_event_implmented(false),
+    scalar_str_attr_release(false),
+    notifd_event(false),
+    zmq_event(false),
+    check_startup_exceptions(false),
+    startup_exceptions_clear(true),
+    att_mem_exception(false)
 {
 
 //
@@ -599,8 +618,8 @@ void Attribute::init_event_prop(std::vector<AttrProperty> &prop_list,const std::
 
 	periodic_counter = 0;
 	archive_periodic_counter = 0;
-	last_periodic = 0.;
-	archive_last_periodic = 0.;
+	last_periodic = {};
+	archive_last_periodic = {};
 
 	prev_change_event.inited = false;
     prev_change_event.err=false;
@@ -4449,19 +4468,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 
 		if ( is_check_archive_criteria() == true )
 		{
-#ifdef _TG_WINDOWS_
-        	struct _timeb           now_win;
-#endif
-        	struct timeval          now_timeval;
-
-#ifdef _TG_WINDOWS_
-			_ftime(&now_win);
-			now_timeval.tv_sec = (unsigned long)now_win.time;
-			now_timeval.tv_usec = (long)now_win.millitm * 1000;
-#else
-			gettimeofday(&now_timeval,NULL);
-#endif
-			now_timeval.tv_sec = now_timeval.tv_sec - DELTA_T;
+			auto now_timeval = PollClock::now();
 
 //
 // Eventually push the event (if detected)
@@ -4472,7 +4479,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 
             bool send_event = false;
             if (event_supplier_nd != NULL)
-                send_event = event_supplier_nd->detect_and_push_archive_event(dev,ad,*this,name,except,&now_timeval,true);
+                send_event = event_supplier_nd->detect_and_push_archive_event(dev,ad,*this,name,except,now_timeval,true);
             if (event_supplier_zmq != NULL)
             {
                 if (event_supplier_nd != NULL)
@@ -4490,7 +4497,7 @@ void Attribute::fire_archive_event(DevFailed *except)
                 else
                 {
                     if (pub_socket_created == true)
-                        event_supplier_zmq->detect_and_push_archive_event(dev,ad,*this,name,except,&now_timeval,true);
+                        event_supplier_zmq->detect_and_push_archive_event(dev,ad,*this,name,except,now_timeval,true);
                 }
 
             }

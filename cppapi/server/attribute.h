@@ -36,6 +36,7 @@
 #include <attrdesc.h>
 #include <fwdattrdesc.h>
 #include <encoded_attribute.h>
+#include <poll_clock.h>
 
 #include <functional>
 #include <time.h>
@@ -2469,13 +2470,15 @@ protected:
     double				archive_abs_change[2];			// Delta for absolute change events
     int					event_period;					// Delta for periodic events in ms
     int					archive_period;					// Delta for archive periodic events in ms
-    double				last_periodic;					// Last time a periodic event was detected
-    double				archive_last_periodic;			// Last time an archive periodic event was detected
     long				periodic_counter;				// Number of periodic events sent so far
     long				archive_periodic_counter;		// Number of periodic events sent so far
     LastAttrValue		prev_change_event;				// Last change attribute
     LastAttrValue		prev_quality_event;				// Last quality attribute
     LastAttrValue		prev_archive_event;				// Last archive attribute
+
+    PollClock::time_point last_periodic;            // Last time a periodic event was detected
+    PollClock::time_point archive_last_periodic;    // Last time an archive periodic event was detected
+    PollClock::time_point archive_last_event;       // Last time an archive event was detected (periodic or not)
 
     time_t				event_change3_subscription;		// Last time() a subscription was made
     time_t				event_change4_subscription;
@@ -2494,7 +2497,6 @@ protected:
     time_t				event_attr_conf5_subscription;	// Last time() a subscription was made
     time_t				event_data_ready_subscription;	// Last time() a subscription was made
 
-    double				archive_last_event;				// Last time an archive event was detected (periodic or not)
     long				idx_in_attr;					// Index in MultiClassAttribute vector
     std::string				d_name;							// The device name
     DeviceImpl 			*dev;							// The device object

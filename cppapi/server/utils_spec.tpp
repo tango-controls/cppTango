@@ -32,6 +32,8 @@
 #ifndef _UTILS_SPEC_TPP
 #define _UTILS_SPEC_TPP
 
+#include <poll_clock.h>
+
 namespace Tango
 {
 
@@ -117,9 +119,6 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,std::string &cmd_name,
     bool cmd_failed;
     CORBA::Any *any_ptr;
 
-    struct timeval zero,when;
-    zero.tv_sec = zero.tv_usec = 0;
-
     for (i = 0;i < nb_elt;i++)
     {
         save_except = NULL;
@@ -178,8 +177,8 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,std::string &cmd_name,
         try
         {
             std::vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
-            when.tv_sec = (data.get_data())[i].t_val.tv_sec - DELTA_T;
-            when.tv_usec = (data.get_data())[i].t_val.tv_usec;
+            auto when = make_poll_time(data.get_data()[i].t_val);
+            auto zero = PollClock::duration::zero();
             if (cmd_failed == false)
                 (*ite)->insert_data(any_ptr,when,zero);
             else
@@ -261,9 +260,6 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,std::string &cmd_name,
     bool cmd_failed;
     CORBA::Any *any_ptr;
 
-    struct timeval zero,when;
-    zero.tv_sec = zero.tv_usec = 0;
-
     for (i = 0;i < nb_elt;i++)
     {
         save_except = NULL;
@@ -322,8 +318,8 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,std::string &cmd_name,
         try
         {
             std::vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
-            when.tv_sec = (data.get_data())[i].t_val.tv_sec - DELTA_T;
-            when.tv_usec = (data.get_data())[i].t_val.tv_usec;
+            auto when = make_poll_time(data.get_data()[i].t_val);
+            auto zero = PollClock::duration::zero();
             if (cmd_failed == false)
                 (*ite)->insert_data(any_ptr,when,zero);
             else

@@ -101,8 +101,12 @@ EventSupplier::EventSupplier(Util *tg)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, struct SuppliedEventData &attr_value,
-                                                    DevFailed *except, std::string &attr_name, struct timeval *time_bef_attr)
+SendEventType EventSupplier::detect_and_push_events(
+    DeviceImpl *device_impl,
+    struct SuppliedEventData &attr_value,
+    DevFailed *except,
+    std::string &attr_name,
+    PollClock::time_point time_bef_attr)
 {
     std::string event, domain_name;
     time_t now, change3_subscription, periodic3_subscription, archive3_subscription;
@@ -519,7 +523,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
                                                   Attribute &attr,
                                                   std::string &attr_name,
                                                   DevFailed *except,
-                                                  struct timeval *time_bef_attr,
+                                                  PollClock::time_point time_bef_attr,
                                                   TANGO_UNUSED(bool user_push))
 {
     std::string event, domain_name;
@@ -533,7 +537,6 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 
     cout3 << "EventSupplier::detect_and_push_archive_event(): called for attribute " << attr_name << std::endl;
 
-    double now_ms, ms_since_last_periodic;
     Tango::AttrQuality the_quality;
 
     if (attr_value.attr_val_5 != NULL)
@@ -553,21 +556,6 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         the_quality = attr_value.attr_val->quality;
     }
 
-    struct timeval now;
-    if (time_bef_attr == NULL)
-    {
-#ifdef _TG_WINDOWS_
-        struct _timeb now_win;
-
-        _ftime(&now_win);
-        now.tv_sec = (unsigned long)now_win.time;
-        now.tv_usec = (long)now_win.millitm * 1000;
-#else
-        gettimeofday(&now, NULL);
-#endif
-        now.tv_sec = now.tv_sec - DELTA_T;
-    }
-
 //
 // get the mutex to synchronize the sending of events
 //
@@ -580,16 +568,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 // If we takes time now, it will also be unstable.
 // Use the time taken in the polling thread before the attribute was read. This one is much more stable
 //
-
-    if (time_bef_attr != NULL)
-    {
-        now_ms = (double) time_bef_attr->tv_sec * 1000. + (double) time_bef_attr->tv_usec / 1000.;
-    }
-    else
-    {
-        now_ms = (double) now.tv_sec * 1000. + (double) now.tv_usec / 1000.;
-    }
-    ms_since_last_periodic = now_ms - attr.archive_last_periodic;
+    auto ms_since_last_periodic = time_bef_attr - attr.archive_last_periodic;
 
     int arch_period;
     TangoMonitor &mon1 = device_impl->get_att_conf_monitor();
@@ -630,11 +609,12 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
             arch_period = (int) eve_round;
         }
 
-        cout3 << "EventSupplier::detect_and_push_archive_event(): ms_since_last_periodic = " << ms_since_last_periodic
+        cout3 << "EventSupplier::detect_and_push_archive_event(): ms_since_last_periodic = "
+              << std::fixed << std::chrono::nanoseconds(ms_since_last_periodic).count() / 1e6 << " ms"
               << ", arch_period = " << arch_period << ", attr.prev_archive_event.inited = "
               << attr.prev_archive_event.inited << std::endl;
 
-        if ((ms_since_last_periodic > arch_period) && (attr.prev_archive_event.inited == true))
+        if ((ms_since_last_periodic > std::chrono::milliseconds(arch_period)) && (attr.prev_archive_event.inited == true))
         {
             is_change = true;
             period_change = true;
@@ -655,8 +635,8 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
             attr_value.attr_val,
             except);
 
-        attr.archive_last_periodic = now_ms;
-        attr.archive_last_event = now_ms;
+        attr.archive_last_periodic = time_bef_attr;
+        attr.archive_last_event = time_bef_attr;
         is_change = true;
     }
     else
@@ -714,7 +694,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         if (period_change == true)
         {
             attr.archive_periodic_counter++;
-            attr.archive_last_periodic = now_ms;
+            attr.archive_last_periodic = time_bef_attr;
             filterable_data_lg.push_back(attr.archive_periodic_counter);
         }
         else
@@ -746,9 +726,11 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
             filterable_data.push_back((double) 0.0);
         }
 
+        auto time_delta = time_bef_attr - attr.archive_last_event;
+        auto time_delta_ms = std::chrono::nanoseconds(time_delta).count() / 1e6;
         filterable_names.push_back("delta_event");
-        filterable_data.push_back(now_ms - attr.archive_last_event);
-        attr.archive_last_event = now_ms;
+        filterable_data.push_back(time_delta_ms);
+        attr.archive_last_event = time_bef_attr;
 
         std::vector<int> &client_libs = attr.get_client_lib(ARCHIVE_EVENT);
         std::vector<int>::iterator ite;
@@ -853,43 +835,10 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
                                                    Attribute &attr,
                                                    std::string &attr_name,
                                                    DevFailed *except,
-                                                   struct timeval *time_bef_attr)
+                                                   PollClock::time_point time_bef_attr)
 {
     std::string event, domain_name;
-    double now_ms, ms_since_last_periodic;
     bool ret = false;
-
-    struct timeval now;
-    if (time_bef_attr == NULL)
-    {
-#ifdef _TG_WINDOWS_
-        struct _timeb now_win;
-
-        _ftime(&now_win);
-        now.tv_sec = (unsigned long)now_win.time;
-        now.tv_usec = (long)now_win.millitm * 1000;
-#else
-        gettimeofday(&now, NULL);
-#endif
-        now.tv_sec = now.tv_sec - DELTA_T;
-    }
-
-//
-// Do not get time now. This metthod is executed after the attribute has been read.
-// For some device, reading one attribute could be long and even worse could have an
-// unstabe reading time. If we takes time now, it will also be unstable.
-// Use the time taken inthe polling thread befor the attribute was read. This one is much
-// more stable
-//
-
-    if (time_bef_attr != NULL)
-    {
-        now_ms = (double) time_bef_attr->tv_sec * 1000. + (double) time_bef_attr->tv_usec / 1000.;
-    }
-    else
-    {
-        now_ms = (double) now.tv_sec * 1000. + (double) now.tv_usec / 1000.;
-    }
 
 //
 // get the mutex to synchronize the sending of events
@@ -940,11 +889,20 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
 // calculate the time
 //
 
-    ms_since_last_periodic = now_ms - attr.last_periodic;
-    cout3 << "EventSupplier::detect_and_push_is_periodic_event(): delta since last periodic " << ms_since_last_periodic
+//
+// Do not get time now. This metthod is executed after the attribute has been read.
+// For some device, reading one attribute could be long and even worse could have an
+// unstabe reading time. If we takes time now, it will also be unstable.
+// Use the time taken inthe polling thread befor the attribute was read. This one is much
+// more stable
+//
+    auto ms_since_last_periodic = time_bef_attr - attr.last_periodic;
+
+    cout3 << "EventSupplier::detect_and_push_is_periodic_event(): delta since last periodic "
+          << std::fixed << std::chrono::nanoseconds(ms_since_last_periodic).count() / 1e6 << " ms"
           << " event_period " << eve_period << " for " << device_impl->get_name() + "/" + attr_name << std::endl;
 
-    if (ms_since_last_periodic > eve_period)
+    if (ms_since_last_periodic > std::chrono::milliseconds(eve_period))
     {
 
 //
@@ -957,7 +915,7 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
         std::vector<long> filterable_data_lg;
 
         attr.periodic_counter++;
-        attr.last_periodic = now_ms;
+        attr.last_periodic = time_bef_attr;
         filterable_names_lg.push_back("counter");
         filterable_data_lg.push_back(attr.periodic_counter);
 

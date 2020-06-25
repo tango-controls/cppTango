@@ -35,6 +35,7 @@
 #define _POLLRING_H
 
 #include <tango.h>
+#include <poll_clock.h>
 
 namespace Tango
 {
@@ -60,7 +61,7 @@ public:
 	Tango::AttributeValueList_4	*attr_value_4;
 	Tango::AttributeValueList_5	*attr_value_5;
 	Tango::DevFailed			*except;
-	struct timeval				when;
+	PollClock::time_point when;
 };
 
 inline bool operator<(const RingElt &,const RingElt &)
@@ -89,17 +90,17 @@ public:
 	PollRing(long);
 	~PollRing();
 
-	void insert_data(CORBA::Any *,struct timeval &);
-	void insert_data(Tango::AttributeValueList *,struct timeval &);
-	void insert_data(Tango::AttributeValueList_3 *,struct timeval &);
-	void insert_data(Tango::AttributeValueList_4 *,struct timeval &,bool);
-	void insert_data(Tango::AttributeValueList_5 *,struct timeval &,bool);
-	void insert_except(Tango::DevFailed *,struct timeval &);
+	void insert_data(CORBA::Any *, PollClock::time_point);
+	void insert_data(Tango::AttributeValueList *,   PollClock::time_point);
+	void insert_data(Tango::AttributeValueList_3 *, PollClock::time_point);
+	void insert_data(Tango::AttributeValueList_4 *, PollClock::time_point, bool);
+	void insert_data(Tango::AttributeValueList_5 *, PollClock::time_point, bool);
+	void insert_except(Tango::DevFailed *,          PollClock::time_point);
 
 	template <typename T> void force_copy_data(T *);
 
-	void get_delta_t(std::vector<double> &,long nb);
-	struct timeval get_last_insert_date();
+	std::vector<PollClock::duration> get_delta_t(long nb);
+	PollClock::time_point get_last_insert_date();
 	bool is_empty() {if (nb_elt == 0) return true;else return false;}
 
 	bool is_last_an_error();
