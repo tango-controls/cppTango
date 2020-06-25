@@ -1093,16 +1093,14 @@ void PollThread::tune_list(bool from_needed)
 
 	if (from_needed == true)
 	{
-        unsigned long needed_sum = 0;
-        unsigned long min_upd = 0;
-        long max_delta_needed;
+		PollClock::duration needed_sum = PollClock::duration::zero();
+		PollClock::duration min_upd = PollClock::duration::zero();
 
 		for (ite = works.begin();ite != works.end();++ite)
 		{
-			long needed_time_usec = std::chrono::duration_cast<std::chrono::microseconds>(ite->needed_time).count();
-			needed_sum = needed_sum + (unsigned long)needed_time_usec;
+			needed_sum += ite->needed_time;
 
-			unsigned long update_usec = std::chrono::duration_cast<std::chrono::microseconds>(ite->update).count();
+			auto update_usec = ite->update;
 
 			if (ite == works.begin())
 			{
@@ -1111,7 +1109,9 @@ void PollThread::tune_list(bool from_needed)
 			else
 			{
 				if (min_upd > update_usec)
+				{
 					min_upd = update_usec;
+				}
 			}
 		}
 
@@ -1120,17 +1120,15 @@ void PollThread::tune_list(bool from_needed)
 //
 
 		if (needed_sum > min_upd)
-			return;
-		else
 		{
-			long sleeping = min_upd - needed_sum;
-			max_delta_needed = sleeping / (nb_works);
+			return;
 		}
+
+		auto sleeping = min_upd - needed_sum;
+		auto max_delta_needed = sleeping / nb_works;
 
 //
 // Now build a new tuned list
-// Warning: On Windows 64 bits, long are 32 bits data. Convert everything to DevULong64 to be sure
-// that we will have computation on unsigned 64 bits data
 //
 // To tune the list
 // - Take obj j and compute when it should be polled (next_work)
@@ -1142,7 +1140,7 @@ void PollThread::tune_list(bool from_needed)
 //		 the delta computed from the smallest upd and the obj number
 //
 
-		auto next_tuning = now + std::chrono::microseconds(POLL_LOOP_NB * min_upd);
+		auto next_tuning = now + (POLL_LOOP_NB * min_upd);
 
 		std::list<WorkItem> new_works;
 		new_works.push_front(works.front());
@@ -1162,7 +1160,8 @@ void PollThread::tune_list(bool from_needed)
 				auto prev_obj_work = ite_prev->wake_up_date;
 				if (next_work > prev_obj_work)
 				{
-					auto n = (next_work - prev_obj_work) / ite_prev->update;
+					// Explicit calculation of n (as integer) is needed and cannot be skipped.
+					auto n = std::uint64_t((next_work - prev_obj_work) / ite_prev->update);
 					next_prev = prev_obj_work + (n * ite_prev->update);
 				}
 				else
@@ -1170,7 +1169,7 @@ void PollThread::tune_list(bool from_needed)
 
 				wo.wake_up_date = next_prev;
 
-				wo.wake_up_date += (needed_time_usec + std::chrono::microseconds(max_delta_needed));
+				wo.wake_up_date += (needed_time_usec + max_delta_needed);
 			}
 			new_works.push_back(wo);
 		}
