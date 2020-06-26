@@ -42,7 +42,7 @@
 
 #include <tango.h>
 #include <device_2.h>
-#include <poll_clock.h>
+#include <tango_clock.h>
 #include <new>
 
 #ifdef _TG_WINDOWS_

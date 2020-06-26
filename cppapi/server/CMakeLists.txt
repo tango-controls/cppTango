@@ -131,7 +131,7 @@ set(HEADERS attrdesc.h
             encoded_format.h
             event_subscription_state.h
             tango_optional.h
-            poll_clock.h
+            tango_clock.h
             )
 
 add_subdirectory(idl)

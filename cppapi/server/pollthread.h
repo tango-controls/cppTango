@@ -39,7 +39,7 @@
 #include <pollobj.h>
 #include <utils.h>
 #include <tango_optional.h>
-#include <poll_clock.h>
+#include <tango_clock.h>
 
 #include <list>
 #include <utility>

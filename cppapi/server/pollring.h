@@ -35,7 +35,7 @@
 #define _POLLRING_H
 
 #include <tango.h>
-#include <poll_clock.h>
+#include <tango_clock.h>
 
 namespace Tango
 {

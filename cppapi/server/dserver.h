@@ -39,7 +39,7 @@
 
 #include <tango.h>
 #include "event_subscription_state.h"
-#include <poll_clock.h>
+#include <tango_clock.h>
 
 namespace Tango
 {

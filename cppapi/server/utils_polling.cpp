@@ -34,7 +34,7 @@
 #endif
 
 #include <tango.h>
-#include <poll_clock.h>
+#include <tango_clock.h>
 
 #include <iostream>
 #include <algorithm>

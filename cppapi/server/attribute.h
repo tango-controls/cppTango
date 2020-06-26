@@ -36,7 +36,7 @@
 #include <attrdesc.h>
 #include <fwdattrdesc.h>
 #include <encoded_attribute.h>
-#include <poll_clock.h>
+#include <tango_clock.h>
 
 #include <functional>
 #include <time.h>

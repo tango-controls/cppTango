@@ -43,7 +43,7 @@
 #include <classattribute.h>
 #include <eventsupplier.h>
 #include <apiexcept.h>
-#include <poll_clock.h>
+#include <tango_clock.h>
 
 #ifdef TANGO_HAS_LOG4TANGO
 #include <logging.h>

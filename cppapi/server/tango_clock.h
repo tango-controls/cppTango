@@ -1,5 +1,5 @@
-#ifndef _POLL_CLOCK_H
-#define _POLL_CLOCK_H
+#ifndef _TANGO_CLOCK_H
+#define _TANGO_CLOCK_H
 
 #include <chrono>
 #include <ratio>

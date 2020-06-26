@@ -39,7 +39,7 @@
 
 #include <tango.h>
 #include <pollring.h>
-#include <poll_clock.h>
+#include <tango_clock.h>
 
 namespace Tango
 {

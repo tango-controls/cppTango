@@ -35,7 +35,7 @@
 #endif
 
 #include <tango.h>
-#include <poll_clock.h>
+#include <tango_clock.h>
 
 #ifdef _TG_WINDOWS_
 	#include <sys/timeb.h>

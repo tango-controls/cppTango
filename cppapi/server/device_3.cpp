@@ -38,7 +38,7 @@
 #include <device_3.h>
 #include <eventsupplier.h>
 #include <device_3.tpp>
-#include <poll_clock.h>
+#include <tango_clock.h>
 #include <new>
 
 

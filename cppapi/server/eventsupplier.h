@@ -43,7 +43,7 @@
 #define _EVENT_SUPPLIER_API_H
 
 #include <except.h>
-#include <poll_clock.h>
+#include <tango_clock.h>
 
 #if defined (_TG_WINDOWS_) && defined (_USRDLL) && !defined(_TANGO_LIB)
 #define USE_stub_in_nt_dll

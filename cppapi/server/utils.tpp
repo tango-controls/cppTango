@@ -32,7 +32,7 @@
 #ifndef _UTILS_TPP
 #define _UTILS_TPP
 
-#include <poll_clock.h>
+#include <tango_clock.h>
 
 namespace Tango
 {
