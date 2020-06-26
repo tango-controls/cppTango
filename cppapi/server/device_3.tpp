@@ -32,6 +32,8 @@
 #ifndef _DEVICE_3_TPP
 #define _DEVICE_3_TPP
 
+#include <tango_clock.h>
+
 namespace Tango
 {
 
@@ -403,22 +405,7 @@ inline void Device_3Impl::init_out_data_quality(T &back,Attribute &att,AttrQuali
 template <typename T>
 inline void Device_3Impl::base_state2attr(T &back)
 {
-
-#ifdef _TG_WINDOWS_
-	struct _timeb after_win;
-
-	_ftime(&after_win);
-	back.time.tv_sec = (long)after_win.time;
-	back.time.tv_usec = (long)after_win.millitm * 1000;
-	back.time.tv_nsec = 0;
-#else
-	struct timeval after;
-
-	gettimeofday(&after,NULL);
-	back.time.tv_sec = after.tv_sec;
-	back.time.tv_usec = after.tv_usec;
-	back.time.tv_nsec = 0;
-#endif
+	back.time = make_TimeVal(std::chrono::system_clock::now());
 	back.quality = Tango::ATTR_VALID;
 	back.name = Tango::string_dup("State");
 	back.r_dim.dim_x = 1;
@@ -430,22 +417,7 @@ inline void Device_3Impl::base_state2attr(T &back)
 template <typename T>
 inline void Device_3Impl::base_status2attr(T &back)
 {
-
-#ifdef _TG_WINDOWS_
-	struct _timeb after_win;
-
-	_ftime(&after_win);
-	back.time.tv_sec = (long)after_win.time;
-	back.time.tv_usec = (long)after_win.millitm * 1000;
-	back.time.tv_nsec = 0;
-#else
-	struct timeval after;
-
-	gettimeofday(&after,NULL);
-	back.time.tv_sec = after.tv_sec;
-	back.time.tv_usec = after.tv_usec;
-	back.time.tv_nsec = 0;
-#endif
+	back.time = make_TimeVal(std::chrono::system_clock::now());
 	back.quality = Tango::ATTR_VALID;
 	back.name = Tango::string_dup("Status");
 	back.r_dim.dim_x = 1;

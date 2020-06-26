@@ -635,22 +635,7 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 
 void Pipe::set_time()
 {
-#ifdef _TG_WINDOWS_
-	struct _timeb t;
-	_ftime(&t);
-
-	when.tv_sec = (CORBA::Long)t.time;
-	when.tv_usec = (CORBA::Long)(t.millitm * 1000);
-	when.tv_nsec = 0;
-#else
-	struct timezone tz;
-	struct timeval tv;
-	gettimeofday(&tv,&tz);
-
-	when.tv_sec = (CORBA::Long)tv.tv_sec;
-	when.tv_usec = (CORBA::Long)tv.tv_usec;
-	when.tv_nsec = 0;
-#endif
+	when = make_TimeVal(std::chrono::system_clock::now());
 }
 
 //+-------------------------------------------------------------------------

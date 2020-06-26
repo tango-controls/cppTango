@@ -33,6 +33,7 @@
 #include <tango.h>
 #include <eventconsumer.h>
 #include <event.tpp>
+#include <tango_clock.h>
 
 #include <stdio.h>
 
@@ -3574,22 +3575,7 @@ EventData::~EventData()
 
 void EventData::set_time()
 {
-#ifdef _TG_WINDOWS_
-		struct _timeb t;
-		_ftime(&t);
-
-		reception_date.tv_sec  = (CORBA::Long)t.time;
-		reception_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
-		reception_date.tv_nsec = 0;
-#else
-		struct timezone tz;
-		struct timeval tv;
-		gettimeofday(&tv,&tz);
-
-		reception_date.tv_sec  = (CORBA::Long)tv.tv_sec;
-		reception_date.tv_usec = (CORBA::Long)tv.tv_usec;
-		reception_date.tv_nsec = 0;
-#endif
+	reception_date = make_TimeVal(std::chrono::system_clock::now());
 }
 
 FwdEventData::FwdEventData():EventData(),av_5(nullptr),event_data(nullptr)
@@ -3703,22 +3689,7 @@ AttrConfEventData::~AttrConfEventData()
 
 void AttrConfEventData::set_time()
 {
-#ifdef _TG_WINDOWS_
-		struct _timeb t;
-		_ftime(&t);
-
-		reception_date.tv_sec  = (CORBA::Long)t.time;
-		reception_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
-		reception_date.tv_nsec = 0;
-#else
-		struct timezone tz;
-		struct timeval tv;
-		gettimeofday(&tv,&tz);
-
-		reception_date.tv_sec  = (CORBA::Long)tv.tv_sec;
-		reception_date.tv_usec = (CORBA::Long)tv.tv_usec;
-		reception_date.tv_nsec = 0;
-#endif
+	reception_date = make_TimeVal(std::chrono::system_clock::now());
 }
 
 FwdAttrConfEventData::FwdAttrConfEventData():AttrConfEventData(),fwd_attr_conf(nullptr)
@@ -3821,22 +3792,7 @@ DataReadyEventData & DataReadyEventData::operator=(const DataReadyEventData &ri)
 
 void DataReadyEventData::set_time()
 {
-#ifdef _TG_WINDOWS_
-		struct _timeb t;
-		_ftime(&t);
-
-		reception_date.tv_sec  = (CORBA::Long)t.time;
-		reception_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
-		reception_date.tv_nsec = 0;
-#else
-		struct timezone tz;
-		struct timeval tv;
-		gettimeofday(&tv,&tz);
-
-		reception_date.tv_sec  = (CORBA::Long)tv.tv_sec;
-		reception_date.tv_usec = (CORBA::Long)tv.tv_usec;
-		reception_date.tv_nsec = 0;
-#endif
+	reception_date = make_TimeVal(std::chrono::system_clock::now());
 }
 
 /************************************************************************/
@@ -3990,22 +3946,7 @@ DevIntrChangeEventData & DevIntrChangeEventData::operator=(const DevIntrChangeEv
 
 void DevIntrChangeEventData::set_time()
 {
-#ifdef _TG_WINDOWS_
-		struct _timeb t;
-		_ftime(&t);
-
-		reception_date.tv_sec  = (CORBA::Long)t.time;
-		reception_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
-		reception_date.tv_nsec = 0;
-#else
-		struct timezone tz;
-		struct timeval tv;
-		gettimeofday(&tv,&tz);
-
-		reception_date.tv_sec  = (CORBA::Long)tv.tv_sec;
-		reception_date.tv_usec = (CORBA::Long)tv.tv_usec;
-		reception_date.tv_nsec = 0;
-#endif
+	reception_date = make_TimeVal(std::chrono::system_clock::now());
 }
 
 /************************************************************************/
@@ -4100,22 +4041,7 @@ PipeEventData::~PipeEventData()
 
 void PipeEventData::set_time()
 {
-#ifdef _TG_WINDOWS_
-		struct _timeb t;
-		_ftime(&t);
-
-		reception_date.tv_sec  = (CORBA::Long)t.time;
-		reception_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
-		reception_date.tv_nsec = 0;
-#else
-		struct timezone tz;
-		struct timeval tv;
-		gettimeofday(&tv,&tz);
-
-		reception_date.tv_sec  = (CORBA::Long)tv.tv_sec;
-		reception_date.tv_usec = (CORBA::Long)tv.tv_usec;
-		reception_date.tv_nsec = 0;
-#endif
+	reception_date = make_TimeVal(std::chrono::system_clock::now());
 }
 
 } /* End of Tango namespace */

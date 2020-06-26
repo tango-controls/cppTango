@@ -39,6 +39,7 @@
 #include <attribute.h>
 #include <classattribute.h>
 #include <eventsupplier.h>
+#include <tango_clock.h>
 
 #include <functional>
 #include <algorithm>
@@ -1681,22 +1682,7 @@ void Attribute::set_time()
 {
 	if (date == true)
 	{
-#ifdef _TG_WINDOWS_
-		struct _timeb t;
-		_ftime(&t);
-
-		when.tv_sec = (CORBA::Long)t.time;
-		when.tv_usec = (CORBA::Long)(t.millitm * 1000);
-		when.tv_nsec = 0;
-#else
-		struct timezone tz;
-		struct timeval tv;
-		gettimeofday(&tv,&tz);
-
-		when.tv_sec = (CORBA::Long)tv.tv_sec;
-		when.tv_usec = (CORBA::Long)tv.tv_usec;
-		when.tv_nsec = 0;
-#endif
+		when = make_TimeVal(std::chrono::system_clock::now());
 	}
 }
 
@@ -3247,21 +3233,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::D
 			a <<= str_seq;
 		}
 
-#ifdef _TG_WINDOWS_
-		struct _timeb t;
-		_ftime(&t);
-
-		ptr->time.tv_sec = (long)t.time;
-		ptr->time.tv_usec = (long)(t.millitm * 1000);
-		ptr->time.tv_nsec = 0;
-#else
-		struct timeval after;
-
-		gettimeofday(&after,NULL);
-		ptr->time.tv_sec = after.tv_sec;
-		ptr->time.tv_usec = after.tv_usec;
-		ptr->time.tv_nsec = 0;
-#endif
+		ptr->time = make_TimeVal(std::chrono::system_clock::now());
 		ptr->r_dim.dim_x = 1;
 		ptr->r_dim.dim_y = 0;
 		ptr->w_dim.dim_x = 0;
