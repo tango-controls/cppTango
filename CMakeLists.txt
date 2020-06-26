@@ -6,6 +6,7 @@ project(cppTango)
 # throw specifications and these are not supported anymore.
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(CTest)
 
