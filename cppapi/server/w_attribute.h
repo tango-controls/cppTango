@@ -976,12 +976,6 @@ private:
 	bool						mem_write_failed;		// Flag set to true if the memorized att setting failed
 };
 
-
-#define COMPUTE_TIME_DIFF(RESULT,BEFORE,AFTER) \
-long bef = ((BEFORE.tv_sec - 1095000000) * 1000) + (BEFORE.tv_usec / 1000); \
-long after = ((AFTER.tv_sec - 1095000000) * 1000) + (AFTER.tv_usec / 1000); \
-RESULT = after - bef;
-
 } // End of Tango namespace
 
 #endif // _WATTRIBUTE_H

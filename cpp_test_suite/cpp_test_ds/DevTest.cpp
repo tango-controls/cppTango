@@ -1860,7 +1860,16 @@ void DevTest::read_slow_actuator(Tango::Attribute &att)
 	long delta;
 	if (slow_actua_write.tv_sec != 0)
 	{
+
+#define COMPUTE_TIME_DIFF(RESULT,BEFORE,AFTER) \
+long bef = ((BEFORE.tv_sec - 1095000000) * 1000) + (BEFORE.tv_usec / 1000); \
+long after = ((AFTER.tv_sec - 1095000000) * 1000) + (AFTER.tv_usec / 1000); \
+RESULT = after - bef;
+
 		COMPUTE_TIME_DIFF(delta,slow_actua_write,now);
+
+#undef COMPUTE_TIME_DIFF
+
 		cout << "Delta time = " << delta << std::endl;
 		if (delta > 3000)
 		{

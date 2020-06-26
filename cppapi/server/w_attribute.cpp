@@ -44,6 +44,7 @@
 #include <attribute.h>
 #include <w_attribute.h>
 #include <classattribute.h>
+#include <tango_clock.h>
 
 #include <functional>
 #include <algorithm>
@@ -2815,20 +2816,7 @@ void WAttribute::copy_data(const Tango::AttrValUnion &the_union)
 
 void WAttribute::set_written_date()
 {
-#ifdef _TG_WINDOWS_
-    struct _timeb t;
-    _ftime(&t);
-
-    write_date.tv_sec = (CORBA::Long)t.time;
-    write_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
-#else
-    struct timezone tz;
-    struct timeval tv;
-    gettimeofday(&tv, &tz);
-
-    write_date.tv_sec = (CORBA::Long) tv.tv_sec;
-    write_date.tv_usec = (CORBA::Long) tv.tv_usec;
-#endif
+    write_date = make_timeval(std::chrono::system_clock::now());
 }
 
 //+-------------------------------------------------------------------------
@@ -2861,22 +2849,9 @@ bool WAttribute::check_rds_alarm()
 // Give some time to the device to change its output
 //
 
-    struct timeval tv;
-#ifdef _TG_WINDOWS_
-    struct _timeb t;
-    _ftime(&t);
+    auto time_diff = std::chrono::system_clock::now() - make_system_time(write_date);
 
-    tv.tv_sec = (CORBA::Long)t.time;
-    tv.tv_usec = (CORBA::Long)(t.millitm * 1000);
-#else
-    struct timezone tz;
-    gettimeofday(&tv, &tz);
-#endif
-
-    long time_diff;
-    COMPUTE_TIME_DIFF(time_diff, write_date, tv);
-
-    if (time_diff >= delta_t)
+    if (time_diff >= std::chrono::milliseconds(delta_t))
     {
 
 //

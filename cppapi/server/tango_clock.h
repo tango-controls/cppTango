@@ -54,7 +54,7 @@ std::chrono::system_clock::time_point make_system_time(TS sec, TU usec, TN nsec)
 } // namespace __detail
 
 template <typename Clock, typename Dur>
-inline TimeVal make_TimeVal(std::chrono::time_point<Clock, Dur> tp)
+TimeVal make_TimeVal(std::chrono::time_point<Clock, Dur> tp)
 {
     constexpr std::chrono::nanoseconds::rep NANOS_IN_SEC = 1000*1000*1000;
     constexpr std::chrono::nanoseconds::rep NANOS_IN_USEC = 1000;
@@ -68,6 +68,16 @@ inline TimeVal make_TimeVal(std::chrono::time_point<Clock, Dur> tp)
     return tv;
 }
 
+template <typename Clock, typename Dur>
+::timeval make_timeval(std::chrono::time_point<Clock, Dur> tp)
+{
+    auto tv = make_TimeVal(tp);
+    ::timeval result{};
+    result.tv_sec = tv.tv_sec;
+    result.tv_usec = tv.tv_usec;
+    return result;
+}
+
 inline PollClock::time_point make_poll_time(::timeval tv)
 {
     auto sys_time = __detail::make_system_time(tv.tv_sec, tv.tv_usec, 0);
@@ -78,6 +88,11 @@ inline PollClock::time_point make_poll_time(TimeVal tv)
 {
     auto sys_time = __detail::make_system_time(tv.tv_sec, tv.tv_usec, tv.tv_nsec);
     return __detail::convert_time_point<PollClock::time_point>(sys_time);
+}
+
+inline std::chrono::system_clock::time_point make_system_time(::timeval tv)
+{
+    return __detail::make_system_time(tv.tv_sec, tv.tv_usec, 0);
 }
 
 } // namespace Tango
