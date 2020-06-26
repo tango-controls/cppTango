@@ -3,6 +3,7 @@
 
 #include <chrono>
 #include <ratio>
+#include <type_traits>
 
 #include <idl/tango.h>
 
@@ -18,35 +19,47 @@ static_assert(
 namespace __detail
 {
 
-using WallClock = std::chrono::system_clock;
+template <typename A, typename B>
+using SameClocks = std::is_same<typename A::clock, typename B::clock>;
 
-// The conversion is based on the duration equality assumption:
-// (poll_ref - poll) == (wall_ref - wall)
-
-inline WallClock::time_point poll_time_to_wall_time(PollClock::time_point poll)
+template <typename DstTp, typename SrcTp>
+typename std::enable_if<SameClocks<DstTp, SrcTp>::value, DstTp>::type
+convert_time_point(SrcTp src)
 {
-    auto poll_ref = PollClock::now();
-    auto wall_ref = WallClock::now();
-    auto wall = wall_ref - (poll_ref - poll);
-    // We must cast, on Windows system_clock has only 1ms precision.
-    return std::chrono::time_point_cast<WallClock::duration>(wall);
+    return std::chrono::time_point_cast<typename DstTp::duration>(src);
 }
 
-inline PollClock::time_point wall_time_to_poll_time(WallClock::time_point wall)
+template <typename DstTp, typename SrcTp>
+typename std::enable_if<!SameClocks<DstTp, SrcTp>::value, DstTp>::type
+convert_time_point(SrcTp src)
 {
-    auto poll_ref = PollClock::now();
-    auto wall_ref = WallClock::now();
-    return poll_ref - (wall_ref - wall);
+    // The conversion is based on the duration equality assumption:
+    // (src_ref - src) == (dst_ref - dst)
+
+    auto src_ref = SrcTp::clock::now();
+    auto dst_ref = DstTp::clock::now();
+    auto dst = dst_ref - (src_ref - src);
+    return std::chrono::time_point_cast<typename DstTp::duration>(dst);
+}
+
+template <typename TS, typename TU, typename TN>
+std::chrono::system_clock::time_point make_system_time(TS sec, TU usec, TN nsec)
+{
+    using namespace std::chrono;
+    auto timestamp = seconds(sec) + microseconds(usec) + nanoseconds(nsec);
+    auto timestamp_sys = duration_cast<system_clock::duration>(timestamp);
+    return system_clock::time_point{timestamp_sys};
 }
 
 } // namespace __detail
 
-inline TimeVal make_TimeVal(PollClock::time_point poll_tp)
+template <typename Clock, typename Dur>
+inline TimeVal make_TimeVal(std::chrono::time_point<Clock, Dur> tp)
 {
     constexpr std::chrono::nanoseconds::rep NANOS_IN_SEC = 1000*1000*1000;
     constexpr std::chrono::nanoseconds::rep NANOS_IN_USEC = 1000;
 
-    auto wall_tp = __detail::poll_time_to_wall_time(poll_tp);
+    auto wall_tp = __detail::convert_time_point<std::chrono::system_clock::time_point>(tp);
     auto time_ns = std::chrono::nanoseconds(wall_tp.time_since_epoch()).count();
     TimeVal tv{};
     tv.tv_sec = time_ns / NANOS_IN_SEC;
@@ -57,21 +70,14 @@ inline TimeVal make_TimeVal(PollClock::time_point poll_tp)
 
 inline PollClock::time_point make_poll_time(::timeval tv)
 {
-    auto wall_time = __detail::WallClock::time_point{
-          std::chrono::seconds(tv.tv_sec)
-        + std::chrono::microseconds(tv.tv_usec)};
-    return __detail::wall_time_to_poll_time(wall_time);
+    auto sys_time = __detail::make_system_time(tv.tv_sec, tv.tv_usec, 0);
+    return __detail::convert_time_point<PollClock::time_point>(sys_time);
 }
 
 inline PollClock::time_point make_poll_time(TimeVal tv)
 {
-    // We must cast, on Windows we do not have required ns precision.
-    auto wall_duration = std::chrono::duration_cast<__detail::WallClock::duration>(
-          std::chrono::seconds(tv.tv_sec)
-        + std::chrono::microseconds(tv.tv_usec)
-        + std::chrono::nanoseconds(tv.tv_nsec));
-    auto wall_time = __detail::WallClock::time_point{wall_duration};
-    return __detail::wall_time_to_poll_time(wall_time);
+    auto sys_time = __detail::make_system_time(tv.tv_sec, tv.tv_usec, tv.tv_nsec);
+    return __detail::convert_time_point<PollClock::time_point>(sys_time);
 }
 
 } // namespace Tango
