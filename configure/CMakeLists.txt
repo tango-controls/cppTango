@@ -193,14 +193,6 @@ if(${FAILED})
 endif()
 
 if(NOT WIN32)
-    include(CheckCXXCompilerFlag)
-    # C++17 and higher support is currently not possible as omniorb uses
-    # throw specifications and these are not supported anymore.
-    CHECK_CXX_COMPILER_FLAG("-std=c++14" COMPILER_SUPPORTS_CXX14)
-    if(COMPILER_SUPPORTS_CXX14)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-    endif()
-
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         message("found GNU compiler ...")
         if(CMAKE_BUILD_TYPE STREQUAL "Release")

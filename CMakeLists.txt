@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
 
 project(cppTango)
 
-set(CMAKE_CXX_STANDARD 11)
+# C++17 and higher support is currently not possible as omniorb uses
+# throw specifications and these are not supported anymore.
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(CTest)
