@@ -51,6 +51,8 @@
 #include <signal.h>
 #include <algorithm>
 
+#include <chrono>
+
 using namespace CORBA;
 
 namespace Tango
@@ -2642,17 +2644,7 @@ void DeviceProxy::unsubscribe_all_events()
 
 int DeviceProxy::ping()
 {
-    int elapsed;
-
-#ifndef _TG_WINDOWS_
-    struct timeval before, after;
-
-    gettimeofday(&before, NULL);
-#else
-    struct _timeb before, after;
-
-    _ftime(&before);
-#endif /* _TG_WINDOWS_ */
+    auto before = std::chrono::steady_clock::now();
 
     int ctr = 0;
 
@@ -2716,17 +2708,9 @@ int DeviceProxy::ping()
                                               (const char *) "DeviceProxy::ping()");
         }
     }
-#ifndef _TG_WINDOWS_
-    gettimeofday(&after, NULL);
-    elapsed = (after.tv_sec - before.tv_sec) * 1000000;
-    elapsed = (after.tv_usec - before.tv_usec) + elapsed;
-#else
-    _ftime(&after);
-    elapsed = (after.time - before.time) * 1000000;
-    elapsed = (after.millitm - before.millitm) * 1000 + elapsed;
-#endif /* _TG_WINDOWS_ */
 
-    return (elapsed);
+    auto after = std::chrono::steady_clock::now();
+    return std::chrono::duration_cast<std::chrono::microseconds>(after - before).count();
 }
 
 //-----------------------------------------------------------------------------
