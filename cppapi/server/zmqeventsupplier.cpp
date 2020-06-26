@@ -1615,20 +1615,7 @@ bool ZmqEventSupplier::update_connected_client(client_addr *cl)
 // First try to find the client in list
 //
 
-    struct timeval now;
-
-#ifdef _TG_WINDOWS_
-    struct _timeb after_win;
-
-    _ftime(&after_win);
-    now.tv_sec = (time_t)after_win.time;
-#else
-    gettimeofday(&now,NULL);
-#endif
-
-    std::list<ConnectedClient>::iterator pos;
-
-    pos = find_if(con_client.begin(),con_client.end(),
+    auto pos = find_if(con_client.begin(),con_client.end(),
                   [&] (ConnectedClient &cc) -> bool
                   {
                       return (cc.clnt == *cl);
@@ -1638,15 +1625,17 @@ bool ZmqEventSupplier::update_connected_client(client_addr *cl)
 // Update date if client in list. Otherwise add client to list
 //
 
+    auto now = std::chrono::steady_clock::now();
+
     if (pos != con_client.end())
     {
-        pos->date = now.tv_sec;
+        pos->date = now;
     }
     else
     {
         ConnectedClient new_cc;
         new_cc.clnt = *cl;
-        new_cc.date = now.tv_sec;
+        new_cc.date = now;
 
         con_client.push_back(new_cc);
         ret = true;
@@ -1656,15 +1645,12 @@ bool ZmqEventSupplier::update_connected_client(client_addr *cl)
 // Remove presumly dead client
 //
 
-	con_client.remove_if([&] (ConnectedClient &cc) -> bool
-                        {
-                            if (now.tv_sec > (cc.date + 500))
-                                return true;
-                            else
-                                return false;
-                        });
+    con_client.remove_if([&](ConnectedClient &cc)
+        {
+            return now - cc.date > std::chrono::seconds(500);
+        });
 
-	return ret;
+    return ret;
 }
 
 

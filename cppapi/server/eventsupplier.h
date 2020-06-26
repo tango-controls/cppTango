@@ -66,6 +66,7 @@
 #include <sys/time.h>
 #endif
 
+#include <chrono>
 
 namespace Tango
 {
@@ -322,8 +323,8 @@ private :
 
     struct ConnectedClient
     {
-        client_addr             clnt;
-        time_t                  date;
+        client_addr clnt;
+        std::chrono::steady_clock::time_point date;
     };
 
 	zmq::context_t              zmq_context;            // ZMQ context
