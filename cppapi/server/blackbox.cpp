@@ -38,6 +38,7 @@
 
 #include <tango.h>
 #include <blackbox.h>
+#include <tango_clock.h>
 
 #include <stdio.h>
 
@@ -95,7 +96,7 @@ BlackBoxElt::BlackBoxElt()
     req_type = Req_Unknown;
     attr_type = Attr_Unknown;
     op_type = Op_Unknown;
-    when.tv_sec = when.tv_usec = 0;
+    when = {};
     host_ip_str[0] = '\0';
     client_ident = false;
     attr_names.reserve(DEFAULT_ATTR_NB);
@@ -168,21 +169,7 @@ void BlackBox::insert_corba_attr(BlackBoxElt_AttrType attr)
     box[insert_elt].attr_type = attr;
     box[insert_elt].op_type = Op_Unknown;
     box[insert_elt].client_ident = false;
-
-#ifdef _TG_WINDOWS_
-    //
-    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-    // This save some times in unnecessary computation
-    //
-        struct _timeb t;
-        _ftime(&t);
-
-        box[insert_elt].when.tv_usec = (long)t.millitm;
-        box[insert_elt].when.tv_sec = (unsigned long)t.time;
-#else
-    struct timezone tz;
-    gettimeofday(&box[insert_elt].when, &tz);
-#endif
+    box[insert_elt].when = std::chrono::system_clock::now();
 
 //
 // get client address
@@ -253,20 +240,7 @@ void BlackBox::insert_cmd_nl(const char *cmd, long vers, DevSource sour)
     box[insert_elt].cmd_name = cmd;
     box[insert_elt].source = sour;
     box[insert_elt].client_ident = false;
-#ifdef _TG_WINDOWS_
-    //
-    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-    // This save some times in unnecessary computation
-    //
-        struct _timeb t;
-        _ftime(&t);
-
-        box[insert_elt].when.tv_usec = (long)t.millitm;
-        box[insert_elt].when.tv_sec = (unsigned long)t.time;
-#else
-    struct timezone tz;
-    gettimeofday(&box[insert_elt].when, &tz);
-#endif
+    box[insert_elt].when = std::chrono::system_clock::now();
 
 //
 // get client address
@@ -471,20 +445,7 @@ void BlackBox::insert_op_nl(BlackBoxElt_OpType op)
     box[insert_elt].attr_type = Attr_Unknown;
     box[insert_elt].op_type = op;
     box[insert_elt].client_ident = false;
-#ifdef _TG_WINDOWS_
-    //
-    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-    // This save some times in unnecessary computation
-    //
-        struct _timeb t;
-        _ftime(&t);
-
-        box[insert_elt].when.tv_usec = (long)t.millitm;
-        box[insert_elt].when.tv_sec = (unsigned long)t.time;
-#else
-    struct timezone tz;
-    gettimeofday(&box[insert_elt].when, &tz);
-#endif
+    box[insert_elt].when = std::chrono::system_clock::now();
 
 //
 // get client address
@@ -561,20 +522,7 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names, long vers, Dev
         box[insert_elt].attr_names.push_back(tmp_str);
     }
 
-#ifdef _TG_WINDOWS_
-    //
-    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-    // This save some times in unnecessary computation
-    //
-        struct _timeb t;
-        _ftime(&t);
-
-        box[insert_elt].when.tv_usec = (long)t.millitm;
-        box[insert_elt].when.tv_sec = (unsigned long)t.time;
-#else
-    struct timezone tz;
-    gettimeofday(&box[insert_elt].when, &tz);
-#endif
+    box[insert_elt].when = std::chrono::system_clock::now();
 
 //
 // get client address
@@ -631,20 +579,7 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names, const ClntIden
         box[insert_elt].attr_names.push_back(tmp_str);
     }
 
-#ifdef _TG_WINDOWS_
-    //
-    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-    // This save some times in unnecessary computation
-    //
-        struct _timeb t;
-        _ftime(&t);
-
-        box[insert_elt].when.tv_usec = (long)t.millitm;
-        box[insert_elt].when.tv_sec = (unsigned long)t.time;
-#else
-    struct timezone tz;
-    gettimeofday(&box[insert_elt].when, &tz);
-#endif
+    box[insert_elt].when = std::chrono::system_clock::now();
 
 //
 // get client address
@@ -717,20 +652,7 @@ void BlackBox::insert_attr(const char *name, const ClntIdent &cl_id, TANGO_UNUSE
     std::string tmp_str(name);
     box[insert_elt].attr_names.push_back(tmp_str);
 
-#ifdef _TG_WINDOWS_
-    //
-    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-    // This save some times in unnecessary computation
-    //
-        struct _timeb t;
-        _ftime(&t);
-
-        box[insert_elt].when.tv_usec = (long)t.millitm;
-        box[insert_elt].when.tv_sec = (unsigned long)t.time;
-#else
-    struct timezone tz;
-    gettimeofday(&box[insert_elt].when, &tz);
-#endif
+    box[insert_elt].when = std::chrono::system_clock::now();
 
 //
 // get client address
@@ -801,20 +723,7 @@ void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val, const ClntIdent &
     std::string tmp_str(pipe_val.name);
     box[insert_elt].attr_names.push_back(tmp_str);
 
-#ifdef _TG_WINDOWS_
-    //
-    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-    // This save some times in unnecessary computation
-    //
-        struct _timeb t;
-        _ftime(&t);
-
-        box[insert_elt].when.tv_usec = (long)t.millitm;
-        box[insert_elt].when.tv_sec = (unsigned long)t.time;
-#else
-    struct timezone tz;
-    gettimeofday(&box[insert_elt].when, &tz);
-#endif
+    box[insert_elt].when = std::chrono::system_clock::now();
 
 //
 // get client address
@@ -921,21 +830,7 @@ void BlackBox::insert_attr_nl(const Tango::AttributeValueList &att_list, long ve
         box[insert_elt].attr_names.push_back(tmp_str);
     }
     box[insert_elt].client_ident = false;
-
-#ifdef _TG_WINDOWS_
-    //
-    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-    // This save some times in unnecessary computation
-    //
-        struct _timeb t;
-        _ftime(&t);
-
-        box[insert_elt].when.tv_usec = (long)t.millitm;
-        box[insert_elt].when.tv_sec = (unsigned long)t.time;
-#else
-    struct timezone tz;
-    gettimeofday(&box[insert_elt].when, &tz);
-#endif
+    box[insert_elt].when = std::chrono::system_clock::now();
 
 //
 // get client address
@@ -967,20 +862,7 @@ void BlackBox::insert_attr_nl_4(const Tango::AttributeValueList_4 &att_list)
         box[insert_elt].attr_names.push_back(tmp_str);
     }
 
-#ifdef _TG_WINDOWS_
-    //
-    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-    // This save some times in unnecessary computation
-    //
-        struct _timeb t;
-        _ftime(&t);
-
-        box[insert_elt].when.tv_usec = (long)t.millitm;
-        box[insert_elt].when.tv_sec = (unsigned long)t.time;
-#else
-    struct timezone tz;
-    gettimeofday(&box[insert_elt].when, &tz);
-#endif
+    box[insert_elt].when = std::chrono::system_clock::now();
 
 //
 // get client address
@@ -1080,20 +962,7 @@ void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list,
         box[insert_elt].attr_names.push_back(tmp_str);
     }
 
-#ifdef _TG_WINDOWS_
-    //
-    // Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
-    // This save some times in unnecessary computation
-    //
-        struct _timeb t;
-        _ftime(&t);
-
-        box[insert_elt].when.tv_usec = (long)t.millitm;
-        box[insert_elt].when.tv_sec = (unsigned long)t.time;
-#else
-    struct timezone tz;
-    gettimeofday(&box[insert_elt].when, &tz);
-#endif
+    box[insert_elt].when = std::chrono::system_clock::now();
 
 //
 // get client address
@@ -1224,7 +1093,8 @@ void BlackBox::build_info_as_str(long index)
 // Convert time to a string
 //
 
-    date_ux_to_str(box[index].when, date_str, sizeof(date_str));
+    auto when_timeval = make_timeval(box[index].when);
+    date_ux_to_str(when_timeval, date_str, sizeof(date_str));
     elt_str = date_str;
 
 //

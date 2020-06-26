@@ -40,6 +40,7 @@
 #endif
 #include <time.h>
 #include <omniORB4/omniInterceptors.h>
+#include <chrono>
 
 namespace Tango
 {
@@ -155,7 +156,7 @@ public:
 	BlackBoxElt_OpType		op_type;
 	std::string					cmd_name;
 	std::vector<std::string>			attr_names;
-	struct timeval			when;
+	std::chrono::system_clock::time_point when;
 	char					host_ip_str[IP_ADDR_BUFFER_SIZE];
 	DevSource				source;
 
