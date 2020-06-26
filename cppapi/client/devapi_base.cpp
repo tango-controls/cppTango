@@ -58,6 +58,11 @@ using namespace CORBA;
 namespace Tango
 {
 
+namespace
+{
+constexpr auto RECONNECTION_DELAY = std::chrono::seconds(1);
+}
+
 //-----------------------------------------------------------------------------
 //
 // ConnectionExt class methods:
@@ -82,7 +87,7 @@ Connection::Connection(ORB *orb_in)
     : pasyn_ctr(0), pasyn_cb_ctr(0),
       timeout(CLNT_TIMEOUT),
       version(0), source(Tango::CACHE_DEV), ext(new ConnectionExt()),
-      tr_reco(true), prev_failed(false), prev_failed_t0(0.0),
+      tr_reco(true), prev_failed_t0(),
       user_connect_timeout(-1), tango_host_localhost(false)
 {
 
@@ -129,7 +134,7 @@ Connection::Connection(ORB *orb_in)
 }
 
 Connection::Connection(bool dummy)
-    : ext(nullptr), tr_reco(true), prev_failed(false), prev_failed_t0(0.0),
+    : ext(nullptr), tr_reco(true), prev_failed_t0(),
       user_connect_timeout(-1), tango_host_localhost(false)
 {
     if (dummy)
@@ -188,7 +193,6 @@ Connection::Connection(const Connection &sou)
     tr_reco = sou.tr_reco;
     device_3 = sou.device_3;
 
-    prev_failed = sou.prev_failed;
     prev_failed_t0 = sou.prev_failed_t0;
 
     device_4 = sou.device_4;
@@ -244,7 +248,6 @@ Connection &Connection::operator=(const Connection &rval)
     tr_reco = rval.tr_reco;
     device_3 = rval.device_3;
 
-    prev_failed = rval.prev_failed;
     prev_failed_t0 = rval.prev_failed_t0;
 
     device_4 = rval.device_4;
@@ -702,28 +705,18 @@ void Connection::toIOR(const char *iorstr, IOP::IOR &ior)
 
 void Connection::reconnect(bool db_used)
 {
-    struct timeval now;
-#ifndef _TG_WINDOWS_
-    gettimeofday(&now, NULL);
-#else
-    struct _timeb now_win;
-    _ftime(&now_win);
-    now.tv_sec = (unsigned long) now_win.time;
-    now.tv_usec = (long) now_win.millitm * 1000;
-#endif /* _TG_WINDOWS_ */
-
-    double t = (double) now.tv_sec + ((double) now.tv_usec / 1000000);
-    double delay = t - prev_failed_t0;
+    auto now = std::chrono::steady_clock::now();
 
     if (connection_state != CONNECTION_OK)
     {
-        //	Do not reconnect if to soon
-        if ((prev_failed == true) && delay < (RECONNECTION_DELAY / 1000))
+        // Do not reconnect if to soon
+        if (prev_failed_t0.has_value() && (now - *prev_failed_t0) < RECONNECTION_DELAY)
         {
             TangoSys_OMemStream desc;
             desc << "Failed to connect to device " << dev_name() << std::endl;
             desc << "The connection request was delayed." << std::endl;
-            desc << "The last connection request was done less than " << RECONNECTION_DELAY << " ms ago" << std::ends;
+            desc << "The last connection request was done less than "
+                 << std::chrono::milliseconds(RECONNECTION_DELAY).count() << " ms ago" << std::ends;
 
             Tango::Except::throw_exception((const char *) API_CantConnectToDevice,
                                            desc.str(),
@@ -779,8 +772,7 @@ void Connection::reconnect(bool db_used)
                 device->ping();
 //				omniORB::setClientConnectTimeout(0);
 
-                prev_failed_t0 = t;
-                prev_failed = false;
+                prev_failed_t0 = tango_nullopt;
 
 //
 // If the device is the database, call its post-reconnection method
@@ -811,8 +803,7 @@ void Connection::reconnect(bool db_used)
     }
     catch (DevFailed &)
     {
-        prev_failed = true;
-        prev_failed_t0 = t;
+        prev_failed_t0 = now;
 
         throw;
     }

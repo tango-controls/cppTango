@@ -172,12 +172,6 @@ const int   DB_TIMEOUT                     = 13000;
 const int   DB_START_PHASE_RETRIES         = 3;
 
 //
-// Time to wait before trying to reconnect after
-// a connevtion failure
-//
-const int   RECONNECTION_DELAY             = 1000;   //ms. Only try to reconnect every second
-
-//
 // Access Control related defines
 // WARNING: these string are also used within the Db stored procedure
 // introduced in Tango V6.1. If you chang eit here, don't forget to
