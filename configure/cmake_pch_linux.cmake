@@ -50,6 +50,7 @@ function(tango_add_pch pch_target ref_target pch_extra_cxx_flags)
         ${pch_compile_opts}
         ${pch_extra_cxx_flags}
         -x c++-header
+        -std=c++${CMAKE_CXX_STANDARD}
         -c
         -o ${tango_pch_file})
 
