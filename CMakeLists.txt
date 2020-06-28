@@ -4,7 +4,9 @@ project(cppTango)
 
 # C++17 and higher support is currently not possible as omniorb uses
 # throw specifications and these are not supported anymore.
-set(CMAKE_CXX_STANDARD 14)
+if (NOT DEFINED CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 14)
+endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
