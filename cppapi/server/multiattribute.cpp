@@ -550,52 +550,66 @@ void MultiAttribute::add_user_default(std::vector<AttrProperty> &prop_list,std::
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::check_associated(long index,std::string &dev_name)
+void MultiAttribute::check_associated(long index, std::string &dev_name)
 {
-	if ((attr_list[index]->get_writable() == Tango::READ_WITH_WRITE) ||
-	    (attr_list[index]->get_writable() == Tango::READ_WRITE))
+	Attribute& attribute = *attr_list[index];
+	const AttrWriteType write_type = attribute.get_writable();
+
+	if (write_type != Tango::READ_WITH_WRITE && write_type != Tango::READ_WRITE)
 	{
-		unsigned long j;
-		std::string &assoc_name = attr_list[index]->get_assoc_name();
-		std::transform(assoc_name.begin(),assoc_name.end(),assoc_name.begin(),::tolower);
-		for (j = 0;j < writable_attr_list.size();j++)
-		{
-			if (attr_list[writable_attr_list[j]]->get_name_lower() == assoc_name)
-				break;
-		}
-		if (j == writable_attr_list.size())
-		{
-			TangoSys_OMemStream o;
-
-			o << "Device --> " << dev_name;
-			o << "\nProperty writable_attr_name for attribute " << attr_list[index]->get_name();
-			o << " is set to " << assoc_name;
-			o << ", but this attribute does not exists or is not writable" << std::ends;
-			Except::throw_exception((const char *)API_AttrOptProp,
-						o.str(),
-						(const char *)"MultiAttribute::MultiAttribute");
-		}
-
-//
-// Check that the two associated attributes have the same data type
-//
-
-		if (attr_list[writable_attr_list[j]]->get_data_type() != attr_list[index]->get_data_type())
-		{
-			TangoSys_OMemStream o;
-
-			o << "Device --> " << dev_name;
-			o << "\nProperty writable_attr_name for attribute " << attr_list[index]->get_name();
-			o << " is set to " << assoc_name;
-			o << ", but these two attributes do not support the same data type" << std::ends;
-			Except::throw_exception((const char *)API_AttrOptProp,
-						o.str(),
-						(const char *)"MultiAttribute::MultiAttribute");
-		}
-
-		attr_list[index]->set_assoc_ind(writable_attr_list[j]);
+		return;
 	}
 
+	std::string& assoc_name = attribute.get_assoc_name();
+
+	long assoc_index = 0;
+	try
+	{
+		assoc_index = get_attr_ind_by_name(assoc_name.c_str());
+	}
+	catch (const DevFailed&)
+	{
+		TangoSys_OMemStream o;
+		o << "Device --> " << dev_name;
+		o << "\nProperty writable_attr_name for attribute " << attribute.get_name();
+		o << " is set to " << assoc_name;
+		o << ", but this attribute does not exist" << std::ends;
+		Except::throw_exception(
+			API_AttrOptProp,
+			o.str().c_str(),
+			"MultiAttribute::check_associated");
+	}
+
+	Attribute& assoc_attribute = *attr_list[assoc_index];
+	const AttrWriteType assoc_write_type = assoc_attribute.get_writable();
+
+	if (assoc_write_type != Tango::WRITE && assoc_write_type != Tango::READ_WRITE)
+	{
+		TangoSys_OMemStream o;
+		o << "Device --> " << dev_name;
+		o << "\nProperty writable_attr_name for attribute " << attribute.get_name();
+		o << " is set to " << assoc_name;
+		o << ", but this attribute is not writable" << std::ends;
+		Except::throw_exception(
+			API_AttrOptProp,
+			o.str().c_str(),
+			"MultiAttribute::check_associated");
+	}
+
+	if (attribute.get_data_type() != assoc_attribute.get_data_type())
+	{
+		TangoSys_OMemStream o;
+		o << "Device --> " << dev_name;
+		o << "\nProperty writable_attr_name for attribute " << attribute.get_name();
+		o << " is set to " << assoc_name;
+		o << ", but these two attributes do not support the same data type" << std::ends;
+		Except::throw_exception(
+			API_AttrOptProp,
+			o.str().c_str(),
+			"MultiAttribute::check_associated");
+	}
+
+	attribute.set_assoc_ind(assoc_index);
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
