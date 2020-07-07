@@ -580,7 +580,7 @@ void MultiAttribute::check_associated(long index, std::string &dev_name)
 		Except::throw_exception(
 			API_AttrOptProp,
 			o.str().c_str(),
-			"MultiAttribute::MultiAttribute");
+			"MultiAttribute::check_associated");
 	}
 
 	Attribute& assoc_attribute = *attr_list[assoc_index];
@@ -596,7 +596,7 @@ void MultiAttribute::check_associated(long index, std::string &dev_name)
 		Except::throw_exception(
 			API_AttrOptProp,
 			o.str().c_str(),
-			"MultiAttribute::MultiAttribute");
+			"MultiAttribute::check_associated");
 	}
 
 	if (attribute.get_data_type() != assoc_attribute.get_data_type())
@@ -609,7 +609,7 @@ void MultiAttribute::check_associated(long index, std::string &dev_name)
 		Except::throw_exception(
 			API_AttrOptProp,
 			o.str().c_str(),
-			"MultiAttribute::MultiAttribute");
+			"MultiAttribute::check_associated");
 	}
 
 	attribute.set_assoc_ind(assoc_index);
