@@ -75,8 +75,6 @@ before_script:
   - docker exec -u root cpp_tango usermod -a -G dockerhost tango || true
   - .travis/install_tango_idl.sh
   - (test ${STOCK_CPPZMQ} = "OFF" && .travis/install_cppzmq.sh) || true
-#work around gcov ignored by sonar
-  - sudo mkdir /home/tango && sudo mkdir /home/tango/src && sudo mount --bind `pwd` /home/tango/src
 
 script:
   - set -e
