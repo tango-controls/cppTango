@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
 
 project(cppTango)
 
-# C++17 and higher support is currently not possible as omniorb uses
-# throw specifications and these are not supported anymore.
+# omniORB>=4.2.4 is required for compilation in C++17 (or better) mode.
 if (NOT DEFINED CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 14)
 endif()
