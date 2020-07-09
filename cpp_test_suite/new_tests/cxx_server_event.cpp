@@ -12,6 +12,27 @@
 #undef SUITE_NAME
 #define SUITE_NAME ServerEventTestSuite
 
+template <typename TEvent>
+struct EventCallback : public Tango::CallBack
+{
+    EventCallback()
+        : num_of_all_events(0)
+        , num_of_error_events(0)
+    {}
+
+    void push_event(TEvent* event)
+    {
+        num_of_all_events++;
+        if (event->err)
+        {
+            num_of_error_events++;
+        }
+    }
+
+    int num_of_all_events;
+    int num_of_error_events;
+};
+
 class ServerEventTestSuite : public CxxTest::TestSuite {
 protected:
     DeviceProxy *device1, *device2;
@@ -132,6 +153,54 @@ public:
         da >> cb2;
 
         TS_ASSERT_EQUALS(cb2, cb);
+    }
+
+    /**
+     * Tests that the client can still receive events after the device server is
+     * shut down, renamed in the database and then restarted. This scenario used
+     * to fail as reported in #679.
+     */
+    void test_reconnection_after_ds_instance_rename()
+    {
+        const std::string new_instance_name = "renamed_ds";
+        const std::string new_ds_name = "DevTest/" + new_instance_name;
+        const std::string old_ds_name = "DevTest/" + device1_instance_name;
+
+        const std::string attribute_name = "event_change_tst";
+
+        EventCallback<Tango::EventData> callback{};
+
+        int subscription{};
+        TS_ASSERT_THROWS_NOTHING(subscription = device1->subscribe_event(
+            attribute_name,
+            Tango::USER_EVENT,
+            &callback));
+
+        TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOPushEvent"));
+        Tango_sleep(1);
+        TS_ASSERT_EQUALS(2, callback.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback.num_of_error_events);
+
+        CxxTest::TangoPrinter::kill_server();
+
+        Database db{};
+        db.rename_server(old_ds_name, new_ds_name);
+
+        CxxTest::TangoPrinter::start_server(new_instance_name);
+        Tango_sleep(EVENT_HEARTBEAT_PERIOD); // Wait for reconnection
+
+        Tango_sleep(1);
+        TS_ASSERT_EQUALS(4, callback.num_of_all_events);
+        TS_ASSERT_EQUALS(1, callback.num_of_error_events);
+
+        TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOPushEvent"));
+        Tango_sleep(1);
+        TS_ASSERT_EQUALS(5, callback.num_of_all_events);
+        TS_ASSERT_EQUALS(1, callback.num_of_error_events);
+
+        TS_ASSERT_THROWS_NOTHING(device1->unsubscribe_event(subscription));
+
+        db.rename_server(new_ds_name, old_ds_name);
     }
 };
 
