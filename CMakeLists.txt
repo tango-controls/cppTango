@@ -2,7 +2,12 @@ cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
 
 project(cppTango)
 
-set(CXX_STANDARD_REQUIRED 11)
+# omniORB>=4.2.4 is required for compilation in C++17 (or better) mode.
+if (NOT DEFINED CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 14)
+endif()
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(CTest)
 
