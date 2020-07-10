@@ -84,7 +84,7 @@ inline PollClock::time_point make_poll_time(::timeval tv)
     return detail::convert_time_point<PollClock::time_point>(sys_time);
 }
 
-inline PollClock::time_point make_poll_time(TimeVal tv)
+inline PollClock::time_point make_poll_time(const TimeVal& tv)
 {
     auto sys_time = detail::make_system_time(tv.tv_sec, tv.tv_usec, tv.tv_nsec);
     return detail::convert_time_point<PollClock::time_point>(sys_time);
