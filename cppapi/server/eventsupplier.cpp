@@ -613,8 +613,8 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         auto arch_period = get_minimal_event_reporting_period(std::chrono::milliseconds(arch_period_ms));
 
         cout3 << "EventSupplier::detect_and_push_archive_event():"
-              << " ms_since_last_periodic = " << std::fixed << std::chrono::nanoseconds(ms_since_last_periodic).count() / 1e6 << " ms"
-              << ", arch_period = " << std::fixed << std::chrono::nanoseconds(arch_period).count() / 1e6 << " ms"
+              << " ms_since_last_periodic = " << std::fixed << duration_ms(ms_since_last_periodic) << " ms"
+              << ", arch_period = " << std::fixed << duration_ms(arch_period) << " ms"
               << ", attr.prev_archive_event.inited = " << attr.prev_archive_event.inited
               << std::endl;
 
@@ -731,7 +731,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
         }
 
         auto time_delta = time_bef_attr - attr.archive_last_event;
-        auto time_delta_ms = std::chrono::nanoseconds(time_delta).count() / 1e6;
+        auto time_delta_ms = duration_ms(time_delta);
         filterable_names.push_back("delta_event");
         filterable_data.push_back(time_delta_ms);
         attr.archive_last_event = time_bef_attr;
@@ -875,8 +875,8 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
     auto ms_since_last_periodic = time_bef_attr - attr.last_periodic;
 
     cout3 << "EventSupplier::detect_and_push_is_periodic_event():"
-          << " delta since last periodic " << std::fixed << std::chrono::nanoseconds(ms_since_last_periodic).count() / 1e6 << " ms"
-          << ", event_period " << std::fixed << std::chrono::nanoseconds(eve_period).count() / 1e6 << " ms"
+          << " delta since last periodic " << std::fixed << duration_ms(ms_since_last_periodic) << " ms"
+          << ", event_period " << std::fixed << duration_ms(eve_period) << " ms"
           << " for " << device_impl->get_name() + "/" + attr_name << std::endl;
 
     if (ms_since_last_periodic > eve_period)

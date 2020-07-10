@@ -352,7 +352,7 @@ void PollThread::execute_cmd()
                 if (local_cmd.new_upd != PollClock::duration::zero())
                 {
                     cout5 << "Received a delta from now of "
-                        << std::fixed << std::chrono::nanoseconds(local_cmd.new_upd).count() / 1e6 << " ms"
+                        << std::fixed << duration_ms(local_cmd.new_upd) << " ms"
                         << std::endl;
                     wo.wake_up_date += local_cmd.new_upd;
                 }
@@ -979,23 +979,23 @@ void PollThread::print_list()
 				}
 
 				cout5 << "Dev name = " << ite->dev->get_name() << ", obj name = " << obj_list << ", next wake_up at "
-					<< std::fixed << std::chrono::nanoseconds(ite->wake_up_date.time_since_epoch()).count() / 1e9 << " s "
-					<< std::fixed << "(in " << std::chrono::nanoseconds(ite->wake_up_date - PollClock::now()).count() / 1e6 << " ms)"
+					<< std::fixed << duration_s(ite->wake_up_date.time_since_epoch()) << " s "
+					<< std::fixed << "(in " << duration_ms(ite->wake_up_date - PollClock::now()) << " ms)"
 					<< std::endl;
 			}
 			else
 			{
 				cout5 << ite->name[0] << ", next wake_up at "
-					<< std::fixed << std::chrono::nanoseconds(ite->wake_up_date.time_since_epoch()).count() / 1e9 << " s "
-					<< std::fixed << "(in " << std::chrono::nanoseconds(ite->wake_up_date - PollClock::now()).count() / 1e6 << " ms)"
+					<< std::fixed << duration_s(ite->wake_up_date.time_since_epoch()) << " s "
+					<< std::fixed << "(in " << duration_ms(ite->wake_up_date - PollClock::now()) << " ms)"
 					<< std::endl;
 			}
 		}
 		else
 		{
 			cout5 << "Event heartbeat, next wake_up at "
-			<< std::fixed << std::chrono::nanoseconds(ite->wake_up_date.time_since_epoch()).count() / 1e9 << " s "
-			<< std::fixed << "(in " << std::chrono::nanoseconds(ite->wake_up_date - PollClock::now()).count() / 1e6 << " ms)"
+			<< std::fixed << duration_s(ite->wake_up_date.time_since_epoch()) << " s "
+			<< std::fixed << "(in " << duration_ms(ite->wake_up_date - PollClock::now()) << " ms)"
 			<< std::endl;
 		}
 
@@ -1351,7 +1351,7 @@ void PollThread::compute_sleep_time()
 
         if (sleep.has_value())
         {
-            cout5 << "Sleep for : " << std::fixed << std::chrono::nanoseconds(*sleep).count() / 1e9 << "s" << std::endl;
+            cout5 << "Sleep for : " << std::fixed << duration_s(*sleep) << "s" << std::endl;
         }
         else
         {
@@ -1476,7 +1476,7 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 
 void PollThread::poll_cmd(WorkItem &to_do)
 {
-	cout5 << "----------> Time = " << std::fixed << std::chrono::nanoseconds(now.time_since_epoch()).count() / 1e9 << " s"
+	cout5 << "----------> Time = " << std::fixed << duration_s(now.time_since_epoch()) << " s"
 		<< ", Dev name = " << to_do.dev->get_name()
 		<< ", Cmd name = " << to_do.name[0]
 		<< std::endl;
@@ -1553,7 +1553,7 @@ void PollThread::poll_attr(WorkItem &to_do)
             att_list = att_list + ", ";
     }
 
-	cout5 << "----------> Time = " << std::fixed << std::chrono::nanoseconds(now.time_since_epoch()).count() / 1e9 << " s"
+	cout5 << "----------> Time = " << std::fixed << duration_s(now.time_since_epoch()) << " s"
 		<< ", Dev name = " << to_do.dev->get_name()
 		<< ", Attr name = " << att_list
 		<< std::endl;
@@ -1902,7 +1902,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 
 void PollThread::eve_heartbeat()
 {
-	cout5 << "----------> Time = " << std::fixed << std::chrono::nanoseconds(now.time_since_epoch()).count() / 1e9 << " s"
+	cout5 << "----------> Time = " << std::fixed << duration_s(now.time_since_epoch()) << " s"
 		<< " Sending event heartbeat" << std::endl;
 
 	EventSupplier *event_supplier;
@@ -1933,7 +1933,7 @@ void PollThread::store_subdev()
 {
 	static bool ignore_call = true;
 
-	cout5 << "----------> Time = " << std::fixed << std::chrono::nanoseconds(now.time_since_epoch()).count() / 1e9 << " s"
+	cout5 << "----------> Time = " << std::fixed << duration_s(now.time_since_epoch()) << " s"
 		<< " Store sub device property data if needed!" << std::endl;
 
 

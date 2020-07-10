@@ -392,7 +392,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
                     }
 
 					s.setf(std::ios::fixed);
-					s << std::setprecision(3) << std::chrono::nanoseconds(tmp_db).count() / 1e6;
+					s << std::setprecision(3) << duration_ms(tmp_db);
 					returned_info = returned_info + s.str();
 
 					s.str("");
@@ -405,7 +405,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
 					auto since = poll_list[i]->get_last_insert_date_i();
 					auto now = PollClock::now();
 					auto diff = now - since;
-					double diff_t = std::chrono::nanoseconds(diff - tmp_db).count() / 1e9;
+					double diff_t = duration_s(diff - tmp_db);
 					if (diff_t < 1.0)
 					{
 						long nb_msec = (long)(diff_t * 1000);
