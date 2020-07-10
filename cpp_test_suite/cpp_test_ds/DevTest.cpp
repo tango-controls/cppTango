@@ -1,5 +1,6 @@
 #include <tango.h>
 #include <DevTest.h>
+#include <tango_clock.h>
 
 #ifdef WIN32
 #include <sys/timeb.h>
@@ -1848,30 +1849,13 @@ void DevTest::read_slow_actuator(Tango::Attribute &att)
 	slow_actua++;
 	att.set_value(&slow_actua);
 
-	struct timeval now;
-#ifdef WIN32
-	struct _timeb before_win;
-	_ftime(&before_win);
-	now.tv_sec = (unsigned long)before_win.time;
-	now.tv_usec = (long)before_win.millitm * 1000;
-#else
-	gettimeofday(&now,NULL);
-#endif
-	long delta;
 	if (slow_actua_write.tv_sec != 0)
 	{
+		auto now = std::chrono::system_clock::now();
+		auto delta = now - Tango::make_system_time(slow_actua_write);
 
-#define COMPUTE_TIME_DIFF(RESULT,BEFORE,AFTER) \
-long bef = ((BEFORE.tv_sec - 1095000000) * 1000) + (BEFORE.tv_usec / 1000); \
-long after = ((AFTER.tv_sec - 1095000000) * 1000) + (AFTER.tv_usec / 1000); \
-RESULT = after - bef;
-
-		COMPUTE_TIME_DIFF(delta,slow_actua_write,now);
-
-#undef COMPUTE_TIME_DIFF
-
-		cout << "Delta time = " << delta << std::endl;
-		if (delta > 3000)
+		cout << "Delta time = " << Tango::duration_ms(delta) << std::endl;
+		if (delta > std::chrono::milliseconds(3000))
 		{
 			att.set_quality(Tango::ATTR_VALID);
 			slow_actua_write.tv_sec = 0;
