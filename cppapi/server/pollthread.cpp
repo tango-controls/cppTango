@@ -237,7 +237,7 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 //		If the work list is empty, the thread waits for ever.
 //
 // returns :
-// 		The method returns true if the thread has been awaken due to a new command sent by the main thread
+// 		Enumeration indicating the type of detected event when waiting for next command.
 //
 //------------------------------------------------------------------------------------------------------------------
 
