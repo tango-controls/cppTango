@@ -1647,7 +1647,7 @@ bool ZmqEventSupplier::update_connected_client(client_addr *cl)
 
     con_client.remove_if([&](ConnectedClient &cc)
         {
-            return now - cc.date > std::chrono::seconds(500);
+            return (now - cc.date) > std::chrono::seconds(500);
         });
 
     return ret;

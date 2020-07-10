@@ -1310,13 +1310,13 @@ void PollThread::compute_sleep_time()
 
             if (next < after)
             {
-                if (after - next < DISCARD_THRESHOLD)
+                if ((after - next) < DISCARD_THRESHOLD)
                 {
                     sleep = tango_nullopt;
                 }
                 else
                 {
-                    while (after - next > DISCARD_THRESHOLD)
+                    while ((after - next) > DISCARD_THRESHOLD)
                     {
                         cout5 << "Discard one elt !!!!!!!!!!!!!" << std::endl;
                         WorkItem tmp = works.front();
