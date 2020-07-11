@@ -592,14 +592,10 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 				{
 					WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[e.errors[k].index_in_call].name.in());
 					att.set_mem_exception(e.errors[k].err_list);
-					log4tango::Logger *log = device_list[i]->get_logger();
-					if (log->is_warn_enabled())
-					{
-						log->warn_stream() << log4tango::LogInitiator::_begin_log << "Writing set_point for attribute " << att.get_name() << " failed" << std::endl;
-						log->warn_stream() << log4tango::LogInitiator::_begin_log << "\tException desc = " << e.errors[k].err_list[0].desc.in() << std::endl;
-						log->warn_stream() << log4tango::LogInitiator::_begin_log << "\tException reason = " << e.errors[k].err_list[0].reason.in() << std::endl;
-					}
 
+					DEV_WARN_STREAM(device_list[i]) << "Writing set_point for attribute " << att.get_name() << " failed" << std::endl;
+					DEV_WARN_STREAM(device_list[i]) << "\tException desc = " << e.errors[k].err_list[0].desc.in() << std::endl;
+					DEV_WARN_STREAM(device_list[i]) << "\tException reason = " << e.errors[k].err_list[0].reason.in() << std::endl;
 				}
 				device_list[i]->set_run_att_conf_loop(true);
 				Tango::NamedDevFailedList e_list (e, device_list[i]->get_name(), (const char *)"DeviceClass::set_memorized_values()",

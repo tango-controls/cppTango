@@ -1804,8 +1804,7 @@ void Attribute::set_rds_prop_val(const AttributeAlarm &att_alarm, std::string &d
         std::cerr.clear();
 			}
 
-			if (dev->get_logger()->is_warn_enabled())
-					dev->get_logger()->warn_stream() << log4tango::LogInitiator::_begin_log << "RDS (Read Different Set) incoherent in attribute " << name << " (only " << (delta_t_defined ? "delta_t" : "delta_val") << " is set) " << std::endl;
+			DEV_WARN_STREAM(dev) << "RDS (Read Different Set) incoherent in attribute " << name << " (only " << (delta_t_defined ? "delta_t" : "delta_val") << " is set) " << std::endl;
 		}
 		catch(...)
 		{
