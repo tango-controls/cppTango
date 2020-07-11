@@ -3,6 +3,8 @@
 
 #include "cxx_common.h"
 
+#include <tango_current_function.h>
+
 #undef SUITE_NAME
 #define SUITE_NAME AttrMiscTestSuite
 
@@ -1039,9 +1041,9 @@ cout << "status = " << status << endl;
 		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOAttrThrowEx", data));
 	}
 
-	void __assert_dev_state(DevState expected, const char* file, const char* line)
+	void __assert_dev_state(DevState expected, const char* location)
 	{
-		std::string message = std::string("Called from ") + file + ":" + line;
+		std::string message = std::string("Called from ") + location;
 
 		DevState state;
 		DeviceData data;
@@ -1050,9 +1052,7 @@ cout << "status = " << status << endl;
 		TSM_ASSERT_EQUALS(message, expected, state);
 	}
 
-#define __QUOTE(x) #x
-#define QUOTE(x) __QUOTE(x)
-#define assert_dev_state(expected) __assert_dev_state(expected, __FILE__, QUOTE(__LINE__))
+#define assert_dev_state(expected) __assert_dev_state(expected, TANGO_FILE_AND_LINE)
 
 // Verifies that device state is set correctly when alarm is configured for an attribute
 // but no value is provided for this attribute in user callback (e.g. an exception is thrown).
@@ -1075,8 +1075,6 @@ cout << "status = " << status << endl;
 	}
 
 #undef assert_dev_state
-#undef QUOTE
-#undef __QUOTE
 
 /*
  * Test for changing alarm treshold to value lower than currently read from

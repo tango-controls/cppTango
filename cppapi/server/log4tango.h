@@ -46,6 +46,8 @@
 #include <logstream.h>
 #include <logging.h>
 
+#include <tango_current_function.h>
+
 //-------------------------------------------------------------
 // LOGGING MACROS (FOR DEVICE DEVELOPERS)
 //-------------------------------------------------------------
@@ -67,27 +69,32 @@
 #define DEV_FATAL_STREAM(device) \
   if (device->get_logger()->is_fatal_enabled()) \
     device->get_logger()->fatal_stream() \
-      << log4tango::LogInitiator::_begin_log
+      << log4tango::LogInitiator::_begin_log \
+      << "(" TANGO_FILE_AND_LINE ") "
 
 #define DEV_ERROR_STREAM(device) \
   if (device->get_logger()->is_error_enabled()) \
     device->get_logger()->error_stream() \
-      << log4tango::LogInitiator::_begin_log
+      << log4tango::LogInitiator::_begin_log \
+      << "(" TANGO_FILE_AND_LINE ") "
 
 #define DEV_WARN_STREAM(device) \
   if (device->get_logger()->is_warn_enabled()) \
     device->get_logger()->warn_stream() \
-      << log4tango::LogInitiator::_begin_log
+      << log4tango::LogInitiator::_begin_log \
+      << "(" TANGO_FILE_AND_LINE ") "
 
 #define DEV_INFO_STREAM(device) \
   if (device->get_logger()->is_info_enabled()) \
     device->get_logger()->info_stream() \
-      << log4tango::LogInitiator::_begin_log
+      << log4tango::LogInitiator::_begin_log \
+      << "(" TANGO_FILE_AND_LINE ") "
 
 #define DEV_DEBUG_STREAM(device) \
   if (device->get_logger()->is_debug_enabled()) \
     device->get_logger()->debug_stream() \
-      << log4tango::LogInitiator::_begin_log
+      << log4tango::LogInitiator::_begin_log \
+      << "(" TANGO_FILE_AND_LINE ") "
 
 #define ENDLOG \
   log4tango::LogSeparator::_end_log

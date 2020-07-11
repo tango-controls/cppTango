@@ -40,6 +40,7 @@
 #include <new>
 #include <rootattreg.h>
 #include <pollthread.h>
+#include <tango_current_function.h>
 
 #ifndef _TG_WINDOWS_
 	#include <unistd.h>
@@ -54,16 +55,21 @@
 
 #ifndef TANGO_HAS_LOG4TANGO
 
-#define	cout1	if ((Tango::Util::_tracelevel >= 1) && \
-		    (Tango::Util::_tracelevel < 5)) cout
-#define cout2  	if ((Tango::Util::_tracelevel >= 2) && \
-		    (Tango::Util::_tracelevel < 5)) cout
-#define cout3	if ((Tango::Util::_tracelevel >= 3) && \
-		    (Tango::Util::_tracelevel < 5)) cout
-#define cout4	if ((Tango::Util::_tracelevel >= 4) && \
-		    (Tango::Util::_tracelevel < 5)) cout
-
-#define cout5   if (Tango::Util::_tracelevel >= 5) cout
+#define	cout1 \
+    if ((Tango::Util::_tracelevel >= 1) && (Tango::Util::_tracelevel < 5)) \
+    cout << "(" TANGO_FILE_AND_LINE ") "
+#define cout2 \
+    if ((Tango::Util::_tracelevel >= 2) && (Tango::Util::_tracelevel < 5)) \
+    cout << "(" TANGO_FILE_AND_LINE ") "
+#define cout3 \
+    if ((Tango::Util::_tracelevel >= 3) && (Tango::Util::_tracelevel < 5)) \
+    cout << "(" TANGO_FILE_AND_LINE ") "
+#define cout4 \
+    if ((Tango::Util::_tracelevel >= 4) && (Tango::Util::_tracelevel < 5)) \
+    cout << "(" TANGO_FILE_AND_LINE ") "
+#define cout5 \
+    if (Tango::Util::_tracelevel >= 5) \
+    cout << "(" TANGO_FILE_AND_LINE ") "
 
 #endif //TANGO_HAS_LOG4TANGO
 
