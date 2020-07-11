@@ -51,10 +51,7 @@
 
 #ifdef _TG_WINDOWS_
 #include <sys/types.h>
-#include <sys/timeb.h>
 #include <float.h>
-#else
-#include <sys/time.h>
 #endif /* _TG_WINDOWS_ */
 
 namespace Tango

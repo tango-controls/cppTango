@@ -38,12 +38,6 @@
 #include <eventsupplier.h>
 #include <pollthread.tpp>
 
-#ifdef _TG_WINDOWS_
-	#include <sys/timeb.h>
-#else
-	#include <sys/time.h>
-#endif
-
 #include <iomanip>
 
 extern omni_thread::key_t key_py_data;

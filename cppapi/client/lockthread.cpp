@@ -41,11 +41,8 @@
 #include <algorithm>
 #include <time.h>
 
-#ifndef _TG_WINDOWS_
-#include <sys/time.h>
-#else
+#ifdef _TG_WINDOWS_
 #include <sys/types.h>
-#include <sys/timeb.h>
 #endif
 
 namespace Tango

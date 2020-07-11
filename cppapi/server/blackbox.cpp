@@ -44,7 +44,6 @@
 
 #ifdef _TG_WINDOWS_
 #include <sys/types.h>
-#include <sys/timeb.h>
 #include <ws2tcpip.h>
 #else
 #include <sys/time.h>

@@ -45,13 +45,6 @@
 #include <tango_clock.h>
 #include <new>
 
-#ifdef _TG_WINDOWS_
-#include <sys/timeb.h>
-#else
-#include <sys/time.h>
-#endif /* _TG_WINDOWS_ */
-
-
 namespace Tango
 {
 

@@ -39,12 +39,8 @@
 #include <pollring.h>
 #include <pollring.tpp>
 
-
 #ifdef _TG_WINDOWS_
 #include <sys/types.h>
-#include <sys/timeb.h>
-#else
-#include <sys/time.h>
 #endif /* _TG_WINDOWS_ */
 
 namespace Tango

@@ -34,12 +34,6 @@
 #include <tango.h>
 #include <eventconsumer.h>
 
-#ifdef _TG_WINDOWS_
-#include <sys/timeb.h>
-#else
-#include <sys/time.h>
-#endif /* _TG_WINDOWS_ */
-
 #include <time.h>
 #include <signal.h>
 

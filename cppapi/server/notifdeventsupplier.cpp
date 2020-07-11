@@ -45,11 +45,9 @@
 #include <stdio.h>
 
 #ifdef _TG_WINDOWS_
-#include <sys/timeb.h>
 #include <process.h>
 #else
 #include <unistd.h>
-#include <sys/time.h>
 #endif
 
 using namespace CORBA;

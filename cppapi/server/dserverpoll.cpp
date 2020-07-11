@@ -37,12 +37,6 @@
 #include <tango.h>
 #include <tango_clock.h>
 
-#ifdef _TG_WINDOWS_
-	#include <sys/timeb.h>
-#else
-	#include <sys/time.h>
-#endif
-
 #include <iomanip>
 
 namespace Tango

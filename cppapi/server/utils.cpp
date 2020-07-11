@@ -45,11 +45,9 @@
 #ifndef _TG_WINDOWS_
 #include <unistd.h>
 #include <assert.h>
-#include <sys/time.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #else
-#include <sys/timeb.h>
 #include <process.h>
 #include <coutbuf.h>
 #include <ntservice.h>

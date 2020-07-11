@@ -35,11 +35,9 @@
 #include <devapi_utils.tpp>
 
 #ifdef _TG_WINDOWS_
-#include <sys/timeb.h>
 #include <process.h>
 #include <ws2tcpip.h>
 #else
-#include <sys/time.h>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>

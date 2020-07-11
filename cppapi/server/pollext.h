@@ -39,6 +39,12 @@
 
 #include <tango.h>
 
+#ifdef _TG_WINDOWS_
+#include <sys/timeb.h>
+#else
+#include <sys/time.h>
+#endif /* _TG_WINDOWS_ */
+
 namespace Tango
 {
 
