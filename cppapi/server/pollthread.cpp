@@ -1355,7 +1355,7 @@ void PollThread::compute_sleep_time()
         }
         else
         {
-            cout5 << "Sleep for : -1 (undefined)" << std::endl;
+            cout5 << "Sleep for : do not sleep" << std::endl;
         }
 	}
 }
