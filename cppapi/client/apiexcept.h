@@ -28,8 +28,11 @@
 
 #include <except.h>
 #include <vector>
+#include <string>
 
 #include <tango_const.h>
+
+#include <tango_current_function.h>
 
 #ifdef TANGO_USE_USING_NAMESPACE
   using namespace std;
@@ -497,6 +500,13 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 				   (const char*)"Connection::command_inout()"); \
 	}
 
+#define TANGO_THROW_API_EXCEPTION(ExceptionClass, reason, desc) \
+    ExceptionClass ::throw_exception(reason, desc, \
+        (std::string(TANGO_CURRENT_FUNCTION) + " at (" TANGO_FILE_AND_LINE ")").c_str())
+
+#define TANGO_RETHROW_API_EXCEPTION(ExceptionClass, original, reason, desc) \
+    ExceptionClass ::re_throw_exception(original, reason, desc, \
+        (std::string(TANGO_CURRENT_FUNCTION) + " at (" TANGO_FILE_AND_LINE ")").c_str())
 
 } // End of Tango namespace
 
