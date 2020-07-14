@@ -10,12 +10,45 @@ using namespace CmpTst;
 namespace
 {
 
+const std::string LOG_PREFIX = "<log4j:message><![CDATA[";
+const std::string LOG_SUFFIX = "]]></log4j:message>";
+
 void strip_cr_lf(std::string& line)
 {
     while (line.size() > 0 && (line.back() == '\r' || line.back() == '\n'))
     {
         line.pop_back();
     }
+}
+
+bool is_log_message(const std::string& line)
+{
+    return line.compare(0, LOG_PREFIX.size(), LOG_PREFIX) == 0
+        && line.compare(line.size() - LOG_SUFFIX.size(), LOG_SUFFIX.size(), LOG_SUFFIX) == 0;
+}
+
+auto strip_log_tags(const std::string& line)
+{
+    return line.substr(LOG_PREFIX.size(), line.size() - LOG_PREFIX.size() - LOG_SUFFIX.size());
+}
+
+bool is_matching_log_message(const std::string& ref_line, const std::string& out_line)
+{
+    // For log messages, we only check that emitted message contains expected
+    // substring. There may be extra information included (like line numbers).
+
+    return is_log_message(ref_line) && is_log_message(out_line)
+        && out_line.find(strip_log_tags(ref_line)) != std::string::npos;
+}
+
+bool is_line_equal(const std::string& ref_line, const std::string& out_line)
+{
+    return ref_line.compare(out_line) == 0;
+}
+
+bool compare_lines(const std::string& ref_line, const std::string& out_line)
+{
+    return is_line_equal(ref_line, out_line) || is_matching_log_message(ref_line, out_line);
 }
 
 } // namespace
@@ -462,7 +495,7 @@ void CmpTst::CompareTest::compare(string ref, string out)
 		strip_cr_lf(ref_line);
 		strip_cr_lf(out_line);
 
-		if(ref_line.compare(out_line) != 0)
+		if (!compare_lines(ref_line, out_line))
 		{
 			refstream.close();
 			outstream.close();
