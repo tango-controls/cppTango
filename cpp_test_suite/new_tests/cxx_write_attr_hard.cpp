@@ -132,17 +132,17 @@ public:
 				TS_ASSERT(string(e.err_list[0].name) == att1_name
 						&& e.err_list[0].idx_in_call == 0
 						&& string(e.err_list[0].err_stack[0].reason.in()) == "DevTest_WriteAttrHardware"
-						&& string(e.err_list[0].err_stack[0].origin.in()) == "DevTest::write_attr_hardware"
+						&& string(e.err_list[0].err_stack[0].origin.in()).find("DevTest::write_attr_hardware") != std::string::npos
 						&& e.err_list[0].err_stack[0].severity == Tango::ERR
 						&& string(e.err_list[1].name) == att2_name
 						&& e.err_list[1].idx_in_call == 1
 						&& string(e.err_list[1].err_stack[0].reason.in()) == "DevTest_WriteAttrHardware"
-						&& string(e.err_list[1].err_stack[0].origin.in()) == "DevTest::write_attr_hardware"
+						&& string(e.err_list[1].err_stack[0].origin.in()).find("DevTest::write_attr_hardware") != std::string::npos
 						&& e.err_list[1].err_stack[0].severity == Tango::ERR
 						&& string(e.err_list[2].name) == att3_name
 						&& e.err_list[2].idx_in_call == 2
 						&& string(e.err_list[2].err_stack[0].reason.in()) == "DevTest_WriteAttrHardware"
-						&& string(e.err_list[2].err_stack[0].origin.in()) == "DevTest::write_attr_hardware"
+						&& string(e.err_list[2].err_stack[0].origin.in()).find("DevTest::write_attr_hardware") != std::string::npos
 						&& e.err_list[2].err_stack[0].severity == Tango::ERR));
 
 		TS_ASSERT_THROWS_NOTHING(read_after = device->read_attributes(vs));
