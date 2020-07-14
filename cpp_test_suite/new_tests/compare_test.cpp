@@ -7,6 +7,19 @@ using namespace CmpTst;
 
 #define TMP_SUFFIX ".tmp"
 
+namespace
+{
+
+void strip_cr_lf(std::string& line)
+{
+    while (line.size() > 0 && (line.back() == '\r' || line.back() == '\n'))
+    {
+        line.pop_back();
+    }
+}
+
+} // namespace
+
 //+-------------------------------------------------------------------------
 //
 // method :			out_set_event_properties
@@ -320,7 +333,7 @@ void CmpTst::CompareTest::ref_replace_keywords(string file, map<string,string> k
 //
 // method :			out_remove_entries
 //
-// description :	
+// description :
 // argument : in :	- file : output file to be modified
 //					- prop_val_map : 	keys - properties to be modified,
 //										values - new values of the properties
@@ -442,21 +455,20 @@ void CmpTst::CompareTest::compare(string ref, string out)
 	while(refstream && outstream)
 	{
 		line_number++;
-		string ref_line, out_line, ref_line_orig, out_line_orig;
+		string ref_line, out_line;
 		getline(refstream, ref_line);
 		getline(outstream, out_line);
 
-		ref_line_orig = ref_line; // stores original line for error message, see linebreak hook below
-		out_line_orig = out_line;
-		size_t end_line = min(ref_line.size(), out_line.size());
-		out_line.erase(end_line); // trick to make it work with different linebreak encoding;
+		strip_cr_lf(ref_line);
+		strip_cr_lf(out_line);
+
 		if(ref_line.compare(out_line) != 0)
 		{
 			refstream.close();
 			outstream.close();
 			stringstream ss;
 			ss << line_number;
-			throw CmpTst::CompareTestException("[CmpTst::CompareTest::compare] FAILED in file: " + out + ":" + ss.str() + "\nEXPECTED:\t" + ref_line_orig + "\n     WAS:\t" + out_line_orig);
+			throw CmpTst::CompareTestException("[CmpTst::CompareTest::compare] FAILED in file: " + out + ":" + ss.str() + "\nEXPECTED:\t" + ref_line + "\n     WAS:\t" + out_line);
 		}
 	}
 
