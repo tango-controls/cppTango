@@ -851,16 +851,14 @@ inline int DeviceProxy::subscribe_event (const std::string &attr_name, EventType
 			TangoSys_OMemStream desc; \
 			desc << "Failed to read_attribute on device " << device_name; \
 			desc << ", attribute " << NAME_CHAR << std::ends; \
-			ApiConnExcept::re_throw_exception(e,(const char*)API_AttributeFailed, \
-                        	desc.str(), (const char*)"DeviceProxy::read_attribute()"); \
+			TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_AttributeFailed, desc.str()); \
 		} \
 		catch (Tango::DevFailed &e) \
 		{ \
 			TangoSys_OMemStream desc; \
 			desc << "Failed to read_attribute on device " << device_name; \
 			desc << ", attribute " << NAME_CHAR << std::ends; \
-			Except::re_throw_exception(e,(const char*)API_AttributeFailed, \
-                        	desc.str(), (const char*)"DeviceProxy::read_attribute()"); \
+			TANGO_RETHROW_EXCEPTION(e, API_AttributeFailed, desc.str()); \
 		} \
 		catch (CORBA::TRANSIENT &trans) \
 		{ \
@@ -877,10 +875,7 @@ inline int DeviceProxy::subscribe_event (const std::string &attr_name, EventType
 				set_connection_state(CONNECTION_NOTOK); \
 				TangoSys_OMemStream desc; \
 				desc << "Failed to read_attribute on device " << device_name << std::ends; \
-				ApiCommExcept::re_throw_exception(one, \
-							      (const char*)API_CommunicationFailed, \
-                        				      desc.str(), \
-							      (const char*)"DeviceProxy::read_attribute()"); \
+				TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str()); \
 			} \
 		} \
 		catch (CORBA::COMM_FAILURE &comm) \
@@ -894,21 +889,15 @@ inline int DeviceProxy::subscribe_event (const std::string &attr_name, EventType
 				set_connection_state(CONNECTION_NOTOK); \
 				TangoSys_OMemStream desc; \
 				desc << "Failed to read_attribute on device " << device_name << std::ends; \
-				ApiCommExcept::re_throw_exception(comm, \
-							      (const char*)API_CommunicationFailed, \
-                        				      desc.str(), \
-							      (const char*)"DeviceProxy::read_attribute()"); \
+				TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str()); \
 			} \
 		} \
 		catch (CORBA::SystemException &ce) \
-        { \
+		{ \
 			set_connection_state(CONNECTION_NOTOK); \
 			TangoSys_OMemStream desc; \
 			desc << "Failed to read_attribute on device " << device_name << std::ends; \
-			ApiCommExcept::re_throw_exception(ce, \
-						      (const char*)API_CommunicationFailed, \
-                        			      desc.str(), \
-						      (const char*)"DeviceProxy::read_attribute()"); \
+			TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str()); \
 		}
 
 

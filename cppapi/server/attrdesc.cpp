@@ -77,9 +77,7 @@ fire_dr_event(false),ext(new AttrExt),cl_name("Attr")
 
 		o << "Attribute : " << name << ": ";
 		o << " Associated attribute is not supported" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"Attr::Attr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 
 	if ((writable == Tango::READ_WITH_WRITE) && (assoc_name == AssocWritNotSpec))
@@ -89,9 +87,7 @@ fire_dr_event(false),ext(new AttrExt),cl_name("Attr")
 
 		o << "Attribute : " << name << ": ";
 		o << " Associated attribute not defined" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"Attr::Attr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 
 	if (writable == READ_WRITE)
@@ -124,9 +120,7 @@ poll_period(0),ext(new AttrExt)
 
 		o << "Attribute : " << name << ": ";
 		o << " Associated attribute is not supported" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"Attr::Attr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 
 	if ((writable == Tango::READ_WITH_WRITE) && (assoc_name == AssocWritNotSpec))
@@ -136,9 +130,7 @@ poll_period(0),ext(new AttrExt)
 
 		o << "Attribute : " << name << ": ";
 		o << " Associated attribute not defined" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"Attr::Attr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 
 	if (writable == READ_WRITE)
@@ -217,9 +209,7 @@ void Attr::check_type()
 
 		o << "Attribute : " << name << ": ";
 		o << " Data type is not supported" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"Attr::check_type");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 }
 
@@ -460,7 +450,7 @@ void Attr::set_default_properties(UserDefaultAttrProp &prop_list)
 	if(ranges.test(delta_val) ^ ranges.test(delta_t))
 	{
 		std::string err_msg = "Just one of the user default properties : delta_val or delta_t is set. Both or none of the values have to be set";
-		Except::throw_exception(API_IncoherentValues,err_msg,"Attr::set_default_properties()");
+		TANGO_THROW_EXCEPTION(API_IncoherentValues, err_msg);
 	}
 }
 
@@ -625,13 +615,13 @@ void Attr::validate_def_change_prop(const std::string &val, const char * prop)
 void Attr::throw_incoherent_def_prop(const char* min, const char* max)
 {
 	std::string err_msg = "User default property " + std::string(min) + " for attribute : " + get_name() + " is greater then or equal " + std::string(max);
-	Except::throw_exception(API_IncoherentValues,err_msg,"Attr::set_default_properties()");
+	TANGO_THROW_EXCEPTION(API_IncoherentValues, err_msg);
 }
 
 void Attr::throw_invalid_def_prop(const char* prop, const char* type)
 {
 	std::string err_msg = "User default property " + std::string(prop) + " for attribute : " + get_name() + " is defined in unsupported format. Expected " + std::string(type);
-	Except::throw_exception(API_IncompatibleAttrDataType,err_msg,"Attr::set_default_properties()");
+	TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg);
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -654,9 +644,7 @@ void Attr::set_memorized()
 
 		o << "Attribute : " << name;
 		o << " is not scalar and can not be memorized" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"Attr::set_memorized");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 
 	if ((type == DEV_STATE) || (type == DEV_ENCODED))
@@ -666,9 +654,7 @@ void Attr::set_memorized()
 
 		o << "Attribute : " << name;
 		o << " can not be memorized" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"Attr::set_memorized");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 
 	if ((writable == READ) || (writable == READ_WITH_WRITE))
@@ -678,9 +664,7 @@ void Attr::set_memorized()
 
 		o << "Attribute : " << name;
 		o << " is not writable and therefore can not be memorized" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"Attr::set_memorized");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 
 	mem = true;
@@ -709,9 +693,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x)
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum x dim. wrongly defined" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"SpectrumAttr::SpectrumAttr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 
 	if (type == DEV_ENCODED)
@@ -721,8 +703,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x)
 
 		o << "Attribute: " << name << ": ";
 		o << "DevEncode data type allowed only for SCALAR attribute" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,o.str(),
-							(const char *)"SpectrumAttr::SpectrumAttr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 	max_x = x;
 }
@@ -738,9 +719,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum x dim. wrongly defined" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"SpectrumAttr::SpectrumAttr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 
 	if (type == DEV_ENCODED)
@@ -750,8 +729,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 
 		o << "Attribute: " << name << ": ";
 		o << "DevEncode data type allowed only for SCALAR attribute" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,o.str(),
-							(const char *)"SpectrumAttr::SpectrumAttr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 	max_x = x;
 }
@@ -767,9 +745,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x,DispLevel l
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum x dim. wrongly defined" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"SpectrumAttr::SpectrumAttr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 
 	if (type == DEV_ENCODED)
@@ -779,8 +755,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x,DispLevel l
 
 		o << "Attribute: " << name << ": ";
 		o << "DevEncode data type allowed only for SCALAR attribute" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,o.str(),
-							(const char *)"SpectrumAttr::SpectrumAttr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 	max_x = x;
 }
@@ -796,9 +771,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum x dim. wrongly defined" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"SpectrumAttr::SpectrumAttr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 
 	if (type == DEV_ENCODED)
@@ -808,8 +781,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 
 		o << "Attribute: " << name << ": ";
 		o << "DevEncode data type allowed only for SCALAR attribute" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,o.str(),
-							(const char *)"SpectrumAttr::SpectrumAttr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 	max_x = x;
 }
@@ -840,9 +812,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,long x,long y)
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum y dim. wrongly defined" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"ImageAttr::ImageAttr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 	max_y = y;
 }
@@ -859,9 +829,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_t
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum y dim. wrongly defined" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"ImageAttr::ImageAttr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 	max_y = y;
 }
@@ -878,9 +846,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,long x,
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum y dim. wrongly defined" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"ImageAttr::ImageAttr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 	max_y = y;
 }
@@ -897,9 +863,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_t
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum y dim. wrongly defined" << std::ends;
-		Except::throw_exception((const char *)API_AttrWrongDefined,
-				      o.str(),
-				      (const char *)"ImageAttr::ImageAttr");
+		TANGO_THROW_EXCEPTION(API_AttrWrongDefined, o.str());
 	}
 	max_y = y;
 }

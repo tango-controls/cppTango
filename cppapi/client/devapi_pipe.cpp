@@ -405,7 +405,7 @@ std::vector<std::string> DevicePipeBlob::get_data_elt_names()
 		std::stringstream ss;
 
 		ss << "You try to get data element name(s) for a blob which has never been received from a device";
-		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_data_elt_names()");
+		TANGO_THROW_EXCEPTION(API_PipeWrongArg, ss.str());
     }
 
 	std::vector<std::string> v_str;
@@ -443,7 +443,7 @@ std::string DevicePipeBlob::get_data_elt_name(size_t _ind)
 		std::stringstream ss;
 
 		ss << "You try to get data element name(s) for a blob which has never been received from a device";
-		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_data_elt_names()");
+		TANGO_THROW_EXCEPTION(API_PipeWrongArg, ss.str());
     }
 
 	if (_ind > extract_elt_array->length())
@@ -451,7 +451,7 @@ std::string DevicePipeBlob::get_data_elt_name(size_t _ind)
 		std::stringstream ss;
 
 		ss << "Given index (" << _ind << ") is above the number of data element in the data blob (" << get_data_elt_nb() << ")";
-		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_data_elt_name()");
+		TANGO_THROW_EXCEPTION(API_PipeWrongArg, ss.str());
 	}
 	std::string tmp((*extract_elt_array)[_ind].name.in());
 	return tmp;
@@ -483,7 +483,7 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 		std::stringstream ss;
 
 		ss << "You try to get data element name(s) for a blob which has never been received from a device";
-		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_data_elt_type()");
+		TANGO_THROW_EXCEPTION(API_PipeWrongArg, ss.str());
     }
 
 	if (_ind > extract_elt_array->length())
@@ -491,7 +491,7 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 		std::stringstream ss;
 
 		ss << "Given index (" << _ind << ") is above the number of data element in the data blob (" << get_data_elt_nb() << ")";
-		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_data_elt_type()");
+		TANGO_THROW_EXCEPTION(API_PipeWrongArg, ss.str());
 	}
 
 //
@@ -622,9 +622,7 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 			break;
 
 			default:
-			Except::throw_exception(API_PipeWrongArg,
-									"Unsupported data type in data element! (ATT_NO_DATA, DEVICE_STATE)",
-									"DevicePipeBlob::get_data_elt_type()");
+			TANGO_THROW_EXCEPTION(API_PipeWrongArg, "Unsupported data type in data element! (ATT_NO_DATA, DEVICE_STATE)");
 			break;
 		}
 	}
@@ -659,16 +657,12 @@ size_t DevicePipeBlob::get_extract_ind_from_name(const std::string &_na)
 
 	if (extract_elt_array == nullptr)
 	{
-		Except::throw_exception(API_PipeNoDataElement,
-								"No data element available for extraction",
-								"DevicePipeBlob::get_extract_ind_from_name()");
+		TANGO_THROW_EXCEPTION(API_PipeNoDataElement, "No data element available for extraction");
 	}
 
 	if (extract_ctr > 0)
 	{
-		Except::throw_exception(API_NotSupportedFeature,
-								"Not supported to mix extraction type (operator >> and operator [])",
-								"DevicePipeBlob::get_extract_ind_from_name()");
+		TANGO_THROW_EXCEPTION(API_NotSupportedFeature, "Not supported to mix extraction type (operator >> and operator [])");
 	}
 
 	for (loop = 0;loop < extract_elt_array->length();loop++)
@@ -688,7 +682,7 @@ size_t DevicePipeBlob::get_extract_ind_from_name(const std::string &_na)
 		std::stringstream ss;
 
 		ss << "Can't get data element with name " << _na;
-		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_extract_ind_from_name()");
+		TANGO_THROW_EXCEPTION(API_PipeWrongArg, ss.str());
 	}
 
 	extract_ctr = -1;
@@ -705,16 +699,12 @@ size_t DevicePipeBlob::get_insert_ind_from_name(const std::string &_na)
 
 	if (insert_elt_array == nullptr)
 	{
-		Except::throw_exception(API_PipeNoDataElement,
-								"No data element available for insertion",
-								"DevicePipeBlob::get_insert_ind_from_name()");
+		TANGO_THROW_EXCEPTION(API_PipeNoDataElement, "No data element available for insertion");
 	}
 
 	if (insert_ctr > 0)
 	{
-		Except::throw_exception(API_NotSupportedFeature,
-								"Not supported to mix insertion type (operator << and operator [])",
-								"DevicePipeBlob::get_insert_ind_from_name()");
+		TANGO_THROW_EXCEPTION(API_NotSupportedFeature, "Not supported to mix insertion type (operator << and operator [])");
 	}
 
 	for (loop = 0;loop < insert_elt_array->length();loop++)
@@ -734,7 +724,7 @@ size_t DevicePipeBlob::get_insert_ind_from_name(const std::string &_na)
 		std::stringstream ss;
 
 		ss << "Can't get data element with name " << _na;
-		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_insert_ind_from_name()");
+		TANGO_THROW_EXCEPTION(API_PipeWrongArg, ss.str());
 	}
 
 	insert_ctr = -1;
@@ -842,7 +832,7 @@ void DevicePipeBlob::set_data_elt_names(std::vector<std::string> &elt_names)
 						desc << ", ";
 				}
 			}
-			ApiConnExcept::throw_exception(API_PipeDuplicateDEName,desc.str(),"set_data_elt_names");
+			TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_PipeDuplicateDEName, desc.str());
 		}
 	}
 
@@ -2036,7 +2026,7 @@ void DevicePipeBlob::throw_type_except(const std::string &_ty,const std::string 
 	ss << "Can't get data element " << extract_ctr << " (numbering starting from 0) into a " << _ty << " data type";
 	std::string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
-	ApiDataExcept::throw_exception(API_IncompatibleArgumentType,ss.str(),m_name.c_str());
+	TANGO_THROW_API_EXCEPTION(ApiDataExcept, API_IncompatibleArgumentType, ss.str());
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2074,7 +2064,7 @@ void DevicePipeBlob::throw_too_many(const std::string &_meth,bool _extract)
 		extract_delete = false;
 	}
 
-	ApiDataExcept::throw_exception(API_PipeWrongArg,ss.str(),m_name.c_str());
+	TANGO_THROW_API_EXCEPTION(ApiDataExcept, API_PipeWrongArg, ss.str());
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2102,7 +2092,7 @@ void DevicePipeBlob::throw_is_empty(const std::string &_meth)
 
 	std::string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
-	ApiDataExcept::throw_exception(API_EmptyDataElement,"The data element is empty",m_name.c_str());
+	TANGO_THROW_API_EXCEPTION(ApiDataExcept, API_EmptyDataElement, "The data element is empty");
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2130,7 +2120,7 @@ void DevicePipeBlob::throw_name_not_set(const std::string &_meth)
 
 	std::string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
-	ApiDataExcept::throw_exception(API_PipeNoDataElement,"The blob data element number (or name) not set",m_name.c_str());
+	TANGO_THROW_API_EXCEPTION(ApiDataExcept, API_PipeNoDataElement, "The blob data element number (or name) not set");
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2158,8 +2148,7 @@ void DevicePipeBlob::throw_mixing(const std::string &_meth)
 
 	std::string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
-	Except::throw_exception(API_NotSupportedFeature,
-								"Not supported to mix extraction type (operator >> (or <<) and operator [])",m_name.c_str());
+	TANGO_THROW_EXCEPTION(API_NotSupportedFeature, "Not supported to mix extraction type (operator >> (or <<) and operator [])");
 }
 
 //+------------------------------------------------------------------------------------------------------------------

@@ -78,7 +78,7 @@ DbServerData::DbServerData(const std::string &exec_name,const std::string &inst_
 	{
 		std::stringstream ss;
 		ss << "Device server process " << full_server_name << " is not defined in database";
-		Tango::Except::throw_exception("DBServerNotDefinedInDb",ss.str(),"DbServerData::DbServerData");
+		TANGO_THROW_EXCEPTION("DBServerNotDefinedInDb", ss.str());
 	}
 
 //
@@ -125,7 +125,7 @@ void DbServerData::put_in_database(const std::string &tg_host)
 	{
 		std::stringstream ss;
 		ss << tg_host << " is not a valid synatx for Tango host (host:port)";
-		Tango::Except::throw_exception("DBWrongTangoHostSyntax",ss.str(),"DbServerData::put_in_database");
+		TANGO_THROW_EXCEPTION("DBWrongTangoHostSyntax", ss.str());
 	}
 
 //
@@ -179,7 +179,7 @@ bool DbServerData::already_exist(const std::string &tg_host)
 	{
 		std::stringstream ss;
 		ss << tg_host << " is not a valid synatx for Tango host (host:port)";
-		Tango::Except::throw_exception("DBWrongTangoHostSyntax",ss.str(),"DbServerData::already_exist");
+		TANGO_THROW_EXCEPTION("DBWrongTangoHostSyntax", ss.str());
 	}
 
 	std::string header("tango://");
@@ -221,7 +221,7 @@ bool DbServerData::already_exist(const std::string &tg_host)
 				{
 					std::stringstream ss;
 					ss << "Failed to check " << dev_name << " in Tango host " << tg_host << std::endl;
-					Tango::Except::re_throw_exception(e,"DBFailedToCheck",ss.str(),"DbServerData::already_exist");
+					TANGO_RETHROW_EXCEPTION(e, "DBFailedToCheck", ss.str());
 				}
 			}
 		}
@@ -318,7 +318,7 @@ void DbServerData::remove(const std::string &tg_host)
 	{
 		std::stringstream ss;
 		ss << tg_host << " is not a valid synatx for Tango host (host:port)";
-		Tango::Except::throw_exception("DBWrongTangoHostSyntax",ss.str(),"DbServerData::remove");
+		TANGO_THROW_EXCEPTION("DBWrongTangoHostSyntax", ss.str());
 	}
 
 //

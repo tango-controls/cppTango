@@ -143,7 +143,7 @@ void Attribute::get_properties(Tango::AttributeConfig_3 &conf)
 		desc = desc + get_name() + " is a forwarded attribute and its root device (";
 		desc = desc + fwd->get_fwd_dev_name();
 		desc = desc + ") is not yet available";
-		Tango::Except::throw_exception(API_AttrConfig,desc,"Attribute::get_properties");
+		TANGO_THROW_EXCEPTION(API_AttrConfig, desc);
 	}
 
 //
@@ -2361,7 +2361,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,std::string &d
 			ss << "Device " << dev_name << "- Attribute : " << name;
 			ss << "- No value defined for the property enum_labels";
 
-			Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_prop_5_specific()");
+			TANGO_THROW_EXCEPTION(API_AttrOptProp, ss.str());
 		}
 
 		if (from_ds == false)
@@ -2377,7 +2377,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,std::string &d
 					ss << "Device " << dev_name << "-> Attribute : " << name;
 					ss << "\nIt's not supported to change enumeration labels number from outside the Tango device class code";
 
-					Except::throw_exception(API_NotSupportedFeature,ss.str(),"Attribute::set_prop_5_specific()");
+					TANGO_THROW_EXCEPTION(API_NotSupportedFeature, ss.str());
 				}
 			}
 		}
@@ -2419,7 +2419,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,std::string &d
 			ss << "Device " << dev_name << "-> Attribute : " << name;
 			ss << "\nNo enumeration label(s) default library value for attribute of the Tango::DEV_ENUM data type";
 
-			Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_prop_5_specific()");
+			TANGO_THROW_EXCEPTION(API_AttrOptProp, ss.str());
 		}
 		else if (strlen(conf.enum_labels[0]) == 0)
 		{
@@ -2431,7 +2431,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,std::string &d
 				ss << "Device " << dev_name << "-> Attribute : " << name;
 				ss << "\nNo enumeration labels default library value for attribute of the Tango::DEV_ENUM data type";
 
-				Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_prop_5_specific()");
+				TANGO_THROW_EXCEPTION(API_AttrOptProp, ss.str());
 			}
 			else
 			{
@@ -2455,7 +2455,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,std::string &d
 					ss << "Device " << dev_name << "-> Attribute : " << name;
 					ss << "\nNo enumeration labels default library value for attribute of the Tango::DEV_ENUM data type";
 
-					Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_prop_5_specific()");
+					TANGO_THROW_EXCEPTION(API_AttrOptProp, ss.str());
 				}
 				else
 				{

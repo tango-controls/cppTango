@@ -1317,9 +1317,7 @@ bool DeviceAttribute::is_empty()
 
 	if (exceptions_flags.test(isempty_flag))
 	{
-		ApiDataExcept::throw_exception(API_EmptyDeviceAttribute,
-					"cannot extract, no data in DeviceAttribute object ",
-					"DeviceAttribute::is_empty");
+		TANGO_THROW_API_EXCEPTION(ApiDataExcept, API_EmptyDeviceAttribute, "cannot extract, no data in DeviceAttribute object ");
 	}
 	return true;
 }
@@ -1414,9 +1412,7 @@ AttrDataFormat DeviceAttribute::get_data_format()
 {
 	if (exceptions_flags.test(unknown_format_flag) && (data_format == Tango::FMT_UNKNOWN))
 	{
-		ApiDataExcept::throw_exception((const char*)API_EmptyDeviceAttribute,
-					(const char*)"Cannot returned data_type from DeviceAttribute object: Not initialised yet or too old device (< V7)",
-					(const char*)"DeviceAttribute::get_data_format");
+		TANGO_THROW_API_EXCEPTION(ApiDataExcept, API_EmptyDeviceAttribute, "Cannot returned data_type from DeviceAttribute object: Not initialised yet or too old device (< V7)");
 	}
 	return data_format;
 }
@@ -3509,9 +3505,7 @@ bool DeviceAttribute::operator >> (DevVarEncodedArray* &datum)
 
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)API_IncompatibleAttrArgumentType,
-					(const char*)"Cannot extract, data in DeviceAttribute object is not an array of DevEncoded",
-					(const char*)"DeviceAttribute::operator>>");
+			TANGO_THROW_API_EXCEPTION(ApiDataExcept, API_IncompatibleAttrArgumentType, "Cannot extract, data in DeviceAttribute object is not an array of DevEncoded");
 		}
 	}
 	return ret;
@@ -5448,9 +5442,7 @@ bool DeviceAttribute::check_wrong_type_exception()
 
 	if (exceptions_flags.test(wrongtype_flag))
 	{
-		ApiDataExcept::throw_exception(API_IncompatibleAttrArgumentType,
-		"Cannot extract, data type in DeviceAttribute object is not coherent with the type provided to extraction method",
-		"DeviceAttribute::operator>>");
+		TANGO_THROW_API_EXCEPTION(ApiDataExcept, API_IncompatibleAttrArgumentType, "Cannot extract, data type in DeviceAttribute object is not coherent with the type provided to extraction method");
 	}
 
 	return false;
@@ -5483,9 +5475,7 @@ int DeviceAttribute::check_set_value_size(int seq_length)
 	{
 		// no set point available
 
-		ApiDataExcept::throw_exception((const char*)API_NoSetValueAvailable,
-					(const char*)"Cannot extract, data from the DeviceAttribute object. No set value available",
-					(const char*)"DeviceAttribute::extract_set");
+		TANGO_THROW_API_EXCEPTION(ApiDataExcept, API_NoSetValueAvailable, "Cannot extract, data from the DeviceAttribute object. No set value available");
 
 	}
 

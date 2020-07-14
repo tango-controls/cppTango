@@ -184,7 +184,7 @@ void Pipe::set_upd_properties(const PipeConfig &new_conf,DeviceImpl *dev)
 
 				o << "Device " << dev->get_name() << "-> Pipe : " << name;
 				o << "\nDatabase error occurred whilst setting pipe properties. The database may be corrupted." << std::ends;
-				Except::throw_exception(API_CorruptedDatabase,o.str(),"Pipe::set_upd_properties()");
+				TANGO_THROW_EXCEPTION(API_CorruptedDatabase, o.str());
 			}
 
 			throw;
@@ -379,12 +379,12 @@ void Pipe::set_properties(const Tango::PipeConfig &conf,DeviceImpl *dev,std::vec
 	std::transform(user_pipe_name.begin(),user_pipe_name.end(),user_pipe_name.begin(),::tolower);
 	if (user_pipe_name != lower_name)
 	{
-		Except::throw_exception(API_AttrNotAllowed,"Pipe name is not changeable at run time","Pipe::set_properties()");
+		TANGO_THROW_EXCEPTION(API_AttrNotAllowed, "Pipe name is not changeable at run time");
 	}
 
 	if (conf.writable != writable)
 	{
-		Except::throw_exception(API_AttrNotAllowed,"Pipe writable property is not changeable at run time","Pipe::set_properties()");
+		TANGO_THROW_EXCEPTION(API_AttrNotAllowed, "Pipe writable property is not changeable at run time");
 	}
 
 //
@@ -668,9 +668,7 @@ void Pipe::set_pipe_serial_model(PipeSerialModel ser_model)
 		Tango::Util *tg = Tango::Util::instance();
 		if (tg->get_serial_model() != Tango::BY_DEVICE)
 		{
-			Except::throw_exception(API_PipeNotAllowed,
-				      	  "Pipe serial model by user is not allowed when the process is not in BY_DEVICE serialization model",
-				      	  "Pipe::set_pipe_serial_model");
+			TANGO_THROW_EXCEPTION(API_PipeNotAllowed, "Pipe serial model by user is not allowed when the process is not in BY_DEVICE serialization model");
 		}
 	}
 
@@ -838,7 +836,7 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 	DevVarPipeDataEltArray *tmp_ptr = p_data->get_insert_data();
 	if (tmp_ptr == nullptr)
 	{
-		Except::throw_exception(API_PipeNoDataElement,"No data in DevicePipeBlob!","Pipe::fire_event()");
+		TANGO_THROW_EXCEPTION(API_PipeNoDataElement, "No data in DevicePipeBlob!");
 	}
 
 	CORBA::ULong max,len;

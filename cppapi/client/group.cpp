@@ -188,9 +188,7 @@ void GroupElementFactory::parse_name (const std::string& p, std::string &db_host
 			TangoSys_OMemStream desc;
 			desc << protocol;
 			desc << " protocol is an unsupported protocol" << std::ends;
-			ApiWrongNameExcept::throw_exception((const char*)API_UnsupportedProtocol,
-						desc.str(),
-						(const char*)"GroupElementFactory::parse_name()");
+			TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_UnsupportedProtocol, desc.str());
 		}
 	}
 
@@ -202,9 +200,7 @@ void GroupElementFactory::parse_name (const std::string& p, std::string &db_host
 		TangoSys_OMemStream desc;
 		desc << "Wrong device name syntax in " << p << std::ends;
 
-		ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
-				desc.str(),
-				(const char *)"GroupElementFactory::parse_name()");
+		TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
 	}
 
 	std::string bef_sep = name_wo_prot.substr(0,pos);
@@ -221,9 +217,7 @@ void GroupElementFactory::parse_name (const std::string& p, std::string &db_host
 			TangoSys_OMemStream desc;
 			desc << "Wrong device name syntax in " << p << std::ends;
 
-			ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
-					desc.str(),
-					(const char *)"GroupElementFactory::parse_name()");
+			TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
 		}
 		TangoSys_MemStream s;
 		s << db_port_str << std::ends;
@@ -1192,9 +1186,7 @@ long Group::command_inout_asynch_i (const std::string& c, const std::vector<Devi
          << d.size()
          << "]"
          << std::ends;
-    ApiDataExcept::throw_exception((const char*)API_MethodArgument,
-                                   (const char*)desc.str().c_str(),
-                                   (const char*)"Group::command_inout_asynch");
+    TANGO_THROW_API_EXCEPTION(ApiDataExcept, API_MethodArgument, desc.str().c_str());
   }
 
   if ( id == -1 )
@@ -1471,9 +1463,7 @@ long Group::write_attribute_asynch_i (const std::vector<DeviceAttribute>& d, boo
          << d.size()
          << "]"
          << std::ends;
-    ApiDataExcept::throw_exception((const char*)API_MethodArgument,
-                                   (const char*)desc.str().c_str(),
-                                   (const char*)"Group::write_attribute_asynch");
+    TANGO_THROW_API_EXCEPTION(ApiDataExcept, API_MethodArgument, desc.str().c_str());
   }
   if (id == -1) {
     id = next_asynch_request_id();

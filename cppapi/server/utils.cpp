@@ -139,9 +139,7 @@ Util *Util::instance(bool exit)
 			Util::print_err_message("Tango is not initialised !!!\nExiting");
 		else
 		{
-			Except::throw_exception((const char*)API_UtilSingletonNotCreated,
-                        		   	(const char*)"Util singleton not created",
-									(const char*)"Util::instance");
+			TANGO_THROW_EXCEPTION(API_UtilSingletonNotCreated, "Util singleton not created");
 		}
 	}
 	return _instance;
@@ -1657,9 +1655,7 @@ void Util::server_already_running()
 				TangoSys_OMemStream o;
 				o << "Database error while trying to import " << dev_name << std::ends;
 
-				Except::throw_exception((const char *)API_DatabaseAccess,
-				                o.str(),
-				                (const char *)"Util::server_already_running");
+				TANGO_THROW_EXCEPTION(API_DatabaseAccess, o.str());
 			}
 		}
 
@@ -2147,9 +2143,7 @@ std::vector<DeviceImpl *> &Util::get_device_list_by_class(const std::string &cla
 
 	if (cl_list_ptr == NULL)
 	{
-		Except::throw_exception((const char *)API_DeviceNotFound,
-				        (const char *)"It's too early to call this method. Devices are not created yet!",
-				        (const char *)"Util::get_device_list_by_class()");
+		TANGO_THROW_EXCEPTION(API_DeviceNotFound, "It's too early to call this method. Devices are not created yet!");
 	}
 
 //
@@ -2191,9 +2185,7 @@ std::vector<DeviceImpl *> &Util::get_device_list_by_class(const std::string &cla
 	{
 		TangoSys_OMemStream o;
 		o << "Class " << class_name << " not found" << std::ends;
-		Except::throw_exception((const char *)API_ClassNotFound,
-				        o.str(),
-				        (const char *)"Util::get_device_list_by_class()");
+		TANGO_THROW_EXCEPTION(API_ClassNotFound, o.str());
 	}
 
 	return tmp_cl_list[i]->get_device_list();
@@ -2275,9 +2267,7 @@ DeviceImpl *Util::get_device_by_name(const std::string &dev_name)
 	{
 		TangoSys_OMemStream o;
 		o << "Device " << dev_name << " not found" << std::ends;
-		Except::throw_exception((const char *)API_DeviceNotFound,
-				        o.str(),
-				        (const char *)"Util::get_device_by_name()");
+		TANGO_THROW_EXCEPTION(API_DeviceNotFound, o.str());
 	}
 
 	return ret_ptr;
@@ -2598,9 +2588,7 @@ void Util::print_err_message(const char *err_mess,TANGO_UNUSED(Tango::MessBoxTyp
 			MessageBox((HWND)NULL,err_mess,MessBoxTitle,MB_ICONINFORMATION);
 			break;
 		}
-		Except::throw_exception((const char *)API_StartupSequence,
-					(const char *)"Error in device server startup sequence",
-					(const char *)"Util::print_err_mess");
+		TANGO_THROW_EXCEPTION(API_StartupSequence, "Error in device server startup sequence");
 	}
 	else
 	{
@@ -2739,7 +2727,7 @@ void Util::validate_cmd_line_classes()
 		{
 			std::stringstream ss;
 			ss << "Class name " << pos->first << " used on command line device declaration but this class is not embedded in DS process";
-			Except::throw_exception(API_WrongCmdLineArgs,ss.str(),"Util::validate_cmd_line_classes");
+			TANGO_THROW_EXCEPTION(API_WrongCmdLineArgs, ss.str());
 		}
 	}
 }
@@ -2771,7 +2759,7 @@ void Util::tango_host_from_fqan(std::string &fqan,std::string &tg_host)
 	{
 		std::stringstream ss;
 		ss << "The provided fqan (" << fqan << ") is not a valid Tango attribute name" << std::endl;
-		Except::throw_exception(API_InvalidArgs,ss.str(),"Util::tango_host_from_fqan");
+		TANGO_THROW_EXCEPTION(API_InvalidArgs, ss.str());
 	}
 
 	std::string::size_type pos = lower_fqan.find('/',8);
@@ -2966,7 +2954,7 @@ void Util::check_end_point_specified(int argc,char *argv[])
             {
                  std::stringstream ss;
                 ss << "Can't open omniORB configuration file (" << fname << ") to check endPoint option" << std::endl;
-                Except::throw_exception(API_InvalidArgs,ss.str(),"Util::check_end_point_specified");
+                TANGO_THROW_EXCEPTION(API_InvalidArgs, ss.str());
             }
         }
     }

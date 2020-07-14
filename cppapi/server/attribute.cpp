@@ -1157,9 +1157,7 @@ void Attribute::init_opt_prop(std::vector<AttrProperty> &prop_list,std::string &
 
 			o << "RDS alarm properties (delta_t and delta_val) are not correctly defined for attribute " << name;
 			o << " in device " << dev_name << std::ends;
-			Except::throw_exception((const char *)API_AttrOptProp,
-						  o.str(),
-						  (const char *)"Attribute::init_opt_prop()");
+			TANGO_THROW_EXCEPTION(API_AttrOptProp, o.str());
 		}
 	}
 	catch(DevFailed &e)
@@ -1260,7 +1258,7 @@ void Attribute::build_check_enum_labels(std::string &labs)
 			ss << "Enumeration for attribute " << name << " has two similar labels (";
 			ss << v_s[loop - 1] << ", " << v_s[loop] << ")";
 
-			Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::build_check_enum_labels");
+			TANGO_THROW_EXCEPTION(API_AttrOptProp, ss.str());
 		}
 	}
 }
@@ -1349,9 +1347,7 @@ void Attribute::throw_err_format(const char *prop_name,const std::string &dev_na
 
 	o << "Device " << dev_name << "-> Attribute : " << name;
 	o << "\nThe property " << prop_name << " is defined in an unsupported format" << std::ends;
-	Except::throw_exception((const char *)API_AttrOptProp,
-			      o.str(),
-			      (const char *)origin);
+	Except::throw_exception(API_AttrOptProp, o.str(), origin);
 }
 
 
@@ -1375,9 +1371,7 @@ void Attribute::throw_incoherent_val_err(const char *min_prop,const char *max_pr
 
 	o << "Device " << dev_name << "-> Attribute : " << name;
 	o << "\nValue of " << min_prop << " is greater than or equal to " << max_prop << std::ends;
-	Except::throw_exception((const char *)API_IncoherentValues,
-			      o.str(),
-			      (const char *)origin);
+	Except::throw_exception(API_IncoherentValues, o.str(), origin);
 }
 
 //+-------------------------------------------------------------------------
@@ -1399,9 +1393,7 @@ void Attribute::throw_err_data_type(const char *prop_name,const std::string &dev
 
 	o << "Device " << dev_name << "-> Attribute : " << name;
 	o << "\nThe property " << prop_name << " is not settable for the attribute data type" << std::ends;
-	Except::throw_exception((const char *)API_AttrOptProp,
-			      o.str(),
-			      (const char *)origin);
+	Except::throw_exception(API_AttrOptProp, o.str(), origin);
 }
 
 //+-------------------------------------------------------------------------
@@ -1428,9 +1420,7 @@ void Attribute::throw_min_max_value(std::string &dev_name,std::string &memorized
     else
         o << "above";
     o << " the new limit!!" << std::ends;
-	Except::throw_exception((const char *)API_AttrOptProp,
-			      o.str(),
-			      (const char *)"Attribute::throw_min_max_value()");
+	TANGO_THROW_EXCEPTION(API_AttrOptProp, o.str());
 }
 
 //+-------------------------------------------------------------------------
@@ -1573,7 +1563,7 @@ std::string &Attribute::get_attr_value(std::vector <AttrProperty> &prop_list,con
 		TangoSys_OMemStream o;
 		o << "Property " << prop_name << " is missing for attribute " << name << std::ends;
 
-		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::get_attr_value()");
+		TANGO_THROW_EXCEPTION(API_AttrOptProp, o.str());
 	}
 
 	return pos->get_value();
@@ -1609,7 +1599,7 @@ long Attribute::get_lg_attr_value(std::vector <AttrProperty> &prop_list,const ch
 		TangoSys_OMemStream o;
 		o << "Property " << prop_name << " is missing for attribute " << name << std::ends;
 
-		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::get_attr_value()");
+		TANGO_THROW_EXCEPTION(API_AttrOptProp, o.str());
 	}
 
 	pos->convert(prop_name);
@@ -1705,8 +1695,7 @@ bool Attribute::check_alarm()
 		TangoSys_OMemStream o;
 
 		o << "No alarm defined for attribute " << name << std::ends;
-		Except::throw_exception((const char *)API_AttrNoAlarm,o.str(),
-				      (const char *)"Attribute::check_alarm()");
+		TANGO_THROW_EXCEPTION(API_AttrNoAlarm, o.str());
 	}
 
 //
@@ -3965,7 +3954,7 @@ void Attribute::fire_change_event(DevFailed *except)
 						o << " has not been updated. Can't send change event\n";
 						o << "Set the attribute value (using set_value(...) method) before!" << std::ends;
 
-						Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_change_event()");
+						TANGO_THROW_EXCEPTION(API_AttrValueNotSet, o.str());
 					}
 				}
 			}
@@ -3987,8 +3976,7 @@ void Attribute::fire_change_event(DevFailed *except)
 		}
 		catch (std::bad_alloc &)
 		{
-			Except::throw_exception(API_MemoryAllocation,
-									"Can't allocate memory in server","Attribute::fire_change_event()");
+			TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 		}
 
 //
@@ -4389,8 +4377,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 						o << " has not been updated. Can't send archive event\n";
 						o << "Set the attribute value (using set_value(...) method) before!" << std::ends;
 
-						Except::throw_exception((const char *)API_AttrValueNotSet,o.str(),
-				        		(const char *)"Attribute::fire_archive_event()");
+						TANGO_THROW_EXCEPTION(API_AttrValueNotSet, o.str());
 					}
 				}
 			}
@@ -4411,8 +4398,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 		}
 		catch (std::bad_alloc &)
 		{
-			Except::throw_exception(API_MemoryAllocation,
-									"Can't allocate memory in server","Attribute::fire_archive_event()");
+			TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 		}
 
 //
@@ -4788,7 +4774,7 @@ void Attribute::fire_event(std::vector<std::string> &filt_names,std::vector<doub
 						o << " has not been updated. Can't send user event\n";
 						o << "Set the attribute value (using set_value(...) method) before!" << std::ends;
 
-						Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_event()");
+						TANGO_THROW_EXCEPTION(API_AttrValueNotSet, o.str());
 					}
 				}
 			}
@@ -4809,7 +4795,7 @@ void Attribute::fire_event(std::vector<std::string> &filt_names,std::vector<doub
 		}
 		catch (std::bad_alloc &)
 		{
-			Except::throw_exception(API_MemoryAllocation,"Can't allocate memory in server","Attribute::fire_event()");
+			TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 		}
 
 //
@@ -5257,9 +5243,7 @@ void Attribute::set_attr_serial_model(AttrSerialModel ser_model)
 		Tango::Util *tg = Tango::Util::instance();
 		if (tg->get_serial_model() != Tango::BY_DEVICE)
 		{
-			Except::throw_exception((const char *)API_AttrNotAllowed,
-				      	  (const char *)"Attribute serial model by user is not allowed when the process is not in BY_DEVICE serialization model",
-				      	  (const char *)"Attribute::set_attr_serial_model");
+			TANGO_THROW_EXCEPTION(API_AttrNotAllowed, "Attribute serial model by user is not allowed when the process is not in BY_DEVICE serialization model");
 		}
 	}
 
@@ -5332,7 +5316,7 @@ DeviceClass *Attribute::get_att_device_class(std::string &dev_name)
 			o << "Device " << dev_name << "-> Attribute : " << name;
 			o << "\nCan't retrieve device class!" << std::ends;
 
-			Except::throw_exception(API_CantRetrieveClass,o.str(),"Attribute::set_properties()");
+			TANGO_THROW_EXCEPTION(API_CantRetrieveClass, o.str());
         }
     }
 

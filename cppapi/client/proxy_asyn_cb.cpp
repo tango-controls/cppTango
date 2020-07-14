@@ -74,8 +74,7 @@ void Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute command_inout on device " << dev_name();
 		desc << ", command " << command << std::ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
-                        desc.str(), (const char*)"Connection::command_inout_asynch()");
+                TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_CommandFailed, desc.str());
 	}
 
 //
@@ -1031,9 +1030,7 @@ void Connection::get_asynch_replies(long call_timeout)
 			{
 				TangoSys_OMemStream desc;
 				desc << "Still some reply(ies) for asynchronous callback call(s) to be received" << std::ends;
-				ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
-						       	       desc.str(),
-						               (const char *)"Connection::get_asynch_replies");
+				TANGO_THROW_API_EXCEPTION(ApiAsynNotThereExcept, API_AsynReplyNotArrived, desc.str());
 			}
 		}
 		else
@@ -1115,8 +1112,7 @@ void DeviceProxy::read_attributes_asynch(std::vector<std::string> &attr_names,Ca
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << std::ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
-                        desc.str(), (const char*)"DeviceProxy::read_attributes_asynch()");
+                TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_CommandFailed, desc.str());
 	}
 
 //
@@ -1232,8 +1228,7 @@ void DeviceProxy::write_attributes_asynch(std::vector<DeviceAttribute> &attr_lis
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << std::ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
-                        desc.str(), (const char*)"DeviceProxy::write_attributes_asynch()");
+                TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_CommandFailed, desc.str());
 	}
 
 //
@@ -1334,8 +1329,7 @@ void DeviceProxy::write_attribute_asynch(DeviceAttribute &attr,CallBack &cb)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << std::ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
-                        desc.str(), (const char*)"DeviceProxy::write_attributes_asynch()");
+                TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_CommandFailed, desc.str());
 	}
 
 //

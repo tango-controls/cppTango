@@ -142,9 +142,7 @@ MultiAttribute::MultiAttribute(std::string &dev_name,DeviceClass *dev_class_ptr,
 				TangoSys_OMemStream o;
 				o << "Can't get device attribute properties for device " << dev_name << std::ends;
 
-				Except::throw_exception((const char *)API_DatabaseAccess,
-				                	o.str(),
-				                	(const char *)"MultiAttribute::MultiAttribute");
+				TANGO_THROW_EXCEPTION(API_DatabaseAccess, o.str());
 			}
 		}
 
@@ -574,10 +572,7 @@ void MultiAttribute::check_associated(long index, std::string &dev_name)
 		o << "\nProperty writable_attr_name for attribute " << attribute.get_name();
 		o << " is set to " << assoc_name;
 		o << ", but this attribute does not exist" << std::ends;
-		Except::throw_exception(
-			API_AttrOptProp,
-			o.str().c_str(),
-			"MultiAttribute::check_associated");
+		TANGO_THROW_EXCEPTION(API_AttrOptProp, o.str().c_str());
 	}
 
 	Attribute& assoc_attribute = *attr_list[assoc_index];
@@ -590,10 +585,7 @@ void MultiAttribute::check_associated(long index, std::string &dev_name)
 		o << "\nProperty writable_attr_name for attribute " << attribute.get_name();
 		o << " is set to " << assoc_name;
 		o << ", but this attribute is not writable" << std::ends;
-		Except::throw_exception(
-			API_AttrOptProp,
-			o.str().c_str(),
-			"MultiAttribute::check_associated");
+		TANGO_THROW_EXCEPTION(API_AttrOptProp, o.str().c_str());
 	}
 
 	if (attribute.get_data_type() != assoc_attribute.get_data_type())
@@ -603,10 +595,7 @@ void MultiAttribute::check_associated(long index, std::string &dev_name)
 		o << "\nProperty writable_attr_name for attribute " << attribute.get_name();
 		o << " is set to " << assoc_name;
 		o << ", but these two attributes do not support the same data type" << std::ends;
-		Except::throw_exception(
-			API_AttrOptProp,
-			o.str().c_str(),
-			"MultiAttribute::check_associated");
+		TANGO_THROW_EXCEPTION(API_AttrOptProp, o.str().c_str());
 	}
 
 	attribute.set_assoc_ind(assoc_index);
@@ -653,7 +642,7 @@ void MultiAttribute::check_idl_release(DeviceImpl *dev)
 				ss << "Attribute " << attr_list[i]->get_name() << " has a DEV_ENUM data type.\n";
 				ss << "This is supported oonly for device inheriting from IDL 5 or more";
 
-				Except::throw_exception(API_NotSupportedFeature,ss.str(),"MultiAttribute::check_idl_release()");
+				TANGO_THROW_EXCEPTION(API_NotSupportedFeature, ss.str());
 			}
 			catch (Tango::DevFailed &e)
 			{
@@ -737,9 +726,7 @@ void MultiAttribute::add_attribute(std::string &dev_name,DeviceClass *dev_class_
 			TangoSys_OMemStream o;
 			o << "Can't get device attribute properties for device " << dev_name << std::ends;
 
-			Except::re_throw_exception(e,(const char *)API_DatabaseAccess,
-				       		 o.str(),
-				        	(const char *)"MultiAttribute::add_attribute");
+			TANGO_RETHROW_EXCEPTION(e, API_DatabaseAccess, o.str());
 		}
 	}
 
@@ -1172,9 +1159,7 @@ Attribute &MultiAttribute::get_attr_by_name(const char *attr_name)
         TangoSys_OMemStream o;
 
         o << attr_name << " attribute not found" << std::ends;
-        Except::throw_exception((const char *)API_AttrNotFound,
-                                o.str(),
-                                (const char *)"MultiAttribute::get_attr_by_name");
+        TANGO_THROW_EXCEPTION(API_AttrNotFound, o.str());
     }
     return *attr;
 }
@@ -1211,9 +1196,7 @@ WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
         TangoSys_OMemStream o;
 
         o << attr_name << " writable attribute not found" << std::ends;
-        Except::throw_exception((const char *)API_AttrNotFound,
-                                o.str(),
-                                (const char *)"MultiAttribute::get_w_attr_by_name");
+        TANGO_THROW_EXCEPTION(API_AttrNotFound, o.str());
     }
 
     if ((attr->get_writable() != Tango::WRITE) &&
@@ -1223,9 +1206,7 @@ WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
         TangoSys_OMemStream o;
 
         o << attr_name << " writable attribute not found" << std::ends;
-        Except::throw_exception((const char *)API_AttrNotFound,
-                                o.str(),
-                                (const char *)"MultiAttribute::get_w_attr_by_name");
+        TANGO_THROW_EXCEPTION(API_AttrNotFound, o.str());
     }
     return static_cast<WAttribute &>(*attr);
 }
@@ -1263,9 +1244,7 @@ long MultiAttribute::get_attr_ind_by_name(const char *attr_name)
         TangoSys_OMemStream o;
 
         o << attr_name << " attribute not found" << std::ends;
-        Except::throw_exception((const char *)API_AttrNotFound,
-                                o.str(),
-                                (const char *)"MultiAttribute::get_attr_ind_by_name");
+        TANGO_THROW_EXCEPTION(API_AttrNotFound, o.str());
     }
     return i;
 }

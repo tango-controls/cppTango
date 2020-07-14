@@ -268,9 +268,7 @@ AccessControlType AccessProxy::check_access_control(std::string &devname)
 			}
 			else if (::strcmp(e.errors[0].reason.in(),API_DeviceNotExported) == 0)
 			{
-				Except::re_throw_exception(e,(const char *)API_CannotCheckAccessControl,
-											(const char *)"Cannot import Access Control device !",
-											(const char *)"AccessProxy::check_access_control()");
+				TANGO_RETHROW_EXCEPTION(e, API_CannotCheckAccessControl, "Cannot import Access Control device !");
 			}
 			else
 				throw;

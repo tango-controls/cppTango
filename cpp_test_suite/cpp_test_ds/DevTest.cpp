@@ -371,7 +371,7 @@ Tango::DevLong DevTest::IOSubscribeEvent(const Tango::DevVarStringArray *in_data
 	{
 		std::stringstream ss;
 		ss << "Event type " << (*in_data)[2] << " not recognized as a valid event type";
-		Tango::Except::throw_exception("DevTest_WrongEventType",ss.str(),"DevTest::IOSubscribeEvent");
+		TANGO_THROW_EXCEPTION("DevTest_WrongEventType", ss.str());
 	}
 
 	int eve_id = remote_dev->subscribe_event(att_name,eve,&cb,filters);
@@ -390,9 +390,7 @@ void DevTest::IOUnSubscribeEvent(Tango::DevLong &in_data)
 		std::map<int,std::string>::iterator ite = event_atts.find(in_data);
 		if (ite == event_atts.end())
 		{
-			Tango::Except::throw_exception("DevTest_WrongEventID",
-										   "Cant find event id in map",
-										   "DevTest::IOUnSubscribeEvent");
+			TANGO_THROW_EXCEPTION("DevTest_WrongEventID", "Cant find event id in map");
 		}
 		remote_dev->unsubscribe_event(in_data);
 
@@ -819,7 +817,7 @@ void DevTest::write_Short_attr_w(Tango::WAttribute &att)
 	att.get_write_value(sh);
 //	cout << "Attribute value = " << sh << std::endl;
 	if (Short_attr_w_except == true)
-		Tango::Except::throw_exception("Aaaa","Bbbb","Cccc");
+		TANGO_THROW_EXCEPTION("Aaaa", "Bbbb");
 }
 
 void DevTest::write_Short_attr_w2(Tango::WAttribute &att)
@@ -904,9 +902,7 @@ void DevTest::write_attr_asyn_write_except(Tango::WAttribute &att)
 	att.get_write_value(lg);
 	cout << "Attribute value = " << lg << std::endl;
 	Tango_sleep(2);
-	Tango::Except::throw_exception((const char *)"aaa",
-					(const char *)"This is a test",
-					(const char *)"DevTest::write_attr_hardware");
+	TANGO_THROW_EXCEPTION("aaa", "This is a test");
 }
 
 void DevTest::write_String_spec_attr_w(Tango::WAttribute &att)
@@ -1245,7 +1241,7 @@ void DevTest::write_attr_hardware(std::vector<long> &att_idx)
 		break;
 
 	case 1:
-		Tango::Except::throw_exception("DevTest_WriteAttrHardware","DevFailed from write_attr_hardware","DevTest::write_attr_hardware");
+		TANGO_THROW_EXCEPTION("DevTest_WriteAttrHardware", "DevFailed from write_attr_hardware");
 		break;
 
 	case 2:
@@ -1279,9 +1275,7 @@ void DevTest::read_Short_attr(Tango::Attribute &att)
 		}
       	else
       	{
-        	Tango::Except::throw_exception((const char *)"aaa",
-       			       (const char *)"This is a test",
-			       (const char *)"DevTest::read_attr");
+        	TANGO_THROW_EXCEPTION("aaa", "This is a test");
       	}
 }
 
@@ -1290,10 +1284,7 @@ void DevTest::read_Long_attr(Tango::Attribute &att)
     cout << "[DevTest::read_attr] attribute name Long_attr" << std::endl;
     if (Long_attr_except)
     {
-        Tango::Except::throw_exception(
-            "Long_attr_except",
-            "Test exception is enabled for this attribute",
-            "DevTest::read_Long_attr");
+        TANGO_THROW_EXCEPTION("Long_attr_except", "Test exception is enabled for this attribute");
     }
     att.set_value(&attr_long);
 }
@@ -1510,9 +1501,7 @@ void DevTest::read_attr_asyn_except(TANGO_UNUSED(Tango::Attribute &att))
        	Tango_sleep(2);
        	cout << "Leaving reading attr_asyn_except attribute" << std::endl;
 
-       	Tango::Except::throw_exception((const char *)"aaa",
-       			       (const char *)"This is a test",
-			       (const char *)"DevTest::read_attr");
+       	TANGO_THROW_EXCEPTION("aaa", "This is a test");
 }
 
 void DevTest::read_PollLong_attr(Tango::Attribute &att)
@@ -1544,11 +1533,11 @@ void DevTest::read_PollString_spec_attr(Tango::Attribute &att)
       	}
       	else if ((PollString_spec_attr_num % 4) == 2)
       	{
-      		Tango::Except::throw_exception((const char *)"aaaa",(const char *)"bbb",(const char *)"ccc");
+      		TANGO_THROW_EXCEPTION("aaaa", "bbb");
       	}
       	else
       	{
-      		Tango::Except::throw_exception((const char *)"xxx",(const char *)"yyy",(const char *)"zzz");
+      		TANGO_THROW_EXCEPTION("xxx", "yyy");
       	}
 
 //      	att.set_value(attr_str_array, 2);
@@ -1675,9 +1664,7 @@ void DevTest::read_Event_change_tst(Tango::Attribute &att)
 	}
 	else
 	{
-        Tango::Except::throw_exception((const char *)"bbb",
-       			       		       (const char *)"This is a test",
-			       		       (const char *)"DevTest::read_attr");
+        TANGO_THROW_EXCEPTION("bbb", "This is a test");
 	}
 }
 
@@ -1690,9 +1677,7 @@ void DevTest::read_Event64_change_tst(Tango::Attribute &att)
 	}
 	else
 	{
-        Tango::Except::throw_exception((const char *)"bbb64",
-       			       		       (const char *)"This is a test",
-			       		       (const char *)"DevTest::read_attr");
+        TANGO_THROW_EXCEPTION("bbb64", "This is a test");
 	}
 }
 void DevTest::read_Event_quality_tst(Tango::Attribute &att)
@@ -1706,9 +1691,7 @@ void DevTest::read_Event_quality_tst(Tango::Attribute &att)
       	}
       	else
       	{
-       	 	Tango::Except::throw_exception((const char *)"ccc",
-       			       (const char *)"This is a test",
-			       (const char *)"DevTest::read_attr");
+       	 	TANGO_THROW_EXCEPTION("ccc", "This is a test");
       	}
 }
 

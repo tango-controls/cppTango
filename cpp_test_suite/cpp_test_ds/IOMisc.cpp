@@ -422,9 +422,7 @@ CORBA::Any *IOSleepExcept::execute(TANGO_UNUSED(Tango::DeviceImpl *device), cons
 
 	Tango_sleep(in);
 
-	Tango::Except::throw_exception((const char *)"aaa",
-								   (const char *)"This is a test ",
-								   (const char *)"IOSleepExcept::execute()");
+	TANGO_THROW_EXCEPTION("aaa", "This is a test ");
 
 	return insert();
 }

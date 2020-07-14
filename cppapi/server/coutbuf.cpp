@@ -151,9 +151,7 @@ void CoutBuf::CreateWin(LPCSTR svc_name)
 
   	if (!hWndDebug)
   	{
-    		Except::throw_exception((LPCSTR)API_NtDebugWindowError,
-              				(LPCSTR)"Can't create debug window",
-              				(LPCSTR)"CoutBuf::CoutBuf");
+    		TANGO_THROW_EXCEPTION((LPCSTR)API_NtDebugWindowError, (LPCSTR)"Can't create debug window");
   	}
   	DbgWin = hWndDebug;
 }

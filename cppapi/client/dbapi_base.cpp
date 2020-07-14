@@ -72,9 +72,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 	{
 		TangoSys_MemStream desc;
 		desc << "TANGO_HOST env. variable not set, set it and retry (e.g. TANGO_HOST=<host>:<port>)" << std::ends;
-		ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
-					       desc.str(),
-					       (const char *)"Database::Database");
+		TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_TangoHostNotSet, desc.str());
 	}
 
 	check_tango_host(tango_host_env_var.c_str());
@@ -107,9 +105,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NUL
 	{
 		TangoSys_MemStream desc;
 		desc << "TANGO_HOST env. variable not set, set it and retry (e.g. TANGO_HOST=<host>:<port>)" << std::ends;
-		ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
-					       desc.str(),
-					       (const char *)"Database::Database");
+		TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_TangoHostNotSet, desc.str());
 	}
 
 	check_tango_host(tango_host_env_c_str);
@@ -169,9 +165,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 				{
 					TangoSys_MemStream desc;
 					desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << std::ends;
-					ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
-					       				desc.str(),
-					       				(const char *)"Database::Database");
+					TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_TangoHostNotSet, desc.str());
 				}
 				multi_db_port.push_back(sub.substr(host_sep + 1));
 			}
@@ -179,9 +173,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 			{
 				TangoSys_MemStream desc;
 				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << std::ends;
-				ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
-					       		desc.str(),
-					       		(const char *)"Database::Database");
+				TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_TangoHostNotSet, desc.str());
 			}
 			std::string tmp_host(sub.substr(0,host_sep));
 			if (tmp_host.find('.') == std::string::npos)
@@ -196,9 +188,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 			{
 				TangoSys_MemStream desc;
 				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << std::ends;
-				ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
-					       				desc.str(),
-					       				(const char *)"Database::Database");
+				TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_TangoHostNotSet, desc.str());
 			}
 			multi_db_port.push_back(last.substr(host_sep + 1));
 		}
@@ -206,9 +196,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 		{
 			TangoSys_MemStream desc;
 			desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << std::ends;
-			ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
-					       		desc.str(),
-					       		(const char *)"Database::Database");
+			TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_TangoHostNotSet, desc.str());
 		}
 		std::string tmp_host(last.substr(0,host_sep));
 		if (tmp_host.find('.') == std::string::npos)
@@ -233,9 +221,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 			{
 				TangoSys_MemStream desc;
 				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>)" << std::ends;
-				ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
-					       				desc.str(),
-					       				(const char *)"Database::Database");
+				TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_TangoHostNotSet, desc.str());
 			}
 			db_port = tango_host_env.substr(separator+1);
 			db_port_num = atoi(db_port.c_str());
@@ -244,9 +230,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 		{
 			TangoSys_MemStream desc;
 			desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>)" << std::ends;
-			ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
-					       		desc.str(),
-					       		(const char *)"Database::Database");
+			TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_TangoHostNotSet, desc.str());
 		}
 		db_host = tango_host_env.substr(0,separator);
 
@@ -516,9 +500,7 @@ const std::string&Database::get_file_name()
 {
 	if (filedb == 0)
 	{
-		Tango::Except::throw_exception ((const char *)API_NotSupportedFeature,
-										(const char *)"The database is not a file-based database",
-										(const char *)"Database::get_file_name");
+		TANGO_THROW_EXCEPTION(API_NotSupportedFeature, "The database is not a file-based database");
 	}
 
 	return file_name;
@@ -831,8 +813,7 @@ DbDevImportInfo Database::import_device(std::string &dev)
 				{
 					TangoSys_OMemStream o;
 					o << "Can't insert device class for device " << dev << " in device class cache" << std::ends;
-					Tango::Except::throw_exception((const char *)API_CantStoreDeviceClass,o.str(),
-			                               (const char *)"DeviceProxy::import_device()");
+					TANGO_THROW_EXCEPTION(API_CantStoreDeviceClass, o.str());
 				}
 			}
 		}
@@ -1097,9 +1078,7 @@ DbServerInfo Database::get_server_info(std::string &server)
 	}
 	else
 	{
-        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                       (const char *)"Incoherent data received from database",
-                                       (const char *)"Database::get_server_info()");
+        TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
 	}
 
 	return(server_info);
@@ -2270,9 +2249,7 @@ DbDatum Database::get_device_exported(std::string &filter)
 	DbDatum db_datum;
     if (device_names == NULL)
     {
-        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                   (const char *)"Incoherent data received from database",
-                                   (const char *)"Database::get_device_exported()");
+        TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
     }
     else
     {
@@ -2316,9 +2293,7 @@ DbDatum Database::get_device_member(std::string &wildcard)
 	DbDatum db_datum;
     if (device_member == NULL)
     {
-        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                   (const char *)"Incoherent data received from database",
-                                   (const char *)"Database::get_device_member()");
+        TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
     }
     else
     {
@@ -2363,9 +2338,7 @@ DbDatum Database::get_device_family(std::string &wildcard)
 
     if (device_family == NULL)
     {
-        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                   (const char *)"Incoherent data received from database",
-                                   (const char *)"Database::get_device_family()");
+        TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
     }
     else
     {
@@ -2411,9 +2384,7 @@ DbDatum Database::get_device_domain(std::string &wildcard)
 
     if (device_domain == NULL)
     {
-        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                   (const char *)"Incoherent data received from database",
-                                   (const char *)"Database::get_device_domain()");
+        TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
     }
     else
     {
@@ -2720,9 +2691,7 @@ void Database::get_attribute_alias(std::string  attr_alias, std::string &attr_na
 
     if (attr_name_tmp == NULL)
     {
-        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                   (const char *)"Incoherent data received from database",
-                                   (const char *)"Database::get_attribute_alias()");
+        TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
     }
     else
         attr_name = attr_name_tmp;
@@ -2754,9 +2723,7 @@ DbDatum Database::get_device_alias_list(std::string &alias)
 
     if (alias_array == NULL)
     {
-        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                   (const char *)"Incoherent data received from database",
-                                   (const char *)"Database::get_device_alias_list()");
+        TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
     }
     else
     {
@@ -2799,9 +2766,7 @@ DbDatum Database::get_attribute_alias_list(std::string &alias)
 
     if (alias_array == NULL)
     {
-        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                   (const char *)"Incoherent data received from database",
-                                   (const char *)"Database::get_attribute_alias_list()");
+        TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
     }
     else
     {
@@ -2832,9 +2797,7 @@ DbDatum Database::make_string_array(std::string name,Any_var &received) {
 	received.inout() >>= prop_list;
     if (prop_list == NULL)
     {
-        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                   (const char *)"Incoherent data received from database",
-                                   (const char *)"Database::make_string_array()");
+        TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
     }
     else
     {
@@ -3003,9 +2966,7 @@ DbDatum Database::get_server_class_list(std::string &servname)
 	DbDatum db_datum;
     if (prop_list == NULL)
     {
-        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                   (const char *)"Incoherent data received from database",
-                                   (const char *)"Database::get_server_class_list()");
+        TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
     }
     else
     {
@@ -3340,8 +3301,7 @@ std::string Database::get_class_for_device(std::string &devname)
 			{
 				TangoSys_OMemStream o;
 				o << "Can't insert device class for device " << devname << " in device class cache" << std::ends;
-				Tango::Except::throw_exception((const char *)API_CantStoreDeviceClass,o.str(),
-		                               (const char *)"DeviceProxy::get_class_for_device()");
+				TANGO_THROW_EXCEPTION(API_CantStoreDeviceClass, o.str());
 			}
 		}
 		else
@@ -3570,9 +3530,7 @@ std::vector<DbHistory> Database::make_history_array(bool is_attribute, Any_var &
 	std::vector<DbHistory> v;
     if (ret == NULL)
     {
-        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                   (const char *)"Incoherent data received from database",
-                                   (const char *)"Database::make_history_array()");
+        TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
     }
     else
     {
@@ -3606,9 +3564,7 @@ std::vector<DbHistory> Database::make_history_array(bool is_attribute, Any_var &
             istream >> count;
             if (!istream)
             {
-                Except::throw_exception( (const char *)API_HistoryInvalid,
-                                 (const char *)"History format is invalid",
-                                 (const char *)"Database::make_history_array()");
+                TANGO_THROW_EXCEPTION(API_HistoryInvalid, "History format is invalid");
             }
             std::vector<std::string> value;
             for(int j=0;j<count;j++)
@@ -4143,9 +4099,7 @@ CORBA::Any *Database::fill_server_cache(std::string &ds_name,std::string &loc_ho
 	pos = ds_name.find('/');
 	if (pos == std::string::npos)
 	{
-		Tango::Except::throw_exception((const char *)API_MethodArgument,
-				       		(const char *)"The device server name parameter is incorrect. Should be: <ds_exec_name>/<inst_name>",
-				       		(const char *)"Database::fill_server_cache");
+		TANGO_THROW_EXCEPTION(API_MethodArgument, "The device server name parameter is incorrect. Should be: <ds_exec_name>/<inst_name>");
 	}
 
 //
@@ -4283,9 +4237,7 @@ void Database::delete_all_device_attribute_property(std::string dev_name,DbData 
 
 	if (filedb != 0)
 	{
-		Tango::Except::throw_exception((const char *)API_NotSupportedFeature,
-				       		(const char *)"The underlying database command is not implemented when the database is a file",
-				       		(const char *)"Database::delete_all_device_attribute_property");
+		TANGO_THROW_EXCEPTION(API_NotSupportedFeature, "The underlying database command is not implemented when the database is a file");
 	}
 	else
 		CALL_DB_SERVER_NO_RET("DbDeleteAllDeviceAttributeProperty",send);
@@ -4497,9 +4449,7 @@ void Database::write_event_channel_ior_filedatabase(std::string &ec_ior)
 {
 	if (filedb == NULL)
 	{
-		Tango::Except::throw_exception((const char *)API_NotSupportedFeature,
-				       		(const char *)"This call is supported only when the database is a file",
-				       		(const char *)"Database::write_event_channel_ior_filedatabase");
+		TANGO_THROW_EXCEPTION(API_NotSupportedFeature, "This call is supported only when the database is a file");
 	}
 
 	filedb->write_event_channel_ior(ec_ior);
@@ -4555,9 +4505,7 @@ DbDevFullInfo Database::get_device_info(std::string &dev)
 	}
 	else
 	{
-        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                       (const char *)"Incoherent data received from database",
-                                       (const char *)"Database::get_device_info()");
+        TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
 	}
 
 	return(dev_info);
@@ -4635,9 +4583,7 @@ void Database::get_attribute_from_alias(std::string attr_alias, std::string &att
 
 	if (attr_name_tmp == NULL)
 	{
-		Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                   (const char *)"Incoherent data received from database",
-                                   (const char *)"Database::get_attribute_from_alias()");
+		TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
 	}
 	else
 		attr_name = attr_name_tmp;
@@ -4667,9 +4613,7 @@ void Database::get_alias_from_attribute(std::string attr_name, std::string &attr
 
 	if (attr_alias_tmp == NULL)
 	{
-		Tango::Except::throw_exception((const char *)API_IncoherentDbData,
-                                   (const char *)"Incoherent data received from database",
-                                   (const char *)"Database::get_alias_from_attribute()");
+		TANGO_THROW_EXCEPTION(API_IncoherentDbData, "Incoherent data received from database");
 	}
 	else
 		attr_alias = attr_alias_tmp;
@@ -5185,9 +5129,7 @@ void Database::delete_all_device_pipe_property(std::string dev_name,DbData &db_d
 
 	if (filedb != 0)
 	{
-		Tango::Except::throw_exception(API_NotSupportedFeature,
-				       		"The underlying database command is not implemented when the database is a file",
-				       		"Database::delete_all_device_pipe_property");
+		TANGO_THROW_EXCEPTION(API_NotSupportedFeature, "The underlying database command is not implemented when the database is a file");
 	}
 	else
 		CALL_DB_SERVER_NO_RET("DbDeleteAllDevicePipeProperty",send);

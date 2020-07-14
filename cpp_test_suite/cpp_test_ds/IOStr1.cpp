@@ -163,7 +163,7 @@ CORBA::Any *IOPollStr1::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UN
     else
     {
     	delete [] argout;
-    	Tango::Except::throw_exception((const char*)"qqq",(const char *)"www",(const char *)"eee");
+    	TANGO_THROW_EXCEPTION("qqq", "www");
     }
     
     return insert(argout);

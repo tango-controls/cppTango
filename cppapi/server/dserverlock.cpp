@@ -73,18 +73,14 @@ void DServer::lock_device(const Tango::DevVarLongStringArray *in_data)
 	Tango::client_addr *cl = get_client_ident();
 	if (cl == NULL)
 	{
-		Except::throw_exception((const char*)API_CantGetClientIdent,
-					       	(const char*)"Cannot retrieve client identification",
-					        (const char*)"DServer::lock_device");
+		TANGO_THROW_EXCEPTION(API_CantGetClientIdent, "Cannot retrieve client identification");
 	}
 
 	cout4 << "Client identification = " << *cl << std::endl;
 
 	if (cl->client_ident == false)
 	{
-		Except::throw_exception((const char*)API_ClientTooOld,
-					       	(const char*)"Your client cannot lock devices. You are using a too old Tango release. Please, update to tango V7 or more",
-					        (const char*)"DServer::lock_device");
+		TANGO_THROW_EXCEPTION(API_ClientTooOld, "Your client cannot lock devices. You are using a too old Tango release. Please, update to tango V7 or more");
 	}
 
 //
@@ -105,9 +101,7 @@ void DServer::lock_device(const Tango::DevVarLongStringArray *in_data)
 
 	if (d_name_lower == local_dev_name)
 	{
-		Except::throw_exception((const char *)API_DeviceUnlockable,
-								(const char *)"Impossible to lock device server administration device",
-								(const char *)"DServer::lock_device");
+		TANGO_THROW_EXCEPTION(API_DeviceUnlockable, "Impossible to lock device server administration device");
 	}
 
 //
@@ -124,9 +118,7 @@ void DServer::lock_device(const Tango::DevVarLongStringArray *in_data)
 	std::string &cl_name = the_dev->get_device_class()->get_name();
 	if (::strcmp(cl_name.c_str(),DATABASE_CLASS) == 0)
 	{
-		Except::throw_exception((const char *)API_DeviceUnlockable,
-								(const char *)"Impossible to lock database device",
-								(const char *)"DServer::lock_device");
+		TANGO_THROW_EXCEPTION(API_DeviceUnlockable, "Impossible to lock database device");
 	}
 
 //
@@ -161,18 +153,14 @@ Tango::DevLong DServer::un_lock_device(const Tango::DevVarLongStringArray *in_da
 	Tango::client_addr *cl = get_client_ident();
 	if (cl == NULL)
 	{
-		Except::throw_exception((const char*)API_CantGetClientIdent,
-					       	(const char*)"Cannot retrieve client identification",
-					        (const char*)"DServer::un_lock_device");
+		TANGO_THROW_EXCEPTION(API_CantGetClientIdent, "Cannot retrieve client identification");
 	}
 
 	cout4 << "Client identification = " << *cl << std::endl;
 
 	if ((cl->client_ident == false) && (in_data->lvalue[0] == 0))
 	{
-		Except::throw_exception((const char*)API_ClientTooOld,
-					       	(const char*)"Your client cannot un-lock devices. You are using a too old Tango release. Please, update to tango V7 or more",
-					        (const char*)"DServer::un_lock_device");
+		TANGO_THROW_EXCEPTION(API_ClientTooOld, "Your client cannot un-lock devices. You are using a too old Tango release. Please, update to tango V7 or more");
 	}
 
 //
@@ -229,18 +217,14 @@ void DServer::re_lock_devices(const Tango::DevVarStringArray *dev_name_list)
 	Tango::client_addr *cl = get_client_ident();
 	if (cl == NULL)
 	{
-		Except::throw_exception((const char*)API_CantGetClientIdent,
-					       	(const char*)"Cannot retrieve client identification",
-					        (const char*)"DServer::re_lock_devices");
+		TANGO_THROW_EXCEPTION(API_CantGetClientIdent, "Cannot retrieve client identification");
 	}
 
 	cout4 << "Client identification = " << *cl << std::endl;
 
 	if (cl->client_ident == false)
 	{
-		Except::throw_exception((const char*)API_ClientTooOld,
-					       	(const char*)"Your client cannot re_lock devices. You are using a too old Tango release. Please, update to tango V7 or more",
-					        (const char*)"DServer::re_lock_devices");
+		TANGO_THROW_EXCEPTION(API_ClientTooOld, "Your client cannot re_lock devices. You are using a too old Tango release. Please, update to tango V7 or more");
 	}
 
 //

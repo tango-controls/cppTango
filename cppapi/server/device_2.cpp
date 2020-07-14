@@ -232,9 +232,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 			{
                 TangoSys_OMemStream o;
                 o << "Command " << in_cmd << " not polled" << std::ends;
-                Except::throw_exception((const char *)API_CmdNotPolled,
-							o.str(),
-							(const char *)"Device_2Impl::command_inout");
+                TANGO_THROW_EXCEPTION(API_CmdNotPolled, o.str());
 			}
 
 /*
@@ -259,9 +257,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 					{
 						TangoSys_OMemStream o;
 						o << "Command " << in_cmd << " not polled" << std::ends;
-						Except::throw_exception((const char *)API_CmdNotPolled,
-								o.str(),
-								(const char *)"Device_2Impl::command_inout");
+						TANGO_THROW_EXCEPTION(API_CmdNotPolled, o.str());
 					}
 					else
 					{
@@ -322,9 +318,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 			{
 				TangoSys_OMemStream o;
 				o << "No data available in cache for command " << in_cmd << std::ends;
-				Except::throw_exception((const char *)API_NoDataYet,
-						o.str(),
-						(const char *)"Device_2Impl::command_inout");
+				TANGO_THROW_EXCEPTION(API_NoDataYet, o.str());
 			}
 
 //
@@ -353,9 +347,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 					TangoSys_OMemStream o;
 					o << "Data in cache for command " << in_cmd;
 					o << " not updated any more" << std::ends;
-					Except::throw_exception((const char *)API_NotUpdatedAnyMore,
-						o.str(),
-						(const char *)"Device_2Impl::command_inout");
+					TANGO_THROW_EXCEPTION(API_NotUpdatedAnyMore, o.str());
 				}
 			}
 		}
@@ -602,9 +594,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 						{
 							TangoSys_OMemStream o;
 							o << "Attribute " << real_names[non_polled[i]] << " not polled" << std::ends;
-							Except::throw_exception((const char *)API_AttrNotPolled,
-									o.str(),
-									(const char *)"Device_2Impl::read_attributes");
+							TANGO_THROW_EXCEPTION(API_AttrNotPolled, o.str());
 						}
 						else
 						{
@@ -624,9 +614,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 							{
 								TangoSys_OMemStream o;
 								o << "Attribute " << real_names[non_polled[i]] << " not polled" << std::ends;
-								Except::throw_exception((const char *)API_AttrNotPolled,
-										o.str(),
-										(const char *)"Device_2Impl::read_attributes");
+								TANGO_THROW_EXCEPTION(API_AttrNotPolled, o.str());
 							}
 						}
 					}
@@ -686,9 +674,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 				catch (std::bad_alloc &)
 				{
 					back = NULL;
-					Except::throw_exception((const char *)API_MemoryAllocation,
-				        		(const char *)"Can't allocate memory in server",
-				        		(const char *)"DeviceImpl_2::read_attributes");
+					TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 				}
 
 //
@@ -727,9 +713,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 
 						TangoSys_OMemStream o;
 						o << "No data available in cache for attribute " << real_names[i] << std::ends;
-						Except::throw_exception((const char *)API_NoDataYet,
-								o.str(),
-								(const char *)"Device_2Impl::read_attributes");
+						TANGO_THROW_EXCEPTION(API_NoDataYet, o.str());
 					}
 
 //
@@ -761,9 +745,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 							TangoSys_OMemStream o;
 							o << "Data in cache for attribute " << real_names[i];
 							o << " not updated any more" << std::ends;
-							Except::throw_exception((const char *)API_NotUpdatedAnyMore,
-									o.str(),
-									(const char *)"Device_2Impl::read_attributes");
+							TANGO_THROW_EXCEPTION(API_NotUpdatedAnyMore, o.str());
 						}
 					}
 
@@ -798,9 +780,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 							o << "Client too old to get data for attribute " << real_names[i].in();
 							o << ".\nPlease, use a client linked with Tango V5";
 							o << " and a device inheriting from Device_3Impl" << std::ends;
-							Except::throw_exception((const char *)API_NotSupportedFeature,
-								o.str(),
-								(const char *)"Device_2Impl::read_attributes");
+							TANGO_THROW_EXCEPTION(API_NotSupportedFeature, o.str());
 						}
 					}
 
@@ -834,9 +814,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 										TangoSys_OMemStream o;
 										o << "Data type for attribute " << real_names[i] << " is DEV_ENCODED.";
 										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << std::ends;
-										Except::throw_exception((const char *)API_NotSupportedFeature,
-												o.str(),
-												(const char *)"Device_2Impl::read_attributes");
+										TANGO_THROW_EXCEPTION(API_NotSupportedFeature, o.str());
 									}
 
 									Polled_2_Live(type,att_val_4.value,(*back)[i].value);
@@ -861,9 +839,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 										TangoSys_OMemStream o;
 										o << "Data type for attribute " << real_names[i] << " is DEV_ENCODED.";
 										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << std::ends;
-										Except::throw_exception((const char *)API_NotSupportedFeature,
-												o.str(),
-												(const char *)"Device_2Impl::read_attributes");
+										TANGO_THROW_EXCEPTION(API_NotSupportedFeature, o.str());
 									}
 
 									Polled_2_Live(type,att_val_3.value,(*back)[i].value);
@@ -889,9 +865,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 										TangoSys_OMemStream o;
 										o << "Data type for attribute " << real_names[i] << " is DEV_ENCODED.";
 										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << std::ends;
-										Except::throw_exception((const char *)API_NotSupportedFeature,
-												o.str(),
-												(const char *)"Device_2Impl::read_attributes");
+										TANGO_THROW_EXCEPTION(API_NotSupportedFeature, o.str());
 									}
 
 									Polled_2_Live(type,att_val.value,(*back)[i].value);
@@ -1059,9 +1033,7 @@ Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 	}
 	catch (std::bad_alloc &)
 	{
-		Except::throw_exception((const char *)API_MemoryAllocation,
-				        (const char *)"Can't allocate memory in server",
-				        (const char *)"Device_2Impl::command_list_query_2");
+		TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 	}
 
 //
@@ -1113,9 +1085,7 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 	}
 	catch (std::bad_alloc &)
 	{
-		Except::throw_exception((const char *)API_MemoryAllocation,
-				        (const char *)"Can't allocate memory in server",
-				        (const char *)"Device_2Impl::command_query_2");
+		TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 	}
 
 //
@@ -1182,9 +1152,7 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 		TangoSys_OMemStream o;
 
 		o << "Command " << command << " not found" << std::ends;
-		Except::throw_exception((const char *)API_CommandNotFound,
-				        o.str(),
-				        (const char *)"Device_2Impl::command_query_2");
+		TANGO_THROW_EXCEPTION(API_CommandNotFound, o.str());
 	}
 
 //
@@ -1276,9 +1244,7 @@ Tango::AttributeConfigList_2 *Device_2Impl::get_attribute_config_2(const Tango::
 	}
 	catch (std::bad_alloc &)
 	{
-		Except::throw_exception((const char *)API_MemoryAllocation,
-				        (const char *)"Can't allocate memory in server",
-				        (const char *)"Device_2Impl::get_attribute_config_2");
+		TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 	}
 
 //
@@ -1401,9 +1367,7 @@ Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* comm
 	{
 		TangoSys_OMemStream o;
 		o << "Command " << cmd_str << " not polled" << std::ends;
-		Except::throw_exception((const char *)API_CmdNotPolled,
-					o.str(),
-					(const char *)"Device_2Impl::command_inout_history_2");
+		TANGO_THROW_EXCEPTION(API_CmdNotPolled, o.str());
 	}
 
 //
@@ -1414,9 +1378,7 @@ Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* comm
 	{
 		TangoSys_OMemStream o;
 		o << "No data available in cache for command " << cmd_str << std::ends;
-		Except::throw_exception((const char *)API_NoDataYet,
-					o.str(),
-					(const char *)"Device_2Impl::command_inout_history_2");
+		TANGO_THROW_EXCEPTION(API_NoDataYet, o.str());
 	}
 
 //
@@ -1438,9 +1400,7 @@ Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* comm
 	}
 	catch (std::bad_alloc &)
 	{
-		Except::throw_exception((const char *)API_MemoryAllocation,
-				        (const char *)"Can't allocate memory in server",
-				        (const char *)"Device_2Impl::command_inout_history_2");
+		TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 	}
 
 //
@@ -1460,9 +1420,7 @@ Tango::DevCmdHistoryList *Device_2Impl::command_inout_history_2(const char* comm
 		}
 		catch (std::bad_alloc &)
 		{
-			Except::throw_exception((const char *)API_MemoryAllocation,
-				        	(const char *)"Can't allocate memory in server",
-				        	(const char *)"Device_2Impl::command_inout_history_2");
+			TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 		}
 
 		if (status_cmd == true)
@@ -1576,9 +1534,7 @@ Tango::DevAttrHistoryList *Device_2Impl::read_attribute_history_2(const char* na
 	{
 		TangoSys_OMemStream o;
 		o << "Attribute " << attr_str << " not polled" << std::ends;
-		Except::throw_exception((const char *)API_AttrNotPolled,
-					o.str(),
-					(const char *)"Device_2Impl::read_attribute_history_2");
+		TANGO_THROW_EXCEPTION(API_AttrNotPolled, o.str());
 	}
 
 //
@@ -1589,9 +1545,7 @@ Tango::DevAttrHistoryList *Device_2Impl::read_attribute_history_2(const char* na
 	{
 		TangoSys_OMemStream o;
 		o << "No data available in cache for attribute " << attr_str << std::ends;
-		Except::throw_exception((const char *)API_NoDataYet,
-					o.str(),
-					(const char *)"Device_2Impl::read_attribute_history_2");
+		TANGO_THROW_EXCEPTION(API_NoDataYet, o.str());
 	}
 
 //
@@ -1618,9 +1572,7 @@ Tango::DevAttrHistoryList *Device_2Impl::read_attribute_history_2(const char* na
 	}
 	catch (std::bad_alloc &)
 	{
-		Except::throw_exception((const char *)API_MemoryAllocation,
-				        (const char *)"Can't allocate memory in server",
-				        (const char *)"Device_2Impl::read_attribute_history_2");
+		TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 	}
 
 //

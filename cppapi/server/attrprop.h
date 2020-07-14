@@ -163,7 +163,7 @@ public:
 		if(is_value == false)
 		{
 			std::string err_msg = "Numeric representation of the property's value (" + str + ") has not been set";
-			Tango::Except::throw_exception(API_AttrPropValueNotSet,err_msg,"AttrProp::get_val",Tango::ERR);
+			TANGO_THROW_EXCEPTION(API_AttrPropValueNotSet, err_msg);
 		}
 		return val;
 	}
@@ -413,7 +413,7 @@ public:
 		if(is_value == false)
 		{
 			std::string err_msg = "Numeric representation of the property's value (" + str + ") has not been set";
-			Tango::Except::throw_exception(API_AttrPropValueNotSet,err_msg,"AttrProp::get_val",Tango::ERR);
+			TANGO_THROW_EXCEPTION(API_AttrPropValueNotSet, err_msg);
 		}
 		return val;
 	}

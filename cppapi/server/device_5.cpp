@@ -181,8 +181,7 @@ Tango::AttributeValueList_5* Device_5Impl::read_attributes_5(const Tango::DevVar
 	}
 	catch (std::bad_alloc &)
 	{
-		Except::throw_exception(API_MemoryAllocation,"Can't allocate memory in server",
-				        "Device_5Impl::read_attributes_5");
+		TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 	}
 
 //
@@ -582,9 +581,7 @@ Tango::AttributeConfigList_5 *Device_5Impl::get_attribute_config_5(const Tango::
 	}
 	catch (std::bad_alloc &)
 	{
-		Except::throw_exception((const char *)API_MemoryAllocation,
-				        (const char *)"Can't allocate memory in server",
-				        (const char *)"Device_5Impl::get_attribute_config_5");
+		TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 	}
 
 //
@@ -746,7 +743,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 	{
 		TangoSys_OMemStream o;
 		o << "Attribute " << attr_str << " not polled" << std::ends;
-		Except::throw_exception(API_AttrNotPolled,o.str(),"Device_5Impl::read_attribute_history_5");
+		TANGO_THROW_EXCEPTION(API_AttrNotPolled, o.str());
 	}
 
 //
@@ -764,7 +761,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 		{
 			std::stringstream ss;
 			ss << "Reading history for attribute " << attr_str << " on device " << get_name() << " failed!";
-			Tango::Except::re_throw_exception(e,API_AttributeFailed,ss.str(),"Device_5Impl::read_attribute_history_5");
+			TANGO_RETHROW_EXCEPTION(e, API_AttributeFailed, ss.str());
 		}
 	}
 	else
@@ -778,7 +775,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 		{
 			TangoSys_OMemStream o;
 			o << "No data available in cache for attribute " << attr_str << std::ends;
-			Except::throw_exception(API_NoDataYet,o.str(),"Device_5Impl::read_attribute_history_5");
+			TANGO_THROW_EXCEPTION(API_NoDataYet, o.str());
 		}
 
 //
@@ -800,9 +797,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 		}
 		catch (std::bad_alloc &)
 		{
-			Except::throw_exception(API_MemoryAllocation,
-								"Can't allocate memory in server",
-								"Device_5Impl::read_attribute_history_5");
+			TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 		}
 
 //
@@ -883,9 +878,7 @@ Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarString
 	}
 	catch (std::bad_alloc &)
 	{
-		Except::throw_exception((const char *)API_MemoryAllocation,
-				        (const char *)"Can't allocate memory in server",
-				        (const char *)"Device_5Impl::get_pipe_config_5");
+		TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 	}
 
 //
@@ -983,7 +976,7 @@ void Device_5Impl::set_pipe_config_5(const Tango::PipeConfigList& new_conf,
 	size_t dev_nb_pipe = device_class->get_pipe_list(device_name_lower).size();
 	if (dev_nb_pipe == 0)
 	{
-		Except::throw_exception(API_PipeNotFound,"The device does not have any pipe","Device_5Impl::set_pipe_config_5");
+		TANGO_THROW_EXCEPTION(API_PipeNotFound, "The device does not have any pipe");
 	}
 
 //
@@ -1094,8 +1087,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 		}
 		catch (std::bad_alloc &)
 		{
-			Except::throw_exception(API_MemoryAllocation,"Can't allocate memory in server",
-									"Device_5Impl::read_pipe_5");
+			TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 		}
 
 //
@@ -1113,7 +1105,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 			std::stringstream o;
 			o << "It is currently not allowed to read pipe " << name;
 
-			Except::throw_exception(API_PipeNotAllowed,o.str(),"Device_5Impl::read_pipe_5");
+			TANGO_THROW_EXCEPTION(API_PipeNotAllowed, o.str());
 		}
 
 //
@@ -1193,7 +1185,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 			std::stringstream o;
 			o << "Value for pipe " << pipe_name << " has not been updated";
 
-			Except::throw_exception(API_PipeValueNotSet,o.str(),"Device_5Impl::read_pipe_5");
+			TANGO_THROW_EXCEPTION(API_PipeValueNotSet, o.str());
 		}
 
 //
@@ -1325,7 +1317,7 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango:
 			std::stringstream o;
 			o << "Pipe " << pipe_name << " is not writable";
 
-			Except::throw_exception(API_PipeNotWritable,o.str(),"Device_5Impl::write_pipe_5");
+			TANGO_THROW_EXCEPTION(API_PipeNotWritable, o.str());
 		}
 
 		WPipe &pi = static_cast<WPipe &>(tmp_pi);
@@ -1345,7 +1337,7 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango:
 			std::stringstream o;
 			o << "It is currently not allowed to write pipe " << pipe_name;
 
-			Except::throw_exception(API_PipeNotAllowed,o.str(),"Device_5Impl::write_pipe_5");
+			TANGO_THROW_EXCEPTION(API_PipeNotAllowed, o.str());
 		}
 
 //

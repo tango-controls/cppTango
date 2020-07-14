@@ -472,7 +472,7 @@ void RootAttRegistry::RootAttConfCallBack::remove_att(std::string &root_att_name
 		std::string desc("Root attribute ");
 		desc = desc + root_att_name + " not found in class map!";
 
-		Except::throw_exception(API_AttrNotFound,desc,"RootAttConfCallBack::remove_att");
+		TANGO_THROW_EXCEPTION(API_AttrNotFound, desc);
 	}
 }
 
@@ -503,7 +503,7 @@ void RootAttRegistry::RootAttConfCallBack::clear_attrdesc(std::string &root_att_
 		std::string desc("Root attribute ");
 		desc = desc + root_att_name + " not found in class map!";
 
-		Except::throw_exception(API_AttrNotFound,desc,"RootAttConfCallBack::clear_attrdesc");
+		TANGO_THROW_EXCEPTION(API_AttrNotFound, desc);
 	}
 }
 
@@ -692,7 +692,7 @@ void RootAttRegistry::add_root_att(std::string &device_name,std::string &att_nam
 
 			std::string desc("The root device ");
 			desc = desc + device_name + " is not defined in database";
-			Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
+			TANGO_THROW_EXCEPTION(API_AttrNotAllowed, desc);
 		}
 		int idl_vers = the_dev->get_idl_version();
 		if (idl_vers > 0 && idl_vers < MIN_IDL_CONF5)
@@ -702,7 +702,7 @@ void RootAttRegistry::add_root_att(std::string &device_name,std::string &att_nam
 
 			std::string desc("The root device ");
 			desc = desc + device_name + " is too old to support forwarded attribute. It requires IDL >= 5";
-			Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
+			TANGO_THROW_EXCEPTION(API_AttrNotAllowed, desc);
 		}
 		dps.insert({device_name,the_dev});
 	}
@@ -759,7 +759,7 @@ void RootAttRegistry::add_root_att(std::string &device_name,std::string &att_nam
 			map_event_id.insert({a_name,event_id});
 
             cbp.update_err_kind(a_name,attdesc->get_err_kind());
-			Tango::Except::re_throw_exception(e,API_DummyException,"nothing","RootAttRegistry::add_root_att");
+			TANGO_RETHROW_EXCEPTION(e, API_DummyException, "nothing");
 		}
 	}
 	else
@@ -772,7 +772,7 @@ void RootAttRegistry::add_root_att(std::string &device_name,std::string &att_nam
 
 			std::string desc("It's not supported to have in the same device server process two times the same root attribute (");
 			desc = desc + a_name + ")";
-			Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
+			TANGO_THROW_EXCEPTION(API_AttrNotAllowed, desc);
 		}
 	}
 }
@@ -892,7 +892,7 @@ DeviceProxy *RootAttRegistry::get_root_att_dp(std::string &device_name)
 	{
 		std::stringstream ss;
 		ss << device_name << " not registered in map of root attribute devices!";
-		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::get_root_att_dp");
+		TANGO_THROW_EXCEPTION(API_FwdAttrInconsistency, ss.str());
 	}
 
 	return ite->second;
@@ -923,7 +923,7 @@ std::string RootAttRegistry::RootAttConfCallBack::get_local_att_name(const std::
 	{
 		std::stringstream ss;
 		ss << root_name << " not registered in map of root attribute!";
-		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::get_local_att_name");
+		TANGO_THROW_EXCEPTION(API_FwdAttrInconsistency, ss.str());
 	}
 
 	std::string loc_name = ite->second.local_name + '/' + ite->second.local_att_name;
@@ -955,7 +955,7 @@ DeviceImpl *RootAttRegistry::RootAttConfCallBack::get_local_dev(std::string &loc
 	{
 		std::stringstream ss;
 		ss << local_dev_name << " not registered in map of local device!";
-		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::get_local_dev");
+		TANGO_THROW_EXCEPTION(API_FwdAttrInconsistency, ss.str());
 	}
 	return ite->second;
 }
@@ -988,7 +988,7 @@ void RootAttRegistry::RootAttConfCallBack::update_label(std::string &root_name,s
 	{
 		std::stringstream ss;
 		ss << root_name << " not registered in map of root attribute!";
-		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::update_label");
+		TANGO_THROW_EXCEPTION(API_FwdAttrInconsistency, ss.str());
 	}
 }
 
@@ -1190,7 +1190,7 @@ void RootAttRegistry::unsubscribe_user_event(std::string &dev_name,std::string &
 	{
 		std::stringstream ss;
 		ss << f_ev_name << " not found in map of user event on root attribute!";
-		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::unsubscribe_user_event");
+		TANGO_THROW_EXCEPTION(API_FwdAttrInconsistency, ss.str());
 	}
 
 //

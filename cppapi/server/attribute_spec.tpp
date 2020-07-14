@@ -67,9 +67,7 @@ template <>
 inline void Attribute::set_min_alarm(const Tango::DevEncoded &)
 {
 	std::string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
-	Except::throw_exception((const char *)API_MethodArgument,
-				  (const char *)err_msg.c_str(),
-				  (const char *)"Attribute::set_min_alarm()");
+	TANGO_THROW_EXCEPTION(API_MethodArgument, err_msg.c_str());
 }
 
 template <>
@@ -260,9 +258,7 @@ template <>
 inline void Attribute::set_max_alarm(const Tango::DevEncoded &)
 {
 	std::string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
-	Except::throw_exception((const char *)API_MethodArgument,
-				  (const char *)err_msg.c_str(),
-				  (const char *)"Attribute::set_max_alarm()");
+	TANGO_THROW_EXCEPTION(API_MethodArgument, err_msg.c_str());
 }
 
 template <>
@@ -453,9 +449,7 @@ template <>
 inline void Attribute::set_min_warning(const Tango::DevEncoded &)
 {
 	std::string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
-	Except::throw_exception((const char *)API_MethodArgument,
-				  (const char *)err_msg.c_str(),
-				  (const char *)"Attribute::set_min_warning()");
+	TANGO_THROW_EXCEPTION(API_MethodArgument, err_msg.c_str());
 }
 
 template <>
@@ -646,9 +640,7 @@ template <>
 inline void Attribute::set_max_warning(const Tango::DevEncoded &)
 {
 	std::string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
-	Except::throw_exception((const char *)API_MethodArgument,
-				  (const char *)err_msg.c_str(),
-				  (const char *)"Attribute::set_max_warning()");
+	TANGO_THROW_EXCEPTION(API_MethodArgument, err_msg.c_str());
 }
 
 template <>

@@ -871,7 +871,7 @@ private:
     inline void check_length(const unsigned int nb_data, unsigned long x, unsigned long y)
     {
         if ((!y && nb_data != x ) || (y && nb_data != (x * y)))
-            Except::throw_exception(API_AttrIncorrectDataNumber,"Incorrect data number","WAttribute::check_written_value()");
+            TANGO_THROW_EXCEPTION(API_AttrIncorrectDataNumber, "Incorrect data number");
     }
     template<typename T1, typename T2>
     void check_min_max(const unsigned int,const T1 &,const T2 &,const T2 &);

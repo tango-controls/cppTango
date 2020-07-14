@@ -1101,8 +1101,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 {
 	if ((device == NULL) || (callback == NULL))
 	{
-		EventSystemExcept::throw_exception(API_InvalidArgs,
-                       	"Device or callback pointer NULL","EventConsumer::subscribe_event()");
+		TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_InvalidArgs, "Device or callback pointer NULL");
 	}
 
 	return (subscribe_event (device, attribute, event, callback, NULL, filters, stateless));
@@ -1137,9 +1136,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 {
 	if ((device == NULL) || (event_queue_size < 0))
 	{
-		EventSystemExcept::throw_exception(API_InvalidArgs,
-                       	"Device pointer is NULL or the event queue size is invalid",
-                       	"EventConsumer::subscribe_event()");
+		TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_InvalidArgs, "Device pointer is NULL or the event queue size is invalid");
 	}
 
 	// create an event queue object
@@ -1179,9 +1176,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 	std::string event_name;
 	if (event == QUALITY_EVENT)
 	{
-        EventSystemExcept::throw_exception(API_InvalidArgs,
-            "The quality change event does not exist any more. A change event is fired on a quality change!",
-            "EventConsumer::subscribe_event()");
+        TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_InvalidArgs, "The quality change event does not exist any more. A change event is fired on a quality change!");
 	}
     else
         event_name = EventName[event];
@@ -1199,9 +1194,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
         {
             if (stateless == false)
             {
-                EventSystemExcept::throw_exception(API_InvalidArgs,
-                "When subscribing to event within a event callback, only stateless subscription is allowed",
-                "EventConsumer::subscribe_event()");
+                TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_InvalidArgs, "When subscribing to event within a event callback, only stateless subscription is allowed");
             }
 
             subscribe_event_id++;
@@ -1293,8 +1286,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 {
 	if ((device == NULL) || (callback == NULL) || (event != INTERFACE_CHANGE_EVENT))
 	{
-		EventSystemExcept::throw_exception(API_InvalidArgs,
-                       	"Device,callback pointer NULL or unsupported event type","EventConsumer::subscribe_event()");
+		TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_InvalidArgs, "Device,callback pointer NULL or unsupported event type");
 	}
 
 	std::vector<std::string> filters;
@@ -1309,8 +1301,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 {
 	if ((device == NULL) || (event != INTERFACE_CHANGE_EVENT))
 	{
-		EventSystemExcept::throw_exception(API_InvalidArgs,
-                       	"Device NULL or unsupported event type","EventConsumer::subscribe_event()");
+		TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_InvalidArgs, "Device NULL or unsupported event type");
 	}
 
 	std::vector<std::string> filters;
@@ -1458,7 +1449,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 			TangoSys_OMemStream o;
 			o << "Can't subscribe to event for device " << device_name << "\n";
 			o << "Check that device server is running..." << std::ends;
-			Except::throw_exception(API_CantConnectToDevice,o.str(),"EventConsumer::connect_event()");
+			TANGO_THROW_EXCEPTION(API_CantConnectToDevice, o.str());
 		}
 	}
 	else
@@ -1469,7 +1460,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 			TangoSys_OMemStream o;
 			o << "Can't subscribe to event for device " << device_name << "\n";
 			o << "Corrupted internal map. Please report bug" << std::ends;
-			Except::throw_exception(API_BadConfigurationProperty,o.str(),"EventConsumer::connect_event()");
+			TANGO_THROW_EXCEPTION(API_BadConfigurationProperty, o.str());
 		}
 		const EventChannelStruct &evt_ch = evt_it->second;
 		{
@@ -1522,8 +1513,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 					o << "Device server for device " << device_name;
 					o << " is too old to generate event in a multi TANGO_HOST environment. Please, use Tango >= 7.1" << std::ends;
 
-					EventSystemExcept::throw_exception(API_DSFailedRegisteringEvent,o.str(),
-                      				"EventConsumer::connect_event()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_DSFailedRegisteringEvent, o.str());
 				}
 			}
 		}
@@ -1536,9 +1526,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
         if (reason == API_CommandNotFound)
             throw;
         else
-            EventSystemExcept::re_throw_exception(e,API_DSFailedRegisteringEvent,
-                       				"Device server send exception while trying to register event",
-                      				"EventConsumer::connect_event()");
+            TANGO_RETHROW_API_EXCEPTION(EventSystemExcept, e, API_DSFailedRegisteringEvent, "Device server send exception while trying to register event");
 	}
 
 //
@@ -1634,9 +1622,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 			TangoSys_OMemStream o;
 
 			o << "Failed to connect to event channel for device " << device_name << std::ends;
-			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
-                       				o.str(),
-                       				(const char*)"EventConsumer::connect_event()");
+			TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_NotificationServiceFailed, o.str());
 		}
 
 		if (evt_it == channel_map.end())
@@ -1774,9 +1760,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
         TangoSys_OMemStream o;
         o << "Failed to connect to event channel for device " << device_name
           << "\nCorrupted internal map: event callback already exists. Please report bug!" << std::ends;
-        EventSystemExcept::throw_exception(API_NotificationServiceFailed,
-                                o.str(),
-								"EventConsumer::connect_event()");
+        TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_NotificationServiceFailed, o.str());
     }
     iter = ret.first;
 
@@ -1831,9 +1815,7 @@ void EventConsumer::unsubscribe_event(int event_id)
 {
 	if (event_id == 0)
 	{
-		EventSystemExcept::throw_exception((const char*)API_EventNotFound,
-			(const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
-			(const char*)"EventConsumer::unsubscribe_event()");
+		TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to unsubscribe event, the event id specified does not correspond with any known one");
 	}
 
 	std::map<std::string,EventCallBackStruct>::iterator epos;
@@ -1928,9 +1910,7 @@ void EventConsumer::unsubscribe_event(int event_id)
 					    }
                         catch (...)
                         {
-                            EventSystemExcept::throw_exception((const char*)API_EventNotFound,
-                                (const char*)"Failed to unsubscribe event, caught exception while calling remove_filter() or destroy() (hint: check the Notification daemon is running ",
-                                (const char*)"EventConsumer::unsubscribe_event()");
+                            TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to unsubscribe event, caught exception while calling remove_filter() or destroy() (hint: check the Notification daemon is running ");
                         }
 					}
 					else
@@ -1994,9 +1974,7 @@ void EventConsumer::unsubscribe_event(int event_id)
                                         }
                                         catch (...)
                                         {
-                                            EventSystemExcept::throw_exception((const char*)API_EventNotFound,
-                                                (const char*)"Failed to unsubscribe event, caught exception while calling remove_filter() or destroy() on the heartbeat filter (hint: check the Notification daemon is running ",
-                                                (const char*)"EventConsumer::unsubscribe_event()");
+                                            TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to unsubscribe event, caught exception while calling remove_filter() or destroy() on the heartbeat filter (hint: check the Notification daemon is running ");
                                         }
 								    }
 								    else
@@ -2060,9 +2038,7 @@ void EventConsumer::unsubscribe_event(int event_id)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
-			(const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
-			(const char*)"EventConsumer::unsubscribe_event()");
+	TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to unsubscribe event, the event id specified does not correspond with any known one");
 }
 
 
@@ -2209,9 +2185,7 @@ void EventConsumer::get_events (int event_id, EventDataList &event_list)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-					        o.str(),
-					        (const char *)"EventConsumer::get_events()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2241,9 +2215,7 @@ void EventConsumer::get_events (int event_id, EventDataList &event_list)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-				        o.str(),
-				        (const char *)"EventConsumer::get_events()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2251,9 +2223,7 @@ void EventConsumer::get_events (int event_id, EventDataList &event_list)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
-			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
-			(const char*)"EventConsumer::get_events()");
+	TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to get event, the event id specified does not correspond with any known one");
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2307,9 +2277,7 @@ void EventConsumer::get_events (int event_id, AttrConfEventDataList &event_list)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-					        o.str(),
-					        (const char *)"EventConsumer::get_events()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2339,9 +2307,7 @@ void EventConsumer::get_events (int event_id, AttrConfEventDataList &event_list)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-				        o.str(),
-				        (const char *)"EventConsumer::get_events()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2349,9 +2315,7 @@ void EventConsumer::get_events (int event_id, AttrConfEventDataList &event_list)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
-			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
-			(const char*)"EventConsumer::get_events()");
+	TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to get event, the event id specified does not correspond with any known one");
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2405,9 +2369,7 @@ void EventConsumer::get_events (int event_id, DataReadyEventDataList &event_list
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-					        o.str(),
-					        (const char *)"EventConsumer::get_events()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2437,9 +2399,7 @@ void EventConsumer::get_events (int event_id, DataReadyEventDataList &event_list
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-				        o.str(),
-				        (const char *)"EventConsumer::get_events()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2447,9 +2407,7 @@ void EventConsumer::get_events (int event_id, DataReadyEventDataList &event_list
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
-			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
-			(const char*)"EventConsumer::get_events()");
+	TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to get event, the event id specified does not correspond with any known one");
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2503,8 +2461,7 @@ void EventConsumer::get_events (int event_id, DevIntrChangeEventDataList &event_
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception(API_EventQueues,
-					        o.str(),"EventConsumer::get_events()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2534,8 +2491,7 @@ void EventConsumer::get_events (int event_id, DevIntrChangeEventDataList &event_
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception(API_EventQueues,
-				        o.str(),"EventConsumer::get_events()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2543,9 +2499,7 @@ void EventConsumer::get_events (int event_id, DevIntrChangeEventDataList &event_
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception(API_EventNotFound,
-			"Failed to get event, the event id specified does not correspond with any known one",
-			"EventConsumer::get_events()");
+	TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to get event, the event id specified does not correspond with any known one");
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2599,8 +2553,7 @@ void EventConsumer::get_events (int event_id, PipeEventDataList &event_list)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception(API_EventQueues,
-					        o.str(),"EventConsumer::get_events()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2630,8 +2583,7 @@ void EventConsumer::get_events (int event_id, PipeEventDataList &event_list)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception(API_EventQueues,
-				        o.str(),"EventConsumer::get_events()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2639,9 +2591,7 @@ void EventConsumer::get_events (int event_id, PipeEventDataList &event_list)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception(API_EventNotFound,
-			"Failed to get event, the event id specified does not correspond with any known one",
-			"EventConsumer::get_events()");
+	TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to get event, the event id specified does not correspond with any known one");
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2696,9 +2646,7 @@ void EventConsumer::get_events (int event_id, CallBack *cb)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-					        o.str(),
-					        (const char *)"EventConsumer::get_events()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2728,9 +2676,7 @@ void EventConsumer::get_events (int event_id, CallBack *cb)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-				        o.str(),
-				        (const char *)"EventConsumer::get_events()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2738,9 +2684,7 @@ void EventConsumer::get_events (int event_id, CallBack *cb)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
-			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
-			(const char*)"EventConsumer::get_events()");
+	TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to get event, the event id specified does not correspond with any known one");
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2789,9 +2733,7 @@ int  EventConsumer::event_queue_size(int event_id)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-					        o.str(),
-					        (const char *)"EventConsumer::event_queue_size()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2821,9 +2763,7 @@ int  EventConsumer::event_queue_size(int event_id)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-				        o.str(),
-				        (const char *)"EventConsumer::event_queue_size()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2831,9 +2771,7 @@ int  EventConsumer::event_queue_size(int event_id)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
-			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
-			(const char*)"EventConsumer::event_queue_size()");
+	TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to get event, the event id specified does not correspond with any known one");
 
 	// Should never reach here. To make compiler happy
 
@@ -2887,9 +2825,7 @@ bool EventConsumer::is_event_queue_empty(int event_id)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-					        o.str(),
-					        (const char *)"EventConsumer::is_event_queue_empty()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2918,9 +2854,7 @@ bool EventConsumer::is_event_queue_empty(int event_id)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-				        o.str(),
-				        (const char *)"EventConsumer::is_event_queue_empty()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -2928,9 +2862,7 @@ bool EventConsumer::is_event_queue_empty(int event_id)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
-			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
-			(const char*)"EventConsumer::is_event_queue_empty()");
+	TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to get event, the event id specified does not correspond with any known one");
 
 	// Should never reach here. To make compiler happy
 
@@ -2984,9 +2916,7 @@ TimeVal EventConsumer::get_last_event_date(int event_id)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-				        	o.str(),
-				        	(const char *)"EventConsumer::get_last_event_date()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -3015,9 +2945,7 @@ TimeVal EventConsumer::get_last_event_date(int event_id)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << std::ends;
-					EventSystemExcept::throw_exception((const char *)API_EventQueues,
-				        o.str(),
-				        (const char *)"EventConsumer::get_last_event_date()");
+					TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventQueues, o.str());
 				}
 			}
 		}
@@ -3025,9 +2953,7 @@ TimeVal EventConsumer::get_last_event_date(int event_id)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
-			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
-			(const char*)"EventConsumer::get_last_event_date()");
+	TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to get event, the event id specified does not correspond with any known one");
 
 	// Should never reach here. To make compiler happy
 
@@ -3416,9 +3342,7 @@ ChannelType EventConsumer::get_event_system_for_event_id(int event_id)
 
 	if (event_id == 0)
 	{
-		EventSystemExcept::throw_exception((const char*)API_EventNotFound,
-			(const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
-			(const char*)"EventConsumer::get_event_system_for_event_id()");
+		TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to unsubscribe event, the event id specified does not correspond with any known one");
 	}
 
     bool found = false;
@@ -3437,9 +3361,7 @@ ChannelType EventConsumer::get_event_system_for_event_id(int event_id)
                     TangoSys_OMemStream o;
                     o << "Can't unsubscribe to event with id " << event_id << "\n";
                     o << "Corrupted internal map. Please report bug" << std::ends;
-                    Except::throw_exception((const char *)API_BadConfigurationProperty,
-									o.str(),
-									(const char *)"EventConsumer::get_event_system_for_event_id()");
+                    TANGO_THROW_EXCEPTION(API_BadConfigurationProperty, o.str());
                 }
                 EventChannelStruct &evt_ch = evt_it->second;
                 ret = evt_ch.channel_type;
@@ -3473,9 +3395,7 @@ ChannelType EventConsumer::get_event_system_for_event_id(int event_id)
 
     if (found == false)
     {
-        EventSystemExcept::throw_exception((const char*)API_EventNotFound,
-			(const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
-			(const char*)"EventConsumer::get_event_system_for_event_id()");
+        TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_EventNotFound, "Failed to unsubscribe event, the event id specified does not correspond with any known one");
     }
 
     return ret;

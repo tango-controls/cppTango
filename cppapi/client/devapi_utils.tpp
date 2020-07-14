@@ -58,9 +58,7 @@ void DeviceProxy::from_hist_2_AttHistory(T &hist,std::vector<DeviceAttributeHist
 		(hist->w_dims.length() != hist->w_dims_array.length()) ||
 		(hist->errors.length() != hist->errors_array.length()))
 	{
-		Tango::Except::throw_exception((const char *)API_WrongHistoryDataBuffer,
-									   (const char *)"Data buffer received from server is not valid !",
-									   (const char *)"DeviceProxy::from_hist4_2_AttHistory");
+		TANGO_THROW_EXCEPTION(API_WrongHistoryDataBuffer, "Data buffer received from server is not valid !");
 	}
 
 //

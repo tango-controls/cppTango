@@ -124,9 +124,7 @@ void AttrProperty::convert(const char *prop_name)
 	{
 	    std::stringstream ss;
 	    ss << "Can't convert property value for property " << prop_name;
-		Except::throw_exception(API_AttrOptProp,
-				      ss.str(),
-				      "AttrProperty::convert");
+		TANGO_THROW_EXCEPTION(API_AttrOptProp, ss.str());
 	}
 }
 
@@ -232,9 +230,7 @@ void MultiClassAttribute::init_class_attribute(std::string &class_name,long base
 			TangoSys_OMemStream o;
 			o << "Can't get class attribute properties for class " << class_name << std::ends;
 
-			Except::re_throw_exception(e,(const char *)API_DatabaseAccess,
-				                o.str(),
-				                (const char *)"MultiClassAttribute::init_class_attribute");
+			TANGO_RETHROW_EXCEPTION(e, API_DatabaseAccess, o.str());
 		}
 
 //
@@ -286,9 +282,7 @@ void MultiClassAttribute::init_class_attribute(std::string &class_name,long base
 					TangoSys_OMemStream o;
 					o << "Attribute " << attr_name << " not found in class attribute(s)" << std::ends;
 
-					Except::throw_exception((const char *)API_AttrNotFound,
-							        o.str(),
-							        (const char *)"MultiClassAttribute::init_class_attribute");
+					TANGO_THROW_EXCEPTION(API_AttrNotFound, o.str());
 				}
 
 //
@@ -343,8 +337,7 @@ Attr &MultiClassAttribute::get_attr(std::string &attr_name)
 		TangoSys_OMemStream o;
 		o << "Attribute " << attr_name << " not found in class attribute(s)" << std::ends;
 
-		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
-				      (const char *)"MultiClassAttribute::get_attr");
+		TANGO_THROW_EXCEPTION(API_AttrOptProp, o.str());
 	}
 
 	return *(*pos);

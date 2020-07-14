@@ -283,9 +283,7 @@ Tango::DevVarStringArray *SubDevDiag::get_sub_devices()
 
 	catch (std::bad_alloc &)
 	{
-		Except::throw_exception((const char *)API_MemoryAllocation,
-				        (const char *)"Can't allocate memory in server",
-				        (const char *)"SubDevDiag::get_sub_devices");
+		TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 	}
 
 	// Should never reach here. To make compiler happy
