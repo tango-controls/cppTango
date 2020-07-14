@@ -1743,7 +1743,7 @@ void DeviceProxy::real_constructor(std::string &name, bool need_check_acc)
         }
         catch (Tango::DevFailed &dfe)
         {
-            if (strcmp(dfe.errors[0].reason, "DB_DeviceNotDefined") == 0)
+            if (strcmp(dfe.errors[0].reason, DB_DeviceNotDefined) == 0)
             {
                 delete db_dev;
                 TangoSys_OMemStream desc;
@@ -2822,7 +2822,7 @@ std::string DeviceProxy::alias()
         }
         else
         {
-            Tango::Except::throw_exception((const char *) "DB_AliasNotDefined",
+            Tango::Except::throw_exception((const char *) DB_AliasNotDefined,
                                            (const char *) "No alias found for your device",
                                            (const char *) "DeviceProxy::alias()");
         }

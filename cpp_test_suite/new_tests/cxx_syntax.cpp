@@ -256,7 +256,7 @@ public:
 		DeviceProxy *device2 = nullptr;
 		TS_ASSERT_THROWS_NOTHING(device2 = new DeviceProxy(device2_name));
 		TS_ASSERT_THROWS_ASSERT(device2->alias(), Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "DB_AliasNotDefined"
+						TS_ASSERT(string(e.errors[0].reason.in()) == DB_AliasNotDefined
 								&& e.errors[0].severity == Tango::ERR));
 		delete device2;
 	}

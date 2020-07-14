@@ -626,7 +626,7 @@ void AttributeProxy::parse_name(std::string &full_name)
 				}
 				catch (DevFailed &dfe)
 				{
-					if (strcmp(dfe.errors[0].reason,"DB_SQLError") == 0)
+					if (strcmp(dfe.errors[0].reason,DB_SQLError) == 0)
 					{
 						TangoSys_OMemStream desc;
 						desc << "Can't connect to attribute with alias " << device_name << std::ends;
@@ -648,7 +648,7 @@ void AttributeProxy::parse_name(std::string &full_name)
 				}
 				catch (DevFailed &dfe)
 				{
-					if (strcmp(dfe.errors[0].reason,"DB_SQLError") == 0)
+					if (strcmp(dfe.errors[0].reason,DB_SQLError) == 0)
 					{
 						TangoSys_OMemStream desc;
 						desc << "Can't connect to attribute with alias " << device_name << std::ends;
@@ -671,7 +671,7 @@ void AttributeProxy::parse_name(std::string &full_name)
 			}
 			catch (DevFailed &dfe)
 			{
-				if (strcmp(dfe.errors[0].reason,"DB_SQLError") == 0)
+				if (strcmp(dfe.errors[0].reason,DB_SQLError) == 0)
 				{
 					TangoSys_OMemStream desc;
 					desc << "Can't connect to attribute with alias " << device_name << std::ends;

@@ -207,7 +207,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
                 catch (Tango::DevFailed &e)
                 {
                     std::string reason(e.errors[0].reason.in());
-                    if (reason == "DB_DeviceNotDefined")
+                    if (reason == DB_DeviceNotDefined)
                     {
                         std::string::size_type pos = factory_name.find('.');
                         if (pos != std::string::npos)

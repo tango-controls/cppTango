@@ -470,6 +470,13 @@ const char* const API_WrongNumberOfArgs            = "API_WrongNumberOfArgs";
 const char* const API_ZmqFailed                    = "API_ZmqFailed";
 const char* const API_ZmqInitFailed                = "API_ZmqInitFailed";
 
+const char* const DB_AliasNotDefined        = "DB_AliasNotDefined";
+const char* const DB_ClassNotFoundInCache   = "DB_ClassNotFoundInCache";
+const char* const DB_DeviceNotDefined       = "DB_DeviceNotDefined";
+const char* const DB_DeviceNotFoundInCache  = "DB_DeviceNotFoundInCache";
+const char* const DB_SQLError               = "DB_SQLError";
+const char* const DB_TooOldStoredProc       = "DB_TooOldStoredProc";
+
 //
 // Many, many typedef
 //
