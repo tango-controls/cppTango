@@ -138,7 +138,7 @@ void AttributeProxy::real_constructor (std::string &name)
 			TangoSys_OMemStream desc;
 			desc << "Attribute " << attr_name << " is not supported by device " << device_name << std::ends;
 
-			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedAttribute",
+			ApiWrongNameExcept::throw_exception((const char*)API_UnsupportedAttribute,
 						desc.str(),
 						(const char*)"AttributeProxy::real_constructor()");
 		}
@@ -218,7 +218,7 @@ void AttributeProxy::ctor_from_dp(const DeviceProxy *dev_ptr,std::string &att_na
 			TangoSys_OMemStream desc;
 			desc << "Attribute " << attr_name << " is not supported by device " << device_name << std::ends;
 
-			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedAttribute",
+			ApiWrongNameExcept::throw_exception((const char*)API_UnsupportedAttribute,
 						desc.str(),
 						(const char*)"AttributeProxy::ctor_from_dp()");
 		}
@@ -417,7 +417,7 @@ void AttributeProxy::parse_name(std::string &full_name)
 			TangoSys_OMemStream desc;
 			desc << protocol;
 			desc << " protocol is an unsupported protocol" << std::ends;
-			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedProtocol",
+			ApiWrongNameExcept::throw_exception((const char*)API_UnsupportedProtocol,
 						desc.str(),
 						(const char*)"AttributeProxy::parse_name()");
 		}
@@ -449,7 +449,7 @@ void AttributeProxy::parse_name(std::string &full_name)
 			TangoSys_OMemStream desc;
 			desc << mod;
 			desc << " modifier is an unsupported db modifier" << std::ends;
-			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedDBaseModifier",
+			ApiWrongNameExcept::throw_exception((const char*)API_UnsupportedDBaseModifier,
 						desc.str(),
 						(const char*)"AttributeProxy::parse_name()");
 		}
@@ -631,7 +631,7 @@ void AttributeProxy::parse_name(std::string &full_name)
 						TangoSys_OMemStream desc;
 						desc << "Can't connect to attribute with alias " << device_name << std::ends;
 						ApiConnExcept::re_throw_exception(dfe,
-								(const char *)"API_AliasNotDefined",
+								(const char *)API_AliasNotDefined,
 					 			desc.str(),
 								(const char *)"AttributeProxy::parse_name");
 					}
@@ -653,7 +653,7 @@ void AttributeProxy::parse_name(std::string &full_name)
 						TangoSys_OMemStream desc;
 						desc << "Can't connect to attribute with alias " << device_name << std::ends;
 						ApiConnExcept::re_throw_exception(dfe,
-								(const char *)"API_AliasNotDefined",
+								(const char *)API_AliasNotDefined,
 					 			desc.str(),
 								(const char *)"AttributeProxy::parse_name");
 					}
@@ -676,7 +676,7 @@ void AttributeProxy::parse_name(std::string &full_name)
 					TangoSys_OMemStream desc;
 					desc << "Can't connect to attribute with alias " << device_name << std::ends;
 					ApiConnExcept::re_throw_exception(dfe,
-							(const char *)"API_AliasNotDefined",
+							(const char *)API_AliasNotDefined,
 					 		desc.str(),
 							(const char *)"AttributeProxy::parse_name");
 				}
@@ -1162,7 +1162,7 @@ void AttributeProxy::set_config(AttributeInfo &dev_attr_info)
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute set_attribute_config on device " << device_name << std::ends;
 		ApiCommExcept::re_throw_exception(ce,
-					      (const char*)"API_CommunicationFailed",
+					      (const char*)API_CommunicationFailed,
                         		      desc.str(),
 					      (const char*)"AttributeProxy::set_attribute_config()");
 	}
@@ -1183,7 +1183,7 @@ void AttributeProxy::set_config(AttributeInfoEx &dev_attr_info)
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute set_attribute_config on device " << device_name << std::ends;
 		ApiCommExcept::re_throw_exception(ce,
-					      (const char*)"API_CommunicationFailed",
+					      (const char*)API_CommunicationFailed,
                         		      desc.str(),
 					      (const char*)"AttributeProxy::set_attribute_config()");
 	}

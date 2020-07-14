@@ -172,7 +172,7 @@ public: \
 		errors[0].desc = Tango::string_dup(tmp);\
 		Tango::Except::the_mutex.unlock(); \
 		errors[0].severity = sever;\
-		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].reason = Tango::string_dup(API_CorbaException);\
 		errors[0].origin = Tango::string_dup(origin);\
 		errors[1].desc = Tango::string_dup(desc.c_str());\
 		errors[1].severity = sever;\
@@ -193,7 +193,7 @@ public: \
 		errors[0].desc = Tango::string_dup(tmp);\
 		Tango::Except::the_mutex.unlock(); \
 		errors[0].severity = sever;\
-		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].reason = Tango::string_dup(API_CorbaException);\
 		errors[0].origin = Tango::string_dup(origin);\
 		errors[1].desc = Tango::string_dup(desc);\
 		errors[1].severity = sever;\
@@ -215,7 +215,7 @@ public: \
 		errors[0].desc = Tango::string_dup(tmp);\
 		Tango::Except::the_mutex.unlock(); \
 		errors[0].severity = sever;\
-		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].reason = Tango::string_dup(API_CorbaException);\
 		errors[0].origin = Tango::string_dup(origin);\
 		errors[1].desc = Tango::string_dup(desc.c_str());\
 		errors[1].severity = sever;\
@@ -235,7 +235,7 @@ public: \
 		errors[0].desc = Tango::string_dup(tmp);\
 		Tango::Except::the_mutex.unlock(); \
 		errors[0].severity = sever;\
-		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].reason = Tango::string_dup(API_CorbaException);\
 		errors[0].origin = Tango::string_dup(origin.c_str());\
 		errors[1].desc = Tango::string_dup(desc.c_str());\
 		errors[1].severity = sever;\
@@ -256,7 +256,7 @@ public: \
 		errors[0].desc = Tango::string_dup(tmp);\
 		Tango::Except::the_mutex.unlock(); \
 		errors[0].severity = sever;\
-		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].reason = Tango::string_dup(API_CorbaException);\
 		errors[0].origin = Tango::string_dup(origin);\
 		errors[1].desc = Tango::string_dup(desc);\
 		errors[1].severity = sever;\
@@ -345,7 +345,7 @@ public: \
 		errors.length(2);\
 		errors[0].desc = Tango::string_dup(CORBA_error_desc);\
 		errors[0].severity = sever;\
-		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].reason = Tango::string_dup(API_CorbaException);\
 		errors[0].origin = Tango::string_dup(origin);\
 		errors[1].desc = Tango::string_dup(desc);\
 		errors[1].severity = sever;\
@@ -364,7 +364,7 @@ public: \
 		errors.length(2);\
 		errors[0].desc = Tango::string_dup(CORBA_error_desc);\
 		errors[0].severity = sever;\
-		errors[0].reason = Tango::string_dup("API_CorbaException");\
+		errors[0].reason = Tango::string_dup(API_CorbaException);\
 		errors[0].origin = Tango::string_dup(origin);\
 		errors[1].desc = Tango::string_dup(desc.c_str());\
 		errors[1].severity = sever;\
@@ -421,7 +421,7 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 			TangoSys_OMemStream ori; \
 			ori << CLASS << ":" << NAME << std::ends; \
 			ApiCommExcept::re_throw_exception(E, \
-						  (const char *)"API_DeviceTimedOut", \
+						  (const char *)API_DeviceTimedOut, \
 						  desc.str(), ori.str());\
 		}\
 	} \
@@ -439,7 +439,7 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 		TangoSys_OMemStream ori; \
 		ori << CLASS << ":" << NAME << std::ends; \
 		ApiCommExcept::re_throw_exception(E, \
-						   (const char*)"API_CommunicationFailed", \
+						   (const char*)API_CommunicationFailed, \
                         			   desc.str(),ori.str()); \
 	}
 
@@ -471,7 +471,7 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 			desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name(); \
 			desc << ", command " << command << std::ends; \
 			ApiCommExcept::re_throw_exception(E, \
-						  (const char *)"API_DeviceTimedOut", \
+						  (const char *)API_DeviceTimedOut, \
 						  desc.str(), \
 						  (const char *)"Connection::command_inout()"); \
 		}\
@@ -495,7 +495,7 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 		desc << "Failed to execute command_inout on device " << dev_name(); \
 		desc << ", command " << command << std::ends; \
 		ApiCommExcept::re_throw_exception(E, \
-				   (const char*)"API_CommunicationFailed", \
+				   (const char*)API_CommunicationFailed, \
                     		   desc.str(), \
 				   (const char*)"Connection::command_inout()"); \
 	}

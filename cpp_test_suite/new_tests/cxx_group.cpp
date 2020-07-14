@@ -377,7 +377,7 @@ public:
 		dd << 75.0;
 		arguments.push_back(dd);
 		TS_ASSERT_THROWS_ASSERT(group->command_inout_asynch("IODouble",arguments), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_MethodArgument"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_MethodArgument
 						&& e.errors[0].severity == Tango::ERR));
 	}
 
@@ -389,7 +389,7 @@ public:
 		arguments[0] = 15.0;
 		arguments[1] = 25.0;
 		TS_ASSERT_THROWS_ASSERT(group->command_inout("IODouble",arguments), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_MethodArgument"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_MethodArgument
 						&& e.errors[0].severity == Tango::ERR));
 	}
 
@@ -403,13 +403,13 @@ public:
 		TS_ASSERT(crl.has_failed() == true);
 		TS_ASSERT(crl.size() == 3);
 		TS_ASSERT_THROWS_ASSERT(crl[0] >> db, Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_ThrowException"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_ThrowException
 						&& e.errors[0].severity == Tango::ERR));
 		TS_ASSERT_THROWS_ASSERT(crl[1] >> db, Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_ThrowException"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_ThrowException
 						&& e.errors[0].severity == Tango::ERR));
 		TS_ASSERT_THROWS_ASSERT(crl[2] >> db, Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_ThrowException"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_ThrowException
 						&& e.errors[0].severity == Tango::ERR));
 		GroupReply::enable_exception(last_mode);
 	}
@@ -425,9 +425,9 @@ public:
 		TS_ASSERT(crl[0].has_failed() == true);
 		TS_ASSERT(crl[1].has_failed() == true);
 		TS_ASSERT(crl[2].has_failed() == true);
-		TS_ASSERT(string(crl[0].get_err_stack()[0].reason.in()) == "API_ThrowException");
-		TS_ASSERT(string(crl[1].get_err_stack()[0].reason.in()) == "API_ThrowException");
-		TS_ASSERT(string(crl[2].get_err_stack()[0].reason.in()) == "API_ThrowException");
+		TS_ASSERT(string(crl[0].get_err_stack()[0].reason.in()) == API_ThrowException);
+		TS_ASSERT(string(crl[1].get_err_stack()[0].reason.in()) == API_ThrowException);
+		TS_ASSERT(string(crl[2].get_err_stack()[0].reason.in()) == API_ThrowException);
 		GroupReply::enable_exception(last_mode);
 	}
 
@@ -526,13 +526,13 @@ public:
 		TS_ASSERT(arl.has_failed() == true);
 		TS_ASSERT(arl.size() == 3);
 		TS_ASSERT_THROWS_ASSERT(arl[0] >> db, Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotFound"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrNotFound
 						&& e.errors[0].severity == Tango::ERR));
 		TS_ASSERT_THROWS_ASSERT(arl[1] >> db, Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotFound"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrNotFound
 						&& e.errors[0].severity == Tango::ERR));
 		TS_ASSERT_THROWS_ASSERT(arl[2] >> db, Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotFound"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrNotFound
 						&& e.errors[0].severity == Tango::ERR));
 		GroupReply::enable_exception(last_mode);
 	}
@@ -548,9 +548,9 @@ public:
 		TS_ASSERT(arl[0].has_failed() == true);
 		TS_ASSERT(arl[1].has_failed() == true);
 		TS_ASSERT(arl[2].has_failed() == true);
-		TS_ASSERT(string(arl[0].get_err_stack()[0].reason.in()) == "API_AttrNotFound");
-		TS_ASSERT(string(arl[1].get_err_stack()[0].reason.in()) == "API_AttrNotFound");
-		TS_ASSERT(string(arl[2].get_err_stack()[0].reason.in()) == "API_AttrNotFound");
+		TS_ASSERT(string(arl[0].get_err_stack()[0].reason.in()) == API_AttrNotFound);
+		TS_ASSERT(string(arl[1].get_err_stack()[0].reason.in()) == API_AttrNotFound);
+		TS_ASSERT(string(arl[2].get_err_stack()[0].reason.in()) == API_AttrNotFound);
 		GroupReply::enable_exception(last_mode);
 	}
 
@@ -793,7 +793,7 @@ public:
 		// wrong number of arguments
 		values.push_back(da4);
 		TS_ASSERT_THROWS_ASSERT(group->write_attribute_asynch(values,true), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_MethodArgument"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_MethodArgument
 						&& e.errors[0].severity == Tango::ERR));
 
 		// read attribute to check if new value was properly set

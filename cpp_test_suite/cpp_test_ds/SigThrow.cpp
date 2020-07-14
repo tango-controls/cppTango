@@ -97,7 +97,7 @@ bool IOExcept::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::A
 CORBA::Any *IOExcept::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {	
 
-  Tango::Except::throw_exception((const char *)"API_ThrowException",
+  Tango::Except::throw_exception((const char *)API_ThrowException,
   			         (const char *)"This is a test ",
 			         (const char *)"IOExcept::execute()");
 

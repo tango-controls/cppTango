@@ -99,7 +99,7 @@ public:
 			cerr << "cxx_fwd_att.cpp test suite - DevFailed exception" << endl;
 			Except::print_exception(e);
 			string reason(e.errors[0].reason);
-			if (reason == "API_AttrNotFound")
+			if (reason == API_AttrNotFound)
 			{
 				string status = fwd_device->status();
 				cout << "Forward device status = " << status << endl;
@@ -634,7 +634,7 @@ public:
 		attr_poll.svalue[2] = "fwd_short_rw";
 		din << attr_poll;
 		TS_ASSERT_THROWS_ASSERT(ad->command_inout("AddObjPolling",din), Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_NotSupportedFeature"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_NotSupportedFeature
 								&& e.errors[0].severity == Tango::ERR));
 
 		// Start polling on root device
@@ -693,7 +693,7 @@ public:
 
 		DeviceAttribute da_fail = fwd_device->read_attribute("fwd_short_rw");
 		TS_ASSERT_THROWS_ASSERT(da_fail >> ds, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotPolled"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrNotPolled
 								&& e.errors[0].severity == Tango::ERR));
 
 	}
@@ -718,7 +718,7 @@ public:
 		}
 
 		TS_ASSERT_THROWS_ASSERT(fwd_device->subscribe_event("fwd_short_rw",Tango::PERIODIC_EVENT,&cb),Tango::DevFailed &e,
-							TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttributePollingNotStarted"
+							TS_ASSERT(string(e.errors[0].reason.in()) == API_AttributePollingNotStarted
 										&& e.errors[0].severity == Tango::ERR));
 
 		// Start polling on root device and subscribe

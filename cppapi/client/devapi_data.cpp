@@ -186,7 +186,7 @@ bool DeviceData::any_is_null()
         ext->ext_state.set(isempty_flag);
         if (exceptions_flags.test(isempty_flag))
         {
-            ApiDataExcept::throw_exception((const char *) "API_EmptyDeviceData",
+            ApiDataExcept::throw_exception((const char *) API_EmptyDeviceData,
                                            (const char *) "Cannot extract, no data in DeviceData object ",
                                            (const char *) "DeviceData::any_is_null");
         }

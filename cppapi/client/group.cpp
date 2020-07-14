@@ -188,7 +188,7 @@ void GroupElementFactory::parse_name (const std::string& p, std::string &db_host
 			TangoSys_OMemStream desc;
 			desc << protocol;
 			desc << " protocol is an unsupported protocol" << std::ends;
-			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedProtocol",
+			ApiWrongNameExcept::throw_exception((const char*)API_UnsupportedProtocol,
 						desc.str(),
 						(const char*)"GroupElementFactory::parse_name()");
 		}
@@ -1237,7 +1237,7 @@ GroupCmdReplyList Group::command_inout_reply_i (long ari, long tmo)
     Tango::DevErrorList errors(1);
     errors.length(1);
     errors[0].severity = Tango::ERR;
-    errors[0].reason = Tango::string_dup("API_BadAsynPollId");
+    errors[0].reason = Tango::string_dup(API_BadAsynPollId);
     errors[0].desc = Tango::string_dup("Invalid asynch. request identifier specified");
     errors[0].origin = Tango::string_dup("Group::command_inout_reply");
     throw DevFailed(errors);
@@ -1319,7 +1319,7 @@ GroupAttrReplyList Group::read_attribute_reply_i (long ari, long tmo)
     Tango::DevErrorList errors(1);
 		errors.length(1);
 		errors[0].severity = Tango::ERR;
-		errors[0].reason = Tango::string_dup("API_BadAsynPollId");
+		errors[0].reason = Tango::string_dup(API_BadAsynPollId);
     errors[0].desc = Tango::string_dup("Invalid asynch. request identifier specified");
 		errors[0].origin = Tango::string_dup("Group::read_attribute_reply");
     throw DevFailed(errors);
@@ -1383,7 +1383,7 @@ GroupAttrReplyList Group::read_attributes_reply_i (long ari, long tmo)
     Tango::DevErrorList errors(1);
 		errors.length(1);
 		errors[0].severity = Tango::ERR;
-		errors[0].reason = Tango::string_dup("API_BadAsynPollId");
+		errors[0].reason = Tango::string_dup(API_BadAsynPollId);
     errors[0].desc = Tango::string_dup("Invalid asynch. request identifier specified");
 		errors[0].origin = Tango::string_dup("Group::read_attributes_reply");
     throw DevFailed(errors);
@@ -1509,7 +1509,7 @@ GroupReplyList Group::write_attribute_reply_i (long ari, long tmo)
     Tango::DevErrorList errors(1);
 		errors.length(1);
 		errors[0].severity = Tango::ERR;
-		errors[0].reason = Tango::string_dup("API_BadAsynPollId");
+		errors[0].reason = Tango::string_dup(API_BadAsynPollId);
     errors[0].desc = Tango::string_dup("Invalid asynch. request identifier specified");
 		errors[0].origin = Tango::string_dup("Group::write_attribute_reply");
     throw DevFailed(errors);
@@ -1807,7 +1807,7 @@ GroupCmdReplyList GroupDeviceElement::command_inout_reply_i (long id, long tmo)
     Tango::DevErrorList errors(1);
 		errors.length(1);
 		errors[0].severity = Tango::ERR;
-		errors[0].reason = Tango::string_dup("API_BadAsynPollId");
+		errors[0].reason = Tango::string_dup(API_BadAsynPollId);
     errors[0].desc = Tango::string_dup("Invalid asynch. request identifier specified");
 		errors[0].origin = Tango::string_dup("GroupDeviceElement::command_inout_reply");
     DevFailed df(errors);
@@ -1908,7 +1908,7 @@ GroupAttrReplyList GroupDeviceElement::read_attribute_reply_i (long id, long tmo
     Tango::DevErrorList errors(1);
 		errors.length(1);
 		errors[0].severity = Tango::ERR;
-		errors[0].reason = Tango::string_dup("API_BadAsynPollId");
+		errors[0].reason = Tango::string_dup(API_BadAsynPollId);
     errors[0].desc = Tango::string_dup("Invalid asynch. request identifier specified");
 		errors[0].origin = Tango::string_dup("GroupDeviceElement::read_attribute_reply");
     DevFailed df(errors);
@@ -2033,7 +2033,7 @@ GroupAttrReplyList GroupDeviceElement::read_attributes_reply_i (long id, long tm
     Tango::DevErrorList errors(1);
 		errors.length(1);
 		errors[0].severity = Tango::ERR;
-		errors[0].reason = Tango::string_dup("API_BadAsynPollId");
+		errors[0].reason = Tango::string_dup(API_BadAsynPollId);
     errors[0].desc = Tango::string_dup("Invalid asynch. request identifier specified");
 		errors[0].origin = Tango::string_dup("GroupDeviceElement::read_attribute_reply");
     DevFailed df(errors);
@@ -2174,7 +2174,7 @@ GroupReplyList GroupDeviceElement::write_attribute_reply_i (long id, long tmo)
     Tango::DevErrorList errors(1);
 		errors.length(1);
 		errors[0].severity = Tango::ERR;
-		errors[0].reason = Tango::string_dup("API_BadAsynPollId");
+		errors[0].reason = Tango::string_dup(API_BadAsynPollId);
     errors[0].desc = Tango::string_dup("Invalid asynch. request identifier specified");
 		errors[0].origin = Tango::string_dup("GroupDeviceElement::write_attribute_reply");
     DevFailed df(errors);

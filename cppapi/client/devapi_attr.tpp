@@ -415,7 +415,7 @@ bool DeviceAttribute::template_type_check(T &TANGO_UNUSED(_datum))
 	{
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception("API_IncompatibleAttrArgumentType",
+			ApiDataExcept::throw_exception(API_IncompatibleAttrArgumentType,
 			"Type provided for insertion is not a valid enum. Only C enum or C++11 enum with underlying short data type are supported",
 			"DeviceAttribute::operator<<");
 		}
@@ -427,7 +427,7 @@ bool DeviceAttribute::template_type_check(T &TANGO_UNUSED(_datum))
 	{
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception("API_IncompatibleAttrArgumentType",
+			ApiDataExcept::throw_exception(API_IncompatibleAttrArgumentType,
 			"Type provided for insertion is not an enumeration",
 			"DeviceAttribute::operator<<");
 		}

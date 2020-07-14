@@ -851,7 +851,7 @@ inline int DeviceProxy::subscribe_event (const std::string &attr_name, EventType
 			TangoSys_OMemStream desc; \
 			desc << "Failed to read_attribute on device " << device_name; \
 			desc << ", attribute " << NAME_CHAR << std::ends; \
-			ApiConnExcept::re_throw_exception(e,(const char*)"API_AttributeFailed", \
+			ApiConnExcept::re_throw_exception(e,(const char*)API_AttributeFailed, \
                         	desc.str(), (const char*)"DeviceProxy::read_attribute()"); \
 		} \
 		catch (Tango::DevFailed &e) \
@@ -859,7 +859,7 @@ inline int DeviceProxy::subscribe_event (const std::string &attr_name, EventType
 			TangoSys_OMemStream desc; \
 			desc << "Failed to read_attribute on device " << device_name; \
 			desc << ", attribute " << NAME_CHAR << std::ends; \
-			Except::re_throw_exception(e,(const char*)"API_AttributeFailed", \
+			Except::re_throw_exception(e,(const char*)API_AttributeFailed, \
                         	desc.str(), (const char*)"DeviceProxy::read_attribute()"); \
 		} \
 		catch (CORBA::TRANSIENT &trans) \
@@ -878,7 +878,7 @@ inline int DeviceProxy::subscribe_event (const std::string &attr_name, EventType
 				TangoSys_OMemStream desc; \
 				desc << "Failed to read_attribute on device " << device_name << std::ends; \
 				ApiCommExcept::re_throw_exception(one, \
-							      (const char*)"API_CommunicationFailed", \
+							      (const char*)API_CommunicationFailed, \
                         				      desc.str(), \
 							      (const char*)"DeviceProxy::read_attribute()"); \
 			} \
@@ -895,7 +895,7 @@ inline int DeviceProxy::subscribe_event (const std::string &attr_name, EventType
 				TangoSys_OMemStream desc; \
 				desc << "Failed to read_attribute on device " << device_name << std::ends; \
 				ApiCommExcept::re_throw_exception(comm, \
-							      (const char*)"API_CommunicationFailed", \
+							      (const char*)API_CommunicationFailed, \
                         				      desc.str(), \
 							      (const char*)"DeviceProxy::read_attribute()"); \
 			} \
@@ -906,7 +906,7 @@ inline int DeviceProxy::subscribe_event (const std::string &attr_name, EventType
 			TangoSys_OMemStream desc; \
 			desc << "Failed to read_attribute on device " << device_name << std::ends; \
 			ApiCommExcept::re_throw_exception(ce, \
-						      (const char*)"API_CommunicationFailed", \
+						      (const char*)API_CommunicationFailed, \
                         			      desc.str(), \
 						      (const char*)"DeviceProxy::read_attribute()"); \
 		}

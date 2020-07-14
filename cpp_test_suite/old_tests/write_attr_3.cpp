@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 	}
 	
 	assert (devfailed_except == true);
-	assert (except_reason == "API_AttrNotWritable");
+	assert (except_reason == API_AttrNotWritable);
 		
 // Send too many data
 
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 	}
 	
 	assert (devfailed_except == true);
-	assert (except_reason == "API_WAttrOutsideLimit");
+	assert (except_reason == API_WAttrOutsideLimit);
 
 // Send data above the max_value
 
@@ -111,7 +111,7 @@ int main(int argc, char **argv)
 	}
 	
 	assert (devfailed_except == true);
-	assert (except_reason == "API_WAttrOutsideLimit");
+	assert (except_reason == API_WAttrOutsideLimit);
 
 // Send incorrect data number (mainly for image)
 
@@ -136,7 +136,7 @@ int main(int argc, char **argv)
 	}
 	
 	assert (devfailed_except == true);
-	assert (except_reason == "API_AttrIncorrectDataNumber");
+	assert (except_reason == API_AttrIncorrectDataNumber);
 	
 	cout << "   Exception cases --> OK" << endl;
 

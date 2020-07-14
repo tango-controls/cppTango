@@ -139,7 +139,7 @@ Util *Util::instance(bool exit)
 			Util::print_err_message("Tango is not initialised !!!\nExiting");
 		else
 		{
-			Except::throw_exception((const char*)"API_UtilSingletonNotCreated",
+			Except::throw_exception((const char*)API_UtilSingletonNotCreated,
                         		   	(const char*)"Util singleton not created",
 									(const char*)"Util::instance");
 		}
@@ -1169,7 +1169,7 @@ void Util::connect_db()
 		{
 			if (e.errors.length() == 2)
 			{
-				if (strcmp(e.errors[1].reason.in(),"API_CantConnectToDatabase") == 0)
+				if (strcmp(e.errors[1].reason.in(),API_CantConnectToDatabase) == 0)
 				{
 
 					TangoSys_OMemStream o;

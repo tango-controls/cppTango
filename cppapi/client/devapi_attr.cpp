@@ -1414,7 +1414,7 @@ AttrDataFormat DeviceAttribute::get_data_format()
 {
 	if (exceptions_flags.test(unknown_format_flag) && (data_format == Tango::FMT_UNKNOWN))
 	{
-		ApiDataExcept::throw_exception((const char*)"API_EmptyDeviceAttribute",
+		ApiDataExcept::throw_exception((const char*)API_EmptyDeviceAttribute,
 					(const char*)"Cannot returned data_type from DeviceAttribute object: Not initialised yet or too old device (< V7)",
 					(const char*)"DeviceAttribute::get_data_format");
 	}
@@ -3509,7 +3509,7 @@ bool DeviceAttribute::operator >> (DevVarEncodedArray* &datum)
 
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleAttrArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleAttrArgumentType,
 					(const char*)"Cannot extract, data in DeviceAttribute object is not an array of DevEncoded",
 					(const char*)"DeviceAttribute::operator>>");
 		}
@@ -5448,7 +5448,7 @@ bool DeviceAttribute::check_wrong_type_exception()
 
 	if (exceptions_flags.test(wrongtype_flag))
 	{
-		ApiDataExcept::throw_exception("API_IncompatibleAttrArgumentType",
+		ApiDataExcept::throw_exception(API_IncompatibleAttrArgumentType,
 		"Cannot extract, data type in DeviceAttribute object is not coherent with the type provided to extraction method",
 		"DeviceAttribute::operator>>");
 	}
@@ -5483,7 +5483,7 @@ int DeviceAttribute::check_set_value_size(int seq_length)
 	{
 		// no set point available
 
-		ApiDataExcept::throw_exception((const char*)"API_NoSetValueAvailable",
+		ApiDataExcept::throw_exception((const char*)API_NoSetValueAvailable,
 					(const char*)"Cannot extract, data from the DeviceAttribute object. No set value available",
 					(const char*)"DeviceAttribute::extract_set");
 

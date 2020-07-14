@@ -602,7 +602,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 					del[0].severity = Tango::ERR;
 					del[0].origin = Tango::string_dup("Device_3Impl::read_attributes_no_except");
-					del[0].reason = Tango::string_dup("API_CorbaSysException ");
+					del[0].reason = Tango::string_dup(API_CorbaSysException);
 					del[0].desc = Tango::string_dup("Unforseen exception when trying to read attribute. It was even not a Tango DevFailed exception");
 
 					if (aid.data_5 != nullptr)

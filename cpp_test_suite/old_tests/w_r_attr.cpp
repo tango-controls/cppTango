@@ -256,7 +256,7 @@ int main(int argc, char **argv)
 	}
 	
 	assert (devfailed_except == true);
-	assert (except_reason == "API_AttrNotWritable");
+	assert (except_reason == API_AttrNotWritable);
 
 	cout << "  Some basic exception cases --> OK" << endl;
 	

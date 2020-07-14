@@ -234,7 +234,7 @@ void EncodedAttribute::decode_rgb32(DeviceAttribute *attr,int *width,int *height
     DevVarEncodedArray_var &encDataSeq = attr->get_Encoded_data();
 	if (encDataSeq.operator->() == NULL)
 	{
-    	ApiDataExcept::throw_exception((const char*)"API_IncompatibleAttrArgumentType",
+    	ApiDataExcept::throw_exception((const char*)API_IncompatibleAttrArgumentType,
       			(const char*)"Cannot extract, data in DeviceAttribute object is not DevEncoded",
       			(const char*)"EncodedAttribute::decode_gray8");
 	}
@@ -335,7 +335,7 @@ void EncodedAttribute::decode_gray8(DeviceAttribute *attr,int *width,int *height
 	DevVarEncodedArray_var &encDataSeq = attr->get_Encoded_data();
 	if (encDataSeq.operator->() == NULL)
 	{
-    	ApiDataExcept::throw_exception((const char*)"API_IncompatibleAttrArgumentType",
+    	ApiDataExcept::throw_exception((const char*)API_IncompatibleAttrArgumentType,
       			(const char*)"Cannot extract, data in DeviceAttribute object is not DevEncoded",
       			(const char*)"EncodedAttribute::decode_gray8");
 	}
@@ -425,7 +425,7 @@ void EncodedAttribute::decode_gray16(DeviceAttribute *attr,int *width,int *heigh
 	DevVarEncodedArray_var &encDataSeq = attr->get_Encoded_data();
 	if (encDataSeq.operator->() == NULL)
 	{
-    	ApiDataExcept::throw_exception((const char*)"API_IncompatibleAttrArgumentType",
+    	ApiDataExcept::throw_exception((const char*)API_IncompatibleAttrArgumentType,
       			(const char*)"Cannot extract, data in DeviceAttribute object is not DevEncoded",
       			(const char*)"EncodedAttribute::decode_gray16");
 	}

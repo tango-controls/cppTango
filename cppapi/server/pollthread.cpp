@@ -1461,7 +1461,7 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
             errs.length(1);
 
             errs[0].severity = Tango::ERR;
-            errs[0].reason = Tango::string_dup("API_PollThreadOutOfSync");
+            errs[0].reason = Tango::string_dup(API_PollThreadOutOfSync);
             errs[0].origin = Tango::string_dup("PollThread::err_out_of_sync");
             errs[0].desc = Tango::string_dup("The polling thread is late and discard this object polling.\nAdvice: Tune device server polling");
 

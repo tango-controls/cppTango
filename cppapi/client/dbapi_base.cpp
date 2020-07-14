@@ -3606,7 +3606,7 @@ std::vector<DbHistory> Database::make_history_array(bool is_attribute, Any_var &
             istream >> count;
             if (!istream)
             {
-                Except::throw_exception( (const char *)"API_HistoryInvalid",
+                Except::throw_exception( (const char *)API_HistoryInvalid,
                                  (const char *)"History format is invalid",
                                  (const char *)"Database::make_history_array()");
             }
@@ -3805,7 +3805,7 @@ DbDatum Database::get_services(std::string &servname,std::string &instname)
 			catch (Tango::DevFailed &e)
 			{
 				std::string reason = e.errors[0].reason.in();
-				if (reason == "API_UtilSingletonNotCreated" && db_tg != NULL)
+				if (reason == API_UtilSingletonNotCreated && db_tg != NULL)
 					dsc = db_tg->get_db_cache();
 				else
 					dsc = NULL;
@@ -3886,7 +3886,7 @@ DbDatum Database::get_device_service_list(std::string &servname)
 			catch (Tango::DevFailed &e)
 			{
 				std::string reason = e.errors[0].reason.in();
-				if (reason == "API_UtilSingletonNotCreated" && db_tg != NULL)
+				if (reason == API_UtilSingletonNotCreated && db_tg != NULL)
 					dsc = db_tg->get_db_cache();
 				else
 					dsc = NULL;

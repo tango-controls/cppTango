@@ -186,7 +186,7 @@ public:
 		aile[0].enum_labels.push_back("North");
 
 		TS_ASSERT_THROWS_ASSERT(device1->set_attribute_config(aile),Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrOptProp"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrOptProp
 								&& e.errors[0].severity == Tango::ERR));
 
 // Reset to lib default is invalid
@@ -195,7 +195,7 @@ public:
 		aile[0].enum_labels.push_back("Not specified");
 
 		TS_ASSERT_THROWS_ASSERT(device1->set_attribute_config(aile),Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrOptProp"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrOptProp
 								&& e.errors[0].severity == Tango::ERR));
 
 // Change enum labels number is not authorized from outside the Tango class
@@ -205,7 +205,7 @@ public:
 		aile[0].enum_labels.push_back("South");
 
 		TS_ASSERT_THROWS_ASSERT(device1->set_attribute_config(aile),Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_NotSupportedFeature"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_NotSupportedFeature
 								&& e.errors[0].severity == Tango::ERR));
 	}
 
@@ -424,7 +424,7 @@ public:
 /*		TS_ASSERT_THROWS_NOTHING(da = device1->read_attribute("DynEnum_attr"));
 
 		TS_ASSERT_THROWS_ASSERT(da >> sh,Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrConfig"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrConfig
 								&& e.errors[0].severity == Tango::ERR));*/
 
 // Add labels to the enum
@@ -461,7 +461,7 @@ public:
 
 		TS_ASSERT_THROWS_NOTHING(da = device1->read_attribute("DynEnum_attr"));
 		TS_ASSERT_THROWS_ASSERT(da >> sh,Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrOptProp"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrOptProp
 								&& e.errors[0].severity == Tango::ERR));
 
 		f_val = 4;

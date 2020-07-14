@@ -47,12 +47,12 @@ void MyCallBack::cmd_ended(CmdDoneEvent *cmd)
 		coutv << "error length = " << nb_err << std::endl;
 		for (int i = 0;i < nb_err;i++)
 			coutv << "error[" << i << "].reason = " << cmd->errors[i].reason.in() << std::endl;
-		if (strcmp(cmd->errors[nb_err - 1].reason,"API_DeviceTimedOut") == 0)
+		if (strcmp(cmd->errors[nb_err - 1].reason,API_DeviceTimedOut) == 0)
 		{
 			to = true;
 			coutv << "Timeout error" << std::endl;
 		}
-		else if (strcmp(cmd->errors[nb_err - 1].reason,"API_CommandFailed") == 0)
+		else if (strcmp(cmd->errors[nb_err - 1].reason,API_CommandFailed) == 0)
 		{
 			cmd_failed = true;
 			coutv << "Command failed error" << std::endl;
@@ -87,12 +87,12 @@ void MyCallBack::attr_read(AttrReadEvent *att)
 		coutv << "error length = " << nb_err << std::endl;
 		for (int i = 0;i < nb_err;i++)
 			coutv << "error[" << i << "].reason = " << att->errors[i].reason.in() << std::endl;
-		if (strcmp(att->errors[nb_err - 1].reason,"API_DeviceTimedOut") == 0)
+		if (strcmp(att->errors[nb_err - 1].reason,API_DeviceTimedOut) == 0)
 		{
 			to = true;
 			coutv << "Timeout error" << std::endl;
 		}
-		else if (strcmp(att->errors[nb_err - 1].reason,"API_AttributeFailed") == 0)
+		else if (strcmp(att->errors[nb_err - 1].reason,API_AttributeFailed) == 0)
 		{
 			attr_failed = true;
 			coutv << "Read attributes failed error" << std::endl;
@@ -120,7 +120,7 @@ void MyCallBack::attr_written(AttrWrittenEvent *att)
 		coutv << "error length = " << nb_err << std::endl;
 		for (long i = 0;i < nb_err;i++)
 			coutv << "error[" << i << "].reason = " << att->errors.err_list[i].err_stack[0].reason.in() << std::endl;
-		if (strcmp(att->errors.err_list[nb_err - 1].err_stack[0].reason.in(),"API_DeviceTimedOut") == 0)
+		if (strcmp(att->errors.err_list[nb_err - 1].err_stack[0].reason.in(),API_DeviceTimedOut) == 0)
 		{
 			to = true;
 			coutv << "Timeout error" << std::endl;

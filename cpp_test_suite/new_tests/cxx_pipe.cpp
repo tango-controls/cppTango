@@ -443,13 +443,13 @@ public:
 		vector<DevState> v_sta;
 
 		TS_ASSERT_THROWS_ASSERT(pipe_data >> dl >> v_db >> v_us >> v_sta >> dl_extra;, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_PipeWrongArg"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_PipeWrongArg
 								&& e.errors[0].severity == Tango::ERR));
 
 		pipe_data = device1->read_pipe("rPipe");
 
 		TS_ASSERT_THROWS_ASSERT(pipe_data >> dl >> dl_extra;, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_IncompatibleArgumentType"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_IncompatibleArgumentType
 								&& e.errors[0].severity == Tango::ERR));
 
 		d_in << (short)4;
@@ -460,7 +460,7 @@ public:
 		TS_ASSERT(pipe_data.get_data_elt_nb() == 2);
 
 		TS_ASSERT_THROWS_ASSERT(pipe_data >> dl >> dl;, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_EmptyDataElement"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_EmptyDataElement
 								&& e.errors[0].severity == Tango::ERR));
 
 // Same error with bit test instead of exceptions
@@ -493,13 +493,13 @@ public:
 		device1->command_inout("SetPipeOutput",d_in);
 
 		TS_ASSERT_THROWS_ASSERT(pipe_data = device1->read_pipe("rpipe");, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_PipeValueNotSet"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_PipeValueNotSet
 								&& e.errors[0].severity == Tango::ERR));
 
 // Error pipe not found
 
 		TS_ASSERT_THROWS_ASSERT(pipe_data = device1->read_pipe("pi");, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_PipeNotFound"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_PipeNotFound
 								&& e.errors[0].severity == Tango::ERR));
 
 // Not allowed error
@@ -508,7 +508,7 @@ public:
 		device1->command_inout("IOState",d_in);
 
 		TS_ASSERT_THROWS_ASSERT(pipe_data = device1->read_pipe("rpipe");, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_PipeNotAllowed"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_PipeNotAllowed
 								&& e.errors[0].severity == Tango::ERR));
 
 		d_in << Tango::ON;
@@ -520,7 +520,7 @@ public:
 		device1->command_inout("SetPipeOutput",d_in);
 
 		TS_ASSERT_THROWS_ASSERT(pipe_data = device1->read_pipe("rpipe");, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_PipeDuplicateDEName"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_PipeDuplicateDEName
 								&& e.errors[0].severity == Tango::ERR));
 
 // Duplicate DE name
@@ -529,7 +529,7 @@ public:
 		device1->command_inout("SetPipeOutput",d_in);
 
 		TS_ASSERT_THROWS_ASSERT(pipe_data = device1->read_pipe("rpipe");, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_PipeNoDataElement"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_PipeNoDataElement
 								&& e.errors[0].severity == Tango::ERR));
 
 // Mixing insertion method type
@@ -538,7 +538,7 @@ public:
 		device1->command_inout("SetPipeOutput",d_in);
 
 		TS_ASSERT_THROWS_ASSERT(pipe_data = device1->read_pipe("rpipe");, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_NotSupportedFeature"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_NotSupportedFeature
 								&& e.errors[0].severity == Tango::ERR));
 
 // Not enough data element
@@ -547,7 +547,7 @@ public:
 		device1->command_inout("SetPipeOutput",d_in);
 
 		TS_ASSERT_THROWS_ASSERT(pipe_data = device1->read_pipe("rpipe");, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_PipeWrongArg"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_PipeWrongArg
 								&& e.errors[0].severity == Tango::ERR));
 
 // Mixing extraction method type
@@ -563,7 +563,7 @@ public:
     	pipe_data >> de_dl;
 
 		TS_ASSERT_THROWS_ASSERT(pipe_data["SecondDE"] >> de_v_db;, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_NotSupportedFeature"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_NotSupportedFeature
 								&& e.errors[0].severity == Tango::ERR));
 	}
 
@@ -601,7 +601,7 @@ public:
 		v_fl.push_back(8.88);
 
 		TS_ASSERT_THROWS_ASSERT(device1->write_pipe(dp);, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_PipeNoDataElement"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_PipeNoDataElement
 								&& e.errors[0].severity == Tango::ERR));
 
 // Empty data element
@@ -609,7 +609,7 @@ public:
 		dp.set_data_elt_names(de_names);
 
 		TS_ASSERT_THROWS_ASSERT(device1->write_pipe(dp);, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_EmptyDataElement"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_EmptyDataElement
 								&& e.errors[0].severity == Tango::ERR));
 
 // Pipe not found
@@ -619,7 +619,7 @@ public:
 		dp << str << v_fl;
 
 		TS_ASSERT_THROWS_ASSERT(device1->write_pipe(dp);, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_PipeNotFound"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_PipeNotFound
 								&& e.errors[0].severity == Tango::ERR));
 
 // Pipe not writable
@@ -629,7 +629,7 @@ public:
 		dp << str << v_fl;
 
 		TS_ASSERT_THROWS_ASSERT(device1->write_pipe(dp);, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_PipeNotWritable"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_PipeNotWritable
 								&& e.errors[0].severity == Tango::ERR));
 
 // Wrong data sent to pipe
@@ -641,7 +641,7 @@ public:
 		dp << v_fl;
 
 		TS_ASSERT_THROWS_ASSERT(device1->write_pipe(dp);, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_IncompatibleArgumentType"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_IncompatibleArgumentType
 								&& e.errors[0].severity == Tango::ERR));
 
 		de_names.clear();
@@ -653,7 +653,7 @@ public:
 		dp << str << str;
 
 		TS_ASSERT_THROWS_ASSERT(device1->write_pipe(dp);, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_IncompatibleArgumentType"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_IncompatibleArgumentType
 								&& e.errors[0].severity == Tango::ERR));
 	}
 

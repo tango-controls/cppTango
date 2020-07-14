@@ -1096,7 +1096,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 	errors.length(1);
 	errors[0].severity = Tango::ERR;
 	errors[0].origin = Tango::string_dup("EventConsumer::KeepAliveThread()");
-	errors[0].reason = Tango::string_dup("API_EventTimeout");
+	errors[0].reason = Tango::string_dup(API_EventTimeout);
 	errors[0].desc = Tango::string_dup("Event channel is not responding anymore, maybe the server or event system is down");
 	DeviceAttribute *dev_attr = NULL;
 	AttributeInfoEx *dev_attr_conf = NULL;

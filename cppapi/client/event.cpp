@@ -1831,7 +1831,7 @@ void EventConsumer::unsubscribe_event(int event_id)
 {
 	if (event_id == 0)
 	{
-		EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+		EventSystemExcept::throw_exception((const char*)API_EventNotFound,
 			(const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
 			(const char*)"EventConsumer::unsubscribe_event()");
 	}
@@ -1928,7 +1928,7 @@ void EventConsumer::unsubscribe_event(int event_id)
 					    }
                         catch (...)
                         {
-                            EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+                            EventSystemExcept::throw_exception((const char*)API_EventNotFound,
                                 (const char*)"Failed to unsubscribe event, caught exception while calling remove_filter() or destroy() (hint: check the Notification daemon is running ",
                                 (const char*)"EventConsumer::unsubscribe_event()");
                         }
@@ -1994,7 +1994,7 @@ void EventConsumer::unsubscribe_event(int event_id)
                                         }
                                         catch (...)
                                         {
-                                            EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+                                            EventSystemExcept::throw_exception((const char*)API_EventNotFound,
                                                 (const char*)"Failed to unsubscribe event, caught exception while calling remove_filter() or destroy() on the heartbeat filter (hint: check the Notification daemon is running ",
                                                 (const char*)"EventConsumer::unsubscribe_event()");
                                         }
@@ -2060,7 +2060,7 @@ void EventConsumer::unsubscribe_event(int event_id)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
 			(const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
 			(const char*)"EventConsumer::unsubscribe_event()");
 }
@@ -2251,7 +2251,7 @@ void EventConsumer::get_events (int event_id, EventDataList &event_list)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
 			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
 			(const char*)"EventConsumer::get_events()");
 }
@@ -2349,7 +2349,7 @@ void EventConsumer::get_events (int event_id, AttrConfEventDataList &event_list)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
 			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
 			(const char*)"EventConsumer::get_events()");
 }
@@ -2447,7 +2447,7 @@ void EventConsumer::get_events (int event_id, DataReadyEventDataList &event_list
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
 			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
 			(const char*)"EventConsumer::get_events()");
 }
@@ -2543,7 +2543,7 @@ void EventConsumer::get_events (int event_id, DevIntrChangeEventDataList &event_
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception("API_EventNotFound",
+	EventSystemExcept::throw_exception(API_EventNotFound,
 			"Failed to get event, the event id specified does not correspond with any known one",
 			"EventConsumer::get_events()");
 }
@@ -2639,7 +2639,7 @@ void EventConsumer::get_events (int event_id, PipeEventDataList &event_list)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception("API_EventNotFound",
+	EventSystemExcept::throw_exception(API_EventNotFound,
 			"Failed to get event, the event id specified does not correspond with any known one",
 			"EventConsumer::get_events()");
 }
@@ -2738,7 +2738,7 @@ void EventConsumer::get_events (int event_id, CallBack *cb)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
 			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
 			(const char*)"EventConsumer::get_events()");
 }
@@ -2831,7 +2831,7 @@ int  EventConsumer::event_queue_size(int event_id)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
 			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
 			(const char*)"EventConsumer::event_queue_size()");
 
@@ -2928,7 +2928,7 @@ bool EventConsumer::is_event_queue_empty(int event_id)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
 			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
 			(const char*)"EventConsumer::is_event_queue_empty()");
 
@@ -3025,7 +3025,7 @@ TimeVal EventConsumer::get_last_event_date(int event_id)
 
 	// nothing was found!
 
-	EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+	EventSystemExcept::throw_exception((const char*)API_EventNotFound,
 			(const char*)"Failed to get event, the event id specified does not correspond with any known one",
 			(const char*)"EventConsumer::get_last_event_date()");
 
@@ -3416,7 +3416,7 @@ ChannelType EventConsumer::get_event_system_for_event_id(int event_id)
 
 	if (event_id == 0)
 	{
-		EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+		EventSystemExcept::throw_exception((const char*)API_EventNotFound,
 			(const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
 			(const char*)"EventConsumer::get_event_system_for_event_id()");
 	}
@@ -3473,7 +3473,7 @@ ChannelType EventConsumer::get_event_system_for_event_id(int event_id)
 
     if (found == false)
     {
-        EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+        EventSystemExcept::throw_exception((const char*)API_EventNotFound,
 			(const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
 			(const char*)"EventConsumer::get_event_system_for_event_id()");
     }

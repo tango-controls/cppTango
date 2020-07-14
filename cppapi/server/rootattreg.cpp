@@ -759,7 +759,7 @@ void RootAttRegistry::add_root_att(std::string &device_name,std::string &att_nam
 			map_event_id.insert({a_name,event_id});
 
             cbp.update_err_kind(a_name,attdesc->get_err_kind());
-			Tango::Except::re_throw_exception(e,"API_DummyException","nothing","RootAttRegistry::add_root_att");
+			Tango::Except::re_throw_exception(e,API_DummyException,"nothing","RootAttRegistry::add_root_att");
 		}
 	}
 	else

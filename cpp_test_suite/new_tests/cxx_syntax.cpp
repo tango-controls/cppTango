@@ -81,7 +81,7 @@ public:
 		}
 		catch (DevFailed &e)
 		{
-			if (strcmp(e.errors[0].reason.in(),"API_WrongDeviceNameSyntax") == 0)
+			if (strcmp(e.errors[0].reason.in(),API_WrongDeviceNameSyntax) == 0)
 				ret = 0;
 			else
 				ret = 1;
@@ -101,9 +101,9 @@ public:
 		}
 		catch (DevFailed &e)
 		{
-			if (strcmp(e.errors[0].reason.in(),"API_WrongAttributeNameSyntax") == 0)
+			if (strcmp(e.errors[0].reason.in(),API_WrongAttributeNameSyntax) == 0)
 				ret = 0;
-			else if (strcmp(e.errors[0].reason.in(),"API_UnsupportedAttribute") == 0)
+			else if (strcmp(e.errors[0].reason.in(),API_UnsupportedAttribute) == 0)
 				ret = 1;
 			else
 				ret = 2;

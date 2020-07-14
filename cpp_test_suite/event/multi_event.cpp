@@ -533,7 +533,7 @@ int main(int argc, char **argv)
 		{
 //			Tango::Except::print_exception(e);
 			std::string reason(e.errors[0].reason);
-			if (reason == "API_EventNotFound")
+			if (reason == API_EventNotFound)
 				unsub = true;
 		}
 

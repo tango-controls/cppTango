@@ -124,7 +124,7 @@ bool DbDatum::is_empty()
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"The DbDatum object is empty",
 					     (const char*)"DbDatum::is_empty");
 		}
@@ -168,7 +168,7 @@ bool DbDatum::operator >> (bool &datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"Cannot extract short, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(short)");
 		}
@@ -234,7 +234,7 @@ bool DbDatum::operator >> (short &datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"Cannot extract short, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(short)");
 		}
@@ -293,7 +293,7 @@ bool DbDatum::operator >> (unsigned char& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract unsigned short, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(unsigned char)");
 		}
@@ -351,7 +351,7 @@ bool DbDatum::operator >> (unsigned short& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract unsigned short, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(unsigned short)");
 		}
@@ -409,7 +409,7 @@ bool DbDatum::operator >> (DevLong& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDbDatum,
 					     (const char*)"cannot extract long, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(long)");
 		}
@@ -467,7 +467,7 @@ bool DbDatum::operator >> (DevULong& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract unsigned long, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(unsigned long)");
 		}
@@ -525,7 +525,7 @@ bool DbDatum::operator >> (DevLong64 &datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract unsigned long, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(DevLong64)");
 		}
@@ -583,7 +583,7 @@ bool DbDatum::operator >> (DevULong64 &datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract unsigned long, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(DevLong64)");
 		}
@@ -641,7 +641,7 @@ bool DbDatum::operator >> (float& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDbDatum,
 					     (const char*)"cannot extract float, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(float)");
 		}
@@ -716,7 +716,7 @@ bool DbDatum::operator >> (double& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract double, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(double)");
 		}
@@ -788,7 +788,7 @@ bool DbDatum::operator >> (std::string& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract string, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(string)");
 		}
@@ -860,7 +860,7 @@ bool DbDatum::operator >> (const char*& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract string, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(string)");
 		}
@@ -909,7 +909,7 @@ bool DbDatum::operator >> (std::vector<short>& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract short vector, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(vector<short>)");
 		}
@@ -980,7 +980,7 @@ bool DbDatum::operator >> (std::vector<unsigned short>& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract unsigned short vector, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(vector<unsigned short>)");
 		}
@@ -1052,7 +1052,7 @@ bool DbDatum::operator >> (std::vector<DevLong>& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract long vector, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(vector<long>)");
 		}
@@ -1124,7 +1124,7 @@ bool DbDatum::operator >> (std::vector<DevULong>& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract unsigned long vector, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(vector<unsigned long>)");
 		}
@@ -1196,7 +1196,7 @@ bool DbDatum::operator >> (std::vector<DevLong64>& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract unsigned long vector, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(vector<unsigned long>)");
 		}
@@ -1268,7 +1268,7 @@ bool DbDatum::operator >> (std::vector<DevULong64>& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract unsigned long vector, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(vector<unsigned long>)");
 		}
@@ -1340,7 +1340,7 @@ bool DbDatum::operator >> (std::vector<float>& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract float vector, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(vector<float>)");
 		}
@@ -1428,7 +1428,7 @@ bool DbDatum::operator >> (std::vector<double>& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract double vector, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(vector<float>)");
 		}
@@ -1510,7 +1510,7 @@ bool DbDatum::operator >> (std::vector<std::string>& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)API_EmptyDbDatum,
 					     (const char*)"cannot extract string vector, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(vector<string>)");
 		}

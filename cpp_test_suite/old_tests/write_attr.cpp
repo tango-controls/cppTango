@@ -457,7 +457,7 @@ int main(int argc, char **argv)
 	}
 	
 	assert (devfailed == true);
-	assert (except_reason == "API_AttrNotWritable");
+	assert (except_reason == API_AttrNotWritable);
 	
 	cout << "   write_attribute() method with exception --> OK" << endl;
 	

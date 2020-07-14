@@ -189,7 +189,7 @@ int main(int argc, char **argv)
 	}
 
 	assert (failed == true);
-	assert (reason == "API_WAttrOutsideLimit");
+	assert (reason == API_WAttrOutsideLimit);
 	
 	in[2] = (float)17.6;
 	failed = false;
@@ -207,7 +207,7 @@ int main(int argc, char **argv)
 	}
 
 	assert (failed == true);
-	assert (reason == "API_WAttrOutsideLimit");
+	assert (reason == API_WAttrOutsideLimit);
 
 	cout << "   Writing outside attribute limits --> OK" << endl;
 
@@ -1057,7 +1057,7 @@ int main(int argc, char **argv)
 		}
 		catch (DevFailed &e)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_AttrNotFound") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_AttrNotFound) == 0)
 				except = true;
 		}
 		assert (except == true);
@@ -1077,7 +1077,7 @@ int main(int argc, char **argv)
 		}
 		catch (DevFailed &e)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_AttrNotAllowed") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_AttrNotAllowed) == 0)
 				except = true;
 		}
 		assert (except == true);
@@ -1097,7 +1097,7 @@ int main(int argc, char **argv)
 		}
 		catch (DevFailed &e)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_AttrNotAllowed") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_AttrNotAllowed) == 0)
 				except = true;
 		}
 		assert (except == true);
@@ -1117,7 +1117,7 @@ int main(int argc, char **argv)
 		}
 		catch (DevFailed &e)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_AttrNotAllowed") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_AttrNotAllowed) == 0)
 				except = true;
 		}
 		assert (except == true);
@@ -1137,7 +1137,7 @@ int main(int argc, char **argv)
 		}
 		catch (DevFailed &e)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_AttrNotAllowed") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_AttrNotAllowed) == 0)
 				except = true;
 		}
 		assert (except == true);

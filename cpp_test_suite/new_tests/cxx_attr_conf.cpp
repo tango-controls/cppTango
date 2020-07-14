@@ -75,7 +75,7 @@ public:
 	void test_some_basic_exception_cases(void)
 	{
 		TS_ASSERT_THROWS_ASSERT(device1->get_attribute_config("toto"), Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotFound"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrNotFound
 								&& e.errors[0].severity == Tango::ERR));
 
 	}

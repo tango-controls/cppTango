@@ -92,7 +92,7 @@ public:
 		din << class_name;
 
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IODevListByClass", din), Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_ClassNotFound"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_ClassNotFound
 								&& e.errors[0].severity == Tango::ERR));
 	}
 
@@ -129,7 +129,7 @@ public:
 		const char *fake_name = "dev/test/1000";
 		din << fake_name;
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IODevByName", din), Tango::DevFailed &e,
-								TS_ASSERT(string(e.errors[0].reason.in()) == "API_DeviceNotFound"
+								TS_ASSERT(string(e.errors[0].reason.in()) == API_DeviceNotFound
 										&& e.errors[0].severity == Tango::ERR));
 	}
 };

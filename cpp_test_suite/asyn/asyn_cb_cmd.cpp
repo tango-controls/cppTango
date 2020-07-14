@@ -41,12 +41,12 @@ void MyCallBack::cmd_ended(CmdDoneEvent *cmd)
 		coutv << "error length = " << nb_err << std::endl;
 		for (int i = 0;i < nb_err;i++)
 			coutv << "error[" << i << "].reason = " << cmd->errors[i].reason << std::endl;
-		if (strcmp(cmd->errors[nb_err - 1].reason,"API_DeviceTimedOut") == 0)
+		if (strcmp(cmd->errors[nb_err - 1].reason,API_DeviceTimedOut) == 0)
 		{
 			to = true;
 			coutv << "Timeout error" << std::endl;
 		}
-		else if (strcmp(cmd->errors[nb_err - 1].reason,"API_CommandFailed") == 0)
+		else if (strcmp(cmd->errors[nb_err - 1].reason,API_CommandFailed) == 0)
 		{
 			cmd_failed = true;
 			coutv << "Command failed error" << std::endl;

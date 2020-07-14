@@ -758,27 +758,27 @@ cout << "required time for command SetGetProperties = " << elapsed << endl;
 
 		TS_ASSERT_THROWS_NOTHING(attr = device1->read_attribute("Toto"));
 		TS_ASSERT_THROWS_ASSERT(attr >> sh, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotFound"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrNotFound
 								&& e.errors[0].severity == Tango::ERR));
 
 		TS_ASSERT_THROWS_NOTHING(attr = device1->read_attribute("attr_no_data"));
 		TS_ASSERT_THROWS_ASSERT(attr >> sh, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrValueNotSet"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrValueNotSet
 								&& e.errors[0].severity == Tango::ERR));
 
 		TS_ASSERT_THROWS_NOTHING(attr = device1->read_attribute("attr_wrong_type"));
 		TS_ASSERT_THROWS_ASSERT(attr >> sh, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrOptProp"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrOptProp
 								&& e.errors[0].severity == Tango::ERR));
 
 		TS_ASSERT_THROWS_NOTHING(attr = device1->read_attribute("attr_wrong_size"));
 		TS_ASSERT_THROWS_ASSERT(attr >> lg, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrOptProp"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrOptProp
 								&& e.errors[0].severity == Tango::ERR));
 
 		TS_ASSERT_THROWS_NOTHING(attr = device1->read_attribute("attr_no_alarm"));
 		TS_ASSERT_THROWS_ASSERT(attr >> lg, Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNoAlarm"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrNoAlarm
 								&& e.errors[0].severity == Tango::ERR));
 	}
 

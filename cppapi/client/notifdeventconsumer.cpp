@@ -486,7 +486,7 @@ void NotifdEventConsumer::connect_event_channel(std::string &channel_name,Databa
 	}
 	else
 	{
-    	EventSystemExcept::throw_exception((const char*)"API_EventChannelNotExported",
+    	EventSystemExcept::throw_exception((const char*)API_EventChannelNotExported,
                         	(const char*)"Failed to narrow EventChannel (hint: make sure a notifd process is running on the server host)",
                         	(const char*)"NotifdEventConsumer::connect_event_channel()");
 	}

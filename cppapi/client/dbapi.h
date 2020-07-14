@@ -1152,7 +1152,7 @@ public:
 	{ \
 		if (e.errors.length() >= 2) \
 		{ \
-			if (::strcmp(e.errors[1].reason.in(),"API_DeviceTimedOut") == 0) \
+			if (::strcmp(e.errors[1].reason.in(),API_DeviceTimedOut) == 0) \
 			{ \
 				if (db_retries != 0) \
 				{ \
