@@ -495,7 +495,7 @@ private:
     };
 
 	void get_class_system_resource();
-	void throw_mem_value(DeviceImpl *,Attribute &);
+	void throw_mem_value(DeviceImpl *,AttributePrivate &);
 
 	std::vector<std::string>			wiz_class_prop;
 	std::vector<std::string>			wiz_dev_prop;

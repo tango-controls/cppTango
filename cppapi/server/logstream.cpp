@@ -208,10 +208,10 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarSt
 // method : LoggerStream::operator<<
 //
 //-----------------------------------------------------------------------------
-log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attribute &a)
+log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const AttributePrivate &a)
 {
 	Tango::AttributeConfig conf;
-	(const_cast<Attribute &>(a)).get_properties(conf);
+	(const_cast<AttributePrivate &>(a)).get_properties(conf);
 
         ls << "Attribute name: " << conf.name.in() << std::endl;
 	ls << "Attribute data_type: ";

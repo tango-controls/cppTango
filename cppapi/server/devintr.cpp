@@ -148,7 +148,7 @@ void DevIntr::build_att_interfaces(DeviceImpl *dev,std::vector<AttrIntr> &atts)
 	for (size_t loop = 0;loop < nb_attr;loop++)
 	{
 		AttrIntr ai;
-		Attribute *att_ptr = (dev->get_device_attr()->get_attribute_list())[loop];
+		AttributePrivate *att_ptr = (dev->get_device_attr()->get_attribute_list())[loop];
 		ai.name  = att_ptr->get_name_lower();
 		ai.writable = att_ptr->get_writable();
 		ai.data_type = att_ptr->get_data_type();

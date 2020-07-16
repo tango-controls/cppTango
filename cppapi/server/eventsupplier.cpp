@@ -111,7 +111,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
     SendEventType ret;
     cout3 << "EventSupplier::detect_and_push_events(): called for attribute " << attr_name << std::endl;
 
-    Attribute &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str());
+    AttributePrivate &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str());
 
     now = time(NULL);
 
@@ -290,7 +290,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
 //--------------------------------------------------------------------------------------------------------------------
 
 bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct SuppliedEventData &attr_value,
-                                                 Attribute &attr, std::string &attr_name, DevFailed *except, TANGO_UNUSED(bool user_push))
+                                                 AttributePrivate &attr, std::string &attr_name, DevFailed *except, TANGO_UNUSED(bool user_push))
 {
     std::string event, domain_name;
     double delta_change_rel = 0.0;
@@ -516,7 +516,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl, struct
 
 bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
                                                   SuppliedEventData &attr_value,
-                                                  Attribute &attr,
+                                                  AttributePrivate &attr,
                                                   std::string &attr_name,
                                                   DevFailed *except,
                                                   struct timeval *time_bef_attr,
@@ -850,7 +850,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,
 
 bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
                                                    struct SuppliedEventData &attr_value,
-                                                   Attribute &attr,
+                                                   AttributePrivate &attr,
                                                    std::string &attr_name,
                                                    DevFailed *except,
                                                    struct timeval *time_bef_attr)
@@ -1066,7 +1066,7 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-bool EventSupplier::detect_change(Attribute &attr, struct SuppliedEventData &attr_value, bool archive,
+bool EventSupplier::detect_change(AttributePrivate &attr, struct SuppliedEventData &attr_value, bool archive,
                                   double &delta_change_rel, double &delta_change_abs, DevFailed *except,
                                   bool &force_change, DeviceImpl *dev)
 {
@@ -2362,7 +2362,7 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,
 
     cout3 << "EventSupplier::push_att_conf_events(): called for attribute " << attr_name << std::endl;
 
-    Attribute &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str());
+    AttributePrivate &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str());
 
 //
 // Called for AttributeConfig_3 or AttributeConfig_5 ?
@@ -2550,7 +2550,7 @@ bool EventSupplier::any_dev_intr_client(DeviceImpl *device_impl)
 
 void EventSupplier::convert_att_event_to_5(struct EventSupplier::SuppliedEventData &attr_value,
                                            struct EventSupplier::SuppliedEventData &sent_value,
-                                           bool &need_free, Attribute &attr)
+                                           bool &need_free, AttributePrivate &attr)
 {
     if (attr_value.attr_val_3 != nullptr)
     {
@@ -2574,7 +2574,7 @@ void EventSupplier::convert_att_event_to_5(struct EventSupplier::SuppliedEventDa
 
 void EventSupplier::convert_att_event_to_4(struct EventSupplier::SuppliedEventData &attr_value,
                                            struct EventSupplier::SuppliedEventData &sent_value,
-                                           bool &need_free, Attribute &attr)
+                                           bool &need_free, AttributePrivate &attr)
 {
     if (attr_value.attr_val_3 != nullptr)
     {
@@ -2598,7 +2598,7 @@ void EventSupplier::convert_att_event_to_4(struct EventSupplier::SuppliedEventDa
 
 void EventSupplier::convert_att_event_to_3(struct EventSupplier::SuppliedEventData &attr_value,
                                            struct EventSupplier::SuppliedEventData &sent_value,
-                                           bool &need_free, Attribute &attr)
+                                           bool &need_free, AttributePrivate &attr)
 {
     if (attr_value.attr_val_4 != nullptr)
     {

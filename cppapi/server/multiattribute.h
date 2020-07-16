@@ -112,7 +112,7 @@ public:
  * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	Attribute &get_attr_by_name(const char *attr_name);
+	AttributePrivate &get_attr_by_name(const char *attr_name);
 /**
  * Get Attribute object from its index.
  *
@@ -122,7 +122,7 @@ public:
  * @param ind The attribute index
  * @return A reference to the Attribute object
  */
-	Attribute &get_attr_by_ind(const long ind) {return *(attr_list[ind]);}
+	AttributePrivate &get_attr_by_ind(const long ind) {return *(attr_list[ind]);}
 /**
  * Get Writable Attribute object from its name.
  *
@@ -231,7 +231,7 @@ public:
  * Returns the vector of attribute objects.
  *
  */
-	 std::vector<Attribute *> &get_attribute_list(){return attr_list;}
+	 std::vector<AttributePrivate *> &get_attribute_list(){return attr_list;}
 //@}
 
 protected:
@@ -242,7 +242,7 @@ protected:
  *
  * This vector is often referred as the main attributes vector
  */
-	std::vector<Attribute *>	attr_list;
+	std::vector<AttributePrivate *>	attr_list;
 /**
  * The list of writable attribute.
  *
@@ -260,7 +260,7 @@ protected:
 public:
 /// @privatesection
 
-	void add_write_value(Attribute &);
+	void add_write_value(AttributePrivate &);
 	void add_attribute(std::string &,DeviceClass *,long);
 	void add_fwd_attribute(std::string &,DeviceClass *,long,Attr *);
 	void remove_attribute(std::string &,bool);
@@ -270,8 +270,8 @@ public:
 	void set_event_param(const EventSubscriptionStates&);
 	void add_alarmed_quality_factor(std::string &);
 	void add_default(std::vector<AttrProperty> &,std::string &,std::string &,long);
-	void add_attr(Attribute *att);
-	void update(Attribute &,std::string &);
+	void add_attr(AttributePrivate *att);
+	void update(AttributePrivate &,std::string &);
 	void check_idl_release(DeviceImpl *);
 	bool is_opt_prop(const std::string &);
 
@@ -281,12 +281,12 @@ private:
 	public:
 		struct AttributePtrAndIndex
 		{
-			Attribute * att_ptr;
+			AttributePrivate * att_ptr;
 			long att_index_in_vector;
 		};
 		MultiAttributeExt() {}
 		std::map<std::string, AttributePtrAndIndex> attr_map;
-		void put_attribute_in_map(Attribute * att, long index)
+		void put_attribute_in_map(AttributePrivate * att, long index)
 		{
 			AttributePtrAndIndex mapElement;
 			mapElement.att_ptr = att;

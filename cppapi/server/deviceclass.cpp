@@ -666,7 +666,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DeviceClass::throw_mem_value(DeviceImpl *dev,Attribute &att)
+void DeviceClass::throw_mem_value(DeviceImpl *dev,AttributePrivate &att)
 {
 	TangoSys_OMemStream o;
 
@@ -1505,7 +1505,7 @@ void DeviceClass::get_mcast_event(DServer *dserv)
 
 	for (unsigned int i = 0;i < device_list.size();++i)
 	{
-		std::vector<Attribute *> &att_list = device_list[i]->get_device_attr()->get_attribute_list();
+		std::vector<AttributePrivate *> &att_list = device_list[i]->get_device_attr()->get_attribute_list();
 		for (unsigned int j = 0;j < att_list.size();++j)
 		{
 			dserv->mcast_event_for_att(device_list[i]->get_name_lower(),att_list[j]->get_name_lower(),m_cast);

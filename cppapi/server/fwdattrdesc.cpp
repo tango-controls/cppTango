@@ -304,7 +304,7 @@ void FwdAttr::get_root_conf(std::string &dev_name,DeviceImpl *dev)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttr::read(DeviceImpl *dev,Attribute &attr)
+void FwdAttr::read(DeviceImpl *dev,AttributePrivate &attr)
 {
 //
 // Throw exception in case of fwd att wrongly configured or if the root device is not yet accessible

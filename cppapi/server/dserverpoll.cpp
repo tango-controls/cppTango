@@ -217,7 +217,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
                 long po = poll_list[i]->get_upd();
                 std::map<int,std::vector<std::string> >::iterator ite = polled_together.find(po);
 
-                Attribute &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
+                AttributePrivate &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
 
                 if (ite == polled_together.end())
                 {
@@ -285,7 +285,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
 			}
 			else
 			{
-				Attribute &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
+				AttributePrivate &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
 				returned_info = returned_info + att.get_name();
 			}
 		}
@@ -634,7 +634,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 	std::string obj_name((argin->svalue)[2]);
 	std::transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 	PollObjType type = Tango::POLL_CMD;
-	Attribute *attr_ptr;
+	AttributePrivate *attr_ptr;
 
 	bool local_request = false;
 	std::string::size_type pos = obj_type.rfind(LOCAL_POLL_REQUEST);
@@ -651,7 +651,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 	}
 	else if (obj_type == PollAttribute)
 	{
-		Attribute &att = dev->get_device_attr()->get_attr_by_name((argin->svalue)[2]);
+		AttributePrivate &att = dev->get_device_attr()->get_attr_by_name((argin->svalue)[2]);
 		attr_ptr = &att;
 		type = Tango::POLL_ATTR;
 	}
@@ -1544,7 +1544,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 
     if (type == Tango::POLL_ATTR)
     {
-        Attribute &att = dev->get_device_attr()->get_attr_by_name(obj_name.c_str());
+        AttributePrivate &att = dev->get_device_attr()->get_attr_by_name(obj_name.c_str());
         att.set_polling_period(0);
     }
 
@@ -1731,7 +1731,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 
 	if (type == POLL_ATTR)
 	{
-		Attribute &att = dev->get_device_attr()->get_attr_by_name((*argin)[2]);
+		AttributePrivate &att = dev->get_device_attr()->get_attr_by_name((*argin)[2]);
 
 		DevFailed ex;
 		ex.errors.length(1);

@@ -79,7 +79,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,std::string &att_name,AttrHi
 // Get a reference on the Attribute object
 //
 
-    Tango::Attribute &att = dev->get_device_attr()->get_attr_by_name(att_name.c_str());
+    Tango::AttributePrivate &att = dev->get_device_attr()->get_attr_by_name(att_name.c_str());
     Tango::WAttribute *w_att_ptr = NULL;
     Tango::AttrWriteType w_type = att.get_writable();
     if (w_type == Tango::READ_WRITE)

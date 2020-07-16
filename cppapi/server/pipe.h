@@ -362,10 +362,10 @@ public:
 	bool is_label_lib_default() {return label==name;}
 	bool is_desc_lib_default() {return desc==DescNotSpec;}
 	void set_upd_properties(const PipeConfig &,DeviceImpl *);
-	void set_properties(const Tango::PipeConfig &,DeviceImpl *,std::vector<Attribute::AttPropDb> &);
-	void upd_database(std::vector<Attribute::AttPropDb> &,std::string &);
+	void set_properties(const Tango::PipeConfig &,DeviceImpl *,std::vector<AttributePrivate::AttPropDb> &);
+	void upd_database(std::vector<AttributePrivate::AttPropDb> &,std::string &);
 	std::vector<PipeProperty> &get_user_default_properties() {return user_def_prop;}
-	void set_one_str_prop(const char *,const CORBA::String_member &,std::string &,std::vector<Attribute::AttPropDb> &,std::vector<PipeProperty> &,std::vector<PipeProperty> &,const char *);
+	void set_one_str_prop(const char *,const CORBA::String_member &,std::string &,std::vector<AttributePrivate::AttPropDb> &,std::vector<PipeProperty> &,std::vector<PipeProperty> &,const char *);
 	bool prop_in_list(const char *,std::string &,size_t,std::vector<PipeProperty> &);
 
 	DevicePipeBlob &get_blob() {return the_blob;}

@@ -149,7 +149,7 @@ class EventSupplier;
  * @ingroup Server
  */
 
-class Attribute
+class AttributePrivate
 {
 public:
 
@@ -207,7 +207,7 @@ public:
  * @param idx The index of the related Attr object in the MultiClassAttribute
  *            vector of Attr object
  */
-	Attribute(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::string &dev_name,long idx);
+	AttributePrivate(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::string &dev_name,long idx);
 //@}
 
 /**@name Destructor
@@ -217,7 +217,7 @@ public:
 /**
  * The attribute destructor.
  */
-	virtual ~Attribute();
+	virtual ~AttributePrivate();
 //@}
 
 /**@name Check attribute methods
@@ -2540,7 +2540,7 @@ protected:
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-inline void Attribute::throw_hard_coded_prop(const char *prop_name)
+inline void AttributePrivate::throw_hard_coded_prop(const char *prop_name)
 {
     TangoSys_OMemStream desc;
     desc << "Attribute property " << prop_name << " is not changeable at run time" << std::ends;
@@ -2563,7 +2563,7 @@ inline void Attribute::throw_hard_coded_prop(const char *prop_name)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-inline void Attribute::throw_startup_exception(const char* origin)
+inline void AttributePrivate::throw_startup_exception(const char* origin)
 {
 	if(check_startup_exceptions)
 	{
@@ -2639,7 +2639,7 @@ inline void Attribute::throw_startup_exception(const char* origin)
 //------------------------------------------------------------------------------------------------------------------
 
 
-inline bool Attribute::prop_in_list(const char *prop_name,std::string &prop_str,size_t list_size,std::vector<AttrProperty> &list)
+inline bool AttributePrivate::prop_in_list(const char *prop_name,std::string &prop_str,size_t list_size,std::vector<AttrProperty> &list)
 {
     bool ret = false;
 
@@ -2661,7 +2661,7 @@ inline bool Attribute::prop_in_list(const char *prop_name,std::string &prop_str,
     return ret;
 }
 
-inline void Attribute::set_change_event_sub(int cl_lib)
+inline void AttributePrivate::set_change_event_sub(int cl_lib)
 {
 	switch (cl_lib)
 	{
@@ -2680,7 +2680,7 @@ inline void Attribute::set_change_event_sub(int cl_lib)
 }
 
 
-inline void Attribute::set_periodic_event_sub(int cl_lib)
+inline void AttributePrivate::set_periodic_event_sub(int cl_lib)
 {
 	switch (cl_lib)
 	{
@@ -2699,7 +2699,7 @@ inline void Attribute::set_periodic_event_sub(int cl_lib)
 }
 
 
-inline void Attribute::set_archive_event_sub(int cl_lib)
+inline void AttributePrivate::set_archive_event_sub(int cl_lib)
 {
 	switch (cl_lib)
 	{
@@ -2718,7 +2718,7 @@ inline void Attribute::set_archive_event_sub(int cl_lib)
 }
 
 
-inline void Attribute::set_user_event_sub(int cl_lib)
+inline void AttributePrivate::set_user_event_sub(int cl_lib)
 {
 	switch (cl_lib)
 	{
@@ -2737,7 +2737,7 @@ inline void Attribute::set_user_event_sub(int cl_lib)
 }
 
 
-inline void Attribute::set_att_conf_event_sub(int cl_lib)
+inline void AttributePrivate::set_att_conf_event_sub(int cl_lib)
 {
 	switch (cl_lib)
 	{

@@ -123,7 +123,7 @@ void LastAttrValue::store(
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-Attribute::Attribute(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::string &dev_name,long idx)
+AttributePrivate::AttributePrivate(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::string &dev_name,long idx)
 :date(true),quality(Tango::ATTR_VALID),check_min_value(false),check_max_value(false),
  enum_nb(0),loc_enum_ptr(nullptr),poll_period(0),event_period(0),archive_period(0),last_periodic(0.0),
  archive_last_periodic(0.0),periodic_counter(0),archive_periodic_counter(0),
@@ -138,7 +138,7 @@ Attribute::Attribute(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::st
 // Create the extension class
 //
 
-	ext = new Attribute::AttributeExt();
+	ext = new AttributePrivate::AttributeExt();
 
 
 	idx_in_attr = idx;
@@ -233,7 +233,7 @@ Attribute::Attribute(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::st
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-Attribute::~Attribute()
+AttributePrivate::~AttributePrivate()
 {
 	try
 	{
@@ -260,7 +260,7 @@ Attribute::~Attribute()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::init_event_prop(std::vector<AttrProperty> &prop_list,const std::string &dev_name,Attr &att)
+void AttributePrivate::init_event_prop(std::vector<AttrProperty> &prop_list,const std::string &dev_name,Attr &att)
 {
 	rel_change[0] = INT_MAX;			// default for relative change is none
 	rel_change[1] = INT_MAX;			// default for relative change is none
@@ -666,7 +666,7 @@ void Attribute::init_event_prop(std::vector<AttrProperty> &prop_list,const std::
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-bool Attribute::init_check_val_prop (std::vector<AttrProperty> &prop_list,std::string &dev_name,const char* prop_name,
+bool AttributePrivate::init_check_val_prop (std::vector<AttrProperty> &prop_list,std::string &dev_name,const char* prop_name,
                                     std::string& prop_str,Tango::Attr_CheckVal &prop,Tango::Attr_CheckVal &prop_comp)
 {
     prop_str = get_attr_value(prop_list, prop_name);
@@ -928,7 +928,7 @@ bool Attribute::init_check_val_prop (std::vector<AttrProperty> &prop_list,std::s
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::init_opt_prop(std::vector<AttrProperty> &prop_list,std::string &dev_name)
+void AttributePrivate::init_opt_prop(std::vector<AttrProperty> &prop_list,std::string &dev_name)
 {
 
 //
@@ -1182,7 +1182,7 @@ void Attribute::init_opt_prop(std::vector<AttrProperty> &prop_list,std::string &
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::init_enum_prop(std::vector<AttrProperty> &prop_list)
+void AttributePrivate::init_enum_prop(std::vector<AttrProperty> &prop_list)
 {
 	try
 	{
@@ -1217,7 +1217,7 @@ void Attribute::init_enum_prop(std::vector<AttrProperty> &prop_list)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::build_check_enum_labels(std::string &labs)
+void AttributePrivate::build_check_enum_labels(std::string &labs)
 {
 	std::string::size_type pos = 0;
 	std::string::size_type start = 0;
@@ -1280,7 +1280,7 @@ void Attribute::build_check_enum_labels(std::string &labs)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::add_startup_exception(std::string prop_name,const DevFailed &except)
+void AttributePrivate::add_startup_exception(std::string prop_name,const DevFailed &except)
 {
 	startup_exceptions.insert(std::pair<std::string, DevFailed>(prop_name,except));
 	check_startup_exceptions = true;
@@ -1302,7 +1302,7 @@ void Attribute::add_startup_exception(std::string prop_name,const DevFailed &exc
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::delete_startup_exception(std::string prop_name,std::string dev_name)
+void AttributePrivate::delete_startup_exception(std::string prop_name,std::string dev_name)
 {
 	if(check_startup_exceptions == true)
 	{
@@ -1343,7 +1343,7 @@ void Attribute::delete_startup_exception(std::string prop_name,std::string dev_n
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::throw_err_format(const char *prop_name,const std::string &dev_name,const char *origin)
+void AttributePrivate::throw_err_format(const char *prop_name,const std::string &dev_name,const char *origin)
 {
 	TangoSys_OMemStream o;
 
@@ -1369,7 +1369,7 @@ void Attribute::throw_err_format(const char *prop_name,const std::string &dev_na
 //
 //--------------------------------------------------------------------------
 
-void Attribute::throw_incoherent_val_err(const char *min_prop,const char *max_prop,const std::string &dev_name,const char *origin)
+void AttributePrivate::throw_incoherent_val_err(const char *min_prop,const char *max_prop,const std::string &dev_name,const char *origin)
 {
 	TangoSys_OMemStream o;
 
@@ -1393,7 +1393,7 @@ void Attribute::throw_incoherent_val_err(const char *min_prop,const char *max_pr
 //
 //--------------------------------------------------------------------------
 
-void Attribute::throw_err_data_type(const char *prop_name,const std::string &dev_name,const char *origin)
+void AttributePrivate::throw_err_data_type(const char *prop_name,const std::string &dev_name,const char *origin)
 {
 	TangoSys_OMemStream o;
 
@@ -1417,7 +1417,7 @@ void Attribute::throw_err_data_type(const char *prop_name,const std::string &dev
 //
 //--------------------------------------------------------------------------
 
-void Attribute::throw_min_max_value(std::string &dev_name,std::string &memorized_value,MinMaxValueCheck check_type)
+void AttributePrivate::throw_min_max_value(std::string &dev_name,std::string &memorized_value,MinMaxValueCheck check_type)
 {
 	TangoSys_OMemStream o;
 
@@ -1443,7 +1443,7 @@ void Attribute::throw_min_max_value(std::string &dev_name,std::string &memorized
 //
 //--------------------------------------------------------------------------
 
-bool Attribute::is_polled()
+bool AttributePrivate::is_polled()
 {
     Tango::Util *tg = Util::instance();
     if ( dev == NULL )
@@ -1512,7 +1512,7 @@ bool Attribute::is_polled()
 	return false;
 }
 
-bool Attribute::is_polled(DeviceImpl *the_dev)
+bool AttributePrivate::is_polled(DeviceImpl *the_dev)
 {
     if ((the_dev != NULL) && (dev == NULL))
     {
@@ -1535,7 +1535,7 @@ bool Attribute::is_polled(DeviceImpl *the_dev)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-bool Attribute::is_writ_associated()
+bool AttributePrivate::is_writ_associated()
 {
 	if (writable_attr_name != AssocWritNotSpec)
 		return true;
@@ -1559,7 +1559,7 @@ bool Attribute::is_writ_associated()
 //-------------------------------------------------------------------------------------------------------------------
 
 
-std::string &Attribute::get_attr_value(std::vector <AttrProperty> &prop_list,const char *prop_name)
+std::string &AttributePrivate::get_attr_value(std::vector <AttrProperty> &prop_list,const char *prop_name)
 {
 	std::vector<AttrProperty>::iterator pos;
 
@@ -1595,7 +1595,7 @@ std::string &Attribute::get_attr_value(std::vector <AttrProperty> &prop_list,con
 //------------------------------------------------------------------------------------------------------------------
 
 
-long Attribute::get_lg_attr_value(std::vector <AttrProperty> &prop_list,const char *prop_name)
+long AttributePrivate::get_lg_attr_value(std::vector <AttrProperty> &prop_list,const char *prop_name)
 {
 	std::vector<AttrProperty>::iterator pos;
 
@@ -1626,7 +1626,7 @@ long Attribute::get_lg_attr_value(std::vector <AttrProperty> &prop_list,const ch
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::set_data_size()
+void AttributePrivate::set_data_size()
 {
 	switch(data_format)
 	{
@@ -1658,7 +1658,7 @@ void Attribute::set_data_size()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::set_time()
+void AttributePrivate::set_time()
 {
 	if (date == true)
 	{
@@ -1692,7 +1692,7 @@ void Attribute::set_time()
 //
 //--------------------------------------------------------------------------
 
-bool Attribute::check_alarm()
+bool AttributePrivate::check_alarm()
 {
 	bool returned = false;
 
@@ -1734,8 +1734,8 @@ bool Attribute::check_alarm()
 
 	std::bitset<numFlags> &bs = is_alarmed();
 
-	if ((bs.test(Attribute::min_level) == true) ||
-	    (bs.test(Attribute::max_level) == true))
+	if ((bs.test(AttributePrivate::min_level) == true) ||
+	    (bs.test(AttributePrivate::max_level) == true))
 	{
 		if (check_level_alarm() == true)
 			returned = true;
@@ -1743,7 +1743,7 @@ bool Attribute::check_alarm()
 
 	if (returned == false)
 	{
-		if ((bs.test(Attribute::min_warn) == true) || (bs.test(Attribute::max_warn) == true))
+		if ((bs.test(AttributePrivate::min_warn) == true) || (bs.test(AttributePrivate::max_warn) == true))
 		{
 			if (check_warn_alarm() == true)
 				returned = true;
@@ -1754,7 +1754,7 @@ bool Attribute::check_alarm()
 // If the RDS alarm is set, check attribute level
 //
 
-	if ((bs.test(Attribute::rds) == true))
+	if ((bs.test(AttributePrivate::rds) == true))
 	{
 		if (check_rds_alarm() == true)
 			returned = true;
@@ -1777,7 +1777,7 @@ bool Attribute::check_alarm()
 //
 //--------------------------------------------------------------------------
 
-bool Attribute::check_level_alarm()
+bool AttributePrivate::check_level_alarm()
 {
 	bool returned = false;
 	bool real_returned = false;
@@ -2331,7 +2331,7 @@ bool Attribute::check_level_alarm()
 //
 //--------------------------------------------------------------------------
 
-bool Attribute::check_warn_alarm()
+bool AttributePrivate::check_warn_alarm()
 {
 	bool returned = false;
 	bool real_returned = false;
@@ -2871,7 +2871,7 @@ bool Attribute::check_warn_alarm()
 //
 //--------------------------------------------------------------------------
 
-bool Attribute::check_scalar_wattribute()
+bool AttributePrivate::check_scalar_wattribute()
 {
 	if ((writable == Tango::READ_WRITE) ||
 	    (writable == Tango::READ_WITH_WRITE))
@@ -2898,7 +2898,7 @@ bool Attribute::check_scalar_wattribute()
 //
 //--------------------------------------------------------------------------
 
-void Attribute::delete_seq()
+void AttributePrivate::delete_seq()
 {
 	switch (data_type)
 	{
@@ -2983,7 +2983,7 @@ void Attribute::delete_seq()
 //
 //--------------------------------------------------------------------------
 
-void Attribute::add_write_value(Tango::DevVarShortArray *val_ptr)
+void AttributePrivate::add_write_value(Tango::DevVarShortArray *val_ptr)
 {
 	if (data_format == Tango::SCALAR)
 	{
@@ -2999,7 +2999,7 @@ void Attribute::add_write_value(Tango::DevVarShortArray *val_ptr)
 	}
 }
 
-void Attribute::add_write_value(Tango::DevVarLongArray *val_ptr)
+void AttributePrivate::add_write_value(Tango::DevVarLongArray *val_ptr)
 {
 	if (data_format == Tango::SCALAR)
 	{
@@ -3015,7 +3015,7 @@ void Attribute::add_write_value(Tango::DevVarLongArray *val_ptr)
 	}
 }
 
-void Attribute::add_write_value(Tango::DevVarLong64Array *val_ptr)
+void AttributePrivate::add_write_value(Tango::DevVarLong64Array *val_ptr)
 {
 	if (data_format == Tango::SCALAR)
 	{
@@ -3031,7 +3031,7 @@ void Attribute::add_write_value(Tango::DevVarLong64Array *val_ptr)
 	}
 }
 
-void Attribute::add_write_value(Tango::DevVarDoubleArray *val_ptr)
+void AttributePrivate::add_write_value(Tango::DevVarDoubleArray *val_ptr)
 {
 	if (data_format == Tango::SCALAR)
 	{
@@ -3047,7 +3047,7 @@ void Attribute::add_write_value(Tango::DevVarDoubleArray *val_ptr)
 	}
 }
 
-void Attribute::add_write_value(Tango::DevVarStringArray *val_ptr)
+void AttributePrivate::add_write_value(Tango::DevVarStringArray *val_ptr)
 {
 	if (data_format == Tango::SCALAR)
 	{
@@ -3073,7 +3073,7 @@ void Attribute::add_write_value(Tango::DevVarStringArray *val_ptr)
 	}
 }
 
-void Attribute::add_write_value(Tango::DevVarFloatArray *val_ptr)
+void AttributePrivate::add_write_value(Tango::DevVarFloatArray *val_ptr)
 {
 	if (data_format == Tango::SCALAR)
 	{
@@ -3089,7 +3089,7 @@ void Attribute::add_write_value(Tango::DevVarFloatArray *val_ptr)
 	}
 }
 
-void Attribute::add_write_value(Tango::DevVarBooleanArray *val_ptr)
+void AttributePrivate::add_write_value(Tango::DevVarBooleanArray *val_ptr)
 {
 	if (data_format == Tango::SCALAR)
 	{
@@ -3105,7 +3105,7 @@ void Attribute::add_write_value(Tango::DevVarBooleanArray *val_ptr)
 	}
 }
 
-void Attribute::add_write_value(Tango::DevVarUShortArray *val_ptr)
+void AttributePrivate::add_write_value(Tango::DevVarUShortArray *val_ptr)
 {
 	if (data_format == Tango::SCALAR)
 	{
@@ -3121,7 +3121,7 @@ void Attribute::add_write_value(Tango::DevVarUShortArray *val_ptr)
 	}
 }
 
-void Attribute::add_write_value(Tango::DevVarCharArray *val_ptr)
+void AttributePrivate::add_write_value(Tango::DevVarCharArray *val_ptr)
 {
 	if (data_format == Tango::SCALAR)
 	{
@@ -3137,7 +3137,7 @@ void Attribute::add_write_value(Tango::DevVarCharArray *val_ptr)
 	}
 }
 
-void Attribute::add_write_value(Tango::DevVarULongArray *val_ptr)
+void AttributePrivate::add_write_value(Tango::DevVarULongArray *val_ptr)
 {
 	if (data_format == Tango::SCALAR)
 	{
@@ -3153,7 +3153,7 @@ void Attribute::add_write_value(Tango::DevVarULongArray *val_ptr)
 	}
 }
 
-void Attribute::add_write_value(Tango::DevVarULong64Array *val_ptr)
+void AttributePrivate::add_write_value(Tango::DevVarULong64Array *val_ptr)
 {
 	if (data_format == Tango::SCALAR)
 	{
@@ -3169,7 +3169,7 @@ void Attribute::add_write_value(Tango::DevVarULong64Array *val_ptr)
 	}
 }
 
-void Attribute::add_write_value(Tango::DevVarStateArray *val_ptr)
+void AttributePrivate::add_write_value(Tango::DevVarStateArray *val_ptr)
 {
 	if (data_format == Tango::SCALAR)
 	{
@@ -3185,7 +3185,7 @@ void Attribute::add_write_value(Tango::DevVarStateArray *val_ptr)
 	}
 }
 
-void Attribute::add_write_value(Tango::DevEncoded &val_ref)
+void AttributePrivate::add_write_value(Tango::DevEncoded &val_ref)
 {
 	tmp_enc[1] = val_ref;
 	value.enc_seq = new Tango::DevVarEncodedArray(data_size + 1,data_size + 1,tmp_enc,false);
@@ -3208,7 +3208,7 @@ void Attribute::add_write_value(Tango::DevEncoded &val_ref)
 //--------------------------------------------------------------------------------------------------------------------
 
 
-void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::DeviceImpl *d)
+void AttributePrivate::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::DeviceImpl *d)
 {
 	if ((name_lower == "state") || (name_lower == "status"))
 	{
@@ -3432,7 +3432,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::D
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_4 *ptr_4,Tango::DeviceImpl *d)
+void AttributePrivate::Attribute_2_AttributeValue(Tango::AttributeValue_4 *ptr_4,Tango::DeviceImpl *d)
 {
 	Attribute_2_AttributeValue_base(ptr_4,d);
 
@@ -3460,7 +3460,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_4 *ptr_4,Tango:
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_5 *ptr_5,Tango::DeviceImpl *d)
+void AttributePrivate::Attribute_2_AttributeValue(Tango::AttributeValue_5 *ptr_5,Tango::DeviceImpl *d)
 {
 	Attribute_2_AttributeValue_base(ptr_5,d);
 
@@ -3492,7 +3492,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_5 *ptr_5,Tango:
 //-------------------------------------------------------------------------------------------------------------------
 
 
-void Attribute::AttributeValue_4_2_AttributeValue_3(const Tango::AttributeValue_4 *ptr_4,Tango::AttributeValue_3 *ptr_3)
+void AttributePrivate::AttributeValue_4_2_AttributeValue_3(const Tango::AttributeValue_4 *ptr_4,Tango::AttributeValue_3 *ptr_3)
 {
 
 //
@@ -3518,7 +3518,7 @@ void Attribute::AttributeValue_4_2_AttributeValue_3(const Tango::AttributeValue_
 	ptr_3->err_list = ptr_4->err_list;
 }
 
-void Attribute::AttributeValue_5_2_AttributeValue_3(const Tango::AttributeValue_5 *att_5,Tango::AttributeValue_3 *att_3)
+void AttributePrivate::AttributeValue_5_2_AttributeValue_3(const Tango::AttributeValue_5 *att_5,Tango::AttributeValue_3 *att_3)
 {
 //
 // First copy the data
@@ -3543,7 +3543,7 @@ void Attribute::AttributeValue_5_2_AttributeValue_3(const Tango::AttributeValue_
 	att_3->err_list = att_5->err_list;
 }
 
-void Attribute::AttributeValue_3_2_AttributeValue_4(const Tango::AttributeValue_3 *att_3,Tango::AttributeValue_4 *att_4)
+void AttributePrivate::AttributeValue_3_2_AttributeValue_4(const Tango::AttributeValue_3 *att_3,Tango::AttributeValue_4 *att_4)
 {
 // TODO: Code data from Any to Union
 
@@ -3562,7 +3562,7 @@ void Attribute::AttributeValue_3_2_AttributeValue_4(const Tango::AttributeValue_
 	att_4->err_list = att_3->err_list;
 }
 
-void Attribute::AttributeValue_5_2_AttributeValue_4(const Tango::AttributeValue_5 *att_5,Tango::AttributeValue_4 *att_4)
+void AttributePrivate::AttributeValue_5_2_AttributeValue_4(const Tango::AttributeValue_5 *att_5,Tango::AttributeValue_4 *att_4)
 {
 //
 // First pass the data from one union to another WITHOUT copying them
@@ -3585,7 +3585,7 @@ void Attribute::AttributeValue_5_2_AttributeValue_4(const Tango::AttributeValue_
 	att_4->err_list = att_5->err_list;
 }
 
-void Attribute::AttributeValue_3_2_AttributeValue_5(const Tango::AttributeValue_3 *att_3,Tango::AttributeValue_5 *att_5)
+void AttributePrivate::AttributeValue_3_2_AttributeValue_5(const Tango::AttributeValue_3 *att_3,Tango::AttributeValue_5 *att_5)
 {
 // TODO: Code data from Any to Union
 
@@ -3605,7 +3605,7 @@ void Attribute::AttributeValue_3_2_AttributeValue_5(const Tango::AttributeValue_
 	att_5->err_list = att_3->err_list;
 }
 
-void Attribute::AttributeValue_4_2_AttributeValue_5(const Tango::AttributeValue_4 *att_4,Tango::AttributeValue_5 *att_5)
+void AttributePrivate::AttributeValue_4_2_AttributeValue_5(const Tango::AttributeValue_4 *att_4,Tango::AttributeValue_5 *att_5)
 {
 //
 // First pass the data from one union to another WITHOUT copying them
@@ -3646,7 +3646,7 @@ void Attribute::AttributeValue_4_2_AttributeValue_5(const Tango::AttributeValue_
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::AttributeConfig_5_2_AttributeConfig_3(const Tango::AttributeConfig_5 &conf5,Tango::AttributeConfig_3 &conf3)
+void AttributePrivate::AttributeConfig_5_2_AttributeConfig_3(const Tango::AttributeConfig_5 &conf5,Tango::AttributeConfig_3 &conf3)
 {
 	size_t j;
 
@@ -3726,7 +3726,7 @@ void Attribute::AttributeConfig_5_2_AttributeConfig_3(const Tango::AttributeConf
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::AttributeConfig_3_2_AttributeConfig_5(const Tango::AttributeConfig_3 &conf3,Tango::AttributeConfig_5 &conf5)
+void AttributePrivate::AttributeConfig_3_2_AttributeConfig_5(const Tango::AttributeConfig_3 &conf3,Tango::AttributeConfig_5 &conf5)
 {
 	size_t j;
 
@@ -3804,7 +3804,7 @@ void Attribute::AttributeConfig_3_2_AttributeConfig_5(const Tango::AttributeConf
 //---------------------------------------------------------------------------------------------------------------------
 
 
-void Attribute::fire_change_event(DevFailed *except)
+void AttributePrivate::fire_change_event(DevFailed *except)
 {
 	cout4 << "Attribute::fire_change_event() entering ..." << std::endl;
 
@@ -4212,7 +4212,7 @@ void Attribute::fire_change_event(DevFailed *except)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::fire_archive_event(DevFailed *except)
+void AttributePrivate::fire_archive_event(DevFailed *except)
 {
 	cout4 << "Attribute::fire_archive_event() entering ..." << std::endl;
 
@@ -4643,7 +4643,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 //--------------------------------------------------------------------------------------------------------------------
 
 
-void Attribute::fire_event(std::vector<std::string> &filt_names,std::vector<double> &filt_vals,DevFailed *except)
+void AttributePrivate::fire_event(std::vector<std::string> &filt_names,std::vector<double> &filt_vals,DevFailed *except)
 {
 	cout4 << "Attribute::fire_event() entring ..." << std::endl;
 
@@ -4928,7 +4928,7 @@ void Attribute::fire_event(std::vector<std::string> &filt_names,std::vector<doub
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::fire_error_periodic_event(DevFailed *except)
+void AttributePrivate::fire_error_periodic_event(DevFailed *except)
 {
 	cout4 << "Attribute::fire_error_periodic_event() entring ..." << std::endl;
 
@@ -5037,7 +5037,7 @@ void Attribute::fire_error_periodic_event(DevFailed *except)
 //
 //--------------------------------------------------------------------------
 
-void Attribute::set_quality(Tango::AttrQuality qua,bool send_event)
+void AttributePrivate::set_quality(Tango::AttrQuality qua,bool send_event)
 {
 	quality = qua;
 	if (send_event == true)
@@ -5055,7 +5055,7 @@ void Attribute::set_quality(Tango::AttrQuality qua,bool send_event)
 //
 //--------------------------------------------------------------------------
 
-void Attribute::upd_att_prop_db(Tango::Attr_CheckVal &new_value,
+void AttributePrivate::upd_att_prop_db(Tango::Attr_CheckVal &new_value,
 				const char *prop_name)
 {
 	cout4 << "Entering upd_att_prop_db method for attribute " << name <<", property = " << prop_name << std::endl;
@@ -5153,7 +5153,7 @@ void Attribute::upd_att_prop_db(Tango::Attr_CheckVal &new_value,
 //                  and removes the attribute from the list of polled attributes.
 //--------------------------------------------------------------------------
 
-void Attribute::remove_configuration()
+void AttributePrivate::remove_configuration()
 {
 	cout4 << "Entering remove_configuration() method for attribute " << name << std::endl;
 
@@ -5232,7 +5232,7 @@ void Attribute::remove_configuration()
 //
 //--------------------------------------------------------------------------
 
-DeviceImpl *Attribute::get_att_device()
+DeviceImpl *AttributePrivate::get_att_device()
 {
 	if (dev == NULL)
 	{
@@ -5251,7 +5251,7 @@ DeviceImpl *Attribute::get_att_device()
 //
 //--------------------------------------------------------------------------
 
-void Attribute::set_attr_serial_model(AttrSerialModel ser_model)
+void AttributePrivate::set_attr_serial_model(AttrSerialModel ser_model)
 {
 	if (ser_model == Tango::ATTR_BY_USER)
 	{
@@ -5281,7 +5281,7 @@ void Attribute::set_attr_serial_model(AttrSerialModel ser_model)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-DeviceClass *Attribute::get_att_device_class(std::string &dev_name)
+DeviceClass *AttributePrivate::get_att_device_class(std::string &dev_name)
 {
 
 //
@@ -5349,7 +5349,7 @@ DeviceClass *Attribute::get_att_device_class(std::string &dev_name)
 //
 //--------------------------------------------------------------------------
 
-void Attribute::log_quality()
+void AttributePrivate::log_quality()
 {
 
 //
@@ -5399,7 +5399,7 @@ void Attribute::log_quality()
     }
 }
 
-void Attribute::log_alarm_quality() const
+void AttributePrivate::log_alarm_quality() const
 {
     if (alarm[min_level])
     {
@@ -5434,7 +5434,7 @@ void Attribute::log_alarm_quality() const
 //
 //--------------------------------------------------------------------------
 
-void Attribute::avns_in_db(const char *prop_name,std::string &dev_name)
+void AttributePrivate::avns_in_db(const char *prop_name,std::string &dev_name)
 {
     Tango::Util *tg = Tango::Util::instance();
 
@@ -5477,7 +5477,7 @@ void Attribute::avns_in_db(const char *prop_name,std::string &dev_name)
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-void Attribute::avns_in_att(prop_type pt)
+void AttributePrivate::avns_in_att(prop_type pt)
 {
     Tango::Util *tg = Tango::Util::instance();
     Tango::TangoMonitor *mon_ptr = NULL;
@@ -5534,7 +5534,7 @@ void Attribute::avns_in_att(prop_type pt)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::set_format_notspec()
+void AttributePrivate::set_format_notspec()
 {
 	switch (data_type)
 	{
@@ -5586,7 +5586,7 @@ void Attribute::set_format_notspec()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool Attribute::is_format_notspec(const char *format)
+bool AttributePrivate::is_format_notspec(const char *format)
 {
 	bool ret = false;
 
@@ -5644,7 +5644,7 @@ bool Attribute::is_format_notspec(const char *format)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::def_format_in_dbdatum(DbDatum &db)
+void AttributePrivate::def_format_in_dbdatum(DbDatum &db)
 {
 	switch (data_type)
 	{
@@ -5691,7 +5691,7 @@ void Attribute::def_format_in_dbdatum(DbDatum &db)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool Attribute::change_event_subscribed()
+bool AttributePrivate::change_event_subscribed()
 {
 	bool ret = false;
 	time_t now = time(NULL);
@@ -5728,7 +5728,7 @@ bool Attribute::change_event_subscribed()
 	return ret;
 }
 
-bool Attribute::periodic_event_subscribed()
+bool AttributePrivate::periodic_event_subscribed()
 {
 	bool ret = false;
 	time_t now = time(NULL);
@@ -5765,7 +5765,7 @@ bool Attribute::periodic_event_subscribed()
 	return ret;
 }
 
-bool Attribute::archive_event_subscribed()
+bool AttributePrivate::archive_event_subscribed()
 {
 	bool ret = false;
 	time_t now = time(NULL);
@@ -5802,7 +5802,7 @@ bool Attribute::archive_event_subscribed()
 	return ret;
 }
 
-bool Attribute::quality_event_subscribed()
+bool AttributePrivate::quality_event_subscribed()
 {
 	bool ret = false;
 
@@ -5818,7 +5818,7 @@ bool Attribute::quality_event_subscribed()
 	return ret;
 }
 
-bool Attribute::user_event_subscribed()
+bool AttributePrivate::user_event_subscribed()
 {
 	bool ret = false;
 	time_t now = time(NULL);
@@ -5855,7 +5855,7 @@ bool Attribute::user_event_subscribed()
 	return ret;
 }
 
-bool Attribute::attr_conf_event_subscribed()
+bool AttributePrivate::attr_conf_event_subscribed()
 {
 	bool ret = false;
 
@@ -5882,7 +5882,7 @@ bool Attribute::attr_conf_event_subscribed()
 	return ret;
 }
 
-bool Attribute::data_ready_event_subscribed()
+bool AttributePrivate::data_ready_event_subscribed()
 {
 	bool ret = false;
 
@@ -5913,7 +5913,7 @@ bool Attribute::data_ready_event_subscribed()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::set_client_lib(int client_lib_version, EventType event_type)
+void AttributePrivate::set_client_lib(int client_lib_version, EventType event_type)
 {
 	cout4 << "Attribute::set_client_lib("
 		<< client_lib_version << ","
@@ -5943,7 +5943,7 @@ void Attribute::set_client_lib(int client_lib_version, EventType event_type)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Attribute::remove_client_lib(int _l,const std::string &ev_name)
+void AttributePrivate::remove_client_lib(int _l,const std::string &ev_name)
 {
 	int i;
 	for (i = 0;i < numEventType;i++)

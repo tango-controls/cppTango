@@ -61,7 +61,7 @@ namespace Tango
 //-------------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
+void AttributePrivate::set_value(T *enum_ptr,long x,long y,bool release)
 {
 //
 // Throw exception if attribute data type is not correct
@@ -246,7 +246,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 }
 
 template <typename T>
-void Attribute::set_value_date_quality(T *p_data,time_t t,Tango::AttrQuality qual,long x,long y,bool release)
+void AttributePrivate::set_value_date_quality(T *p_data,time_t t,Tango::AttrQuality qual,long x,long y,bool release)
 {
 	set_value(p_data,x,y,release);
 	set_quality(qual,false);
@@ -275,7 +275,7 @@ void Attribute::set_value_date_quality(T *p_data,struct _timeb &t,Tango::AttrQua
 }
 #else
 template <typename T>
-void Attribute::set_value_date_quality(T *p_data,struct timeval &t,Tango::AttrQuality qual,long x,long y,bool release)
+void AttributePrivate::set_value_date_quality(T *p_data,struct timeval &t,Tango::AttrQuality qual,long x,long y,bool release)
 {
 	set_value(p_data,x,y,release);
 	set_quality(qual,false);

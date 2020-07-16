@@ -549,7 +549,7 @@ public:
 
 	virtual bool is_fwd() {return false;}
 
-	virtual void read(DeviceImpl *,Attribute &) {};
+	virtual void read(DeviceImpl *,AttributePrivate &) {};
 	virtual void write(DeviceImpl *,WAttribute &) {};
 	virtual bool is_allowed(DeviceImpl *,AttReqType) {return true;}
 

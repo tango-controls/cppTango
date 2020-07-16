@@ -206,7 +206,7 @@ void DServer::event_subscription(std::string &dev_name,std::string &obj_name,std
 
 		MultiAttribute *m_attr = dev_impl->get_device_attr();
 		int attr_ind = m_attr->get_attr_ind_by_name(obj_name.c_str());
-		Attribute &attribute = m_attr->get_attr_by_ind(attr_ind);
+		AttributePrivate &attribute = m_attr->get_attr_by_ind(attr_ind);
 
 //
 // Refuse subscription on forwarded attribute and notifd
@@ -996,7 +996,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
 		if (intr_change == false && pipe_event == false)
 		{
-			Attribute &attribute = dev->get_device_attr()->get_attr_by_name(obj_name.c_str());
+			AttributePrivate &attribute = dev->get_device_attr()->get_attr_by_name(obj_name.c_str());
 			EventType et;
 			tg->event_name_2_event_type(event,et);
 

@@ -53,7 +53,7 @@ namespace Tango
 //------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::check_hard_coded_properties(const T &user_conf)
+void AttributePrivate::check_hard_coded_properties(const T &user_conf)
 {
 //
 // Check attribute name
@@ -141,7 +141,7 @@ void Attribute::check_hard_coded_properties(const T &user_conf)
 //------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::set_hard_coded_properties(const T &user_conf)
+void AttributePrivate::set_hard_coded_properties(const T &user_conf)
 {
     data_type = user_conf.data_type;
     data_format = user_conf.data_format;
@@ -167,7 +167,7 @@ void Attribute::set_hard_coded_properties(const T &user_conf)
 //-------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::set_min_alarm(const T &new_min_alarm)
+void AttributePrivate::set_min_alarm(const T &new_min_alarm)
 {
 
 //
@@ -342,7 +342,7 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
 //-------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::get_min_alarm(T &min_al)
+void AttributePrivate::get_min_alarm(T &min_al)
 {
     if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
         (data_type != ranges_type2const<T>::enu))
@@ -391,7 +391,7 @@ void Attribute::get_min_alarm(T &min_al)
 //------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::set_max_alarm(const T &new_max_alarm)
+void AttributePrivate::set_max_alarm(const T &new_max_alarm)
 {
 
 //
@@ -567,7 +567,7 @@ void Attribute::set_max_alarm(const T &new_max_alarm)
 //-------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::get_max_alarm(T &max_al)
+void AttributePrivate::get_max_alarm(T &max_al)
 {
     if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
         (data_type != ranges_type2const<T>::enu))
@@ -612,7 +612,7 @@ void Attribute::get_max_alarm(T &max_al)
 //-------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::set_min_warning(const T &new_min_warning)
+void AttributePrivate::set_min_warning(const T &new_min_warning)
 {
 
 //
@@ -787,7 +787,7 @@ void Attribute::set_min_warning(const T &new_min_warning)
 //-------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::get_min_warning(T &min_war)
+void AttributePrivate::get_min_warning(T &min_war)
 {
     if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
         (data_type != ranges_type2const<T>::enu))
@@ -832,7 +832,7 @@ void Attribute::get_min_warning(T &min_war)
 //-----------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::set_max_warning(const T &new_max_warning)
+void AttributePrivate::set_max_warning(const T &new_max_warning)
 {
 
 //
@@ -1005,7 +1005,7 @@ void Attribute::set_max_warning(const T &new_max_warning)
 //-------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::get_max_warning(T &max_war)
+void AttributePrivate::get_max_warning(T &max_war)
 {
     if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
         (data_type != ranges_type2const<T>::enu))
@@ -1049,7 +1049,7 @@ void Attribute::get_max_warning(T &max_war)
 //-------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::get_properties(Tango::MultiAttrProp<T> &props)
+void AttributePrivate::get_properties(Tango::MultiAttrProp<T> &props)
 {
 
 //
@@ -1117,7 +1117,7 @@ void Attribute::get_properties(Tango::MultiAttrProp<T> &props)
 //-------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
+void AttributePrivate::set_properties(Tango::MultiAttrProp<T> &props)
 {
 
 //
@@ -1249,7 +1249,7 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 //-------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::set_upd_properties(const T &conf, std::string &dev_name, bool from_ds)
+void AttributePrivate::set_upd_properties(const T &conf, std::string &dev_name, bool from_ds)
 {
 
 //
@@ -1364,7 +1364,7 @@ void Attribute::set_upd_properties(const T &conf, std::string &dev_name, bool fr
 //--------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void Attribute::Attribute_2_AttributeValue_base(T *ptr, Tango::DeviceImpl *d)
+void AttributePrivate::Attribute_2_AttributeValue_base(T *ptr, Tango::DeviceImpl *d)
 {
     if ((name_lower == "state") || (name_lower == "status"))
     {
@@ -1459,7 +1459,7 @@ void Attribute::Attribute_2_AttributeValue_base(T *ptr, Tango::DeviceImpl *d)
 }
 
 template<typename T, typename V>
-void Attribute::AttrValUnion_fake_copy(const T *src, V *dst)
+void AttributePrivate::AttrValUnion_fake_copy(const T *src, V *dst)
 {
     switch (src->value._d())
     {
@@ -1594,7 +1594,7 @@ void Attribute::AttrValUnion_fake_copy(const T *src, V *dst)
 }
 
 template<typename T>
-void Attribute::AttrValUnion_2_Any(const T *src, CORBA::Any &dst)
+void AttributePrivate::AttrValUnion_2_Any(const T *src, CORBA::Any &dst)
 {
     switch (src->value._d())
     {

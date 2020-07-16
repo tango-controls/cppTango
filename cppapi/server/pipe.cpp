@@ -149,7 +149,7 @@ void Pipe::set_upd_properties(const PipeConfig &new_conf,DeviceImpl *dev)
 // Set properties locally. In case of exception bring the backed-up values
 //
 
-		std::vector<Attribute::AttPropDb> v_db;
+		std::vector<AttributePrivate::AttPropDb> v_db;
 		set_properties(new_conf,dev,v_db);
 
 //
@@ -192,7 +192,7 @@ void Pipe::set_upd_properties(const PipeConfig &new_conf,DeviceImpl *dev)
 	}
 	catch(DevFailed &)
 	{
-		std::vector<Attribute::AttPropDb> v_db;
+		std::vector<AttributePrivate::AttPropDb> v_db;
 		set_properties(old_conf,dev,v_db);
 
 		throw;
@@ -215,7 +215,7 @@ void Pipe::set_upd_properties(const PipeConfig &new_conf,DeviceImpl *dev)
 //
 //---------------------------------------------------------------------------------------------------------------------
 
-void Pipe::upd_database(std::vector<Attribute::AttPropDb> &v_db,std::string &dev_name)
+void Pipe::upd_database(std::vector<AttributePrivate::AttPropDb> &v_db,std::string &dev_name)
 {
 
 //
@@ -231,7 +231,7 @@ void Pipe::upd_database(std::vector<Attribute::AttPropDb> &v_db,std::string &dev
 	db_d.push_back(DbDatum(name));
 	db_del.push_back(DbDatum(name));
 
-	std::vector<Attribute::AttPropDb>::iterator ite;
+	std::vector<AttributePrivate::AttPropDb>::iterator ite;
 
 //
 // A loop for each db action
@@ -241,7 +241,7 @@ void Pipe::upd_database(std::vector<Attribute::AttPropDb> &v_db,std::string &dev
 	{
 		switch (ite->dba)
 		{
-			case Attribute::UPD:
+			case AttributePrivate::UPD:
 			{
 				DbDatum desc(ite->name);
 				desc << ite->db_value;
@@ -250,7 +250,7 @@ void Pipe::upd_database(std::vector<Attribute::AttPropDb> &v_db,std::string &dev
 			}
 			break;
 
-			case Attribute::UPD_FROM_DB:
+			case AttributePrivate::UPD_FROM_DB:
 			{
 				DbDatum desc(ite->name);
 				desc << ite->db_value_db;
@@ -259,7 +259,7 @@ void Pipe::upd_database(std::vector<Attribute::AttPropDb> &v_db,std::string &dev
 			}
 			break;
 
-			case Attribute::UPD_FROM_VECT_STR:
+			case AttributePrivate::UPD_FROM_VECT_STR:
 			{
 				DbDatum desc(ite->name);
 				desc << ite->db_value_v_str;
@@ -268,7 +268,7 @@ void Pipe::upd_database(std::vector<Attribute::AttPropDb> &v_db,std::string &dev
 			}
 			break;
 
-			case Attribute::DEL:
+			case AttributePrivate::DEL:
 			{
 				DbDatum desc(ite->name);
 				db_del.push_back(desc);
@@ -282,7 +282,7 @@ void Pipe::upd_database(std::vector<Attribute::AttPropDb> &v_db,std::string &dev
 // Update database
 //
 
-	struct Attribute::CheckOneStrProp cosp;
+	struct AttributePrivate::CheckOneStrProp cosp;
 	cosp.prop_to_delete = &prop_to_delete;
 	cosp.prop_to_update = &prop_to_update;
 	cosp.db_d = &db_d;
@@ -368,7 +368,7 @@ void Pipe::upd_database(std::vector<Attribute::AttPropDb> &v_db,std::string &dev
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void Pipe::set_properties(const Tango::PipeConfig &conf,DeviceImpl *dev,std::vector<Attribute::AttPropDb> &v_db)
+void Pipe::set_properties(const Tango::PipeConfig &conf,DeviceImpl *dev,std::vector<AttributePrivate::AttPropDb> &v_db)
 {
 
 //
@@ -435,10 +435,10 @@ void Pipe::set_properties(const Tango::PipeConfig &conf,DeviceImpl *dev,std::vec
 //--------------------------------------------------------------------------------------------------------------------
 
 void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &conf_val,
-								 std::string &pipe_conf,std::vector<Attribute::AttPropDb> &v_db,std::vector<PipeProperty> &def_user_prop,
+								 std::string &pipe_conf,std::vector<AttributePrivate::AttPropDb> &v_db,std::vector<PipeProperty> &def_user_prop,
 								std::vector<PipeProperty> &def_class_prop,const char *lib_def)
 {
-	Attribute::AttPropDb apd;
+	AttributePrivate::AttPropDb apd;
 	apd.name = prop_name;
 
 	bool user_defaults, class_defaults;
@@ -464,13 +464,13 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 		{
 			if (user_defaults == true || class_defaults == true)
 			{
-				apd.dba = Attribute::UPD;
+				apd.dba = AttributePrivate::UPD;
 				apd.db_value = pipe_conf;
 				v_db.push_back(apd);
 			}
 			else
 			{
-				apd.dba = Attribute::DEL;
+				apd.dba = AttributePrivate::DEL;
 				v_db.push_back(apd);
 			}
 		}
@@ -496,13 +496,13 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 		{
 			if (class_defaults == true)
 			{
-				apd.dba = Attribute::UPD;
+				apd.dba = AttributePrivate::UPD;
 				apd.db_value = pipe_conf;
 				v_db.push_back(apd);
 			}
 			else
 			{
-				apd.dba = Attribute::DEL;
+				apd.dba = AttributePrivate::DEL;
 				v_db.push_back(apd);
 			}
 		}
@@ -527,7 +527,7 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 
 		if (old_val != pipe_conf)
 		{
-			apd.dba = Attribute::DEL;
+			apd.dba = AttributePrivate::DEL;
 			v_db.push_back(apd);
 		}
 	}
@@ -552,13 +552,13 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 			{
 				if (class_defaults == true)
 				{
-					apd.dba = Attribute::UPD;
+					apd.dba = AttributePrivate::UPD;
 					apd.db_value = pipe_conf;
 					v_db.push_back(apd);
 				}
 				else
 				{
-					apd.dba = Attribute::DEL;
+					apd.dba = AttributePrivate::DEL;
 					v_db.push_back(apd);
 				}
 			}
@@ -572,7 +572,7 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 
 			if (old_val != pipe_conf)
 			{
-				apd.dba = Attribute::DEL;
+				apd.dba = AttributePrivate::DEL;
 				v_db.push_back(apd);
 			}
 		}
@@ -585,7 +585,7 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 
 			if (old_val != pipe_conf)
 			{
-				apd.dba = Attribute::DEL;
+				apd.dba = AttributePrivate::DEL;
 				v_db.push_back(apd);
 			}
 		}
@@ -600,12 +600,12 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 			{
 				if (TG_strcasecmp(pipe_conf.c_str(),LabelNotSpec) == 0)
 				{
-					apd.dba = Attribute::DEL;
+					apd.dba = AttributePrivate::DEL;
 					v_db.push_back(apd);
 				}
 				else
 				{
-					apd.dba = Attribute::UPD;
+					apd.dba = AttributePrivate::UPD;
 					apd.db_value = pipe_conf;
 					v_db.push_back(apd);
 				}
@@ -615,7 +615,7 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 		{
 			if (old_val != pipe_conf)
 			{
-				apd.dba = Attribute::UPD;
+				apd.dba = AttributePrivate::UPD;
 				apd.db_value = pipe_conf;
 				v_db.push_back(apd);
 			}

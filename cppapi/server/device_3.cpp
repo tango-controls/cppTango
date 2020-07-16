@@ -382,7 +382,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					{
 						x.idx_in_multi_attr = j;
 						x.failed = false;
-						Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
+						AttributePrivate &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
 						if(att.is_startup_exception())
 							att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
 						wanted_w_attr.push_back(x);
@@ -404,7 +404,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							{
 								x.idx_in_multi_attr = j;
 								x.failed = false;
-								Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
+								AttributePrivate &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
 								if(att.is_startup_exception())
 									att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
 								wanted_attr.push_back(x);
@@ -415,7 +415,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							{
 								x.idx_in_multi_attr = j	;
 								x.failed = false;
-								Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
+								AttributePrivate &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
 								if(att.is_startup_exception())
 									att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
 								wanted_w_attr.push_back(x);
@@ -425,7 +425,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						{
 							x.idx_in_multi_attr = j;
 							x.failed = false;
-							Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
+							AttributePrivate &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
 							if(att.is_startup_exception())
 								att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
 							wanted_attr.push_back(x);
@@ -493,7 +493,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 		{
 			if (wanted_attr[i].idx_in_multi_attr != -1)
 			{
-				Attribute &att = dev_attr->get_attr_by_ind(wanted_attr[i].idx_in_multi_attr);
+				AttributePrivate &att = dev_attr->get_attr_by_ind(wanted_attr[i].idx_in_multi_attr);
 				bool is_allowed_failed = false;
 
 				try
@@ -637,7 +637,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 		for (i = 0;i < nb_wanted_w_attr;i++)
 		{
-			Attribute &att = dev_attr->get_attr_by_ind(wanted_w_attr[i].idx_in_multi_attr);
+			AttributePrivate &att = dev_attr->get_attr_by_ind(wanted_w_attr[i].idx_in_multi_attr);
 			Tango::AttrWriteType w_type = att.get_writable();
 			try
 			{
@@ -824,7 +824,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 			if (nb_err == 0)
 			{
-				Attribute &att = dev_attr->get_attr_by_name(names[i]);
+				AttributePrivate &att = dev_attr->get_attr_by_name(names[i]);
 				Tango::AttrQuality qual = att.get_quality();
 				if (qual != Tango::ATTR_INVALID)
 				{
@@ -1117,7 +1117,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 
 		for (i = 0;i < non_polled.size();i++)
 		{
-			Attribute &att = dev_attr->get_attr_by_name(names[non_polled[i]]);
+			AttributePrivate &att = dev_attr->get_attr_by_name(names[non_polled[i]]);
 			poll_period.push_back(att.get_polling_period());
 
 			if (poll_period.back() == 0)
@@ -1289,7 +1289,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 // Get attribute data type
 //
 
-		Attribute &att = dev_attr->get_attr_by_name(names[i]);
+		AttributePrivate &att = dev_attr->get_attr_by_name(names[i]);
 		long type = att.get_data_type();
 
 //
@@ -1528,7 +1528,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 // For attributes which are not scalar, also check that their dimensions are correct
 //
 
-				Attribute &att = dev_attr->get_attr_by_ind(updated_attr.back().idx_in_multi_attr);
+				AttributePrivate &att = dev_attr->get_attr_by_ind(updated_attr.back().idx_in_multi_attr);
 				if ((att.get_writable() == Tango::READ) ||
 					(att.get_writable() == Tango::READ_WITH_WRITE))
 				{
@@ -1841,7 +1841,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
                 if (att.get_mem_value() == MemNotUsed)
                     att.set_mem_value("Set");
 			}
-			if (att.is_alarmed().test(Attribute::rds) == true)
+			if (att.is_alarmed().test(AttributePrivate::rds) == true)
 				att.set_written_date();
 		}
 
@@ -1943,7 +1943,7 @@ Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* 
 // Check that the device supports this attribute. This method returns an exception in case of unsupported attribute
 //
 
-	Attribute &att = dev_attr->get_attr_by_name(name);
+	AttributePrivate &att = dev_attr->get_attr_by_name(name);
 
 	std::string attr_str(name);
 	std::transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
@@ -2200,12 +2200,12 @@ Tango::AttributeConfigList_3 *Device_3Impl::get_attribute_config_3(const Tango::
 		{
 			if (all_attr == true)
 			{
-				Attribute &attr = dev_attr->get_attr_by_ind(i);
+				AttributePrivate &attr = dev_attr->get_attr_by_ind(i);
 				attr.get_properties((*back)[i]);
 			}
 			else
 			{
-				Attribute &attr = dev_attr->get_attr_by_name(names[i]);
+				AttributePrivate &attr = dev_attr->get_attr_by_name(names[i]);
 				attr.get_properties((*back)[i]);
 			}
 		}
@@ -2419,7 +2419,7 @@ void Device_3Impl::add_state_status_attrs()
 	get_attr_props("State",prop_list_state);
 	dev_attr->add_default(prop_list_state,device_name,att_name,Tango::DEV_STATE);
 
-	dev_attr->add_attr(new Attribute(prop_list_state,att_state,device_name,-1));
+	dev_attr->add_attr(new AttributePrivate(prop_list_state,att_state,device_name,-1));
 
 //
 // Now, create the status attribute also with default properties
@@ -2431,7 +2431,7 @@ void Device_3Impl::add_state_status_attrs()
 	get_attr_props("Status",prop_list_status);
 	dev_attr->add_default(prop_list_status,device_name,att_name,Tango::DEV_STRING);
 
-	dev_attr->add_attr(new Attribute(prop_list_status,att_status,device_name,-1));
+	dev_attr->add_attr(new AttributePrivate(prop_list_status,att_status,device_name,-1));
 }
 
 //+-------------------------------------------------------------------------------------------------------------------

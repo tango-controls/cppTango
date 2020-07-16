@@ -269,12 +269,12 @@ MultiAttribute::MultiAttribute(std::string &dev_name,DeviceClass *dev_class_ptr,
 				{
 					if (attr.is_fwd() == true)
 					{
-						Attribute * new_attr = new FwdAttribute(prop_list,attr,dev_name,i);
+						AttributePrivate * new_attr = new FwdAttribute(prop_list,attr,dev_name,i);
 						add_attr(new_attr);
 					}
 					else
 					{
-						Attribute * new_attr = new WAttribute(prop_list, attr, dev_name, i);
+						AttributePrivate * new_attr = new WAttribute(prop_list, attr, dev_name, i);
 						add_attr(new_attr);
 					}
 				}
@@ -282,12 +282,12 @@ MultiAttribute::MultiAttribute(std::string &dev_name,DeviceClass *dev_class_ptr,
 				{
 					if (attr.is_fwd() == true)
 					{
-						Attribute * new_attr = new FwdAttribute(prop_list, attr, dev_name, i);
+						AttributePrivate * new_attr = new FwdAttribute(prop_list, attr, dev_name, i);
 						add_attr(new_attr);
 					}
 					else
 					{
-						Attribute * new_attr = new Attribute(prop_list, attr, dev_name, i);
+						AttributePrivate * new_attr = new AttributePrivate(prop_list, attr, dev_name, i);
 						add_attr(new_attr);
 					}
 				}
@@ -552,7 +552,7 @@ void MultiAttribute::add_user_default(std::vector<AttrProperty> &prop_list,std::
 
 void MultiAttribute::check_associated(long index, std::string &dev_name)
 {
-	Attribute& attribute = *attr_list[index];
+	AttributePrivate& attribute = *attr_list[index];
 	const AttrWriteType write_type = attribute.get_writable();
 
 	if (write_type != Tango::READ_WITH_WRITE && write_type != Tango::READ_WRITE)
@@ -580,7 +580,7 @@ void MultiAttribute::check_associated(long index, std::string &dev_name)
 			"MultiAttribute::check_associated");
 	}
 
-	Attribute& assoc_attribute = *attr_list[assoc_index];
+	AttributePrivate& assoc_attribute = *attr_list[assoc_index];
 	const AttrWriteType assoc_write_type = assoc_attribute.get_writable();
 
 	if (assoc_write_type != Tango::WRITE && assoc_write_type != Tango::READ_WRITE)
@@ -799,7 +799,7 @@ void MultiAttribute::add_attribute(std::string &dev_name,DeviceClass *dev_class_
 //
 
 	bool idl_3 = false;
-	std::vector<Attribute *>::iterator ite;
+	std::vector<AttributePrivate *>::iterator ite;
 	if ((attr_list.back())->get_name() == "Status")
 	{
 		idl_3 = true;
@@ -812,13 +812,13 @@ void MultiAttribute::add_attribute(std::string &dev_name,DeviceClass *dev_class_
 	{
 		if (idl_3 == false)
 		{
-			Attribute * new_attr = new WAttribute(prop_list,attr,dev_name,index);
+			AttributePrivate * new_attr = new WAttribute(prop_list,attr,dev_name,index);
 			add_attr(new_attr);
 			index = attr_list.size() - 1;
 		}
 		else
 		{
-			Attribute * new_attr = new WAttribute(prop_list,attr,dev_name,index);
+			AttributePrivate * new_attr = new WAttribute(prop_list,attr,dev_name,index);
 			attr_list.insert(ite,new_attr);
 			index = attr_list.size() - 3;
 			ext->put_attribute_in_map(new_attr,index);
@@ -829,13 +829,13 @@ void MultiAttribute::add_attribute(std::string &dev_name,DeviceClass *dev_class_
 	{
 		if (idl_3 == false)
 		{
-			Attribute * new_attr = new Attribute(prop_list,attr,dev_name,index);
+			AttributePrivate * new_attr = new AttributePrivate(prop_list,attr,dev_name,index);
 			add_attr(new_attr);
 			index = attr_list.size() - 1;
 		}
 		else
 		{
-			Attribute * new_attr = new Attribute(prop_list,attr,dev_name,index);
+			AttributePrivate * new_attr = new AttributePrivate(prop_list,attr,dev_name,index);
 			attr_list.insert(ite,new_attr);
 			index = attr_list.size() - 3;
 			ext->put_attribute_in_map(new_attr,index);
@@ -967,10 +967,10 @@ void MultiAttribute::add_fwd_attribute(std::string &dev_name,DeviceClass *dev_cl
 // (with state and status as attributes), add it at the end of the list but before state and status.
 //
 
-	std::vector<Attribute *>::iterator ite;
+	std::vector<AttributePrivate *>::iterator ite;
 	ite = attr_list.end() - 2;
 
-	Attribute * new_fwd_attr = new FwdAttribute(prop_list,*new_attr,dev_name,index);
+	AttributePrivate * new_fwd_attr = new FwdAttribute(prop_list,*new_attr,dev_name,index);
 	attr_list.insert(ite,new_fwd_attr);
 	index = attr_list.size() - 3;
 	ext->put_attribute_in_map(new_fwd_attr,index);
@@ -1036,7 +1036,7 @@ void MultiAttribute::remove_attribute(std::string &attr_name,bool update_idx)
 // Remove the attribute from the main vector
 //
 
-	Attribute *att = attr_list[att_index];
+	AttributePrivate *att = attr_list[att_index];
 
 	long old_idx = att->get_attr_idx();
 	DeviceImpl *the_dev = att->get_att_device();
@@ -1044,12 +1044,12 @@ void MultiAttribute::remove_attribute(std::string &attr_name,bool update_idx)
 
 	ext->attr_map.erase(att->get_name_lower());
 	delete att;
-	std::vector<Tango::Attribute *>::iterator pos = attr_list.begin();
+	std::vector<Tango::AttributePrivate *>::iterator pos = attr_list.begin();
 	advance(pos,att_index);
 	pos = attr_list.erase(pos);
 
 // Update all the att_index_in_vector indexes for the attributes following the one which has been deleted
-	for (std::vector<Tango::Attribute *>::iterator tmp_pos = pos ;tmp_pos != attr_list.end();++tmp_pos)
+	for (std::vector<Tango::AttributePrivate *>::iterator tmp_pos = pos ;tmp_pos != attr_list.end();++tmp_pos)
 	{
 		std::string & attr_name_lower = (*tmp_pos)->get_name_lower();
 		ext->attr_map[attr_name_lower].att_index_in_vector--;
@@ -1065,7 +1065,7 @@ void MultiAttribute::remove_attribute(std::string &attr_name,bool update_idx)
 // 1 - Update indexes in local device
 // 2 - Update indexes in remaining device(s) belonging to the same class
 // Update indexes in local device
-        for(std::vector<Tango::Attribute *>::iterator pos_it = attr_list.begin(); pos_it != attr_list.end(); pos_it++)
+        for(std::vector<Tango::AttributePrivate *>::iterator pos_it = attr_list.begin(); pos_it != attr_list.end(); pos_it++)
         {
             long idx = (*pos_it)->get_attr_idx();
             if (idx > old_idx)
@@ -1084,7 +1084,7 @@ void MultiAttribute::remove_attribute(std::string &attr_name,bool update_idx)
 				continue;
 
 			MultiAttribute * dev_multi_attr = (*dev_ite)->get_device_attr();
-			std::vector<Attribute *> &dev_att_list = dev_multi_attr->get_attribute_list();
+			std::vector<AttributePrivate *> &dev_att_list = dev_multi_attr->get_attribute_list();
 			for (unsigned int i = 0;i < dev_att_list.size()-2 /* ignore state and status */ ;++i)
 			{
 				long idx = dev_att_list[i]->get_attr_idx();
@@ -1157,9 +1157,9 @@ void MultiAttribute::remove_attribute(std::string &attr_name,bool update_idx)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-Attribute &MultiAttribute::get_attr_by_name(const char *attr_name)
+AttributePrivate &MultiAttribute::get_attr_by_name(const char *attr_name)
 {
-    Attribute * attr = 0;
+    AttributePrivate * attr = 0;
     std::string st(attr_name);
     std::transform(st.begin(),st.end(),st.begin(),::tolower);
     try
@@ -1198,7 +1198,7 @@ Attribute &MultiAttribute::get_attr_by_name(const char *attr_name)
 
 WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
 {
-    Attribute * attr = 0;
+    AttributePrivate * attr = 0;
     std::string st(attr_name);
     std::transform(st.begin(),st.end(),st.begin(),::tolower);
     try
@@ -1306,7 +1306,7 @@ bool MultiAttribute::check_alarm()
 // attribute.
 //
 
-		    Attribute &att = get_attr_by_ind(alarm_attr_list[i]);
+		    AttributePrivate &att = get_attr_by_ind(alarm_attr_list[i]);
 		    if (att.is_polled() == false)
 		    {
                 tmp_ret = check_alarm(alarm_attr_list[i]);
@@ -1339,7 +1339,7 @@ void MultiAttribute::read_alarm(std::string &status)
 
 	for (i = 0;i < alarm_attr_list.size();i++)
 	{
-		Attribute &att = get_attr_by_ind(alarm_attr_list[i]);
+		AttributePrivate &att = get_attr_by_ind(alarm_attr_list[i]);
 
 //
 // Add a message for low level alarm
@@ -1568,7 +1568,7 @@ void MultiAttribute::set_event_param(const EventSubscriptionStates& eve)
 	{
 		if (! eve[i].attribute_name.empty())
 		{
-			Tango::Attribute &att = get_attr_by_name(eve[i].attribute_name.c_str());
+			Tango::AttributePrivate &att = get_attr_by_name(eve[i].attribute_name.c_str());
 
 			{
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
@@ -1648,7 +1648,7 @@ void MultiAttribute::set_event_param(const EventSubscriptionStates& eve)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::add_write_value(Attribute &att)
+void MultiAttribute::add_write_value(AttributePrivate &att)
 {
 	WAttribute &assoc_att = get_w_attr_by_ind(att.get_assoc_ind());
 
@@ -1843,7 +1843,7 @@ void MultiAttribute::add_alarmed_quality_factor(std::string &status)
 //			- att : The newly configured attribute
 //
 //-------------------------------------------------------------------------------------------------------------------
-void MultiAttribute::add_attr(Attribute *att)
+void MultiAttribute::add_attr(AttributePrivate *att)
 {
     attr_list.push_back(att);
     ext->put_attribute_in_map(att,attr_list.size() - 1);
@@ -1865,7 +1865,7 @@ void MultiAttribute::add_attr(Attribute *att)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::update(Attribute &att,std::string &dev_name)
+void MultiAttribute::update(AttributePrivate &att,std::string &dev_name)
 {
 	long ind = get_attr_ind_by_name(att.get_name().c_str());
 

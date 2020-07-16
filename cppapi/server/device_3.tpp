@@ -93,7 +93,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 	{
 		for (i = 0;i < nb_attr;i++)
 		{
-			Attribute &attr = dev_attr->get_attr_by_name(new_conf[i].name);
+			AttributePrivate &attr = dev_attr->get_attr_by_name(new_conf[i].name);
 			bool old_alarm = attr.is_alarmed().any();
 
 //
@@ -247,7 +247,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 		dev_attr->get_alarm_list().clear();
 		for (long j = 0;j < nb_dev_attr;j++)
 		{
-			Attribute &att = dev_attr->get_attr_by_ind(j);
+			AttributePrivate &att = dev_attr->get_attr_by_ind(j);
 			if (att.is_alarmed().any() == true)
 			{
 				if (att.get_writable() != Tango::WRITE)
@@ -280,7 +280,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 	dev_attr->get_alarm_list().clear();
 	for (i = 0;i < nb_dev_attr;i++)
 	{
-		Tango::Attribute &attr = dev_attr->get_attr_by_ind(i);
+		Tango::AttributePrivate &attr = dev_attr->get_attr_by_ind(i);
 		Tango::AttrWriteType w_type = attr.get_writable();
 		if (attr.is_alarmed().any() == true)
 		{
@@ -315,7 +315,7 @@ inline void Device_3Impl::error_from_errorlist(T &back,DevErrorList &e,const cha
 }
 
 template <typename T>
-inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,std::string &mess,Attribute &att)
+inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,std::string &mess,AttributePrivate &att)
 {
 	back.err_list.length(1);
 
@@ -355,7 +355,7 @@ inline void Device_3Impl::init_polled_out_data(T &back,V &att_val)
 }
 
 template <typename T>
-inline void Device_3Impl::init_out_data(T &back,Attribute &att,AttrWriteType &w_type)
+inline void Device_3Impl::init_out_data(T &back,AttributePrivate &att,AttrWriteType &w_type)
 {
 	back.time = att.get_when();
 	back.quality = att.get_quality();
@@ -387,7 +387,7 @@ inline void Device_3Impl::init_out_data(T &back,Attribute &att,AttrWriteType &w_
 }
 
 template <typename T>
-inline void Device_3Impl::init_out_data_quality(T &back,Attribute &att,AttrQuality qual)
+inline void Device_3Impl::init_out_data_quality(T &back,AttributePrivate &att,AttrQuality qual)
 {
 	back.time = att.get_when();
 	back.quality = qual;

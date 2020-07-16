@@ -62,7 +62,7 @@ namespace Tango
  * @ingroup Server
  */
 
-class WAttribute:public Attribute
+class WAttribute:public AttributePrivate
 {
 public:
 
