@@ -158,67 +158,67 @@ RANGES_TYPE2CONST(Tango::DevState,DEV_STATE)
 //-----------------------------------------------------------------------------
 
 
-TEMPL_EXPL_METH_INST(Attribute,get_min_alarm)
-TEMPL_EXPL_METH_INST(Attribute,get_max_alarm)
-TEMPL_EXPL_METH_INST(Attribute,get_min_warning)
-TEMPL_EXPL_METH_INST(Attribute,get_max_warning)
+TEMPL_EXPL_METH_INST(AttributePrivate,get_min_alarm)
+TEMPL_EXPL_METH_INST(AttributePrivate,get_max_alarm)
+TEMPL_EXPL_METH_INST(AttributePrivate,get_min_warning)
+TEMPL_EXPL_METH_INST(AttributePrivate,get_max_warning)
 
-TEMPL_EXPL_METH_INST_CONST(Attribute,set_min_alarm)
-TEMPL_EXPL_METH_INST_CONST(Attribute,set_max_alarm)
-TEMPL_EXPL_METH_INST_CONST(Attribute,set_min_warning)
-TEMPL_EXPL_METH_INST_CONST(Attribute,set_max_warning)
+TEMPL_EXPL_METH_INST_CONST(AttributePrivate,set_min_alarm)
+TEMPL_EXPL_METH_INST_CONST(AttributePrivate,set_max_alarm)
+TEMPL_EXPL_METH_INST_CONST(AttributePrivate,set_min_warning)
+TEMPL_EXPL_METH_INST_CONST(AttributePrivate,set_max_warning)
 
 TEMPL_EXPL_CLASS_INST(AttrProp)
 TEMPL_EXPL_CLASS_INST(DoubleAttrProp)
 TEMPL_EXPL_CLASS_INST(MultiAttrProp)
 
-template void Attribute::get_properties(MultiAttrProp<DevBoolean> &);
-template void Attribute::get_properties(MultiAttrProp<DevUChar> &);
-template void Attribute::get_properties(MultiAttrProp<DevShort> &);
-template void Attribute::get_properties(MultiAttrProp<DevUShort> &);
-template void Attribute::get_properties(MultiAttrProp<DevLong> &);
-template void Attribute::get_properties(MultiAttrProp<DevULong> &);
-template void Attribute::get_properties(MultiAttrProp<DevLong64> &);
-template void Attribute::get_properties(MultiAttrProp<DevULong64> &);
-template void Attribute::get_properties(MultiAttrProp<DevFloat> &);
-template void Attribute::get_properties(MultiAttrProp<DevDouble> &);
-template void Attribute::get_properties(MultiAttrProp<DevState> &);
-template void Attribute::get_properties(MultiAttrProp<DevEncoded> &);
-template void Attribute::get_properties(MultiAttrProp<DevString> &);
+template void AttributePrivate::get_properties(MultiAttrProp<DevBoolean> &);
+template void AttributePrivate::get_properties(MultiAttrProp<DevUChar> &);
+template void AttributePrivate::get_properties(MultiAttrProp<DevShort> &);
+template void AttributePrivate::get_properties(MultiAttrProp<DevUShort> &);
+template void AttributePrivate::get_properties(MultiAttrProp<DevLong> &);
+template void AttributePrivate::get_properties(MultiAttrProp<DevULong> &);
+template void AttributePrivate::get_properties(MultiAttrProp<DevLong64> &);
+template void AttributePrivate::get_properties(MultiAttrProp<DevULong64> &);
+template void AttributePrivate::get_properties(MultiAttrProp<DevFloat> &);
+template void AttributePrivate::get_properties(MultiAttrProp<DevDouble> &);
+template void AttributePrivate::get_properties(MultiAttrProp<DevState> &);
+template void AttributePrivate::get_properties(MultiAttrProp<DevEncoded> &);
+template void AttributePrivate::get_properties(MultiAttrProp<DevString> &);
 
 
-template void Attribute::set_properties(MultiAttrProp<DevBoolean> &);
-template void Attribute::set_properties(MultiAttrProp<DevUChar> &);
-template void Attribute::set_properties(MultiAttrProp<DevShort> &);
-template void Attribute::set_properties(MultiAttrProp<DevUShort> &);
-template void Attribute::set_properties(MultiAttrProp<DevLong> &);
-template void Attribute::set_properties(MultiAttrProp<DevULong> &);
-template void Attribute::set_properties(MultiAttrProp<DevLong64> &);
-template void Attribute::set_properties(MultiAttrProp<DevULong64> &);
-template void Attribute::set_properties(MultiAttrProp<DevFloat> &);
-template void Attribute::set_properties(MultiAttrProp<DevDouble> &);
-template void Attribute::set_properties(MultiAttrProp<DevState> &);
-template void Attribute::set_properties(MultiAttrProp<DevEncoded> &);
-template void Attribute::set_properties(MultiAttrProp<DevString> &);
+template void AttributePrivate::set_properties(MultiAttrProp<DevBoolean> &);
+template void AttributePrivate::set_properties(MultiAttrProp<DevUChar> &);
+template void AttributePrivate::set_properties(MultiAttrProp<DevShort> &);
+template void AttributePrivate::set_properties(MultiAttrProp<DevUShort> &);
+template void AttributePrivate::set_properties(MultiAttrProp<DevLong> &);
+template void AttributePrivate::set_properties(MultiAttrProp<DevULong> &);
+template void AttributePrivate::set_properties(MultiAttrProp<DevLong64> &);
+template void AttributePrivate::set_properties(MultiAttrProp<DevULong64> &);
+template void AttributePrivate::set_properties(MultiAttrProp<DevFloat> &);
+template void AttributePrivate::set_properties(MultiAttrProp<DevDouble> &);
+template void AttributePrivate::set_properties(MultiAttrProp<DevState> &);
+template void AttributePrivate::set_properties(MultiAttrProp<DevEncoded> &);
+template void AttributePrivate::set_properties(MultiAttrProp<DevString> &);
 
-template void Attribute::check_hard_coded_properties(const AttributeConfig &);
-template void Attribute::check_hard_coded_properties(const AttributeConfig_3 &);
+template void AttributePrivate::check_hard_coded_properties(const AttributeConfig &);
+template void AttributePrivate::check_hard_coded_properties(const AttributeConfig_3 &);
 
-template void Attribute::set_hard_coded_properties(const AttributeConfig &);
-template void Attribute::set_hard_coded_properties(const AttributeConfig_3 &);
+template void AttributePrivate::set_hard_coded_properties(const AttributeConfig &);
+template void AttributePrivate::set_hard_coded_properties(const AttributeConfig_3 &);
 
-template void Attribute::set_upd_properties(const AttributeConfig &,std::string &,bool);
-template void Attribute::set_upd_properties(const AttributeConfig_3 &,std::string &,bool);
-template void Attribute::set_upd_properties(const AttributeConfig_5 &,std::string &,bool);
+template void AttributePrivate::set_upd_properties(const AttributeConfig &,std::string &,bool);
+template void AttributePrivate::set_upd_properties(const AttributeConfig_3 &,std::string &,bool);
+template void AttributePrivate::set_upd_properties(const AttributeConfig_5 &,std::string &,bool);
 
-template void Attribute::Attribute_2_AttributeValue_base(AttributeValue_4 *,Tango::DeviceImpl *);
-template void Attribute::Attribute_2_AttributeValue_base(AttributeValue_5 *,Tango::DeviceImpl *);
+template void AttributePrivate::Attribute_2_AttributeValue_base(AttributeValue_4 *,Tango::DeviceImpl *);
+template void AttributePrivate::Attribute_2_AttributeValue_base(AttributeValue_5 *,Tango::DeviceImpl *);
 
-template void Attribute::AttrValUnion_fake_copy(const AttributeValue_5 *,AttributeValue_4 *);
-template void Attribute::AttrValUnion_fake_copy(const AttributeValue_4 *,AttributeValue_5 *);
+template void AttributePrivate::AttrValUnion_fake_copy(const AttributeValue_5 *,AttributeValue_4 *);
+template void AttributePrivate::AttrValUnion_fake_copy(const AttributeValue_4 *,AttributeValue_5 *);
 
-template void Attribute::AttrValUnion_2_Any(const AttributeValue_4 *,CORBA::Any &);
-template void Attribute::AttrValUnion_2_Any(const AttributeValue_5 *,CORBA::Any &);
+template void AttributePrivate::AttrValUnion_2_Any(const AttributeValue_4 *,CORBA::Any &);
+template void AttributePrivate::AttrValUnion_2_Any(const AttributeValue_5 *,CORBA::Any &);
 
 //+----------------------------------------------------------------------------
 //
