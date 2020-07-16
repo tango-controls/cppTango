@@ -42,7 +42,7 @@
 namespace Tango
 {
 
-class FwdAttribute: public WAttribute
+class FwdAttribute: public WAttributePrivate
 {
 public:
 	FwdAttribute(std::vector<AttrProperty> &,Attr &,std::string &,long);
@@ -69,7 +69,7 @@ public:
 	void set_local_attribute(DeviceAttribute &, T* &);
 
 	template<typename T,typename V>
-	void propagate_writen_data(DeviceAttribute &da,WAttribute &attr,T *&,V *&);
+	void propagate_writen_data(DeviceAttribute &da,WAttributePrivate &attr,T *&,V *&);
 
 	template<typename T>
 	bool new_att_conf_base(const T&);

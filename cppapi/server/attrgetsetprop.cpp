@@ -396,7 +396,7 @@ void AttributePrivate::add_config_5_specific(AttributeConfig_5 &conf)
 
 	if (writable == WRITE || writable == READ_WRITE)
 	{
-		WAttribute *watt = static_cast<WAttribute *>(this);
+		WAttributePrivate *watt = static_cast<WAttributePrivate *>(this);
 		conf.memorized = watt->is_memorized();
 		conf.mem_init = watt->is_memorized_init();
 	}
@@ -1318,7 +1318,7 @@ void AttributePrivate::set_one_alarm_prop(const char *prop_name,const CORBA::Str
 		Tango::AttrWriteType w_type = get_writable();
 		if ((w_type == Tango::READ_WRITE) || (w_type == Tango::WRITE))
 		{
-			WAttribute *w_att = static_cast<WAttribute *>(this);
+			WAttributePrivate *w_att = static_cast<WAttributePrivate *>(this);
 			std::string mem_value;
 			if (strcmp(prop_name,"min_value") == 0)
 			{
@@ -3371,7 +3371,7 @@ void AttributePrivate::check_hard_coded(const AttributeConfig_5 &user_conf)
 
 	if (writable == WRITE || writable == READ_WRITE)
 	{
-		WAttribute *watt = static_cast<WAttribute *>(this);
+		WAttributePrivate *watt = static_cast<WAttributePrivate *>(this);
 		if (watt->is_memorized() != user_conf.memorized)
 		{
 			throw_hard_coded_prop("memorized");

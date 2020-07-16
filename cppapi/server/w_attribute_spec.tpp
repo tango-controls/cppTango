@@ -52,7 +52,7 @@ namespace Tango
 //-------------------------------------------------------------------------------------------------------------------
 
 template <>
-inline void WAttribute::set_min_value(const Tango::DevEncoded &)
+inline void WAttributePrivate::set_min_value(const Tango::DevEncoded &)
 {
 	std::string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
 	Except::throw_exception((const char *)API_MethodArgument,
@@ -61,7 +61,7 @@ inline void WAttribute::set_min_value(const Tango::DevEncoded &)
 }
 
 template <>
-inline void WAttribute::set_min_value(const std::string &new_min_value_str)
+inline void WAttributePrivate::set_min_value(const std::string &new_min_value_str)
 {
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
@@ -246,7 +246,7 @@ inline void WAttribute::set_min_value(const std::string &new_min_value_str)
 //------------------------------------------------------------------------------------------------------------------
 
 template <>
-inline void WAttribute::set_max_value(const Tango::DevEncoded &)
+inline void WAttributePrivate::set_max_value(const Tango::DevEncoded &)
 {
 	std::string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
 	Except::throw_exception((const char *)API_MethodArgument,
@@ -255,7 +255,7 @@ inline void WAttribute::set_max_value(const Tango::DevEncoded &)
 }
 
 template <>
-inline void WAttribute::set_max_value(const std::string &new_max_value_str)
+inline void WAttributePrivate::set_max_value(const std::string &new_max_value_str)
 {
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||

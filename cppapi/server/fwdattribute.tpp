@@ -98,7 +98,7 @@ void FwdAttribute::set_local_attribute(DeviceAttribute &da, T *&seq_ptr)
 //--------------------------------------------------------------------------------------------------------------------
 
 template<typename T, typename V>
-void FwdAttribute::propagate_writen_data(DeviceAttribute &da, WAttribute &attr, T *&ptr, V *&seq_ptr)
+void FwdAttribute::propagate_writen_data(DeviceAttribute &da, WAttributePrivate &attr, T *&ptr, V *&seq_ptr)
 {
     attr.get_write_value(const_cast<const T *&>(ptr));
     int data_length = attr.get_write_value_length();

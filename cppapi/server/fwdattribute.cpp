@@ -60,7 +60,7 @@ namespace Tango
 //--------------------------------------------------------------------------------------------------------------------
 
 FwdAttribute::FwdAttribute(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::string &dev_name,long idx)
-:WAttribute(prop_list,tmp_attr,dev_name,idx)
+:WAttributePrivate(prop_list,tmp_attr,dev_name,idx)
 {
 	FwdAttr &attr = static_cast<FwdAttr &>(tmp_attr);
 

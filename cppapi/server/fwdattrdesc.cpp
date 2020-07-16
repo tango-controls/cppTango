@@ -434,7 +434,7 @@ void FwdAttr::read(DeviceImpl *dev,AttributePrivate &attr)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttribute &attr)
+void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttributePrivate &attr)
 {
 
 //

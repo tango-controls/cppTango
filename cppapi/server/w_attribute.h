@@ -62,7 +62,7 @@ namespace Tango
  * @ingroup Server
  */
 
-class WAttribute:public AttributePrivate
+class WAttributePrivate:public AttributePrivate
 {
 public:
 
@@ -79,7 +79,7 @@ public:
  * @param idx The index of the related Attr object in the MultiClassAttribute
  *            vector of Attr object
  */
-	WAttribute(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::string &dev_name,long idx);
+	WAttributePrivate(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::string &dev_name,long idx);
 //@}
 
 /**@name Destructor
@@ -89,7 +89,7 @@ public:
 /**
  * The WAttribute desctructor.
  */
-	~WAttribute();
+	~WAttributePrivate();
 //@}
 
 /**@name Attribute configuration methods

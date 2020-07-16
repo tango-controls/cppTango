@@ -337,7 +337,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 		for (unsigned long j = 0;j < att_list.size();j++)
 		{
 
-			WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_ind(att_list[j]);
+			WAttributePrivate &att = device_list[i]->get_device_attr()->get_w_attr_by_ind(att_list[j]);
 
 			if (att.is_memorized() == true)
 			{
@@ -590,7 +590,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 				cout3 << "Cannot write setpoint(s) value for memorized attribute(s) of device " << device_list[i]->get_name() << std::endl;
 				for (unsigned long k = 0;k < e.errors.length();k++)
 				{
-					WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[e.errors[k].index_in_call].name.in());
+					WAttributePrivate &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[e.errors[k].index_in_call].name.in());
 					att.set_mem_exception(e.errors[k].err_list);
 					log4tango::Logger *log = device_list[i]->get_logger();
 					if (log->is_warn_enabled())
@@ -624,7 +624,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
                     errors[0].desc = CORBA::string_dup(ss.str().c_str());
                     errors[0].severity = ERR;
 
-                    WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[k].name.in());
+                    WAttributePrivate &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[k].name.in());
 					att.set_mem_exception(errors);
 					log4tango::Logger *log = device_list[i]->get_logger();
 					if (log->is_warn_enabled())
@@ -641,7 +641,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 
 			for (unsigned long k = 0;k < att_val.length();k++)
 			{
-				WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[k].name.in());
+				WAttributePrivate &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[k].name.in());
 				att.set_memorized(true);
 			}
 		}

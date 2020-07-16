@@ -143,7 +143,7 @@ public:
 	void set_err_kind(FwdAttError _e) {err_kind = _e;}
 
 	virtual void read(DeviceImpl *,AttributePrivate &);
-	virtual void write(DeviceImpl *,WAttribute &);
+	virtual void write(DeviceImpl *,WAttributePrivate &);
 	virtual bool is_allowed(DeviceImpl *,AttReqType) {return true;}
 
 	virtual void init_conf(AttrConfEventData *);

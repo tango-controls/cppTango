@@ -3117,7 +3117,7 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
             write_attr_hardware(updated_attr);
             for (i = 0; i < nb_updated_attr; i++)
             {
-                WAttribute &att = dev_attr->get_w_attr_by_ind(updated_attr[i]);
+                WAttributePrivate &att = dev_attr->get_w_attr_by_ind(updated_attr[i]);
                 att.copy_data(values[i].value);
             }
         }
@@ -3127,7 +3127,7 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
 
             for (i = 0; i < nb_updated_attr; i++)
             {
-                WAttribute &att = dev_attr->get_w_attr_by_ind(updated_attr[i]);
+                WAttributePrivate &att = dev_attr->get_w_attr_by_ind(updated_attr[i]);
                 std::vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
                 if (attr_vect[att.get_attr_idx()]->is_allowed(this, Tango::WRITE_REQ) == false)
                 {

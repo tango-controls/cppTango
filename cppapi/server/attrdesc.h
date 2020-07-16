@@ -41,7 +41,7 @@ namespace Tango
 {
 
 class AttrProperty;
-class WAttribute;
+class WAttributePrivate;
 
 
 /**
@@ -550,7 +550,7 @@ public:
 	virtual bool is_fwd() {return false;}
 
 	virtual void read(DeviceImpl *,AttributePrivate &) {};
-	virtual void write(DeviceImpl *,WAttribute &) {};
+	virtual void write(DeviceImpl *,WAttributePrivate &) {};
 	virtual bool is_allowed(DeviceImpl *,AttReqType) {return true;}
 
 	virtual bool same_type(const std::type_info &) {return false;}

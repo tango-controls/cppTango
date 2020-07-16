@@ -159,7 +159,7 @@ void DevIntr::build_att_interfaces(DeviceImpl *dev,std::vector<AttrIntr> &atts)
 
 		if (ai.writable == READ_WRITE || ai.writable == WRITE)
 		{
-			WAttribute *w_att_ptr = static_cast<WAttribute *>(att_ptr);
+			WAttributePrivate *w_att_ptr = static_cast<WAttributePrivate *>(att_ptr);
 			ai.mem = w_att_ptr->get_memorized();
 			ai.mem_init = w_att_ptr->get_memorized_init();
 			ai.writable_attr_name = w_att_ptr->get_assoc_name();

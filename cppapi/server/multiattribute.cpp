@@ -274,7 +274,7 @@ MultiAttribute::MultiAttribute(std::string &dev_name,DeviceClass *dev_class_ptr,
 					}
 					else
 					{
-						AttributePrivate * new_attr = new WAttribute(prop_list, attr, dev_name, i);
+						AttributePrivate * new_attr = new WAttributePrivate(prop_list, attr, dev_name, i);
 						add_attr(new_attr);
 					}
 				}
@@ -812,13 +812,13 @@ void MultiAttribute::add_attribute(std::string &dev_name,DeviceClass *dev_class_
 	{
 		if (idl_3 == false)
 		{
-			AttributePrivate * new_attr = new WAttribute(prop_list,attr,dev_name,index);
+			AttributePrivate * new_attr = new WAttributePrivate(prop_list,attr,dev_name,index);
 			add_attr(new_attr);
 			index = attr_list.size() - 1;
 		}
 		else
 		{
-			AttributePrivate * new_attr = new WAttribute(prop_list,attr,dev_name,index);
+			AttributePrivate * new_attr = new WAttributePrivate(prop_list,attr,dev_name,index);
 			attr_list.insert(ite,new_attr);
 			index = attr_list.size() - 3;
 			ext->put_attribute_in_map(new_attr,index);
@@ -1196,7 +1196,7 @@ AttributePrivate &MultiAttribute::get_attr_by_name(const char *attr_name)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
+WAttributePrivate &MultiAttribute::get_w_attr_by_name(const char *attr_name)
 {
     AttributePrivate * attr = 0;
     std::string st(attr_name);
@@ -1227,7 +1227,7 @@ WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
                                 o.str(),
                                 (const char *)"MultiAttribute::get_w_attr_by_name");
     }
-    return static_cast<WAttribute &>(*attr);
+    return static_cast<WAttributePrivate &>(*attr);
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -1650,7 +1650,7 @@ void MultiAttribute::set_event_param(const EventSubscriptionStates& eve)
 
 void MultiAttribute::add_write_value(AttributePrivate &att)
 {
-	WAttribute &assoc_att = get_w_attr_by_ind(att.get_assoc_ind());
+	WAttributePrivate &assoc_att = get_w_attr_by_ind(att.get_assoc_ind());
 
 	Tango::DevVarShortArray *sh_write_val;
 	Tango::DevVarLongArray *lg_write_val;

@@ -74,7 +74,7 @@ namespace Tango
 //--------------------------------------------------------------------------
 
 
-WAttribute::WAttribute(std::vector<AttrProperty> &prop_list,
+WAttributePrivate::WAttributePrivate(std::vector<AttrProperty> &prop_list,
                        Attr &tmp_attr, std::string &dev_name, long idx)
     : AttributePrivate(prop_list, tmp_attr, dev_name, idx),
       long_ptr(NULL), double_ptr(NULL), str_ptr(NULL), float_ptr(NULL),
@@ -164,7 +164,7 @@ WAttribute::WAttribute(std::vector<AttrProperty> &prop_list,
 //
 //--------------------------------------------------------------------------
 
-WAttribute::~WAttribute()
+WAttributePrivate::~WAttributePrivate()
 {
     Tango::string_free(str_val);
     Tango::string_free(old_str_val);
@@ -185,7 +185,7 @@ WAttribute::~WAttribute()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void WAttribute::set_rvalue()
+void WAttributePrivate::set_rvalue()
 {
     switch (data_type)
     {
@@ -339,7 +339,7 @@ void WAttribute::set_rvalue()
 //
 //--------------------------------------------------------------------------
 
-void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, unsigned long y)
+void WAttributePrivate::check_written_value(const CORBA::Any &any, unsigned long x, unsigned long y)
 {
     CORBA::ULong nb_data;
     unsigned long i;
@@ -1197,7 +1197,7 @@ void WAttribute::check_written_value(const CORBA::Any &any, unsigned long x, uns
     }
 }
 
-void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsigned long x, unsigned long y)
+void WAttributePrivate::check_written_value(const Tango::AttrValUnion &att_union, unsigned long x, unsigned long y)
 {
     unsigned int nb_data;
     unsigned int i;
@@ -1955,7 +1955,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union, unsig
 //
 //--------------------------------------------------------------------------
 
-long WAttribute::get_write_value_length()
+long WAttributePrivate::get_write_value_length()
 {
     long ret_val;
 
@@ -1989,7 +1989,7 @@ long WAttribute::get_write_value_length()
 
 // DevShort:
 
-void WAttribute::set_write_value(Tango::DevShort val)
+void WAttributePrivate::set_write_value(Tango::DevShort val)
 {
     CORBA::Any tmp_any;
     Tango::DevVarShortArray tmp_seq(1);
@@ -2003,7 +2003,7 @@ void WAttribute::set_write_value(Tango::DevShort val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevShort *val, long x, long y)
+void WAttributePrivate::set_write_value(Tango::DevShort *val, long x, long y)
 {
     long nb_data;
 
@@ -2025,7 +2025,7 @@ void WAttribute::set_write_value(Tango::DevShort *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(std::vector<Tango::DevShort> &val, long x, long y)
+void WAttributePrivate::set_write_value(std::vector<Tango::DevShort> &val, long x, long y)
 {
     Tango::DevVarShortArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2039,7 +2039,7 @@ void WAttribute::set_write_value(std::vector<Tango::DevShort> &val, long x, long
 
 // DevLong:
 
-void WAttribute::set_write_value(Tango::DevLong val)
+void WAttributePrivate::set_write_value(Tango::DevLong val)
 {
     Tango::DevVarLongArray tmp_seq(1);
     tmp_seq.length(1);
@@ -2053,7 +2053,7 @@ void WAttribute::set_write_value(Tango::DevLong val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevLong *val, long x, long y)
+void WAttributePrivate::set_write_value(Tango::DevLong *val, long x, long y)
 {
     long nb_data;
 
@@ -2075,7 +2075,7 @@ void WAttribute::set_write_value(Tango::DevLong *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(std::vector<Tango::DevLong> &val, long x, long y)
+void WAttributePrivate::set_write_value(std::vector<Tango::DevLong> &val, long x, long y)
 {
     Tango::DevVarLongArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2089,7 +2089,7 @@ void WAttribute::set_write_value(std::vector<Tango::DevLong> &val, long x, long 
 
 // DevLong64:
 
-void WAttribute::set_write_value(Tango::DevLong64 val)
+void WAttributePrivate::set_write_value(Tango::DevLong64 val)
 {
     Tango::DevVarLong64Array tmp_seq(1);
     tmp_seq.length(1);
@@ -2102,7 +2102,7 @@ void WAttribute::set_write_value(Tango::DevLong64 val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevLong64 *val, long x, long y)
+void WAttributePrivate::set_write_value(Tango::DevLong64 *val, long x, long y)
 {
     long nb_data;
 
@@ -2124,7 +2124,7 @@ void WAttribute::set_write_value(Tango::DevLong64 *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(std::vector<Tango::DevLong64> &val, long x, long y)
+void WAttributePrivate::set_write_value(std::vector<Tango::DevLong64> &val, long x, long y)
 {
     Tango::DevVarLong64Array tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2137,7 +2137,7 @@ void WAttribute::set_write_value(std::vector<Tango::DevLong64> &val, long x, lon
 
 // DevDouble:
 
-void WAttribute::set_write_value(Tango::DevDouble val)
+void WAttributePrivate::set_write_value(Tango::DevDouble val)
 {
     Tango::DevVarDoubleArray tmp_seq(1);
     tmp_seq.length(1);
@@ -2150,7 +2150,7 @@ void WAttribute::set_write_value(Tango::DevDouble val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevDouble *val, long x, long y)
+void WAttributePrivate::set_write_value(Tango::DevDouble *val, long x, long y)
 {
     long nb_data;
 
@@ -2172,7 +2172,7 @@ void WAttribute::set_write_value(Tango::DevDouble *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(std::vector<Tango::DevDouble> &val, long x, long y)
+void WAttributePrivate::set_write_value(std::vector<Tango::DevDouble> &val, long x, long y)
 {
     CORBA::Any tmp_any;
     Tango::DevVarDoubleArray tmp_seq(val.size(), val.size(), &val[0], false);
@@ -2185,7 +2185,7 @@ void WAttribute::set_write_value(std::vector<Tango::DevDouble> &val, long x, lon
 
 // DevString:
 
-void WAttribute::set_write_value(Tango::DevString val)
+void WAttributePrivate::set_write_value(Tango::DevString val)
 {
     Tango::DevVarStringArray tmp_seq(1);
     tmp_seq.length(1);
@@ -2198,7 +2198,7 @@ void WAttribute::set_write_value(Tango::DevString val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(std::string &val)
+void WAttributePrivate::set_write_value(std::string &val)
 {
     Tango::DevVarStringArray tmp_seq(1);
     tmp_seq.length(1);
@@ -2211,7 +2211,7 @@ void WAttribute::set_write_value(std::string &val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevString *val, long x, long y)
+void WAttributePrivate::set_write_value(Tango::DevString *val, long x, long y)
 {
     long nb_data;
 
@@ -2233,7 +2233,7 @@ void WAttribute::set_write_value(Tango::DevString *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(std::vector<std::string> &val, long x, long y)
+void WAttributePrivate::set_write_value(std::vector<std::string> &val, long x, long y)
 {
     Tango::DevVarStringArray tmp_seq;
     tmp_seq << val;
@@ -2247,7 +2247,7 @@ void WAttribute::set_write_value(std::vector<std::string> &val, long x, long y)
 
 // DevFloat:
 
-void WAttribute::set_write_value(Tango::DevFloat val)
+void WAttributePrivate::set_write_value(Tango::DevFloat val)
 {
     Tango::DevVarFloatArray tmp_seq(1);
     tmp_seq.length(1);
@@ -2260,7 +2260,7 @@ void WAttribute::set_write_value(Tango::DevFloat val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevFloat *val, long x, long y)
+void WAttributePrivate::set_write_value(Tango::DevFloat *val, long x, long y)
 {
     long nb_data;
 
@@ -2281,7 +2281,7 @@ void WAttribute::set_write_value(Tango::DevFloat *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(std::vector<Tango::DevFloat> &val, long x, long y)
+void WAttributePrivate::set_write_value(std::vector<Tango::DevFloat> &val, long x, long y)
 {
     Tango::DevVarFloatArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2294,7 +2294,7 @@ void WAttribute::set_write_value(std::vector<Tango::DevFloat> &val, long x, long
 
 // DevBoolean:
 
-void WAttribute::set_write_value(Tango::DevBoolean val)
+void WAttributePrivate::set_write_value(Tango::DevBoolean val)
 {
     Tango::DevVarBooleanArray tmp_seq(1);
     tmp_seq.length(1);
@@ -2307,7 +2307,7 @@ void WAttribute::set_write_value(Tango::DevBoolean val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevBoolean *val, long x, long y)
+void WAttributePrivate::set_write_value(Tango::DevBoolean *val, long x, long y)
 {
     long nb_data;
 
@@ -2329,7 +2329,7 @@ void WAttribute::set_write_value(Tango::DevBoolean *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(std::vector<Tango::DevBoolean> &val, long x, long y)
+void WAttributePrivate::set_write_value(std::vector<Tango::DevBoolean> &val, long x, long y)
 {
     Tango::DevVarBooleanArray tmp_seq;
     tmp_seq << val;
@@ -2343,7 +2343,7 @@ void WAttribute::set_write_value(std::vector<Tango::DevBoolean> &val, long x, lo
 
 // DevUShort:
 
-void WAttribute::set_write_value(Tango::DevUShort val)
+void WAttributePrivate::set_write_value(Tango::DevUShort val)
 {
     Tango::DevVarUShortArray tmp_seq(1);
     tmp_seq.length(1);
@@ -2356,7 +2356,7 @@ void WAttribute::set_write_value(Tango::DevUShort val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevUShort *val, long x, long y)
+void WAttributePrivate::set_write_value(Tango::DevUShort *val, long x, long y)
 {
     long nb_data;
 
@@ -2378,7 +2378,7 @@ void WAttribute::set_write_value(Tango::DevUShort *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(std::vector<Tango::DevUShort> &val, long x, long y)
+void WAttributePrivate::set_write_value(std::vector<Tango::DevUShort> &val, long x, long y)
 {
     Tango::DevVarUShortArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2391,7 +2391,7 @@ void WAttribute::set_write_value(std::vector<Tango::DevUShort> &val, long x, lon
 
 // DevUChar:
 
-void WAttribute::set_write_value(Tango::DevUChar val)
+void WAttributePrivate::set_write_value(Tango::DevUChar val)
 {
     Tango::DevVarCharArray tmp_seq(1);
     tmp_seq.length(1);
@@ -2404,7 +2404,7 @@ void WAttribute::set_write_value(Tango::DevUChar val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevUChar *val, long x, long y)
+void WAttributePrivate::set_write_value(Tango::DevUChar *val, long x, long y)
 {
     long nb_data;
 
@@ -2426,7 +2426,7 @@ void WAttribute::set_write_value(Tango::DevUChar *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(std::vector<Tango::DevUChar> &val, long x, long y)
+void WAttributePrivate::set_write_value(std::vector<Tango::DevUChar> &val, long x, long y)
 {
     Tango::DevVarUCharArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2439,7 +2439,7 @@ void WAttribute::set_write_value(std::vector<Tango::DevUChar> &val, long x, long
 
 // DevULong:
 
-void WAttribute::set_write_value(Tango::DevULong val)
+void WAttributePrivate::set_write_value(Tango::DevULong val)
 {
     Tango::DevVarULongArray tmp_seq(1);
     tmp_seq.length(1);
@@ -2452,7 +2452,7 @@ void WAttribute::set_write_value(Tango::DevULong val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevULong *val, long x, long y)
+void WAttributePrivate::set_write_value(Tango::DevULong *val, long x, long y)
 {
     long nb_data;
 
@@ -2474,7 +2474,7 @@ void WAttribute::set_write_value(Tango::DevULong *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(std::vector<Tango::DevULong> &val, long x, long y)
+void WAttributePrivate::set_write_value(std::vector<Tango::DevULong> &val, long x, long y)
 {
     Tango::DevVarULongArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2487,7 +2487,7 @@ void WAttribute::set_write_value(std::vector<Tango::DevULong> &val, long x, long
 
 // DevULong64:
 
-void WAttribute::set_write_value(Tango::DevULong64 val)
+void WAttributePrivate::set_write_value(Tango::DevULong64 val)
 {
     Tango::DevVarULong64Array tmp_seq(1);
     tmp_seq.length(1);
@@ -2500,7 +2500,7 @@ void WAttribute::set_write_value(Tango::DevULong64 val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevULong64 *val, long x, long y)
+void WAttributePrivate::set_write_value(Tango::DevULong64 *val, long x, long y)
 {
     long nb_data;
 
@@ -2522,7 +2522,7 @@ void WAttribute::set_write_value(Tango::DevULong64 *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(std::vector<Tango::DevULong64> &val, long x, long y)
+void WAttributePrivate::set_write_value(std::vector<Tango::DevULong64> &val, long x, long y)
 {
     Tango::DevVarULong64Array tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2535,7 +2535,7 @@ void WAttribute::set_write_value(std::vector<Tango::DevULong64> &val, long x, lo
 
 // DevState:
 
-void WAttribute::set_write_value(Tango::DevState val)
+void WAttributePrivate::set_write_value(Tango::DevState val)
 {
     Tango::DevVarStateArray tmp_seq(1);
     tmp_seq.length(1);
@@ -2548,7 +2548,7 @@ void WAttribute::set_write_value(Tango::DevState val)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevState *val, long x, long y)
+void WAttributePrivate::set_write_value(Tango::DevState *val, long x, long y)
 {
     long nb_data;
 
@@ -2570,7 +2570,7 @@ void WAttribute::set_write_value(Tango::DevState *val, long x, long y)
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(std::vector<Tango::DevState> &val, long x, long y)
+void WAttributePrivate::set_write_value(std::vector<Tango::DevState> &val, long x, long y)
 {
     Tango::DevVarStateArray tmp_seq(val.size(), val.size(), &val[0], false);
 
@@ -2581,7 +2581,7 @@ void WAttribute::set_write_value(std::vector<Tango::DevState> &val, long x, long
     set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevEncoded *, TANGO_UNUSED(long x), TANGO_UNUSED(long y))
+void WAttributePrivate::set_write_value(Tango::DevEncoded *, TANGO_UNUSED(long x), TANGO_UNUSED(long y))
 {
 
 //
@@ -2605,7 +2605,7 @@ void WAttribute::set_write_value(Tango::DevEncoded *, TANGO_UNUSED(long x), TANG
 //
 //--------------------------------------------------------------------------
 
-void WAttribute::rollback()
+void WAttributePrivate::rollback()
 {
     switch (data_type)
     {
@@ -2672,7 +2672,7 @@ void WAttribute::rollback()
 //
 //--------------------------------------------------------------------------
 
-void WAttribute::copy_data(const CORBA::Any &any)
+void WAttributePrivate::copy_data(const CORBA::Any &any)
 {
     switch (data_type)
     {
@@ -2751,7 +2751,7 @@ void WAttribute::copy_data(const CORBA::Any &any)
     }
 }
 
-void WAttribute::copy_data(const Tango::AttrValUnion &the_union)
+void WAttributePrivate::copy_data(const Tango::AttrValUnion &the_union)
 {
     switch (data_type)
     {
@@ -2813,7 +2813,7 @@ void WAttribute::copy_data(const Tango::AttrValUnion &the_union)
 //
 //--------------------------------------------------------------------------
 
-void WAttribute::set_written_date()
+void WAttributePrivate::set_written_date()
 {
 #ifdef _TG_WINDOWS_
     struct _timeb t;
@@ -2843,7 +2843,7 @@ void WAttribute::set_written_date()
 //
 //--------------------------------------------------------------------------
 
-bool WAttribute::check_rds_alarm()
+bool WAttributePrivate::check_rds_alarm()
 {
     bool ret = false;
 
@@ -3177,22 +3177,22 @@ bool WAttribute::check_rds_alarm()
     return ret;
 }
 
-void WAttribute::set_min_value(char *new_min_value_str)
+void WAttributePrivate::set_min_value(char *new_min_value_str)
 {
     set_min_value(std::string(new_min_value_str));
 }
 
-void WAttribute::set_min_value(const char *new_min_value_str)
+void WAttributePrivate::set_min_value(const char *new_min_value_str)
 {
     set_min_value(std::string(new_min_value_str));
 }
 
-void WAttribute::set_max_value(char *new_max_value_str)
+void WAttributePrivate::set_max_value(char *new_max_value_str)
 {
     set_max_value(std::string(new_max_value_str));
 }
 
-void WAttribute::set_max_value(const char *new_max_value_str)
+void WAttributePrivate::set_max_value(const char *new_max_value_str)
 {
     set_max_value(std::string(new_max_value_str));
 }
@@ -3211,7 +3211,7 @@ void WAttribute::set_max_value(const char *new_max_value_str)
 //
 //--------------------------------------------------------------------------
 
-bool WAttribute::mem_value_below_above(MinMaxValueCheck check_type, std::string &ret_mem_value)
+bool WAttributePrivate::mem_value_below_above(MinMaxValueCheck check_type, std::string &ret_mem_value)
 {
     bool ret = false;
 

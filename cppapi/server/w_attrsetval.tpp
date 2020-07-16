@@ -54,7 +54,7 @@ namespace Tango
 
 
 template <typename T>
-void WAttribute::get_write_value(T &data)
+void WAttributePrivate::get_write_value(T &data)
 {
 //
 // First some check on user type
@@ -72,7 +72,7 @@ void WAttribute::get_write_value(T &data)
 
 
 template <typename T>
-void WAttribute::get_write_value(const T *&ptr)
+void WAttributePrivate::get_write_value(const T *&ptr)
 {
 //
 // First some check on user type
@@ -104,7 +104,7 @@ void WAttribute::get_write_value(const T *&ptr)
 //-----------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void WAttribute::check_type(T &TANGO_UNUSED(dummy), const std::string &origin)
+void WAttributePrivate::check_type(T &TANGO_UNUSED(dummy), const std::string &origin)
 {
 	bool short_enum = std::is_same<short,typename std::underlying_type<T>::type>::value;
 	bool uns_int_enum = std::is_same<unsigned int,typename std::underlying_type<T>::type>::value;
@@ -173,7 +173,7 @@ void WAttribute::check_type(T &TANGO_UNUSED(dummy), const std::string &origin)
 //-----------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void WAttribute::set_write_value(T val)
+void WAttributePrivate::set_write_value(T val)
 {
 	check_type(val,"WAttribute::set_write_value");
 
@@ -190,7 +190,7 @@ void WAttribute::set_write_value(T val)
 }
 
 template <typename T>
-void WAttribute::set_write_value(T *val, long x, long y)
+void WAttributePrivate::set_write_value(T *val, long x, long y)
 {
 	T dum;
 	check_type(dum,"WAttribute::set_write_value");
@@ -226,7 +226,7 @@ void WAttribute::set_write_value(T *val, long x, long y)
 }
 
 template <typename T>
-void WAttribute::set_write_value(std::vector<T> &val, long x, long y)
+void WAttributePrivate::set_write_value(std::vector<T> &val, long x, long y)
 {
 	T dum;
 	check_type(dum,"WAttribute::set_write_value");

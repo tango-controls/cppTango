@@ -135,7 +135,7 @@ public:
  * Click <a href="https://tango-controls.readthedocs.io/en/latest/development/advanced/IDL.html#exceptions">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	WAttribute &get_w_attr_by_name(const char *attr_name);
+	WAttributePrivate &get_w_attr_by_name(const char *attr_name);
 /**
  * Get Writable Attribute object from its index.
  *
@@ -145,7 +145,7 @@ public:
  * @param ind The attribute index
  * @return A reference to the WAttribute object
  */
-	WAttribute &get_w_attr_by_ind(const long ind) {return static_cast<WAttribute &>(*(attr_list[ind]));}
+	WAttributePrivate &get_w_attr_by_ind(const long ind) {return static_cast<WAttributePrivate &>(*(attr_list[ind]));}
 /**
  * Get Attribute index into the main attribute vector from its name.
  *

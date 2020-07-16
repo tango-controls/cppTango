@@ -365,7 +365,7 @@ inline void Device_3Impl::init_out_data(T &back,AttributePrivate &att,AttrWriteT
 	if ((w_type == Tango::READ_WRITE) ||
 		(w_type == Tango::READ_WITH_WRITE))
 	{
-		WAttribute &assoc_att = dev_attr->get_w_attr_by_ind(att.get_assoc_ind());
+		WAttributePrivate &assoc_att = dev_attr->get_w_attr_by_ind(att.get_assoc_ind());
 		back.w_dim.dim_x = assoc_att.get_w_dim_x();
 		back.w_dim.dim_y = assoc_att.get_w_dim_y();
 	}

@@ -538,7 +538,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						attr_vect[att.get_attr_idx()]->read(this,att);
 					else
 					{
-						Tango::WAttribute &w_att = static_cast<Tango::WAttribute &>(att);
+						Tango::WAttributePrivate &w_att = static_cast<Tango::WAttributePrivate &>(att);
 						Tango::DevFailed df(w_att.get_mem_exception());
 
 						TangoSys_OMemStream o;
@@ -643,7 +643,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 			{
 				if (att.is_mem_exception() == true)
 				{
-					Tango::WAttribute &w_att = static_cast<Tango::WAttribute &>(att);
+					Tango::WAttributePrivate &w_att = static_cast<Tango::WAttributePrivate &>(att);
 					Tango::DevFailed df(w_att.get_mem_exception());
 
 					TangoSys_OMemStream o;
@@ -1672,7 +1672,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 
 			for(ite = updated_attr.begin();ite != updated_attr.end();)
 			{
-                WAttribute &att = dev_attr->get_w_attr_by_ind((*ite).idx_in_multi_attr);
+                WAttributePrivate &att = dev_attr->get_w_attr_by_ind((*ite).idx_in_multi_attr);
                 att_idx.push_back(ite->idx_in_multi_attr);
 
 				try
@@ -1770,7 +1770,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 								errs[nb_failed - 1].name = Tango::string_dup(e.errors[loop].name);
 								errs[nb_failed - 1].err_list = e.errors[loop].err_list;
 
-								WAttribute &att = dev_attr->get_w_attr_by_ind(ite_att->idx_in_multi_attr);
+								WAttributePrivate &att = dev_attr->get_w_attr_by_ind(ite_att->idx_in_multi_attr);
 								if (att.get_data_format() == SCALAR)
 									att.rollback();
 								break;
@@ -1784,7 +1784,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 					std::vector<long>::iterator ite;
 					for(ite = att_idx.begin();ite != att_idx.end();++ite)
 					{
-						WAttribute &att = dev_attr->get_w_attr_by_ind(*ite);
+						WAttributePrivate &att = dev_attr->get_w_attr_by_ind(*ite);
 						nb_failed++;
 						if (att.get_data_format() == SCALAR)
 							att.rollback();
@@ -1822,7 +1822,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 
 		for (i = 0;i < updated_attr.size();i++)
 		{
-			WAttribute &att = dev_attr->get_w_attr_by_ind(updated_attr[i].idx_in_multi_attr);
+			WAttributePrivate &att = dev_attr->get_w_attr_by_ind(updated_attr[i].idx_in_multi_attr);
 
 			if (values_3 != NULL)
 			{
@@ -2310,7 +2310,7 @@ void Device_3Impl::write_attributes_in_db(std::vector<long> &att_in_db,std::vect
 //
 
 		long idx = att_in_db[i];
-		WAttribute &att = dev_attr->get_w_attr_by_ind(updated_attr[idx].idx_in_multi_attr);
+		WAttributePrivate &att = dev_attr->get_w_attr_by_ind(updated_attr[idx].idx_in_multi_attr);
 		tmp_db.name = att.get_name();
 		tmp_db << (short)1;
 		db_data.push_back(tmp_db);
