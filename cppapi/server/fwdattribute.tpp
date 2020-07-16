@@ -51,7 +51,7 @@ namespace Tango
 //--------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void FwdAttribute::set_local_attribute(DeviceAttribute &da, T *&seq_ptr)
+void FwdAttributePrivate::set_local_attribute(DeviceAttribute &da, T *&seq_ptr)
 {
     qual = da.get_quality();
 
@@ -98,7 +98,7 @@ void FwdAttribute::set_local_attribute(DeviceAttribute &da, T *&seq_ptr)
 //--------------------------------------------------------------------------------------------------------------------
 
 template<typename T, typename V>
-void FwdAttribute::propagate_writen_data(DeviceAttribute &da, WAttributePrivate &attr, T *&ptr, V *&seq_ptr)
+void FwdAttributePrivate::propagate_writen_data(DeviceAttribute &da, WAttributePrivate &attr, T *&ptr, V *&seq_ptr)
 {
     attr.get_write_value(const_cast<const T *&>(ptr));
     int data_length = attr.get_write_value_length();
@@ -127,7 +127,7 @@ void FwdAttribute::propagate_writen_data(DeviceAttribute &da, WAttributePrivate 
 //--------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-bool FwdAttribute::new_att_conf_base(const T &conf)
+bool FwdAttributePrivate::new_att_conf_base(const T &conf)
 {
     if (std::string(conf.name.in()) != name)
         return true;

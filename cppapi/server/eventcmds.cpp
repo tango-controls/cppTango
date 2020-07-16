@@ -1002,7 +1002,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
 			if (attribute.is_fwd_att() == true && et != ATTR_CONF_EVENT)
 			{
-				FwdAttribute &fwd_att = static_cast<FwdAttribute &>(attribute);
+				FwdAttributePrivate &fwd_att = static_cast<FwdAttributePrivate &>(attribute);
 				std::string root_name = fwd_att.get_fwd_dev_name() + "/" + fwd_att.get_fwd_att_name();
 				RootAttRegistry &rar = tg->get_root_att_reg();
 				bool already_there = rar.is_event_subscribed(root_name,et);

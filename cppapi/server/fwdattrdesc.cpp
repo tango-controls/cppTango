@@ -323,7 +323,7 @@ void FwdAttr::read(DeviceImpl *dev,AttributePrivate &attr)
 // Retrieve root attribute device proxy object
 //
 
-	FwdAttribute &fwd_attr = static_cast<FwdAttribute &>(attr);
+	FwdAttributePrivate &fwd_attr = static_cast<FwdAttributePrivate &>(attr);
 	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
 	DeviceProxy *root_att_dev;
 	try
@@ -454,7 +454,7 @@ void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttributePrivate &attr)
 // Retrieve root attribute device proxy object
 //
 
-	FwdAttribute &fwd_attr = static_cast<FwdAttribute &>(attr);
+	FwdAttributePrivate &fwd_attr = static_cast<FwdAttributePrivate &>(attr);
 	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
 	DeviceProxy *root_att_dev;
 	try

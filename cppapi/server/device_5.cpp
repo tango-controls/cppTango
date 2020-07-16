@@ -431,7 +431,7 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 		Tango::AttributePrivate &att = dev_attr->get_attr_by_name(values[loop].name);
 		if (att.is_fwd_att() == true)
 		{
-			Tango::FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
+			Tango::FwdAttributePrivate &fwd_att = static_cast<FwdAttributePrivate &>(att);
 			fwd_att_root_dev_name.push_back(fwd_att.get_fwd_dev_name());
 		}
 	}
@@ -757,7 +757,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 	{
 		try
 		{
-			FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
+			FwdAttributePrivate &fwd_att = static_cast<FwdAttributePrivate &>(att);
 			back = fwd_att.read_root_att_history(n);
 		}
 		catch (Tango::DevFailed &e)

@@ -5909,7 +5909,7 @@ void DeviceImpl::lock_root_devices(int validity, bool lock_action)
     {
         if (att_list[j]->is_fwd_att() == true)
         {
-            FwdAttribute *fwd_att = static_cast<FwdAttribute *>(att_list[j]);
+            FwdAttributePrivate *fwd_att = static_cast<FwdAttributePrivate *>(att_list[j]);
             std::string &dev_name = fwd_att->get_fwd_dev_name();
             ite = find(root_devs.begin(), root_devs.end(), dev_name);
             if (ite == root_devs.end())

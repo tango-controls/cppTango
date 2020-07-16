@@ -558,7 +558,7 @@ public :
 	void set_access_control(AccessControlType acc) {access=acc;}
 	AccessControlType get_access_right() {return get_access_control();}
 
-	friend class FwdAttribute;
+	friend class FwdAttributePrivate;
 
 private:
     void omni420_timeout(int,char *);

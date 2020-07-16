@@ -56,7 +56,7 @@ namespace Tango
 //--------------------------------------------------------------------------------------------------------------------
 
 template<>
-void FwdAttribute::propagate_writen_data(DeviceAttribute &da,WAttributePrivate &attr,ConstDevString *&ptr,DevVarStringArray *&seq_ptr)
+void FwdAttributePrivate::propagate_writen_data(DeviceAttribute &da,WAttributePrivate &attr,ConstDevString *&ptr,DevVarStringArray *&seq_ptr)
 {
 	const ConstDevString *tmp_ptr = const_cast<const ConstDevString *>(ptr);
 	attr.get_write_value(tmp_ptr);
@@ -69,7 +69,7 @@ void FwdAttribute::propagate_writen_data(DeviceAttribute &da,WAttributePrivate &
 }
 
 template<>
-void FwdAttribute::propagate_writen_data(DeviceAttribute &da,WAttributePrivate &attr,DevEncoded *&ptr,DevVarEncodedArray *&seq_ptr)
+void FwdAttributePrivate::propagate_writen_data(DeviceAttribute &da,WAttributePrivate &attr,DevEncoded *&ptr,DevVarEncodedArray *&seq_ptr)
 {
 	attr.get_write_value(const_cast<const DevEncoded* &>(ptr));
 	int data_length = attr.get_write_value_length();

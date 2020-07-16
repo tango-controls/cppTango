@@ -1217,7 +1217,7 @@ void AttributePrivate::set_properties(Tango::MultiAttrProp<T> &props)
 
     if (is_fwd_att() == true)
     {
-        FwdAttribute *fwd_attr = static_cast<FwdAttribute *>(this);
+        FwdAttributePrivate *fwd_attr = static_cast<FwdAttributePrivate *>(this);
         fwd_attr->upd_att_config_base(conf.label.in());
         fwd_attr->upd_att_config(conf);
     }

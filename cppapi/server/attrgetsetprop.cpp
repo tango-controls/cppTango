@@ -139,7 +139,7 @@ void AttributePrivate::get_properties(Tango::AttributeConfig_3 &conf)
 	if (data_type == DATA_TYPE_UNKNOWN)
 	{
 		std::string desc("Attribute ");
-		FwdAttribute *fwd = static_cast<FwdAttribute *>(this);
+		FwdAttributePrivate *fwd = static_cast<FwdAttributePrivate *>(this);
 		desc = desc + get_name() + " is a forwarded attribute and its root device (";
 		desc = desc + fwd->get_fwd_dev_name();
 		desc = desc + ") is not yet available";
@@ -383,7 +383,7 @@ void AttributePrivate::add_config_5_specific(AttributeConfig_5 &conf)
 
 	if (is_fwd_att() == true)
 	{
-		FwdAttribute *fwd = static_cast<FwdAttribute *>(this);
+		FwdAttributePrivate *fwd = static_cast<FwdAttributePrivate *>(this);
 		std::string str(fwd->get_fwd_dev_name() + '/' + fwd->get_fwd_att_name());
 		conf.root_attr_name = Tango::string_dup(str.c_str());
 	}
@@ -3355,7 +3355,7 @@ void AttributePrivate::check_hard_coded(const AttributeConfig_5 &user_conf)
 
 	if (is_fwd_att() == true)
 	{
-		FwdAttribute *fwd = static_cast<FwdAttribute *>(this);
+		FwdAttributePrivate *fwd = static_cast<FwdAttributePrivate *>(this);
 		std::string root_attr_name(fwd->get_fwd_dev_name() + '/' + fwd->get_fwd_att_name());
 		std::string user_root_att_name(user_conf.root_attr_name.in());
 		std::transform(user_root_att_name.begin(),user_root_att_name.end(),user_root_att_name.begin(),::tolower);

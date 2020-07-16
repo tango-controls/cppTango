@@ -269,7 +269,7 @@ MultiAttribute::MultiAttribute(std::string &dev_name,DeviceClass *dev_class_ptr,
 				{
 					if (attr.is_fwd() == true)
 					{
-						AttributePrivate * new_attr = new FwdAttribute(prop_list,attr,dev_name,i);
+						AttributePrivate * new_attr = new FwdAttributePrivate(prop_list,attr,dev_name,i);
 						add_attr(new_attr);
 					}
 					else
@@ -282,7 +282,7 @@ MultiAttribute::MultiAttribute(std::string &dev_name,DeviceClass *dev_class_ptr,
 				{
 					if (attr.is_fwd() == true)
 					{
-						AttributePrivate * new_attr = new FwdAttribute(prop_list, attr, dev_name, i);
+						AttributePrivate * new_attr = new FwdAttributePrivate(prop_list, attr, dev_name, i);
 						add_attr(new_attr);
 					}
 					else
@@ -678,7 +678,7 @@ void MultiAttribute::check_idl_release(DeviceImpl *dev)
 
 			DeviceImpl::FwdWrongConf fwc;
 			fwc.att_name = attr_list[i]->get_name();
-			FwdAttribute *fwd_attr = static_cast<FwdAttribute *>(attr_list[i]);
+			FwdAttributePrivate *fwd_attr = static_cast<FwdAttributePrivate *>(attr_list[i]);
 			fwc.full_root_att_name = fwd_attr->get_fwd_dev_name() + '/' + fwd_attr->get_fwd_att_name();
 			fwc.fae = FWD_TOO_OLD_LOCAL_DEVICE;
 			fwd_wrong_conf.push_back(fwc);
@@ -970,7 +970,7 @@ void MultiAttribute::add_fwd_attribute(std::string &dev_name,DeviceClass *dev_cl
 	std::vector<AttributePrivate *>::iterator ite;
 	ite = attr_list.end() - 2;
 
-	AttributePrivate * new_fwd_attr = new FwdAttribute(prop_list,*new_attr,dev_name,index);
+	AttributePrivate * new_fwd_attr = new FwdAttributePrivate(prop_list,*new_attr,dev_name,index);
 	attr_list.insert(ite,new_fwd_attr);
 	index = attr_list.size() - 3;
 	ext->put_attribute_in_map(new_fwd_attr,index);

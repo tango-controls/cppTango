@@ -102,7 +102,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 
 			if (attr.is_fwd_att() == true)
 			{
-				FwdAttribute &fwd_attr = static_cast<FwdAttribute &>(attr);
+				FwdAttributePrivate &fwd_attr = static_cast<FwdAttributePrivate &>(attr);
 				if (fwd_cb == true)
 					fwd_attr.set_att_config(new_conf[i]);
 				else

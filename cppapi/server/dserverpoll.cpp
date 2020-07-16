@@ -737,7 +737,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 		std::stringstream ss;
 		ss << "Attribute " << obj_name << " is a forwarded attribute.\n";
 		ss << "It's not supported to poll a forwarded attribute.\n";
-		FwdAttribute *fwd = static_cast<FwdAttribute *>(attr_ptr);
+		FwdAttributePrivate *fwd = static_cast<FwdAttributePrivate *>(attr_ptr);
 		ss << "Polling has to be done on the root attribute (";
 		ss << fwd->get_fwd_dev_name() << "/" << fwd->get_fwd_att_name() << ")";
 

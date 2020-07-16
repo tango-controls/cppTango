@@ -42,11 +42,11 @@
 namespace Tango
 {
 
-class FwdAttribute: public WAttributePrivate
+class FwdAttributePrivate: public WAttributePrivate
 {
 public:
-	FwdAttribute(std::vector<AttrProperty> &,Attr &,std::string &,long);
-	~FwdAttribute();
+	FwdAttributePrivate(std::vector<AttrProperty> &,Attr &,std::string &,long);
+	~FwdAttributePrivate();
 
 	virtual bool is_fwd_att() {return true;}
 	std::string &get_fwd_dev_name() {return fwd_dev_name;}
