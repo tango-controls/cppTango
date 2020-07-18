@@ -41,6 +41,8 @@
 #include <time.h>
 #include <iterator>
 
+#include <tango/server/attribute.h>
+
 #ifdef _TG_WINDOWS_
 	#include <sys/types.h>
 	#include <sys/timeb.h>
@@ -163,6 +165,9 @@ public:
 		max_warn,
 		numFlags
 	};
+
+	static_assert(numFlags == Attribute::NUM_ALARM_FLAGS,
+		"Please update NUM_ALARM_FLAGS in public Attribute definition.");
 
 	struct CheckOneStrProp
 	{
