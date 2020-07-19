@@ -33,6 +33,9 @@
 #define _FWDATTRIBUTE_H
 
 #include <tango.h>
+#include <tango/server/w_attribute.h>
+
+#include <memory>
 
 #ifdef _TG_WINDOWS_
 #include <sys/types.h>
@@ -41,6 +44,20 @@
 
 namespace Tango
 {
+
+class FwdAttributePrivate;
+
+class FwdAttribute : public WAttribute
+{
+public:
+	FwdAttribute(std::unique_ptr<FwdAttributePrivate>);
+
+	const FwdAttributePrivate& get_impl() const;
+	FwdAttributePrivate& get_impl();
+
+private:
+	FwdAttributePrivate* impl;
+};
 
 class FwdAttributePrivate: public WAttributePrivate
 {

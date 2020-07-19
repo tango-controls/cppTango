@@ -39,8 +39,27 @@
 #include <fwdattribute.h>
 #include <fwdattribute.tpp>
 
+#include <utility>
+
 namespace Tango
 {
+
+FwdAttribute::FwdAttribute(std::unique_ptr<FwdAttributePrivate> impl_) :
+    WAttribute(std::move(impl_)),
+    impl(dynamic_cast<FwdAttributePrivate*>(&WAttribute::get_impl()))
+{
+    assert(impl != nullptr);
+}
+
+const FwdAttributePrivate& FwdAttribute::get_impl() const
+{
+    return *impl;
+}
+
+FwdAttributePrivate& FwdAttribute::get_impl()
+{
+    return *impl;
+}
 
 //--------------------------------------------------------------------------------------------------------------------
 //
