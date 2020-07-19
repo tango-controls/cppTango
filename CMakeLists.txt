@@ -39,6 +39,7 @@ set(SO_VERSION "${MAJOR_VERSION}${MINOR_VERSION}")
 set(TANGO_HOST $ENV{TANGO_HOST})
 include(configure/CMakeLists.txt)
 
+include_directories(cppapi/include)
 include_directories(cppapi/client)
 include_directories(cppapi/client/helpers)
 include_directories(cppapi/server)
