@@ -31,6 +31,7 @@
 #ifndef _TANGO_CONST_H
 #define _TANGO_CONST_H
 
+#include <tango/common/common_types.h>
 #include <tango/server/server_types.h>
 
 namespace Tango
@@ -467,7 +468,6 @@ const char* const API_ZmqInitFailed                = "API_ZmqInitFailed";
 // Many, many typedef
 //
 
-typedef	const char *	ConstDevString;	// Pseudo Tango type to ease POGO job
 typedef DevVarCharArray	DevVarUCharArray;
 
 class DeviceImpl;
