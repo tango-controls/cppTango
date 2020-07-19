@@ -31,6 +31,8 @@
 #ifndef _TANGO_CONST_H
 #define _TANGO_CONST_H
 
+#include <tango/server/server_types.h>
+
 namespace Tango
 {
 
@@ -1119,13 +1121,6 @@ const char * const EventName[] = {
 
 const char *const CONF_TYPE_EVENT		   = EventName[ATTR_CONF_EVENT];
 const char* const DATA_READY_TYPE_EVENT	   = EventName[DATA_READY_EVENT];
-
-enum AttrSerialModel
-{
-	ATTR_NO_SYNC=0,
-	ATTR_BY_KERNEL,
-	ATTR_BY_USER
-};
 
 enum PipeSerialModel
 {
