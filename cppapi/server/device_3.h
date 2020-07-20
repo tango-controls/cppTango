@@ -311,12 +311,12 @@ protected:
 	template <typename T> void error_from_devfailed(T &,DevFailed &,const char *);
 	template <typename T> void error_from_errorlist(T &,DevErrorList &,const char *);
 
-	template <typename T> void one_error(T &,const char *,const char *,std::string &,AttributePrivate &);
+	template <typename T> void one_error(T &,const char *,const char *,std::string &,Attribute &);
 	template <typename T> void one_error(T &,const char *,const char *,std::string &,const char *);
 
 	template <typename T,typename V> void init_polled_out_data(T &,V &);
-	template <typename T> void init_out_data(T &,AttributePrivate &,AttrWriteType &);
-	template <typename T> void init_out_data_quality(T &,AttributePrivate &,AttrQuality);
+	template <typename T> void init_out_data(T &,Attribute &,AttrWriteType &);
+	template <typename T> void init_out_data_quality(T &,Attribute &,AttrQuality);
 
 	template <typename T> void base_state2attr(T &);
 	template <typename T> void base_status2attr(T &);

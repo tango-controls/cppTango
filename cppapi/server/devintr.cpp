@@ -148,7 +148,7 @@ void DevIntr::build_att_interfaces(DeviceImpl *dev,std::vector<AttrIntr> &atts)
 	for (size_t loop = 0;loop < nb_attr;loop++)
 	{
 		AttrIntr ai;
-		AttributePrivate *att_ptr = (dev->get_device_attr()->get_attribute_list())[loop];
+		Attribute *att_ptr = (dev->get_device_attr()->get_attribute_list())[loop];
 		ai.name  = att_ptr->get_name_lower();
 		ai.writable = att_ptr->get_writable();
 		ai.data_type = att_ptr->get_data_type();
@@ -159,7 +159,7 @@ void DevIntr::build_att_interfaces(DeviceImpl *dev,std::vector<AttrIntr> &atts)
 
 		if (ai.writable == READ_WRITE || ai.writable == WRITE)
 		{
-			WAttributePrivate *w_att_ptr = static_cast<WAttributePrivate *>(att_ptr);
+			WAttribute *w_att_ptr = static_cast<WAttribute *>(att_ptr);
 			ai.mem = w_att_ptr->get_memorized();
 			ai.mem_init = w_att_ptr->get_memorized_init();
 			ai.writable_attr_name = w_att_ptr->get_assoc_name();

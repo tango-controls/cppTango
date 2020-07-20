@@ -595,7 +595,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 
 					for (i = 0;i < non_polled.size();i++)
 					{
-						AttributePrivate &att = dev_attr->get_attr_by_name(real_names[non_polled[i]]);
+						Attribute &att = dev_attr->get_attr_by_name(real_names[non_polled[i]]);
 						poll_period.push_back(att.get_polling_period());
 
 						if (poll_period.back() == 0)
@@ -771,7 +771,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 // Get attribute data type
 //
 
-					AttributePrivate &att = dev_attr->get_attr_by_name(real_names[i]);
+					Attribute &att = dev_attr->get_attr_by_name(real_names[i]);
 					long type = att.get_data_type();
 
 //
@@ -1291,12 +1291,12 @@ Tango::AttributeConfigList_2 *Device_2Impl::get_attribute_config_2(const Tango::
 		{
 			if (all_attr == true)
 			{
-				AttributePrivate &attr = dev_attr->get_attr_by_ind(i);
+				Attribute &attr = dev_attr->get_attr_by_ind(i);
 				attr.get_properties((*back)[i]);
 			}
 			else
 			{
-				AttributePrivate &attr = dev_attr->get_attr_by_name(names[i]);
+				Attribute &attr = dev_attr->get_attr_by_name(names[i]);
 				attr.get_properties((*back)[i]);
 			}
 		}
@@ -1552,7 +1552,7 @@ Tango::DevAttrHistoryList *Device_2Impl::read_attribute_history_2(const char* na
 // exception in case of unsupported attribute
 //
 
-	AttributePrivate &att = dev_attr->get_attr_by_name(name);
+	Attribute &att = dev_attr->get_attr_by_name(name);
 
 	std::string attr_str(name);
 	std::transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);

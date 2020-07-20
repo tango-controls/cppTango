@@ -79,8 +79,8 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,std::string &att_name,AttrHi
 // Get a reference on the Attribute object
 //
 
-    Tango::AttributePrivate &att = dev->get_device_attr()->get_attr_by_name(att_name.c_str());
-    Tango::WAttributePrivate *w_att_ptr = NULL;
+    Tango::Attribute &att = dev->get_device_attr()->get_attr_by_name(att_name.c_str());
+    Tango::WAttribute *w_att_ptr = NULL;
     Tango::AttrWriteType w_type = att.get_writable();
     if (w_type == Tango::READ_WRITE)
         w_att_ptr = &(dev->get_device_attr()->get_w_attr_by_name(att_name.c_str()));
@@ -382,7 +382,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,std::string &att_name,AttrHi
 
                     if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
                     {
-                        WAttributePrivate &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
+                        WAttribute &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
                         (*aid.data_5)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
                         (*aid.data_5)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
                     }
@@ -394,7 +394,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,std::string &att_name,AttrHi
 
                     if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
                     {
-                        WAttributePrivate &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
+                        WAttribute &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
                         (*aid.data_4)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
                         (*aid.data_4)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
                     }
@@ -406,7 +406,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,std::string &att_name,AttrHi
 
                     if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
                     {
-                        WAttributePrivate &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
+                        WAttribute &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
                         (*aid.data_3)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
                         (*aid.data_3)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
                     }

@@ -152,7 +152,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 // exception in case of unsupported attribute
 //
 
-	AttributePrivate &att = dev_attr->get_attr_by_name(name);
+	Attribute &att = dev_attr->get_attr_by_name(name);
 
 	std::string attr_str(name);
 	std::transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
@@ -614,7 +614,7 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 		{
 			for (size_t loop = 0;loop < nb_names;loop++)
 			{
-				AttributePrivate &att = dev_attr->get_attr_by_name(real_names[loop]);
+				Attribute &att = dev_attr->get_attr_by_name(real_names[loop]);
 
 				if (att.is_fwd_att() == true)
 				{
@@ -881,7 +881,7 @@ Tango::AttributeValueList_4* Device_4Impl::write_read_attributes_4(const Tango::
 // Check the attribute write type (only READ_WRITE or READ_WITH_WRITE allowed)
 //
 
-	Tango::AttributePrivate &att = dev_attr->get_attr_by_name(values[0].name);
+	Tango::Attribute &att = dev_attr->get_attr_by_name(values[0].name);
 	Tango::AttrWriteType awt = att.get_writable();
 	if ((awt == Tango::READ) || (awt == Tango::WRITE))
 	{

@@ -46,7 +46,7 @@ namespace log4tango {
 namespace Tango {
   class Attr;
   class DevFailed;
-  class AttributePrivate;
+  class Attribute;
   class AttrManip;
   class AttrProperty;
   class DevVarCharArray;
@@ -82,7 +82,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream&, const DevVarULong
 
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream&, const DevVarStringArray&);
 
-log4tango::LoggerStream& operator<< (log4tango::LoggerStream&, const AttributePrivate&);
+log4tango::LoggerStream& operator<< (log4tango::LoggerStream&, const Attribute&);
 
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream&, const Attr&);
 

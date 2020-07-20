@@ -59,8 +59,8 @@ void DeviceImpl::init_poll_no_db()
 // A loop for all device attribute
 //
 
-    std::vector<AttributePrivate *> &att_list = dev_attr->get_attribute_list();
-    std::vector<AttributePrivate *>::iterator ite;
+    std::vector<Attribute *> &att_list = dev_attr->get_attribute_list();
+    std::vector<Attribute *>::iterator ite;
     for (ite = att_list.begin();ite != att_list.end();++ite)
     {
         long poll_period = (*ite)->get_polling_period();
@@ -311,7 +311,7 @@ int DeviceImpl::get_attribute_poll_period(const std::string &att_name)
 
     if (found == false)
     {
-    	Tango::AttributePrivate &the_att = dev_attr->get_attr_by_name(att_name.c_str());
+    	Tango::Attribute &the_att = dev_attr->get_attr_by_name(att_name.c_str());
     	per = the_att.get_polling_period();
 	}
 

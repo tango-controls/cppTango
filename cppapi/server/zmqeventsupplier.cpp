@@ -1073,7 +1073,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,std::string event_type
 		bool print = false;
     	if (intr_change == false && pipe_event == false)
 		{
-			AttributePrivate &att = device_impl->get_device_attr()->get_attr_by_name(obj_name.c_str());
+			Attribute &att = device_impl->get_device_attr()->get_attr_by_name(obj_name.c_str());
 
 			if (local_event_type == "data_ready")
 			{
@@ -1691,7 +1691,7 @@ bool ZmqEventSupplier::update_connected_client(client_addr *cl)
 void ZmqEventSupplier::push_event_loop(DeviceImpl *device_impl,EventType event_type,
             TANGO_UNUSED(std::vector<std::string> &filterable_names),TANGO_UNUSED(std::vector<double> &filterable_data),
             TANGO_UNUSED(std::vector<std::string> &filterable_names_lg),TANGO_UNUSED(std::vector<long> &filterable_data_lg),
-            struct SuppliedEventData &attr_value,AttributePrivate &att,DevFailed *except)
+            struct SuppliedEventData &attr_value,Attribute &att,DevFailed *except)
 {
 	cout3 << "ZmqEventSupplier::push_event_loop(): called for attribute " << att.get_name() << std::endl;
 

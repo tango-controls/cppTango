@@ -217,7 +217,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
                 long po = poll_list[i]->get_upd();
                 std::map<int,std::vector<std::string> >::iterator ite = polled_together.find(po);
 
-                AttributePrivate &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
+                Attribute &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
 
                 if (ite == polled_together.end())
                 {
@@ -285,7 +285,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
 			}
 			else
 			{
-				AttributePrivate &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
+				Attribute &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
 				returned_info = returned_info + att.get_name();
 			}
 		}
@@ -634,7 +634,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 	std::string obj_name((argin->svalue)[2]);
 	std::transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 	PollObjType type = Tango::POLL_CMD;
-	AttributePrivate *attr_ptr;
+	Attribute *attr_ptr;
 
 	bool local_request = false;
 	std::string::size_type pos = obj_type.rfind(LOCAL_POLL_REQUEST);
@@ -651,7 +651,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 	}
 	else if (obj_type == PollAttribute)
 	{
-		AttributePrivate &att = dev->get_device_attr()->get_attr_by_name((argin->svalue)[2]);
+		Attribute &att = dev->get_device_attr()->get_attr_by_name((argin->svalue)[2]);
 		attr_ptr = &att;
 		type = Tango::POLL_ATTR;
 	}
@@ -737,7 +737,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 		std::stringstream ss;
 		ss << "Attribute " << obj_name << " is a forwarded attribute.\n";
 		ss << "It's not supported to poll a forwarded attribute.\n";
-		FwdAttributePrivate *fwd = static_cast<FwdAttributePrivate *>(attr_ptr);
+		FwdAttribute *fwd = static_cast<FwdAttribute *>(attr_ptr);
 		ss << "Polling has to be done on the root attribute (";
 		ss << fwd->get_fwd_dev_name() << "/" << fwd->get_fwd_att_name() << ")";
 
@@ -1544,7 +1544,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 
     if (type == Tango::POLL_ATTR)
     {
-        AttributePrivate &att = dev->get_device_attr()->get_attr_by_name(obj_name.c_str());
+        Attribute &att = dev->get_device_attr()->get_attr_by_name(obj_name.c_str());
         att.set_polling_period(0);
     }
 
@@ -1731,7 +1731,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 
 	if (type == POLL_ATTR)
 	{
-		AttributePrivate &att = dev->get_device_attr()->get_attr_by_name((*argin)[2]);
+		Attribute &att = dev->get_device_attr()->get_attr_by_name((*argin)[2]);
 
 		DevFailed ex;
 		ex.errors.length(1);

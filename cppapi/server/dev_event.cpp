@@ -77,7 +77,7 @@ void DeviceImpl::push_event(std::string attr_name, std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// push the event
 	attr.fire_event (filt_names,filt_vals,except);
@@ -112,7 +112,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -129,7 +129,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -145,7 +145,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -162,7 +162,7 @@ void DeviceImpl::push_event(std::string attr_name,std::vector<std::string> &filt
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -180,7 +180,7 @@ void DeviceImpl::push_event(std::string attr_name,std::vector<std::string> &filt
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -198,7 +198,7 @@ void DeviceImpl::push_event(std::string attr_name,std::vector<std::string> &filt
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -216,7 +216,7 @@ void DeviceImpl::push_event(std::string attr_name,std::vector<std::string> &filt
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -234,7 +234,7 @@ void DeviceImpl::push_event(std::string attr_name,std::vector<std::string> &filt
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -252,7 +252,7 @@ void DeviceImpl::push_event(std::string attr_name,std::vector<std::string> &filt
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -268,7 +268,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -284,7 +284,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -300,7 +300,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -316,7 +316,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -332,7 +332,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_str,p_data, size, release);
@@ -377,7 +377,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -400,7 +400,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -423,7 +423,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -446,7 +446,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -469,7 +469,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -492,7 +492,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -515,7 +515,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -538,7 +538,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -561,7 +561,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -584,7 +584,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -607,7 +607,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -630,7 +630,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -653,7 +653,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -676,7 +676,7 @@ void DeviceImpl::push_event (std::string attr_name,std::vector<std::string> &fil
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_str_data,p_data, size,t, qual, release);
@@ -710,7 +710,7 @@ void DeviceImpl::set_change_event  (std::string attr_name, bool implemented, boo
 {
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	attr.set_change_event (implemented, detect);
 }
@@ -739,7 +739,7 @@ void DeviceImpl::push_change_event(std::string attr_name, DevFailed *except)
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// push the event
 	attr.fire_change_event (except);
@@ -771,7 +771,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevShort *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -787,7 +787,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevLong *p_dat
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -802,7 +802,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevLong64 *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -817,7 +817,7 @@ void DeviceImpl::push_change_event(std::string attr_name, Tango::DevFloat *p_dat
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -834,7 +834,7 @@ void DeviceImpl::push_change_event(std::string attr_name, Tango::DevDouble *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -851,7 +851,7 @@ void DeviceImpl::push_change_event(std::string attr_name, Tango::DevString *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -868,7 +868,7 @@ void DeviceImpl::push_change_event(std::string attr_name, Tango::DevBoolean *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -885,7 +885,7 @@ void DeviceImpl::push_change_event(std::string attr_name, Tango::DevUShort *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -902,7 +902,7 @@ void DeviceImpl::push_change_event(std::string attr_name, Tango::DevUChar *p_dat
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -917,7 +917,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevULong *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -932,7 +932,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevULong64 *p_
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -947,7 +947,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevState *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -962,7 +962,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevEncoded *p_
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -977,7 +977,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevString *p_s
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_str_data, p_data, size, release);
@@ -1019,7 +1019,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevShort *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1042,7 +1042,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevLong *p_dat
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1066,7 +1066,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevLong64 *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1089,7 +1089,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevFloat *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1112,7 +1112,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevDouble *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1135,7 +1135,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevString *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1158,7 +1158,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevBoolean *p_
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1181,7 +1181,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevUShort *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1204,7 +1204,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevUChar *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1227,7 +1227,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevULong *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1250,7 +1250,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevULong64 *p_
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1273,7 +1273,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevState *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1296,7 +1296,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevEncoded *p_
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1319,7 +1319,7 @@ void DeviceImpl::push_change_event (std::string attr_name, Tango::DevString *p_s
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_str_data,p_data, size, t, qual, release);
@@ -1354,7 +1354,7 @@ void DeviceImpl::set_archive_event  (std::string attr_name, bool implemented, bo
 {
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	attr.set_archive_event (implemented, detect);
 }
@@ -1383,7 +1383,7 @@ void DeviceImpl::push_archive_event(std::string attr_name, DevFailed *except)
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// push the event
 	attr.fire_archive_event (except);
@@ -1415,7 +1415,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevShort *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -1431,7 +1431,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevLong *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -1446,7 +1446,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevLong64 *p_
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -1462,7 +1462,7 @@ void DeviceImpl::push_archive_event(std::string attr_name, Tango::DevFloat *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -1479,7 +1479,7 @@ void DeviceImpl::push_archive_event(std::string attr_name, Tango::DevDouble *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -1496,7 +1496,7 @@ void DeviceImpl::push_archive_event(std::string attr_name, Tango::DevString *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -1513,7 +1513,7 @@ void DeviceImpl::push_archive_event(std::string attr_name, Tango::DevBoolean *p_
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -1530,7 +1530,7 @@ void DeviceImpl::push_archive_event(std::string attr_name, Tango::DevUShort *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -1547,7 +1547,7 @@ void DeviceImpl::push_archive_event(std::string attr_name, Tango::DevUChar *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -1562,7 +1562,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevULong *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -1576,7 +1576,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevULong64 *p
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -1590,7 +1590,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevState *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -1605,7 +1605,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevEncoded *p
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
@@ -1620,7 +1620,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevString *p_
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value (p_str_data,p_data, size, release);
@@ -1663,7 +1663,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevShort *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1686,7 +1686,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevLong *p_da
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1709,7 +1709,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevLong64 *p_
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1733,7 +1733,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevFloat *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1756,7 +1756,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevDouble *p_
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1779,7 +1779,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevString *p_
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1802,7 +1802,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevBoolean *p
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1825,7 +1825,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevUShort *p_
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1848,7 +1848,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevUChar *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1871,7 +1871,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevULong *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1894,7 +1894,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevULong64 *p
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1917,7 +1917,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevState *p_d
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1940,7 +1940,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevEncoded *p
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
@@ -1963,7 +1963,7 @@ void DeviceImpl::push_archive_event (std::string attr_name, Tango::DevString *p_
 
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	// set the attribute value
 	attr.set_value_date_quality (p_str_data, p_data, size, t, qual, release);
@@ -1991,7 +1991,7 @@ void DeviceImpl::set_data_ready_event  (std::string attr_name, bool implemented)
 {
 	// search the attribute from the attribute list
 	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::AttributePrivate &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
 
 	attr.set_data_ready_event (implemented);
 }
@@ -2023,7 +2023,7 @@ void DeviceImpl::push_data_ready_event (const std::string &attr_name, Tango::Dev
 // search the attribute from the attribute list to check that it exist
 
     Tango::MultiAttribute *attr_list = get_device_attr();
-    Tango::AttributePrivate &attr = attr_list->get_attr_by_name (attr_name.c_str());
+    Tango::Attribute &attr = attr_list->get_attr_by_name (attr_name.c_str());
 
 //
 // Get event suppliers

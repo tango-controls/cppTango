@@ -211,7 +211,7 @@ void Util::polling_configure()
 				if (upd < 0)
 					upd = -upd;
 
-				AttributePrivate &att = dev_list[j]->get_device_attr()->get_attr_by_name(poll_attr_list[k].c_str());
+				Attribute &att = dev_list[j]->get_device_attr()->get_attr_by_name(poll_attr_list[k].c_str());
 				if (att.is_fwd_att() == true)
 				{
 					v_poll_cmd_fwd.push_back(send);
@@ -1471,7 +1471,7 @@ int Util::check_dev_poll(std::vector<std::string> &poll_cmd_list,std::vector<std
 // Now, get device attribute list
 //
 
-	std::vector<AttributePrivate *> &att_list = dev->get_device_attr()->get_attribute_list();
+	std::vector<Attribute *> &att_list = dev->get_device_attr()->get_attribute_list();
 
 //
 // Check polled attributes
@@ -1482,7 +1482,7 @@ int Util::check_dev_poll(std::vector<std::string> &poll_cmd_list,std::vector<std
 		std::string polled_attr = *iter;
 		std::transform(polled_attr.begin(),polled_attr.end(),polled_attr.begin(),::tolower);
 
-		std::vector<AttributePrivate *>::iterator i_attr;
+		std::vector<Attribute *>::iterator i_attr;
 
 		for (i_attr = att_list.begin();i_attr < att_list.end();++i_attr)
 		{

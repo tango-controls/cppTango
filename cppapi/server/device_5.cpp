@@ -228,7 +228,7 @@ Tango::AttributeValueList_5* Device_5Impl::read_attributes_5(const Tango::DevVar
 		{
 			for (size_t loop = 0;loop < nb_names;loop++)
 			{
-				AttributePrivate &att = dev_attr->get_attr_by_name(real_names[loop]);
+				Attribute &att = dev_attr->get_attr_by_name(real_names[loop]);
 
 				if (att.is_fwd_att() == true)
 				{
@@ -428,10 +428,10 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 
 	for (unsigned int loop = 0;loop < r_w_att.size();++loop)
 	{
-		Tango::AttributePrivate &att = dev_attr->get_attr_by_name(values[loop].name);
+		Tango::Attribute &att = dev_attr->get_attr_by_name(values[loop].name);
 		if (att.is_fwd_att() == true)
 		{
-			Tango::FwdAttributePrivate &fwd_att = static_cast<FwdAttributePrivate &>(att);
+			Tango::FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
 			fwd_att_root_dev_name.push_back(fwd_att.get_fwd_dev_name());
 		}
 	}
@@ -597,12 +597,12 @@ Tango::AttributeConfigList_5 *Device_5Impl::get_attribute_config_5(const Tango::
 		{
 			if (all_attr == true)
 			{
-				AttributePrivate &attr = dev_attr->get_attr_by_ind(i);
+				Attribute &attr = dev_attr->get_attr_by_ind(i);
 				attr.get_properties((*back)[i]);
 			}
 			else
 			{
-				AttributePrivate &attr = dev_attr->get_attr_by_name(names[i]);
+				Attribute &attr = dev_attr->get_attr_by_name(names[i]);
 				attr.get_properties((*back)[i]);
 			}
 		}
@@ -722,7 +722,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 // exception in case of unsupported attribute
 //
 
-	AttributePrivate &att = dev_attr->get_attr_by_name(name);
+	Attribute &att = dev_attr->get_attr_by_name(name);
 
 	std::string attr_str(name);
 	std::transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
@@ -757,7 +757,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 	{
 		try
 		{
-			FwdAttributePrivate &fwd_att = static_cast<FwdAttributePrivate &>(att);
+			FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
 			back = fwd_att.read_root_att_history(n);
 		}
 		catch (Tango::DevFailed &e)

@@ -1074,7 +1074,7 @@ void DServer::restart(std::string &d_name)
 //
 
 	std::vector<std::string> m_cast;
-	std::vector<AttributePrivate *> &att_list = new_dev->get_device_attr()->get_attribute_list();
+	std::vector<Attribute *> &att_list = new_dev->get_device_attr()->get_attribute_list();
 
 	for (unsigned int j = 0;j < att_list.size();++j)
 	{
@@ -1123,7 +1123,7 @@ void DServer::restart(std::string &d_name)
 // Attribute properties may have changed after the restart.
 // Push an attribute configuration event to all registered subscribers.
 
-	for (AttributePrivate* attr : new_dev->get_device_attr()->get_attribute_list())
+	for (Attribute* attr : new_dev->get_device_attr()->get_attribute_list())
 	{
 		new_dev->push_att_conf_event(attr);
 	}

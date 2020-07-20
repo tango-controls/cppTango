@@ -93,7 +93,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 	{
 		for (i = 0;i < nb_attr;i++)
 		{
-			AttributePrivate &attr = dev_attr->get_attr_by_name(new_conf[i].name);
+			Attribute &attr = dev_attr->get_attr_by_name(new_conf[i].name);
 			bool old_alarm = attr.is_alarmed().any();
 
 //
@@ -102,7 +102,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 
 			if (attr.is_fwd_att() == true)
 			{
-				FwdAttributePrivate &fwd_attr = static_cast<FwdAttributePrivate &>(attr);
+				FwdAttribute &fwd_attr = static_cast<FwdAttribute &>(attr);
 				if (fwd_cb == true)
 					fwd_attr.set_att_config(new_conf[i]);
 				else
@@ -247,7 +247,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 		dev_attr->get_alarm_list().clear();
 		for (long j = 0;j < nb_dev_attr;j++)
 		{
-			AttributePrivate &att = dev_attr->get_attr_by_ind(j);
+			Attribute &att = dev_attr->get_attr_by_ind(j);
 			if (att.is_alarmed().any() == true)
 			{
 				if (att.get_writable() != Tango::WRITE)
@@ -280,7 +280,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 	dev_attr->get_alarm_list().clear();
 	for (i = 0;i < nb_dev_attr;i++)
 	{
-		Tango::AttributePrivate &attr = dev_attr->get_attr_by_ind(i);
+		Tango::Attribute &attr = dev_attr->get_attr_by_ind(i);
 		Tango::AttrWriteType w_type = attr.get_writable();
 		if (attr.is_alarmed().any() == true)
 		{
@@ -315,7 +315,7 @@ inline void Device_3Impl::error_from_errorlist(T &back,DevErrorList &e,const cha
 }
 
 template <typename T>
-inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,std::string &mess,AttributePrivate &att)
+inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,std::string &mess,Attribute &att)
 {
 	back.err_list.length(1);
 
@@ -355,7 +355,7 @@ inline void Device_3Impl::init_polled_out_data(T &back,V &att_val)
 }
 
 template <typename T>
-inline void Device_3Impl::init_out_data(T &back,AttributePrivate &att,AttrWriteType &w_type)
+inline void Device_3Impl::init_out_data(T &back,Attribute &att,AttrWriteType &w_type)
 {
 	back.time = att.get_when();
 	back.quality = att.get_quality();
@@ -365,7 +365,7 @@ inline void Device_3Impl::init_out_data(T &back,AttributePrivate &att,AttrWriteT
 	if ((w_type == Tango::READ_WRITE) ||
 		(w_type == Tango::READ_WITH_WRITE))
 	{
-		WAttributePrivate &assoc_att = dev_attr->get_w_attr_by_ind(att.get_assoc_ind());
+		WAttribute &assoc_att = dev_attr->get_w_attr_by_ind(att.get_assoc_ind());
 		back.w_dim.dim_x = assoc_att.get_w_dim_x();
 		back.w_dim.dim_y = assoc_att.get_w_dim_y();
 	}
@@ -387,7 +387,7 @@ inline void Device_3Impl::init_out_data(T &back,AttributePrivate &att,AttrWriteT
 }
 
 template <typename T>
-inline void Device_3Impl::init_out_data_quality(T &back,AttributePrivate &att,AttrQuality qual)
+inline void Device_3Impl::init_out_data_quality(T &back,Attribute &att,AttrQuality qual)
 {
 	back.time = att.get_when();
 	back.quality = qual;

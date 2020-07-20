@@ -1448,7 +1448,7 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
     size_t nb_obj = to_do.name.size();
     for (size_t ctr = 0;ctr < nb_obj;ctr++)
     {
-        AttributePrivate &att = to_do.dev->get_device_attr()->get_attr_by_name(to_do.name[ctr].c_str());
+        Attribute &att = to_do.dev->get_device_attr()->get_attr_by_name(to_do.name[ctr].c_str());
 
         if (att.use_notifd_event() == true && event_supplier_nd == NULL)
             event_supplier_nd = Util::instance()->get_notifd_event_supplier();
@@ -1851,7 +1851,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 
     for (size_t ctr = 0;ctr < nb_obj;ctr++)
     {
-        AttributePrivate &att = to_do.dev->get_device_attr()->get_attr_by_name(to_do.name[ctr].c_str());
+        Attribute &att = to_do.dev->get_device_attr()->get_attr_by_name(to_do.name[ctr].c_str());
 
         if (att.use_notifd_event() == true && event_supplier_nd == NULL)
             event_supplier_nd = Util::instance()->get_notifd_event_supplier();
