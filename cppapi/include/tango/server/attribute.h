@@ -49,6 +49,10 @@ public:
 	const AttributePrivate& get_impl() const;
 	AttributePrivate& get_impl();
 
+	// Used by Pogo in DeviceClass::erase_dynamic_attributes.
+	long get_attr_idx();
+	std::string& get_name_lower();
+
 /// @publicsection
 
 /**@name Check attribute methods

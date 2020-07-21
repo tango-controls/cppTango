@@ -43,6 +43,16 @@ AttributePrivate& Attribute::get_impl()
     return *impl;
 }
 
+long Attribute::get_attr_idx()
+{
+    return impl->get_attr_idx();
+}
+
+std::string& Attribute::get_name_lower()
+{
+    return impl->get_name_lower();
+}
+
 bool Attribute::is_writ_associated()
 {
     return impl->is_writ_associated();
