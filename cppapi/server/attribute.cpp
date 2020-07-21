@@ -3392,7 +3392,7 @@ void AttributePrivate::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,T
 			if ((writable == Tango::READ_WRITE) ||
 			     (writable == Tango::READ_WITH_WRITE))
 			{
-				WAttributePrivate &assoc_att = m_attr->get_w_attr_by_ind(get_assoc_ind());
+				WAttributePrivate &assoc_att = m_attr->get_w_attr_by_ind(get_assoc_ind()).get_impl();
 				ptr->w_dim.dim_x = assoc_att.get_w_dim_x();
 				ptr->w_dim.dim_y = assoc_att.get_w_dim_y();
 			}
@@ -5974,7 +5974,7 @@ std::ostream &operator<<(std::ostream &o_str, const Attribute &p)
 // Get attribute properties
 //
 
-	p.get_properties(conf);
+	p.get_impl().get_properties(conf);
 
 //
 // Print all these properties

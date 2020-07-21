@@ -341,7 +341,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,std::string &att_name,AttrHi
 //
 
                 if (w_type == Tango::READ_WITH_WRITE)
-                    dev->get_device_attr()->add_write_value(att);
+                    dev->get_device_attr()->add_write_value(att.get_impl());
                 else if (w_type == Tango::READ_WRITE)
                 {
                     if ((data.get_data())[i].wr_ptr != NULL)
@@ -349,7 +349,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,std::string &att_name,AttrHi
                         w_att_ptr->set_write_value((T *)(data.get_data())[i].wr_ptr,
                                                 (data.get_data())[i].wr_x,
                                                 (data.get_data())[i].wr_y);
-                        dev->get_device_attr()->add_write_value(att);
+                        dev->get_device_attr()->add_write_value(att.get_impl());
 
                         if ((data.get_data())[i].release == true)
                         {
@@ -361,7 +361,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,std::string &att_name,AttrHi
                     }
                     else
                     {
-                        dev->get_device_attr()->add_write_value(att);
+                        dev->get_device_attr()->add_write_value(att.get_impl());
                     }
                 }
 
@@ -369,7 +369,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,std::string &att_name,AttrHi
 // Insert data into the AttributeValue object
 //
 
-                dev->data_into_net_object(att,aid,0,w_type,true);
+                dev->data_into_net_object(att.get_impl(),aid,0,w_type,true);
 
 //
 // Init remaining fields
@@ -383,8 +383,8 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,std::string &att_name,AttrHi
                     if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
                     {
                         WAttribute &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
-                        (*aid.data_5)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
-                        (*aid.data_5)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
+                        (*aid.data_5)[0].w_dim.dim_x = assoc_att.get_impl().get_w_dim_x();
+                        (*aid.data_5)[0].w_dim.dim_y = assoc_att.get_impl().get_w_dim_y();
                     }
 				}
                 else if (idl_vers == 4)
@@ -395,8 +395,8 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,std::string &att_name,AttrHi
                     if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
                     {
                         WAttribute &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
-                        (*aid.data_4)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
-                        (*aid.data_4)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
+                        (*aid.data_4)[0].w_dim.dim_x = assoc_att.get_impl().get_w_dim_x();
+                        (*aid.data_4)[0].w_dim.dim_y = assoc_att.get_impl().get_w_dim_y();
                     }
                 }
                 else
@@ -407,8 +407,8 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,std::string &att_name,AttrHi
                     if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
                     {
                         WAttribute &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
-                        (*aid.data_3)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
-                        (*aid.data_3)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
+                        (*aid.data_3)[0].w_dim.dim_x = assoc_att.get_impl().get_w_dim_x();
+                        (*aid.data_3)[0].w_dim.dim_y = assoc_att.get_impl().get_w_dim_y();
                     }
                 }
             }

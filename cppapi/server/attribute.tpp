@@ -1432,9 +1432,9 @@ void AttributePrivate::Attribute_2_AttributeValue_base(T *ptr, Tango::DeviceImpl
             if ((writable == Tango::READ_WRITE) ||
                 (writable == Tango::READ_WITH_WRITE))
             {
-                WAttributePrivate &assoc_att = m_attr->get_w_attr_by_ind(get_assoc_ind());
-                ptr->w_dim.dim_x = assoc_att.get_w_dim_x();
-                ptr->w_dim.dim_y = assoc_att.get_w_dim_y();
+                WAttribute &assoc_att = m_attr->get_w_attr_by_ind(get_assoc_ind());
+                ptr->w_dim.dim_x = assoc_att.get_impl().get_w_dim_x();
+                ptr->w_dim.dim_y = assoc_att.get_impl().get_w_dim_y();
             }
             else
             {

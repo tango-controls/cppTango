@@ -226,7 +226,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 // DEV_STATE, use DEV_VOID for state as data type.
 //
 
-	if (att.get_name_lower() == "state")
+	if (att.get_impl().get_name_lower() == "state")
 		polled_attr->get_attr_history(n,back,Tango::DEV_VOID,att.get_data_format());
 	else
 		polled_attr->get_attr_history(n,back,att.get_data_type(),att.get_data_format());
@@ -616,7 +616,7 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 			{
 				Attribute &att = dev_attr->get_attr_by_name(real_names[loop]);
 
-				if (att.is_fwd_att() == true)
+				if (att.get_impl().is_fwd_att() == true)
 				{
 					size_t nb_fwd = 0;
 					fwd_att_in_call = true;

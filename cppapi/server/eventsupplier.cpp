@@ -111,7 +111,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl, str
     SendEventType ret;
     cout3 << "EventSupplier::detect_and_push_events(): called for attribute " << attr_name << std::endl;
 
-    AttributePrivate &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str());
+    AttributePrivate &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str()).get_impl();
 
     now = time(NULL);
 
@@ -2362,7 +2362,7 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,
 
     cout3 << "EventSupplier::push_att_conf_events(): called for attribute " << attr_name << std::endl;
 
-    AttributePrivate &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str());
+    AttributePrivate &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str()).get_impl();
 
 //
 // Called for AttributeConfig_3 or AttributeConfig_5 ?

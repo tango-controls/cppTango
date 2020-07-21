@@ -160,7 +160,7 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 									the_dev->add_attribute(ite->second.fwd_attr);
 
 									Attribute &the_fwd_att = the_dev->get_device_attr()->get_attr_by_name(ite->second.local_att_name.c_str());
-									static_cast<FwdAttribute &>(the_fwd_att).set_att_config(ev->attr_conf);
+									static_cast<FwdAttribute &>(the_fwd_att).get_impl().set_att_config(ev->attr_conf);
 
 									MultiAttribute *m_att = the_dev->get_device_attr();
 									m_att->update(the_fwd_att,ite->second.local_name);
@@ -1273,7 +1273,7 @@ void RootAttRegistry::auto_unsub()
 //
 
 			DeviceImpl *dev = cbp.get_local_dev(local_dev_name);
-			Attribute &att = dev->get_device_attr()->get_attr_by_name(local_att_name.c_str());
+			AttributePrivate &att = dev->get_device_attr()->get_attr_by_name(local_att_name.c_str()).get_impl();
 
 //
 // A loop on each user event registered for this atttribute

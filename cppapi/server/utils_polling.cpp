@@ -212,7 +212,7 @@ void Util::polling_configure()
 					upd = -upd;
 
 				Attribute &att = dev_list[j]->get_device_attr()->get_attr_by_name(poll_attr_list[k].c_str());
-				if (att.is_fwd_att() == true)
+				if (att.get_impl().is_fwd_att() == true)
 				{
 					v_poll_cmd_fwd.push_back(send);
 				}
@@ -1486,7 +1486,7 @@ int Util::check_dev_poll(std::vector<std::string> &poll_cmd_list,std::vector<std
 
 		for (i_attr = att_list.begin();i_attr < att_list.end();++i_attr)
 		{
-			if ((*i_attr)->get_name_lower() == polled_attr)
+			if ((*i_attr)->get_impl().get_name_lower() == polled_attr)
 				break;
 		}
 

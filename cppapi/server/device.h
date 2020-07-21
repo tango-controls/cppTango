@@ -3386,9 +3386,9 @@ public:
 	void set_alias_name_lower(std::string &al) {alias_name_lower = al;}
 	std::string &get_alias_name_lower() {return alias_name_lower;}
 
-	void push_att_conf_event(Attribute *);
+	void push_att_conf_event(AttributePrivate *);
 
-	void data_into_net_object(Attribute &,AttributeIdlData &,long,AttrWriteType,bool);
+	void data_into_net_object(AttributePrivate &,AttributeIdlData &,long,AttrWriteType,bool);
 	void polled_data_into_net_object(AttributeIdlData &,long,long,long,PollObj *,const DevVarStringArray &);
 
 	int get_min_poll_period() {return min_poll_period;}

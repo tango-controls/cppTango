@@ -1292,12 +1292,12 @@ Tango::AttributeConfigList_2 *Device_2Impl::get_attribute_config_2(const Tango::
 			if (all_attr == true)
 			{
 				Attribute &attr = dev_attr->get_attr_by_ind(i);
-				attr.get_properties((*back)[i]);
+				attr.get_impl().get_properties((*back)[i]);
 			}
 			else
 			{
 				Attribute &attr = dev_attr->get_attr_by_name(names[i]);
-				attr.get_properties((*back)[i]);
+				attr.get_impl().get_properties((*back)[i]);
 			}
 		}
 		catch (Tango::DevFailed &)

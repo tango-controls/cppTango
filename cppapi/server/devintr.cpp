@@ -149,19 +149,19 @@ void DevIntr::build_att_interfaces(DeviceImpl *dev,std::vector<AttrIntr> &atts)
 	{
 		AttrIntr ai;
 		Attribute *att_ptr = (dev->get_device_attr()->get_attribute_list())[loop];
-		ai.name  = att_ptr->get_name_lower();
+		ai.name  = att_ptr->get_impl().get_name_lower();
 		ai.writable = att_ptr->get_writable();
 		ai.data_type = att_ptr->get_data_type();
 		ai.data_format = att_ptr->get_data_format();
 		ai.max_x = att_ptr->get_max_dim_x();
 		ai.max_y = att_ptr->get_max_dim_y();
-		ai.enum_labels = att_ptr->get_enum_labels();
+		ai.enum_labels = att_ptr->get_impl().get_enum_labels();
 
 		if (ai.writable == READ_WRITE || ai.writable == WRITE)
 		{
 			WAttribute *w_att_ptr = static_cast<WAttribute *>(att_ptr);
-			ai.mem = w_att_ptr->get_memorized();
-			ai.mem_init = w_att_ptr->get_memorized_init();
+			ai.mem = w_att_ptr->get_impl().get_memorized();
+			ai.mem_init = w_att_ptr->get_impl().get_memorized_init();
 			ai.writable_attr_name = w_att_ptr->get_assoc_name();
 		}
 		else

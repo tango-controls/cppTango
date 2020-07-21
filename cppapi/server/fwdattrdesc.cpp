@@ -323,7 +323,7 @@ void FwdAttr::read(DeviceImpl *dev,Attribute &attr)
 // Retrieve root attribute device proxy object
 //
 
-	FwdAttribute &fwd_attr = static_cast<FwdAttribute &>(attr);
+	FwdAttributePrivate &fwd_attr = static_cast<FwdAttribute &>(attr).get_impl();
 	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
 	DeviceProxy *root_att_dev;
 	try
@@ -434,8 +434,9 @@ void FwdAttr::read(DeviceImpl *dev,Attribute &attr)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttribute &attr)
+void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttribute &attr_public)
 {
+	WAttributePrivate& attr = attr_public.get_impl();
 
 //
 // Throw exception in case of fwd att wrongly configured or if the root device is not yet accessible
@@ -454,7 +455,7 @@ void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttribute &attr)
 // Retrieve root attribute device proxy object
 //
 
-	FwdAttribute &fwd_attr = static_cast<FwdAttribute &>(attr);
+	FwdAttributePrivate &fwd_attr = static_cast<FwdAttributePrivate &>(attr);
 	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
 	DeviceProxy *root_att_dev;
 	try

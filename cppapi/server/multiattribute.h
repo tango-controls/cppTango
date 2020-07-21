@@ -260,7 +260,7 @@ protected:
 public:
 /// @privatesection
 
-	void add_write_value(Attribute &);
+	void add_write_value(AttributePrivate &);
 	void add_attribute(std::string &,DeviceClass *,long);
 	void add_fwd_attribute(std::string &,DeviceClass *,long,Attr *);
 	void remove_attribute(std::string &,bool);
@@ -291,7 +291,7 @@ private:
 			AttributePtrAndIndex mapElement;
 			mapElement.att_ptr = att;
 			mapElement.att_index_in_vector = index;
-			attr_map[att->get_name_lower()] = mapElement;
+			attr_map[att->get_impl().get_name_lower()] = mapElement;
 		}
 		void increment_state_and_status_indexes()
 		{
