@@ -40,6 +40,8 @@
 #include <functional>
 #include <time.h>
 #include <iterator>
+#include <cstddef>
+#include <typeinfo>
 
 #include <tango/server/attribute.h>
 
@@ -2160,7 +2162,16 @@ public:
 // methods not usable for the external world (outside the lib)
 //
 
-    void get_properties(Tango::AttributeConfig &);
+	void set_value_enum_impl(
+		void* enum_ptr,
+		const std::function<short(std::size_t)>& get_enum_value,
+		const std::function<void()>& safe_delete,
+		const std::type_info& original_type_info,
+		long x, long y, bool release);
+
+	void delete_seq_if_quality_is_invalid(AttrQuality);
+
+	void get_properties(Tango::AttributeConfig &);
 	void get_properties(Tango::AttributeConfig_2 &);
 	void get_properties(Tango::AttributeConfig_3 &);
 	void get_properties(Tango::AttributeConfig_5 &);
@@ -2439,7 +2450,6 @@ protected:
 	void set_one_event_prop(const char *,const CORBA::String_member &,double *,std::vector<AttPropDb> &,std::vector<AttrProperty> &,std::vector<AttrProperty> &);
 	void event_prop_db_xxx(std::vector<double> &,std::vector<double> &,std::vector<AttPropDb> &,AttPropDb &);
 	void set_one_event_period(const char *,const CORBA::String_member &,int &,const int &,std::vector<AttPropDb> &,std::vector<AttrProperty> &,std::vector<AttrProperty> &);
-
 
 	std::bitset<numFlags>	alarm_conf;
 	std::bitset<numFlags>	alarm;

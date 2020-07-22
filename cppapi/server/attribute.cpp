@@ -5957,6 +5957,17 @@ void AttributePrivate::remove_client_lib(int _l,const std::string &ev_name)
 		client_lib[i].erase(pos);
 }
 
+void AttributePrivate::delete_seq_if_quality_is_invalid(AttrQuality qual)
+{
+    if (qual == Tango::ATTR_INVALID)
+    {
+        if (!is_writ_associated() || data_format != Tango::SCALAR)
+        {
+            delete_seq();
+        }
+    }
+}
+
 //-------------------------------------------------------------------------------------------------------------------
 //
 // operator overloading : 	<<

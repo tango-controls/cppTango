@@ -449,31 +449,44 @@ void Attribute::get_max_warning(T& max_war)
     return impl->get_max_warning(max_war);
 }
 
-template <typename T>
-void Attribute::set_value(T* data, long x, long y, bool release)
+bool Attribute::is_fwd_att()
 {
+    return impl->is_fwd_att();
 }
 
-template <typename T>
-void set_value_date_quality(T* data, time_t t, AttrQuality qual, long x, long y, bool rel)
+void Attribute::delete_seq_if_quality_is_invalid(AttrQuality qual)
 {
+    impl->delete_seq_if_quality_is_invalid(qual);
 }
 
-#ifdef _TG_WINDOWS_
-
-template <typename T>
-void set_value_date_quality(T* data, struct _timeb& t, AttrQuality qual, long x, long y, bool rel)
+void Attribute::set_value_enum_impl(
+    void* enum_ptr,
+    const std::function<short(std::size_t)>& get_enum_value,
+    const std::function<void()>& safe_delete,
+    const std::type_info& original_type_info,
+    long x, long y, bool release)
 {
+    return impl->set_value_enum_impl(
+        enum_ptr,
+        get_enum_value,
+        safe_delete,
+        original_type_info,
+        x, y, release);
 }
 
-#else // _TG_WINDOWS_
-
-template <typename T>
-void set_value_date_quality(T* data, struct timeval& t, AttrQuality qual, long x, long y, bool rel)
-{
-}
-
-#endif // _TG_WINDOWS_
+#define X(Type) \
+template void Attribute::get_properties(MultiAttrProp<Type>&); \
+template void Attribute::set_properties(MultiAttrProp<Type>&); \
+template void Attribute::set_min_alarm(const Type&); \
+template void Attribute::get_min_alarm(Type&); \
+template void Attribute::set_max_alarm(const Type&); \
+template void Attribute::get_max_alarm(Type&); \
+template void Attribute::set_min_warning(const Type&); \
+template void Attribute::get_min_warning(Type&); \
+template void Attribute::set_max_warning(const Type&); \
+template void Attribute::get_max_warning(Type&);
+X_SUPPORTED_DATA_TYPES
+#undef X
 
 #undef X_SUPPORTED_DATA_TYPES
 

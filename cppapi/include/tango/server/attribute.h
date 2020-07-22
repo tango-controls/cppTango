@@ -5,8 +5,12 @@
 #include <tango/server/server_types.h>
 
 #include <bitset>
+#include <cstddef>
+#include <functional>
 #include <memory>
 #include <string>
+#include <typeinfo>
+#include <type_traits>
 #include <vector>
 
 #include <time.h> // for time_t
@@ -1784,21 +1788,56 @@ public:
 /// @privatesection
 
 	template <typename T>
-	void set_value(T *,long x = 1,long y = 0,bool release = false);
+	void set_value(T*, long x = 1, long y = 0, bool release = false);
 
-	template <typename T>
-	void set_value_date_quality(T *,time_t,Tango::AttrQuality,long x=1,long y=0,bool rel=false);
-#ifdef _TG_WINDOWS_
-	template <typename T>
-	void set_value_date_quality(T *,struct _timeb &,Tango::AttrQuality,long x=1,long y=1,bool rel=false);
-#else
-	template <typename T>
-	void set_value_date_quality(T *,struct timeval &,Tango::AttrQuality,long x=1,long y=1,bool rel=false);
-#endif
+	template <typename T, typename Time>
+	void set_value_date_quality(T*, Time&&, AttrQuality, long x = 1, long y = 0, bool release = false);
 
 private:
+	bool is_fwd_att();
+	void delete_seq_if_quality_is_invalid(AttrQuality);
+	void set_value_enum_impl(
+		void*,
+		const std::function<short(std::size_t)>&,
+		const std::function<void()>&,
+		const std::type_info&,
+		long, long, bool);
+
 	std::unique_ptr<AttributePrivate> impl;
 };
+
+template <typename T>
+void Attribute::set_value(T* data, long x, long y, bool release)
+{
+    static_assert(std::is_enum<T>::value, "Value of enum attribute must be enumeration.");
+    static_assert(
+        std::is_same<std::underlying_type_t<T>, short>::value ||
+        std::is_same<std::underlying_type_t<T>, unsigned int>::value,
+        "Underlying type of enum attribute must be `short` or `unsigned int`.");
+
+    return set_value_enum_impl(
+        static_cast<void*>(data),
+        [&](std::size_t index){ return short(data[index]); },
+        [&]
+        {
+            if (!release) return;
+            if (is_fwd_att())
+                delete[] data;
+            else
+                delete data;
+        },
+        typeid(T),
+        x, y, release);
+}
+
+template <typename T, typename Time>
+void Attribute::set_value_date_quality(T* data, Time&& t, AttrQuality qual, long x, long y, bool release)
+{
+    set_value(data, x, y, release);
+    set_quality(qual, false);
+    set_date(t);
+    delete_seq_if_quality_is_invalid(qual);
+}
 
 } // namespace Tango
 
