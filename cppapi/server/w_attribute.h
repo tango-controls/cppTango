@@ -38,6 +38,8 @@
 #include <attrdesc.h>
 #include <functional>
 #include <time.h>
+#include <cstddef>
+#include <typeinfo>
 
 namespace Tango
 {
@@ -779,28 +781,24 @@ public:
 
 /// @privatesection
 
-	template <typename T>
-	void get_write_value(T &);
+	DevShort get_write_value_enum_impl(const std::type_info&);
 
-	template <typename T>
-	void get_write_value(const T *&);
+	const DevShort* get_write_value_ptr_enum_impl(const std::type_info&);
 
-	template <typename T>
-	void check_type(T &,const std::string &);
+	void check_enum_type(const std::type_info&, const std::string&);
 
-	template <typename T>
-	void set_write_value(T);
+	void set_write_value_enum_impl(const std::type_info&, short);
 
-	template <typename T>
-	void set_write_value(T *,long,long);
+	void set_write_value_enum_impl(
+		const std::type_info&,
+		const std::function<short(std::size_t)>&,
+		long, long);
 
-	template <typename T>
-	void set_write_value(std::vector<T> &,long,long);
-
-
-
-
-
+	void set_write_value_enum_impl(
+		const std::type_info&,
+		const std::function<short(std::size_t)>&,
+		std::size_t,
+		long, long);
 
 	void set_write_value(Tango::DevEncoded *, long x = 1,long y = 0); // Dummy method for compiler
 

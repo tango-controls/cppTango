@@ -83,10 +83,10 @@ public:
 	Attr_Value &get_root_ptr() {return r_val;}
 
 	template<typename T>
-	void set_local_attribute(DeviceAttribute &, T* &);
+	void set_local_attribute(FwdAttribute&, DeviceAttribute &, T* &);
 
 	template<typename T,typename V>
-	void propagate_writen_data(DeviceAttribute &da,WAttributePrivate &attr,T *&,V *&);
+	void propagate_writen_data(DeviceAttribute &da,WAttribute &attr,T *&,V *&);
 
 	template<typename T>
 	bool new_att_conf_base(const T&);

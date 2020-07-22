@@ -166,35 +166,47 @@ void WAttribute::set_write_value(DevEncoded* val, long x, long y)
     return impl->set_write_value(val, x, y);
 }
 
-template <typename T>
-void WAttribute::get_write_value(T& val)
+DevShort WAttribute::get_write_value_enum_impl(const std::type_info& ti)
 {
-    return impl->get_write_value(val);
+    return impl->get_write_value_enum_impl(ti);
 }
 
-template <typename T>
-void WAttribute::get_write_value(const T*& val)
+const DevShort* WAttribute::get_write_value_ptr_enum_impl(const std::type_info& ti)
 {
-    return impl->get_write_value(val);
+    return impl->get_write_value_ptr_enum_impl(ti);
 }
 
-template <typename T>
-void WAttribute::set_write_value(T val)
+void WAttribute::set_write_value_enum_impl(const std::type_info& ti, short val)
 {
-    return impl->set_write_value(val);
+    return impl->set_write_value_enum_impl(ti, val);
 }
 
-template <typename T>
-void WAttribute::set_write_value(T* val, long x, long y)
+void WAttribute::set_write_value_enum_impl(
+    const std::type_info& ti,
+    const std::function<short(std::size_t)>& getter,
+    long x, long y)
 {
-    return impl->set_write_value(val, x, y);
+    return impl->set_write_value_enum_impl(ti, getter, x, y);
 }
 
-template <typename T>
-void WAttribute::set_write_value(std::vector<T>& val, long x, long y)
+void WAttribute::set_write_value_enum_impl(
+    const std::type_info& ti,
+    const std::function<short(std::size_t)>& getter,
+    std::size_t size,
+    long x, long y)
 {
-    return impl->set_write_value(val, x, y);
+    return impl->set_write_value_enum_impl(ti, getter, size, x, y);
 }
+
+#define X(Type) \
+template void WAttribute::set_min_value(const Type&); \
+template void WAttribute::get_min_value(Type&); \
+template void WAttribute::set_max_value(const Type&); \
+template void WAttribute::get_max_value(Type&);
+X_SUPPORTED_DATA_TYPES
+X(DevString)
+X(DevEncoded)
+#undef X
 
 #undef X_SUPPORTED_DATA_TYPES
 

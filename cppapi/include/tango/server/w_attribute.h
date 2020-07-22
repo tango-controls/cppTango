@@ -728,25 +728,95 @@ public:
 /// @privatesection
 
 	template <typename T>
-	void get_write_value(T &);
+	void get_write_value(T&);
 
 	template <typename T>
-	void get_write_value(const T *&);
+	void get_write_value(const T*&);
 
 	template <typename T>
 	void set_write_value(T);
 
 	template <typename T>
-	void set_write_value(T *,long,long);
-
-	template <typename T>
-	void set_write_value(std::vector<T> &,long,long);
+	void set_write_value(T*, long, long);
 
 	void set_write_value(Tango::DevEncoded *, long x = 1,long y = 0); // Dummy method for compiler
 
+	template <typename T>
+	void set_write_value(std::vector<T>&, long, long);
+
 private:
+	DevShort get_write_value_enum_impl(const std::type_info&);
+	const DevShort* get_write_value_ptr_enum_impl(const std::type_info&);
+	void set_write_value_enum_impl(const std::type_info&, short);
+	void set_write_value_enum_impl(
+		const std::type_info&,
+		const std::function<short(std::size_t)>&,
+		long, long);
+	void set_write_value_enum_impl(
+		const std::type_info&,
+		const std::function<short(std::size_t)>&,
+		std::size_t,
+		long, long);
+
 	WAttributePrivate* impl;
 };
+
+namespace
+{
+
+template <typename T>
+void assert_type_is_enum()
+{
+    static_assert(std::is_enum<T>::value, "Value of enum attribute must be enumeration.");
+    static_assert(
+        std::is_same<std::underlying_type_t<T>, short>::value ||
+        std::is_same<std::underlying_type_t<T>, unsigned int>::value,
+        "Underlying type of enum attribute must be `short` or `unsigned int`.");
+}
+
+} // namespace
+
+template <typename T>
+void WAttribute::get_write_value(T& data)
+{
+    assert_type_is_enum<T>();
+    data = static_cast<T>(get_write_value_enum_impl(typeid(T)));
+}
+
+template <typename T>
+void WAttribute::get_write_value(const T*& data)
+{
+    assert_type_is_enum<T>();
+    data = static_cast<const T*>(get_write_value_ptr_enum_impl(typeid(T)));
+}
+
+template <typename T>
+void WAttribute::set_write_value(T data)
+{
+    assert_type_is_enum<T>();
+    set_write_value_enum_impl(typeid(T), short(data));
+}
+
+template <typename T>
+void WAttribute::set_write_value(T* data, long x, long y)
+{
+    assert_type_is_enum<T>();
+    set_write_value_enum_impl(
+        typeid(T),
+        [&](std::size_t index){ return short(data[index]); },
+        x, y);
+}
+
+template <typename T>
+void WAttribute::set_write_value(std::vector<T>& data, long x, long y)
+{
+    assert_type_is_enum<T>();
+    set_write_value_enum_impl(
+        typeid(T),
+        [&](std::size_t index){ return short(data[index]); },
+        data.size(),
+        x, y);
+}
 
 } // namespace Tango
 

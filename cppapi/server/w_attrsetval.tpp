@@ -38,96 +38,20 @@
 namespace Tango
 {
 
-//+-----------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		WAttribute::get_write_value()
-//
-// description :
-//		Get value written by the client. These two templated methods are used for enumerated attribute
-//
-// args :
-//		out :
-// 			- data : User data to be initialized
-//
-//-----------------------------------------------------------------------------------------------------------------
-
-
-template <typename T>
-void WAttributePrivate::get_write_value(T &data)
+inline DevShort WAttributePrivate::get_write_value_enum_impl(const std::type_info& ti)
 {
-//
-// First some check on user type
-//
-
-	T dum;
-	check_type(dum,"WAttribute::get_write_value");
-
-//
-// Then, init user data
-//
-
-	data = static_cast<T>(short_val);
+	check_enum_type(ti, "WAttribute::get_write_value");
+	return short_val;
 }
 
-
-template <typename T>
-void WAttributePrivate::get_write_value(const T *&ptr)
+inline const DevShort* WAttributePrivate::get_write_value_ptr_enum_impl(const std::type_info& ti)
 {
-//
-// First some check on user type
-//
-
-	T dum;
-	check_type(dum,"WAttribute::get_write_value");
-
-//
-// Then, init user data
-//
-
-	ptr = (const T *)short_ptr;
+	check_enum_type(ti, "WAttribute::get_write_value");
+	return short_ptr;
 }
 
-//+-----------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		WAttribute::check_type()
-//
-// description :
-//		Check user type given to the template get_write_value() method
-//
-// args :
-//		in :
-// 			- dummy : Dummy data used to pass type
-//			- origin : Calling method name (for exception)
-//
-//-----------------------------------------------------------------------------------------------------------------
-
-template <typename T>
-void WAttributePrivate::check_type(T &TANGO_UNUSED(dummy), const std::string &origin)
+inline void WAttributePrivate::check_enum_type(const std::type_info& ti, const std::string &origin)
 {
-	bool short_enum = std::is_same<short,typename std::underlying_type<T>::type>::value;
-	bool uns_int_enum = std::is_same<unsigned int,typename std::underlying_type<T>::type>::value;
-
-	if (short_enum == false && uns_int_enum == false)
-	{
-		std::stringstream ss;
-		ss << "Invalid enumeration type. Supported types are C++11 scoped enum with short as underlying data type\n";
-		ss << "or old enum";
-
-		Except::throw_exception(API_IncompatibleArgumentType,ss.str(),origin);
-	}
-
-//
-// Check if the input type is an enum and if it is from the valid type
-//
-
-	if (std::is_enum<T>::value == false)
-	{
-		Except::throw_exception(API_IncompatibleArgumentType,
-								"The input argument data type is not an enumeration",origin);
-	}
-
 	Tango::DeviceClass *dev_class;
 	try
 	{
@@ -150,7 +74,7 @@ void WAttributePrivate::check_type(T &TANGO_UNUSED(dummy), const std::string &or
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 
-	if (att.same_type(typeid(T)) == false)
+	if (att.same_type(ti) == false)
 	{
 		std::stringstream ss;
 		ss << "Invalid enumeration type. Requested enum type is " << att.get_enum_type();
@@ -158,29 +82,14 @@ void WAttributePrivate::check_type(T &TANGO_UNUSED(dummy), const std::string &or
 	}
 }
 
-//+-----------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		WAttribute::set_write_value()
-//
-// description :
-//		Set written part of a WAttribute. These two templated methods are used for enumerated attribute
-//
-// args :
-//		in :
-// 			- val : Data to be set as written value
-//
-//-----------------------------------------------------------------------------------------------------------------
-
-template <typename T>
-void WAttributePrivate::set_write_value(T val)
+inline void WAttributePrivate::set_write_value_enum_impl(const std::type_info& ti, short val)
 {
-	check_type(val,"WAttribute::set_write_value");
+	check_enum_type(ti, "WAttribute::set_write_value");
 
 	CORBA::Any tmp_any;
 	Tango::DevVarShortArray tmp_seq(1);
 	tmp_seq.length(1);
-	tmp_seq[0] = (short)val;
+	tmp_seq[0] = val;
 
 	tmp_any <<= tmp_seq;
 
@@ -189,11 +98,12 @@ void WAttributePrivate::set_write_value(T val)
 	set_user_set_write_value(true);
 }
 
-template <typename T>
-void WAttributePrivate::set_write_value(T *val, long x, long y)
+inline void WAttributePrivate::set_write_value_enum_impl(
+	const std::type_info& ti,
+	const std::function<short(std::size_t)>& get_enum_value,
+	long x, long y)
 {
-	T dum;
-	check_type(dum,"WAttribute::set_write_value");
+	check_enum_type(ti, "WAttribute::set_write_value");
 
 	long nb_data;
 
@@ -204,7 +114,7 @@ void WAttributePrivate::set_write_value(T *val, long x, long y)
 
 	short *ptr = new short [nb_data];
 	for (int i = 0;i < nb_data;i++)
-		ptr[i] = (short)val[i];
+		ptr[i] = get_enum_value(i);
 
 	try
 	{
@@ -225,19 +135,21 @@ void WAttributePrivate::set_write_value(T *val, long x, long y)
 	}
 }
 
-template <typename T>
-void WAttributePrivate::set_write_value(std::vector<T> &val, long x, long y)
+inline void WAttributePrivate::set_write_value_enum_impl(
+	const std::type_info& ti,
+	const std::function<short(std::size_t)>& get_enum_value,
+	std::size_t data_length,
+	long x, long y)
 {
-	T dum;
-	check_type(dum,"WAttribute::set_write_value");
+	check_enum_type(ti, "WAttribute::set_write_value");
 
-	short *ptr = new short [val.size()];
-	for (unsigned int i = 0;i < val.size();i++)
-		ptr[i] = (short)val[i];
+	short *ptr = new short [data_length];
+	for (unsigned int i = 0;i < data_length;i++)
+		ptr[i] = get_enum_value(i);
 
 	try
 	{
-		Tango::DevVarShortArray tmp_seq(val.size(),val.size(),ptr,false);
+		Tango::DevVarShortArray tmp_seq(data_length, data_length, ptr, false);
 
 		CORBA::Any 	tmp_any;
 		tmp_any <<= tmp_seq;

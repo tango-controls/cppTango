@@ -323,7 +323,9 @@ void FwdAttr::read(DeviceImpl *dev,Attribute &attr)
 // Retrieve root attribute device proxy object
 //
 
-	FwdAttributePrivate &fwd_attr = static_cast<FwdAttribute &>(attr).get_impl();
+	FwdAttribute& fwd_attr_public = static_cast<FwdAttribute &>(attr);
+	FwdAttributePrivate& fwd_attr = fwd_attr_public.get_impl();
+
 	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
 	DeviceProxy *root_att_dev;
 	try
@@ -355,55 +357,55 @@ void FwdAttr::read(DeviceImpl *dev,Attribute &attr)
 		{
 		case DEV_SHORT:
 		case DEV_ENUM:
-			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().sh_seq);
+			fwd_attr.set_local_attribute(fwd_attr_public, da,fwd_attr.get_root_ptr().sh_seq);
 			break;
 
 		case DEV_LONG:
-			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().lg_seq);
+			fwd_attr.set_local_attribute(fwd_attr_public, da,fwd_attr.get_root_ptr().lg_seq);
 			break;
 
 		case DEV_FLOAT:
-			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().fl_seq);
+			fwd_attr.set_local_attribute(fwd_attr_public, da,fwd_attr.get_root_ptr().fl_seq);
 			break;
 
 		case DEV_DOUBLE:
-			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().db_seq);
+			fwd_attr.set_local_attribute(fwd_attr_public, da,fwd_attr.get_root_ptr().db_seq);
 			break;
 
 		case DEV_STRING:
-			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().str_seq);
+			fwd_attr.set_local_attribute(fwd_attr_public, da,fwd_attr.get_root_ptr().str_seq);
 			break;
 
 		case DEV_USHORT:
-			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().ush_seq);
+			fwd_attr.set_local_attribute(fwd_attr_public, da,fwd_attr.get_root_ptr().ush_seq);
 			break;
 
 		case DEV_BOOLEAN:
-			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().boo_seq);
+			fwd_attr.set_local_attribute(fwd_attr_public, da,fwd_attr.get_root_ptr().boo_seq);
 			break;
 
 		case DEV_UCHAR:
-			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().cha_seq);
+			fwd_attr.set_local_attribute(fwd_attr_public, da,fwd_attr.get_root_ptr().cha_seq);
 			break;
 
 		case DEV_LONG64:
-			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().lg64_seq);
+			fwd_attr.set_local_attribute(fwd_attr_public, da,fwd_attr.get_root_ptr().lg64_seq);
 			break;
 
 		case DEV_ULONG:
-			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().ulg_seq);
+			fwd_attr.set_local_attribute(fwd_attr_public, da,fwd_attr.get_root_ptr().ulg_seq);
 			break;
 
 		case DEV_ULONG64:
-			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().ulg64_seq);
+			fwd_attr.set_local_attribute(fwd_attr_public, da,fwd_attr.get_root_ptr().ulg64_seq);
 			break;
 
 		case DEV_STATE:
-			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().state_seq);
+			fwd_attr.set_local_attribute(fwd_attr_public, da,fwd_attr.get_root_ptr().state_seq);
 			break;
 
 		case DEV_ENCODED:
-			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().enc_seq);
+			fwd_attr.set_local_attribute(fwd_attr_public, da,fwd_attr.get_root_ptr().enc_seq);
 			break;
 
 		default:
@@ -482,67 +484,67 @@ void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttribute &attr_public)
 	case DEV_SHORT:
 	case DEV_ENUM:
 		DevShort *ptr_sh;
-		fwd_attr.propagate_writen_data(da,attr,ptr_sh,fwd_attr.get_root_ptr().sh_seq);
+		fwd_attr.propagate_writen_data(da,attr_public,ptr_sh,fwd_attr.get_root_ptr().sh_seq);
 		break;
 
 	case DEV_LONG:
 		DevLong *ptr_lo;
-		fwd_attr.propagate_writen_data(da,attr,ptr_lo,fwd_attr.get_root_ptr().lg_seq);
+		fwd_attr.propagate_writen_data(da,attr_public,ptr_lo,fwd_attr.get_root_ptr().lg_seq);
 		break;
 
 	case DEV_FLOAT:
 		DevFloat *ptr_fl;
-		fwd_attr.propagate_writen_data(da,attr,ptr_fl,fwd_attr.get_root_ptr().fl_seq);
+		fwd_attr.propagate_writen_data(da,attr_public,ptr_fl,fwd_attr.get_root_ptr().fl_seq);
 		break;
 
 	case DEV_DOUBLE:
 		DevDouble *ptr_db;
-		fwd_attr.propagate_writen_data(da,attr,ptr_db,fwd_attr.get_root_ptr().db_seq);
+		fwd_attr.propagate_writen_data(da,attr_public,ptr_db,fwd_attr.get_root_ptr().db_seq);
 		break;
 
 	case DEV_STRING:
 		ConstDevString *ptr_str;
-		fwd_attr.propagate_writen_data(da,attr,ptr_str,fwd_attr.get_root_ptr().str_seq);
+		fwd_attr.propagate_writen_data(da,attr_public,ptr_str,fwd_attr.get_root_ptr().str_seq);
 		break;
 
 	case DEV_USHORT:
 		DevUShort *ptr_ush;
-		fwd_attr.propagate_writen_data(da,attr,ptr_ush,fwd_attr.get_root_ptr().ush_seq);
+		fwd_attr.propagate_writen_data(da,attr_public,ptr_ush,fwd_attr.get_root_ptr().ush_seq);
 		break;
 
 	case DEV_BOOLEAN:
 		DevBoolean *ptr_bo;
-		fwd_attr.propagate_writen_data(da,attr,ptr_bo,fwd_attr.get_root_ptr().boo_seq);
+		fwd_attr.propagate_writen_data(da,attr_public,ptr_bo,fwd_attr.get_root_ptr().boo_seq);
 		break;
 
 	case DEV_UCHAR:
 		DevUChar *ptr_uch;
-		fwd_attr.propagate_writen_data(da,attr,ptr_uch,fwd_attr.get_root_ptr().cha_seq);
+		fwd_attr.propagate_writen_data(da,attr_public,ptr_uch,fwd_attr.get_root_ptr().cha_seq);
 		break;
 
 	case DEV_LONG64:
 		DevLong64 *ptr_lg64;
-		fwd_attr.propagate_writen_data(da,attr,ptr_lg64,fwd_attr.get_root_ptr().lg64_seq);
+		fwd_attr.propagate_writen_data(da,attr_public,ptr_lg64,fwd_attr.get_root_ptr().lg64_seq);
 		break;
 
 	case DEV_ULONG:
 		DevULong *ptr_ulg;
-		fwd_attr.propagate_writen_data(da,attr,ptr_ulg,fwd_attr.get_root_ptr().ulg_seq);
+		fwd_attr.propagate_writen_data(da,attr_public,ptr_ulg,fwd_attr.get_root_ptr().ulg_seq);
 		break;
 
 	case DEV_ULONG64:
 		DevULong64 *ptr_ulg64;
-		fwd_attr.propagate_writen_data(da,attr,ptr_ulg64,fwd_attr.get_root_ptr().ulg64_seq);
+		fwd_attr.propagate_writen_data(da,attr_public,ptr_ulg64,fwd_attr.get_root_ptr().ulg64_seq);
 		break;
 
 	case DEV_STATE:
 		DevState *ptr_sta;
-		fwd_attr.propagate_writen_data(da,attr,ptr_sta,fwd_attr.get_root_ptr().state_seq);
+		fwd_attr.propagate_writen_data(da,attr_public,ptr_sta,fwd_attr.get_root_ptr().state_seq);
 		break;
 
 	case DEV_ENCODED:
 		DevEncoded *ptr_enc;
-		fwd_attr.propagate_writen_data(da,attr,ptr_enc,fwd_attr.get_root_ptr().enc_seq);
+		fwd_attr.propagate_writen_data(da,attr_public,ptr_enc,fwd_attr.get_root_ptr().enc_seq);
 		break;
 
 	default:

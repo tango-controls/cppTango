@@ -56,23 +56,23 @@ namespace Tango
 //--------------------------------------------------------------------------------------------------------------------
 
 template<>
-void FwdAttributePrivate::propagate_writen_data(DeviceAttribute &da,WAttributePrivate &attr,ConstDevString *&ptr,DevVarStringArray *&seq_ptr)
+void FwdAttributePrivate::propagate_writen_data(DeviceAttribute &da,WAttribute &attr,ConstDevString *&ptr,DevVarStringArray *&seq_ptr)
 {
 	const ConstDevString *tmp_ptr = const_cast<const ConstDevString *>(ptr);
 	attr.get_write_value(tmp_ptr);
-	long data_length = attr.get_write_value_length();
-	long w_dim_x = attr.get_w_dim_x();
-	long w_dim_y = attr.get_w_dim_y();
+	long data_length = attr.get_impl().get_write_value_length();
+	long w_dim_x = attr.get_impl().get_w_dim_x();
+	long w_dim_y = attr.get_impl().get_w_dim_y();
 
 	seq_ptr = new DevVarStringArray(data_length,data_length,const_cast<DevString *>(tmp_ptr),false);
 	da.insert(seq_ptr,w_dim_x,w_dim_y);
 }
 
 template<>
-void FwdAttributePrivate::propagate_writen_data(DeviceAttribute &da,WAttributePrivate &attr,DevEncoded *&ptr,DevVarEncodedArray *&seq_ptr)
+void FwdAttributePrivate::propagate_writen_data(DeviceAttribute &da,WAttribute &attr,DevEncoded *&ptr,DevVarEncodedArray *&seq_ptr)
 {
 	attr.get_write_value(const_cast<const DevEncoded* &>(ptr));
-	int data_length = attr.get_write_value_length();
+	int data_length = attr.get_impl().get_write_value_length();
 
 	seq_ptr = new DevVarEncodedArray(data_length,data_length,ptr,false);
 	da << seq_ptr;

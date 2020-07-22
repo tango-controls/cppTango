@@ -51,7 +51,7 @@ namespace Tango
 //--------------------------------------------------------------------------------------------------------------------
 
 template<typename T>
-void FwdAttributePrivate::set_local_attribute(DeviceAttribute &da, T *&seq_ptr)
+void FwdAttributePrivate::set_local_attribute(FwdAttribute& self, DeviceAttribute &da, T *&seq_ptr)
 {
     qual = da.get_quality();
 
@@ -68,13 +68,13 @@ void FwdAttributePrivate::set_local_attribute(DeviceAttribute &da, T *&seq_ptr)
 
     if (writable == READ_WRITE || writable == READ_WITH_WRITE)
     {
-        set_write_value(seq_ptr->get_buffer() + da.get_nb_read(), da.get_written_dim_x(), da.get_written_dim_y());
+        self.set_write_value(seq_ptr->get_buffer() + da.get_nb_read(), da.get_written_dim_x(), da.get_written_dim_y());
     }
 
     if (seq_ptr->release() == true)
-        set_value_date_quality(seq_ptr->get_buffer(true), tv, qual, da.get_dim_x(), da.get_dim_y(), true);
+        self.set_value_date_quality(seq_ptr->get_buffer(true), tv, qual, da.get_dim_x(), da.get_dim_y(), true);
     else
-        set_value_date_quality(seq_ptr->get_buffer(), tv, qual, da.get_dim_x(), da.get_dim_y());
+        self.set_value_date_quality(seq_ptr->get_buffer(), tv, qual, da.get_dim_x(), da.get_dim_y());
 
     delete seq_ptr;
 }
@@ -98,12 +98,12 @@ void FwdAttributePrivate::set_local_attribute(DeviceAttribute &da, T *&seq_ptr)
 //--------------------------------------------------------------------------------------------------------------------
 
 template<typename T, typename V>
-void FwdAttributePrivate::propagate_writen_data(DeviceAttribute &da, WAttributePrivate &attr, T *&ptr, V *&seq_ptr)
+void FwdAttributePrivate::propagate_writen_data(DeviceAttribute &da, WAttribute &attr, T *&ptr, V *&seq_ptr)
 {
     attr.get_write_value(const_cast<const T *&>(ptr));
-    int data_length = attr.get_write_value_length();
-    long w_dim_x = attr.get_w_dim_x();
-    long w_dim_y = attr.get_w_dim_y();
+    int data_length = attr.get_impl().get_write_value_length();
+    long w_dim_x = attr.get_impl().get_w_dim_x();
+    long w_dim_y = attr.get_impl().get_w_dim_y();
 
     seq_ptr = new V(data_length, data_length, ptr, false);
     da.insert(seq_ptr, w_dim_x, w_dim_y);
