@@ -1,7 +1,10 @@
 #ifndef TANGO_PUBLIC_W_ATTRIBUTE_H
 #define TANGO_PUBLIC_W_ATTRIBUTE_H
 
+#include <tango/common/omniorb_platform_macros.h>
 #include <idl/tango.h>
+
+#include <tango/common/common_macros.h>
 #include <tango/common/common_types.h>
 #include <tango/server/attribute.h>
 
