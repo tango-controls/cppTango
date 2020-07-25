@@ -1676,7 +1676,7 @@ void AttributePrivate::set_value_date_quality(Tango::DevShort *p_data,time_t t,
 }
 
 #ifdef _TG_WINDOWS_
-void Attribute::set_value_date_quality(Tango::DevShort *p_data,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevShort *p_data,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    long x,long y,bool release)
 {
@@ -1725,7 +1725,7 @@ void AttributePrivate::set_value_date_quality(Tango::DevLong *p_data,time_t t,
 }
 
 #ifdef _TG_WINDOWS_
-void Attribute::set_value_date_quality(Tango::DevLong *p_data,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevLong *p_data,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    long x,long y,bool release)
 {
@@ -1775,7 +1775,7 @@ void AttributePrivate::set_value_date_quality(Tango::DevLong64 *p_data,time_t t,
 }
 
 #ifdef _TG_WINDOWS_
-void Attribute::set_value_date_quality(Tango::DevLong64 *p_data,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevLong64 *p_data,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    long x,long y,bool release)
 {
@@ -1824,7 +1824,7 @@ void AttributePrivate::set_value_date_quality(Tango::DevFloat *p_data,time_t t,
 }
 
 #ifdef _TG_WINDOWS_
-void Attribute::set_value_date_quality(Tango::DevFloat *p_data,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevFloat *p_data,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    long x,long y,bool release)
 {
@@ -1873,7 +1873,7 @@ void AttributePrivate::set_value_date_quality(Tango::DevDouble *p_data,time_t t,
 }
 
 #ifdef _TG_WINDOWS_
-void Attribute::set_value_date_quality(Tango::DevDouble *p_data,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevDouble *p_data,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    long x,long y,bool release)
 {
@@ -1922,7 +1922,7 @@ void AttributePrivate::set_value_date_quality(Tango::DevString *p_data,time_t t,
 }
 
 #ifdef _TG_WINDOWS_
-void Attribute::set_value_date_quality(Tango::DevString *p_data,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevString *p_data,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    long x,long y,bool release)
 {
@@ -1971,7 +1971,7 @@ void AttributePrivate::set_value_date_quality(Tango::DevBoolean *p_data,time_t t
 }
 
 #ifdef _TG_WINDOWS_
-void Attribute::set_value_date_quality(Tango::DevBoolean *p_data,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevBoolean *p_data,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    long x,long y,bool release)
 {
@@ -2020,7 +2020,7 @@ void AttributePrivate::set_value_date_quality(Tango::DevUShort *p_data,time_t t,
 }
 
 #ifdef _TG_WINDOWS_
-void Attribute::set_value_date_quality(Tango::DevUShort *p_data,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevUShort *p_data,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    long x,long y,bool release)
 {
@@ -2069,7 +2069,7 @@ void AttributePrivate::set_value_date_quality(Tango::DevUChar *p_data,time_t t,
 }
 
 #ifdef _TG_WINDOWS_
-void Attribute::set_value_date_quality(Tango::DevUChar *p_data,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevUChar *p_data,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    long x,long y,bool release)
 {
@@ -2118,7 +2118,7 @@ void AttributePrivate::set_value_date_quality(Tango::DevULong *p_data,time_t t,
 }
 
 #ifdef _TG_WINDOWS_
-void Attribute::set_value_date_quality(Tango::DevULong *p_data,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevULong *p_data,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    long x,long y,bool release)
 {
@@ -2167,7 +2167,7 @@ void AttributePrivate::set_value_date_quality(Tango::DevULong64 *p_data,time_t t
 }
 
 #ifdef _TG_WINDOWS_
-void Attribute::set_value_date_quality(Tango::DevULong64 *p_data,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevULong64 *p_data,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    long x,long y,bool release)
 {
@@ -2216,7 +2216,7 @@ void AttributePrivate::set_value_date_quality(Tango::DevState *p_data,time_t t,
 }
 
 #ifdef _TG_WINDOWS_
-void Attribute::set_value_date_quality(Tango::DevState *p_data,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevState *p_data,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    long x,long y,bool release)
 {
@@ -2268,7 +2268,7 @@ void AttributePrivate::set_value_date_quality(Tango::DevString *p_data_str,Tango
 }
 
 #ifdef _TG_WINDOWS_
-void Attribute::set_value_date_quality(Tango::DevEncoded *p_data,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevEncoded *p_data,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    long x,long y,bool release)
 {
@@ -2277,7 +2277,7 @@ void Attribute::set_value_date_quality(Tango::DevEncoded *p_data,struct _timeb &
 	set_date(t);
 }
 
-void Attribute::set_value_date_quality(Tango::DevString *p_data_str,Tango::DevUChar *p_data,long size,struct _timeb &t,
+void AttributePrivate::set_value_date_quality(Tango::DevString *p_data_str,Tango::DevUChar *p_data,long size,struct _timeb &t,
 				    Tango::AttrQuality qual,
 				    bool release)
 {
