@@ -634,7 +634,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 	std::string obj_name((argin->svalue)[2]);
 	std::transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 	PollObjType type = Tango::POLL_CMD;
-	Attribute *attr_ptr;
+	Attribute *attr_ptr = nullptr;
 
 	bool local_request = false;
 	std::string::size_type pos = obj_type.rfind(LOCAL_POLL_REQUEST);
