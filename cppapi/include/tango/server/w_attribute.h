@@ -727,6 +727,9 @@ public:
 
 /// @privatesection
 
+	long get_w_dim_x();
+	long get_w_dim_y();
+
 	template <typename T>
 	void get_write_value(T&);
 

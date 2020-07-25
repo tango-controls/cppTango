@@ -166,6 +166,16 @@ void WAttribute::set_write_value(DevEncoded* val, long x, long y)
     return impl->set_write_value(val, x, y);
 }
 
+long WAttribute::get_w_dim_x()
+{
+    return impl->get_w_dim_x();
+}
+
+long WAttribute::get_w_dim_y()
+{
+    return impl->get_w_dim_y();
+}
+
 DevShort WAttribute::get_write_value_enum_impl(const std::type_info& ti)
 {
     return impl->get_write_value_enum_impl(ti);
