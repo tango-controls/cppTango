@@ -1,4 +1,4 @@
-/* 
+/*
  * Check size of user classes/structure (For compatibility prurpose)
  *
  * This test suite has to be run on a redhate4 host
@@ -31,17 +31,17 @@ int main(int argc, char **argv)
 	check_size("Attr",sizeof(Attr),128, &isOK);  // Was 52 in V4
 	check_size("SpectrumAttr",sizeof(SpectrumAttr),144, &isOK);	// Was 60 in V4
 	check_size("ImageAttr",sizeof(ImageAttr),160, &isOK);	// Was 68 in V4
-		
+
 	check_size("DeviceImpl",sizeof(DeviceImpl),1760, &isOK);
 	check_size("Device_2Impl",sizeof(Device_2Impl),1776, &isOK);
-	
+
 	check_size("DeviceClass",sizeof(DeviceClass),416, &isOK);  	// Was 48 in V4
 	check_size("Util",sizeof(Util),1616, &isOK);	// Was 68 in V4
 
-	check_size("Attribute",sizeof(Attribute),2536, &isOK);		// Was 208 in V4
-	check_size("WAttribute",sizeof(WAttribute),3200, &isOK);	// Was 252 in V4
+	check_size("Attribute", sizeof(Attribute), 16, &isOK);
+	check_size("WAttribute", sizeof(WAttribute), 24, &isOK);
 	check_size("MultiAttribute",sizeof(MultiAttribute),80, &isOK);
-	
+
 	check_size("Command",sizeof(Command),72, &isOK);
 	check_size("TemplCommand",sizeof(TemplCommand),112, &isOK);
 	check_size("TemplCommandIn",sizeof(TemplCommandIn<int>),136, &isOK);
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 	check_size("DbServer",sizeof(DbServer),32, &isOK);
 	check_size("DbDatum",sizeof(DbDatum),56, &isOK);
 	check_size("DbData",sizeof(DbData),24, &isOK);
-	
+
 	check_size("CmdDoneEvent",sizeof(CmdDoneEvent),48, &isOK);
 	check_size("AttrReadEvent",sizeof(AttrReadEvent),48, &isOK);
 	check_size("AttrWrittenEvent",sizeof(AttrWrittenEvent),40, &isOK);
