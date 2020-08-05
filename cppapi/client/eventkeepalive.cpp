@@ -35,6 +35,7 @@
 
 #include <tango.h>
 #include <eventconsumer.h>
+#include <auto_tango_monitor.h>
 
 #include <stdio.h>
 
@@ -150,12 +151,9 @@ bool EventConsumerKeepAliveThread::reconnect_to_channel(EvChanIte &ipos,EventCon
 
 bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,EventConsumer *event_consumer,DeviceData &dd)
 {
-	bool ret = true;
-	EvCbIte epos;
-
 	cout3 << "Entering KeepAliveThread::reconnect_to_zmq_channel()" << std::endl;
 
-	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
+	for (auto epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
 	{
 		if (epos->second.channel_name == ipos->first)
 		{
@@ -174,18 +172,49 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 			{
 				try
 				{
+                    // Admin name might have changed while the event system was down.
+                    std::string old_adm_name = ipos->second.full_adm_name;
+                    std::string new_adm_name = old_adm_name;
+                    try
+                    {
+                        new_adm_name = epos->second.device->adm_name();
+                    }
+                    catch (const DevFailed&)
+                    {
+                        // Here we silently ignore the issue but most likely
+                        // the ZmqEventSubscriptionChange command will fail,
+                        // or we will be unable to create admin DeviceProxy.
+                    }
+
+                    if (ipos->second.adm_device_proxy != nullptr)
+                    {
+                        delete ipos->second.adm_device_proxy;
+                        ipos->second.adm_device_proxy = nullptr;
+                    }
+                    ipos->second.adm_device_proxy = new DeviceProxy(new_adm_name);
+
                     DeviceData subscriber_in,subscriber_out;
                     std::vector<std::string> subscriber_info;
                     subscriber_info.push_back(epos->second.device->dev_name());
                     subscriber_info.push_back(epos->second.obj_name);
                     subscriber_info.push_back("subscribe");
                     subscriber_info.push_back(epos->second.event_name);
-					subscriber_info.push_back("0");
+                    subscriber_info.push_back("0");
                     subscriber_in << subscriber_info;
 
                     subscriber_out = ipos->second.adm_device_proxy->command_inout("ZmqEventSubscriptionChange",subscriber_in);
 
-					std::string adm_name = ipos->second.full_adm_name;
+                    // Calculate new event channel name.
+                    // This must be done using the initialize_received_from_admin
+                    // function in order to support older (< 9.3) Tango versions.
+                    const DevVarLongStringArray* event_sub_change_result;
+                    subscriber_out >> event_sub_change_result;
+                    std::string local_callback_key = ""; // We are not interested in event name, pass dummy value.
+                    auto event_and_channel_name = event_consumer->initialize_received_from_admin(
+                            event_sub_change_result, local_callback_key,
+                            new_adm_name, epos->second.device->get_from_env_var());
+
+                    ipos->second.full_adm_name = event_and_channel_name.channel_name;
 
 #ifdef TANGO_ZMQ_HAS_DISCONNECT
 //
@@ -193,23 +222,23 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 //
                     try
                     {
-                        event_consumer->disconnect_event_channel(adm_name,ipos->second.endpoint,epos->second.endpoint);
+                        event_consumer->disconnect_event_channel(old_adm_name,ipos->second.endpoint,epos->second.endpoint);
                     }
                     catch (Tango::DevFailed &e) {}
 #endif
-					event_consumer->connect_event_channel(adm_name,
+					event_consumer->connect_event_channel(old_adm_name,
 									      epos->second.device->get_device_db(),
 									      true,subscriber_out);
 
                     dd = subscriber_out;
-					if (ipos->second.adm_device_proxy != NULL)
-						delete ipos->second.adm_device_proxy;
-					ipos->second.adm_device_proxy = new DeviceProxy(ipos->second.full_adm_name);
 					cout3 << "Reconnected to zmq event channel" << std::endl;
 				}
 				catch(...)
 				{
-					ret = false;
+					cout3 << "Failed to reconnect to zmq event channel" << std::endl;
+
+					constexpr bool success = false;
+					return success;
 				}
 
 				break;
@@ -217,7 +246,8 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 		}
 	}
 
-	return ret;
+	constexpr bool success = true;
+	return success;
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -413,8 +443,13 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 
 	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
 	{
+		// Here ipos->first still points to the old channel name (before reconnection).
 		if (epos->second.channel_name == ipos->first)
 		{
+			// Admin name might have changed while the event system was down.
+			epos->second.channel_name = ipos->second.full_adm_name;
+			epos->second.received_from_admin.channel_name = ipos->second.full_adm_name;
+
 			bool need_reconnect = false;
 			std::vector<EventSubscribeStruct>:: iterator esspos;
 			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
@@ -584,12 +619,16 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 // Check for all other event reconnections
 //
 
+		std::vector<EvChanIte> renamed_channels{};
+
 		{
 			// lock the maps only for reading
 			ReaderLock r (event_consumer->map_modification_lock);
 
-			std::map<std::string,EventChannelStruct>::iterator ipos;
-			std::map<std::string,EventCallBackStruct>::iterator epos;
+			EvChanIte ipos;
+			EvCbIte epos;
+
+			renamed_channels.reserve(event_consumer->channel_map.size());
 
 			for (ipos = event_consumer->channel_map.begin(); ipos != event_consumer->channel_map.end(); ++ipos)
 			{
@@ -623,6 +662,11 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 					{
 						ipos->second.heartbeat_skipped = true;
 						main_reconnect(event_consumer,notifd_event_consumer,epos,ipos);
+						if (ipos->first != ipos->second.full_adm_name) {
+							// Channel name has changed after reconnection.
+							// Store the iterator and update the map later.
+							renamed_channels.push_back(ipos);
+						}
 					}
 					else
 					{
@@ -642,6 +686,27 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 					ss << "EventConsumerKeepAliveThread::run_undetached() timeout on callback monitor of " << epos->first;
 					au->print_error_message(ss.str().c_str());
 				}
+			}
+		}
+
+		{
+			// Move entries for renamed channels. This is done outside of the reconnection loop to avoid
+			// reconnectiong to the same channel twice in case it would be inserted past ipos iterator.
+
+			WriterLock writer_lock(event_consumer->map_modification_lock);
+			for (const auto& channel : renamed_channels)
+			{
+				for (auto& device : event_consumer->device_channel_map)
+				{
+					if (device.second == channel->first)
+					{
+						device.second = channel->second.full_adm_name;
+					}
+				}
+
+				AutoTangoMonitor monitor_lock(channel->second.channel_monitor);
+				event_consumer->channel_map.emplace(channel->second.full_adm_name, channel->second);
+				event_consumer->channel_map.erase(channel);
 			}
 		}
 	}
@@ -1104,7 +1169,10 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 
 	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
 	{
-		if (epos->second.channel_name == ipos->first)
+		// Here ipos->first still points to the old channel name (before reconnection),
+		// but epos->second.channel_name might have been updated (reconnect_to_zmq_event).
+		// We must compare to ipos->second.full_adm_name.
+		if (epos->second.channel_name == ipos->second.full_adm_name)
 		{
 			bool need_reconnect = false;
 			std::vector<EventSubscribeStruct>:: iterator esspos;

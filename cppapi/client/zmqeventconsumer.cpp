@@ -1229,6 +1229,16 @@ void ZmqEventConsumer::cleanup_EventChannel_map()
 
 void ZmqEventConsumer::connect_event_channel(std::string &channel_name,TANGO_UNUSED(Database *db),bool reconnect,DeviceData &dd)
 {
+    // Channel name may change during reconnection. In this case the caller is responsible
+    // for updating full_adm_name field inside channel_map before calling this function.
+    auto event_channel_info = channel_map.end();
+    std::string event_channel_name = channel_name;
+    if (reconnect)
+    {
+        event_channel_info = channel_map.find(channel_name);
+        assert(event_channel_info != channel_map.end());
+        event_channel_name =  event_channel_info->second.full_adm_name;
+    }
 
 //
 // Extract server command result
@@ -1241,7 +1251,7 @@ void ZmqEventConsumer::connect_event_channel(std::string &channel_name,TANGO_UNU
 // Do we have this tango host info in the vector of possible TANGO_HOST. If not get them
 //
 
-	std::string prefix = channel_name.substr(0,channel_name.find('/',8) + 1);
+	std::string prefix = event_channel_name.substr(0,event_channel_name.find('/',8) + 1);
 	bool found = false;
 	for (const auto &elem:env_var_fqdn_prefix)
 	{
@@ -1350,7 +1360,7 @@ void ZmqEventConsumer::connect_event_channel(std::string &channel_name,TANGO_UNU
         ::strcpy(&(buffer[length]),ev_svr_data->svalue[valid_endpoint << 1].in());
         length = length + ::strlen(ev_svr_data->svalue[valid_endpoint << 1].in()) + 1;
 
-        std::string sub(channel_name);
+        std::string sub(event_channel_name);
         sub = sub + '.' + HEARTBEAT_EVENT_NAME;
 
         ::strcpy(&(buffer[length]),sub.c_str());
@@ -1402,16 +1412,19 @@ void ZmqEventConsumer::connect_event_channel(std::string &channel_name,TANGO_UNU
 // Init (or create) EventChannelStruct
 //
 
-	EvChanIte evt_it = channel_map.end();
 	if (reconnect == true)
 	{
-		evt_it = channel_map.find(channel_name);
-		EventChannelStruct &evt_ch = evt_it->second;
+		EventChannelStruct &evt_ch = event_channel_info->second;
+		evt_ch.channel_monitor->set_name(event_channel_name.c_str());
 		evt_ch.last_heartbeat = time(NULL);
 		evt_ch.heartbeat_skipped = false;
 		evt_ch.event_system_failed = false;
 		evt_ch.endpoint = ev_svr_data->svalue[valid_endpoint << 1].in();
 		evt_ch.valid_endpoint = valid_endpoint;
+
+		// We may need to update key in channel_map entry but to avoid iterator
+		// invalidation we will do this later in EventConsumerKeepAliveThread's
+		// main loop.
 	}
 	else
 	{
@@ -1421,7 +1434,7 @@ void ZmqEventConsumer::connect_event_channel(std::string &channel_name,TANGO_UNU
 		new_event_channel_struct.heartbeat_skipped = false;
 		new_event_channel_struct.adm_device_proxy = NULL;
 		// create a channel monitor
-		new_event_channel_struct.channel_monitor = new TangoMonitor(channel_name.c_str());
+		new_event_channel_struct.channel_monitor = new TangoMonitor(event_channel_name.c_str());
 		// set the timeout for the channel monitor to 1000ms not to block the event consumer for to long.
 		new_event_channel_struct.channel_monitor->timeout(1000);
 
