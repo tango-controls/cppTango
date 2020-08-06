@@ -238,7 +238,8 @@ cout << "str = " << str << endl;
 
         std::string attribute_name = "event_change_tst";
 
-        TS_ASSERT_THROWS_NOTHING(device1->subscribe_event(
+        int subscription = 0;
+        TS_ASSERT_THROWS_NOTHING(subscription = device1->subscribe_event(
             attribute_name,
             Tango::USER_EVENT,
             &callback));
@@ -258,6 +259,8 @@ cout << "str = " << str << endl;
         Tango_sleep(2);
         TS_ASSERT_EQUALS(3, callback.num_of_all_events);
         TS_ASSERT_EQUALS(0, callback.num_of_error_events);
+
+        TS_ASSERT_THROWS_NOTHING(device1->unsubscribe_event(subscription));
     }
 
     /* Tests that attribute configuration change event
@@ -314,7 +317,8 @@ cout << "str = " << str << endl;
 
         EventCallback<Tango::EventData> callback{};
 
-        TS_ASSERT_THROWS_NOTHING(device1->subscribe_event(
+        int subscription = 0;
+        TS_ASSERT_THROWS_NOTHING(subscription = device1->subscribe_event(
             attribute_name,
             Tango::ARCHIVE_EVENT,
             &callback));
@@ -338,6 +342,57 @@ cout << "str = " << str << endl;
         std::this_thread::sleep_for(poll_period);
         TS_ASSERT_EQUALS(1, callback.num_of_error_events);
         TS_ASSERT_EQUALS(5, callback.num_of_all_events);
+
+        TS_ASSERT_THROWS_NOTHING(device1->unsubscribe_event(subscription));
+    }
+
+    /* Tests that when two or more device proxies subscribe to the same event
+     * and one of them is deleted, only subscriptions made with that proxy are
+     * cancelled.
+     */
+    void test_unsubscription_during_deletion_of_multiple_proxies()
+    {
+        EventCallback<Tango::EventData> callback1{};
+        EventCallback<Tango::EventData> callback2{};
+
+        const std::string attribute_name = "event_change_tst";
+
+        auto proxy1 = std::make_unique<DeviceProxy>(device1_name);
+        int subscription1 = 0;
+        TS_ASSERT_THROWS_NOTHING(subscription1 = proxy1->subscribe_event(
+            attribute_name, Tango::USER_EVENT, &callback1));
+
+        auto proxy2 = std::make_unique<DeviceProxy>(device1_name);
+        int subscription2 = 0;
+        TS_ASSERT_THROWS_NOTHING(subscription2 = proxy2->subscribe_event(
+            attribute_name, Tango::USER_EVENT, &callback2));
+
+        TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOPushEvent"));
+        Tango_sleep(1);
+        TS_ASSERT_EQUALS(2, callback1.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback1.num_of_error_events);
+        TS_ASSERT_EQUALS(2, callback2.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback2.num_of_error_events);
+
+        TS_ASSERT_THROWS_NOTHING(proxy1->unsubscribe_event(subscription1));
+        proxy1.reset(nullptr);
+
+        TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOPushEvent"));
+        Tango_sleep(1);
+        TS_ASSERT_EQUALS(2, callback1.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback1.num_of_error_events);
+        TS_ASSERT_EQUALS(3, callback2.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback2.num_of_error_events);
+
+        TS_ASSERT_THROWS_NOTHING(proxy2->unsubscribe_event(subscription2));
+        proxy2.reset(nullptr);
+
+        TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOPushEvent"));
+        Tango_sleep(1);
+        TS_ASSERT_EQUALS(2, callback1.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback1.num_of_error_events);
+        TS_ASSERT_EQUALS(3, callback2.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback2.num_of_error_events);
     }
 };
 #undef cout
