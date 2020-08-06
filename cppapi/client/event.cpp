@@ -1677,7 +1677,6 @@ int EventConsumer::connect_event(DeviceProxy *device,
     EventSubscribeStruct new_ess;
 
     new_event_callback.received_from_admin = received_from_admin;
-    new_event_callback.device = device;
     new_event_callback.obj_name = obj_name_lower;
     new_event_callback.event_name = event_name;
     new_event_callback.channel_name = evt_it->first;
@@ -1705,6 +1704,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
     new_ess.callback = callback;
     new_ess.ev_queue = ev_queue;
+    new_ess.device = device;
 
 	connect_event_system(device_name,obj_name_lower,event_name,filters,evt_it,new_event_callback,dd,valid_endpoint_nb);
 

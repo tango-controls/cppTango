@@ -332,11 +332,11 @@ typedef struct event_subscribe
 	EventQueue						*ev_queue;
 	CallBack						*callback;
 	int								id;
+ 	DeviceProxy 					*device;
 } EventSubscribeStruct;
 
 typedef struct event_callback_base
 {
- 	DeviceProxy 					*device;
 	std::string 							obj_name;
 	std::string 							event_name;
 	std::string 							channel_name;
@@ -651,7 +651,7 @@ private :
     friend class DelayEvent;
 
     FwdEventData *newFwdEventData(zmq::message_t &event_data,
-                                  const std::string &new_tango_host,
+                                  DeviceProxy* device,
                                   DevErrorList &errors,
                                   std::string &event_name,
                                   std::string &full_att_name,
