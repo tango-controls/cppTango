@@ -40,6 +40,9 @@ function(tango_add_pch pch_target ref_target pch_extra_cxx_flags)
     get_target_property(pch_include_dirs ${ref_target} INCLUDE_DIRECTORIES)
     get_target_property(pch_compile_opts ${ref_target} COMPILE_OPTIONS)
 
+    get_directory_property(dir_compile_defs COMPILE_DEFINITIONS)
+    list(APPEND pch_compile_defs ${dir_compile_defs})
+
     string(REPLACE ";" ";-D" pch_compile_defs "-D${pch_compile_defs}")
     string(REPLACE ";" ";-I" pch_include_dirs "-I${pch_include_dirs}")
 
