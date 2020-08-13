@@ -41,7 +41,7 @@ class StringUtil
 public:
 
   /**
-  Returns a string contructed from the a format specifier
+  Returns a string constructed from the a format specifier
   and a va_list of arguments, analogously to vprintf(3).
   @param format the format specifier.
   @param args the va_list of arguments.
