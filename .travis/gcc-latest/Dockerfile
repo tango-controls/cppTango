@@ -1,4 +1,4 @@
-FROM gcc:10.1.0
+FROM gcc:10.2.0
 
 ARG APP_UID=2000
 
