@@ -147,15 +147,6 @@ const int   SUB_SEND_HWM                   = 10000;
 
 #cmakedefine TANGO_ZMQ_HAS_DISCONNECT
 
-#cmakedefine TANGO_CXX_HAS_RELAXED_CONSTEXPR
-
-// C++14 style relaxed constexpr
-#ifdef TANGO_CXX_HAS_RELAXED_CONSTEXPR
-  #define TANGO_CONSTEXPR constexpr
-#else
-  #define TANGO_CONSTEXPR
-#endif
-
 //
 // Event when using a file as database stuff
 //
@@ -1066,7 +1057,7 @@ const char * const CmdArgTypeName[] = {
 };
 
 /// Convert data types to strings
-inline TANGO_CONSTEXPR const char * data_type_to_string(int type)
+inline constexpr const char * data_type_to_string(int type)
 {
     return (type >= DEV_VOID
             && type < (static_cast<int>(sizeof(CmdArgTypeName) / sizeof(CmdArgTypeName[0]))))

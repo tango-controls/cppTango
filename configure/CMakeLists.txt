@@ -214,14 +214,6 @@ if(WARNINGS_AS_ERRORS)
   endif()
 endif()
 
-if(cxx_relaxed_constexpr IN_LIST CMAKE_CXX_COMPILE_FEATURES)
-  set(TANGO_CXX_HAS_RELAXED_CONSTEXPR TRUE)
-else()
-  set(TANGO_CXX_HAS_RELAXED_CONSTEXPR FALSE)
-endif()
-
-message(STATUS "Check if the compiler supports C++14 relaxed constexpr: ${TANGO_CXX_HAS_RELAXED_CONSTEXPR}")
-
 include(GNUInstallDirs)
 include(configure/coveralls.cmake)
 
