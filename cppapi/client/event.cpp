@@ -4118,5 +4118,10 @@ void PipeEventData::set_time()
 #endif
 }
 
-} /* End of Tango namespace */
+DeviceProxy& EventCallBackBase::get_device_proxy()
+{
+    assert(!callback_list.empty());
+    return *callback_list[0].device;
+}
 
+} /* End of Tango namespace */

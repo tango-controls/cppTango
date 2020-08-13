@@ -107,7 +107,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_channel(EvChanIte &ipos,EventCon
 				    DeviceData dummy;
 					std::string adm_name = ipos->second.full_adm_name;
 					event_consumer->connect_event_channel(adm_name,
-									      epos->second.callback_list[0].device->get_device_db(),
+									      epos->second.get_device_proxy().get_device_db(),
 									      true,dummy);
 
 					if (ipos->second.adm_device_proxy != NULL)
@@ -176,7 +176,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 				{
                     DeviceData subscriber_in,subscriber_out;
                     std::vector<std::string> subscriber_info;
-                    subscriber_info.push_back(epos->second.callback_list[0].device->dev_name());
+                    subscriber_info.push_back(epos->second.get_device_proxy().dev_name());
                     subscriber_info.push_back(epos->second.obj_name);
                     subscriber_info.push_back("subscribe");
                     subscriber_info.push_back(epos->second.event_name);
@@ -198,7 +198,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
                     catch (Tango::DevFailed &e) {}
 #endif
 					event_consumer->connect_event_channel(adm_name,
-									      epos->second.callback_list[0].device->get_device_db(),
+									      epos->second.get_device_proxy().get_device_db(),
 									      true,subscriber_out);
 
                     dd = subscriber_out;
@@ -439,7 +439,7 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 
 						vs.push_back(std::string("reconnect"));
 
-						std::string d_name = epos->second.callback_list[0].device->dev_name();
+						std::string d_name = epos->second.get_device_proxy().dev_name();
 						std::string &fqen = epos->second.fully_qualified_event_name;
 						std::string::size_type pos = fqen.find('/');
 						pos = pos + 2;
@@ -879,7 +879,7 @@ void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_
 
 				if (ipos->second.channel_type == ZMQ)
 				{
-					cmd_params.push_back(epos->second.callback_list[0].device->dev_name());
+					cmd_params.push_back(epos->second.get_device_proxy().dev_name());
 					cmd_params.push_back(epos->second.obj_name);
 					cmd_params.push_back(epos->second.event_name);
 
@@ -889,7 +889,7 @@ void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_
 				{
 					DeviceData subscriber_in;
 					std::vector<std::string> subscriber_info;
-					subscriber_info.push_back(epos->second.callback_list[0].device->dev_name());
+					subscriber_info.push_back(epos->second.get_device_proxy().dev_name());
 					subscriber_info.push_back(epos->second.obj_name);
 					subscriber_info.push_back("subscribe");
 					subscriber_info.push_back(epos->second.event_name);
@@ -1377,7 +1377,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 {
 	DeviceData subscriber_in;
 	std::vector<std::string> subscriber_info;
-	auto& device = *epos->second.callback_list[0].device;
+	auto& device = epos->second.get_device_proxy();
 	subscriber_info.push_back(device.dev_name());
 	subscriber_info.push_back(epos->second.obj_name);
 	subscriber_info.push_back("subscribe");
