@@ -2,6 +2,11 @@
 
 set -e
 
+if [[ "$RUN_TESTS" == "OFF" ]]
+then
+  exit 0
+fi
+
 admin_dir="/home/tango/tango_admin"
 
 echo "Build tango_admin"

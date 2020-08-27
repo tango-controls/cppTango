@@ -7,7 +7,7 @@ if (COVERALLS)
     include(Coveralls)
     coveralls_turn_on_coverage()
 
-    FILE(GLOB_RECURSE COVERAGE_SRCS ${PROJECT_SOURCE_DIR}/cppapi/*.cpp ${PROJECT_SOURCE_DIR}/cppapi/*.h)
+    FILE(GLOB_RECURSE COVERAGE_SRCS ${PROJECT_SOURCE_DIR}/cppapi/*.tpp ${PROJECT_SOURCE_DIR}/cppapi/*.cpp ${PROJECT_SOURCE_DIR}/cppapi/*.h)
 
     # Create the coveralls target.
     coveralls_setup(

@@ -28,25 +28,12 @@ services:
   - docker
 
 addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.9
-    update: true
   sonarcloud:
     organization: "tango-controls"
-    token:
-      secure: ${SONAR_TOKEN}
+    token: ${SONAR_TOKEN}
 
 before_install:
-  - docker pull tangocs/mysql:9.2.2
-  - docker pull tangocs/tango-cs:latest
-  - git clone https://github.com/JoakimSoderberg/coveralls-cmake.git
-  - (test ${STOCK_CPPZMQ} = "OFF" && git clone -b v4.2.2 https://${CI_USER_TOKEN}@github.com/zeromq/cppzmq.git cppzmq) || mkdir cppzmq
-  - git clone -b tango-9-lts https://${CI_USER_TOKEN}@github.com/tango-controls/tango-idl.git idl
-  - git clone -b Release_1.15 https://github.com/tango-controls/tango_admin.git
-  - wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip && unzip build-wrapper-linux-x86.zip
+  - .travis/before_install.sh
 
 before_script:
   - >
@@ -59,16 +46,20 @@ before_script:
       docker run
       --rm
       --name cpp_tango
-      -e TANGO_HOST=${TANGO_HOST}
-      -e BINTRAY_USER_NAME=tango-ci
       -e BINTRAY_API_KEY=${CI_BINTRAY_API_KEY}
+      -e BINTRAY_USER_NAME=tango-ci
       -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN}
+      -e SONAR_TOKEN=${SONAR_TOKEN}
+      -e TANGO_HOST=${TANGO_HOST}
+      -e TRAVIS_BRANCH=${TRAVIS_BRANCH}
+      -e TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
       -v `pwd`:/home/tango/src
       -v `pwd`/idl:/home/tango/idl
       -v `pwd`/cppzmq:/home/tango/cppzmq
       -v `pwd`/tango_admin:/home/tango/tango_admin
       -v `pwd`/coveralls-cmake:/home/tango/coveralls-cmake
       -v `pwd`/build-wrapper-linux-x86:/home/tango/build-wrapper-linux-x86
+      -v `pwd`/sonar-scanner:/home/tango/sonar-scanner
       -v /var/run/docker.sock:/var/run/docker.sock
       -dit
       cpp_tango
@@ -78,8 +69,6 @@ before_script:
   - docker exec -u root cpp_tango usermod -a -G dockerhost tango || true
   - .travis/install_tango_idl.sh
   - (test ${STOCK_CPPZMQ} = "OFF" && .travis/install_cppzmq.sh) || true
-#work around gcov ignored by sonar
-  - sudo mkdir /home/tango && sudo mkdir /home/tango/src && sudo mount --bind `pwd` /home/tango/src
 
 script:
   - set -e
