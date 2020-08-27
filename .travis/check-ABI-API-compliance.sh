@@ -12,11 +12,8 @@ then
   export CMAKE_BUILD_PARALLEL_LEVEL=$(grep -c ^processor /proc/cpuinfo)
 fi
 
-function print_abi_api_breakages() {
-   echo "ABI breakages detected:"
-   cat compat_reports/libtango/${old_revision}_to_${new_revision}/abi_affected.txt | c++filt
-   echo "API breakages detected:"
-   cat compat_reports/libtango/${old_revision}_to_${new_revision}/src_affected.txt | c++filt
+function exit_on_abi_api_breakages() {
+   echo "ABI/API breakages detected!"
    exit 1
 }
 
@@ -54,6 +51,6 @@ generate_info "old" ${old_revision}
 generate_info "new" ${new_revision}
 
 # Compare results
-abi-compliance-checker -l libtango -old ${base}/libtango-old-${old_revision}.dump \
-                                   -new ${base}/libtango-new-${new_revision}.dump \
-                                   -list-affected || print_abi_api_breakages
+sed "s/${old_revision}/fixed/g" ${base}/libtango-old-${old_revision}.dump > old.dump
+sed "s/${new_revision}/fixed/g" ${base}/libtango-new-${new_revision}.dump > new.dump
+diff -Nur old.dump new.dump || exit_on_abi_api_breakages
