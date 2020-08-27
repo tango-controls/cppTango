@@ -23,7 +23,7 @@ function generate_info() {
   local prefix=$1
   local revision=$2
 
-  git worktree remove $prefix-branch || true
+  git worktree remove --force $prefix-branch || true
   git -c advice.detachedHead=false worktree add ${prefix}-branch ${revision}
   mkdir ${prefix}-branch/build
   cd ${prefix}-branch/build
