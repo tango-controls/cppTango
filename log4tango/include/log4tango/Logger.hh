@@ -27,28 +27,15 @@
 
 #ifndef _LOG4TANGO_LOGGER_H
 #define _LOG4TANGO_LOGGER_H
-
-//-----------------------------------------------------------------------------
-// IMPL. OPTION
-//----------------------------------------------------------------------------- 
-//#define LOG4TANGO_LOGGERS_USE_LOGSTREAM
  
 #include <log4tango/Portability.hh>
 #include <log4tango/AppenderAttachable.hh>
 #include <log4tango/LoggingEvent.hh>
 #include <log4tango/Level.hh>
-#ifndef LOG4TANGO_LOGGERS_USE_LOGSTREAM
-# include <log4tango/LoggerStream.hh>
-#endif
+#include <log4tango/LoggerStream.hh>
 
 namespace log4tango {
 
-#ifdef LOG4TANGO_LOGGERS_USE_LOGSTREAM
-//-----------------------------------------------------------------------------
-// FORWARD DECL.
-//-----------------------------------------------------------------------------  
-class LogStream;
-#endif
 
 //-----------------------------------------------------------------------------
 // class : Logger
@@ -165,7 +152,6 @@ public:
     return is_level_enabled (Level::DEBUG);
   };
      
-#ifndef LOG4TANGO_LOGGERS_USE_LOGSTREAM   
   /**
    * Return a LoggerStream with level DEBUG.
    * @returns The LoggerStream.
@@ -173,15 +159,6 @@ public:
   inline LoggerStream debug_stream (void) {
     return LoggerStream(*this, Level::DEBUG, true);
   }
-#else
-  /**
-   * Return the DEBUG LogStream.
-   * @returns The DEBUG LogStream.
-   **/
-  inline LogStream& debug_stream (void) {
-    return *_log_streams[_DEBUG_STREAM_ID];
-  }
-#endif
 
   /** 
    * Log a message with info level.
@@ -208,7 +185,6 @@ public:
     return is_level_enabled(Level::INFO);
   };
 
-#ifndef LOG4TANGO_LOGGERS_USE_LOGSTREAM   
   /**
    * Return a LoggerStream with level INFO.
    * @returns The LoggerStream.
@@ -216,15 +192,6 @@ public:
   inline LoggerStream info_stream (void) {
     return LoggerStream(*this, Level::INFO, true);
   }
-#else
-  /**
-   * Return the INFO LogStream.
-   * @returns The INFO LogStream.
-   **/
-  inline LogStream& info_stream (void) {
-    return *_log_streams[_INFO_STREAM_ID];
-  }
-#endif
       
   /** 
    * Log a message with warn level.
@@ -251,7 +218,6 @@ public:
     return is_level_enabled(Level::WARN);
   };
 
-#ifndef LOG4TANGO_LOGGERS_USE_LOGSTREAM   
   /**
    * Return a LoggerStream with level WARN.
    * @returns The LoggerStream.
@@ -259,15 +225,6 @@ public:
   inline LoggerStream warn_stream (void) {
     return LoggerStream(*this, Level::WARN, true);
   };
-#else
-  /**
-   * Return the WARN LogStream.
-   * @returns The WARN LogStream.
-   **/
-  inline LogStream& warn_stream (void) {
-    return *_log_streams[_WARN_STREAM_ID];
-  }
-#endif
 
   /** 
    * Log a message with error level.
@@ -294,7 +251,6 @@ public:
     return is_level_enabled(Level::ERROR);
   };
 
-#ifndef LOG4TANGO_LOGGERS_USE_LOGSTREAM   
   /**
    * Return a LoggerStream with level ERROR.
    * @returns The LoggerStream.
@@ -302,15 +258,6 @@ public:
   inline LoggerStream error_stream (void) {
       return LoggerStream(*this, Level::ERROR, true);
   };
-#else
-  /**
-   * Return the ERROR LogStream.
-   * @returns The ERROR LogStream.
-   **/
-  inline LogStream& error_stream (void) {
-    return *_log_streams[_ERROR_STREAM_ID];
-  }
-#endif
 
   /** 
    * Log a message with fatal level. 
@@ -337,7 +284,6 @@ public:
     return is_level_enabled(Level::FATAL);
   };
   
-#ifndef LOG4TANGO_LOGGERS_USE_LOGSTREAM   
   /**
    * Return a LoggerStream with level FATAL.
    * @returns The LoggerStream.
@@ -345,17 +291,7 @@ public:
   inline LoggerStream fatal_stream (void) {
     return LoggerStream(*this, Level::FATAL, true);
   };
-#else
-  /**
-   * Return the FATAL LogStream.
-   * @returns The FATAL LogStream.
-   **/
-  inline LogStream& fatal_stream (void) {
-    return *_log_streams[_FATAL_STREAM_ID];
-  }
-#endif
 
-#ifndef LOG4TANGO_LOGGERS_USE_LOGSTREAM   
   /**
    * Return a LoggerStream with given Level.
    * @param level The Level of the LoggerStream.
@@ -365,7 +301,6 @@ public:
   inline LoggerStream get_stream (Level::Value level, bool filter = true) {
     return LoggerStream(*this, level, filter);
   }
-#endif
 
 protected:
 
@@ -379,16 +314,6 @@ protected:
 
 private:
 
-#ifdef LOG4TANGO_LOGGERS_USE_LOGSTREAM
-  /** Stream ids. */
-  enum {
-    _FATAL_STREAM_ID = 0,
-    _ERROR_STREAM_ID = 1,
-    _WARN_STREAM_ID  = 2,
-    _INFO_STREAM_ID  = 3,
-    _DEBUG_STREAM_ID = 4
-  };
-#endif
 
   /** The name of this logger. */
   const std::string _name;
@@ -396,10 +321,6 @@ private:
   /** The assigned level of this logger. */
   Level::Value _level;
 
-#ifdef LOG4TANGO_LOGGERS_USE_LOGSTREAM
-  /** The thread-safe streams of this logger. */
-  LogStream *_log_streams[5];
-#endif
 
   /* prevent copying and assignment */
   Logger (const Logger&);

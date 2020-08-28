@@ -15,7 +15,6 @@ liblog4tangoinclude_HEADERS =  \
 	Logger.hh \
   LogSeparator.hh \
 	LoggerStream.hh \
-  LogStream.hh \
   LogStreambuf.hh \
 	LoggingEvent.hh \
 	Level.hh \

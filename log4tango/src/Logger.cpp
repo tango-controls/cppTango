@@ -32,9 +32,6 @@
 #endif
 
 #include <log4tango/Logger.hh>
-#ifdef LOG4TANGO_LOGGERS_USE_LOGSTREAM  
-# include <log4tango/LogStream.hh>
-#endif
 #ifdef LOG4TANGO_HAS_NDC
 # include <log4tango/NDC.hh>
 #endif
@@ -45,31 +42,11 @@ namespace log4tango {
 Logger::Logger(const std::string& name, Level::Value level) 
   : _name(name), _level(level)
 {
-#ifdef LOG4TANGO_LOGGERS_USE_LOGSTREAM  
-   LogStreamBuf* stream_buf;
-   stream_buf = new LogStreamBuf(this, Level::DEBUG);
-  _log_streams[_DEBUG_STREAM_ID] = new LogStream(stream_buf);
-   stream_buf = new LogStreamBuf(this, Level::INFO);
-  _log_streams[_INFO_STREAM_ID] = new LogStream(stream_buf);
-   stream_buf = new LogStreamBuf(this, Level::WARN);
-  _log_streams[_WARN_STREAM_ID] = new LogStream(stream_buf);
-   stream_buf = new LogStreamBuf(this, Level::ERROR);
-  _log_streams[_ERROR_STREAM_ID] = new LogStream(stream_buf);
-  stream_buf = new LogStreamBuf(this, Level::FATAL);
-  _log_streams[_FATAL_STREAM_ID] = new LogStream(stream_buf);
-#else
   //no-op
-#endif // LOG4TANGO_LOGGERS_USE_LOGSTREAM 
 }
 
 Logger::~Logger() 
 {
-#ifdef LOG4TANGO_LOGGERS_USE_LOGSTREAM 
-  for (int i = _FATAL_STREAM_ID; i <= _DEBUG_STREAM_ID; i++) {
-    if (_log_streams[i]) delete _log_streams[i];
-    _log_streams[i] = 0;
-  }
-#endif
 }
     
 void Logger::set_level (Level::Value level)
