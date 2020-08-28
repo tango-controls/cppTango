@@ -28,9 +28,7 @@
 
 #include "PortabilityImpl.hh"
 #include <log4tango/threading/Threading.hh>
-#ifdef LOG4TANGO_HAVE_SSTREAM
-# include <sstream>
-#endif
+#include <sstream>
 
 #if defined(LOG4TANGO_HAVE_THREADING) && defined(LOG4TANGO_USE_PTHREADS)
 

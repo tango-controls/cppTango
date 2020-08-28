@@ -50,15 +50,5 @@
 	#endif
 #endif
 
-#ifndef LOG4TANGO_HAVE_SSTREAM
-#include <strstream>
-namespace std {
-  class LOG4TANGO_EXPORT ostringstream : public ostrstream {
-    public:
-      std::string str();
-      void str (const char*);
-  };
-}
-#endif // LOG4TANGO_HAVE_SSTREAM
 
 #endif // _LOG4TANGO_PORTABILITY_H

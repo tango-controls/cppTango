@@ -30,9 +30,7 @@
 
 #include <log4tango/Portability.hh>
 #include <log4tango/Level.hh>
-#ifdef LOG4TANGO_HAVE_SSTREAM
-# include <sstream>
-#endif
+#include <sstream>
 #include <log4tango/LogSeparator.hh>
 
 namespace log4tango {
@@ -136,10 +134,6 @@ public:
 #else
   inline LOG4TANGO_EXPORT LoggerStream& operator<< (std::ios_base&(*_F)(std::ios_base&)) {
 #endif
-#ifndef LOG4TANGO_HAVE_SSTREAM 
-    if (!_buffer) 
-      _buffer = new std::ostringstream;
-#endif
     if (_buffer) 
       (*_F)(*(std::ios_base *)(_buffer));
     return *this;
@@ -152,10 +146,6 @@ public:
    **/
   template<typename T> LoggerStream& operator<< (const T& t) {
     if (_level != Level::OFF) {
-#ifndef LOG4TANGO_HAVE_SSTREAM
-      if (!_buffer) 
-        _buffer = new std::ostringstream;
-#endif
       if (_buffer) 
         (*_buffer) << t;
     }

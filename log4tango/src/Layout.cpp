@@ -26,9 +26,7 @@
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PortabilityImpl.hh"
-#ifdef LOG4TANGO_HAVE_SSTREAM
-# include <sstream>
-#endif
+#include <sstream>
 #include <log4tango/Level.hh>
 #include <log4tango/Layout.hh>
 

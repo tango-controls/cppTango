@@ -32,11 +32,7 @@
 #include <log4tango/NDC.hh>
 #include <log4tango/TimeStamp.hh>
 
-#ifdef LOG4TANGO_HAVE_SSTREAM
-# include <sstream>
-#else
-# include <strstream>
-#endif
+#include <sstream>
 
 #include <iomanip>
 #include <ctime>
@@ -71,11 +67,7 @@ namespace log4tango {
             if (specifier == "") {
                 _precision = -1;
             } else {
-#ifdef LOG4TANGO_HAVE_SSTREAM 
                 std::istringstream s(specifier);
-#else
-                std::istrstream s(specifier.c_str());
-#endif
                 s >> _precision;
             }
         }
@@ -286,11 +278,7 @@ void PatternLayout::clear_conversion_pattern() {
 
 int PatternLayout::set_conversion_pattern (const std::string& conversionPattern) 
 {
-#ifdef LOG4TANGO_HAVE_SSTREAM 
     std::istringstream conversionStream(conversionPattern);
-#else
-    std::istrstream conversionStream(conversionPattern.c_str());
-#endif
     std::string literal;
 
     char ch;
