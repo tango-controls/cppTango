@@ -18,7 +18,6 @@ set(SOURCES
                 TimeStamp.cpp
                 StringUtil.hh
                 StringUtil.cpp
-                DllMain.cpp
                 DummyThreads.cpp
                 MSThreads.cpp
                 PThreads.cpp
