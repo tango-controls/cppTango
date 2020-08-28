@@ -512,7 +512,7 @@ void DbServerCache::get_obj_prop(DevVarStringArray *in_param,PropEltIdx &obj,boo
 
 		}
 	}
-	::sprintf(n_prop_str,"%d",found_prop);
+	std::snprintf(n_prop_str, sizeof(n_prop_str),"%d",found_prop);
 	ret_obj_prop[1] = Tango::string_dup(n_prop_str);
 
 //	cout4 << "DbCache --> Data returned for a get_obj_property for object " << (*in_param)[0] << std::endl;
@@ -718,7 +718,7 @@ const DevVarStringArray *DbServerCache::get_class_att_property(DevVarStringArray
 				ret_obj_att_prop[old_length + 1] = Tango::string_dup("0");
 			}
 		}
-		::sprintf(n_att_str,"%d",found_att);
+		std::snprintf(n_att_str, sizeof(n_att_str),"%d",found_att);
 		ret_obj_att_prop[1] = Tango::string_dup(n_att_str);
 	}
 	else
@@ -807,7 +807,7 @@ const DevVarStringArray *DbServerCache::get_dev_att_property(DevVarStringArray *
 				ret_obj_att_prop[old_length + 1] = Tango::string_dup("0");
 			}
 		}
-		::sprintf(n_att_str,"%d",found_att);
+		std::snprintf(n_att_str, sizeof(n_att_str),"%d",found_att);
 		ret_obj_att_prop[1] = Tango::string_dup(n_att_str);
 	}
 	else
@@ -822,7 +822,7 @@ const DevVarStringArray *DbServerCache::get_dev_att_property(DevVarStringArray *
 		}
 		else
 		{
-			::sprintf(n_att_str,"%d",found_att);
+			std::snprintf(n_att_str, sizeof(n_att_str),"%d",found_att);
 			ret_obj_att_prop[1] = Tango::string_dup(n_att_str);
 		}
 	}
@@ -1519,7 +1519,7 @@ const DevVarStringArray *DbServerCache::get_class_pipe_property(DevVarStringArra
 				ret_obj_pipe_prop[old_length + 1] = Tango::string_dup("0");
 			}
 		}
-		::sprintf(n_pipe_str,"%d",found_pipe);
+		std::snprintf(n_pipe_str, sizeof(n_pipe_str),"%d",found_pipe);
 		ret_obj_pipe_prop[1] = Tango::string_dup(n_pipe_str);
 	}
 	else
@@ -1620,7 +1620,7 @@ const DevVarStringArray *DbServerCache::get_dev_pipe_property(DevVarStringArray 
 				ret_obj_pipe_prop[old_length + 1] = Tango::string_dup("0");
 			}
 		}
-		::sprintf(n_pipe_str,"%d",found_pipe);
+		std::snprintf(n_pipe_str, sizeof(n_pipe_str),"%d",found_pipe);
 		ret_obj_pipe_prop[1] = Tango::string_dup(n_pipe_str);
 	}
 	else
@@ -1635,7 +1635,7 @@ const DevVarStringArray *DbServerCache::get_dev_pipe_property(DevVarStringArray 
 		}
 		else
 		{
-			::sprintf(n_pipe_str,"%d",found_pipe);
+			std::snprintf(n_pipe_str, sizeof(n_pipe_str),"%d",found_pipe);
 			ret_obj_pipe_prop[1] = Tango::string_dup(n_pipe_str);
 		}
 	}
