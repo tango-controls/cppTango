@@ -43,15 +43,6 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #cmakedefine LOG4TANGO_HAVE_UNISTD_H
 
-/* Define to the address where bug reports for this package should be sent. */
-#cmakedefine LOG4TANGO_PACKAGE_BUGREPORT "@LOG4TANGO_PACKAGE_BUGREPORT@"
-
-/* Define to the home page for this package. */
-#cmakedefine LOG4TANGO_PACKAGE_URL "@LOG4TANGO_PACKAGE_URL@"
-
-/* Define to the version of this package. */
-#cmakedefine LOG4TANGO_PACKAGE_VERSION "${LIBRARY_VERSION}"
-
 /* define if pthread library is available */
 #cmakedefine HAVE_PTHREAD_ATTR_GET_NP 1
 #cmakedefine HAVE_PTHREAD_GETATTR_NP 1
@@ -60,12 +51,3 @@
 #if defined(HAVE_PTHREAD_ATTR_GET_NP) || defined(HAVE_PTHREAD_GETATTR_NP) || defined(HAVE_PTHREAD_CREATE) || defined(HAVE_PTHREAD_NP_H)
 #define LOG4TANGO_USE_PTHREADS 1
 #endif
-
-/* Version number of package */
-#cmakedefine LOG4TANGO_VERSION "@LIBRARY_VERSION@"
-
-/* If we're running on darwin/MacOsX */
-#cmakedefine __darwin__
-
-/* If we're running on FreeBSD */
-#cmakedefine __freebsd__
