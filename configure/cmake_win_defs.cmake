@@ -1,5 +1,4 @@
 #definitions and preprocessor
-option(TANGO_BUILD_SHARED "Build a shared library instead of static" ON)
 option(TANGO_INSTALL_DEPENDENCIES "Install the libraries that tango depends on" ON)
 
 add_definitions(-D_WIN32)
@@ -46,7 +45,7 @@ if(CMAKE_CL_64)
 endif(CMAKE_CL_64)
 message("dyn_defs: ${dyn_defs}")
 
-if (TANGO_BUILD_SHARED)
+if(BUILD_SHARED_LIBS)
     message("selected dynamic-library build")
     set(windows_defs ${dyn_defs})
 else()
