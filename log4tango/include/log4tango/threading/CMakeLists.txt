@@ -1,7 +1,6 @@
 set(HEADER_FILES
                 DummyThreads.hh
-                PThreads.hh
-                MSThreads.hh
+                StandardThreads.hh
                 Threading.hh)
 
 install(FILES ${HEADER_FILES}

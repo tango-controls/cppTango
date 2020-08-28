@@ -32,16 +32,11 @@
 
 #ifdef LOG4TANGO_HAVE_THREADING
 
-# ifdef LOG4TANGO_USE_MSTHREADS
-#   include <log4tango/threading/MSThreads.hh>
-# endif
-# ifdef LOG4TANGO_USE_PTHREADS
-#   include <log4tango/threading/PThreads.hh>
-# endif
+#include <log4tango/threading/StandardThreads.hh>
 
 #else 
 
-# include <log4tango/threading/DummyThreads.hh>
+#include <log4tango/threading/DummyThreads.hh>
 
 #endif
 

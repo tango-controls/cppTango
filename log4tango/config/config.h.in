@@ -42,12 +42,3 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #cmakedefine LOG4TANGO_HAVE_UNISTD_H
-
-/* define if pthread library is available */
-#cmakedefine HAVE_PTHREAD_ATTR_GET_NP 1
-#cmakedefine HAVE_PTHREAD_GETATTR_NP 1
-#cmakedefine HAVE_PTHREAD_CREATE 1
-#cmakedefine HAVE_PTHREAD_NP_H 1
-#if defined(HAVE_PTHREAD_ATTR_GET_NP) || defined(HAVE_PTHREAD_GETATTR_NP) || defined(HAVE_PTHREAD_CREATE) || defined(HAVE_PTHREAD_NP_H)
-#define LOG4TANGO_USE_PTHREADS 1
-#endif
