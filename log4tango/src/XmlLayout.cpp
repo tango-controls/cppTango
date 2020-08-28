@@ -67,13 +67,6 @@ namespace log4tango {
 #endif
     buf.append("]]></log4j:message>\r\n"); 
     buf.append("<log4j:NDC><![CDATA[");
-#ifdef LOG4TANGO_HAS_NDC
-# if APPEND_ECAPING_CDATA_IMPLEMENTED
-    appendEscapingCDATA(buf, event.ndc);
-# else
-    buf.append(event.ndc);  
-# endif
-#endif	
     buf.append("]]></log4j:NDC>\r\n");	  
     buf.append("</log4j:event>\r\n\r\n");
     return buf;

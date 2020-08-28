@@ -13,7 +13,6 @@ set(SOURCES
                 LoggerStream.cpp
                 LoggingEvent.cpp
                 Level.cpp
-                NDC.cpp
                 Filter.cpp
                 TimeStamp.cpp
                 StringUtil.hh

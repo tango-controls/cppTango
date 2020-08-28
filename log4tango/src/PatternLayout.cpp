@@ -29,7 +29,6 @@
 
 #include <log4tango/PatternLayout.hh>
 #include <log4tango/Level.hh> 
-#include <log4tango/NDC.hh>
 #include <log4tango/TimeStamp.hh>
 
 #include <sstream>
@@ -99,13 +98,6 @@ namespace log4tango {
         }
     };
 
-#ifdef LOG4TANGO_HAS_NDC
-    struct NDCComponent : public PatternLayout::PatternComponent {
-        virtual void append(std::ostringstream& out, const LoggingEvent& event) {
-            out << event.ndc;
-        }
-    };
-#endif
 
     struct LevelComponent : public PatternLayout::PatternComponent {
         virtual void append(std::ostringstream& out, const LoggingEvent& event) {
@@ -253,11 +245,7 @@ namespace log4tango {
     bool _alignLeft;
 };
 
-#ifdef LOG4TANGO_HAS_NDC
-    const char* PatternLayout::BASIC_CONVERSION_PATTERN = "%R %p %c %x: %m%n";
-#else
     const char* PatternLayout::BASIC_CONVERSION_PATTERN = "%R %p %c %m%n";
-#endif
 
 PatternLayout::PatternLayout() {
   set_conversion_pattern(BASIC_CONVERSION_PATTERN);
@@ -357,11 +345,6 @@ int PatternLayout::set_conversion_pattern (const std::string& conversionPattern)
             case 'u':
                 component = new ProcessorTimeComponent();
                 break;
-#ifdef LOG4TANGO_HAS_NDC
-            case 'x':
-                component = new NDCComponent();
-                break;
-#endif
             default:
                 return -1;                 
             }

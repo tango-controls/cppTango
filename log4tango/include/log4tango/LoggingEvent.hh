@@ -61,16 +61,9 @@ public:
    * @param message  The message of this event.
    * @param level The level of this event.
    **/
-#ifdef LOG4TANGO_HAS_NDC
-  LoggingEvent(const std::string& logger, 
-               const std::string& message, 
-               const std::string& ndc, 
-               Level::Value level);
-#else
   LoggingEvent(const std::string& logger, 
                const std::string& message, 
                Level::Value level);
-#endif // LOG4TANGO_HAS_NDC
 
   /** Copy constructor */
   LoggingEvent(const LoggingEvent& event);
@@ -81,10 +74,6 @@ public:
   /** The application supplied message of logging event. */
   const std::string message;
 
-#ifdef LOG4TANGO_HAS_NDC
-  /** The nested diagnostic context (NDC) of logging event. */
-  const std::string ndc;
-#endif
 
   /** Level of logging event. */
   Level::Value level;

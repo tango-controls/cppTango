@@ -32,9 +32,6 @@
 #endif
 
 #include <log4tango/Logger.hh>
-#ifdef LOG4TANGO_HAS_NDC
-# include <log4tango/NDC.hh>
-#endif
 #include "StringUtil.hh"
 
 namespace log4tango {
@@ -106,11 +103,7 @@ void Logger::log_unconditionally(Level::Value level,
 void Logger::log_unconditionally(Level::Value level, 
                                  const std::string& message) 
 {
-#ifdef LOG4TANGO_HAS_NDC
-  LoggingEvent event(get_name(), message, NDC::get(), level);
-#else
   LoggingEvent event(get_name(), message, level);
-#endif
   call_appenders(event);
 }
 

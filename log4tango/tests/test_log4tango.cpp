@@ -26,9 +26,6 @@
 #include <log4tango/OstreamAppender.hh>
 #include <log4tango/Layout.hh>
 #include <log4tango/Level.hh>
-#ifdef LOG4TANGO_HAS_NDC
-# include <log4tango/NDC.hh>
-#endif
 
 int test_get_appender (log4tango::Logger& logger,
                        log4tango::Appender* appender_1,
