@@ -1,4 +1,3 @@
-
 function(tango_target_pch target)
 
     set(tango_pch_file "${CMAKE_CURRENT_BINARY_DIR}/pch_${target}.pch")

@@ -52,4 +52,3 @@ else()
     message("selected static-library build")
     set(windows_defs ${static_defs})
 endif()
-

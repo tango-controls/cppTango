@@ -1,4 +1,4 @@
-set(SOURCES 
+set(SOURCES
                 Appender.cpp
                 AppenderAttachable.cpp
                 LayoutAppender.cpp

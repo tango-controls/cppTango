@@ -15,4 +15,3 @@ if (COVERALLS)
             ON                 # If we should upload.
     )
 endif ()
-

@@ -23,5 +23,3 @@ set(CPACK_DEBIAN_PACKAGE_DEBUG TRUE)
 
 add_custom_command(OUTPUT ${CPACK_PACKAGE_FILE_NAME}.deb
         COMMAND cpack -V)
-
-
