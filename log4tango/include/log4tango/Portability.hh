@@ -28,12 +28,7 @@
 #ifndef _LOG4TANGO_PORTABILITY_H
 #define _LOG4TANGO_PORTABILITY_H
 
-#if defined (_MSC_VER) || defined(__BORLANDC__)
-# include <log4tango/config-win32.h>
-#else
-# include <log4tango/config.h>
-#endif
-
+#include <log4tango/config.h>
 #include <log4tango/Export.hh>
 
 #if defined(_MSC_VER)
