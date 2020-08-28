@@ -1,35 +1,25 @@
 project(libtango)
 
-add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
-                            $<TARGET_OBJECTS:client_objects>
-                            $<TARGET_OBJECTS:idl_objects>
-                            $<TARGET_OBJECTS:jpeg_objects>
-                            $<TARGET_OBJECTS:jpeg_mmx_objects>
-                            $<TARGET_OBJECTS:server_objects>)
+add_library(tango $<TARGET_OBJECTS:log4tango_objects>
+                  $<TARGET_OBJECTS:client_objects>
+                  $<TARGET_OBJECTS:idl_objects>
+                  $<TARGET_OBJECTS:jpeg_objects>
+                  $<TARGET_OBJECTS:jpeg_mmx_objects>
+                  $<TARGET_OBJECTS:server_objects>)
 target_link_libraries(tango PUBLIC ${ZMQ_PKG_LIBRARIES} ${OMNIORB_PKG_LIBRARIES} ${OMNICOS_PKG_LIBRARIES} ${OMNIDYN_PKG_LIBRARIES} ${CMAKE_DL_LIBS})
-target_compile_options(tango PRIVATE -fPIC)
 target_include_directories(tango PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS} ${OMNIDYN_PKG_INCLUDE_DIRS})
-
 target_compile_options(tango PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
-target_compile_definitions(tango PUBLIC _REENTRANT)
 
-set_target_properties(tango PROPERTIES
-                      VERSION ${LIBRARY_VERSION}
-                      SOVERSION ${SO_VERSION})
-
-add_library(tango-static STATIC $<TARGET_OBJECTS:log4tango_objects>
-                                $<TARGET_OBJECTS:client_objects>
-                                $<TARGET_OBJECTS:idl_objects>
-                                $<TARGET_OBJECTS:jpeg_objects>
-                                $<TARGET_OBJECTS:jpeg_mmx_objects>
-                                $<TARGET_OBJECTS:server_objects>)
-target_link_libraries(tango-static PUBLIC ${ZMQ_PKG_LIBRARIES} ${OMNIORB_PKG_LIBRARIES} ${OMNICOS_PKG_LIBRARIES} ${OMNIDYN_PKG_LIBRARIES} ${CMAKE_DL_LIBS})
-target_include_directories(tango-static PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS} ${OMNIDYN_PKG_INCLUDE_DIRS})
-target_compile_options(tango-static PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
-set_target_properties(tango-static PROPERTIES OUTPUT_NAME tango)
-
-install(TARGETS tango LIBRARY DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
-install(TARGETS tango-static ARCHIVE DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
+if(BUILD_SHARED_LIBS)
+  target_compile_options(tango PRIVATE -fPIC)
+  target_compile_definitions(tango PUBLIC _REENTRANT)
+  set_target_properties(tango PROPERTIES
+                        VERSION ${LIBRARY_VERSION}
+                        SOVERSION ${SO_VERSION})
+  install(TARGETS tango LIBRARY DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
+else()
+  install(TARGETS tango ARCHIVE DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
+endif()
 
 configure_file(tango.pc.cmake tango.pc @ONLY)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/tango.pc"

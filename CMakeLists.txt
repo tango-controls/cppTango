@@ -33,7 +33,12 @@ add_subdirectory("log4tango")
 add_subdirectory("cppapi")
 
 if(BUILD_TESTING)
+  if(BUILD_SHARED_LIBS)
     add_subdirectory("cpp_test_suite")
+  else()
+    message(WARNING "Not building the tests, because that is currently supported only when BUILD_SHARED_LIBS is ON")
+    SET(BUILD_TESTING OFF)
+  endif()
 endif()
 
 if(WIN32)
