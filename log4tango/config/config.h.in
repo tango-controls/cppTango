@@ -19,9 +19,6 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #cmakedefine LOG4TANGO_HAVE_MEMORY_H
 
-/* define if the compiler implements namespaces */
-#cmakedefine LOG4TANGO_HAVE_NAMESPACES
-
 /* define if the compiler has stringstream */
 #cmakedefine LOG4TANGO_HAVE_SSTREAM
 
