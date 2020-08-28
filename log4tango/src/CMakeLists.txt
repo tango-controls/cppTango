@@ -18,9 +18,7 @@ set(SOURCES
                 StringUtil.hh
                 StringUtil.cpp
                 DummyThreads.cpp
-                StandardThreads.cpp
-                PortabilityImpl.hh
-                PortabilityImpl.cpp)
+                StandardThreads.cpp)
 
 add_library(log4tango_objects OBJECT ${SOURCES})
 
