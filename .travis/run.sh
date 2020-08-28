@@ -2,6 +2,12 @@
 
 set -e
 
+# export all ENV variables from the docker container starting with TANGO_
+eval $(docker inspect -f '{{range $index, $value := .Config.Env}}{{$value}} {{end}}' cpp_tango | \
+  sed -e "s/ /\n/g" |                                                                            \
+  grep "^TANGO_" |                                                                               \
+  sed -e "s/^/export /")
+
 echo "############################"
 echo "CMAKE_BUILD_TYPE=$CMAKE_BUILD_TYPE"
 echo "OS_TYPE=$OS_TYPE"
@@ -10,6 +16,9 @@ echo "COVERALLS=$COVERALLS"
 echo "USE_PCH=$USE_PCH"
 echo "BUILD_SHARED_LIBS=$BUILD_SHARED_LIBS"
 echo "TANGO_USE_USING_NAMESPACE=$TANGO_USE_USING_NAMESPACE"
+echo "TANGO_USE_LIBCPP=$TANGO_USE_LIBCPP"
+echo "TANGO_LIBCPP_INCLUDE=$TANGO_LIBCPP_INCLUDE"
+echo "TANGO_LIBCPP_LIB=$TANGO_LIBCPP_LIB"
 echo "WARNINGS_AS_ERRORS=$WARNINGS_AS_ERRORS"
 echo "############################"
 
@@ -18,6 +27,9 @@ docker exec cpp_tango mkdir -p /home/tango/src/build
 # set defaults
 MAKEFLAGS=${MAKEFLAGS:- -j $(nproc)}
 COVERALLS=${COVERALLS:-OFF}
+TANGO_USE_LIBCPP=${TANGO_USE_LIBCPP:-OFF}
+TANGO_LIBCPP_INCLUDE=${TANGO_LIBCPP_INCLUDE:-}
+TANGO_LIBCPP_LIB=${TANGO_LIBCPP_LIB:-}
 USE_PCH=${USE_PCH:-OFF}
 BUILD_SHARED_LIBS=${BUILD_SHARED_LIBS:-ON}
 WARNINGS_AS_ERRORS=${WARNINGS_AS_ERRORS:-OFF}
@@ -32,6 +44,9 @@ docker exec cpp_tango cmake                                \
   -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}                   \
   -DUSE_PCH=${USE_PCH}                                     \
   -DTANGO_USE_USING_NAMESPACE=${TANGO_USE_USING_NAMESPACE} \
+  -DTANGO_USE_LIBCPP=${TANGO_USE_LIBCPP}                   \
+  -DTANGO_LIBCPP_INCLUDE=${TANGO_LIBCPP_INCLUDE}           \
+  -DTANGO_LIBCPP_LIB=${TANGO_LIBCPP_LIB}                   \
   -DWARNINGS_AS_ERRORS=${WARNINGS_AS_ERRORS}               \
   -DCOVERALLS=${COVERALLS}                                 \
   -DCOVERALLS_MODULE_PATH=${COVERALLS_MODULE_PATH}

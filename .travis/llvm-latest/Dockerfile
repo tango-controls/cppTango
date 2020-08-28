@@ -31,7 +31,9 @@ RUN curl https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - &&          
     apt-get install --no-install-recommends -y                                                                          \
         clang-${LLVM_VERSION}                                                                                           \
         lld-${LLVM_VERSION}                                                                                             \
-        llvm-${LLVM_VERSION}
+        llvm-${LLVM_VERSION}                                                                                            \
+        libc++-${LLVM_VERSION}-dev                                                                                      \
+        libc++abi-${LLVM_VERSION}-dev
 
 RUN groupadd -g "$APP_GID" tango
 
@@ -40,6 +42,8 @@ RUN useradd -u "$APP_UID" -g "$APP_GID" -ms /bin/bash tango
 ENV PKG_CONFIG_PATH=/home/tango/lib/pkgconfig
 ENV CXX=clang++-${LLVM_VERSION}
 ENV CC=clang-${LLVM_VERSION}
+ENV TANGO_LIBCPP_INCLUDE=/usr/lib/llvm-${LLVM_VERSION}/include/c++/v1
+ENV TANGO_LIBCPP_LIB=/usr/lib/llvm-${LLVM_VERSION}/lib
 
 USER tango
 

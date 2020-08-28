@@ -1,5 +1,5 @@
 add_executable(conf_devtest conf_devtest.cpp)
-target_link_libraries(conf_devtest PUBLIC tango ${CMAKE_DL_LIBS})
+target_link_libraries(conf_devtest PUBLIC tango $<$<BOOL:${TANGO_USE_LIBCPP}>:c++abi> $<$<BOOL:${TANGO_USE_LIBCPP}>:c++> ${CMAKE_DL_LIBS})
 add_library(compare_test_object OBJECT compare_test.cpp compare_test.h cxx_common.h)
 if(USE_PCH)
     tango_target_test_pch(conf_devtest)
