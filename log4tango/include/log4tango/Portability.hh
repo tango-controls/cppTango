@@ -32,9 +32,6 @@
 #include <log4tango/Export.hh>
 
 #if defined(_MSC_VER)
-# pragma warning( disable : 4786 ) // 255 char debug symbol limit
-# pragma warning( disable : 4290 ) // throw specifier not implemented
-# pragma warning( disable : 4251 ) // "class XXX should be exported"
 
 /* define to get around problems with ERROR in windows.h */
 #ifndef LOG4TANGO_FIX_ERROR_COLLISION
