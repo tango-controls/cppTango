@@ -175,7 +175,7 @@ bool DeviceData::is_empty()
 //
 //-----------------------------------------------------------------------------
 
-bool DeviceData::any_is_null()
+bool DeviceData::any_is_null() const
 {
     ext->ext_state.reset(isempty_flag);
     CORBA::TypeCode_ptr tc;
@@ -2242,7 +2242,7 @@ bool DeviceData::extract(std::string &str, std::vector<unsigned char> &datum)
 //
 //--------------------------------------------------------------------------
 
-std::ostream &operator<<(std::ostream &o_str, DeviceData &dd)
+std::ostream &operator<<(std::ostream &o_str, const DeviceData &dd)
 {
     if (dd.any_is_null() == true)
     {
@@ -2336,67 +2336,67 @@ std::ostream &operator<<(std::ostream &o_str, DeviceData &dd)
                 {
                     case CORBA::tk_octet:
                         Tango::DevVarCharArray *ch_arr;
-                        dd.any.inout() >>= ch_arr;
+                        dd.any.in() >>= ch_arr;
                         o_str << *ch_arr;
                         break;
 
                     case CORBA::tk_boolean:
                         Tango::DevVarBooleanArray *bl_arr;
-                        dd.any.inout() >>= bl_arr;
+                        dd.any.in() >>= bl_arr;
                         o_str << *bl_arr;
                         break;
 
                     case CORBA::tk_short:
                         Tango::DevVarShortArray *sh_arr;
-                        dd.any.inout() >>= sh_arr;
+                        dd.any.in() >>= sh_arr;
                         o_str << *sh_arr;
                         break;
 
                     case CORBA::tk_long:
                         Tango::DevVarLongArray *lg_arr;
-                        dd.any.inout() >>= lg_arr;
+                        dd.any.in() >>= lg_arr;
                         o_str << *lg_arr;
                         break;
 
                     case CORBA::tk_longlong:
                         Tango::DevVarLong64Array *llg_arr;
-                        dd.any.inout() >>= llg_arr;
+                        dd.any.in() >>= llg_arr;
                         o_str << *llg_arr;
                         break;
 
                     case CORBA::tk_float:
                         Tango::DevVarFloatArray *fl_arr;
-                        dd.any.inout() >>= fl_arr;
+                        dd.any.in() >>= fl_arr;
                         o_str << *fl_arr;
                         break;
 
                     case CORBA::tk_double:
                         Tango::DevVarDoubleArray *db_arr;
-                        dd.any.inout() >>= db_arr;
+                        dd.any.in() >>= db_arr;
                         o_str << *db_arr;
                         break;
 
                     case CORBA::tk_ushort:
                         Tango::DevVarUShortArray *us_arr;
-                        dd.any.inout() >>= us_arr;
+                        dd.any.in() >>= us_arr;
                         o_str << *us_arr;
                         break;
 
                     case CORBA::tk_ulong:
                         Tango::DevVarULongArray *ul_arr;
-                        dd.any.inout() >>= ul_arr;
+                        dd.any.in() >>= ul_arr;
                         o_str << *ul_arr;
                         break;
 
                     case CORBA::tk_ulonglong:
                         Tango::DevVarULong64Array *ull_arr;
-                        dd.any.inout() >>= ull_arr;
+                        dd.any.in() >>= ull_arr;
                         o_str << *ull_arr;
                         break;
 
                     case CORBA::tk_string:
                         Tango::DevVarStringArray *str_arr;
-                        dd.any.inout() >>= str_arr;
+                        dd.any.in() >>= str_arr;
                         o_str << *str_arr;
                         break;
 
@@ -2416,14 +2416,14 @@ std::ostream &operator<<(std::ostream &o_str, DeviceData &dd)
                         {
                             case CORBA::tk_long:
                                 Tango::DevVarLongStringArray *lgstr_arr;
-                                dd.any.inout() >>= lgstr_arr;
+                                dd.any.in() >>= lgstr_arr;
                                 o_str << lgstr_arr->lvalue << std::endl;
                                 o_str << lgstr_arr->svalue;
                                 break;
 
                             case CORBA::tk_double:
                                 Tango::DevVarDoubleStringArray *dbstr_arr;
-                                dd.any.inout() >>= dbstr_arr;
+                                dd.any.in() >>= dbstr_arr;
                                 o_str << dbstr_arr->dvalue << std::endl;
                                 o_str << dbstr_arr->svalue;
                                 break;
@@ -2435,7 +2435,7 @@ std::ostream &operator<<(std::ostream &o_str, DeviceData &dd)
 
                     case CORBA::tk_string:
                         Tango::DevEncoded *enc;
-                        dd.any.inout() >>= enc;
+                        dd.any.in() >>= enc;
                         o_str << "Encoding string: " << enc->encoded_format << std::endl;
                         {
                             long nb_data_elt = enc->encoded_data.length();
@@ -2457,7 +2457,7 @@ std::ostream &operator<<(std::ostream &o_str, DeviceData &dd)
 
             case CORBA::tk_enum:
                 Tango::DevState tmp_state;
-                dd.any.inout() >>= tmp_state;
+                dd.any.in() >>= tmp_state;
                 o_str << Tango::DevStateName[tmp_state];
                 break;
 

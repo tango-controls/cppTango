@@ -156,21 +156,21 @@ DevicePipeBlob &operator>>(DevicePipeBlob &_dp,DataElement<T> &datum)
 //-------------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-std::ostream &operator<<(std::ostream &str,DataElement<T> &dd)
+std::ostream &operator<<(std::ostream &str, const DataElement<T> &dd)
 {
 	str << "Name = " << dd.name << " - Value = " << dd.value;
 	return str;
 }
 
 template <>
-std::ostream &operator<<(std::ostream &str,DataElement<DevString> &dd)
+std::ostream &operator<<(std::ostream &str, const DataElement<DevString> &dd)
 {
 	str << "Name = " << dd.name << " - Value = " << dd.value;
 	return str;
 }
 
 template <typename T>
-std::ostream &operator<<(std::ostream &str,DataElement<std::vector<T> > &dd)
+std::ostream &operator<<(std::ostream &str, const DataElement<std::vector<T> > &dd)
 {
 	str << "Name = " << dd.name << " - Value = ";
 	for (size_t loop = 0;loop < dd.value.size();loop++)
@@ -183,7 +183,7 @@ std::ostream &operator<<(std::ostream &str,DataElement<std::vector<T> > &dd)
 }
 
 template <typename T>
-std::ostream &operator<<(std::ostream &str,DataElement<T *> &dd)
+std::ostream &operator<<(std::ostream &str, const DataElement<T *> &dd)
 {
 	str << "Name = " << dd.name << " - Value = ";
 	for (size_t loop = 0;loop < dd.value->length();loop++)
@@ -196,7 +196,7 @@ std::ostream &operator<<(std::ostream &str,DataElement<T *> &dd)
 }
 
 template <>
-std::ostream &operator<<(std::ostream &str,DataElement<DevicePipeBlob> &dd)
+std::ostream &operator<<(std::ostream &str, const DataElement<DevicePipeBlob> &dd)
 {
 	str << "Name = " << dd.name << "- Value = ";
 	dd.value.print(str,0,true);
