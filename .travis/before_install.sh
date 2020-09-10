@@ -18,7 +18,7 @@ fi
 
 if [[ "$STOCK_CPPZMQ" == "OFF" ]]
 then
-  git clone -b v4.2.2 --depth 1 https://github.com/zeromq/cppzmq.git
+  git clone -b v4.6.0 --depth 1 https://github.com/zeromq/cppzmq.git
 else
   mkdir cppzmq
 fi
