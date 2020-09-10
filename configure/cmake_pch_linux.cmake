@@ -73,6 +73,6 @@ function(tango_add_pch pch_target ref_target pch_extra_cxx_flags)
         MAIN_DEPENDENCY ${tango_h_file})
 
     add_custom_target(${pch_target}
-        DEPENDS ${tango_pch_h_file} ${tango_pch_file})
+        DEPENDS ${tango_pch_h_file} ${tango_pch_file} idl_objects)
 
 endfunction()
