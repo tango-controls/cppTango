@@ -61,7 +61,7 @@ namespace {
 
   constexpr int LINGER_DEFAULT = 0;
 
-  zmq::message_t CreateZMQMessage(const std::string &str)
+  zmq::message_t CreateZMQMessage(std::string str)
   {
     return zmq::message_t(static_cast<const void*>(str.data()), str.size());
   }
