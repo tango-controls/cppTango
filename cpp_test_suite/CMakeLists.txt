@@ -20,7 +20,6 @@ message("HOST_NAME=${HOST_NAME}")
 add_subdirectory(environment)
 
 function(TEST_SUITE_ADD_TEST test)
-    message("Add executable ${test}")
     add_executable(${test} ${test}.cpp)
     target_compile_definitions(${test} PUBLIC VALGRIND _PTHREADS)
     target_link_libraries(${test} tango ${CMAKE_DL_LIBS})
