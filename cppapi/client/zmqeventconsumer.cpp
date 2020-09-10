@@ -55,7 +55,11 @@
 
 using namespace CORBA;
 
+namespace Tango {
+
 namespace {
+
+  constexpr int LINGER_DEFAULT = 0;
 
   zmq::message_t CreateZMQMessage(const std::string &str)
   {
@@ -68,9 +72,6 @@ namespace {
   }
 
 } // anonymous namespace
-
-namespace Tango {
-
 
 ZmqEventConsumer *ZmqEventConsumer::_instance = NULL;
 //omni_mutex EventConsumer::ev_consumer_inst_mutex;
@@ -138,7 +139,6 @@ ZmqEventConsumer *ZmqEventConsumer::create()
 
 void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 {
-	const int linger = 0;
 	int reconnect_ivl = -1;
 //
 // Store thread ID
@@ -153,7 +153,7 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 //
 
 	heartbeat_sub_sock = new zmq::socket_t(zmq_context,ZMQ_SUB);
-	heartbeat_sub_sock->set(zmq::sockopt::linger, linger);
+	heartbeat_sub_sock->set(zmq::sockopt::linger, LINGER_DEFAULT);
 	try
 	{
 		heartbeat_sub_sock->set(zmq::sockopt::reconnect_ivl, reconnect_ivl);
@@ -172,7 +172,7 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 //
 
 	event_sub_sock = new zmq::socket_t(zmq_context,ZMQ_SUB);
-	event_sub_sock->set(zmq::sockopt::linger, linger);
+	event_sub_sock->set(zmq::sockopt::linger, LINGER_DEFAULT);
 	event_sub_sock->set(zmq::sockopt::reconnect_ivl, reconnect_ivl);
 	event_sub_sock->set(zmq::sockopt::sndhwm, SUB_SEND_HWM);
 
@@ -181,7 +181,7 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 //
 
 	control_sock = new zmq::socket_t(zmq_context,ZMQ_REP);
-	control_sock->set(zmq::sockopt::linger, linger);
+	control_sock->set(zmq::sockopt::linger, LINGER_DEFAULT);
 	control_sock->bind(CTRL_SOCK_ENDPOINT);
 
 	set_ctrl_sock_bound();
@@ -1031,7 +1031,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
                 tmp_sock->set(zmq::sockopt::rate, rate);
                 tmp_sock->set(zmq::sockopt::recovery_ivl, ivl);
-                tmp_sock->set(zmq::sockopt::linger, 0);
+                tmp_sock->set(zmq::sockopt::linger, LINGER_DEFAULT);
                 tmp_sock->set(zmq::sockopt::rcvhwm, sub_hwm);
 
 //
