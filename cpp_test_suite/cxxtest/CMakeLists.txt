@@ -6,18 +6,16 @@ if(NOT PYTHON_INTERPRETER)
 endif()
 
 function(CXX_GENERATE_TEST name)
-    message("Generate ${name}.cpp")
-    set(GENERATED_FILE "${CMAKE_CURRENT_SOURCE_DIR}/${name}.cpp")
-    execute_process(COMMAND "${PYTHON_INTERPRETER}" cxxtestgen.py
-            --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
-            -o ${GENERATED_FILE}
-            ../../new_tests/${name}.cpp
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin
-        RESULT_VARIABLE GENERATOR_OUTPUT)
-
-    if(NOT EXISTS ${GENERATED_FILE})
-      message(FATAL_ERROR " Failed to generate ${name}.cpp due to \"${GENERATOR_OUTPUT}\".")
-    endif()
+    add_custom_command(OUTPUT ${name}.cpp
+                       COMMAND "${PYTHON_INTERPRETER}" ${CMAKE_CURRENT_SOURCE_DIR}/bin/cxxtestgen.py
+                               --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
+                               -o ${name}.cpp
+                               ${CMAKE_CURRENT_SOURCE_DIR}/../new_tests/${name}.cpp
+                       DEPENDS tango
+                               ${CMAKE_CURRENT_SOURCE_DIR}/../new_tests/${name}.cpp
+                               ${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
+                       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                       COMMENT "Generate ${name}.cpp")
 
     add_executable(${name} $<TARGET_OBJECTS:compare_test_object> ${name}.cpp)
     target_include_directories(${name} PRIVATE include ${CMAKE_CURRENT_BINARY_DIR}/include)
