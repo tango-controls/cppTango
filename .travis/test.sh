@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+if [ $RUN_TESTS = "OFF" ]
+then
+  echo "Skipping tests as requested"
+  exit 0
+fi
+
 TEST_COMMAND="exec ctest --output-on-failure"
 if [ $COVERALLS = "ON" ]
 then

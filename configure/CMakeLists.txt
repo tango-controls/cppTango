@@ -214,3 +214,4 @@ include(GNUInstallDirs)
 include(configure/coveralls.cmake)
 
 option(TANGO_JPEG_MMX "Build MMX support" ON)
+option(BUILD_SHARED_LIBS "Build a shared library instead of static" ON)
