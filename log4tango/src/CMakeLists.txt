@@ -1,4 +1,4 @@
-set(SOURCES 
+set(SOURCES
                 Appender.cpp
                 AppenderAttachable.cpp
                 LayoutAppender.cpp
@@ -29,6 +29,6 @@ add_library(log4tango_objects OBJECT ${SOURCES})
 
 if(WIN32)
     target_compile_definitions(log4tango_objects PRIVATE "${windows_defs}")
-else(WIN32)
+else()
     target_compile_options(log4tango_objects PRIVATE -fPIC)
-endif(WIN32)
+endif()

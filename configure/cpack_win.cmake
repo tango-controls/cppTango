@@ -7,7 +7,7 @@ else()
     set(ARCH_TAG "x86")
 endif()
 
-if (TANGO_BUILD_SHARED)
+if(BUILD_SHARED_LIBS)
     set(VARIANT_TAG "shared")
 else()
     set(VARIANT_TAG "static")

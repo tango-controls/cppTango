@@ -2,7 +2,7 @@ project(tango)
 
 if(CMAKE_CL_64)
     add_definitions(-D_64BITS)
-endif(CMAKE_CL_64)
+endif()
 
 set(TANGO_LIBRARY_NAME tango)
 
@@ -13,10 +13,7 @@ endif()
 # The name without the variant tag (i.e. -static)
 set(TANGO_LIBRARY_OUTPUT_NAME ${TANGO_LIBRARY_NAME})
 
-if (TANGO_BUILD_SHARED)
-    # https://cmake.org/cmake/help/latest/variable/BUILD_SHARED_LIBS.html
-    set(BUILD_SHARED_LIBS ON)
-else()
+if(NOT BUILD_SHARED_LIBS)
     set(TANGO_LIBRARY_NAME ${TANGO_LIBRARY_NAME}-static)
 endif()
 
@@ -32,7 +29,7 @@ include_directories(${PTHREAD_WIN_PKG_INCLUDE_DIRS})
 set(WIN32_LIBS "ws2_32.lib;mswsock.lib;advapi32.lib;comctl32.lib;odbc32.lib;")
 if(PTHREAD_WIN)
     link_directories(${PTHREAD_WIN}/lib)
-endif(PTHREAD_WIN)
+endif()
 
 add_library(${TANGO_LIBRARY_NAME} $<TARGET_OBJECTS:log4tango_objects>
         $<TARGET_OBJECTS:idl_objects>
@@ -46,7 +43,7 @@ set_target_properties(${TANGO_LIBRARY_NAME} PROPERTIES COMPILE_DEFINITIONS
 
 target_compile_options(${TANGO_LIBRARY_NAME} PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
 
-if(TANGO_BUILD_SHARED)
+if(BUILD_SHARED_LIBS)
     target_link_libraries(${TANGO_LIBRARY_NAME} PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES_DYN} ${ZMQ_PKG_LIBRARIES_DYN} ${PTHREAD_WIN_PKG_LIBRARIES_DYN} ${CMAKE_DL_LIBS})
 else()
     target_link_libraries(${TANGO_LIBRARY_NAME} PUBLIC ${WIN32_LIBS} ${OMNIORB_PKG_LIBRARIES_STA} ${ZMQ_PKG_LIBRARIES_STA} ${PTHREAD_WIN_PKG_LIBRARIES_STA} ${CMAKE_DL_LIBS})
@@ -114,7 +111,7 @@ if (TANGO_INSTALL_DEPENDENCIES)
         install(FILES $ENV{OMNI_BASE}/lib/x86_win32/COS421_rtd.lib DESTINATION lib COMPONENT dynamic)
         install(FILES $ENV{OMNI_BASE}/lib/x86_win32/msvcstubd.lib DESTINATION lib COMPONENT dynamic)
 
-    else(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    else()
 
         #omniorb static lib
         install(FILES $ENV{OMNI_BASE}/lib/x86_win32/omniORB4.lib DESTINATION lib COMPONENT static)
@@ -131,7 +128,7 @@ if (TANGO_INSTALL_DEPENDENCIES)
         install(FILES $ENV{OMNI_BASE}/lib/x86_win32/COS421_rt.lib DESTINATION lib COMPONENT dynamic)
         install(FILES $ENV{OMNI_BASE}/lib/x86_win32/msvcstub.lib DESTINATION lib COMPONENT dynamic)
 
-    endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    endif()
 
     if(CMAKE_VS_PLATFORM_TOOLSET STREQUAL "v140")
         if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -142,7 +139,7 @@ if (TANGO_INSTALL_DEPENDENCIES)
             install(FILES $ENV{ZMQ_BASE}/lib/Debug/libzmq-v140-mt-gd-4_0_5.lib DESTINATION lib COMPONENT static)
             install(FILES $ENV{ZMQ_BASE}/lib/Debug/libzmq-v140-mt-sgd-4_0_5.lib DESTINATION lib COMPONENT static)
             install(FILES $ENV{ZMQ_BASE}/bin/Debug/libzmq-v140-mt-gd-4_0_5.dll DESTINATION bin COMPONENT dynamic)
-        else(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        else()
             install(FILES $ENV{OMNI_BASE}/bin/x86_win32/omniORB421_vc14_rt.dll DESTINATION bin COMPONENT dynamic)
             install(FILES $ENV{OMNI_BASE}/bin/x86_win32/omniDynamic421_vc14_rt.dll DESTINATION bin COMPONENT dynamic)
             install(FILES $ENV{OMNI_BASE}/bin/x86_win32/omnithread40_vc14_rt.dll DESTINATION bin COMPONENT dynamic)
@@ -150,8 +147,8 @@ if (TANGO_INSTALL_DEPENDENCIES)
             install(FILES $ENV{ZMQ_BASE}/lib/Release/libzmq-v140-mt-4_0_5.lib DESTINATION lib COMPONENT static)
             install(FILES $ENV{ZMQ_BASE}/lib/Release/libzmq-v140-mt-s-4_0_5.lib DESTINATION lib COMPONENT static)
             install(FILES $ENV{ZMQ_BASE}/bin/Release/libzmq-v140-mt-4_0_5.dll DESTINATION bin COMPONENT dynamic)
-        endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    endif(CMAKE_VS_PLATFORM_TOOLSET STREQUAL "v140")
+        endif()
+    endif()
 
     if(CMAKE_VS_PLATFORM_TOOLSET STREQUAL "v141")
         if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -162,7 +159,7 @@ if (TANGO_INSTALL_DEPENDENCIES)
             install(FILES $ENV{ZMQ_BASE}/lib/Debug/libzmq-v141-mt-gd-4_0_5.lib DESTINATION lib COMPONENT static)
             install(FILES $ENV{ZMQ_BASE}/lib/Debug/libzmq-v141-mt-sgd-4_0_5.lib DESTINATION lib COMPONENT static)
             install(FILES $ENV{ZMQ_BASE}/bin/Debug/libzmq-v141-mt-gd-4_0_5.dll DESTINATION bin COMPONENT dynamic)
-        else(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        else()
             install(FILES $ENV{OMNI_BASE}/bin/x86_win32/omniORB421_vc15_rt.dll DESTINATION bin COMPONENT dynamic)
             install(FILES $ENV{OMNI_BASE}/bin/x86_win32/omniDynamic421_vc15_rt.dll DESTINATION bin COMPONENT dynamic)
             install(FILES $ENV{OMNI_BASE}/bin/x86_win32/omnithread40_vc15_rt.dll DESTINATION bin COMPONENT dynamic)
@@ -170,8 +167,8 @@ if (TANGO_INSTALL_DEPENDENCIES)
             install(FILES $ENV{ZMQ_BASE}/lib/Release/libzmq-v141-mt-4_0_5.lib DESTINATION lib COMPONENT static)
             install(FILES $ENV{ZMQ_BASE}/lib/Release/libzmq-v141-mt-s-4_0_5.lib DESTINATION lib COMPONENT static)
             install(FILES $ENV{ZMQ_BASE}/bin/Release/libzmq-v141-mt-4_0_5.dll DESTINATION bin COMPONENT dynamic)
-        endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    endif(CMAKE_VS_PLATFORM_TOOLSET STREQUAL "v141")
+        endif()
+    endif()
 
     #pthreads
     if (PTHREAD_WIN)
@@ -187,7 +184,7 @@ if (TANGO_INSTALL_DEPENDENCIES)
         install(FILES ${PTHREAD_WIN}/bin/pthreadVC2d.pdb DESTINATION bin COMPONENT dynamic)
         install(FILES ${PTHREAD_WIN}/bin/pthreadVC2d.exp DESTINATION bin COMPONENT dynamic)
         install(FILES ${PTHREAD_WIN}/bin/pthreadVC2d.ilk DESTINATION bin COMPONENT dynamic)
-    endif(PTHREAD_WIN)
+    endif()
 endif()
 
 configure_file(tango.pc.cmake tango.pc @ONLY)

@@ -8,6 +8,7 @@ echo "OS_TYPE=$OS_TYPE"
 echo "TANGO_HOST=$TANGO_HOST"
 echo "COVERALLS=$COVERALLS"
 echo "USE_PCH=$USE_PCH"
+echo "BUILD_SHARED_LIBS=$BUILD_SHARED_LIBS"
 echo "TANGO_USE_USING_NAMESPACE=$TANGO_USE_USING_NAMESPACE"
 echo "WARNINGS_AS_ERRORS=$WARNINGS_AS_ERRORS"
 echo "############################"
@@ -18,12 +19,14 @@ docker exec cpp_tango mkdir -p /home/tango/src/build
 MAKEFLAGS=${MAKEFLAGS:- -j $(nproc)}
 COVERALLS=${COVERALLS:-OFF}
 USE_PCH=${USE_PCH:-OFF}
+BUILD_SHARED_LIBS=${BUILD_SHARED_LIBS:-ON}
 WARNINGS_AS_ERRORS=${WARNINGS_AS_ERRORS:-OFF}
 COVERALLS_MODULE_PATH=/home/tango/coveralls-cmake/cmake
 
 docker exec cpp_tango cmake                                \
   -H/home/tango/src                                        \
   -B/home/tango/src/build                                  \
+  -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}                 \
   -DCMAKE_VERBOSE_MAKEFILE=ON                              \
   -DCPPZMQ_BASE=/home/tango                                \
   -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}                   \
