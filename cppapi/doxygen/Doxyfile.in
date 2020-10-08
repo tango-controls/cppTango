@@ -781,36 +781,46 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = @PROJECT_SOURCE_DIR@/cppapi/server/device.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/deviceclass.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/command.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/utils.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/except.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/attrdesc.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/fwdattrdesc.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/pipedesc.h \
-                        @PROJECT_BINARY_DIR@/cppapi/server/tango_const.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/attribute.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/multiattribute.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/pollext.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/device_2.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/w_attribute.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/pipe.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/w_pipe.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/device_3.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/device_4.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/device_5.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/encoded_attribute.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/attrprop.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/client/dbapi.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/client/apiexcept.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/client/devapi.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/client/doc.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/client/devasyn.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/client/event.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/client/group.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/tango.h \
-                        @PROJECT_SOURCE_DIR@/cppapi/server/seqvec.h \
-                        @PROJECT_SOURCE_DIR@/log4tango
+                         @PROJECT_SOURCE_DIR@/cppapi/server/deviceclass.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/command.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/utils.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/except.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/attrdesc.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/fwdattrdesc.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/pipedesc.h \
+                         @PROJECT_BINARY_DIR@/cppapi/server/tango_const.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/attribute.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/multiattribute.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/pollext.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/device_2.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/w_attribute.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/pipe.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/w_pipe.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/device_3.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/device_4.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/device_5.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/encoded_attribute.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/attrprop.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/AttributeProxy.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/ApiUtil.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/api_util.tpp \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/Connection.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/Database.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/DbDevice.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/dbapi.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/DeviceAttribute.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/DeviceData.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/DevicePipe.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/DeviceProxy.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/apiexcept.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/devapi.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/doc.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/devasyn.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/event.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/group.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/tango.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/seqvec.h \
+                         @PROJECT_SOURCE_DIR@/log4tango
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
