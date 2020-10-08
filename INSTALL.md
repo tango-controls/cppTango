@@ -24,12 +24,16 @@
 - `-DOMNI_BASE=<omniORB4 home folder>`
 - `-DCPPZMQ_BASE=<cppzmq home folder>`
 - `-DZMQ_BASE=<zmq home folder>`
-- `-DCMAKE_BUILD_TYPE=<Release|Debug>`
-- `-DCMAKE_VERBOSE_MAKEFILE=true`
+- `-DCMAKE_BUILD_TYPE=<Release|Debug>` (`Release` by default)
+- `-DCMAKE_VERBOSE_MAKEFILE=<ON|OFF>`
 - `-DTANGO_USE_USING_NAMESPACE=<ON|OFF>` choose `OFF` for modern builds
-- `-DUSE_PCH=<ON|OFF>`
+- `-DUSE_PCH=<ON|OFF>` Use precompiled headers (`OFF` by default)
 - `-DBUILD_TESTING=<ON|OFF>` Build the test suite (`ON` by default)
 - `-DBUILD_SHARED_LIBS=<ON|OFF>` Build tango as shared library (`ON` by default)
+- `-DWARNINGS_AS_ERRORS=<ON|OFF>` Treat compiler warnings as errors (`OFF` by default)
+- `-DTANGO_JPEG_MMX=<ON|OFF>` Build the jpeg support using MMX extensions (`ON` by default)
+- `-DCOVERALLS=<ON|OFF>` Generate code coverage data (`OFF` by default)
+- `-DTANGO_INSTALL_DEPENDENCIES=<ON|OFF>` Install dependencies of tango as well (`ON` by default, windows only)
 
 Typical output:
 
