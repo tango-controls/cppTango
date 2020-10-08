@@ -813,27 +813,27 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = @PROJECT_SOURCE_DIR@/cppapi/server/device.h \
-                         @PROJECT_SOURCE_DIR@/cppapi/server/deviceclass.h \
-                         @PROJECT_SOURCE_DIR@/cppapi/server/command.h \
-                         @PROJECT_SOURCE_DIR@/cppapi/server/utils.h \
-                         @PROJECT_SOURCE_DIR@/cppapi/server/except.h \
+INPUT                  = @PROJECT_BINARY_DIR@/cppapi/server/tango_const.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/attrdesc.h \
-                         @PROJECT_SOURCE_DIR@/cppapi/server/fwdattrdesc.h \
-                         @PROJECT_SOURCE_DIR@/cppapi/server/pipedesc.h \
-                         @PROJECT_BINARY_DIR@/cppapi/server/tango_const.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/attribute.h \
-                         @PROJECT_SOURCE_DIR@/cppapi/server/multiattribute.h \
-                         @PROJECT_SOURCE_DIR@/cppapi/server/pollext.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/attrprop.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/command.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/device.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/device_2.h \
-                         @PROJECT_SOURCE_DIR@/cppapi/server/w_attribute.h \
-                         @PROJECT_SOURCE_DIR@/cppapi/server/pipe.h \
-                         @PROJECT_SOURCE_DIR@/cppapi/server/w_pipe.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/device_3.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/device_4.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/device_5.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/deviceclass.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/encoded_attribute.h \
-                         @PROJECT_SOURCE_DIR@/cppapi/server/attrprop.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/except.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/fwdattrdesc.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/multiattribute.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/pipe.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/pipedesc.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/pollext.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/utils.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/w_attribute.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/w_pipe.h \
                          @PROJECT_SOURCE_DIR@/cppapi/client/AttributeProxy.h \
                          @PROJECT_SOURCE_DIR@/cppapi/client/ApiUtil.h \
                          @PROJECT_SOURCE_DIR@/cppapi/client/api_util.tpp \
