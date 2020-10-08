@@ -794,10 +794,14 @@ INPUT                  = @PROJECT_BINARY_DIR@/cppapi/server/tango_const.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/encoded_attribute.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/except.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/fwdattrdesc.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/logging.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/logstream.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/multiattribute.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/pipe.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/pipedesc.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/pollext.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/rootattreg.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/server/seqvec.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/utils.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/w_attribute.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/w_pipe.h \
