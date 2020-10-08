@@ -139,7 +139,7 @@ void CoutBuf::CreateWin(LPCSTR svc_name)
 {
   	char buf[256];
 
-  	sprintf(buf,"%s - Console",svc_name);
+  	std::snprintf(buf, sizeof(buf),"%s - Console",svc_name);
  	hWndDebug = CreateWindow("Debug",buf,
                           WS_OVERLAPPED | WS_CAPTION | WS_BORDER | WS_THICKFRAME,
                           GetSystemMetrics(SM_CXSCREEN) / 2-100,

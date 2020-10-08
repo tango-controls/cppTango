@@ -1224,7 +1224,7 @@ void BlackBox::build_info_as_str(long index)
 // Convert time to a string
 //
 
-    date_ux_to_str(box[index].when, date_str);
+    date_ux_to_str(box[index].when, date_str, sizeof(date_str));
     elt_str = date_str;
 
 //
@@ -1929,7 +1929,7 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void BlackBox::date_ux_to_str(timeval &ux_date, char *str_date)
+void BlackBox::date_ux_to_str(timeval &ux_date, char *str_date, size_t str_date_len)
 {
     long i;
     char month[5];
@@ -2048,9 +2048,9 @@ void BlackBox::date_ux_to_str(timeval &ux_date, char *str_date)
 /* Add milliseconds */
 
 #ifdef _TG_WINDOWS_
-    sprintf(&(str_date[19]),":%.2d",(int)(ux_date.tv_usec/10));
+    std::snprintf(&(str_date[19]), (str_date_len - 19), ":%.2d",(int)(ux_date.tv_usec/10));
 #else
-    sprintf(&(str_date[19]), ":%.2d", (int) (ux_date.tv_usec / 10000));
+    std::snprintf(&(str_date[19]), (str_date_len - 19), ":%.2d", (int) (ux_date.tv_usec / 10000));
 #endif
 
 }

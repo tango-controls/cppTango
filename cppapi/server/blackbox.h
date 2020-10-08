@@ -214,7 +214,7 @@ private:
 	void inc_indexes();
 	void get_client_host();
 	void build_info_as_str(long);
-	void date_ux_to_str(struct timeval &,char *);
+	void date_ux_to_str(struct timeval &,char *,size_t);
 	void add_source(long);
 	void insert_op_nl(BlackBoxElt_OpType);
 	void insert_attr_nl(const Tango::AttributeValueList &,long);

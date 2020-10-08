@@ -286,7 +286,7 @@ void NotifdEventConsumer::connect_event_system(std::string &device_name,std::str
 
 	char constraint_expr[512];
 
-	::sprintf(constraint_expr,"$domain_name == \'%s/%s\' and $event_name == \'%s\'",
+	std::snprintf(constraint_expr, sizeof(constraint_expr),"$domain_name == \'%s/%s\' and $event_name == \'%s\'",
 		d_name.c_str(),att_name.c_str(),event_name.c_str());
 
 	if (filters.size() != 0)
@@ -616,7 +616,7 @@ void NotifdEventConsumer::connect_event_channel(std::string &channel_name,Databa
 //
 
     char constraint_expr[256];
-    ::sprintf(constraint_expr,"$event_name == \'heartbeat\'");
+    std::snprintf(constraint_expr, sizeof(constraint_expr),"$event_name == \'heartbeat\'");
     CosNotifyFilter::FilterFactory_var ffp;
     CosNotifyFilter::Filter_var filter = CosNotifyFilter::Filter::_nil();
     try
