@@ -834,7 +834,17 @@ INPUT                  = @PROJECT_SOURCE_DIR@/cppapi/server/device.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/device_5.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/encoded_attribute.h \
                          @PROJECT_SOURCE_DIR@/cppapi/server/attrprop.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/AttributeProxy.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/ApiUtil.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/api_util.tpp \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/Connection.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/Database.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/DbDevice.h \
                          @PROJECT_SOURCE_DIR@/cppapi/client/dbapi.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/DeviceAttribute.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/DeviceData.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/DevicePipe.h \
+                         @PROJECT_SOURCE_DIR@/cppapi/client/DeviceProxy.h \
                          @PROJECT_SOURCE_DIR@/cppapi/client/apiexcept.h \
                          @PROJECT_SOURCE_DIR@/cppapi/client/devapi.h \
                          @PROJECT_SOURCE_DIR@/cppapi/client/doc.h \
