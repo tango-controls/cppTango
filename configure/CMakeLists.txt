@@ -154,17 +154,6 @@ else()
   message(STATUS "Check if zmq::socket has a disconnect method: ${TANGO_ZMQ_HAS_DISCONNECT} (hardcoded)")
 endif()
 
-message("Verifying ${OMNIIDL_PATH}omniidl")
-if(WIN32)
-    execute_process(COMMAND ${OMNIIDL_PATH}omniidl.exe -V RESULT_VARIABLE FAILED)
-else()
-    execute_process(COMMAND ${OMNIIDL_PATH}omniidl -V RESULT_VARIABLE FAILED)
-endif()
-
-if(${FAILED})
-    message(SEND_ERROR " No omniidl was found! rv=${FAILED}")
-endif()
-
 if(NOT WIN32)
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         message("found GNU compiler ...")
