@@ -24,15 +24,8 @@ endif()
 
 #check types
 check_type_size(int64_t INT64_SIZE)
-if(WIN32)
-    if(CMAKE_CL_64)
-        set(LOG4TANGO_HAVE_INT64_T "/**/")
-    endif()
-else()
-    if(${INT64_SIZE} EQUAL 8)
-        set(LOG4TANGO_HAVE_INT64_T "/**/")
-    endif()
+if(${INT64_SIZE} EQUAL 8)
+    set(LOG4TANGO_HAVE_INT64_T "/**/")
 endif()
-
 
 configure_file(config/config.h.in ${PROJECT_BINARY_DIR}/log4tango/include/log4tango/config.h)
