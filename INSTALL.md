@@ -209,3 +209,51 @@ TANGO_TEST_CASE_SKIP_FIXTURE=1 ctest -V -R ds_cache
 killall DevTest FwdTest
 docker stop tango_cs mysql_db
 ```
+
+# Building on windows
+
+For the majority of users using the prebuilt binaries from the release page is
+easier. The following documentation is targeted for developers.
+
+We assume Windows 10 and a Visual Studio 2017 development environment. In
+addition python 3.7 must be installed (this is required by omniidl), get it
+from [here](https://www.python.org/downloads/release/python-379). You need the
+same bitness as you want to compile tango for. And add python to the path
+during installation as well.
+
+- Fetch the required dependencies into `c:\projects`
+
+```bat
+SET ARCH=x64-msvc15
+SET PYVER=py37
+https://github.com/tango-controls/omniorb-windows-ci/releases/download/4.2.1-2/omniorb-4.2.1_%ARCH%_%PYVER%.zip
+https://github.com/tango-controls/Pthread_WIN32/releases/download/2.9.1/pthreads-win32-2.9.1_%ARCH%.zip
+https://github.com/tango-controls/zmq-windows-ci/releases/download/4.0.5/zmq-4.0.5_%ARCH%.zip
+git clone --depth 1 https://github.com/tango-controls/tango-idl tango-idl-source
+```
+
+- Open a VS 2017 command prompt
+
+- Install tango-idl
+
+```bat
+cd tango-idl-source
+cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX="c:/projects/tango-idl"
+cmake --build . --target install
+```
+
+- Switch to cppTango directory
+- `mkdir build`
+- `cd build`
+- Configure with
+
+```
+cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BUILD_TYPE=Release           \
+      -DCMAKE_CXX_FLAGS_RELEASE="/MT" -DCMAKE_CXX_FLAGS_DEBUG="/MTd" -DIDL_BASE="c:/projects/tango-idl"    \
+      -DOMNI_BASE="c:/projects/omniorb" -DZMQ_BASE="c:/projects/zeromq" -DCPPZMQ_BASE="c:/projects/zeromq" \
+      -DPTHREAD_WIN="c:/projects/pthreads-win32" -DUSE_PCH=OFF -DBUILD_TESTING=OFF ..
+```
+
+- Compile with `cmake --build .`
+- Install with `cmake --build . --target install`
+- You now have a full tango installation in `build/install`
