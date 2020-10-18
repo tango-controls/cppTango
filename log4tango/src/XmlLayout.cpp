@@ -29,6 +29,7 @@
 #include <log4tango/LoggingEvent.hh> 
 #include <log4tango/XmlLayout.hh> 
 
+#include <cmath>
 #include <stdio.h>
 #include <sstream>
 #include <string>
@@ -59,9 +60,7 @@ namespace log4tango {
     buf.append("\" timestamp=\"");
     double ts_ms = 1000. * event.timestamp.get_seconds();
     ts_ms += event.timestamp.get_milliseconds();
-    char ts_str[32];
-    ::sprintf(ts_str, "%.0f", ts_ms);
-    buf.append(ts_str);
+    buf.append(std::to_string(std::trunc(ts_ms)));
     buf.append("\" level=\"");
     buf.append(log4tango::Level::get_name(event.level));
     buf.append("\" thread=\"");
