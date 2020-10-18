@@ -24,7 +24,6 @@ file(WRITE ${PROJECT_BINARY_DIR}/VERSION ${LIBRARY_VERSION})
 
 #include and link directories
 
-include_directories(${INCLUDE_OBJECT_MS})
 include_directories(SYSTEM ${PTHREAD_WIN_PKG_INCLUDE_DIRS})
 set(WIN32_LIBS "ws2_32.lib;mswsock.lib;advapi32.lib;comctl32.lib;odbc32.lib;")
 if(PTHREAD_WIN)
@@ -52,7 +51,6 @@ else()
 endif()
 
 set_property(TARGET ${TANGO_LIBRARY_NAME} PROPERTY LINK_FLAGS "/force:multiple")
-set_property(TARGET ${TANGO_LIBRARY_NAME} PROPERTY PUBLIC_HEADER ${INCLUDE_OBJECT_MS})
 target_include_directories(${TANGO_LIBRARY_NAME} SYSTEM PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS} ${OMNIDYN_PKG_INCLUDE_DIRS})
 
 set_target_properties(${TANGO_LIBRARY_NAME} PROPERTIES
