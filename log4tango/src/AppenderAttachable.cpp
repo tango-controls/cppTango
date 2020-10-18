@@ -32,7 +32,6 @@
 
 namespace log4tango {
 
-typedef AppenderMap::value_type AppenderMapValue;
 using Guard = std::lock_guard<std::mutex>;
 
 AppenderAttachable::AppenderAttachable () 
@@ -49,8 +48,7 @@ void AppenderAttachable::add_appender (Appender* appender)
 {
   if (appender) {
     Guard guard(_appendersMutex);
-    AppenderMapValue pair(appender->get_name(), appender);
-    _appenders.insert(pair);
+    _appenders.insert(std::make_pair(appender->get_name(), appender));
   }
 }
 
