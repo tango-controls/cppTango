@@ -52,7 +52,7 @@ namespace Tango
 //-----------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void WAttribute::set_min_value(const T &new_min_value)
+void WAttributePrivate::set_min_value(const T &new_min_value)
 {
 
 //
@@ -224,7 +224,7 @@ void WAttribute::set_min_value(const T &new_min_value)
 //------------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void WAttribute::get_min_value(T &min_val)
+void WAttributePrivate::get_min_value(T &min_val)
 {
 	if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
 		(data_type != ranges_type2const<T>::enu))
@@ -262,7 +262,7 @@ void WAttribute::get_min_value(T &min_val)
 //-------------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void WAttribute::set_max_value(const T &new_max_value)
+void WAttributePrivate::set_max_value(const T &new_max_value)
 {
 
 //
@@ -434,7 +434,7 @@ void WAttribute::set_max_value(const T &new_max_value)
 //------------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void WAttribute::get_max_value(T &max_val)
+void WAttributePrivate::get_max_value(T &max_val)
 {
 	if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
 		(data_type != ranges_type2const<T>::enu))
@@ -474,7 +474,7 @@ void WAttribute::get_max_value(T &max_val)
 //------------------------------------------------------------------------------------------------------------------
 
 template<typename T1, typename T2>
-void WAttribute::check_min_max(const unsigned int nb_data,const T1 &seq, const T2 &min_value, const T2 &max_value)
+void WAttributePrivate::check_min_max(const unsigned int nb_data,const T1 &seq, const T2 &min_value, const T2 &max_value)
 {
     if (check_min_value == true)
     {

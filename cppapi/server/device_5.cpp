@@ -230,7 +230,7 @@ Tango::AttributeValueList_5* Device_5Impl::read_attributes_5(const Tango::DevVar
 			{
 				Attribute &att = dev_attr->get_attr_by_name(real_names[loop]);
 
-				if (att.is_fwd_att() == true)
+				if (att.get_impl().is_fwd_att() == true)
 				{
 					size_t nb_fwd = 0;
 					fwd_att_in_call = true;
@@ -429,10 +429,10 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 	for (unsigned int loop = 0;loop < r_w_att.size();++loop)
 	{
 		Tango::Attribute &att = dev_attr->get_attr_by_name(values[loop].name);
-		if (att.is_fwd_att() == true)
+		if (att.get_impl().is_fwd_att() == true)
 		{
 			Tango::FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
-			fwd_att_root_dev_name.push_back(fwd_att.get_fwd_dev_name());
+			fwd_att_root_dev_name.push_back(fwd_att.get_impl().get_fwd_dev_name());
 		}
 	}
 
@@ -598,12 +598,12 @@ Tango::AttributeConfigList_5 *Device_5Impl::get_attribute_config_5(const Tango::
 			if (all_attr == true)
 			{
 				Attribute &attr = dev_attr->get_attr_by_ind(i);
-				attr.get_properties((*back)[i]);
+				attr.get_impl().get_properties((*back)[i]);
 			}
 			else
 			{
 				Attribute &attr = dev_attr->get_attr_by_name(names[i]);
-				attr.get_properties((*back)[i]);
+				attr.get_impl().get_properties((*back)[i]);
 			}
 		}
 		catch (Tango::DevFailed &)
@@ -742,7 +742,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 			break;
 		}
 	}
-	if ((polled_attr == NULL) && (att.is_fwd_att() == false))
+	if ((polled_attr == NULL) && (att.get_impl().is_fwd_att() == false))
 	{
 		TangoSys_OMemStream o;
 		o << "Attribute " << attr_str << " not polled" << std::ends;
@@ -753,12 +753,12 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 // If it is a forwarded attribute, get data from the root attribute
 //
 
-	if (att.is_fwd_att() == true)
+	if (att.get_impl().is_fwd_att() == true)
 	{
 		try
 		{
 			FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
-			back = fwd_att.read_root_att_history(n);
+			back = fwd_att.get_impl().read_root_att_history(n);
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -817,7 +817,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 // DEV_STATE, use DEV_VOID for state as data type.
 //
 
-		if (att.get_name_lower() == "state")
+		if (att.get_impl().get_name_lower() == "state")
 			polled_attr->get_attr_history(n,back,Tango::DEV_VOID,att.get_data_format());
 		else
 			polled_attr->get_attr_history(n,back,att.get_data_type(),att.get_data_format());

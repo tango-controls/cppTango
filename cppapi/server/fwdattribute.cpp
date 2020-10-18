@@ -39,8 +39,27 @@
 #include <fwdattribute.h>
 #include <fwdattribute.tpp>
 
+#include <utility>
+
 namespace Tango
 {
+
+FwdAttribute::FwdAttribute(std::unique_ptr<FwdAttributePrivate> impl_) :
+    WAttribute(std::move(impl_)),
+    impl(dynamic_cast<FwdAttributePrivate*>(&WAttribute::get_impl()))
+{
+    assert(impl != nullptr);
+}
+
+const FwdAttributePrivate& FwdAttribute::get_impl() const
+{
+    return *impl;
+}
+
+FwdAttributePrivate& FwdAttribute::get_impl()
+{
+    return *impl;
+}
 
 //--------------------------------------------------------------------------------------------------------------------
 //
@@ -59,8 +78,8 @@ namespace Tango
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-FwdAttribute::FwdAttribute(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::string &dev_name,long idx)
-:WAttribute(prop_list,tmp_attr,dev_name,idx)
+FwdAttributePrivate::FwdAttributePrivate(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,std::string &dev_name,long idx)
+:WAttributePrivate(prop_list,tmp_attr,dev_name,idx)
 {
 	FwdAttr &attr = static_cast<FwdAttr &>(tmp_attr);
 
@@ -89,7 +108,7 @@ FwdAttribute::FwdAttribute(std::vector<AttrProperty> &prop_list,Attr &tmp_attr,s
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-FwdAttribute::~FwdAttribute()
+FwdAttributePrivate::~FwdAttributePrivate()
 {
 	RootAttRegistry &fdp = Util::instance()->get_root_att_reg();
 	fdp.remove_root_att(fwd_dev_name,fwd_att_name);
@@ -116,7 +135,7 @@ FwdAttribute::~FwdAttribute()
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
+void FwdAttributePrivate::set_att_config(const Tango::AttributeConfig_5 &conf)
 {
 	description = conf.description.in();
 	unit = conf.unit.in();
@@ -318,7 +337,7 @@ void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
 // root attribute not available when the DS was started
 //
 
-void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
+void FwdAttributePrivate::set_att_config(AttributeInfoEx *aie_ptr)
 {
 	data_format = aie_ptr->data_format;
 	writable = aie_ptr->writable;
@@ -555,7 +574,7 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttribute::convert_event_prop(std::string &prop_str,double *ptr)
+void FwdAttributePrivate::convert_event_prop(std::string &prop_str,double *ptr)
 {
 	std::stringstream ss;
 
@@ -601,7 +620,7 @@ void FwdAttribute::convert_event_prop(std::string &prop_str,double *ptr)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttribute::upd_att_config_base(const char *new_label)
+void FwdAttributePrivate::upd_att_config_base(const char *new_label)
 {
 	cout4 << "Entering FwdAttribute::upd_att_config_base" << std::endl;
 
@@ -642,7 +661,7 @@ void FwdAttribute::upd_att_config_base(const char *new_label)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttribute::upd_att_config(const Tango::AttributeConfig_5 &conf)
+void FwdAttributePrivate::upd_att_config(const Tango::AttributeConfig_5 &conf)
 {
 
 //
@@ -669,7 +688,7 @@ void FwdAttribute::upd_att_config(const Tango::AttributeConfig_5 &conf)
 	}
 }
 
-void FwdAttribute::upd_att_config(const Tango::AttributeConfig_3 &conf)
+void FwdAttributePrivate::upd_att_config(const Tango::AttributeConfig_3 &conf)
 {
 
 //
@@ -710,7 +729,7 @@ void FwdAttribute::upd_att_config(const Tango::AttributeConfig_3 &conf)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool FwdAttribute::new_att_conf(const Tango::AttributeConfig_3 *conf3,const Tango::AttributeConfig_5 *conf5)
+bool FwdAttributePrivate::new_att_conf(const Tango::AttributeConfig_3 *conf3,const Tango::AttributeConfig_5 *conf5)
 {
 	bool ret = false;
 
@@ -751,7 +770,7 @@ bool FwdAttribute::new_att_conf(const Tango::AttributeConfig_3 *conf3,const Tang
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttribute::upd_att_label(const char *new_label)
+void FwdAttributePrivate::upd_att_label(const char *new_label)
 {
 	cout4 << "Entering FwdAttribute::upd_att_label() for att " << name << " with label set to " << new_label << std::endl;
 	std::string old_label = label;
@@ -894,7 +913,7 @@ void FwdAttribute::upd_att_label(const char *new_label)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-DevAttrHistory_5 *FwdAttribute::read_root_att_history(long n)
+DevAttrHistory_5 *FwdAttributePrivate::read_root_att_history(long n)
 {
 
 //
@@ -992,7 +1011,7 @@ DevAttrHistory_5 *FwdAttribute::read_root_att_history(long n)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueList_4& values)
+AttributeValueList_5 *FwdAttributePrivate::write_read_root_att(Tango::AttributeValueList_4& values)
 {
 //
 // Get CORBA object reference

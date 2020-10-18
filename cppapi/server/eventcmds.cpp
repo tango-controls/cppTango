@@ -206,7 +206,7 @@ void DServer::event_subscription(std::string &dev_name,std::string &obj_name,std
 
 		MultiAttribute *m_attr = dev_impl->get_device_attr();
 		int attr_ind = m_attr->get_attr_ind_by_name(obj_name.c_str());
-		Attribute &attribute = m_attr->get_attr_by_ind(attr_ind);
+		AttributePrivate &attribute = m_attr->get_attr_by_ind(attr_ind).get_impl();
 
 //
 // Refuse subscription on forwarded attribute and notifd
@@ -996,13 +996,13 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
 		if (intr_change == false && pipe_event == false)
 		{
-			Attribute &attribute = dev->get_device_attr()->get_attr_by_name(obj_name.c_str());
+			AttributePrivate &attribute = dev->get_device_attr()->get_attr_by_name(obj_name.c_str()).get_impl();
 			EventType et;
 			tg->event_name_2_event_type(event,et);
 
 			if (attribute.is_fwd_att() == true && et != ATTR_CONF_EVENT)
 			{
-				FwdAttribute &fwd_att = static_cast<FwdAttribute &>(attribute);
+				FwdAttributePrivate &fwd_att = static_cast<FwdAttributePrivate &>(attribute);
 				std::string root_name = fwd_att.get_fwd_dev_name() + "/" + fwd_att.get_fwd_att_name();
 				RootAttRegistry &rar = tg->get_root_att_reg();
 				bool already_there = rar.is_event_subscribed(root_name,et);

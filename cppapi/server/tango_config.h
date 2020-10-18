@@ -58,31 +58,13 @@
 // included by tango.h after this file
 //
 
-#ifdef _WIN32
-  #ifndef __WIN32__
-    #define __WIN32__
-  #endif
-  #ifndef __x86__
-    #define __x86__
-  #endif
-  #ifndef _WIN32_WINNT
-    #define _WIN32_WINNT 0x0500
-  #endif
-  #ifndef __NT__
-    #define __NT__
-  #endif
-  #ifndef __OSVERSION
-    #define __OSVERSION 4
-  #endif
-#endif
+#include <tango/common/omniorb_platform_macros.h>
 
 //
 // Define a common preprocessor macros for all Windows (32 or 64 bits)
 //
 
-#ifdef _WIN32
-	#define _TG_WINDOWS_
-#endif
+#include <tango/common/common_macros.h>
 
 //
 // For Windows DLL (import and export nightmare)

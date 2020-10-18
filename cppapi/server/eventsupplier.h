@@ -115,24 +115,24 @@ public :
 
 //------------------ Change event ---------------------------
 
-	bool detect_change(Attribute &,struct SuppliedEventData &,bool,double &,double &,DevFailed *,bool &,DeviceImpl *);
+	bool detect_change(AttributePrivate &,struct SuppliedEventData &,bool,double &,double &,DevFailed *,bool &,DeviceImpl *);
 
 //------------------ Detect, push change event --------------
 
-	bool detect_and_push_change_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,std::string &,DevFailed *,bool user_push = false);
+	bool detect_and_push_change_event(DeviceImpl *,struct SuppliedEventData &,AttributePrivate &,std::string &,DevFailed *,bool user_push = false);
 
 //------------------ Detect, push archive event --------------
 
-	bool detect_and_push_archive_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,std::string &,DevFailed *,struct timeval *,bool user_push = false);
+	bool detect_and_push_archive_event(DeviceImpl *,struct SuppliedEventData &,AttributePrivate &,std::string &,DevFailed *,struct timeval *,bool user_push = false);
 
 //------------------ Detect, push periodic event -------------
 
-	bool detect_and_push_periodic_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,std::string &,DevFailed *,struct timeval *);
+	bool detect_and_push_periodic_event(DeviceImpl *,struct SuppliedEventData &,AttributePrivate &,std::string &,DevFailed *,struct timeval *);
 
 //------------------ Push event -------------------------------
 
 	virtual void push_event(DeviceImpl *,std::string,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,std::string &,DevFailed *,bool) = 0;
-	virtual void push_event_loop(DeviceImpl *,EventType,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *) = 0;
+	virtual void push_event_loop(DeviceImpl *,EventType,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,AttributePrivate &,DevFailed *) = 0;
 	virtual void push_heartbeat_event() = 0;
 
 //------------------- Attribute conf change event ---------------------
@@ -144,9 +144,9 @@ public :
 	static omni_mutex &get_event_mutex() {return event_mutex;}
 	std::string &get_fqdn_prefix() {return fqdn_prefix;}
 
-	void convert_att_event_to_5(struct SuppliedEventData &,struct SuppliedEventData &,bool &,Attribute &);
-	void convert_att_event_to_4(struct SuppliedEventData &,struct SuppliedEventData &,bool &,Attribute &);
-	void convert_att_event_to_3(struct SuppliedEventData &,struct SuppliedEventData &,bool &,Attribute &);
+	void convert_att_event_to_5(struct SuppliedEventData &,struct SuppliedEventData &,bool &,AttributePrivate &);
+	void convert_att_event_to_4(struct SuppliedEventData &,struct SuppliedEventData &,bool &,AttributePrivate &);
+	void convert_att_event_to_3(struct SuppliedEventData &,struct SuppliedEventData &,bool &,AttributePrivate &);
 
 
 	bool get_one_subscription_cmd() {return one_subscription_cmd;}
@@ -200,7 +200,7 @@ public :
 //------------------ Push event -------------------------------
 
 	virtual void push_event(DeviceImpl *,std::string,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,std::string &,DevFailed *,bool);
-	virtual void push_event_loop(DeviceImpl *,EventType,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *) {}
+	virtual void push_event_loop(DeviceImpl *,EventType,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,AttributePrivate &,DevFailed *) {}
 
 protected :
 
@@ -251,7 +251,7 @@ public :
 
 	void push_heartbeat_event();
 	virtual void push_event(DeviceImpl *,std::string,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,std::string &,DevFailed *,bool);
-	virtual void push_event_loop(DeviceImpl *,EventType,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *);
+	virtual void push_event_loop(DeviceImpl *,EventType,std::vector<std::string> &,std::vector<double> &,std::vector<std::string> &,std::vector<long> &,struct SuppliedEventData &,AttributePrivate &,DevFailed *);
 
 	std::string &get_heartbeat_endpoint() {return heartbeat_endpoint;}
 	std::string &get_event_endpoint() {return event_endpoint;}

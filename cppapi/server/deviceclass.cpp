@@ -337,7 +337,8 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 		for (unsigned long j = 0;j < att_list.size();j++)
 		{
 
-			WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_ind(att_list[j]);
+			WAttribute &att_public = device_list[i]->get_device_attr()->get_w_attr_by_ind(att_list[j]);
+			WAttributePrivate &att = att_public.get_impl();
 
 			if (att.is_memorized() == true)
 			{
@@ -373,7 +374,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 							if (from_init == false)
 							{
 								if (!(str >> sh))
-									throw_mem_value(device_list[i],att);
+									throw_mem_value(device_list[i],att_public);
 								att.set_write_value(sh);
 							}
 							else
@@ -387,7 +388,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 							if (from_init == false)
 							{
 								if (!(str >> lg))
-									throw_mem_value(device_list[i],att);
+									throw_mem_value(device_list[i],att_public);
 								att.set_write_value(lg);
 							}
 							else
@@ -401,7 +402,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 							if (from_init == false)
 							{
 								if (!(str >> db))
-									throw_mem_value(device_list[i],att);
+									throw_mem_value(device_list[i],att_public);
 								att.set_write_value(db);
 							}
 							else
@@ -430,7 +431,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 							if (from_init == false)
 							{
 								if (!(str >> fl))
-									throw_mem_value(device_list[i],att);
+									throw_mem_value(device_list[i],att_public);
 								att.set_write_value(fl);
 							}
 							else
@@ -444,7 +445,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 							if (from_init == false)
 							{
 								if (!(str >> std::boolalpha >> boo))
-									throw_mem_value(device_list[i],att);
+									throw_mem_value(device_list[i],att_public);
 								att.set_write_value(boo);
 							}
 							else
@@ -458,7 +459,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 							if (from_init == false)
 							{
 								if (!(str >> ush))
-									throw_mem_value(device_list[i],att);
+									throw_mem_value(device_list[i],att_public);
 								att.set_write_value(ush);
 							}
 							else
@@ -473,7 +474,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 							{
 								short tmp_sh;
 								if (!(str >> tmp_sh))
-									throw_mem_value(device_list[i],att);
+									throw_mem_value(device_list[i],att_public);
 								uch = (DevUChar)tmp_sh;
 								att.set_write_value(uch);
 							}
@@ -488,7 +489,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 							if (from_init == false)
 							{
 								if (!(str >> ulg))
-									throw_mem_value(device_list[i],att);
+									throw_mem_value(device_list[i],att_public);
 								att.set_write_value(ulg);
 							}
 							else
@@ -502,7 +503,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 							if (from_init == false)
 							{
 								if (!(str >> lg64))
-									throw_mem_value(device_list[i],att);
+									throw_mem_value(device_list[i],att_public);
 								att.set_write_value(lg64);
 							}
 							else
@@ -516,7 +517,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 							if (from_init == false)
 							{
 								if (!(str >> ulg64))
-									throw_mem_value(device_list[i],att);
+									throw_mem_value(device_list[i],att_public);
 								att.set_write_value(ulg64);
 							}
 							else
@@ -591,7 +592,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 				for (unsigned long k = 0;k < e.errors.length();k++)
 				{
 					WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[e.errors[k].index_in_call].name.in());
-					att.set_mem_exception(e.errors[k].err_list);
+					att.get_impl().set_mem_exception(e.errors[k].err_list);
 					log4tango::Logger *log = device_list[i]->get_logger();
 					if (log->is_warn_enabled())
 					{
@@ -625,7 +626,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
                     errors[0].severity = ERR;
 
                     WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[k].name.in());
-					att.set_mem_exception(errors);
+					att.get_impl().set_mem_exception(errors);
 					log4tango::Logger *log = device_list[i]->get_logger();
 					if (log->is_warn_enabled())
 					{
@@ -642,7 +643,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 			for (unsigned long k = 0;k < att_val.length();k++)
 			{
 				WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[k].name.in());
-				att.set_memorized(true);
+				att.get_impl().set_memorized(true);
 			}
 		}
 	}
@@ -1508,9 +1509,9 @@ void DeviceClass::get_mcast_event(DServer *dserv)
 		std::vector<Attribute *> &att_list = device_list[i]->get_device_attr()->get_attribute_list();
 		for (unsigned int j = 0;j < att_list.size();++j)
 		{
-			dserv->mcast_event_for_att(device_list[i]->get_name_lower(),att_list[j]->get_name_lower(),m_cast);
+			dserv->mcast_event_for_att(device_list[i]->get_name_lower(),att_list[j]->get_impl().get_name_lower(),m_cast);
 			if (m_cast.empty() == false)
-				att_list[j]->set_mcast_event(m_cast);
+				att_list[j]->get_impl().set_mcast_event(m_cast);
 		}
 	}
 }

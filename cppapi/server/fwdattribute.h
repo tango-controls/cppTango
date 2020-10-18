@@ -33,6 +33,9 @@
 #define _FWDATTRIBUTE_H
 
 #include <tango.h>
+#include <tango/server/w_attribute.h>
+
+#include <memory>
 
 #ifdef _TG_WINDOWS_
 #include <sys/types.h>
@@ -42,11 +45,25 @@
 namespace Tango
 {
 
-class FwdAttribute: public WAttribute
+class FwdAttributePrivate;
+
+class FwdAttribute : public WAttribute
 {
 public:
-	FwdAttribute(std::vector<AttrProperty> &,Attr &,std::string &,long);
-	~FwdAttribute();
+	FwdAttribute(std::unique_ptr<FwdAttributePrivate>);
+
+	const FwdAttributePrivate& get_impl() const;
+	FwdAttributePrivate& get_impl();
+
+private:
+	FwdAttributePrivate* impl;
+};
+
+class FwdAttributePrivate: public WAttributePrivate
+{
+public:
+	FwdAttributePrivate(std::vector<AttrProperty> &,Attr &,std::string &,long);
+	~FwdAttributePrivate();
 
 	virtual bool is_fwd_att() {return true;}
 	std::string &get_fwd_dev_name() {return fwd_dev_name;}
@@ -66,7 +83,7 @@ public:
 	Attr_Value &get_root_ptr() {return r_val;}
 
 	template<typename T>
-	void set_local_attribute(DeviceAttribute &, T* &);
+	void set_local_attribute(FwdAttribute&, DeviceAttribute &, T* &);
 
 	template<typename T,typename V>
 	void propagate_writen_data(DeviceAttribute &da,WAttribute &attr,T *&,V *&);

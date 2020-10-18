@@ -1078,9 +1078,9 @@ void DServer::restart(std::string &d_name)
 
 	for (unsigned int j = 0;j < att_list.size();++j)
 	{
-		mcast_event_for_att(new_dev->get_name_lower(),att_list[j]->get_name_lower(),m_cast);
+		mcast_event_for_att(new_dev->get_name_lower(),att_list[j]->get_impl().get_name_lower(),m_cast);
 		if (m_cast.empty() == false)
-			att_list[j]->set_mcast_event(m_cast);
+			att_list[j]->get_impl().set_mcast_event(m_cast);
 	}
 
 //
@@ -1125,7 +1125,7 @@ void DServer::restart(std::string &d_name)
 
 	for (Attribute* attr : new_dev->get_device_attr()->get_attribute_list())
 	{
-		new_dev->push_att_conf_event(attr);
+		new_dev->push_att_conf_event(&attr->get_impl());
 	}
 }
 

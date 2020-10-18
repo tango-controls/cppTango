@@ -93,7 +93,8 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 	{
 		for (i = 0;i < nb_attr;i++)
 		{
-			Attribute &attr = dev_attr->get_attr_by_name(new_conf[i].name);
+			Attribute &attr_public = dev_attr->get_attr_by_name(new_conf[i].name);
+			AttributePrivate &attr = attr_public.get_impl();
 			bool old_alarm = attr.is_alarmed().any();
 
 //
@@ -102,7 +103,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 
 			if (attr.is_fwd_att() == true)
 			{
-				FwdAttribute &fwd_attr = static_cast<FwdAttribute &>(attr);
+				FwdAttributePrivate &fwd_attr = static_cast<FwdAttribute &>(attr_public).get_impl();
 				if (fwd_cb == true)
 					fwd_attr.set_att_config(new_conf[i]);
 				else
@@ -357,7 +358,7 @@ inline void Device_3Impl::init_polled_out_data(T &back,V &att_val)
 template <typename T>
 inline void Device_3Impl::init_out_data(T &back,Attribute &att,AttrWriteType &w_type)
 {
-	back.time = att.get_when();
+	back.time = att.get_impl().get_when();
 	back.quality = att.get_quality();
 	back.name = Tango::string_dup(att.get_name().c_str());
 	back.r_dim.dim_x = att.get_x();
@@ -365,7 +366,7 @@ inline void Device_3Impl::init_out_data(T &back,Attribute &att,AttrWriteType &w_
 	if ((w_type == Tango::READ_WRITE) ||
 		(w_type == Tango::READ_WITH_WRITE))
 	{
-		WAttribute &assoc_att = dev_attr->get_w_attr_by_ind(att.get_assoc_ind());
+		WAttributePrivate &assoc_att = dev_attr->get_w_attr_by_ind(att.get_assoc_ind()).get_impl();
 		back.w_dim.dim_x = assoc_att.get_w_dim_x();
 		back.w_dim.dim_y = assoc_att.get_w_dim_y();
 	}
@@ -389,7 +390,7 @@ inline void Device_3Impl::init_out_data(T &back,Attribute &att,AttrWriteType &w_
 template <typename T>
 inline void Device_3Impl::init_out_data_quality(T &back,Attribute &att,AttrQuality qual)
 {
-	back.time = att.get_when();
+	back.time = att.get_impl().get_when();
 	back.quality = qual;
 	back.name = Tango::string_dup(att.get_name().c_str());
 	back.r_dim.dim_x = att.get_x();

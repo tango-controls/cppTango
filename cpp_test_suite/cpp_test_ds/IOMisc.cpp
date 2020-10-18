@@ -2041,7 +2041,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("Double_attr");
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevDouble db, db_min_alarm = -999.99, db_min_warning = -888.88, db_max_warning = 888.88, db_max_alarm = 999.99;
@@ -2073,19 +2073,19 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << db;
 			alarms_vec.push_back(str.str());
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("Float_attr");
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevFloat fl, fl_min_alarm = -777.77, fl_min_warning = -666.66, fl_max_warning = 666.66, fl_max_alarm = 777.77;
@@ -2119,19 +2119,19 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << fl;
 			alarms_vec.push_back(str.str());
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("Long_attr");
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevLong lg, lg_min_alarm = 1000, lg_min_warning = 1100, lg_max_warning = 1400, lg_max_alarm = 1500;
@@ -2165,19 +2165,19 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << lg;
 			alarms_vec.push_back(str.str());
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("Long64_attr");
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevLong64 lg64, lg64_min_alarm = -90000, lg64_min_warning = -80000, lg64_max_warning = 80000, lg64_max_alarm = 90000;
@@ -2211,19 +2211,19 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << lg64;
 			alarms_vec.push_back(str.str());
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("Short_attr");
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevShort sh, sh_min_alarm = -5000, sh_min_warning = -4000, sh_max_warning = 4000, sh_max_alarm = 5000;
@@ -2257,19 +2257,19 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << sh;
 			alarms_vec.push_back(str.str());
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("UChar_attr");
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevUChar uch, uch_min_alarm = 1, uch_min_warning = 2, uch_max_warning = 230, uch_max_alarm = 240;
@@ -2303,19 +2303,19 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << (short)uch;
 			alarms_vec.push_back(str.str());
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("ULong_attr");
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevULong ulg, ulg_min_alarm = 1, ulg_min_warning = 2, ulg_max_warning = 666666, ulg_max_alarm = 777777;
@@ -2349,19 +2349,19 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << ulg;
 			alarms_vec.push_back(str.str());
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("ULong64_attr");
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevULong64 ulg64, ulg64_min_alarm = 1, ulg64_min_warning = 2, ulg64_max_warning = 77777777, ulg64_max_alarm = 88888888;
@@ -2395,19 +2395,19 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << ulg64;
 			alarms_vec.push_back(str.str());
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("UShort_attr");
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevUShort ush, ush_min_alarm = 1, ush_min_warning = 2, ush_max_warning = 20000, ush_max_alarm = 30000;
@@ -2441,12 +2441,12 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << ush;
 			alarms_vec.push_back(str.str());
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
@@ -2530,7 +2530,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("Double_attr_w");
-			wattr.get_properties(conf);
+			wattr.get_impl().get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevDouble db, db_min_value = -1111.11, db_max_value = 1111.11;
@@ -2550,19 +2550,19 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << db;
 			ranges_vec.push_back(str.str());
 
-			wattr.set_upd_properties(conf);
+			wattr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (wattr_ptr != NULL)
-				wattr_ptr->set_upd_properties(conf);
+				wattr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("Float_attr_w");
-			wattr.get_properties(conf);
+			wattr.get_impl().get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevFloat fl, fl_min_value = -888.88, fl_max_value = 888.88;
@@ -2584,19 +2584,19 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << fl;
 			ranges_vec.push_back(str.str());
 
-			wattr.set_upd_properties(conf);
+			wattr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (wattr_ptr != NULL)
-				wattr_ptr->set_upd_properties(conf);
+				wattr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("Long_attr_w");
-			wattr.get_properties(conf);
+			wattr.get_impl().get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevLong lg, lg_min_value = 900, lg_max_value = 1600;
@@ -2618,19 +2618,19 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << lg;
 			ranges_vec.push_back(str.str());
 
-			wattr.set_upd_properties(conf);
+			wattr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (wattr_ptr != NULL)
-				wattr_ptr->set_upd_properties(conf);
+				wattr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("Long64_attr_rw");
-			wattr.get_properties(conf);
+			wattr.get_impl().get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevLong64 lg64, lg64_min_value = -100000, lg64_max_value = 100000;
@@ -2652,19 +2652,19 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << lg64;
 			ranges_vec.push_back(str.str());
 
-			wattr.set_upd_properties(conf);
+			wattr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (wattr_ptr != NULL)
-				wattr_ptr->set_upd_properties(conf);
+				wattr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("Short_attr_w");
-			wattr.get_properties(conf);
+			wattr.get_impl().get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevShort sh, sh_min_value = -6000, sh_max_value = 6000;
@@ -2686,19 +2686,19 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << sh;
 			ranges_vec.push_back(str.str());
 
-			wattr.set_upd_properties(conf);
+			wattr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (wattr_ptr != NULL)
-				wattr_ptr->set_upd_properties(conf);
+				wattr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("UChar_attr_w");
-			wattr.get_properties(conf);
+			wattr.get_impl().get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevUChar uch, uch_min_value = 0, uch_max_value = 250;
@@ -2720,19 +2720,19 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << (short) uch;
 			ranges_vec.push_back(str.str());
 
-			wattr.set_upd_properties(conf);
+			wattr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (wattr_ptr != NULL)
-				wattr_ptr->set_upd_properties(conf);
+				wattr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("ULong_attr_rw");
-			wattr.get_properties(conf);
+			wattr.get_impl().get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevULong ulg, ulg_min_value = 0, ulg_max_value = 888888;
@@ -2754,19 +2754,19 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << ulg;
 			ranges_vec.push_back(str.str());
 
-			wattr.set_upd_properties(conf);
+			wattr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (wattr_ptr != NULL)
-				wattr_ptr->set_upd_properties(conf);
+				wattr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("ULong64_attr_rw");
-			wattr.get_properties(conf);
+			wattr.get_impl().get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevULong64 ulg64, ulg64_min_value = 0, ulg64_max_value = 99999999;
@@ -2788,19 +2788,19 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << ulg64;
 			ranges_vec.push_back(str.str());
 
-			wattr.set_upd_properties(conf);
+			wattr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (wattr_ptr != NULL)
-				wattr_ptr->set_upd_properties(conf);
+				wattr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("UShort_attr_w");
-			wattr.get_properties(conf);
+			wattr.get_impl().get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevUShort ush, ush_min_value = 0, ush_max_value = 40000;
@@ -2822,12 +2822,12 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, TANGO_UNUSED(const 
 			str << ush;
 			ranges_vec.push_back(str.str());
 
-			wattr.set_upd_properties(conf);
+			wattr.get_impl().set_upd_properties(conf);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			if (wattr_ptr != NULL)
-				wattr_ptr->set_upd_properties(conf);
+				wattr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
@@ -2924,11 +2924,11 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, TANGO_UNUSED(co
 			Tango::MultiAttrProp<Tango::DevDouble> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("Double_attr");
 
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -2953,7 +2953,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, TANGO_UNUSED(co
 
 Tango_sleep(1);
 
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("Double_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -2977,10 +2977,10 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 			// test properties provided as actual values
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3007,7 +3007,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 Tango_sleep(1);
 			props_vec.push_back("Double_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3031,14 +3031,14 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
@@ -3047,11 +3047,11 @@ Tango_sleep(1);
 			Tango::MultiAttrProp<Tango::DevFloat> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("Float_attr");
 
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3074,7 +3074,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("Float_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3098,10 +3098,10 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 			// test properties provided as actual values
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3128,7 +3128,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 Tango_sleep(1);
 			props_vec.push_back("Float_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3152,14 +3152,14 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
@@ -3169,11 +3169,11 @@ Tango_sleep(1);
 			Tango::MultiAttrProp<Tango::DevLong> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("Long_attr");
 
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3196,7 +3196,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("Long_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3220,10 +3220,10 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 			// test properties provided as actual values
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3250,7 +3250,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("Long_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3274,14 +3274,14 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
@@ -3290,11 +3290,11 @@ Tango_sleep(1);
 			Tango::MultiAttrProp<Tango::DevLong64> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("Long64_attr");
 
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3317,7 +3317,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("Long64_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3341,10 +3341,10 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 			// test properties provided as actual values
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3371,7 +3371,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("Long64_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3395,14 +3395,14 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
@@ -3412,11 +3412,11 @@ Tango_sleep(1);
 			Tango::MultiAttrProp<Tango::DevShort> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("Short_attr");
 
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3439,7 +3439,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("Short_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3463,10 +3463,10 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 			// test properties provided as actual values
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3493,7 +3493,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("Short_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3517,14 +3517,14 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
@@ -3534,11 +3534,11 @@ Tango_sleep(1);
 			Tango::MultiAttrProp<Tango::DevUChar> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("UChar_attr");
 
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3561,7 +3561,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("UChar_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3585,10 +3585,10 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 			// test properties provided as actual values
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3615,7 +3615,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("UChar_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3639,14 +3639,14 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
@@ -3655,11 +3655,11 @@ Tango_sleep(1);
 			Tango::MultiAttrProp<Tango::DevULong> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("ULong_attr");
 
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3682,7 +3682,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("ULong_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3706,10 +3706,10 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 			// test properties provided as actual values
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3736,7 +3736,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("ULong_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3760,14 +3760,14 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
@@ -3777,11 +3777,11 @@ Tango_sleep(1);
 			Tango::MultiAttrProp<Tango::DevULong64> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("ULong64_attr");
 
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3804,7 +3804,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("ULong64_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3828,10 +3828,10 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 			// test properties provided as actual values
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3858,7 +3858,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("ULong64_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3882,14 +3882,14 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
@@ -3898,11 +3898,11 @@ Tango_sleep(1);
 			Tango::MultiAttrProp<Tango::DevUShort> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("UShort_attr");
 
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3925,7 +3925,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("UShort_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -3949,10 +3949,10 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 			// test properties provided as actual values
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -3979,7 +3979,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("UShort_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -4003,14 +4003,14 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
@@ -4019,11 +4019,11 @@ Tango_sleep(1);
 			Tango::MultiAttrProp<Tango::DevEncoded> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("Encoded_attr");
 
-			attr.get_properties(conf);
+			attr.get_impl().get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -4046,7 +4046,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("Encoded_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -4070,10 +4070,10 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 			// test properties provided as actual values
-			attr.get_properties(multi_prop);
+			attr.get_impl().get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -4100,7 +4100,7 @@ Tango_sleep(1);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 Tango_sleep(1);
-			attr.get_properties(multi_prop_get);
+			attr.get_impl().get_properties(multi_prop_get);
 
 			props_vec.push_back("Encoded_attr");
 			props_vec.push_back(multi_prop_get.label);
@@ -4124,14 +4124,14 @@ Tango_sleep(1);
 			props_vec.push_back(multi_prop_get.archive_rel_change);
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-			attr.set_upd_properties(conf);
+			attr.get_impl().set_upd_properties(conf);
 Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
 			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
-				attr_ptr->set_upd_properties(conf);
+				attr_ptr->get_impl().set_upd_properties(conf);
 			throw e;
 		}
 
@@ -4142,10 +4142,10 @@ Tango_sleep(1);
 //			Tango::MultiAttrProp<Tango::DevDouble> multi_prop, multi_prop_get;
 //			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("UChar_attr_w");
 //
-//			attr.get_properties(conf);
+//			attr.get_impl().get_properties(conf);
 //			attr_ptr = &attr;
 //
-//			attr.get_properties(multi_prop);
+//			attr.get_impl().get_properties(multi_prop);
 //			multi_prop.label = "Test_label";
 //			multi_prop.description = "Test_description";
 //			multi_prop.unit = "Test_unit";
@@ -4168,7 +4168,7 @@ Tango_sleep(1);
 //			multi_prop.archive_abs_change = "80,90";
 //			attr.set_properties(multi_prop);
 //
-//			attr.get_properties(multi_prop_get);
+//			attr.get_impl().get_properties(multi_prop_get);
 //
 //			props_vec.push_back(attr_names[i]);
 //			props_vec.push_back(multi_prop_get.label);
@@ -4192,13 +4192,13 @@ Tango_sleep(1);
 //			props_vec.push_back(multi_prop_get.archive_rel_change);
 //			props_vec.push_back(multi_prop_get.archive_abs_change);
 //
-//			attr.set_upd_properties(conf);
+//			attr.get_impl().set_upd_properties(conf);
 //		}
 //		catch(Tango::DevFailed &e)
 //		{
 //			db->set_timeout_millis(Tango::DB_TIMEOUT);
 //			if(attr_ptr != NULL)
-//				attr_ptr->set_upd_properties(conf);
+//				attr_ptr->get_impl().set_upd_properties(conf);
 //			throw e;
 //		}
 

@@ -1219,14 +1219,15 @@ Tango::DevState DeviceImpl::dev_state()
                         idx = attr_list[i];
                     }
 
-                    Attribute &att = dev_attr->get_attr_by_ind(idx);
+                    Attribute &att_public = dev_attr->get_attr_by_ind(idx);
+                    AttributePrivate &att = att_public.get_impl();
                     att.save_alarm_quality();
 
                     try
                     {
                         if (vers < 3)
                         {
-                            read_attr(att);
+                            read_attr(att_public);
                         }
                         else
                         {
@@ -1243,7 +1244,7 @@ Tango::DevState DeviceImpl::dev_state()
                                 att.wanted_date(true);
                                 continue;
                             }
-                            attr_vect[att.get_attr_idx()]->read(this, att);
+                            attr_vect[att.get_attr_idx()]->read(this, att_public);
                             Tango::AttrQuality qua = att.get_quality();
                             if ((qua != Tango::ATTR_INVALID) && (att.get_value_flag() == false))
                             {
@@ -1280,7 +1281,7 @@ Tango::DevState DeviceImpl::dev_state()
                             {
                                 idx = attr_list[j];
                             }
-                            Tango::Attribute &tmp_att = dev_attr->get_attr_by_ind(idx);
+                            Tango::AttributePrivate &tmp_att = dev_attr->get_attr_by_ind(idx).get_impl();
                             if (att.get_wanted_date() == false)
                             {
                                 if (tmp_att.get_quality() != Tango::ATTR_INVALID)
@@ -1332,7 +1333,7 @@ Tango::DevState DeviceImpl::dev_state()
                     {
                         idx = attr_list[i];
                     }
-                    Tango::Attribute &att = dev_attr->get_attr_by_ind(idx);
+                    Tango::AttributePrivate &att = dev_attr->get_attr_by_ind(idx).get_impl();
                     if (att.get_wanted_date() == false)
                     {
                         if (att.get_quality() != Tango::ATTR_INVALID)
@@ -2333,12 +2334,12 @@ Tango::AttributeConfigList *DeviceImpl::get_attribute_config(const Tango::DevVar
             if (all_attr == true)
             {
                 Attribute &attr = dev_attr->get_attr_by_ind(i);
-                attr.get_properties((*back)[i]);
+                attr.get_impl().get_properties((*back)[i]);
             }
             else
             {
                 Attribute &attr = dev_attr->get_attr_by_name(names[i]);
-                attr.get_properties((*back)[i]);
+                attr.get_impl().get_properties((*back)[i]);
             }
         }
         catch (Tango::DevFailed &e)
@@ -2429,9 +2430,9 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList &new_conf
                                         (const char *) "DeviceImpl::set_attribute_config");
             }
 
-            Attribute &attr = dev_attr->get_attr_by_name(new_conf[i].name);
+            AttributePrivate &attr = dev_attr->get_attr_by_name(new_conf[i].name).get_impl();
             bool old_alarm = attr.is_alarmed().any();
-            std::vector<Attribute::AttPropDb> v_db;
+            std::vector<AttributePrivate::AttPropDb> v_db;
             attr.set_properties(new_conf[i], device_name, false, v_db);
             if (Tango::Util::_UseDb == true)
             {
@@ -2650,7 +2651,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
             {
                 wanted_w_attr.push_back(j);
                 wanted_attr.push_back(j);
-                Attribute &att = dev_attr->get_attr_by_ind(wanted_attr.back());
+                AttributePrivate &att = dev_attr->get_attr_by_ind(wanted_attr.back()).get_impl();
                 Tango::AttrDataFormat format_type = att.get_data_format();
                 if ((format_type == Tango::SPECTRUM) || (format_type == Tango::IMAGE))
                 {
@@ -2686,7 +2687,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
                 else
                 {
                     wanted_attr.push_back(j);
-                    Attribute &att = dev_attr->get_attr_by_ind(wanted_attr.back());
+                    AttributePrivate &att = dev_attr->get_attr_by_ind(wanted_attr.back()).get_impl();
                     att.set_value_flag(false);
                     att.get_when().tv_sec = 0;
                 }
@@ -2725,7 +2726,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
             else
             {
                 Attribute &att = dev_attr->get_attr_by_ind(wanted_attr[i]);
-                long idx = att.get_attr_idx();
+                long idx = att.get_impl().get_attr_idx();
                 if (idx == -1)
                 {
                     TangoSys_OMemStream o;
@@ -2763,7 +2764,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
             if ((w_type == Tango::READ_WITH_WRITE) ||
                 (w_type == Tango::WRITE))
             {
-                dev_attr->get_attr_by_ind(wanted_w_attr[i]).set_rvalue();
+                dev_attr->get_attr_by_ind(wanted_w_attr[i]).get_impl().set_rvalue();
             }
         }
 
@@ -2790,7 +2791,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 
         for (i = 0; i < nb_names; i++)
         {
-            Attribute &att = dev_attr->get_attr_by_name(real_names[i]);
+            AttributePrivate &att = dev_attr->get_attr_by_name(real_names[i]).get_impl();
             Tango::AttrQuality qual = att.get_quality();
             if (qual != Tango::ATTR_INVALID)
             {
@@ -2800,7 +2801,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
                     delete back;
                     for (long j = 0; j < i; j++)
                     {
-                        att = dev_attr->get_attr_by_name(real_names[j]);
+                        AttributePrivate &att = dev_attr->get_attr_by_name(real_names[j]).get_impl();
                         att.delete_seq();
                     }
 
@@ -3093,14 +3094,14 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
         {
             try
             {
-                dev_attr->get_w_attr_by_ind(updated_attr[i])
+                dev_attr->get_w_attr_by_ind(updated_attr[i]).get_impl()
                     .check_written_value(values[i].value, (unsigned long) 1, (unsigned long) 0);
             }
             catch (Tango::DevFailed &)
             {
                 for (long j = 0; j < i; j++)
                 {
-                    dev_attr->get_w_attr_by_ind(updated_attr[j]).rollback();
+                    dev_attr->get_w_attr_by_ind(updated_attr[j]).get_impl().rollback();
                 }
 
                 throw;
@@ -3118,7 +3119,7 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
             for (i = 0; i < nb_updated_attr; i++)
             {
                 WAttribute &att = dev_attr->get_w_attr_by_ind(updated_attr[i]);
-                att.copy_data(values[i].value);
+                att.get_impl().copy_data(values[i].value);
             }
         }
         else
@@ -3129,7 +3130,7 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
             {
                 WAttribute &att = dev_attr->get_w_attr_by_ind(updated_attr[i]);
                 std::vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
-                if (attr_vect[att.get_attr_idx()]->is_allowed(this, Tango::WRITE_REQ) == false)
+                if (attr_vect[att.get_impl().get_attr_idx()]->is_allowed(this, Tango::WRITE_REQ) == false)
                 {
                     TangoSys_OMemStream o;
 
@@ -3142,15 +3143,15 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList &values)
                                             o.str(),
                                             (const char *) "Device_Impl::write_attributes");
                 }
-                attr_vect[att.get_attr_idx()]->write(this, att);
-                att.copy_data(values[i].value);
-                if (att.is_memorized() == true)
+                attr_vect[att.get_impl().get_attr_idx()]->write(this, att);
+                att.get_impl().copy_data(values[i].value);
+                if (att.get_impl().is_memorized() == true)
                 {
                     att_in_db.push_back(i);
                 }
-                if (att.is_alarmed().test(Attribute::rds) == true)
+                if (att.is_alarmed().test(AttributePrivate::rds) == true)
                 {
-                    att.set_written_date();
+                    att.get_impl().set_written_date();
                 }
             }
 
@@ -3557,7 +3558,7 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it, bool clea
             {
                 Attribute &att = dev_list[i]->get_device_attr()->get_attr_by_name(attr_name.c_str());
                 std::vector<Tango::Attr *> &attr_list = device_class->get_class_attr()->get_attr_list();
-                if (attr_list[att.get_attr_idx()]->get_cl_name() != rem_attr->get_cl_name())
+                if (attr_list[att.get_impl().get_attr_idx()]->get_cl_name() != rem_attr->get_cl_name())
                 {
                     nb_except++;
                 }
@@ -4381,7 +4382,7 @@ void DeviceImpl::init_attr_poll_period()
         unsigned long i;
         for (i = 0; i < attr_list.size(); i++)
         {
-            std::string &attr_name = attr_list[i]->get_name_lower();
+            std::string &attr_name = attr_list[i]->get_impl().get_name_lower();
 
 //
 // Special case for state and status attributes. They are polled as attribute but they are managed by Pogo as
@@ -4395,7 +4396,7 @@ void DeviceImpl::init_attr_poll_period()
                 long state_poll_period = state_cmd.get_polling_period();
                 if (state_poll_period != 0)
                 {
-                    attr_list[i]->set_polling_period(state_poll_period);
+                    attr_list[i]->get_impl().set_polling_period(state_poll_period);
                 }
             }
 
@@ -4405,7 +4406,7 @@ void DeviceImpl::init_attr_poll_period()
                 long status_poll_period = status_cmd.get_polling_period();
                 if (status_poll_period != 0)
                 {
-                    attr_list[i]->set_polling_period(status_poll_period);
+                    attr_list[i]->get_impl().set_polling_period(status_poll_period);
                 }
             }
 
@@ -4481,7 +4482,7 @@ void DeviceImpl::init_attr_poll_period()
                 ss >> per;
                 if (ss)
                 {
-                    att.set_polling_period(per);
+                    att.get_impl().set_polling_period(per);
                 }
             }
             catch (Tango::DevFailed &)
@@ -4504,7 +4505,7 @@ void DeviceImpl::init_attr_poll_period()
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::push_att_conf_event(Attribute *attr)
+void DeviceImpl::push_att_conf_event(AttributePrivate *attr)
 {
     EventSupplier *event_supplier_nd = NULL;
     EventSupplier *event_supplier_zmq = NULL;
@@ -5072,7 +5073,7 @@ void DeviceImpl::throw_locked_exception(const char *meth)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::data_into_net_object(Attribute &att, AttributeIdlData &aid,
+void DeviceImpl::data_into_net_object(AttributePrivate &att, AttributeIdlData &aid,
                                       long index, AttrWriteType w_type, bool del_seq)
 {
 
@@ -5579,11 +5580,11 @@ void DeviceImpl::att_conf_loop()
 
     for (size_t i = 0; i < att_list.size(); ++i)
     {
-        if (att_list[i]->is_startup_exception() == true ||
-            att_list[i]->is_mem_exception() == true)
+        if (att_list[i]->get_impl().is_startup_exception() == true ||
+            att_list[i]->get_impl().is_mem_exception() == true)
         {
             force_alarm_state = true;
-            if (att_list[i]->is_startup_exception() == true)
+            if (att_list[i]->get_impl().is_startup_exception() == true)
             {
                 wrong_conf_att_list.push_back(att_list[i]->get_name());
             }
@@ -5780,7 +5781,7 @@ void DeviceImpl::build_att_list_in_status_mess(size_t nb_att, AttErrorType att_t
 
 bool DeviceImpl::is_there_subscriber(const std::string &att_name, EventType event_type)
 {
-    Attribute &att = dev_attr->get_attr_by_name(att_name.c_str());
+    AttributePrivate &att = dev_attr->get_attr_by_name(att_name.c_str()).get_impl();
 
     bool ret = false;
 
@@ -5907,10 +5908,10 @@ void DeviceImpl::lock_root_devices(int validity, bool lock_action)
     std::vector<Attribute *> att_list = dev_attr->get_attribute_list();
     for (size_t j = 0; j < att_list.size(); j++)
     {
-        if (att_list[j]->is_fwd_att() == true)
+        if (att_list[j]->get_impl().is_fwd_att() == true)
         {
             FwdAttribute *fwd_att = static_cast<FwdAttribute *>(att_list[j]);
-            std::string &dev_name = fwd_att->get_fwd_dev_name();
+            std::string &dev_name = fwd_att->get_impl().get_fwd_dev_name();
             ite = find(root_devs.begin(), root_devs.end(), dev_name);
             if (ite == root_devs.end())
             {

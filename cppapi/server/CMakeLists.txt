@@ -55,6 +55,8 @@ set(SOURCES attrdesc.cpp
             utils_shut.cpp
             w_attribute.cpp
             w_pipe.cpp
+            public_attribute.cpp
+            public_w_attribute.cpp
             zmqeventsupplier.cpp)
 
 set(HEADERS attrdesc.h
