@@ -37,8 +37,6 @@
 
 #include <tango.h>
 
-#ifdef TANGO_HAS_LOG4TANGO
-
 #include <tangorollingfileappender.h>
 
 namespace Tango
@@ -62,5 +60,3 @@ namespace Tango
   }
 
 } // namespace tango
-
-#endif // TANGO_HAS_LOG4TANGO

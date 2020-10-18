@@ -109,7 +109,7 @@ namespace Tango {
 #include <attrmanip.h>
 #include <seqvec.h>
 
-#if !defined(TANGO_CLIENT) && defined TANGO_HAS_LOG4TANGO
+#if !defined(TANGO_CLIENT)
 	#include <log4tango.h>
 #endif
 

@@ -138,15 +138,6 @@ void AttrProperty::convert(const char *prop_name)
 //		Friend function to ease printing instance of the AttrProperty class
 //
 //-------------------------------------------------------------------------------------------------------------------
-#ifndef TANGO_HAS_LOG4TANGO
-
-std::ostream &operator<<(std::ostream &o_str,const AttrProperty &p)
-{
-	o_str << "Property name = " << p.attr_name << ", Property value = " << p.attr_value;
-	return o_str;
-}
-
-#endif // TANGO_HAS_LOG4TANGO
 
 //+------------------------------------------------------------------------------------------------------------------
 //
@@ -389,21 +380,6 @@ void MultiClassAttribute::remove_attr(const std::string &attr_name,const std::st
 // 		and value defined in DB
 //
 //-------------------------------------------------------------------------------------------------------------------
-#ifndef TANGO_HAS_LOG4TANGO
-
-std::ostream &operator<<(std::ostream &o_str,const Attr &c)
-{
-	long nb_prop = c.class_properties.size();
-	for (long i = 0;i < nb_prop;i++)
-	{
-		o_str << c.class_properties[i];
-		if (i <= (nb_prop - 2))
-			o_str << std::endl;
-	}
-	return o_str;
-}
-
-#endif // TANGO_HAS_LOG4TANGO
 
 
 } // End of Tango namespace

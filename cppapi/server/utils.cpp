@@ -165,9 +165,6 @@ db_cache(NULL),inter(NULL),svr_starting(true),svr_stopping(false),poll_pool_size
 conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false),
 zmq_event_supplier(NULL),endpoint_specified(false),user_pub_hwm(-1),wattr_nan_allowed(false),
 polling_bef_9_def(false)
-# ifndef TANGO_HAS_LOG4TANGO
-    ,cout_tmp(cout.rdbuf())
-# endif
 #else
 Util::Util(int argc,char *argv[]):cl_list_ptr(NULL),ext(new UtilExt),
 heartbeat_th(NULL),heartbeat_th_id(0),poll_mon("utils_poll"),poll_on(false),ser_model(BY_DEVICE),
@@ -176,9 +173,6 @@ db_cache(NULL),inter(NULL),svr_starting(true),svr_stopping(false),poll_pool_size
 conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false),
 zmq_event_supplier(NULL),endpoint_specified(false),user_pub_hwm(-1),wattr_nan_allowed(false),
 polling_bef_9_def(false)
-# ifndef TANGO_HAS_LOG4TANGO
-    ,cout_tmp(cout.rdbuf())
-# endif
 #endif
 {
 	shared_data.cmd_pending=false;
@@ -351,20 +345,6 @@ void Util::effective_job(int argc,char *argv[])
 			orb = CORBA::ORB_init(argc,argv,"omniORB4",options);
 		}
 
-#ifndef TANGO_HAS_LOG4TANGO
-
-//
-// Initialize trace output (For Windows, the stdc++ lib also implements the
-// new iostreams where the xx_with_assign classes are not defined. Therefore,
-// to copy streams, I have used the advices in the C++ report of June 1997
-//
-
-  		trace_output = InitialOutput;
-		file_stream = NULL;
-
-		cout_tmp.copyfmt(cout);
-		cout_tmp.clear(cout.rdstate());
-#endif // TANGO_HAS_LOG4TANGO
 
 //
 // Init host name
@@ -404,12 +384,10 @@ void Util::effective_job(int argc,char *argv[])
 
 		create_CORBA_objects();
 
-#ifdef TANGO_HAS_LOG4TANGO
 //
 // Initialize logging stuffs
 //
 		Logging::init(ds_name, (int)_tracelevel,  ((!_FileDb) && _UseDb), *db, this);
-#endif
 
 		cout4 << "Connected to database" << std::endl;
 		if (get_db_cache() == NULL)
@@ -541,9 +519,6 @@ db_cache(NULL),inter(NULL),svr_starting(true),svr_stopping(false),poll_pool_size
 conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false),
 zmq_event_supplier(NULL),endpoint_specified(false),user_pub_hwm(-1),wattr_nan_allowed(false),
 polling_bef_9_def(false)
-#ifndef TANGO_HAS_LOG4TANGO
-  ,cout_tmp(cout.rdbuf())
-#endif
 {
 
 //
@@ -1602,9 +1577,7 @@ Util::~Util()
 		orb->shutdown(true);
 		//JM : 9.8.2005 : destroy() should be called at the exit of run()!
 		//orb->destroy();
-    #ifdef TANGO_HAS_LOG4TANGO
 	  	Logging::cleanup();
-    #endif
 	}
 #endif
 
@@ -1818,17 +1791,11 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 //
 
 
-	#ifndef TANGO_HAS_LOG4TANGO
-    		cout.rdbuf(ds_window->get_output_buffer());
-    		cout_tmp.rdbuf(ds_window->get_output_buffer());
-	#endif
 	}
-	#ifdef TANGO_HAS_LOG4TANGO //MODIF-NL
   	else
 	{
     		ds_window = 0;
   	}
-	#endif
 
 	if (_win == true)
 	{

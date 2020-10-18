@@ -37,7 +37,6 @@
 
 #include <tango.h>
 
-#ifdef TANGO_HAS_LOG4TANGO
 
 namespace Tango
 {
@@ -348,5 +347,3 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const AttrMani
 }
 
 } // Tango namespace
-
-#endif // TANGO_HAS_LOG4TANGO

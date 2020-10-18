@@ -74,8 +74,6 @@
 
 #include <tango.h>
 
-#if defined(TANGO_HAS_LOG4TANGO)
-
 #include <coutappender.h>
 
 namespace Tango
@@ -109,5 +107,3 @@ namespace Tango
   }
 
 } // namespace tango
-
-#endif // TANGO_HAS_LOG4TANGO

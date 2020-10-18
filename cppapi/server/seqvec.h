@@ -537,7 +537,6 @@ inline void operator<<(std::vector<DevState> &lval,const DevVarStateArray &rval)
 // description :	These operators allow simple printing of sequences
 //
 //=============================================================================
-//#ifndef TANGO_HAS_LOG4TANGO
 /** @defgroup Eas Easy printing operator overloading functions
  * Overloading of the << operator between C++ ostream and some Tango types */
 //@{
@@ -659,8 +658,6 @@ std::ostream &operator<<(std::ostream &lval,const DevVarStateArray &rval);
  */
 std::ostream &operator<<(std::ostream &lval,const DevVarEncodedArray &rval);
 //@}
-
-//#endif // TANGO_HAS_LOG4TANGO
 
 } // End of Tango namespace
 

@@ -75,7 +75,6 @@
 
 #include <tango.h>
 
-#ifdef TANGO_HAS_LOG4TANGO
 
 #include <logcmds.h>
 
@@ -412,5 +411,3 @@ CORBA::Any *StartLogging::execute (DeviceImpl *device, TANGO_UNUSED(const CORBA:
 }
 
 } // namespace Tango
-
-#endif // TANGO_HAS_LOG4TANGO

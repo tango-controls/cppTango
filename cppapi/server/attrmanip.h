@@ -42,10 +42,8 @@ namespace Tango
 
 class AttrManip
 {
-//#ifndef TANGO_HAS_LOG4TANGO
 	friend std::ostream &operator<<(std::ostream &,const AttrManip&);
 	friend void execute_manip(std::ostream &, std::string &str);
-//#endif
 
 public:
 	AttrManip(const char *f):format(f) {

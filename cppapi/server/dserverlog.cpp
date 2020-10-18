@@ -90,7 +90,6 @@
 
 #include <tango.h>
 
-#ifdef TANGO_HAS_LOG4TANGO
 
 namespace Tango
 {
@@ -189,5 +188,3 @@ void  DServer::start_logging (void)
 
 
 } // End of Tango namespace
-
-#endif // TANGO_HAS_LOG4TANGO

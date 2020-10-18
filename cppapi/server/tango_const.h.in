@@ -263,7 +263,6 @@ const char* const TANGO_RC_FILE            = "/etc/tangorc";
 const char* const WINDOWS_ENV_VAR_FILE     = "tangorc";
 
 
-#ifdef TANGO_HAS_LOG4TANGO
 
 //
 // Logging targets (as string)
@@ -290,7 +289,6 @@ const size_t kDefaultRollingThreshold      = 20 * 1024;
 // Max RollingFileAppender threshold (~1GB)
 const size_t kMaxRollingThreshold          = 1024 * 1024;
 
-#endif // TANGO_HAS_LOG4TANGO
 
 // Include namespaces in header files (deprecated).
 #ifndef TANGO_USE_USING_NAMESPACE
@@ -991,7 +989,6 @@ typedef struct _PollDevice
 	std::vector<long>	ind_list;
 }PollDevice;
 
-#ifdef TANGO_HAS_LOG4TANGO
 //
 // Logging levels
 //
@@ -1015,7 +1012,6 @@ enum LogTarget {
   	LOG_DEVICE
 };
 
-#endif // TANGO_HAS_LOG4TANGO
 
 /// List of command types
 ///

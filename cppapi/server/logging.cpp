@@ -37,7 +37,6 @@
 
 #include <tango.h>
 
-#ifdef TANGO_HAS_LOG4TANGO
 
 //-----------------------------------------------------------------------------
 // HEADERS
@@ -1149,5 +1148,3 @@ LogAdapter::~LogAdapter ( )
 }
 
 } // namespace Tango
-
-#endif // TANGO_HAS_LOG4TANGO

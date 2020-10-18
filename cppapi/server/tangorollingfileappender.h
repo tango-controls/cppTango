@@ -30,8 +30,6 @@
 #ifndef _LOG4TANGO_TANGO_ROLLING_FILE_APPENDER_H_
 #define _LOG4TANGO_TANGO_ROLLING_FILE_APPENDER_H_
 
-#ifdef TANGO_HAS_LOG4TANGO
-
 namespace Tango
 {
   class TangoRollingFileAppender : public log4tango::RollingFileAppender
@@ -57,5 +55,3 @@ namespace Tango
 } // namespace tango
 
 #endif // _LOG4TANGO_TANGO_ROLLING_FILE_APPENDER_H_
-
-#endif // TANGO_HAS_LOG4TANGO

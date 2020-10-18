@@ -40,7 +40,6 @@
 
 #include <iomanip>
 
-#ifdef TANGO_HAS_LOG4TANGO
 
 #include <tangoappender.h>
 
@@ -195,5 +194,3 @@ namespace Tango
   }
 
 } // namespace tango
-
-#endif // TANGO_HAS_LOG4TANGO

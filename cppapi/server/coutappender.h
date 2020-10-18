@@ -29,7 +29,6 @@
 #ifndef _COUT_APPENDER_H_
 #define _COUT_APPENDER_H_
 
-#if defined(TANGO_HAS_LOG4TANGO)
 
 namespace Tango {
 
@@ -70,5 +69,3 @@ protected:
 } // namespace tango
 
 #endif // _COUT_APPENDER_H_
-
-#endif // TANGO_HAS_LOG4TANGO

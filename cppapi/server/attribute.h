@@ -2317,9 +2317,6 @@ public:
 
 	void fire_error_periodic_event(DevFailed *);
 
-#ifndef TANGO_HAS_LOG4TANGO
-	friend std::ostream &operator<<(std::ostream &, const Attribute &);
-#endif // TANGO_HAS_LOG4TANGO
 	friend class EventSupplier;
 	friend class ZmqEventSupplier;
 	friend class DServer;

@@ -31,7 +31,6 @@
 //
 //=============================================================================
 
-#ifdef TANGO_HAS_LOG4TANGO
 
 #ifndef _LOG_CMDS_H
 #define _LOG_CMDS_H
@@ -194,5 +193,3 @@ public:
 } // End of Tango namespace
 
 #endif // _LOG_CMDS_H
-
-#endif // TANGO_HAS_LOG4TANGO

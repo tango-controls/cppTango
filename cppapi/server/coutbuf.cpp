@@ -48,9 +48,6 @@ namespace Tango
 
 static HINSTANCE hAppInst;
 static HWND hWndDebug;
-#ifndef TANGO_HAS_LOG4TANGO //MODIF-NL
-static CRITICAL_SECTION cs;
-#endif
 static HWND hWndDebugList = NULL;
 
 //+----------------------------------------------------------------------------
@@ -104,13 +101,6 @@ CoutBuf::CoutBuf(HINSTANCE hInstance,int nCmdShow,HWND parent,LPCSTR svc_name)
   	parent_window = parent;
   	CreateWin(svc_name);
 
-#ifndef TANGO_HAS_LOG4TANGO //MODIF-NL
-//
-// Create a Windows mutex
-//
-  	InitializeCriticalSection(&cs);
-  	nb_critical = 0;
-#endif
 
 //
 // Show the main window
@@ -120,19 +110,10 @@ CoutBuf::CoutBuf(HINSTANCE hInstance,int nCmdShow,HWND parent,LPCSTR svc_name)
 //	ShowWindow(hWndDebug,nCmdShow);
 //	UpdateWindow(hWndDebug);
 
-#ifndef TANGO_HAS_LOG4TANGO
-//
-// Set streambuf pointers
-//
-  	setp(buffer, buffer + (bufferSize - 1));
-#endif
 }
 
 CoutBuf::~CoutBuf()
 {
-#ifndef TANGO_HAS_LOG4TANGO
-  	sync();
-#endif
 }
 
 void CoutBuf::CreateWin(LPCSTR svc_name)
@@ -211,140 +192,6 @@ int CoutBuf::dbg_out(LPCSTR buf)
   	return 0;
 }
 
-#ifndef TANGO_HAS_LOG4TANGO
-//+----------------------------------------------------------------------------
-//
-// method :       CoutBuf::overflow()
-//
-// description :  Overriding of the streambuf::overflow method
-//          This method prints a single char at a time
-//          This method has been copied from the std C++ library
-//          book from Josuttis (p 674)
-//
-// in :     - c : The charater to be printed
-//
-//-----------------------------------------------------------------------------
-
-streambuf::int_type CoutBuf::overflow(streambuf::int_type c)
-{
-  	if (c != EOF)
-  	{
-    		EnterCriticalSection(&cs);
-    		nb_critical++;
-    		*pptr() = c;
-    		pbump(1);
-  	}
-
-  	if (flushBuffer() == EOF)
-    		return EOF;
-
-  	return c;
-}
-
-streamsize CoutBuf::xsputn(const char_type *s,streamsize n)
-{
-
-//
-// Enter the critical section and count how many times we enter it
-//
-
-  	EnterCriticalSection(&cs);
-  	nb_critical++;
-
-//
-// Count how many characters we can copy into the stream buffer
-//
-
-  	int nb_place = epptr() - pptr();
-  	int start = pptr() - pbase();
-  	int nb_to_write,i;
-
-  	if (n <= nb_place)
-    		nb_to_write = n;
-  	else
-    		nb_to_write = nb_place;
-
-//
-// Copy data into stream buffer
-//
-
-  	for (i = 0;i < nb_to_write;i++)
-  	{
-    		buffer[start] = s[i];
-    		start++;
-  	}
-  	pbump(nb_to_write);
-  	return nb_to_write;
-}
-
-//+----------------------------------------------------------------------------
-//
-// method :       CoutBuf::flushBuffer()
-//
-// description :  This method flushs (send data to the output window)
-//          characters buffer
-//          This method has been copied from the std C++ library
-//          book from Josuttis (p 674)
-//
-//-----------------------------------------------------------------------------
-
-int CoutBuf::flushBuffer()
-{
-
-//
-// Replace the last windows chracter (0xa) by the famous 0
-//
-
-  	int num = pptr() - pbase();
-  	if (buffer[num - 1] == 0xa)
-    		buffer[num - 1] = '\0';
-  	else
-    		buffer[num] = '\0';
-
-//
-// Send buffer to output window
-//
-
-  	if (DbgWin != NULL)
-  	{
-    		if (dbg_out((LPCSTR)buffer) == -1)
-      			return EOF;
-  	}
-
-  	pbump(-num);
-
-//
-// Leave ctitical section as often as we enter it
-//
-
-  	long loop = nb_critical;
-  	nb_critical = 0;
-  	for (int i = 0;i < loop;i++)
-    		LeaveCriticalSection(&cs);
-
-  	return num;
-}
-
-//+----------------------------------------------------------------------------
-//
-// method :       CoutBuf::sync()
-//
-// description :  Overriding of the streambuf::sync method
-//          This method synchronizes data with the output window
-//          This method has been copied from the std C++ library
-//          book from Josuttis (p 674)
-//
-//-----------------------------------------------------------------------------
-
-int CoutBuf::sync()
-{
-  	if (flushBuffer() == EOF)
-    		return -1;
-
-  	return 0;
-}
-
-#endif // TANGO_HAS_LOG4TANGO //MODIF-NL
 
 
 //
