@@ -36,12 +36,7 @@
 #include <iomanip>
 #include <ctime>
 #include <cmath>
-
-#ifdef LOG4TANGO_HAVE_INT64_T
-# ifdef LOG4TANGO_HAVE_STDINT_H
-#   include <stdint.h>
-# endif // LOG4TANGO_HAVE_STDINT_H
-#endif // LOG4TANGO_HAVE_INT64_T
+#include <cstdint>
 
 namespace log4tango {
 
