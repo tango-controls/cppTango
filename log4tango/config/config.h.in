@@ -37,8 +37,5 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #cmakedefine LOG4TANGO_HAVE_SYS_TYPES_H
 
-/* define if threading is enabled */
-#cmakedefine LOG4TANGO_HAVE_THREADING
-
 /* Define to 1 if you have the <unistd.h> header file. */
 #cmakedefine LOG4TANGO_HAVE_UNISTD_H

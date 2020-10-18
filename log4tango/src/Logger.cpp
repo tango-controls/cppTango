@@ -51,7 +51,7 @@ void Logger::set_level (Level::Value level)
   if ((level >= Level::OFF) && (level <= Level::DEBUG)) {
     _level = level;
     { //-- Begin critical section -----------------------------
-      threading::ScopedLock guard(_appendersMutex); 
+      std::lock_guard<std::mutex> guard(_appendersMutex);
       if (!_appenders.empty()) {
         AppenderMapIterator i = _appenders.begin();
         AppenderMapIterator e = _appenders.end();
@@ -67,7 +67,7 @@ void Logger::call_appenders (const LoggingEvent& event)
 {
   std::vector<std::string> *bad_appenders = 0;
   { //-- Begin critical section -----------------------------
-    threading::ScopedLock guard(_appendersMutex); 
+    std::lock_guard<std::mutex> guard(_appendersMutex);
     if (!_appenders.empty()) {
       AppenderMapIterator i = _appenders.begin();
       AppenderMapIterator e = _appenders.end();

@@ -27,7 +27,6 @@
 
 #include <log4tango/Portability.hh>
 #include <log4tango/LoggingEvent.hh>
-#include <log4tango/threading/Threading.hh>
 
 namespace log4tango {
    

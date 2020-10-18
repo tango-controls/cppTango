@@ -16,9 +16,7 @@ set(SOURCES
                 Filter.cpp
                 TimeStamp.cpp
                 StringUtil.hh
-                StringUtil.cpp
-                DummyThreads.cpp
-                StandardThreads.cpp)
+                StringUtil.cpp)
 
 add_library(log4tango_objects OBJECT ${SOURCES})
 

@@ -27,8 +27,8 @@ endmacro()
 LOG4TANGO_CHECK_FUNCTION_EXISTS(ftime         HAVE_FTIME)
 LOG4TANGO_CHECK_FUNCTION_EXISTS(gettimeofday  HAVE_GETTIMEOFDAY)
 
-if(CMAKE_THREAD_LIBS_INIT)
-    set(LOG4TANGO_HAVE_THREADING "/**/")
+if(NOT DEFINED Threads_FOUND)
+  message(FATAL_ERROR "Could not find a suitable threading library")
 endif()
 
 #check types

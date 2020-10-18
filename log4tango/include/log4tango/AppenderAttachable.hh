@@ -31,8 +31,8 @@
 #include <log4tango/Portability.hh>
 #include <map>
 #include <vector>
+#include <mutex>
 #include <log4tango/Appender.hh>
-#include <log4tango/threading/Threading.hh>
 
 namespace log4tango {
 
@@ -124,7 +124,7 @@ class LOG4TANGO_EXPORT AppenderAttachable
     /**
      * A mutex to protect the repository against race conditions.
      **/
-    threading::Mutex _appendersMutex;
+    std::mutex _appendersMutex;
 
     AppenderAttachable (const AppenderAttachable& other);
     AppenderAttachable& operator=(const AppenderAttachable& other);

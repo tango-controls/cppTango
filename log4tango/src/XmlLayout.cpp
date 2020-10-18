@@ -26,10 +26,12 @@
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <log4tango/Portability.hh>
-#include <stdio.h>
-#include <log4tango/threading/Threading.hh> 
 #include <log4tango/LoggingEvent.hh> 
 #include <log4tango/XmlLayout.hh> 
+
+#include <stdio.h>
+#include <sstream>
+#include <string>
 
 namespace log4tango {
 
@@ -45,6 +47,12 @@ namespace log4tango {
 
   std::string XMLLayout::format (const LoggingEvent& event) 
   {
+    auto id = []() -> std::string {
+      std::ostringstream out;
+      out << std::this_thread::get_id();
+      return out.str();
+    };
+
     std::string buf;
     buf.append("<log4j:event logger=\"");
     buf.append(event.logger_name);
@@ -57,7 +65,7 @@ namespace log4tango {
     buf.append("\" level=\"");
     buf.append(log4tango::Level::get_name(event.level));
     buf.append("\" thread=\"");
-    buf.append(log4tango::threading::get_thread_id());
+    buf.append(id());
     buf.append("\">\r\n");
     buf.append("<log4j:message><![CDATA[");
 #if APPEND_ECAPING_CDATA_IMPLEMENTED

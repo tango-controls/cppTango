@@ -33,6 +33,7 @@
 namespace log4tango {
 
 typedef AppenderMap::value_type AppenderMapValue;
+using Guard = std::lock_guard<std::mutex>;
 
 AppenderAttachable::AppenderAttachable () 
 {
@@ -47,7 +48,7 @@ AppenderAttachable::~AppenderAttachable ()
 void AppenderAttachable::add_appender (Appender* appender) 
 {
   if (appender) {
-    threading::ScopedLock guard(_appendersMutex);
+    Guard guard(_appendersMutex);
     AppenderMapValue pair(appender->get_name(), appender);
     _appenders.insert(pair);
   }
@@ -55,7 +56,7 @@ void AppenderAttachable::add_appender (Appender* appender)
 
 AppenderList AppenderAttachable::get_all_appenders (void) 
 {
-  threading::ScopedLock guard(_appendersMutex); 
+  Guard guard(_appendersMutex);
   AppenderList al(0);
   AppenderMapIterator it = _appenders.begin();
   AppenderMapIterator end = _appenders.end();
@@ -67,7 +68,7 @@ AppenderList AppenderAttachable::get_all_appenders (void)
 
 Appender* AppenderAttachable::get_appender (const std::string& name) 
 {
-  threading::ScopedLock guard(_appendersMutex);
+  Guard guard(_appendersMutex);
   AppenderMapIterator it = _appenders.find(name);
   if (it != _appenders.end()) {
     return it->second;
@@ -77,7 +78,7 @@ Appender* AppenderAttachable::get_appender (const std::string& name)
 
 bool AppenderAttachable::is_attached (Appender* appender) 
 {
-  threading::ScopedLock guard(_appendersMutex); 
+  Guard guard(_appendersMutex);
   if (appender && _appenders.find(appender->get_name()) != _appenders.end()) {
     return true;
   }
@@ -86,7 +87,7 @@ bool AppenderAttachable::is_attached (Appender* appender)
 
 void AppenderAttachable::remove_all_appenders (void) 
 {
-  threading::ScopedLock guard(_appendersMutex);
+  Guard guard(_appendersMutex);
   AppenderMapIterator it = _appenders.begin();
   AppenderMapIterator end = _appenders.end();
   for (; it != end ; ++it) {
@@ -104,7 +105,7 @@ void AppenderAttachable::remove_appender(Appender* appender)
 
 void AppenderAttachable::remove_appender(const std::string& name) 
 {
-  threading::ScopedLock guard(_appendersMutex); 
+  Guard guard(_appendersMutex);
   AppenderMapIterator it = _appenders.find(name);
   if (it != _appenders.end()) {
     delete it->second;
