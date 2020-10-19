@@ -34,7 +34,6 @@
 #ifndef _LOGGING_H_
 #define _LOGGING_H_
 
-#ifdef TANGO_HAS_LOG4TANGO
 
 // A shortcut to the core logger ------------------------------
 #define API_LOGGER Tango::Logging::get_core_logger()
@@ -224,6 +223,5 @@ private:
 
 } // namespace tango
 
-#endif // TANGO_HAS_LOG4TANGO
 
 #endif // _LOGGING_H_

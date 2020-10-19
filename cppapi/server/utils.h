@@ -52,20 +52,6 @@
 // For debug purpose
 //
 
-#ifndef TANGO_HAS_LOG4TANGO
-
-#define	cout1	if ((Tango::Util::_tracelevel >= 1) && \
-		    (Tango::Util::_tracelevel < 5)) cout
-#define cout2  	if ((Tango::Util::_tracelevel >= 2) && \
-		    (Tango::Util::_tracelevel < 5)) cout
-#define cout3	if ((Tango::Util::_tracelevel >= 3) && \
-		    (Tango::Util::_tracelevel < 5)) cout
-#define cout4	if ((Tango::Util::_tracelevel >= 4) && \
-		    (Tango::Util::_tracelevel < 5)) cout
-
-#define cout5   if (Tango::Util::_tracelevel >= 5) cout
-
-#endif //TANGO_HAS_LOG4TANGO
 
 
 namespace Tango
@@ -243,42 +229,6 @@ public:
  */
 	int get_trace_level() {return _tracelevel;}
 
-#ifndef TANGO_HAS_LOG4TANGO
-/**
- * Set the process trace output .
- *
- * @param level The new process output
- */
-	void set_trace_output(std::string &trace) {trace_output = trace;}
-
-/**
- * Get the process trace output.
- *
- * @return The process trace output
- */
-	std::string &get_trace_output() {return trace_output;}
-
-/**
- * Get the temporary process output print stream
- *
- * @return The process output print stream
- */
-	TangoSys_Cout &get_out() {return cout_tmp;}
-
-/**
- * Set the process trace output stream.
- *
- * @param in The new process output stream
- */
-	void set_trace_output_stream(ofstream *in) {file_stream = in;}
-
-/**
- * Get the process output print stream
- *
- * @return The process output print stream
- */
-	ofstream *get_trace_output_stream() {return file_stream;}
-#endif //TANGO_HAS_LOG4TANGO
 
 /**
  * Get the device server instance name.
@@ -953,11 +903,6 @@ private:
 
 	std::string      			database_file_name;
 
-#ifndef TANGO_HAS_LOG4TANGO
-	std::string			        trace_output;
-	TangoSys_Cout		    cout_tmp;
-	ofstream		        *file_stream;
-#endif //TANGO_HAS_LOG4TANGO
 
 	Database				*db;			    // The db proxy
 

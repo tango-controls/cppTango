@@ -35,9 +35,6 @@
 #define _COUTBUF_H
 
 #include <tango.h>
-#ifndef TANGO_HAS_LOG4TANGO
-# include <streambuf>
-#endif
 
 namespace Tango
 {
@@ -48,15 +45,8 @@ namespace Tango
 
 #define IDC_LIST      	-777
 #define MAXLISTLINES  	200
-#ifndef TANGO_HAS_LOG4TANGO
-#define bufferSize 	512
-#endif
 
-#ifndef TANGO_HAS_LOG4TANGO
-class CoutBuf: public streambuf
-#else
 class CoutBuf
-#endif
 {
 public:
   	CoutBuf(HINSTANCE,int,HWND,LPCSTR);
@@ -65,26 +55,13 @@ public:
   	void clear_debug_window() {DbgWin = NULL;}
   	void CreateWin(LPCSTR);
 
-#ifdef TANGO_HAS_LOG4TANGO
   	int dbg_out (LPCSTR);
-#endif
 
 protected:
-#ifndef TANGO_HAS_LOG4TANGO
-  	char buffer[bufferSize];
-  	long nb_critical;
-#endif
 
   	HWND DbgWin;
   	HWND parent_window;
 
-#ifndef TANGO_HAS_LOG4TANGO
-  	int dbg_out(LPCSTR);
-  	virtual int_type overflow(int_type);
-  	int flushBuffer();
-  	virtual int sync();
-  	virtual streamsize xsputn(const char_type *,streamsize);
-#endif
 };
 
 //

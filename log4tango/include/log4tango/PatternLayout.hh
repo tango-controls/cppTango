@@ -31,9 +31,7 @@
 #include <log4tango/Portability.hh>
 #include <log4tango/Layout.hh>
 #include <vector>
-#ifdef LOG4TANGO_HAVE_SSTREAM
-# include <sstream>
-#endif
+#include <sstream>
 
 namespace log4tango {
 

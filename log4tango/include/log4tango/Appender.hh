@@ -32,7 +32,6 @@
 #include <log4tango/Level.hh>
 #include <log4tango/Layout.hh>
 #include <log4tango/LoggingEvent.hh>
-#include <log4tango/threading/Threading.hh>
 
 #ifndef _LOG4TANGO_APPENDER_H
 #define _LOG4TANGO_APPENDER_H

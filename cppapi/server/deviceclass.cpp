@@ -47,9 +47,7 @@
 
 #include <apiexcept.h>
 
-#ifdef TANGO_HAS_LOG4TANGO
 #include <logging.h>
-#endif
 
 extern omni_thread::key_t key_py_data;
 namespace Tango

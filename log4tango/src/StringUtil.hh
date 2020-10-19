@@ -28,7 +28,7 @@
 #ifndef _LOG4TANGO_STRINGUTIL_H
 #define _LOG4TANGO_STRINGUTIL_H
 
-#include "PortabilityImpl.hh"
+#include <log4tango/Portability.hh>
 #include <string>
 #include <vector>
 #include <climits>

@@ -3429,14 +3429,12 @@ public:
 
 	void set_client_lib(int _l) {if (count(client_lib.begin(),client_lib.end(),_l)==0)client_lib.push_back(_l);}
 
-#ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
 	{return logger ? logger : get_logger_i();}
 
   	void init_logger(void);
   	void start_logging(void);
   	void stop_logging(void);
-#endif // TANGO_HAS_LOG4TANGO
 
 
 private:
@@ -3484,11 +3482,9 @@ protected:
 // Ported from the extension class
 //
 
-#ifdef TANGO_HAS_LOG4TANGO
 	log4tango::Logger* 			logger;
 	log4tango::Level::Value 	saved_log_level;
 	size_t              		rft;
-#endif
 
     long						poll_old_factor;
     long						idl_version;
@@ -3583,9 +3579,7 @@ private:
 	void end_pipe_config();
 	void set_pipe_prop(std::vector<PipeProperty> &,Pipe *,PipePropType);
 
-#ifdef TANGO_HAS_LOG4TANGO
   	log4tango::Logger *get_logger_i (void);
-#endif
 
 	std::string							alarm_status;
 	Tango::Device_var				d_var;

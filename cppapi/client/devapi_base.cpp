@@ -7882,7 +7882,6 @@ void DeviceProxy::stop_poll_attribute(std::string &attr_name)
 
 }
 
-#ifdef TANGO_HAS_LOG4TANGO
 //-----------------------------------------------------------------------------
 //
 // DeviceProxy::add_logging_target - Add a logging target
@@ -8057,7 +8056,6 @@ void DeviceProxy::set_logging_level(int level)
         adm_device->command_inout(cmd, din);
     }
 }
-#endif // TANGO_HAS_LOG4TANGO
 
 
 

@@ -44,9 +44,7 @@
 #include <tango.h>
 #include <dserverclass.h>
 #include <pollcmds.h>
-#ifdef TANGO_HAS_LOG4TANGO
 #include <logcmds.h>
-#endif
 #include <eventsupplier.h>
 
 namespace Tango
@@ -411,7 +409,6 @@ CORBA::Any *DevSetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 
 	cout4 << "DevSetTraceLevelCmd::execute(): arrived" << std::endl;
 
-#ifdef TANGO_HAS_LOG4TANGO
   	Except::throw_exception((const char *)API_DeprecatedCommand,
       				(const char *)"SetTraceLevel is no more supported, please use SetLoggingLevel",
       				(const char *)"DevSetTraceLevelCmd::execute");
@@ -422,34 +419,6 @@ CORBA::Any *DevSetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 	CORBA::Any *ret = return_empty_any("DevSetTraceLevelCmd");
 	return ret;
 
-#else // TANGO_HAS_LOG4TANGO
-
-//
-// Get new level
-//
-
-	int new_level;
-	if ((in_any >>= new_level) == false)
-	{
-		cout3 << "DevSetTraceLevelCmd::execute() --> Wrong argument type" << std::endl;
-		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
-				      (const char *)"Imcompatible command argument type, expected type is : long",
-				      (const char *)"DevSetTraceLevelCmd::execute");
-	}
-
-//
-// Set new level
-//
-
-	Tango::Util::instance()->set_trace_level(new_level);
-
-//
-// Return to the caller
-//
-
-	CORBA::Any *ret = return_empty_any("DevSetTraceLevelCmd");
-	return ret;
-#endif
 }
 
 
@@ -484,7 +453,6 @@ CORBA::Any *DevGetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 
 	cout4 << "DevGetTraceLevelCmd::execute(): arrived" << std::endl;
 
-#ifdef TANGO_HAS_LOG4TANGO
 
   	Except::throw_exception((const char *)API_DeprecatedCommand,
       				(const char *)"GetTraceLevel is no more supported, please use GetLoggingLevel",
@@ -497,24 +465,6 @@ CORBA::Any *DevGetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 	CORBA::Any *ret = return_empty_any("DevGetTraceLevelCmd");
 	return ret;
 
-#else // TANGO_HAS_LOG4TANGO
-
-//
-// Get level
-//
-
-	int level = Tango::Util::instance()->get_trace_level();
-
-//
-// return data to the caller
-//
-
-	CORBA::Any *out_any = new CORBA::Any();
-	(*out_any) <<= level;
-
-	cout4 << "Leaving DevGetTraceLevelCmd::execute()" << std::endl;
-	return(out_any);
-#endif
 }
 
 
@@ -549,7 +499,6 @@ CORBA::Any *DevGetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 
 	cout4 << "DevGetTraceOutputCmd::execute(): arrived" << std::endl;
 
-#ifdef TANGO_HAS_LOG4TANGO
 	Except::throw_exception((const char *)API_DeprecatedCommand,
       				(const char *)"GetTraceOutput is no more supported, please use GetLoggingTarget",
       				(const char *)"DevGetTraceOutputCmd::execute");
@@ -560,24 +509,6 @@ CORBA::Any *DevGetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 	CORBA::Any *ret = return_empty_any("DevGetTraceOutputCmd");
 	return ret;
 
-#else
-
-//
-// Get Trace output
-//
-
-	std::string st = Tango::Util::instance()->get_trace_output();
-
-//
-// return data to the caller
-//
-
-	CORBA::Any *out_any = new CORBA::Any();
-	(*out_any) <<= st.c_str();
-
-	cout4 << "Leaving DevGetTraceOutputCmd::execute()" << std::endl;
-	return(out_any);
-#endif
 }
 
 //+----------------------------------------------------------------------------
@@ -613,7 +544,6 @@ CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 
 	cout4 << "DevSetTraceOutputCmd::execute(): arrived" << std::endl;
 
-#ifdef TANGO_HAS_LOG4TANGO
 
 	Except::throw_exception((const char *)API_DeprecatedCommand,
       				(const char *)"SetTraceOutput is no more supported, please use AddLoggingTarget",
@@ -625,73 +555,6 @@ CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 	CORBA::Any *ret = return_empty_any("DevSetTraceOutputCmd");
 	return ret;
 
-#else
-
-//
-// Extract the input string and try to create a output file stream from it
-//
-
-	const char *in_file_ptr;
-	if ((in_any >>= in_file_ptr) == false)
-	{
-		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
-				      (const char *)"Imcompatible command argument type, expected type is : string",
-				      (const char *)"DevSetTraceOutputCmd::execute");
-	}
-	std::string in_file(in_file_ptr);
-	cout4 << "Received string = " << in_file << std::endl;
-
-	if (in_file == InitialOutput)
-	{
-		delete(Tango::Util::instance()->get_trace_output_stream());
-		Tango::Util::instance()->set_trace_output_stream((ofstream *)NULL);
-
-		std::ostream &tmp_stream = Tango::Util::instance()->get_out();
-
-//
-// For windows, the stdc++ library also implements the new IOstreams where the
-// xx_with_assign classes do not exist. To copy stream, I have used the advice
-// from the C++ report of June 1997
-//
-
-		cout.copyfmt(tmp_stream);
-		cout.clear(tmp_stream.rdstate());
-		cout.rdbuf(tmp_stream.rdbuf());
-
-		Tango::Util::instance()->set_trace_output(in_file);
-	}
-	else
-	{
-		ofstream *ofp = new ofstream(in_file_ptr);
-		if (ofp->good())
-		{
-			cout.copyfmt(*ofp);
-			cout.clear(ofp->rdstate());
-			cout.rdbuf(ofp->rdbuf());
-
-			delete(Tango::Util::instance()->get_trace_output_stream());
-			Tango::Util::instance()->set_trace_output(in_file);
-			Tango::Util::instance()->set_trace_output_stream(ofp);
-		}
-		else
-		{
-			cout3 << "Cannot open ofstream" << std::endl;
-			TangoSys_OMemStream o;
-
-			o << "Impossible to open file " << in_file << std::ends;
-			Except::throw_exception((const char *)API_CannotOpenFile,
-					      o.str(),
-					      (const char *)"DevSetTraceoutput::execute");
-		}
-	}
-
-//
-// return to the caller
-//
-
-	CORBA::Any *ret = return_empty_any("DevSetTraceOutputCmd");
-	return ret;
-#endif
 }
 
 //+----------------------------------------------------------------------------
@@ -1706,7 +1569,6 @@ void DServerClass::command_factory()
 						   Tango::DEV_VOID,
 						   Tango::DEV_VOID));
 
-#ifdef TANGO_HAS_LOG4TANGO
   	msg = "Str[i]=Device-name. Str[i+1]=Target-type::Target-name";
 
   	command_list.push_back(new AddLoggingTarget("AddLoggingTarget",
@@ -1743,24 +1605,6 @@ void DServerClass::command_factory()
 	command_list.push_back(new StartLogging("StartLogging",
 			  			Tango::DEV_VOID,
 			  			Tango::DEV_VOID));
-#else
-	command_list.push_back(new DevSetTraceLevelCmd("SetTraceLevel",
-						       Tango::DEV_LONG,
-						       Tango::DEV_VOID,
-						       "New trace level"));
-	command_list.push_back(new DevGetTraceLevelCmd("GetTraceLevel",
-						       Tango::DEV_VOID,
-						       Tango::DEV_LONG,
-						       "Device server trace level"));
-	command_list.push_back(new DevSetTraceOutputCmd("SetTraceOutput",
-						        Tango::DEV_STRING,
-						        Tango::DEV_VOID,
-							"New device server output file"));
-	command_list.push_back(new DevGetTraceOutputCmd("GetTraceOutput",
-						        Tango::DEV_VOID,
-						        Tango::DEV_STRING,
-							"Device server output file"));
-#endif // TANGO_HAS_LOG4TANGO
 	command_list.push_back(new EventSubscriptionChangeCmd("EventSubscriptionChange",
 							Tango::DEVVAR_STRINGARRAY, Tango::DEV_LONG,
 							"Event consumer wants to subscribe to",

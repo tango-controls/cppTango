@@ -34,7 +34,6 @@
 #ifndef _LOG_STREAM_H
 #define _LOG_STREAM_H
 
-#ifdef TANGO_HAS_LOG4TANGO
 
 //-----------------------------------------------------------------------------
 // FORWARD DECLARATIONS
@@ -92,6 +91,5 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream&, const AttrPropert
 
 } // Tango namespace
 
-#endif // TANGO_HAS_LOG4TANGO
 
 #endif // _LOG_STREAM_H

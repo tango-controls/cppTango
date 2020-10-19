@@ -29,7 +29,6 @@
 #define _LOG4TANGO_LAYOUT_H
 
 #include <log4tango/Portability.hh>
-#include <log4tango/threading/Threading.hh>
 #include <log4tango/LoggingEvent.hh>
 #include <string>
 

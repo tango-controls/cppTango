@@ -1186,9 +1186,7 @@ void ServRestartThread::run(void *ptr)
 // Setup logging
 //
 
-#ifdef TANGO_HAS_LOG4TANGO
   	dev->init_logger();
-#endif
 
 //
 // Reset initial state and status

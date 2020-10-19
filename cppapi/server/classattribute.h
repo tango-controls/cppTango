@@ -79,9 +79,6 @@ public:
 
 	void convert(const char *);
 
-#ifndef TANGO_HAS_LOG4TANGO
-	friend std::ostream &operator<<(std::ostream &,const AttrProperty &);
-#endif
 
 private:
 	std::string			attr_name;

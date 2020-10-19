@@ -556,9 +556,6 @@ public:
 	virtual bool same_type(const std::type_info &) {return false;}
 	virtual std::string get_enum_type() {return std::string("Unknown");}
 
-#ifndef TANGO_HAS_LOG4TANGO
-	friend std::ostream &operator<<(std::ostream &,const Attr &);
-#endif
 
 protected:
 /// @privatesection

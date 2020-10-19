@@ -29,7 +29,6 @@
 #ifndef _LOG4TANGO_H_
 #define _LOG4TANGO_H_
 
-#ifdef TANGO_HAS_LOG4TANGO
 
 //-------------------------------------------------------------
 // REQUIRED LOG4TANGO STUFFS
@@ -122,7 +121,6 @@ private:
 
 } // namespace Tango
 
-#endif // TANGO_HAS_LOG4TANGO
 
 #endif // _LOG4TANGO_H_
 

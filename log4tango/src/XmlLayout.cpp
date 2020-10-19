@@ -25,11 +25,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "PortabilityImpl.hh"
-#include <stdio.h>
-#include <log4tango/threading/Threading.hh> 
+#include <log4tango/Portability.hh>
 #include <log4tango/LoggingEvent.hh> 
 #include <log4tango/XmlLayout.hh> 
+
+#include <cmath>
+#include <stdio.h>
+#include <sstream>
+#include <string>
 
 namespace log4tango {
 
@@ -45,19 +48,23 @@ namespace log4tango {
 
   std::string XMLLayout::format (const LoggingEvent& event) 
   {
+    auto id = []() -> std::string {
+      std::ostringstream out;
+      out << std::this_thread::get_id();
+      return out.str();
+    };
+
     std::string buf;
     buf.append("<log4j:event logger=\"");
     buf.append(event.logger_name);
     buf.append("\" timestamp=\"");
     double ts_ms = 1000. * event.timestamp.get_seconds();
     ts_ms += event.timestamp.get_milliseconds();
-    char ts_str[32];
-    ::sprintf(ts_str, "%.0f", ts_ms);
-    buf.append(ts_str);
+    buf.append(std::to_string(std::trunc(ts_ms)));
     buf.append("\" level=\"");
     buf.append(log4tango::Level::get_name(event.level));
     buf.append("\" thread=\"");
-    buf.append(log4tango::threading::get_thread_id());
+    buf.append(id());
     buf.append("\">\r\n");
     buf.append("<log4j:message><![CDATA[");
 #if APPEND_ECAPING_CDATA_IMPLEMENTED
@@ -67,13 +74,6 @@ namespace log4tango {
 #endif
     buf.append("]]></log4j:message>\r\n"); 
     buf.append("<log4j:NDC><![CDATA[");
-#ifdef LOG4TANGO_HAS_NDC
-# if APPEND_ECAPING_CDATA_IMPLEMENTED
-    appendEscapingCDATA(buf, event.ndc);
-# else
-    buf.append(event.ndc);  
-# endif
-#endif	
     buf.append("]]></log4j:NDC>\r\n");	  
     buf.append("</log4j:event>\r\n\r\n");
     return buf;

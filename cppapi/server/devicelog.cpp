@@ -102,7 +102,6 @@
 
 #include <tango.h>
 
-#ifdef TANGO_HAS_LOG4TANGO
 
 #include <logging.h>
 
@@ -274,5 +273,3 @@ void DeviceImpl::stop_logging (void) {
 }
 
 } // namespace Tango
-
-#endif // TANGO_HAS_LOG4TANGO

@@ -26,9 +26,7 @@
 #ifndef __CLOCK_H
 #define __CLOCK_H
 
-#ifdef LOG4TANGO_HAVE_STDINT_H
-#include <stdint.h>
-#endif // LOG4TANGO_HAVE_STDINT_H
+#include <cstdint>
 
 #ifdef __osf__
     typedef long usec_t;    /* number of microseconds since 1970/01/01 */

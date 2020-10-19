@@ -93,8 +93,6 @@ void execute_manip(std::ostream &o_str, std::string &manip)
 	}
 }
 
-//#ifndef TANGO_HAS_LOG4TANGO
-
 std::ostream &operator<<(std::ostream &o_str,const AttrManip &manip)
 {
 
@@ -121,7 +119,5 @@ std::ostream &operator<<(std::ostream &o_str,const AttrManip &manip)
 
 	return o_str;
 }
-
-//#endif // TANGO_HAS_LOG4TANGO
 
 } // End of tango namespace

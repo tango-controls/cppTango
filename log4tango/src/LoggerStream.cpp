@@ -25,7 +25,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "PortabilityImpl.hh"
+#include <log4tango/Portability.hh>
 
 #ifdef LOG4TANGO_HAVE_UNISTD_H
 #  include <unistd.h>
@@ -48,33 +48,22 @@ LoggerStream::LoggerStream (Logger& logger, Level::Value level, bool filter)
 LoggerStream::~LoggerStream() 
 { 
   flush();
-#ifdef LOG4TANGO_HAVE_SSTREAM
   if (_buffer) {
     delete _buffer;
     _buffer = 0;
   }
-#endif
 }
 
 void LoggerStream::flush (void) 
 {
-#ifdef LOG4TANGO_HAVE_SSTREAM
   if (_buffer && _buffer->tellp() > 0)
-#else
-  if (_buffer && _buffer->pcount())
-#endif
   {
     if (_filter) {
       _logger.log(_level, _buffer->str());
     } else {
       _logger.log_unconditionally(_level, _buffer->str());
     }
-#ifdef LOG4TANGO_HAVE_SSTREAM
     _buffer->str("");
-#else
-    delete _buffer;
-    _buffer = 0;
-#endif
   }
 }
 

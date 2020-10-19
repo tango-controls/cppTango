@@ -1686,7 +1686,6 @@ public :
 
 /** @name Logging related methods */
 //@{
-#ifdef TANGO_HAS_LOG4TANGO
 /**
  * Add a logging target to the device
  *
@@ -1793,7 +1792,6 @@ public :
  * @param [in] level The new device logging level
  */
 	virtual void set_logging_level (int level);
-#endif // TANGO_HAS_LOG4TANGO
 //@}
 
 /** @name Locking related methods */

@@ -44,9 +44,7 @@
 #include <eventsupplier.h>
 #include <apiexcept.h>
 
-#ifdef TANGO_HAS_LOG4TANGO
 #include <logging.h>
-#endif
 
 namespace Tango
 {
@@ -77,10 +75,8 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, const char *d_name,
                        const char *de, Tango::DevState st, const char *sta)
     : device_name(d_name), desc(de), device_status(sta),
       device_state(st), device_class(cl_ptr), ext(new DeviceImplExt),
-#ifdef TANGO_HAS_LOG4TANGO
       logger(NULL), saved_log_level(log4tango::Level::WARN), rft(Tango::kDefaultRollingThreshold), poll_old_factor(0),
       idl_version(1),
-#endif
       exported(false), polled(false), poll_ring_depth(0), only_one(d_name),
       store_in_bb(true), poll_mon("cache"), att_conf_mon("att_config"),
       state_from_read(false), py_device(false), device_locked(false),
@@ -95,10 +91,8 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name, std::string &de
                        Tango::DevState st, std::string &sta)
     : device_name(d_name), desc(de), device_status(sta),
       device_state(st), device_class(cl_ptr), ext(new DeviceImplExt),
-#ifdef TANGO_HAS_LOG4TANGO
       logger(NULL), saved_log_level(log4tango::Level::WARN), rft(Tango::kDefaultRollingThreshold), poll_old_factor(0),
       idl_version(1),
-#endif
       exported(false), polled(false), poll_ring_depth(0), only_one(d_name.c_str()),
       store_in_bb(true), poll_mon("cache"), att_conf_mon("att_config"),
       state_from_read(false), py_device(false), device_locked(false),
@@ -111,10 +105,8 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name, std::string &de
 
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name)
     : device_name(d_name), device_class(cl_ptr), ext(new DeviceImplExt),
-#ifdef TANGO_HAS_LOG4TANGO
       logger(NULL), saved_log_level(log4tango::Level::WARN), rft(Tango::kDefaultRollingThreshold), poll_old_factor(0),
       idl_version(1),
-#endif
       exported(false), polled(false), poll_ring_depth(0), only_one(d_name.c_str()),
       store_in_bb(true), poll_mon("cache"), att_conf_mon("att_config"),
       state_from_read(false), py_device(false), device_locked(false),
@@ -131,10 +123,8 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name)
 
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr, std::string &d_name, std::string &description)
     : device_name(d_name), device_class(cl_ptr), ext(new DeviceImplExt),
-#ifdef TANGO_HAS_LOG4TANGO
       logger(NULL), saved_log_level(log4tango::Level::WARN), rft(Tango::kDefaultRollingThreshold), poll_old_factor(0),
       idl_version(1),
-#endif
       exported(false), polled(false), poll_ring_depth(0), only_one(d_name.c_str()),
       store_in_bb(true), poll_mon("cache"), att_conf_mon("att_config"),
       state_from_read(false), py_device(false), device_locked(false),
@@ -215,9 +205,7 @@ void DeviceImpl::real_ctor()
 // Init logging
 //
 
-#ifdef TANGO_HAS_LOG4TANGO
     init_logger();
-#endif
 
 }
 
@@ -435,14 +423,12 @@ DeviceImpl::~DeviceImpl()
         delete (poll_obj_list[i]);
     }
 
-#ifdef TANGO_HAS_LOG4TANGO
     if (logger && logger != Logging::get_core_logger())
     {
         logger->remove_all_appenders();
         delete logger;
         logger = 0;
     }
-#endif
 
     delete locker_client;
     delete old_locker_client;

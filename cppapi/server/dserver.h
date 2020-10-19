@@ -93,7 +93,6 @@ public :
 
 	void delete_devices();
 
-#ifdef TANGO_HAS_LOG4TANGO
 	void add_logging_target (const Tango::DevVarStringArray *argin);
 	void remove_logging_target (const Tango::DevVarStringArray *argin);
 	Tango::DevVarStringArray* get_logging_target (const std::string& dev_name);
@@ -101,7 +100,6 @@ public :
 	Tango::DevVarLongStringArray* get_logging_level (const Tango::DevVarStringArray *argin);
 	void stop_logging (void);
 	void start_logging (void);
-#endif
 
 	std::string &get_process_name() {return process_name;}
 	std::string &get_personal_name() {return instance_name;}

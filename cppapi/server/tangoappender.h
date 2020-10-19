@@ -29,8 +29,6 @@
 #ifndef _TANGO_APPENDER_H_
 #define _TANGO_APPENDER_H_
 
-#ifdef TANGO_HAS_LOG4TANGO
-
 namespace Tango
 {
 
@@ -101,6 +99,3 @@ private:
 } // namespace tango
 
 #endif // _TANGO_APPENDER_H_
-
-
-#endif // TANGO_HAS_LOG4TANGO

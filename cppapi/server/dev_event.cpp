@@ -42,9 +42,7 @@
 #include <sys/time.h>
 #endif
 
-#ifdef TANGO_HAS_LOG4TANGO
 #include <logging.h>
-#endif
 
 namespace Tango
 {

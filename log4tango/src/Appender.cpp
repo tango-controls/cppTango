@@ -26,7 +26,7 @@
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "PortabilityImpl.hh"
+#include <log4tango/Portability.hh>
 #include <log4tango/Appender.hh>
 
 namespace log4tango {
