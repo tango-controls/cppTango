@@ -230,10 +230,29 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 #endif
 			std::cerr << "Trying to re-enter the main loop" << std::endl;
 		}
+		catch (const Tango::DevFailed &e)
+		{
+			std::cerr << "OUPS !! A DevFailed exception received by a polling thread !!!!!!!!" << std::endl;
+			Tango::Except::print_error_stack(e.errors);
+#ifndef _TG_WINDOWS_
+			time_t t = time(NULL);
+			std::cerr << ctime(&t);
+#endif
+			std::cerr << "Trying to re-enter the main loop" << std::endl;
+		}
 		catch (const std::exception &ex)
 		{
 			std::cerr << "OUPS !! An unforeseen standard exception has been received by a polling thread !!!!!!" << std::endl;
 			std::cerr << ex.what() << std::endl;
+#ifndef _TG_WINDOWS_
+			time_t t = time(NULL);
+			std::cerr << ctime(&t);
+#endif
+			std::cerr << "Trying to re-enter the main loop" << std::endl;
+		}
+		catch (...)
+		{
+			std::cerr << "OUPS !! An unknown exception received by a polling thread !!!!!!!!" << std::endl;
 #ifndef _TG_WINDOWS_
 			time_t t = time(NULL);
 			std::cerr << ctime(&t);
