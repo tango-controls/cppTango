@@ -30,6 +30,7 @@
 
 #include <log4tango/Portability.hh>
 #include <log4tango/LayoutAppender.hh>
+#include <sys/stat.h>
 
 namespace log4tango {
 
