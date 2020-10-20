@@ -291,11 +291,6 @@ GroupReplyList::GroupReplyList ()
 {
   //-noop impl
 }
-//-----------------------------------------------------------------------------
-GroupReplyList::~GroupReplyList ()
-{
-  //-noop impl
-}
 
 //=============================================================================
 // class GroupCmdReply : reply to command executed on a group
@@ -336,10 +331,6 @@ GroupCmdReply::GroupCmdReply (const std::string& _dev_name,
   //-noop impl
 }
 //-----------------------------------------------------------------------------
-GroupCmdReply::~GroupCmdReply ()
-{
-  //-noop impl
-}
 //-----------------------------------------------------------------------------
 /*const*/ DeviceData& GroupCmdReply::get_data ()
 {
@@ -487,11 +478,6 @@ GroupCmdReplyList::GroupCmdReplyList ()
 {
   //-noop impl
 }
-//-----------------------------------------------------------------------------
-GroupCmdReplyList::~GroupCmdReplyList ()
-{
-  //-noop impl
-}
 
 //=============================================================================
 // class GroupAttrReply : reply to read/write attr on a group
@@ -532,11 +518,6 @@ GroupAttrReply::GroupAttrReply (const std::string& _dev_name,
   //-noop impl
 }
 //-----------------------------------------------------------------------------
-GroupAttrReply::~GroupAttrReply ()
-{
-  //-noop impl
-}
-//-----------------------------------------------------------------------------
 /*const*/ DeviceAttribute& GroupAttrReply::get_data ()
 {
   if (group_element_enabled_m == false && exception_enabled)
@@ -564,11 +545,6 @@ GroupAttrReply::~GroupAttrReply ()
 //=============================================================================
 GroupAttrReplyList::GroupAttrReplyList ()
   : std::vector<GroupAttrReply>(0), has_failed_m(false)
-{
-  //-noop impl
-}
-//-----------------------------------------------------------------------------
-GroupAttrReplyList::~GroupAttrReplyList ()
 {
   //-noop impl
 }
