@@ -119,31 +119,6 @@ protected:
 	std::vector<Tango::Attr *>			attr_list;
 };
 
-
-//=============================================================================
-//
-//			A binary function object
-//
-//
-// description :	This binary function object is used by the find_if
-//			std C++ find_if algorithm. It checks if the
-//			ClassAttribute object passed as argument (A1) stored
-//			all the properties for the atribute name passed as
-//			second argument (A2).
-//			This function object is a predicate and therefore
-//			returns a boolean (R)
-//
-//=============================================================================
-
-template <class A1, class A2, class R>
-struct WantedClassAttr : public  std::binary_function<A1,A2,R>
-{
-	R operator() (A1 att,A2 name_str) const
-	{
-		return att->get_name() == name_str;
-	}
-};
-
 } // End of Tango namespace
 
 #endif // _CLASS_ATTRIBUTE_H
