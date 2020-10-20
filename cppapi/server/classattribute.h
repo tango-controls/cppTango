@@ -71,7 +71,7 @@ public:
 	AttrProperty(std::string &name,std::string &value);
 	AttrProperty(const char *name,long value);
 	AttrProperty(const char *name,std::string &value);
-	~AttrProperty() {};
+	~AttrProperty() = default;
 
 	std::string &get_value() {return attr_value;}
 	long get_lg_value() {return attr_lg;}
