@@ -49,24 +49,6 @@
 namespace Tango
 {
 
-//
-// Binary function objects to be used by the find_if algorithm.
-// The find_if algo. want to have a predicate, this means that the return value
-// must be a boolean (R is its name).
-// The test is done between a AttrProperty object (name A1) and a string (name A2)
-// The find_if algo. needs a unary predicate. This function object is a binary
-// function object. It must be used with the bind2nd function adapter
-//
-
-template <typename A1, typename A2, typename R>
-struct WantedProp : public  std::binary_function<A1,A2,R>
-{
-	R operator() (A1 att,A2 name_str) const
-	{
-		return att.get_name() == name_str;
-	}
-};
-
 class AttrProperty;
 class DeviceClass;
 
