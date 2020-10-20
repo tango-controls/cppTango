@@ -50,19 +50,20 @@
 #include <sys/time.h>
 #endif /* _TG_WINDOWS_ */
 
+namespace { //anonymous
+
+std::vector<Tango::AttrProperty>::iterator FindProperty(std::vector<Tango::AttrProperty> &prop_list,
+                                                        const char *prop_name)
+{
+	return std::find_if(std::begin(prop_list), std::end(prop_list),
+	                    [prop_name](Tango::AttrProperty& attr){ return attr.get_name() == prop_name; });
+}
+
+} // anonymous
+
 namespace Tango
 {
 
-//
-// A classical function which will be used as unary predicate for the find_if
-// algo. It must be used with the bind2nd adapter to be transform as unary and
-// with the ptr_fun adapter to be transform as a function object
-//
-
-static bool WantedProp_f(AttrProperty a,const char *n)
-{
-	return (a.get_name() == n);
-}
 
 void LastAttrValue::store(
     const AttributeValue_5* attr_5,
@@ -1558,16 +1559,10 @@ bool Attribute::is_writ_associated()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-
 std::string &Attribute::get_attr_value(std::vector <AttrProperty> &prop_list,const char *prop_name)
 {
-	std::vector<AttrProperty>::iterator pos;
+	auto pos = FindProperty(prop_list, prop_name);
 
-//
-// Get the property value
-//
-
-	pos = find_if(prop_list.begin(),prop_list.end(),std::bind2nd(std::ptr_fun(WantedProp_f),prop_name));
 	if (pos == prop_list.end())
 	{
 		TangoSys_OMemStream o;
@@ -1597,13 +1592,8 @@ std::string &Attribute::get_attr_value(std::vector <AttrProperty> &prop_list,con
 
 long Attribute::get_lg_attr_value(std::vector <AttrProperty> &prop_list,const char *prop_name)
 {
-	std::vector<AttrProperty>::iterator pos;
+	auto pos = FindProperty(prop_list, prop_name);
 
-//
-// Get the property value
-//
-
-	pos = find_if(prop_list.begin(),prop_list.end(),std::bind2nd(std::ptr_fun(WantedProp_f),prop_name));
 	if (pos == prop_list.end())
 	{
 		TangoSys_OMemStream o;
