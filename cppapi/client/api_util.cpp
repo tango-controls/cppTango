@@ -484,7 +484,7 @@ void ApiUtil::get_asynch_replies()
     }
     catch (CORBA::BAD_INV_ORDER &e)
     {
-        if (e.minor() != omni::BAD_INV_ORDER_RequestNotSentYet)
+        if ((e.minor)() != omni::BAD_INV_ORDER_RequestNotSentYet)
         {
             throw;
         }
@@ -647,7 +647,7 @@ void ApiUtil::get_asynch_replies(long call_timeout)
                 }
                 catch (CORBA::BAD_INV_ORDER &e)
                 {
-                    if (e.minor() != omni::BAD_INV_ORDER_RequestNotSentYet)
+                    if ((e.minor)() != omni::BAD_INV_ORDER_RequestNotSentYet)
                     {
                         throw;
                     }
@@ -713,7 +713,7 @@ void ApiUtil::get_asynch_replies(long call_timeout)
                 }
                 catch (CORBA::BAD_INV_ORDER &e)
                 {
-                    if (e.minor() != omni::BAD_INV_ORDER_RequestNotSentYet)
+                    if ((e.minor)() != omni::BAD_INV_ORDER_RequestNotSentYet)
                     {
                         throw;
                     }
