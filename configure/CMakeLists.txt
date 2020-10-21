@@ -40,6 +40,10 @@ if(IDL_BASE)
     set(IDL_PKG_INCLUDE_DIRS ${IDL_BASE}/include)
 else()
     pkg_search_module(IDL_PKG REQUIRED tangoidl)
+
+    if(NOT IDL_PKG_FOUND)
+        message(FATAL_ERROR "tangoidl is required for Tango")
+    endif()
 endif()
 
 if(OMNI_BASE)
