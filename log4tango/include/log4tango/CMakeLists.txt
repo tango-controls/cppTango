@@ -16,7 +16,6 @@ set(HEADER_FILES
                 LoggingEvent.hh
                 Level.hh
                 NDC.hh
-                TimeStamp.hh
                 Filter.hh
                 Export.hh
                 Portability.hh)

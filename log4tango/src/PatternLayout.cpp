@@ -30,7 +30,6 @@
 #include <log4tango/PatternLayout.hh>
 #include <log4tango/Level.hh> 
 #include <log4tango/NDC.hh>
-#include <log4tango/TimeStamp.hh>
 
 #ifdef LOG4TANGO_HAVE_SSTREAM
 # include <sstream>
@@ -41,12 +40,11 @@
 #include <iomanip>
 #include <ctime>
 #include <cmath>
+#include <chrono>
 
-#ifdef LOG4TANGO_HAVE_INT64_T
-# ifdef LOG4TANGO_HAVE_STDINT_H
-#   include <stdint.h>
-# endif // LOG4TANGO_HAVE_STDINT_H
-#endif // LOG4TANGO_HAVE_INT64_T
+namespace {
+    const auto LogStartTime = std::chrono::system_clock::now();
+}
 
 namespace log4tango {
 
@@ -165,15 +163,17 @@ namespace log4tango {
 
         virtual void append(std::ostringstream& out, const LoggingEvent& event) {
             struct tm *currentTime;
-            time_t t = event.timestamp.get_seconds();
+	    time_t t = std::chrono::system_clock::to_time_t(event.timestamp);
             currentTime = std::localtime(&t);
             char formatted[100];
             std::string timeFormat;
             if (_printMillis) {
+	        auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
+		    event.timestamp.time_since_epoch()).count() % 1000;
                 std::ostringstream formatStream;
                 formatStream << _timeFormat1 
                              << std::setw(3) << std::setfill('0')
-                             << event.timestamp.get_milliseconds()
+                             << milliseconds
                              << _timeFormat2;
                 timeFormat = formatStream.str();
             } else {
@@ -195,30 +195,15 @@ namespace log4tango {
 
     struct SecondsSinceEpochComponent : public PatternLayout::PatternComponent {
         virtual void append(std::ostringstream& out, const LoggingEvent& event) {
-            out << event.timestamp.get_seconds();
+	    out << std::chrono::duration_cast<std::chrono::seconds>(
+	        event.timestamp.time_since_epoch()).count();
         }
     };
 
     struct MillisSinceEpochComponent : public PatternLayout::PatternComponent {
         virtual void append(std::ostringstream& out, const LoggingEvent& event) {
-#ifdef LOG4TANGO_HAVE_INT64_T
-            int64_t t = event.timestamp.get_seconds() -
-                TimeStamp::get_start_time().get_seconds();
-            t *= 1000;
-            t += event.timestamp.get_milliseconds() -
-                TimeStamp::get_start_time().get_milliseconds();
-            
-            out << t;
-#else
-            double t = event.timestamp.get_seconds() -
-                TimeStamp::get_start_time().get_seconds();
-            t *= 1000;
-            t += event.timestamp.get_milliseconds() -
-                TimeStamp::get_start_time().get_milliseconds();
-
-            out << std::setiosflags(std::ios::fixed)
-                << std::setprecision(0) << t;
-#endif
+	    auto delta = event.timestamp - LogStartTime;
+	    out << std::chrono::duration_cast<std::chrono::milliseconds>(delta).count();
         }
     };
 
