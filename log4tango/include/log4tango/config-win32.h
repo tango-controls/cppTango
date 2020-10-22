@@ -33,23 +33,6 @@
 /* Define if you have the syslog function.  */
 /* #undef LOG4TANGO_HAVE_SYSLOG */
 
-/* Define if you have the `ftime' function. */
-#ifndef LOG4TANGO_HAVE_FTIME
-# define LOG4TANGO_HAVE_FTIME  1
-#endif
-
-/* Define if you have the `gettimeofday' function. */
-/* #undef LOG4TANGO_HAVE_GETTIMEOFDAY */
-
-/* define if the compiler has int64_t */
-#ifndef LOG4TANGO_HAVE_INT64_T
-#define LOG4TANGO_HAVE_INT64_T
-//#define int64_t __int64
-typedef __int64 int64_t;
-
-
-#endif
-
 /* Define if you have the <io.h> header file.  */
 #ifndef LOG4TANGO_HAVE_IO_H
 # define LOG4TANGO_HAVE_IO_H 1
