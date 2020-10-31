@@ -394,6 +394,38 @@ cout << "str = " << str << endl;
         TS_ASSERT_EQUALS(3, callback2.num_of_all_events);
         TS_ASSERT_EQUALS(0, callback2.num_of_error_events);
     }
+
+    void test_unsubscription_multiple_subscriptions_with_single_proxy()
+    {
+        EventCallback<Tango::EventData> callback1{};
+        EventCallback<Tango::EventData> callback2{};
+
+        const std::string attribute_name = "event_change_tst";
+
+        auto proxy = std::make_unique<DeviceProxy>(device1_name);
+
+        TS_ASSERT_THROWS_NOTHING(proxy->subscribe_event(
+            attribute_name, Tango::USER_EVENT, &callback1));
+        TS_ASSERT_THROWS_NOTHING(proxy->subscribe_event(
+            attribute_name, Tango::USER_EVENT, &callback2));
+
+        TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOPushEvent"));
+        Tango_sleep(1);
+        TS_ASSERT_EQUALS(2, callback1.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback1.num_of_error_events);
+        TS_ASSERT_EQUALS(2, callback2.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback2.num_of_error_events);
+
+        proxy.reset(nullptr);
+
+        TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOPushEvent"));
+        Tango_sleep(1);
+        TS_ASSERT_EQUALS(2, callback1.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback1.num_of_error_events);
+        TS_ASSERT_EQUALS(2, callback2.num_of_all_events);
+        TS_ASSERT_EQUALS(0, callback2.num_of_error_events);
+    }
+
 };
 #undef cout
 #endif // DServerMiscTestSuite_h

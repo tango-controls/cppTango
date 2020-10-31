@@ -1586,7 +1586,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 	if (iter != event_callback_map.end())
 	{
-		int new_event_id = add_new_callback(iter, callback, ev_queue, event_id);
+		int new_event_id = add_new_callback(device, iter, callback, ev_queue, event_id);
 		get_fire_sync_event(device,
 							callback,
 							ev_queue,
@@ -1674,7 +1674,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 //
 
     EventCallBackStruct new_event_callback;
-    EventSubscribeStruct new_ess;
+    EventSubscribeStruct new_ess{};
 
     new_event_callback.received_from_admin = received_from_admin;
     new_event_callback.obj_name = obj_name_lower;
@@ -3046,6 +3046,7 @@ TimeVal EventConsumer::get_last_event_date(int event_id)
 //
 // argument :
 //		in :
+//			- device : Device proxy used for subscription
 //			- iter : Iterator in the callback map
 //			- callback : Pointer to the Callback object
 //			- ev_queue : Pointer to the event queue
@@ -3053,9 +3054,9 @@ TimeVal EventConsumer::get_last_event_date(int event_id)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-int EventConsumer::add_new_callback(EvCbIte &iter,CallBack *callback,EventQueue *ev_queue,int event_id)
+int EventConsumer::add_new_callback(DeviceProxy *device, EvCbIte &iter,CallBack *callback,EventQueue *ev_queue,int event_id)
 {
-	EventSubscribeStruct ess;
+	EventSubscribeStruct ess{};
 	int ret_event_id = event_id;
 
 	if (ret_event_id <= 0)
@@ -3064,6 +3065,7 @@ int EventConsumer::add_new_callback(EvCbIte &iter,CallBack *callback,EventQueue 
 		ret_event_id = subscribe_event_id;
 	}
 
+	ess.device = device;
 	ess.id = ret_event_id;
 	ess.callback = callback;
 	ess.ev_queue = ev_queue;
