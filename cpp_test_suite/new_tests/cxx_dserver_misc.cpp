@@ -5,6 +5,8 @@
 #include <cxxtest/TangoPrinter.h>
 #include <tango.h>
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 using namespace Tango;
 using namespace std;
@@ -294,6 +296,59 @@ cout << "str = " << str << endl;
         TS_ASSERT_EQUALS(0, callback.num_of_error_events);
 
         TS_ASSERT_THROWS_NOTHING(device1->unsubscribe_event(subscription));
+    }
+
+/*
+ * Test to check that client still receives periodic archive events after
+ * polling is stopped and started again for particular device. Such scenario
+ * used to fail as described in #675.
+ */
+    void test_archive_periodic_events_after_polling_restart()
+    {
+        constexpr auto poll_period = std::chrono::milliseconds(1000);
+        constexpr auto time_buffer = std::chrono::milliseconds(100);
+        constexpr auto poll_period_ms = std::chrono::milliseconds(poll_period).count();
+
+        std::string attribute_name = "PollLong_attr";
+
+        auto config = device1->get_attribute_config(attribute_name);
+        config.events.arch_event.archive_period = std::to_string(poll_period_ms);
+        AttributeInfoListEx config_in = { config };
+        TS_ASSERT_THROWS_NOTHING(device1->set_attribute_config(config_in));
+
+        TS_ASSERT_THROWS_NOTHING(device1->poll_attribute(attribute_name, poll_period_ms));
+
+        EventCallback<Tango::EventData> callback{};
+
+        int subscription = 0;
+        TS_ASSERT_THROWS_NOTHING(subscription = device1->subscribe_event(
+            attribute_name,
+            Tango::ARCHIVE_EVENT,
+            &callback));
+
+        std::this_thread::sleep_for(poll_period + time_buffer);
+        TS_ASSERT_EQUALS(0, callback.num_of_error_events);
+        TS_ASSERT_EQUALS(2, callback.num_of_all_events);
+
+        TS_ASSERT_THROWS_NOTHING(device1->stop_poll_attribute(attribute_name));
+
+        std::this_thread::sleep_for(time_buffer);
+        TS_ASSERT_EQUALS(1, callback.num_of_error_events);
+        TS_ASSERT_EQUALS(3, callback.num_of_all_events);
+
+        TS_ASSERT_THROWS_NOTHING(device1->poll_attribute(attribute_name, poll_period_ms));
+
+        std::this_thread::sleep_for(poll_period + time_buffer);
+        TS_ASSERT_EQUALS(1, callback.num_of_error_events);
+        TS_ASSERT_EQUALS(4, callback.num_of_all_events);
+
+        std::this_thread::sleep_for(poll_period);
+        TS_ASSERT_EQUALS(1, callback.num_of_error_events);
+        TS_ASSERT_EQUALS(5, callback.num_of_all_events);
+
+        TS_ASSERT_THROWS_NOTHING(device1->unsubscribe_event(subscription));
+
+        TS_ASSERT_THROWS_NOTHING(device1->stop_poll_attribute(attribute_name));
     }
 };
 #undef cout
