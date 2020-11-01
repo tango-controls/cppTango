@@ -1,96 +1,168 @@
 # Prerequisites
 
-* [tango-idl](https://github.com/tango-controls/tango-idl)
-* Other required packages can be installed on apt-based linux systems via
-  * add deb-src entries for main and contrib (debian) or main, restricted and universe (ubuntu) into /etc/apt/sources.list
-  * `sudo apt-get update`
-  * `sudo apt-get build-dep libtango9`
-* docker and docker-engine (for tests)
+The following software packages are required to build cppTango:
 
-# How to build and install
+- A C++14 compliant compiler like GCC, clang or Visual Studio (2015 or newer)
+- [cmake](https://cmake.org), 3.7 or newer
+- [tango-idl](https://github.com/tango-controls/tango-idl)
+- [omniorb](http://omniorb.sourceforge.net), 4.2.1 or newer
+- [libzmq](https://github.com/zeromq/libzmq), 4.0.5 or newer
+- [cppzmq](https://github.com/zeromq/cppzmq), 4.2.2 or newer
 
-- `git clone https://github.com/tango-controls/cppTango`
-- `cd cppTango`
-- `mkdir build`
-- `cd build`
-- `cmake ..`
-- `make [-j NUMBER_OF_CPUS]`
-- `sudo make install`
+In the following we assume a linux-based system, see [here](#building-on-windows) for building on Windows.
 
-## Available are the following cmake options:
+On current debian systems the dependencies, except tango-idl, are available as distribution packages:
 
-- `-DCMAKE_INSTALL_PREFIX=<desired installation path>`
-- `-DIDL_BASE=<tango-idl installation folder>`
-- `-DOMNI_BASE=<omniORB4 home folder>`
-- `-DCPPZMQ_BASE=<cppzmq home folder>`
-- `-DZMQ_BASE=<zmq home folder>`
-- `-DCMAKE_BUILD_TYPE=<Release|Debug>` (`Release` by default)
-- `-DCMAKE_VERBOSE_MAKEFILE=<ON|OFF>`
-- `-DTANGO_USE_USING_NAMESPACE=<ON|OFF>` choose `OFF` for modern builds
-- `-DUSE_PCH=<ON|OFF>` Use precompiled headers (`OFF` by default)
-- `-DBUILD_TESTING=<ON|OFF>` Build the test suite (`ON` by default)
-- `-DBUILD_SHARED_LIBS=<ON|OFF>` Build tango as shared library (`ON` by default)
-- `-DWARNINGS_AS_ERRORS=<ON|OFF>` Treat compiler warnings as errors (`OFF` by default)
-- `-DTANGO_JPEG_MMX=<ON|OFF>` Build the jpeg support using MMX extensions (`ON` by default)
-- `-DCOVERALLS=<ON|OFF>` Generate code coverage data (`OFF` by default)
-- `-DTANGO_INSTALL_DEPENDENCIES=<ON|OFF>` Install dependencies of tango as well (`ON` by default, windows only)
-
-Typical output:
-
-```
--- Install configuration: "Debug"
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/lib/libtango.so.9.2.5
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/lib/libtango.so.9
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/lib/libtango.so
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/lib/pkgconfig/tango.pc
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Appender.hh
-<snip>
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/subdev_diag.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/encoded_attribute.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/encoded_format.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/idl/tango.h
+```bash
+sudo apt install cmake build-essential git libcos4-dev libomniorb4-dev libomnithread4-dev libzmq3-dev omniidl python3
 ```
 
-## Installing required cppzmq version on older systems
+If your linux does not have precompiled packages for these dependencies jump to the
+[next](#compiling-the-dependencies) section for compilation instructions.
 
-On some debian versions, 7 (wheezy) and older, there is no compatible cppzmq version available.
+## Compiling tango
 
-This requires installing [cppzmq](https://github.com/zeromq/cppzmq) via:
+## tango-idl
 
-```
-git clone https://github.com/zeromq/cppzmq
-cd cppzmq
+```bash
+git clone https://github.com/tango-controls/tango-idl
+cd tango-idl
 mkdir build
 cd build
-cmake -DENABLE_DRAFTS=OFF -DCPPZMQ_BUILD_TESTS=OFF ..
+cmake ..
+// no make required
 sudo make install
 ```
 
-And then pass `-DCPPZMQ_BASE=/usr/local` to cmake or use
+## cppTango
 
-```
+```bash
+git clone https://github.com/tango-controls/cppTango
+cd cppTango
 mkdir build
 cd build
-configure CXXFLAGS="-I /usr/local/include" ..
+cmake ..
+make [-j NUMBER_OF_CPUS]
+sudo make install
 ```
 
-when compiling via the tango source distribution.
+## CMake Variables
 
-# Using pkg-config
+The following variable can be passed to cmake to tweak compilation. The general syntax is `-D$var=$value`.
 
-Once installed cppTango provides [pkg-config](https://en.wikipedia.org/wiki/Pkg-config) file `tango.pc`
+On linux-based systems all dependencies are searched via `pkg-config`.
+Therefore you can also pass additional search locations via the
+`PKG_CONFIG_PATH` environment variable as in
 
-One can use it to resolve libtango dependencies in his project, for instance using cmake:
+```
+PKG_CONFIG_PATH="/usr/local/libzmq:/usr/local/omniORB" cmake ..
+```
+
+<!-- Keep the variable list sorted -->
+
+| Variable name                |  Default value                         | Description
+|------------------------------|----------------------------------------|--------------------------------------------------------------------------------------------------
+| `BUILD_SHARED_LIBS`          | `ON`                                   | Build tango as shared library, `OFF` creates a static library
+| `BUILD_TESTING`              | `ON`                                   | Build the test suite
+| `CMAKE_BUILD_TYPE`           | `Release`                              | Compilation type, can be `Release` or `Debug`
+| `CMAKE_INSTALL_PREFIX`       | `/usr/local` or `C:/Program Files`     | Desired install path
+| `CMAKE_VERBOSE_MAKEFILE`     | `OFF`                                  | Allows to increase the verbosity level with `ON`
+| `COVERALLS`                  | `OFF`                                  | Generate code coverage data
+| `CPPZMQ_BASE`                |                                        | cppzmq installed path
+| `IDL_BASE`                   |                                        | tangoidl installed path
+| `OMNI_BASE`                  |                                        | omniORB4 installed path
+| `TANGO_JPEG_MMX`             | `ON`                                   | Build the jpeg support with MMX extensions (32bit Linux only)
+| `TANGO_INSTALL_DEPENDENCIES` | `OFF`                                  | Install dependencies of tango as well (Windows only)
+| `TANGO_USE_USING_NAMESPACE`  | `ON`                                   | `ON` will include the `std` namespace in tango headers. Choose `OFF` for modern builds.
+| `USE_PCH`                    | `OFF`                                  | Use precompiled headers (makes compilation much faster)
+| `WARNINGS_AS_ERRORS`         | `OFF`                                  | Treat compiler warnings as errors
+| `ZMQ_BASE`                   |                                        | libzmq installed path
+
+# Compiling the dependencies
+
+We assume that you have a compiler already and are on a linux based system.
+Additionally the tools git, wget, tar and bzip2 are required.
+
+## CMake
+
+```bash
+git clone https://github.com/Kitware/CMake cmake
+cd cmake
+git checkout v3.12.4
+mkdir build
+cd build
+../bootstrap
+make [-j NUMBER_OF_CPUS]
+sudo make install
+```
+
+## libzmq
+
+```bash
+git clone https://github.com/zeromq/libzmq
+cd libzmq
+git checkout v4.2.0
+mkdir build
+cd build
+cmake -DENABLE_DRAFTS=OFF -DWITH_DOC=OFF -DZMQ_BUILD_TESTS=OFF ..
+make [-j NUMBER_OF_CPUS]
+sudo make install
+```
+
+## cppzmq
+
+```bash
+git clone https://github.com/zeromq/cppzmq
+cd cppzmq
+git checkout v4.2.2
+mkdir build
+cd build
+cmake -DENABLE_DRAFTS=OFF -DZMQ_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local ..
+make [-j NUMBER_OF_CPUS]
+sudo make install
+```
+
+## omniORB4
+
+```bash
+wget -L https://sourceforge.net/projects/omniorb/files/omniORB/omniORB-4.2.4/omniORB-4.2.4.tar.bz2/download -O omniORB-4.2.4.tar.bz2
+tar xjf omniORB-4.2.4.tar.bz2
+./configure
+make [-j NUMBER_OF_CPUS]
+sudo make install
+```
+
+Now with all these dependencies installed the cmake invocation to compile cppTango looks like
+
+```bash
+cd cppTango/build
+cmake ..
+```
+
+if cmake does not find some of the dependencies, you can either add a custom `PKG_CONFIG_PATH` environment variable with
+
+```bash
+PKG_CONFIG_PATH=/usr/local/lib/pkgconfig cmake ..
+```
+
+or use the the CMAKE variables `ZMQ_BASE`, `CPPZMQ_BASE`, `IDL_BASE`, `OMNI_BASE` from [here](#cmake-variables).
+
+# Using pkg-config in packages requiring tango
+
+Once installed cppTango provides
+[pkg-config](https://en.wikipedia.org/wiki/Pkg-config) file `tango.pc`. One can
+use it to resolve libtango dependencies:
 
 ```cmake
 include(FindPkgConfig)
 pkg_search_module(TANGO_PKG REQUIRED tango)
 
-#...
+if(NOT TANGO_PKG_FOUND)
+  message(FATAL_ERROR "Could not find tango")
+endif()
 
 link_directories(${TANGO_PKG_LIBRARY_DIRS})
 
-#note TANGO_PKG_XXX usage
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${TANGO_PKG_INCLUDE_DIRS})
 target_compile_options(${PROJECT_NAME} PUBLIC -std=c++11)
@@ -104,98 +176,30 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${TANGO_PKG_LIBRARIES})
 pkg-config --variable=tangodsdir tango
 /usr/bin
 ```
+# Running the tests
 
-# How to setup tests
+Running the tests requires docker. See
+[here](https://docs.docker.com/engine/install) for install instructions.
 
-Using provided docker based TANGO environment:
+Once you have installed docker, you can run the tests from `build/` via:
 
-### Build the library:
-
-```
-$ mkdir build
-$ cd build
-$ cmake ..
-$ make
+```bash
+make test
 ```
 
-### Run tests
+## Run individual tests
 
-From `build/` directory run:
+For debugging a single test execute the following:
 
 ```
-$ ctest --output-on-failure --parallel 4
-
-Test project /home/tango-cs/Documents/cppTango/build
-      Start 54: old_tests::ring_depth
-      Start 66: asyn::asyn_cmd
-      Start 77: event::per_event
-      Start 83: event::user_event
- 1/93 Test #83: event::user_event .................   Passed   22.65 sec
-
-...
-
-90/93 Test  #1: log4tango_test ....................   Passed    0.20 sec
-91/93 Test #39: CXX::cxx_nan_inf_in_prop ..........   Passed   13.28 sec
-92/93 Test #43: old_tests::attr_types .............   Passed   12.89 sec
-93/93 Test #14: CXX::cxx_attr_conf ................   Passed   12.81 sec
-
-100% tests passed, 0 tests failed out of 93
-
-Total Test time (real) = 546.93 sec
+ctest -R event::per_event --output-on-failure -V
 ```
 
 Test output and device server logs are collected in `build/cpp_test_suite/test_results`.
 
-For more details on testing with CTest, [see the guide](https://cmake.org/Wiki/CMake/Testing_With_CTest).
+For more details on testing with CTest, see [here](https://cmake.org/Wiki/CMake/Testing_With_CTest).
 
-### Run individual tests
-
-```
-$ ctest -R old_tests::attr_misc -V
-
-UpdateCTestConfiguration  from :/home/tango-cs/Documents/cppTango/build/DartConfiguration.tcl
-Parse Config file:/home/tango-cs/Documents/cppTango/build/DartConfiguration.tcl
-UpdateCTestConfiguration  from :/home/tango-cs/Documents/cppTango/build/DartConfiguration.tcl
-Parse Config file:/home/tango-cs/Documents/cppTango/build/DartConfiguration.tcl
-Test project /home/tango-cs/Documents/cppTango/build
-Constructing a list of tests
-Done constructing a list of tests
-Updating test list for fixtures
-Added 0 tests to meet fixture requirements
-Checking test dependency graph...
-Checking test dependency graph end
-test 49
-    Start 49: old_tests::attr_misc
-
-49: Test command: /home/tango-cs/Documents/cppTango/build/cpp_test_suite/environment/run_with_fixture.sh "/home/tango-cs/Documents/cppTango/build/cpp_test_suite/old_tests/attr_misc" "test/debian8/10"
-49: Test timeout computed to be: 1500
-49:
-49: new DeviceProxy(test/debian8/10) returned
-49:
-49:    Setting/Getting attribute info --> OK
-49:    Writing outside attribute limits --> OK
-49:    Min alarm detection (on a float spectrum) --> OK
-49:    Reset min alarm detection --> OK
-49:    Max alarm detection (on a float spectrum) --> OK
-49:    Reset max alarm detection --> OK
-49:    Min alarm detection (on a unsigned short spectrum) --> OK
-49:    Reset min alarm detection --> OK
-49:    Max alarm detection (on a unsigned short spectrum) --> OK
-49:    Reset max alarm detection --> OK
-49:    Setting/Getting V5 attribute info --> OK
-49:    Alarm, Warning level detection --> OK
-49:    Exception when trying to change "hard coded" properties --> OK
-1/1 Test #49: old_tests::attr_misc .............   Passed    8.55 sec
-
-The following tests passed:
-        old_tests::attr_misc
-
-100% tests passed, 0 tests failed out of 1
-
-Total Test time (real) =   8.56 sec
-```
-
-### Setting environment up manually
+## Setting environment up manually
 
 The test runner automatically starts database and all required
 device servers for each test. If you want to set up the environment
