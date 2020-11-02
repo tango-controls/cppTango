@@ -60,4 +60,4 @@ See [INSTALL file](INSTALL.md).
 
 # How to contribute
 
-See [CONTRIBUTE file](INSTALL.md).
+See [CONTRIBUTING file](CONTRIBUTING.md).
