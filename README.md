@@ -24,7 +24,6 @@
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=org.tango-controls%3Acpp-tango%3Atango-9-lts&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=org.tango-controls%3Acpp-tango%3Atango-9-lts)
 [![Tech debt](https://sonarcloud.io/api/project_badges/measure?project=org.tango-controls%3Acpp-tango%3Atango-9-lts&metric=sqale_index)](https://sonarcloud.io/dashboard?id=org.tango-controls%3Acpp-tango%3Atango-9-lts)
 
-
 [![Lines of code](https://sonarcloud.io/api/project_badges/measure?project=org.tango-controls%3Acpp-tango%3Atango-9-lts&metric=ncloc)](https://sonarcloud.io/dashboard?id=org.tango-controls%3Acpp-tango%3Atango-9-lts)
 [![Lines of code](https://sonarcloud.io/api/project_badges/measure?project=org.tango-controls%3Acpp-tango%3Atango-9-lts&metric=coverage)](https://sonarcloud.io/dashboard?id=org.tango-controls%3Acpp-tango%3Atango-9-lts)
 
@@ -55,36 +54,10 @@ API reference: [tango-controls.github.io/cppTango-docs](https://tango-controls.g
 
 Old Manuals: [tango-controls.org/documentation/kernel](http://www.tango-controls.org/documentation/kernel/)
 
-
 # How to build and install
 
 See [INSTALL file](INSTALL.md).
 
 # How to contribute
 
-See [corresponding wiki page](https://github.com/tango-controls/cppTango/wiki/Contribution-Guide)
-
-# Pull request acceptance and merging
-
-You have created a change to cppTango. 🎉
-
-And now you want to get these changes merged? Very nice!
-
-In order to give you the best possible experience here are a few hints for the
-path forward:
-- All CI tests have to pass. If you have changed the behaviour of the code, you
-  should add new tests as well. You don't need to execute the tests locally,
-  CI is the reference anyway. So just create a PR and let CI handle that.
-- Make your PR easy to review. This starts with explaining what it wants to
-  achieve and ends with splitting the changes into logical commits where each
-  commit describes why it is changing the code.
-- Follow the coding style. This is at the moment messy at best, but still
-  we don't want to get worse.
-- Your PR needs two review approvals, including one from the code owners listed [here](https://github.com/tango-controls/cppTango/blob/tango-9-lts/CODEOWNERS).
-- Be prepared to adapt your pull request to the review responses. Code review
-  is done for ensuring higher code quality and communicating implementations
-  details to newcomers and not for annoying anyone or slowing down development.
-
-# Links
-
-[Tango Controls web page](http://tango-controls.org)
+See [CONTRIBUTING file](CONTRIBUTING.md).
