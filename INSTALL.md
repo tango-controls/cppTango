@@ -78,6 +78,28 @@ PKG_CONFIG_PATH="/usr/local/libzmq:/usr/local/omniORB" cmake ..
 | `WARNINGS_AS_ERRORS`         | `OFF`                                  | Treat compiler warnings as errors
 | `ZMQ_BASE`                   |                                        | libzmq installed path
 
+## Cross-compiling tango
+
+For compiling tango for a different architectures than the host architecture, it is
+advisable to cross compile tango. We demonstrate the approach by compiling for
+32-bit on a 64-bit linux. See [here](https://wiki.debian.org/Multiarch/HOWTO)
+for the generic debian howto.
+
+```bash
+sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt remove libcos4-dev libomniorb4-dev libomnithread4-dev libzmq3-dev
+sudo apt install gcc-multilib g++-multilib gcc-i686-linux-gnu
+sudo apt install libcos4-dev:i386 libomniorb4-dev:i386 libomnithread4-dev:i386 libzmq3-dev:i386
+mkdir build-cross-32bit
+cd build-cross-32bit
+cmake -DCMAKE_TOOLCHAIN_FILE=..\configure\toolchain-i686.cmake ..
+make [-j NUMBER_OF_CPUS]
+```
+
+cmake should output `Target platform: Linux 32-bit`. You can also inspect the
+created library using `file` to check that you built it correctly.
+
 # Compiling the dependencies
 
 We assume that you have a compiler already and are on a linux based system.
