@@ -24,7 +24,6 @@
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=org.tango-controls%3Acpp-tango%3Atango-9-lts&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=org.tango-controls%3Acpp-tango%3Atango-9-lts)
 [![Tech debt](https://sonarcloud.io/api/project_badges/measure?project=org.tango-controls%3Acpp-tango%3Atango-9-lts&metric=sqale_index)](https://sonarcloud.io/dashboard?id=org.tango-controls%3Acpp-tango%3Atango-9-lts)
 
-
 [![Lines of code](https://sonarcloud.io/api/project_badges/measure?project=org.tango-controls%3Acpp-tango%3Atango-9-lts&metric=ncloc)](https://sonarcloud.io/dashboard?id=org.tango-controls%3Acpp-tango%3Atango-9-lts)
 [![Lines of code](https://sonarcloud.io/api/project_badges/measure?project=org.tango-controls%3Acpp-tango%3Atango-9-lts&metric=coverage)](https://sonarcloud.io/dashboard?id=org.tango-controls%3Acpp-tango%3Atango-9-lts)
 
@@ -55,7 +54,6 @@ API reference: [tango-controls.github.io/cppTango-docs](https://tango-controls.g
 
 Old Manuals: [tango-controls.org/documentation/kernel](http://www.tango-controls.org/documentation/kernel/)
 
-
 # How to build and install
 
 See [INSTALL file](INSTALL.md).
@@ -63,7 +61,3 @@ See [INSTALL file](INSTALL.md).
 # How to contribute
 
 See [CONTRIBUTE file](INSTALL.md).
-
-# Links
-
-[Tango Controls web page](http://tango-controls.org)
