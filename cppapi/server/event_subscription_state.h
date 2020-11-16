@@ -11,27 +11,43 @@ namespace Tango
 using EventClientLibVersion = int;
 using EventClientLibVersions = std::vector<EventClientLibVersion>;
 
-struct EventSubscriptionState
+struct AttributeEventSubscriptionState
 {
     std::string attribute_name;
 
-    EventClientLibVersions change;
-    EventClientLibVersions archive;
-    EventClientLibVersions periodic;
-    EventClientLibVersions user;
-    EventClientLibVersions att_conf;
+    EventClientLibVersions change_event_clients = {};
+    EventClientLibVersions archive_event_clients = {};
+    EventClientLibVersions periodic_event_clients = {};
+    EventClientLibVersions user_event_clients = {};
+    EventClientLibVersions attr_conf_event_clients = {};
 
-    bool quality;
-    bool data_ready;
-    bool dev_intr_change;
+    bool has_quality_event_clients = false;
+    bool has_data_ready_event_clients = false;
 
-    bool notifd;
-    bool zmq;
+    bool has_zmq_event_channel = false;
+    bool has_notifd_event_channel = false;
 };
 
-using EventSubscriptionStates = std::vector<EventSubscriptionState>;
-using ServerEventSubscriptionState = std::map<std::string, EventSubscriptionStates>;
+using AttributeEventSubscriptionStates = std::vector<AttributeEventSubscriptionState>;
 
+struct PipeEventSubscriptionState
+{
+    std::string pipe_name;
+
+    bool has_pipe_event_clients = false;
+};
+
+using PipeEventSubscriptionStates = std::vector<PipeEventSubscriptionState>;
+
+struct DeviceEventSubscriptionState
+{
+    bool has_dev_intr_change_event_clients;
+
+    AttributeEventSubscriptionStates attribute_events;
+    PipeEventSubscriptionStates pipe_events;
+};
+
+using ServerEventSubscriptionState = std::map<std::string, DeviceEventSubscriptionState>;
 }
 
 #endif

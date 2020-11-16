@@ -707,14 +707,10 @@ void Pipe::fire_event(DeviceImpl *dev,DevFailed *except)
 // Check if it is needed to send an event
 //
 
-	time_t now;
-	time_t delta_subscription;
-
-	now = time(NULL);
-	delta_subscription = now - event_subscription;
-
-	if (delta_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+	if (! is_pipe_event_subscribed())
+	{
 		return;
+	}
 
 //
 // Get the event supplier, and simply return if not created
@@ -781,13 +777,7 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 // Check if it is needed to send an event
 //
 
-	time_t now;
-	time_t delta_subscription;
-
-	now = time(NULL);
-	delta_subscription = now - event_subscription;
-
-	if (delta_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+	if (! is_pipe_event_subscribed())
 	{
 		p_data->reset_insert_ctr();
 		DevVarPipeDataEltArray *tmp_ptr = p_data->get_insert_data();
@@ -865,6 +855,14 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 	}
 
 	delete ad.pipe_val;
+}
+
+bool Pipe::is_pipe_event_subscribed() const
+{
+    const auto now = time(NULL);
+    const auto delta_subscription = now - event_subscription;
+
+    return delta_subscription < EVENT_RESUBSCRIBE_PERIOD;
 }
 
 } // End of Tango namespace

@@ -129,8 +129,9 @@ public :
 	void _create_cpp_class(const char *c1,const char *c2) {this->create_cpp_class(c1,c2);}
 
 	void mcast_event_for_att(std::string &,std::string &,std::vector<std::string> &);
-	void mem_event_par(ServerEventSubscriptionState&);
-	void apply_event_par(const ServerEventSubscriptionState&);
+
+	ServerEventSubscriptionState get_event_subscription_state();
+	void set_event_subscription_state(const ServerEventSubscriptionState&);
 
 	void mem_devices_interface(std::map<std::string,DevIntr> &);
 	void changed_devices_interface(std::map<std::string,DevIntr> &);

@@ -382,6 +382,7 @@ public:
 	void fire_event(DeviceImpl *,DevicePipeBlob *,struct timeval &,bool);
 
 	void set_event_subscription(time_t _t) {event_subscription = _t;}
+	bool is_pipe_event_subscribed() const;
 
 	friend class EventSupplier;
 	friend class ZmqEventSupplier;

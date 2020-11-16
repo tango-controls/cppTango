@@ -2533,7 +2533,7 @@ void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,
 //
 //-------------------------------------------------------------------------------------------------------------
 
-bool EventSupplier::any_dev_intr_client(DeviceImpl *device_impl)
+bool EventSupplier::any_dev_intr_client(const DeviceImpl *device_impl) const
 {
     bool ret = false;
 
