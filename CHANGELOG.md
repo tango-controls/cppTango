@@ -3,12 +3,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [9.3.4] - 2020-04-23
+## Unreleased
+
+### Fixed
+
+- Include all relevant classes in the C++ doxygen documentation ([#780][pr-780])
+- No archive periodic events after polling restart ([#675][i-675], [#778][pr-778])
+
+## [9.3.4] - 2020-09-15
 
 ### Fixed
 - Be compatible with all in-use cppzmq versions ([#530][pr-530], [#561][pr-561], [#273][i-273], [#499][i-499], [#535][i-535])
 - Fix snprintf detection. Now the `LOG_*` macros work again ([#658][pr-658])
-- Various spelling errors (found by lintian) ([#647][pr-647], [#621][pr-621])
+- Various spelling errors (found by lintian) ([#647][pr-647], [#621][pr-621], [#751][pr-751])
 - CMake fixes regarding `CMAKE_BUILD_TYPE` logic ([#629][pr-629])
 - Fix race conditions between polling threads and user threads pushing events ([#665][pr-665], [#511][i-511])
 - Avoid undefined interface warning msvc ([#664][pr-664])
@@ -16,6 +23,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Fix memory leak in Attribute::get_att_device_class() ([#677][pr-677])
 - Fix crash during alarm state evaluation if attribute value is not set ([#330][i-330], [#681][pr-681])
 - Fix issue where unsubscribing in push_events led to API_EventTimeout ([#686][i-686], [#699][pr-699])
+- Fix Debian7 Travis tests after move of Debian wheezy docker image to debian/eol ([#596][pr-596])
+- Remove event blindness after device restart ([#496][i-496], [#702][pr-702])
+- Include all relevant classes in the C++ doxygen documentation ([#780][pr-780])
+- Fix connection with tango servers with version 9.3.0 in complex network setups ([#716][pr-716])
+- Remove extra comma in struct declaration which trips up old compilers ([#709][pr-709])
 
 ### Added
 - Document contributing process and use CODEOWNERS for easier review organization ([#639][pr-639])
@@ -23,6 +35,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Add CMake option to disable building the test suite ([#689][pr-689])
 - Add CMake switch to disable building MMX ([#674][pr-674])
 - appveyor.yml: Add inline deployment on tag push ([#690][pr-690])
+- Speedup attribute performance in Multiattribute ([#738][pr-738])
+- Respect the `BUILD_TESTING` cmake option for log4tango ([#743][pr-743])
+- Only build either the static or the shared library ([#740][i-740], [#763][pr-763])
 
 ## [9.3.3] - 2019-03-29
 
@@ -335,3 +350,16 @@ where a client application might show out of date/incorrect values.
 [pr-689]: https://github.com/tango-controls/cppTango/pull/689
 [pr-690]: https://github.com/tango-controls/cppTango/pull/690
 [pr-699]: https://github.com/tango-controls/cppTango/pull/699
+[i-496]: https://github.com/tango-controls/cppTango/issues/496
+[pr-596]: https://github.com/tango-controls/cppTango/pull/596
+[i-740]: https://github.com/tango-controls/cppTango/issues/740
+[pr-702]: https://github.com/tango-controls/cppTango/pull/702
+[pr-709]: https://github.com/tango-controls/cppTango/pull/709
+[pr-716]: https://github.com/tango-controls/cppTango/pull/716
+[pr-738]: https://github.com/tango-controls/cppTango/pull/738
+[pr-743]: https://github.com/tango-controls/cppTango/pull/743
+[pr-751]: https://github.com/tango-controls/cppTango/pull/751
+[pr-763]: https://github.com/tango-controls/cppTango/pull/763
+[pr-780]: https://github.com/tango-controls/cppTango/pull/780
+[i-675]: https://github.com/tango-controls/cppTango/issues/675
+[pr-778]: https://github.com/tango-controls/cppTango/pull/778
