@@ -53,6 +53,12 @@ add_subdirectory("log4tango")
 add_subdirectory("cppapi")
 
 if(BUILD_TESTING)
+
+  find_program(DOCKER_BINARY docker)
+  if(NOT DOCKER_BINARY)
+      message(WARNING "The tests can not be run as docker is missing.")
+  endif()
+
   if(BUILD_SHARED_LIBS)
     add_subdirectory("cpp_test_suite")
   else()
