@@ -57,7 +57,7 @@ if(BUILD_TESTING)
     add_subdirectory("cpp_test_suite")
   else()
     message(WARNING "Not building the tests, because that is currently supported only when BUILD_SHARED_LIBS is ON")
-    SET(BUILD_TESTING OFF)
+    set(BUILD_TESTING OFF)
   endif()
 endif()
 
