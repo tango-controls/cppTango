@@ -2284,7 +2284,7 @@ std::ostream &operator<<(std::ostream &o_str, const DeviceData &dd)
                 break;
 
             case CORBA::tk_longlong:
-                long long ll_tmp;
+                Tango::DevLong64 ll_tmp;
                 dd.any >>= ll_tmp;
                 o_str << ll_tmp;
                 break;
@@ -2314,7 +2314,7 @@ std::ostream &operator<<(std::ostream &o_str, const DeviceData &dd)
                 break;
 
             case CORBA::tk_ulonglong:
-                unsigned long long ull_tmp;
+                Tango::DevULong64 ull_tmp;
                 dd.any >>= ull_tmp;
                 o_str << ull_tmp;
                 break;
