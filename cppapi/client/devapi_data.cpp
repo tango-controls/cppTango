@@ -2284,11 +2284,7 @@ std::ostream &operator<<(std::ostream &o_str, const DeviceData &dd)
                 break;
 
             case CORBA::tk_longlong:
-#ifdef TANGO_LONG32
                 long long ll_tmp;
-#else
-                long ll_tmp;
-#endif
                 dd.any >>= ll_tmp;
                 o_str << ll_tmp;
                 break;
@@ -2318,7 +2314,7 @@ std::ostream &operator<<(std::ostream &o_str, const DeviceData &dd)
                 break;
 
             case CORBA::tk_ulonglong:
-                unsigned long ull_tmp;
+                unsigned long long ull_tmp;
                 dd.any >>= ull_tmp;
                 o_str << ull_tmp;
                 break;
