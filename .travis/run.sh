@@ -11,6 +11,7 @@ echo "USE_PCH=$USE_PCH"
 echo "BUILD_SHARED_LIBS=$BUILD_SHARED_LIBS"
 echo "TANGO_USE_USING_NAMESPACE=$TANGO_USE_USING_NAMESPACE"
 echo "WARNINGS_AS_ERRORS=$WARNINGS_AS_ERRORS"
+echo "TOOLCHAIN_FILE=$TOOLCHAIN_FILE"
 echo "############################"
 
 docker exec cpp_tango mkdir -p /home/tango/src/build
@@ -30,6 +31,11 @@ ADDITIONAL_ARGS=""
 if [[ "$SONAR_SCANNER" == "ON" ||  "$COVERALLS" == "ON" ]]
 then
   ADDITIONAL_ARGS="${ADDITIONAL_ARGS} -DCOVERALLS=${COVERALLS} -DCOVERALLS_MODULE_PATH=${COVERALLS_MODULE_PATH}"
+fi
+
+if [[ -f "$TOOLCHAIN_FILE" && -s "$TOOLCHAIN_FILE" ]]
+then
+  ADDITIONAL_ARGS="${ADDITIONAL_ARGS} -DCMAKE_TOOLCHAIN_FILE=${SOURCE_DIR}/${TOOLCHAIN_FILE}"
 fi
 
 docker exec cpp_tango cmake                                \
