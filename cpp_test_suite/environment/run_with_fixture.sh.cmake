@@ -8,6 +8,11 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
+if ! hash docker 2>/dev/null; then
+  echo "Can not run the tests as docker is missing"
+  exit 1
+fi
+
 tc_program="$1"
 tc_run_name="$(basename "$tc_program")_$(date '+%Y%m%d.%H%M%S.%N')"
 shift 1

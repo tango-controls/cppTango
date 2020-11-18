@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # vim: syntax=sh
 
+if ! hash docker 2>/dev/null; then
+  echo "Can not run the tests as docker is missing"
+  exit 1
+fi
+
 mysql_container="${1:-mysql_db}"
 tango_container="${2:-tango_cs}"
 
