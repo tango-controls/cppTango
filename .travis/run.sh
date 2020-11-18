@@ -25,6 +25,13 @@ COVERALLS_MODULE_PATH=/home/tango/coveralls-cmake/cmake
 SOURCE_DIR=/home/tango/src
 BUILD_DIR=${SOURCE_DIR}/build
 
+ADDITIONAL_ARGS=""
+
+if [[ "$SONAR_SCANNER" == "ON" ||  "$COVERALLS" == "ON" ]]
+then
+  ADDITIONAL_ARGS="${ADDITIONAL_ARGS} -DCOVERALLS=${COVERALLS} -DCOVERALLS_MODULE_PATH=${COVERALLS_MODULE_PATH}"
+fi
+
 docker exec cpp_tango cmake                                \
   -H${SOURCE_DIR}                                          \
   -B${BUILD_DIR}                                           \
@@ -36,8 +43,7 @@ docker exec cpp_tango cmake                                \
   -DTANGO_USE_USING_NAMESPACE=${TANGO_USE_USING_NAMESPACE} \
   -DWARNINGS_AS_ERRORS=${WARNINGS_AS_ERRORS}               \
   -DTANGO_ENABLE_COVERAGE=${TANGO_ENABLE_COVERAGE:-OFF}    \
-  -DCOVERALLS=${COVERALLS}                                 \
-  -DCOVERALLS_MODULE_PATH=${COVERALLS_MODULE_PATH}
+  ${ADDITIONAL_ARGS}
 
 if [[ "$SONAR_SCANNER" == "ON" ||  "$COVERALLS" == "ON" ]]
 then
