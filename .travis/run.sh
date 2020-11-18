@@ -22,10 +22,12 @@ USE_PCH=${USE_PCH:-OFF}
 BUILD_SHARED_LIBS=${BUILD_SHARED_LIBS:-ON}
 WARNINGS_AS_ERRORS=${WARNINGS_AS_ERRORS:-OFF}
 COVERALLS_MODULE_PATH=/home/tango/coveralls-cmake/cmake
+SOURCE_DIR=/home/tango/src
+BUILD_DIR=${SOURCE_DIR}/build
 
 docker exec cpp_tango cmake                                \
-  -H/home/tango/src                                        \
-  -B/home/tango/src/build                                  \
+  -H${SOURCE_DIR}                                          \
+  -B${BUILD_DIR}                                           \
   -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}                 \
   -DCMAKE_VERBOSE_MAKEFILE=ON                              \
   -DCPPZMQ_BASE=/home/tango                                \
@@ -41,8 +43,8 @@ if [[ "$SONAR_SCANNER" == "ON" ||  "$COVERALLS" == "ON" ]]
 then
   docker exec cpp_tango                                            \
     /home/tango/build-wrapper-linux-x86/build-wrapper-linux-x86-64 \
-    --out-dir /home/tango/src/bw-output                            \
-    make -C /home/tango/src/build $MAKEFLAGS
+    --out-dir ${SOURCE_DIR}/bw-output                              \
+    make -C ${BUILD_DIR} $MAKEFLAGS
 else
-  docker exec cpp_tango make -C /home/tango/src/build $MAKEFLAGS
+  docker exec cpp_tango make -C ${BUILD_DIR} $MAKEFLAGS
 fi
