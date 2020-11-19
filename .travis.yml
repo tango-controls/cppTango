@@ -34,6 +34,10 @@ addons:
     organization: "tango-controls"
     token: ${SONAR_TOKEN}
 
+cache:
+  directories:
+  - $HOME/.sonar
+
 before_install:
   - .travis/before_install.sh
 
@@ -56,6 +60,7 @@ before_script:
       -e TRAVIS_BRANCH=${TRAVIS_BRANCH}
       -e TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
       -v `pwd`:/home/tango/src
+      -v `pwd`/.sonar:/home/tango/.sonar
       -v `pwd`/idl:/home/tango/idl
       -v `pwd`/cppzmq:/home/tango/cppzmq
       -v `pwd`/tango_admin:/home/tango/tango_admin
