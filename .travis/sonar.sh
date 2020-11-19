@@ -12,5 +12,8 @@ fi
 
 git fetch --unshallow --quiet
 
+# make the sonar cache folder, which is cached in travis, available
+docker exec -u root cpp_tango chown -R tango:tango /home/tango/.sonar
+
 # pass -X for verbose output
 docker exec -w "/home/tango/src" cpp_tango /home/tango/sonar-scanner/bin/sonar-scanner $SONAR_PROPERTIES
