@@ -107,7 +107,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_channel(EvChanIte &ipos,EventCon
 				    DeviceData dummy;
 					std::string adm_name = ipos->second.full_adm_name;
 					event_consumer->connect_event_channel(adm_name,
-									      epos->second.device->get_device_db(),
+									      epos->second.get_device_proxy().get_device_db(),
 									      true,dummy);
 
 					if (ipos->second.adm_device_proxy != NULL)
@@ -176,7 +176,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 				{
                     DeviceData subscriber_in,subscriber_out;
                     std::vector<std::string> subscriber_info;
-                    subscriber_info.push_back(epos->second.device->dev_name());
+                    subscriber_info.push_back(epos->second.get_device_proxy().dev_name());
                     subscriber_info.push_back(epos->second.obj_name);
                     subscriber_info.push_back("subscribe");
                     subscriber_info.push_back(epos->second.event_name);
@@ -198,7 +198,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
                     catch (Tango::DevFailed &e) {}
 #endif
 					event_consumer->connect_event_channel(adm_name,
-									      epos->second.device->get_device_db(),
+									      epos->second.get_device_proxy().get_device_db(),
 									      true,subscriber_out);
 
                     dd = subscriber_out;
@@ -439,7 +439,7 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 
 						vs.push_back(std::string("reconnect"));
 
-						std::string d_name = epos->second.device->dev_name();
+						std::string d_name = epos->second.get_device_proxy().dev_name();
 						std::string &fqen = epos->second.fully_qualified_event_name;
 						std::string::size_type pos = fqen.find('/');
 						pos = pos + 2;
@@ -879,7 +879,7 @@ void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_
 
 				if (ipos->second.channel_type == ZMQ)
 				{
-					cmd_params.push_back(epos->second.device->dev_name());
+					cmd_params.push_back(epos->second.get_device_proxy().dev_name());
 					cmd_params.push_back(epos->second.obj_name);
 					cmd_params.push_back(epos->second.event_name);
 
@@ -889,7 +889,7 @@ void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_
 				{
 					DeviceData subscriber_in;
 					std::vector<std::string> subscriber_info;
-					subscriber_info.push_back(epos->second.device->dev_name());
+					subscriber_info.push_back(epos->second.get_device_proxy().dev_name());
 					subscriber_info.push_back(epos->second.obj_name);
 					subscriber_info.push_back("subscribe");
 					subscriber_info.push_back(epos->second.event_name);
@@ -1166,7 +1166,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 
 					if (event_name == CONF_TYPE_EVENT)
 					{
-						FwdAttrConfEventData *event_data = new FwdAttrConfEventData(epos->second.device,
+						FwdAttrConfEventData *event_data = new FwdAttrConfEventData(esspos->device,
 																			domain_name,
 																			event_name,
 																			dev_attr_conf,
@@ -1200,7 +1200,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 					}
 					else if (event_name == DATA_READY_TYPE_EVENT)
 					{
-						DataReadyEventData *event_data = new DataReadyEventData(epos->second.device,NULL,event_name,errors);
+						DataReadyEventData *event_data = new DataReadyEventData(esspos->device,NULL,event_name,errors);
 						// if a callback method was specified, call it!
 						if (callback != NULL )
 						{
@@ -1229,7 +1229,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 					}
 					else if (event_name == EventName[INTERFACE_CHANGE_EVENT])
 					{
-						DevIntrChangeEventData *event_data = new DevIntrChangeEventData(epos->second.device,
+						DevIntrChangeEventData *event_data = new DevIntrChangeEventData(esspos->device,
 																			event_name,domain_name,
 																			(CommandInfoList *)NULL,
 																			(AttributeInfoListEx *)NULL,
@@ -1262,7 +1262,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 					}
 					else if (event_name == EventName[PIPE_EVENT])
 					{
-						PipeEventData *event_data = new PipeEventData(epos->second.device,
+						PipeEventData *event_data = new PipeEventData(esspos->device,
 										domain_name,
 										event_name,
 										dev_pipe,
@@ -1297,7 +1297,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 					}
 					else
 					{
-						FwdEventData *event_data = new FwdEventData(epos->second.device,
+						FwdEventData *event_data = new FwdEventData(esspos->device,
 										domain_name,
 										event_name,
 										dev_attr,
@@ -1377,7 +1377,8 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 {
 	DeviceData subscriber_in;
 	std::vector<std::string> subscriber_info;
-	subscriber_info.push_back(epos->second.device->dev_name());
+	auto& device = epos->second.get_device_proxy();
+	subscriber_info.push_back(device.dev_name());
 	subscriber_info.push_back(epos->second.obj_name);
 	subscriber_info.push_back("subscribe");
 	subscriber_info.push_back(epos->second.event_name);
@@ -1427,13 +1428,13 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			DevErrorList err;
 			err.length(0);
 
-			bool old_transp = epos->second.device->get_transparency_reconnection();
-			epos->second.device->set_transparency_reconnection(true);
+			bool old_transp = device.get_transparency_reconnection();
+			device.set_transparency_reconnection(true);
 
 			try
 			{
 				da = new DeviceAttribute();
-				*da = epos->second.device->read_attribute(epos->second.obj_name.c_str());
+				*da = device.read_attribute(epos->second.obj_name.c_str());
 
                 if (da->has_failed() == true)
                     err = da->get_err_stack();
@@ -1449,7 +1450,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			{
 				err = e.errors;
 			}
-			epos->second.device->set_transparency_reconnection(old_transp);
+			device.set_transparency_reconnection(old_transp);
 
 			// if callback methods were specified, call them!
 			unsigned int cb_nb = epos->second.callback_list.size();
@@ -1466,7 +1467,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 					da_copy = new DeviceAttribute();
 					da_copy->deep_copy(*da);
 
-					event_data = new FwdEventData(epos->second.device,
+					event_data = new FwdEventData(esspos->device,
 									domain_name,
 									ev_name,
 									da_copy,
@@ -1474,7 +1475,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 				}
 				else
 				{
-					event_data = new FwdEventData(epos->second.device,
+					event_data = new FwdEventData(esspos->device,
 									domain_name,
 									ev_name,
 									da,
@@ -1527,13 +1528,13 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 				prefix = notifd_event_consumer->env_var_fqdn_prefix[0];
 			else
             {
-                if (epos->second.device->get_from_env_var() == false)
+                if (device.get_from_env_var() == false)
                 {
                     prefix = "tango://";
-                    if (epos->second.device->is_dbase_used() == false)
-                        prefix = prefix + epos->second.device->get_dev_host() + ':' + epos->second.device->get_dev_port() + '/';
+                    if (device.is_dbase_used() == false)
+                        prefix = prefix + device.get_dev_host() + ':' + device.get_dev_port() + '/';
                     else
-                        prefix = prefix + epos->second.device->get_db_host() + ':' + epos->second.device->get_db_port() + '/';
+                        prefix = prefix + device.get_db_host() + ':' + device.get_db_port() + '/';
                 }
                 else
                 {
@@ -1541,18 +1542,18 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
                 }
             }
 
-			std::string dom_name = prefix + epos->second.device->dev_name();
-            if (epos->second.device->is_dbase_used() == false)
+			std::string dom_name = prefix + device.dev_name();
+            if (device.is_dbase_used() == false)
                 dom_name = dom_name + MODIFIER_DBASE_NO;
 			dom_name = dom_name + "/" + epos->second.obj_name;
 
-			bool old_transp = epos->second.device->get_transparency_reconnection();
-			epos->second.device->set_transparency_reconnection(true);
+			bool old_transp = device.get_transparency_reconnection();
+			device.set_transparency_reconnection(true);
 
 			try
 			{
 				aie = new AttributeInfoEx();
-				*aie = epos->second.device->get_attribute_config(epos->second.obj_name);
+				*aie = device.get_attribute_config(epos->second.obj_name);
 
 //
 // The reconnection worked fine. The heartbeat should come back now, when the notifd has not closed the connection.
@@ -1566,7 +1567,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			{
 				err = e.errors;
 			}
-			epos->second.device->set_transparency_reconnection(old_transp);
+			device.set_transparency_reconnection(old_transp);
 
 			unsigned int cb_nb = epos->second.callback_list.size();
 			unsigned int cb_ctr = 0;
@@ -1585,7 +1586,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 				{
 					aie_copy = new AttributeInfoEx;
 					*aie_copy = *aie;
-					event_data = new FwdAttrConfEventData(epos->second.device,
+					event_data = new FwdAttrConfEventData(esspos->device,
 									dom_name,
 									ev_name,
 									aie_copy,
@@ -1593,7 +1594,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 				}
 				else
 				{
-					event_data = new FwdAttrConfEventData(epos->second.device,
+					event_data = new FwdAttrConfEventData(esspos->device,
 									dom_name,
 									ev_name,
 									aie,
@@ -1642,15 +1643,15 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			DevErrorList err;
 			err.length(0);
 			std::string prefix = event_consumer->env_var_fqdn_prefix[0];
-			std::string dom_name = prefix + epos->second.device->dev_name();
+			std::string dom_name = prefix + device.dev_name();
 
-			bool old_transp = epos->second.device->get_transparency_reconnection();
-			epos->second.device->set_transparency_reconnection(true);
+			bool old_transp = device.get_transparency_reconnection();
+			device.set_transparency_reconnection(true);
 
 			try
 			{
-				aie = epos->second.device->attribute_list_query_ex();
-				cil = epos->second.device->command_list_query();
+				aie = device.attribute_list_query_ex();
+				cil = device.command_list_query();
 			}
 			catch (DevFailed &e)
 			{
@@ -1661,7 +1662,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 
 				err = e.errors;
 			}
-			epos->second.device->set_transparency_reconnection(old_transp);
+			device.set_transparency_reconnection(old_transp);
 
 			unsigned int cb_nb = epos->second.callback_list.size();
 			unsigned int cb_ctr = 0;
@@ -1680,14 +1681,14 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 					*aie_copy = *aie;
 					cil_copy = new CommandInfoList;
 					*cil_copy = *cil;
-					event_data = new DevIntrChangeEventData(epos->second.device,
+					event_data = new DevIntrChangeEventData(esspos->device,
 									ev_name,dom_name,
 									cil_copy,aie_copy,true,
 									err);
 				}
 				else
 				{
-					event_data = new DevIntrChangeEventData(epos->second.device,
+					event_data = new DevIntrChangeEventData(esspos->device,
 									ev_name,dom_name,
 									cil,aie,true,
 									err);
@@ -1744,19 +1745,19 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			DevErrorList err;
 			err.length(0);
 
-			bool old_transp = epos->second.device->get_transparency_reconnection();
-			epos->second.device->set_transparency_reconnection(true);
+			bool old_transp = device.get_transparency_reconnection();
+			device.set_transparency_reconnection(true);
 
 			try
 			{
 				dp = new DevicePipe();
-				*dp = epos->second.device->read_pipe(epos->second.obj_name);
+				*dp = device.read_pipe(epos->second.obj_name);
 			}
 			catch (DevFailed &e)
 			{
 				err = e.errors;
 			}
-			epos->second.device->set_transparency_reconnection(old_transp);
+			device.set_transparency_reconnection(old_transp);
 
 			unsigned int cb_nb = epos->second.callback_list.size();
 			unsigned int cb_ctr = 0;
@@ -1773,7 +1774,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 					dp_copy = new DevicePipe();
 					*dp_copy = *dp;
 
-					event_data = new PipeEventData(epos->second.device,
+					event_data = new PipeEventData(esspos->device,
 									domain_name,
 									epos->second.event_name,
 									dp_copy,
@@ -1781,7 +1782,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 				}
 				else
 				{
-					event_data = new PipeEventData(epos->second.device,
+					event_data = new PipeEventData(esspos->device,
 									domain_name,
 									epos->second.event_name,
 									dp,

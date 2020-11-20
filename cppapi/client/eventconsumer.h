@@ -332,11 +332,11 @@ typedef struct event_subscribe
 	EventQueue						*ev_queue;
 	CallBack						*callback;
 	int								id;
+ 	DeviceProxy 					*device;
 } EventSubscribeStruct;
 
 typedef struct event_callback_base
 {
- 	DeviceProxy 					*device;
 	std::string 							obj_name;
 	std::string 							event_name;
 	std::string 							channel_name;
@@ -345,6 +345,7 @@ typedef struct event_callback_base
 	TangoMonitor					*callback_monitor;
 	std::vector<EventSubscribeStruct>	callback_list;
 	bool							alias_used;
+	DeviceProxy& get_device_proxy();
 } EventCallBackBase;
 
 typedef struct event_callback_zmq
@@ -484,7 +485,7 @@ protected :
 	std::string 													obj_name_lower;
     int                                                     thread_id;
 
-	int add_new_callback(EvCbIte &,CallBack *,EventQueue *,int);
+	int add_new_callback(DeviceProxy*, EvCbIte &,CallBack *,EventQueue *,int);
 	void get_fire_sync_event(DeviceProxy *,CallBack *,EventQueue *,EventType,std::string &,const std::string &,EventCallBackStruct &,std::string &);
 
 	virtual void connect_event_channel(std::string &,Database *,bool,DeviceData &) = 0;
@@ -651,7 +652,7 @@ private :
     friend class DelayEvent;
 
     FwdEventData *newFwdEventData(zmq::message_t &event_data,
-                                  const std::string &new_tango_host,
+                                  DeviceProxy* device,
                                   DevErrorList &errors,
                                   std::string &event_name,
                                   std::string &full_att_name,

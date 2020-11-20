@@ -995,7 +995,7 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 									dev_attr_copy->deep_copy(*dev_attr);
 								}
 
-								event_data = new EventData(event_callback_map[attr_event_name].device,
+								event_data = new EventData(esspos->device,
 												      				fq_dev_name,
 												      				event_name,
 												      				dev_attr_copy,
@@ -1003,7 +1003,7 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 							}
 							else
 							{
-								event_data = new EventData (event_callback_map[attr_event_name].device,
+								event_data = new EventData (esspos->device,
 																  fq_dev_name,
 																  event_name,
 																  dev_attr,
@@ -1040,7 +1040,7 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 							{
 								AttributeInfoEx *attr_info_copy = new AttributeInfoEx();
 								*attr_info_copy = *attr_info_ex;
-								event_data = new AttrConfEventData(event_callback_map[attr_event_name].device,
+								event_data = new AttrConfEventData(esspos->device,
 																  fq_dev_name,
 																  event_name,
 																  attr_info_copy,
@@ -1048,7 +1048,7 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 							}
 							else
 							{
-								event_data = new AttrConfEventData(event_callback_map[attr_event_name].device,
+								event_data = new AttrConfEventData(esspos->device,
 																  fq_dev_name,
 																  event_name,
 																  attr_info_ex,
@@ -1080,7 +1080,7 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 						}
 						else
 						{
-							DataReadyEventData *event_data = new DataReadyEventData(event_callback_map[attr_event_name].device,
+							DataReadyEventData *event_data = new DataReadyEventData(esspos->device,
 																	att_ready,event_name,errors);
 							// if a callback method was specified, call it!
 							if (callback != NULL )
