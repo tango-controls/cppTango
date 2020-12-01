@@ -70,7 +70,7 @@ ZmqEventConsumer *ZmqEventConsumer::_instance = NULL;
 /************************************************************************/
 
 ZmqEventConsumer::ZmqEventConsumer(ApiUtil *ptr) : EventConsumer(ptr),
-omni_thread((void *)ptr),zmq_context(1),ctrl_socket_bound(false)
+omni_thread((void *)ptr),zmq_context(1),ctrl_socket_bound(false), nb_current_delay_event_requests(0)
 {
 	cout3 << "calling Tango::ZmqEventConsumer::ZmqEventConsumer() \n";
 	_instance = this;
@@ -697,9 +697,6 @@ void ZmqEventConsumer::process_event(zmq_msg_t &received_event_name,zmq_msg_t &r
 bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_t *poll_list,int &poll_nb)
 {
     bool ret = false;
-
-    // static variable to count the number of ZMQ_DELAY_EVENT requests currently in progress:
-    static int nb_current_delay_event_requests = 0;
 
 //
 // For debug and logging purposes
