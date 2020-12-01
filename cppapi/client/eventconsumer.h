@@ -628,9 +628,11 @@ private :
     DevErrorList_var                        del;
 
     int                                     old_poll_nb;
-    TangoMonitor							subscription_monitor;
+    TangoMonitor                            subscription_monitor;
     omni_mutex                              sock_bound_mutex;
-    bool									ctrl_socket_bound;
+    bool                                    ctrl_socket_bound;
+    // variable to count the number of ZMQ_DELAY_EVENT requests currently in progress:
+    int                                     nb_current_delay_event_requests;
 
 
 	void *run_undetached(void *arg) override;

@@ -70,7 +70,7 @@ ZmqEventConsumer *ZmqEventConsumer::_instance = NULL;
 /************************************************************************/
 
 ZmqEventConsumer::ZmqEventConsumer(ApiUtil *ptr) : EventConsumer(ptr),
-omni_thread((void *)ptr),zmq_context(1),ctrl_socket_bound(false)
+omni_thread((void *)ptr),zmq_context(1),ctrl_socket_bound(false), nb_current_delay_event_requests(0)
 {
 	cout3 << "calling Tango::ZmqEventConsumer::ZmqEventConsumer() \n";
 	_instance = this;
@@ -1075,14 +1075,32 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
         case ZMQ_DELAY_EVENT:
         {
-            old_poll_nb = poll_nb;
-            poll_nb = 1;
+            // If poll_nb == 1, then we are already in a situation where events are being delayed
+            // and we are currently only taking care of messages received on the control socket
+            // No need to update old_poll_nb in this case because it is already correct
+            // otherwise this would lead to issues like https://github.com/tango-controls/cppTango/issues/686
+            // where events would no longer be received if someone subscribes or unsubscribes to events in
+            // an event callback and when the callback is executed during a subscribe_event call
+            if (poll_nb != 1)
+            {
+                old_poll_nb = poll_nb;
+                poll_nb = 1;
+            }
+            nb_current_delay_event_requests++;
         }
         break;
 
         case ZMQ_RELEASE_EVENT:
         {
-            poll_nb = old_poll_nb;
+            if(nb_current_delay_event_requests >= 1)
+            {
+                nb_current_delay_event_requests--;
+            }
+            if(nb_current_delay_event_requests == 0)
+            {
+                // Stop delaying events only if there is no other ZMQ_DELAY_EVENT command requested
+                poll_nb = old_poll_nb;
+            }
         }
         break;
 
