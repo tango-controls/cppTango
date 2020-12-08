@@ -1109,6 +1109,9 @@ cout << "status = " << status << endl;
  * used to fail with API_AttrValueNotSet as reported in #201.
  */
 
+    static constexpr Tango::DevShort READ_WITH_PUSH_ATTR_1_VALUE = 13;
+    static constexpr Tango::DevShort READ_WITH_PUSH_ATTR_2_VALUE = 17;
+
     void test_read_two_attributes_one_pushes_event_for_another_1st_pushes()
     {
         std::vector<std::string> attributes = {"ReadWithPushAttr2", "ReadWithPushAttr1"};
@@ -1116,7 +1119,9 @@ cout << "status = " << status << endl;
         TS_ASSERT_THROWS_NOTHING(result = device1->read_attributes(attributes));
         Tango::DevShort out;
         TS_ASSERT_THROWS_NOTHING((*result)[0] >> out);
+        TS_ASSERT_EQUALS(out, READ_WITH_PUSH_ATTR_2_VALUE);
         TS_ASSERT_THROWS_NOTHING((*result)[1] >> out);
+        TS_ASSERT_EQUALS(out, READ_WITH_PUSH_ATTR_1_VALUE);
         delete result;
     }
 
@@ -1127,7 +1132,9 @@ cout << "status = " << status << endl;
         TS_ASSERT_THROWS_NOTHING(result = device1->read_attributes(attributes));
         Tango::DevShort out;
         TS_ASSERT_THROWS_NOTHING((*result)[0] >> out);
+        TS_ASSERT_EQUALS(out, READ_WITH_PUSH_ATTR_1_VALUE);
         TS_ASSERT_THROWS_NOTHING((*result)[1] >> out);
+        TS_ASSERT_EQUALS(out, READ_WITH_PUSH_ATTR_2_VALUE);
         delete result;
     }
 
