@@ -1610,7 +1610,6 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 	const Tango::DevVarStringArray* data_in = NULL;
 	char num_prop_str[256];
 	char num_vals_str[256];
-	unsigned int num_prop = 0;
 	unsigned int num_val = 0;
 
 	cout4 << "FILEDATABASE: entering DbGetClassProperty" << endl;
@@ -1624,7 +1623,7 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 
 	data_out->length(2);
 	(*data_out)[0] = Tango::string_dup((*data_in)[0]); index++;
-	num_prop = data_in->length() - 1;
+	const unsigned int num_prop = data_in->length() - 1;
 	sprintf(num_prop_str,"%ud",num_prop);
 	(*data_out)[index] = Tango::string_dup(num_prop_str); index++;
 
@@ -1644,7 +1643,6 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 				{
 					if (equalsIgnoreCase((*data_in)[j].in(), m_server.classes[i]->properties[m]->name))
 					{
-						num_prop++;
 						num_val = m_server.classes[i]->properties[m]->value.size();
 						seq_length = seq_length + 2 + num_val;
 						(*data_out).length(seq_length);
