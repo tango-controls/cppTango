@@ -340,7 +340,7 @@ Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVar
 // arguments:
 //		in :
 //			- names: The names of the attribute to read
-//			- data : Structure with pointers for data to be returned to caller (several pointers acoording to
+//			- data : Structure with pointers for data to be returned to caller (several pointers according to
 //					caller IDL level)
 //			- name_to_data_mapping : Vector with index in data array for which we have to read data
 //
