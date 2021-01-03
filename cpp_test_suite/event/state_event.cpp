@@ -12,6 +12,8 @@
 #include <sys/time.h>
 #include <unistd.h>
 #endif
+#include <thread>
+#include <chrono>
 
 #define	coutv	if (verbose == true) cout
 
@@ -241,6 +243,9 @@ int main(int argc, char **argv)
 
 		// start the polling first!
 		device->poll_attribute(att_name,1000);
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
 		cout << "   subscribe_event on status attribute --> OK" << std::endl;
 
