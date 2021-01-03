@@ -33,6 +33,7 @@ docker exec cpp_tango cmake                                \
   -DUSE_PCH=${USE_PCH}                                     \
   -DTANGO_USE_USING_NAMESPACE=${TANGO_USE_USING_NAMESPACE} \
   -DWARNINGS_AS_ERRORS=${WARNINGS_AS_ERRORS}               \
+  -DTANGO_ENABLE_COVERAGE=${TANGO_ENABLE_COVERAGE:-OFF}    \
   -DCOVERALLS=${COVERALLS}                                 \
   -DCOVERALLS_MODULE_PATH=${COVERALLS_MODULE_PATH}
 
