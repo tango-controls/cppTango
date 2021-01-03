@@ -71,6 +71,7 @@ PKG_CONFIG_PATH="/usr/local/libzmq:/usr/local/omniORB" cmake ..
 | `CPPZMQ_BASE`                |                                        | cppzmq installed path
 | `IDL_BASE`                   |                                        | tangoidl installed path
 | `OMNI_BASE`                  |                                        | omniORB4 installed path
+| `TANGO_ENABLE_COVERAGE`      | `OFF`                                  | Instrument code for coverage analysis (Requres CMake 3.13+)
 | `TANGO_JPEG_MMX`             | `ON`                                   | Build the jpeg support with MMX extensions (32bit Linux only)
 | `TANGO_INSTALL_DEPENDENCIES` | `OFF`                                  | Install dependencies of tango as well (Windows only)
 | `TANGO_USE_USING_NAMESPACE`  | `ON`                                   | `ON` will include the `std` namespace in tango headers. Choose `OFF` for modern builds.
@@ -283,3 +284,26 @@ cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_INSTALL_PREFIX=install -DCMAKE_BU
 - Compile with `cmake --build .`
 - Install with `cmake --build . --target install`
 - You now have a full tango installation in `build/install`
+
+# Generating code coverage report
+
+> *Note: This requires CMake 3.13 or better.*
+
+> *Note: Code coverage reports are currently supported only with GCC or Clang.*
+
+To generate code coverage report one can follow these steps:
+
+1. Enable code coverage support with CMake flag `TANGO_ENABLE_COVERAGE`:
+   ```
+   cmake -DTANGO_ENABLE_COVERAGE=ON ...
+   ```
+2. Run any relevant tests that contribute to the code coverage:
+   ```
+   ctest ...
+   ```
+3. Generate the report with a tool of choice, e.g. `gcovr` can generate reports
+   in many formats. Note that usually one is interested only in the library
+   code and may want to exclude any test code from the report.
+   ```
+   gcovr --filter '^cppapi/' --filter '^log4tango/' --html-details --output coverage.html
+   ```
