@@ -318,6 +318,8 @@ cout << "str = " << str << endl;
 
         TS_ASSERT_THROWS_NOTHING(device1->poll_attribute(attribute_name, poll_period_ms));
 
+        std::this_thread::sleep_for(time_buffer);
+
         EventCallback<Tango::EventData> callback{};
 
         int subscription = 0;

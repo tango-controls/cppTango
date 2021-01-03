@@ -445,6 +445,17 @@ int main(int argc, char **argv)
 
 		device->poll_attribute(att_name,200);
 
+#ifdef _TG_WINDOWS_
+		Sleep(20);
+#else
+		{
+			struct timespec to_wait,inter;
+			to_wait.tv_sec = 0;
+			to_wait.tv_nsec = 20 * 1000 * 1000;
+			nanosleep(&to_wait, NULL);
+		}
+#endif
+
 //
 // subscribe to a periodic event
 //
