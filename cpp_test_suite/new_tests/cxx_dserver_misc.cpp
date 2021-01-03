@@ -300,8 +300,10 @@ cout << "str = " << str << endl;
  * polling is stopped and started again for particular device. Such scenario
  * used to fail as described in #675.
  */
-    void test_archive_periodic_events_after_polling_restart()
+    void DISABLED_test_archive_periodic_events_after_polling_restart()
     {
+        // TODO: FIXME: This test is temporarily disabled due to failures on single-core machines.
+
         constexpr auto poll_period = 1000ms;
         constexpr auto time_buffer = 100ms;
         constexpr auto poll_period_ms = std::chrono::milliseconds(poll_period).count();
