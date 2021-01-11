@@ -75,6 +75,7 @@ abi-api-compliance-check:
   image: debian:10
   before_script:
     - apt-get update && apt-get install -y git docker.io
+    - git fetch origin "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
     - .travis/before_install.sh
     - docker build -t cpp_tango .travis/gcc-latest
     - >
