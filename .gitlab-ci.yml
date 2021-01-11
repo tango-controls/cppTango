@@ -57,6 +57,7 @@ services:
     - test ${SONAR_SCANNER} = "ON" && .travis/sonar.sh || true
   after_script:
     - docker stop cpp_tango
+    - find build -name 'core.*' -exec gzip "{}" \;
     - mkdir -p build/cpp_test_suite/test_results
     - gzip -r build/cpp_test_suite/test_results
   artifacts:
@@ -137,6 +138,7 @@ debian10:
     TANGO_ENABLE_COVERAGE: "ON"
     OS_TYPE: debian10
   after_script:
+    - find build -name 'core.*' -exec gzip "{}" \;
     - mkdir -p build/cpp_test_suite/test_results
     - gzip -r build/cpp_test_suite/test_results
     - mkdir coverage
