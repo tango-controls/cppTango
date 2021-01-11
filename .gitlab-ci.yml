@@ -47,6 +47,7 @@ services:
     - docker rm tango_cs
     - docker stop mysql_db
     - docker rm mysql_db
+    - find build -name 'core.*' -exec gzip "{}" \;
   artifacts:
     when: always
     expire_in: 1h
@@ -67,6 +68,7 @@ debian10:
     TANGO_ENABLE_COVERAGE: "ON"
     OS_TYPE: debian10
   after_script:
+    - find build -name 'core.*' -exec gzip "{}" \;
     - mkdir coverage
     - >
         docker exec --workdir /home/tango/src cpp_tango
