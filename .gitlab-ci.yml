@@ -12,6 +12,13 @@ variables: &variables
 services:
   - docker:20.10.1-dind
 
+# See: https://docs.gitlab.com/ce/ci/yaml/README.html#workflowrules-templates
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
 .job-template: &job-template
   image: debian:10
   before_script:
