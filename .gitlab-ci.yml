@@ -106,7 +106,6 @@ abi-api-compliance-check:
         .travis/check-ABI-API-compliance.sh || true
   after_script:
     - docker stop cpp_tango
-    - gzip -r compat_reports
   artifacts:
     when: always
     paths:
