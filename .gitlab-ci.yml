@@ -150,15 +150,15 @@ debian10:
     - mkdir coverage
     - >
         docker exec --workdir /home/tango/src cpp_tango
-        gcovr --filter '^cppapi/' --filter '^log4tango/' -j$(nproc)
+        gcovr --filter '^cppapi/' --filter '^log4tango/(?!tests/)' -j$(nproc)
         --xml --output coverage.xml
     - >
         docker exec --workdir /home/tango/src cpp_tango
-        gcovr --filter '^cppapi/' --filter '^log4tango/' -j$(nproc)
+        gcovr --filter '^cppapi/' --filter '^log4tango/(?!tests/)' -j$(nproc)
         --html-details --output coverage/coverage.html
     - >
         docker exec --workdir /home/tango/src cpp_tango
-        gcovr --filter '^cppapi/' --filter '^log4tango/' -j$(nproc)
+        gcovr --filter '^cppapi/' --filter '^log4tango/(?!tests/)' -j$(nproc)
     - tar czf coverage.tar.gz coverage
     - docker stop cpp_tango
   artifacts:

@@ -304,6 +304,7 @@ To generate code coverage report one can follow these steps:
 3. Generate the report with a tool of choice, e.g. `gcovr` can generate reports
    in many formats. Note that usually one is interested only in the library
    code and may want to exclude any test code from the report.
+   Below command can be run from the project's root directory:
    ```
-   gcovr --filter '^cppapi/' --filter '^log4tango/' --html-details --output coverage.html
+   gcovr --filter '^cppapi/' --filter '^log4tango/(?!tests/)' --html-details --output coverage.html
    ```
