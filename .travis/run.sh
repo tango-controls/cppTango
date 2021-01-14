@@ -26,6 +26,7 @@ docker exec cpp_tango cmake                                \
   -DCMAKE_VERBOSE_MAKEFILE=ON                              \
   -DCPPZMQ_BASE=/home/tango                                \
   -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}                   \
+  -DTANGO_ENABLE_COVERAGE=${TANGO_ENABLE_COVERAGE:-OFF}    \
   -DCOVERALLS=${COVERALLS}                                 \
   -DCOVERALLS_MODULE_PATH=${COVERALLS_MODULE_PATH}
 
