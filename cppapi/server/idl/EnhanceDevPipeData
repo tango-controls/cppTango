@@ -1,6 +1,0 @@
-/typedef\ _CORBA_ConstrType_Variable_Var<DevPipeData>/a \/\/Added by Tango team \
-\t\tvirtual ~DevPipeData() {if (mut_ptr != NULL)mut_ptr->unlock();}\
-\t\tDevPipeData() {mut_ptr=NULL;}\
-\t\tvoid set_pipe_mutex(omni_mutex *ptr) {mut_ptr=ptr;}\
-\t\tvoid rel_pipe_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}\
-\t\tomni_mutex *mut_ptr;
