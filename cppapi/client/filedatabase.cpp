@@ -1580,14 +1580,36 @@ CORBA::Any*   FileDatabase :: DbDeleteDeviceAttributeProperty(CORBA::Any& send)
 
 }
 
-
+/*
+ * FileDatabase :: DbGetClassProperty(CORBA::Any& send)
+ * @param send CORBA::Any Argin representing a DevVarStringArray
+ * Argin description:
+ * Str[0] = Tango class
+ * Str[1] = Property #1 name
+ * Str[2] = Property #2 name
+ * ...
+ * @return DevVarStringArray as CORBA::Any
+ * Argout description:
+ * Str[0] = Tango class
+ * Str[1] = Number of properties
+ * Str[2] = Property #1 name
+ * Str[3] = Property #1 value size (number of value elements, 1 for scalar case, 0 if class property not found)
+ * Str[4] = Property #1 value
+ * Str[5] = Property #1 value (array case)
+ * ...
+ * Str[n] = Property #1 value (array case)
+ * Str[n+1] = Property #2 name
+ * Str[n+2] = Property #2 value size (number of value elements, 1 for scalar case, 0 if class property not found)
+ * Str[n+3] = Property #2 value
+ * Str[n+4] = Property #2 value (array case)
+ * ...
+ */
 CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 {
 	Tango::DevVarStringArray* data_out = new DevVarStringArray;
 	const Tango::DevVarStringArray* data_in = NULL;
 	char num_prop_str[256];
 	char num_vals_str[256];
-	unsigned int num_prop = 0;
 	unsigned int num_val = 0;
 
 	cout4 << "FILEDATABASE: entering DbGetClassProperty" << endl;
@@ -1601,7 +1623,7 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 
 	data_out->length(2);
 	(*data_out)[0] = Tango::string_dup((*data_in)[0]); index++;
-	num_prop = data_in->length() - 1;
+	const unsigned int num_prop = data_in->length() - 1;
 	sprintf(num_prop_str,"%ud",num_prop);
 	(*data_out)[index] = Tango::string_dup(num_prop_str); index++;
 
@@ -1612,8 +1634,8 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 	{
 		if (equalsIgnoreCase((*data_in)[0].in(), m_server.classes[i]->name))
 		{
-			// m_server.classes[i] e' la classe che cerchiamo
-			for (unsigned int j = 1; j < (*data_in).length(); j++)  // in 0 c'e' il nome della classe e poi a seguire le proprieta
+			// m_server.classes[i] is the class we are looking for
+			for (unsigned int j = 1; j < (*data_in).length(); j++)  // at index 0 is the name of the class, property names are following
 			{
 				unsigned long nb_prop_defined = m_server.classes[i]->properties.size();
 				unsigned long m;
@@ -1621,7 +1643,6 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 				{
 					if (equalsIgnoreCase((*data_in)[j].in(), m_server.classes[i]->properties[m]->name))
 					{
-						num_prop++;
 						num_val = m_server.classes[i]->properties[m]->value.size();
 						seq_length = seq_length + 2 + num_val;
 						(*data_out).length(seq_length);
@@ -1642,11 +1663,13 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 
 				if (m == nb_prop_defined)
 				{
+					// The requested property does not exist in the specified class
 					seq_length = seq_length + 2;
 					data_out->length(seq_length);
-					(*data_out)[index] = Tango::string_dup((*data_in)[i + 1].in());index++;
+					// The requested property name is returned, followed by a 0,
+					// meaning the length of this property value is 0 ( <=> class property not found )
+					(*data_out)[index] = Tango::string_dup((*data_in)[j].in());index++;
 					(*data_out)[index] = Tango::string_dup("0");index++;
-//					(*data_out)[index] = Tango::string_dup(" ");index++;
 				}
 			}
 			break;
