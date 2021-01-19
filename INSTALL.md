@@ -29,6 +29,7 @@
 - `-DTANGO_USE_USING_NAMESPACE=<ON|OFF>` choose `OFF` for modern builds
 - `-DBUILD_TESTING=<ON|OFF>` Build the test suite (`ON` by default)
 - `-DBUILD_SHARED_LIBS=<ON|OFF>` Build tango as shared library (`ON` by default)
+- `-DTANGO_ENABLE_COVERAGE=<ON|OFF>` Instrument code for coverage analysis (`OFF` by default, requires CMake 3.13+, GCC/Clang only)
 
 Typical output:
 

@@ -241,6 +241,18 @@ int main(int argc, char **argv)
 		
 		// start the polling first!
 		device->poll_attribute(att_name,1000);
+
+#ifdef _TG_WINDOWS_
+		Sleep(100);
+#else
+		{
+			struct timespec to_wait,inter;
+			to_wait.tv_sec = 0;
+			to_wait.tv_nsec = 100 * 1000 * 1000;
+			nanosleep(&to_wait, NULL);
+		}
+#endif
+
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
 		cout << "   subscribe_event on status attribute --> OK" << endl;
 

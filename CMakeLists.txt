@@ -4,6 +4,12 @@ project(cppTango)
 
 include(CTest)
 
+option(TANGO_ENABLE_COVERAGE "Instrument code for coverage analysis" OFF)
+if (TANGO_ENABLE_COVERAGE AND NOT (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang"))
+    message(WARNING "Code coverage is not supported for selected compiler.")
+    set(TANGO_ENABLE_COVERAGE OFF)
+endif()
+
 #need to define the version of the library
 set(MAJOR_VERSION "9")
 set(MINOR_VERSION "3")

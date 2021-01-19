@@ -228,10 +228,13 @@ public:
         CxxTest::TangoPrinter::restore_set("logging_level");
 
         // try to add logging target as a file which cannot be opened
+        // note: we do not want to depend on current user permissions
+        // so that the testcase is portable. We try to create the log
+        // file in a location that no one (even root) can write to.
         DevVarStringArray fake_logging_target;
         fake_logging_target.length(2);
         fake_logging_target[0] = dserver_name.c_str();
-        fake_logging_target[1] = string("file::/usr/lib/cxx_dserver_cmd.out").c_str();
+        fake_logging_target[1] = string("file::/sys/cxx_dserver_cmd.out").c_str();
         din << fake_logging_target;
 
         TS_ASSERT_THROWS_ASSERT(dserver->command_inout("AddLoggingTarget", din), Tango::DevFailed & e,
