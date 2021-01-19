@@ -1,0 +1,210 @@
+variables: &variables
+  DEBIAN_FRONTEND: noninteractive
+  DOCKER_HOST: tcp://docker:2375
+  # Build parameters. We later override them at job level if needed.
+  SONAR_SCANNER: "OFF"
+  COVERALLS: "OFF"
+  RUN_TESTS: "ON"
+  STOCK_CPPZMQ: "ON"
+  USE_PCH: "ON"
+  CMAKE_BUILD_TYPE: "Debug"
+  TANGO_USE_USING_NAMESPACE: "ON"
+  BUILD_SHARED_LIBS: "ON"
+
+services:
+  - docker:20.10.1-dind
+
+# See: https://docs.gitlab.com/ce/ci/yaml/README.html#workflowrules-templates
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+.job-template: &job-template
+  image: debian:10
+  before_script:
+    - ulimit -c unlimited
+    - echo "core.%e.%p.%t" > /proc/sys/kernel/core_pattern
+    - apt-get update && apt-get install -y git wget unzip docker.io
+    - .travis/before_install.sh
+    - docker build -t cpp_tango .travis/${OS_TYPE}
+    - >
+        docker run
+        --rm
+        --name cpp_tango
+        --user root
+        -e BINTRAY_API_KEY=${CI_BINTRAY_API_KEY}
+        -e BINTRAY_USER_NAME=tango-ci
+        -e COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN}
+        -e SONAR_TOKEN=${SONAR_TOKEN}
+        -e TANGO_HOST=${TANGO_HOST}
+        -e TRAVIS_BRANCH=${TRAVIS_BRANCH}
+        -e TRAVIS_JOB_ID=${TRAVIS_JOB_ID}
+        -e DOCKER_HOST=tcp://$(getent hosts docker | awk '{ print $1 }'):2375
+        -v `pwd`:/home/tango/src
+        -v `pwd`/.sonar:/home/tango/.sonar
+        -v `pwd`/idl:/home/tango/idl
+        -v `pwd`/cppzmq:/home/tango/cppzmq
+        -v `pwd`/tango_admin:/home/tango/tango_admin
+        -v `pwd`/coveralls-cmake:/home/tango/coveralls-cmake
+        -v `pwd`/build-wrapper-linux-x86:/home/tango/build-wrapper-linux-x86
+        -v `pwd`/sonar-scanner:/home/tango/sonar-scanner
+        -dit
+        cpp_tango
+    - .travis/install_tango_idl.sh
+    - test ${STOCK_CPPZMQ} = "OFF" && .travis/install_cppzmq.sh || true
+  script:
+    - set -e
+    - .travis/run.sh
+    - .travis/install_tango.sh
+    - .travis/install_tango_admin.sh
+    - .travis/test.sh
+    - set +e
+    - test ${SONAR_SCANNER} = "ON" && .travis/sonar.sh || true
+  after_script:
+    - docker stop cpp_tango
+    - find build -name 'core.*' -exec gzip "{}" \;
+    - mkdir -p build/cpp_test_suite/test_results
+    - gzip -r build/cpp_test_suite/test_results
+  artifacts:
+    when: always
+    paths:
+      - build/cpp_test_suite/test_results
+      - build/cpp_test_suite/*/core.*
+
+abi-api-compliance-check:
+  variables:
+    <<: *variables
+    RUN_TESTS: "OFF"
+  rules:
+    # This job runs only for merge requests.
+    - if: $CI_MERGE_REQUEST_IID
+  image: debian:10
+  before_script:
+    - apt-get update && apt-get install -y git docker.io
+    - git fetch origin "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - .travis/before_install.sh
+    - docker build -t cpp_tango .travis/gcc-latest
+    - >
+        docker run
+        --rm
+        --name cpp_tango
+        --user root
+        -v `pwd`:/home/tango/src
+        -v `pwd`/idl:/home/tango/idl
+        -dit
+        cpp_tango
+    - .travis/install_tango_idl.sh
+  script:
+    - >
+        docker exec
+        -w /home/tango/src
+        -e CI_TARGET_BRANCH=${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
+        -e CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)
+        cpp_tango
+        .travis/check-ABI-API-compliance.sh || true
+  after_script:
+    - docker stop cpp_tango
+  artifacts:
+    when: always
+    paths:
+      - compat_reports
+
+llvm-latest:
+  <<: *job-template
+  variables:
+    <<: *variables
+    OS_TYPE: llvm-latest
+    RUN_TESTS: "OFF"
+    WARNINGS_AS_ERRORS: "ON"
+    TANGO_USE_USING_NAMESPACE: "OFF"
+    USE_PCH: "OFF"
+
+gcc-latest:
+  <<: *job-template
+  variables:
+    <<: *variables
+    OS_TYPE: gcc-latest
+    RUN_TESTS: "OFF"
+    WARNINGS_AS_ERRORS: "ON"
+    TANGO_USE_USING_NAMESPACE: "OFF"
+    USE_PCH: "OFF"
+
+ubuntu-20.04:
+  <<: *job-template
+  variables:
+    <<: *variables
+    OS_TYPE: ubuntu-20.04
+
+debian10:
+  <<: *job-template
+  variables:
+    <<: *variables
+    TANGO_ENABLE_COVERAGE: "ON"
+    OS_TYPE: debian10
+  after_script:
+    - find build -name 'core.*' -exec gzip "{}" \;
+    - mkdir -p build/cpp_test_suite/test_results
+    - gzip -r build/cpp_test_suite/test_results
+    - mkdir coverage
+    - >
+        docker exec --workdir /home/tango/src cpp_tango
+        gcovr --filter '^cppapi/' --filter '^log4tango/(?!tests/)' -j$(nproc)
+        --xml --output coverage.xml
+    - >
+        docker exec --workdir /home/tango/src cpp_tango
+        gcovr --filter '^cppapi/' --filter '^log4tango/(?!tests/)' -j$(nproc)
+        --html-details --output coverage/coverage.html
+    - >
+        docker exec --workdir /home/tango/src cpp_tango
+        gcovr --filter '^cppapi/' --filter '^log4tango/(?!tests/)' -j$(nproc)
+    - tar czf coverage.tar.gz coverage
+    - docker stop cpp_tango
+  artifacts:
+    when: always
+    reports:
+      cobertura: coverage.xml
+    paths:
+      - build/cpp_test_suite/test_results
+      - build/cpp_test_suite/*/core.*.gz
+      - coverage.xml
+      - coverage.tar.gz
+
+debian10-static:
+  <<: *job-template
+  variables:
+    <<: *variables
+    OS_TYPE: debian10
+    RUN_TESTS: "OFF"
+    BUILD_SHARED_LIBS: "OFF"
+
+debian10-no-pch:
+  <<: *job-template
+  variables:
+    <<: *variables
+    OS_TYPE: debian10
+    USE_PCH: "OFF"
+    RUN_TESTS: "OFF"
+
+debian10-release:
+  <<: *job-template
+  variables:
+    <<: *variables
+    OS_TYPE: debian10
+    CMAKE_BUILD_TYPE: Release
+
+debian9:
+  <<: *job-template
+  variables:
+    <<: *variables
+    OS_TYPE: debian9
+
+debian8:
+  <<: *job-template
+  variables:
+    <<: *variables
+    OS_TYPE: debian8
+    # SONAR_SCANNER: "ON"
+    # COVERALLS: "ON"
+    STOCK_CPPZMQ: "OFF"

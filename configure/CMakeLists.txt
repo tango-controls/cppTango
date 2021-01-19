@@ -168,6 +168,13 @@ if(NOT WIN32)
     endif()
 endif()
 
+if (TANGO_ENABLE_COVERAGE)
+    if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        add_compile_options(--coverage)
+        add_link_options(--coverage)
+    endif()
+endif()
+
 if(WARNINGS_AS_ERRORS)
   if(WIN32)
     add_compile_options(/WX)
