@@ -253,17 +253,10 @@ ALIGN8 short __jpmm_row_tab_frw[] = {  // forward_dct coeff table
 	"pmulhw	"#REG1", QWORD PTR [esp]	\n" \
 	"add	esp,8	\n"
 
-#if __GNUC__ > 3
-#define lea_addr_in_reg(REG1) \
-	"call	__i686.get_pc_thunk.bx	\n" \
-	"add    ebx,_GLOBAL_OFFSET_TABLE_	\n" \
-	"lea	"#REG1",__jpmm_row_tab_frw@GOTOFF	\n"
-#else
 #define lea_addr_in_reg(REG1) \
 	"call	__tg_get_pc	\n" \
 	"add    ebx,_GLOBAL_OFFSET_TABLE_	\n" \
 	"lea	"#REG1",__jpmm_row_tab_frw@GOTOFF	\n"
-#endif
 
 #else /* __PIC__ */
 
@@ -1062,21 +1055,12 @@ void jpeg_fdct_mmx( short *block )
   );
 
 #ifdef __PIC__
-#if __GNUC__ > 3
- __asm__(
- 	"push 	%ebx		\n"
-	"call	__i686.get_pc_thunk.bx	\n"
-	"add    $_GLOBAL_OFFSET_TABLE_, %ebx	\n"
-	"lea	__jpmm_row_tab_frw@GOTOFF(%ebx),%ebx	\n"
-   );
-#else
  __asm__(
  	"push 	%ebx		\n"
 	"call	__tg_get_pc	\n"
 	"add    $_GLOBAL_OFFSET_TABLE_, %ebx	\n"
 	"lea	__jpmm_row_tab_frw@GOTOFF(%ebx),%ebx	\n"
    );
-#endif
 #endif /* __PIC__ */
 
   // Rows
@@ -1278,15 +1262,6 @@ ALIGN8 short __jpmm_offset128[]  = { 128,128,128,128 };
 	"paddw	"#REG1", QWORD PTR [esp]	\n" \
 	"add	esp,8	\n"
 
-#if __GNUC__ > 3
-#define lea_addr_in_regs(REG1,REG2) \
-    "push 	ebx		\n" \
-	"call	__i686.get_pc_thunk.bx	\n" \
-	"add    ebx,_GLOBAL_OFFSET_TABLE_	\n" \
-	"lea	"#REG1",__jpmm_row_tabs@GOTOFF	\n" \
-	"lea	"#REG2",__jpmm_rounder@GOTOFF	\n" \
-	"pop	ebx   \n"
-#else
 #define lea_addr_in_regs(REG1,REG2) \
     "push 	ebx		\n" \
 	"call	__tg_get_pc	\n" \
@@ -1294,7 +1269,6 @@ ALIGN8 short __jpmm_offset128[]  = { 128,128,128,128 };
 	"lea	"#REG1",__jpmm_row_tabs@GOTOFF	\n" \
 	"lea	"#REG2",__jpmm_rounder@GOTOFF	\n" \
 	"pop	ebx   \n"
-#endif
 
 
 #else /* __PIC__ */
@@ -1754,18 +1728,6 @@ __mmx_idct_cols:
 #else
 
 #ifdef __PIC__
-#if __GNUC__ > 3
- __asm__(
- 	"push 	%ebx		\n"
-    "push 	%ecx		\n"
-	"call	__i686.get_pc_thunk.bx	\n"
-	"add    $_GLOBAL_OFFSET_TABLE_, %ebx	\n"
-	"lea	__jpmm_row_tabs@GOTOFF(%ebx),%eax	\n"
-	"lea	__jpmm_rounder@GOTOFF(%ebx),%ecx	\n"
-	"mov	%ecx,%ebx	\n"
-	"pop	%ecx   \n"
-   );
-#else
  __asm__(
  	"push 	%ebx		\n"
     "push 	%ecx		\n"
@@ -1776,7 +1738,6 @@ __mmx_idct_cols:
 	"mov	%ecx,%ebx	\n"
 	"pop	%ecx   \n"
    );
-#endif
 #endif /* __PIC__ */
   // gcc inline assembly code (32bits)
   // Rows
