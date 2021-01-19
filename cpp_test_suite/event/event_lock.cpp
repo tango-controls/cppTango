@@ -48,10 +48,10 @@ void EventCallback::push_event(Tango::EventData *ed)
 void set_abs_change(std::string device_name, std::string attribute_name)
 {
     Tango::DbDatum attribute_datum(attribute_name);
-    attribute_datum << 1;
+    attribute_datum << 1ul;
 
     Tango::DbDatum change_datum("abs_change");
-    change_datum << 1;
+    change_datum << 1ul;
 
     Tango::DbData data;
     data.push_back(attribute_datum);
