@@ -1,4 +1,0 @@
-#define LOCKED_DEVICE_CMD "@CMAKE_CURRENT_BINARY_DIR@/locked_device "
-#define ALLOWED_CMD "@CMAKE_CURRENT_BINARY_DIR@/allowed_cmd "
-#define RESTART_DEVICE_CMD "@CMAKE_CURRENT_BINARY_DIR@/restart_device "
-#define UNLOCK_CMD "@CMAKE_CURRENT_BINARY_DIR@/unlock "
