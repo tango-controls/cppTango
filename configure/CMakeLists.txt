@@ -65,6 +65,8 @@ if(ZMQ_BASE)
         link_directories(${ZMQ_BASE}/bin/Debug)
         link_directories(${ZMQ_BASE}/bin/Release)
         if(MSVC90)
+            # not defined for MSCV90, see https://cmake.org/cmake/help/latest/variable/CMAKE_VS_PLATFORM_TOOLSET.html
+            set(CMAKE_VS_PLATFORM_TOOLSET "v90")
             if(CMAKE_BUILD_TYPE STREQUAL "Debug")
                 set(ZMQ_PKG_LIBRARIES_STA "libzmq-v90-mt-sgd-4_0_5.lib")
                 set(ZMQ_PKG_LIBRARIES_DYN "libzmq-v90-mt-gd-4_0_5.lib")
