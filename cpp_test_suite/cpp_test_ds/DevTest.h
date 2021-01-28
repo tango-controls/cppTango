@@ -61,6 +61,7 @@ public :
 	void add_enum_label(Tango::DevString);
 	void cmd_push_pipe_event(Tango::DevShort);
     void cmd_push_state_status_event();
+    bool cmd_check_location_transparency();
 
 	Tango::DevVarLongArray *IOTemplOut();
 	Tango::DevVarDoubleArray *IOTemplInOut(Tango::DevDouble);
@@ -124,6 +125,7 @@ public :
 	void read_ULong_spec_attr_rw(Tango::Attribute &att);
 	void read_ULong64_spec_attr_rw(Tango::Attribute &att);
 	void read_State_spec_attr_rw(Tango::Attribute &att);
+	void read_SpectrumAttrWithSharedBuffer(Tango::Attribute&);
 
 	void read_Float_attr(Tango::Attribute &att);
 	void read_Boolean_attr(Tango::Attribute &att);
@@ -269,6 +271,7 @@ protected :
 	Tango::DevULong 	attr_spec_ulong_rw[3];
 	Tango::DevULong64 	attr_spec_ulong64_rw[3];
 	Tango::DevState 	attr_spec_state_rw[3];
+	Tango::DevDouble	spectrum_attr_with_shared_buffer[2];
 
 	Tango::DevShort 	short_spec_attr[2];
 	Tango::DevLong 		long_spec_attr[3];

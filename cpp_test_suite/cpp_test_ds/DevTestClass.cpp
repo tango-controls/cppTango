@@ -649,6 +649,13 @@ void DevTestClass::command_factory()
 	command_list.push_back(new Tango::TemplCommandInOut<Tango::DevDouble,Tango::DevVarDoubleArray *>((const char *)"IOTemplInOutState",
 			       static_cast<Tango::DbA_CmdMethPtr_Db>(&DevTest::IOTemplInOut),
 			       static_cast<Tango::StateMethPtr>(&DevTest::templ_state)));
+
+	command_list.push_back(new CheckLocationTransparency(
+	    "CheckLocationTransparency",
+	    Tango::DEV_VOID,
+	    Tango::DEV_BOOLEAN,
+	    "void",
+	    "is location transparent"));
 }
 
 
@@ -896,6 +903,7 @@ void DevTestClass::attribute_factory(std::vector<Tango::Attr *> &att_list)
 
   att_list.push_back(new DynEnumAttr());
   att_list.push_back(new ReynaldPollAttr());
+  att_list.push_back(new SpectrumAttrWithSharedBuffer());
 }
 
 void DevTestClass::pipe_factory()

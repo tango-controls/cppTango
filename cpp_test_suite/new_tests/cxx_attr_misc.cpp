@@ -1101,6 +1101,25 @@ cout << "status = " << status << endl;
 
         TS_ASSERT_EQUALS(Tango::ALARM, device1->state());
         TS_ASSERT_EQUALS(Tango::ATTR_ALARM, device1->read_attribute(attr_name).get_quality());
+
+        DeviceAttribute default_value(attr_name, DevShort(0));
+        TS_ASSERT_THROWS_NOTHING(device1->write_attribute(default_value));
+
+        TS_ASSERT_EQUALS(Tango::ON, device1->state());
+    }
+
+/*
+ * Verify that Tango provides location transparency for remote calls even if
+ * client is located within server process. Client must not have direct access
+ * to server's memory.
+ */
+    void test_location_transparency(void)
+    {
+        DeviceData data;
+        TS_ASSERT_THROWS_NOTHING(data = device1->command_inout("CheckLocationTransparency"));
+        bool result;
+        data >> result;
+        TSM_ASSERT("Failure, check server logs.", result);
     }
 };
 #undef cout

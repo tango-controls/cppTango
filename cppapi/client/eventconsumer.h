@@ -459,12 +459,10 @@ protected :
 	                   CallBack *callback, EventQueue *ev_queue,
 					   const std::vector<std::string> &filters, bool stateless = false);
 	friend class EventConsumerKeepAliveThread;
-	void attr_to_device(const AttributeValue *,const AttributeValue_3 *,long,DeviceAttribute *);
-	void attr_to_device(const AttributeValue_4 *,DeviceAttribute *);
-    void attr_to_device(const ZmqAttributeValue_4 *,DeviceAttribute *);
-    void attr_to_device(const ZmqAttributeValue_5 *,DeviceAttribute *);
-	template <typename T> void base_attr_to_device(const T *,DeviceAttribute *);
-    void att_union_to_device(const AttrValUnion *union_ptr,DeviceAttribute *dev_attr);
+	static void attr_to_device(AttributeValue*, AttributeValue_3*, long, DeviceAttribute*);
+	static void attr_to_device(AttributeValue_4*, DeviceAttribute*);
+	static void attr_to_device(ZmqAttributeValue_4*, DeviceAttribute*);
+	static void attr_to_device(ZmqAttributeValue_5*, DeviceAttribute*);
 	void conf_to_info(AttributeConfig_2 &,AttributeInfoEx **);
 	void get_cs_tango_host(Database *);
 	std::string get_client_attribute_name(const std::string &, const std::vector<std::string> &filters);

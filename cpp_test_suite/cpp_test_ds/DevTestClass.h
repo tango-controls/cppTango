@@ -1005,6 +1005,17 @@ public:
 	{(static_cast<DevTest *>(dev))->write_State_spec_attr_rw(att);}
 };
 
+class SpectrumAttrWithSharedBuffer: public Tango::SpectrumAttr
+{
+public:
+    SpectrumAttrWithSharedBuffer()
+        : SpectrumAttr("SpectrumAttrWithSharedBuffer", Tango::DEV_DOUBLE, Tango::READ, 2) {};
+    ~SpectrumAttrWithSharedBuffer() = default;
+
+    virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+    {(static_cast<DevTest *>(dev))->read_SpectrumAttrWithSharedBuffer(att);}
+};
+
 
 
 // ----------------------------------------------------------------------------

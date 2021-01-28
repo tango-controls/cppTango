@@ -9,6 +9,7 @@
 #endif
 
 #include <iterator>
+#include <memory>
 
 void EventCallBack::push_event(Tango::EventData* event_data)
 {
@@ -160,6 +161,8 @@ void DevTest::init_device()
 	attr_spec_ulong64_rw[2] = 888888;
 	attr_spec_state_rw[0] = Tango::ON;
 	attr_spec_state_rw[1] = Tango::OFF;
+	spectrum_attr_with_shared_buffer[0] = 12345;
+	spectrum_attr_with_shared_buffer[1] = 67890;
 
 	attr_slow = 3.3;
 
@@ -1904,6 +1907,18 @@ void DevTest::read_State_spec_attr_rw(Tango::Attribute &att)
       	att.set_value(attr_spec_state_rw,2);
 }
 
+void DevTest::read_SpectrumAttrWithSharedBuffer(Tango::Attribute &att)
+{
+    cout << "[DevTest::read_attr] attribute name SpectrumAttrWithSharedBuffer" << std::endl;
+    constexpr int dim_x = 2;
+    constexpr int dim_y = 0;
+    constexpr bool release = false;
+    att.set_value(spectrum_attr_with_shared_buffer, dim_x, dim_y, release);
+
+    cout << "[read_SpectrumAttrWithSharedBuffer] att.get_buffer()="
+         << att.get_double_value()->get_buffer() << std::endl;
+}
+
 void DevTest::read_Sub_device_tst(Tango::Attribute &att)
 {
       	cout << "[DevTest::read_attr] attribute name Sub_device_tst" << std::endl;
@@ -2642,3 +2657,24 @@ void DevTest::cmd_push_state_status_event()
 	set_change_event("Status",false,false);
 }
 
+bool DevTest::cmd_check_location_transparency()
+{
+    auto proxy = Tango::DeviceProxy(get_name());
+    auto attr = proxy.read_attribute("SpectrumAttrWithSharedBuffer");
+    auto& seq = attr.DoubleSeq;
+
+    const auto seq_address = std::addressof(seq[0]);
+    const auto data_address = std::addressof(spectrum_attr_with_shared_buffer[0]);
+
+    cout << "[cmd_check_location_transparency] seq->release()=" << seq->release() << std::endl;
+    cout << "[cmd_check_location_transparency] seq->get_buffer()=" << seq->get_buffer() << std::endl;
+    cout << "[cmd_check_location_transparency] *seq[0]=" << seq_address << std::endl;
+    cout << "[cmd_check_location_transparency] *data[0]=" << data_address << std::endl;
+
+    const auto transparency_broken =
+        ! seq->release()
+        || seq->get_buffer() == data_address
+        || seq_address == data_address;
+
+    return ! transparency_broken;
+}

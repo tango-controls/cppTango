@@ -1982,10 +1982,10 @@ void ZmqEventConsumer::push_zmq_event(std::string &ev_name,unsigned char endian,
 
         if (ipos != event_callback_map.end())
         {
-            const AttributeValue *attr_value = NULL;
-            const AttributeValue_3 *attr_value_3 = NULL;
-            const ZmqAttributeValue_4 *z_attr_value_4 = NULL;
-            const ZmqAttributeValue_5 *z_attr_value_5 = NULL;
+            AttributeValue *attr_value = NULL;
+            AttributeValue_3 *attr_value_3 = NULL;
+            ZmqAttributeValue_4 *z_attr_value_4 = NULL;
+            ZmqAttributeValue_5 *z_attr_value_5 = NULL;
             const AttributeConfig_2 *attr_conf_2 = NULL;
             const AttributeConfig_3 *attr_conf_3 = NULL;
             const AttributeConfig_5 *attr_conf_5 = NULL;
@@ -2454,7 +2454,7 @@ void ZmqEventConsumer::push_zmq_event(std::string &ev_name,unsigned char endian,
 							{
 								vers = 3;
 								(AttributeValue_3 &)av3 <<= event_data_cdr;
-								attr_value_3 = &av3.in();
+								attr_value_3 = &av3.inout();
 								dev_attr = new (DeviceAttribute);
 								attr_to_device(attr_value,attr_value_3,vers,dev_attr);
 							}
@@ -2477,7 +2477,7 @@ void ZmqEventConsumer::push_zmq_event(std::string &ev_name,unsigned char endian,
 							{
 								vers = 2;
 								(AttributeValue &)av <<= event_data_cdr;
-								attr_value = &av.in();
+								attr_value = &av.inout();
 								dev_attr = new (DeviceAttribute);
 								attr_to_device(attr_value,attr_value_3,vers,dev_attr);
 							}

@@ -248,8 +248,6 @@ private:
     ZmqEventConsumer            *zmq_event_consumer;
     std::vector<std::string>              host_ip_adrs;
     DevLong                     user_sub_hwm;
-
-    template <typename T> static void attr_to_device_base(const T *,DeviceAttribute *);
 };
 
 #endif /* _APIUTIL_H */
