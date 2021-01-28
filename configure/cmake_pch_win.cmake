@@ -5,7 +5,8 @@ function(tango_target_pch target)
 
     add_custom_command(
         OUTPUT "${tango_cpp_file}"
-        COMMAND cmake -E touch "${tango_cpp_file}")
+        COMMAND ${CMAKE_COMMAND} -E touch "${tango_cpp_file}"
+        DEPENDS idl_objects)
 
     target_sources(${target} PRIVATE "${tango_cpp_file}")
 

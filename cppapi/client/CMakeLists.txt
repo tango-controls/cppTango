@@ -58,6 +58,7 @@ set(HEADERS accessproxy.h
 
 add_subdirectory(helpers)
 add_library(client_objects OBJECT ${SOURCES})
+add_dependencies(client_objects idl_objects)
 
 if(WIN32)
     target_compile_definitions(client_objects PRIVATE "${windows_defs}")

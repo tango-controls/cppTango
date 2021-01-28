@@ -67,11 +67,11 @@ function(tango_add_pch pch_target ref_target pch_extra_cxx_flags)
 
     add_custom_command(
         OUTPUT ${tango_pch_h_file}
-        COMMAND cmake -E copy ${tango_h_file} ${tango_pch_h_file}
+        COMMAND ${CMAKE_COMMAND} -E copy ${tango_h_file} ${tango_pch_h_file}
         COMMENT "Copying tango.h to PCH directory (${pch_target})"
         MAIN_DEPENDENCY ${tango_h_file})
 
     add_custom_target(${pch_target}
-        DEPENDS ${tango_pch_h_file} ${tango_pch_file})
+        DEPENDS ${tango_pch_h_file} ${tango_pch_file} idl_objects)
 
 endfunction()

@@ -19,8 +19,7 @@ message("HOST_NAME=${HOST_NAME}")
 
 add_subdirectory(environment)
 
-macro(TEST_SUITE_ADD_TEST test)
-    message("Add executable ${test}")
+function(TEST_SUITE_ADD_TEST test)
     add_executable(${test} ${test}.cpp)
     target_compile_definitions(${test} PUBLIC VALGRIND _PTHREADS)
     target_link_libraries(${test} tango ${CMAKE_DL_LIBS})
@@ -29,7 +28,7 @@ macro(TEST_SUITE_ADD_TEST test)
     endif()
         #TODO generalize tests
 #    add_test(NAME "CPP::${test}"  COMMAND $<TARGET_FILE:${test}> ${DEV1} ${DEV2} ${DEV3} ${DEV1_ALIAS})
-endmacro()
+endfunction()
 
 function(tango_add_test name_tag name command_tag command)
     add_test(
