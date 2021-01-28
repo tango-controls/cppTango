@@ -13,6 +13,9 @@ include(CTest)
 
 option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 option(BUILD_SHARED_LIBS "Build a shared library instead of static" ON)
+option(TANGO_USE_LIBCPP "Build against libc++" OFF)
+option(TANGO_LIBCPP_INCLUDE "Include path for building using libc++" STRING)
+option(TANGO_LIBCPP_LIB "Library path for building using libc++" STRING)
 
 option(USE_PCH "Use precompiled header for server/tango.h" OFF)
 if (USE_PCH AND NOT (CMAKE_CXX_COMPILER_ID MATCHES "GNU|MSVC|Clang"))

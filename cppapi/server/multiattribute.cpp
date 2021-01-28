@@ -402,10 +402,8 @@ void MultiAttribute::concat(std::vector<AttrProperty> &dev_prop,
 	unsigned long nb_class_check = class_prop.size();
 	for (i = 0;i < nb_class_check;i++)
 	{
-		std::vector<AttrProperty>::iterator pos;
-
-		pos = find_if(tmp_result.begin(),tmp_result.end(),
-			      std::bind2nd(WantedProp<AttrProperty,std::string,bool>(),class_prop[i].get_name()));
+		auto pos = std::find_if(std::begin(tmp_result), std::end(tmp_result),
+		                        [attr_name=class_prop[i].get_name()](AttrProperty& attr){ return attr.get_name() == attr_name;});
 
 		if (pos != tmp_result.end())
 			continue;
@@ -486,11 +484,8 @@ void MultiAttribute::add_default(std::vector<AttrProperty> &prop_list, TANGO_UNU
 
 	for (long i = 0;i < nb_opt_prop;i++)
 	{
-		std::vector<AttrProperty>::iterator pos;
-		std::string opt_prop_name(Tango_OptAttrProp[i].name);
-
-		pos = find_if(prop_list.begin(),prop_list.end(),
-			      std::bind2nd(WantedProp<AttrProperty,std::string,bool>(),opt_prop_name));
+		auto pos = std::find_if(std::begin(prop_list), std::end(prop_list),
+		                        [attr_name=Tango_OptAttrProp[i].name](AttrProperty& attr){ return attr.get_name() == attr_name;});
 
 		if (pos == prop_list.end())
 			prop_list.push_back(AttrProperty(Tango_OptAttrProp[i].name,Tango_OptAttrProp[i].default_value));
@@ -522,10 +517,8 @@ void MultiAttribute::add_user_default(std::vector<AttrProperty> &prop_list,std::
 	long nb_user = user_default.size();
 	for (int i = 0;i < nb_user;i++)
 	{
-		std::vector<AttrProperty>::iterator pos;
-
-		pos = find_if(prop_list.begin(),prop_list.end(),
-			      std::bind2nd(WantedProp<AttrProperty,std::string,bool>(),user_default[i].get_name()));
+		auto pos = std::find_if(std::begin(prop_list), std::end(prop_list),
+		                        [attr_name=user_default[i].get_name()](AttrProperty& attr){ return attr.get_name() == attr_name;});
 
 		if (pos != prop_list.end())
 			continue;

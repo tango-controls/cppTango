@@ -26,7 +26,9 @@ if(WIN32)
 
 else()
     add_executable(test_log4tango ${LOG4TANGO_TEST_SOURCES} $<TARGET_OBJECTS:log4tango_objects>)
+    target_link_libraries(test_log4tango $<$<BOOL:${TANGO_USE_LIBCPP}>:c++abi> $<$<BOOL:${TANGO_USE_LIBCPP}>:c++>)
     add_executable(test_bench ${BENCH_TEST_SOURCES} $<TARGET_OBJECTS:log4tango_objects>)
+    target_link_libraries(test_bench $<$<BOOL:${TANGO_USE_LIBCPP}>:c++abi> $<$<BOOL:${TANGO_USE_LIBCPP}>:c++>)
 
     add_test("log4tango_test"       test_log4tango)
 #    add_test("log4tango_benchmark"  test_bench)

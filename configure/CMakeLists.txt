@@ -165,6 +165,12 @@ if(NOT WIN32)
             message("setup for debug build ...")
             add_compile_options(-Wall -Wextra -Wformat -Werror=format-security -pedantic -Og -g)
         endif()
+
+        if(TANGO_USE_LIBCPP)
+          add_compile_options(-nostdinc++ -nodefaultlibs)
+          include_directories(${TANGO_LIBCPP_INCLUDE})
+          link_directories(${TANGO_LIBCPP_LIB})
+        endif()
     endif()
 endif()
 

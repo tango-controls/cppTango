@@ -68,6 +68,12 @@ public:
    **/
   LOG4TANGO_EXPORT LoggerStream(Logger& logger, Level::Value level, bool filter = true);
 
+  LOG4TANGO_EXPORT LoggerStream(const LoggerStream &) = delete;
+  LOG4TANGO_EXPORT LoggerStream & operator=(const LoggerStream&) = delete;
+
+  LOG4TANGO_EXPORT LoggerStream(LoggerStream &&) = default;
+  LOG4TANGO_EXPORT LoggerStream & operator=(LoggerStream&&) = delete;
+
   /**
    * Destructor for LoggerStream&)
    **/

@@ -53,7 +53,7 @@ class PipeProperty
 {
 public:
 	PipeProperty(const std::string &name,const std::string &value):prop_name(name),prop_value(value) {}
-	~PipeProperty() {};
+	~PipeProperty() = default;
 
 	const std::string &get_value() {return prop_value;}
 	const std::string &get_name() {return prop_name;}
@@ -78,7 +78,7 @@ class MultiClassPipe
 {
 public:
 	MultiClassPipe();
-	~MultiClassPipe();
+	~MultiClassPipe() = default;
 
 	void init_class_pipe(DeviceClass *);
 
