@@ -149,6 +149,26 @@ if(NOT WIN32)
               LINK_LIBRARIES "${ZMQ_PKG_LIBRARIES}")
 
   message(STATUS "Check if zmq::socket has a disconnect method: ${TANGO_ZMQ_HAS_DISCONNECT}")
+
+  set(ZMQ_MIN_VER_MAJOR 4)
+  set(ZMQ_MIN_VER_MINOR 0)
+  set(ZMQ_MIN_VER_PATCH 5)
+
+  try_compile(TANGO_ZMQ_USABLE_VERSION ${CMAKE_BINARY_DIR}/test_zmq_version
+              SOURCES ${CMAKE_SOURCE_DIR}/configure/test_zmq_version.cpp
+              COMPILE_DEFINITIONS "-I ${ZMQ_BASE}/include
+              -DMINIMUM_VERSION_MAJOR=${ZMQ_MIN_VER_MAJOR}
+              -DMINIMUM_VERSION_MINOR=${ZMQ_MIN_VER_MINOR}
+              -DMINIMUM_VERSION_PATCH=${ZMQ_MIN_VER_PATCH}"
+              LINK_LIBRARIES "${ZMQ_PKG_LIBRARIES}")
+
+  set(msg "Check if libzmq version is >= ${ZMQ_MIN_VER_MAJOR}.${ZMQ_MIN_VER_MINOR}.${ZMQ_MIN_VER_PATCH}: ${TANGO_ZMQ_USABLE_VERSION}")
+
+  if(${TANGO_ZMQ_USABLE_VERSION})
+    message(STATUS ${msg})
+  else()
+    message(FATAL_ERROR ${msg})
+  endif()
 else()
   set(TANGO_ZMQ_HAS_DISCONNECT TRUE)
   message(STATUS "Check if zmq::socket has a disconnect method: ${TANGO_ZMQ_HAS_DISCONNECT} (hardcoded)")
