@@ -33,6 +33,7 @@
 #ifndef _ATTRIBUTE_TPP
 #define _ATTRIBUTE_TPP
 
+#include <tango_clock.h>
 
 namespace Tango
 {
@@ -1383,22 +1384,7 @@ void Attribute::Attribute_2_AttributeValue_base(T *ptr, Tango::DeviceImpl *d)
             ptr->value.string_att_value(str_seq);
         }
 
-#ifdef _TG_WINDOWS_
-        struct _timeb t;
-        _ftime(&t);
-
-        ptr->time.tv_sec = (long)t.time;
-        ptr->time.tv_usec = (long)(t.millitm * 1000);
-        ptr->time.tv_nsec = 0;
-#else
-        struct timeval after;
-
-        gettimeofday(&after, NULL);
-
-        ptr->time.tv_sec = after.tv_sec;
-        ptr->time.tv_usec = after.tv_usec;
-        ptr->time.tv_nsec = 0;
-#endif
+        ptr->time = make_TimeVal(std::chrono::system_clock::now());
         ptr->r_dim.dim_x = 1;
         ptr->r_dim.dim_y = 0;
         ptr->w_dim.dim_x = 0;

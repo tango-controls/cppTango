@@ -36,6 +36,7 @@
 
 #include <tango.h>
 #include <eventsupplier.h>
+#include <tango_clock.h>
 
 namespace Tango
 {
@@ -635,22 +636,7 @@ void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &co
 
 void Pipe::set_time()
 {
-#ifdef _TG_WINDOWS_
-	struct _timeb t;
-	_ftime(&t);
-
-	when.tv_sec = (CORBA::Long)t.time;
-	when.tv_usec = (CORBA::Long)(t.millitm * 1000);
-	when.tv_nsec = 0;
-#else
-	struct timezone tz;
-	struct timeval tv;
-	gettimeofday(&tv,&tz);
-
-	when.tv_sec = (CORBA::Long)tv.tv_sec;
-	when.tv_usec = (CORBA::Long)tv.tv_usec;
-	when.tv_nsec = 0;
-#endif
+	when = make_TimeVal(std::chrono::system_clock::now());
 }
 
 //+-------------------------------------------------------------------------
@@ -758,20 +744,11 @@ void Pipe::fire_event(DeviceImpl *dev,DevFailed *except)
 	event_supplier_zmq->push_event(dev, event_type, f_names, f_data, f_names_lg, f_data_lg, ad, name, except, true);
 }
 
-#ifdef _TG_WINDOWS_
 void Pipe::fire_event(DeviceImpl *_dev,DevicePipeBlob *_dat,bool reuse_it)
 {
-	struct _timeb now_win;
-	struct timeval now;
-
-	_ftime(&now_win);
-	now.tv_sec = (unsigned long)now_win.time;
-	now.tv_usec = (long)now_win.millitm * 1000;
-
-	fire_event(_dev,_dat,now,reuse_it);
+	auto now = make_timeval(std::chrono::system_clock::now());
+	fire_event(_dev, _dat, now, reuse_it);
 }
-#endif // _TG_WINDOWS_
-
 
 void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,bool reuse_it)
 {
@@ -829,7 +806,6 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 	::memset(&(ad.pipe_val->time),0,sizeof(ad.pipe_val->time));
 	ad.pipe_val->time.tv_sec = t.tv_sec;
 	ad.pipe_val->time.tv_usec = t.tv_usec;
-
 
 	const std::string &bl_name = p_data->get_name();
 	if (bl_name.size() != 0)

@@ -374,11 +374,7 @@ public:
 	omni_mutex *get_user_pipe_mutex() {return user_pipe_mutex;}
 
 	void fire_event(DeviceImpl *,DevFailed *);
-#ifdef _TG_WINDOWS_
 	void fire_event(DeviceImpl *,DevicePipeBlob *,bool);
-#else
-	void fire_event(DeviceImpl *_dev,DevicePipeBlob *_dat,bool bo) {struct timeval now;gettimeofday(&now,NULL);fire_event(_dev,_dat,now,bo);}
-#endif
 	void fire_event(DeviceImpl *,DevicePipeBlob *,struct timeval &,bool);
 
 	void set_event_subscription(time_t _t) {event_subscription = _t;}

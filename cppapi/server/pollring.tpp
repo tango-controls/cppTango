@@ -353,8 +353,7 @@ void PollRing::get_attr_history(long n,T *ptr,long type)
         }
         else
         {
-            ptr->dates[seq_index].tv_sec = ring[index].when.tv_sec + DELTA_T;
-            ptr->dates[seq_index].tv_usec = ring[index].when.tv_usec;
+            ptr->dates[seq_index] = make_TimeVal(ring[index].when);
         }
         ptr->dates[seq_index].tv_nsec = 0;
 

@@ -36,15 +36,9 @@
 #include <ac_config.h>
 #endif
 
-
 #include <tango.h>
 
 #define _dyn_attr
-#ifdef _TG_WINDOWS_
-	#include <sys/timeb.h>
-#else
-	#include <sys/time.h>
-#endif
 
 namespace Tango
 {

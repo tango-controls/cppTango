@@ -47,6 +47,12 @@
 #include <dintrthread.h>
 #include "event_subscription_state.h"
 
+#ifdef _TG_WINDOWS_
+#include <sys/timeb.h>
+#else
+#include <sys/time.h>
+#endif /* _TG_WINDOWS_ */
+
 namespace Tango
 {
 

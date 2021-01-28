@@ -41,7 +41,6 @@
 #ifdef _TG_WINDOWS_
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <sys/timeb.h>
 #include <process.h>
 #else
 #include <unistd.h>

@@ -83,12 +83,6 @@ const char* const LOCAL_POLL_REQUEST	   = "_local";
 const int   LOCAL_REQUEST_STR_SIZE		   = 6;
 
 const int   MIN_POLL_PERIOD                = 5;
-const int   DELTA_T                        = 1002000000;
-const int   MIN_DELTA_WORK                 = 20000;
-const int   TIME_HEARTBEAT                 = 2000;
-const int   POLL_LOOP_NB                   = 500;
-const int   ONE_SECOND                     = 1000000;
-const double   DISCARD_THRESHOLD           = 0.02;
 
 const int   DEFAULT_TIMEOUT                = 3200;
 const int   DEFAULT_POLL_OLD_FACTOR        = 4;
@@ -123,8 +117,6 @@ const char* const DEFAULT_OMNI_CONF_FILE   = "/etc/omniORB.cfg";
 const int   EVENT_HEARTBEAT_PERIOD         = 10;
 const int   EVENT_RESUBSCRIBE_PERIOD       = 600;
 const int   DEFAULT_EVENT_PERIOD           = 1000;
-const double   DELTA_PERIODIC              = 0.98;  // Using a delta of 2% only for times < 5000 ms
-const int   DELTA_PERIODIC_LONG            = 100;   // For times > 5000ms only keep a delta of 100ms
 const char* const HEARTBEAT                = "Event heartbeat";
 
 //
@@ -178,12 +170,6 @@ const int   DB_CONNECT_TIMEOUT             = 25000;
 const int   DB_RECONNECT_TIMEOUT           = 20000;
 const int   DB_TIMEOUT                     = 13000;
 const int   DB_START_PHASE_RETRIES         = 3;
-
-//
-// Time to wait before trying to reconnect after
-// a connevtion failure
-//
-const int   RECONNECTION_DELAY             = 1000;   //ms. Only try to reconnect every second
 
 //
 // Access Control related defines

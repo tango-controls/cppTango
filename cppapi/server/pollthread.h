@@ -38,12 +38,14 @@
 #include <tango.h>
 #include <pollobj.h>
 #include <utils.h>
+#include <tango_optional.h>
+#include <tango_clock.h>
 
 #include <list>
+#include <utility>
 
 #ifdef _TG_WINDOWS_
-	#include <sys/types.h>
-	#include <sys/timeb.h>
+#include <sys/types.h>
 #endif
 
 namespace Tango
@@ -60,26 +62,26 @@ namespace Tango
 
 struct PollThCmd
 {
-	bool			cmd_pending;	// The new command flag
-	bool			trigger;		// The external trigger flag
-	PollCmdCode		cmd_code;		// The command code
-	DeviceImpl		*dev;			// The device pointer (servant)
-	long			index;			// Index in the device poll_list
-	std::string			name;			// Object name
-	PollObjType		type;			// Object type (cmd/attr)
-	int				new_upd;		// New update period (For upd period com.)
+	bool cmd_pending;               // The new command flag
+	bool trigger;                   // The external trigger flag
+	PollCmdCode cmd_code;           // The command code
+	DeviceImpl* dev;                // The device pointer (servant)
+	long index;	                    // Index in the device poll_list
+	std::string name;               // Object name
+	PollObjType type;               // Object type (cmd/attr)
+	PollClock::duration new_upd;    // New update period (For upd period com.)
 };
 
 
 struct WorkItem
 {
-	DeviceImpl			*dev;			// The device pointer (servant)
-	std::vector<PollObj *> 	*poll_list;		// The device poll list
-	struct timeval		wake_up_date;	// The next wake up date
-	int 				update;			// The update period (mS)
-	PollObjType			type;			// Object type (command/attr)
-	std::vector<std::string>		name;			// Object name(s)
-	struct timeval		needed_time;	// Time needed to execute action
+	DeviceImpl* dev;                    // The device pointer (servant)
+	std::vector<PollObj*>* poll_list;   // The device poll list
+	PollClock::time_point wake_up_date; // The next wake up date
+	PollClock::duration update;         // The update period (mS)
+	PollObjType type;                   // Object type (command/attr)
+	std::vector<std::string> name;      // Object name(s)
+	PollClock::duration needed_time;    // Time needed to execute action
 };
 
 enum PollCmdType
@@ -112,12 +114,10 @@ public:
 	void set_polling_bef_9(bool _v) {polling_bef_9 = _v;}
 
 protected:
-	PollCmdType get_command(long);
+	PollCmdType get_command();
 	void one_more_poll();
 	void one_more_trigg();
-	void compute_new_date(struct timeval &,int);
 	void compute_sleep_time();
-	void time_diff(struct timeval &,struct timeval &,struct timeval &);
 	void poll_cmd(WorkItem &);
 	void poll_attr(WorkItem &);
 	void eve_heartbeat();
@@ -127,7 +127,7 @@ protected:
 	void print_list();
 	void insert_in_list(WorkItem &);
 	void add_insert_in_list(WorkItem &);
-	void tune_list(bool,long);
+	void tune_list(bool);
 	void err_out_of_sync(WorkItem &);
 
     template <typename T> void robb_data(T &,T &);
@@ -141,14 +141,10 @@ protected:
 
 	PollThCmd			local_cmd;
 
-#ifdef _TG_WINDOWS_
-	struct _timeb		now_win;
-	struct _timeb		after_win;
-	double				ctr_frequency;
-#endif
-	struct timeval		now;
-	struct timeval		after;
-	long				sleep;
+	PollClock::time_point now;
+	PollClock::time_point after;
+	tango_optional<PollClock::duration> sleep;
+
 	bool				polling_stop;
 
 private:
@@ -160,14 +156,13 @@ private:
 	AttributeValue_5	dummy_att5;
 	long				tune_ctr;
 	bool				need_two_tuning;
-	std::vector<long>		auto_upd;
-	std::vector<std::string>      auto_name;
-	std::vector<long>        rem_upd;
-	std::vector<std::string>      rem_name;
 	bool				send_heartbeat;
 	u_int				heartbeat_ctr;
 	u_int               previous_nb_late;
 	bool                polling_bef_9;
+
+	std::vector<std::pair<PollClock::duration, std::string>> auto_upd;
+	std::vector<std::pair<PollClock::duration, std::string>> rem_upd;
 
 	ClntIdent 			dummy_cl_id;
 	CppClntIdent 		cci;
@@ -177,47 +172,6 @@ public:
 	static std::string	   	name_to_del;
 	static PollObjType	type_to_del;
 };
-
-//
-// Three macros
-//
-
-#define T_DIFF(A,B,C)                                                      \
-  do                                                                       \
-  {                                                                        \
-    long delta_sec = B.tv_sec - A.tv_sec;                                  \
-    if (delta_sec == 0)                                                    \
-      C = B.tv_usec - A.tv_usec;                                           \
-    else                                                                   \
-    {                                                                      \
-      C = ((delta_sec - 1) * 1000000) + (1000000 - A.tv_usec) + B.tv_usec; \
-    }                                                                      \
-  }                                                                        \
-  while(0)
-
-#define T_ADD(A,B)                     \
-  do                                   \
-  {                                    \
-    A.tv_usec = A.tv_usec + B;         \
-    while (A.tv_usec > 1000000)        \
-    {                                  \
-      A.tv_sec++;                      \
-      A.tv_usec = A.tv_usec - 1000000; \
-    }                                  \
-  }                                    \
-  while(0)
-
-#define T_DEC(A,B)                     \
-  do                                   \
-  {                                    \
-    A.tv_usec = A.tv_usec - B;         \
-    if (A.tv_usec < 0)                 \
-    {                                  \
-      A.tv_sec--;                      \
-      A.tv_usec = 1000000 + A.tv_usec; \
-    }                                  \
-  }                                    \
-  while(0)
 
 } // End of Tango namespace
 

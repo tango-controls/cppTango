@@ -46,9 +46,6 @@
 
 #ifdef _TG_WINDOWS_
 #include <sys/types.h>
-#include <sys/timeb.h>
-#else
-#include <sys/time.h>
 #endif /* _TG_WINDOWS_ */
 
 namespace Tango
@@ -66,7 +63,7 @@ namespace Tango
 
 RingElt::RingElt()
 {
-	when.tv_sec = when.tv_usec = 0;
+	when = {};
 	cmd_result = NULL;
 	attr_value = NULL;
 	attr_value_3 = NULL;
@@ -142,7 +139,7 @@ PollRing::~PollRing()
 //--------------------------------------------------------------------------
 
 
-void PollRing::insert_data(CORBA::Any *any_ptr,struct timeval &t)
+void PollRing::insert_data(CORBA::Any *any_ptr, PollClock::time_point t)
 {
 
 //
@@ -163,7 +160,7 @@ void PollRing::insert_data(CORBA::Any *any_ptr,struct timeval &t)
 	inc_indexes();
 }
 
-void PollRing::insert_data(Tango::AttributeValueList *attr_val,struct timeval &t)
+void PollRing::insert_data(Tango::AttributeValueList *attr_val, PollClock::time_point t)
 {
 
 //
@@ -184,7 +181,7 @@ void PollRing::insert_data(Tango::AttributeValueList *attr_val,struct timeval &t
 	inc_indexes();
 }
 
-void PollRing::insert_data(Tango::AttributeValueList_3 *attr_val,struct timeval &t)
+void PollRing::insert_data(Tango::AttributeValueList_3 *attr_val, PollClock::time_point t)
 {
 
 //
@@ -205,7 +202,7 @@ void PollRing::insert_data(Tango::AttributeValueList_3 *attr_val,struct timeval 
 	inc_indexes();
 }
 
-void PollRing::insert_data(Tango::AttributeValueList_4 *attr_val,struct timeval &t,bool unlock)
+void PollRing::insert_data(Tango::AttributeValueList_4 *attr_val, PollClock::time_point t, bool unlock)
 {
 
 //
@@ -241,7 +238,7 @@ void PollRing::insert_data(Tango::AttributeValueList_4 *attr_val,struct timeval 
 	inc_indexes();
 }
 
-void PollRing::insert_data(Tango::AttributeValueList_5 *attr_val,struct timeval &t,bool unlock)
+void PollRing::insert_data(Tango::AttributeValueList_5 *attr_val, PollClock::time_point t, bool unlock)
 {
 
 //
@@ -290,7 +287,7 @@ void PollRing::insert_data(Tango::AttributeValueList_5 *attr_val,struct timeval 
 //--------------------------------------------------------------------------
 
 
-void PollRing::insert_except(Tango::DevFailed *ex,struct timeval &t)
+void PollRing::insert_except(Tango::DevFailed *ex, PollClock::time_point t)
 {
 
 //
@@ -353,8 +350,9 @@ void PollRing::inc_indexes()
 //
 //--------------------------------------------------------------------------
 
-void PollRing::get_delta_t(std::vector<double> &res,long nb)
+std::vector<PollClock::duration> PollRing::get_delta_t(long nb)
 {
+    std::vector<PollClock::duration> res{};
 
 //
 // Throw exception if nothing in ring
@@ -387,12 +385,6 @@ void PollRing::get_delta_t(std::vector<double> &res,long nb)
 	}
 
 //
-// Clear the result vector
-//
-
-	res.clear();
-
-//
 // Compute how many delta can be computed
 //
 
@@ -406,8 +398,8 @@ void PollRing::get_delta_t(std::vector<double> &res,long nb)
 	long i;
 	for (i = 0;i < nb;i++)
 	{
-		double t_ref = (double)ring[read_index].when.tv_sec + ((double)ring[read_index].when.tv_usec / 1000000);
-		double t_prev = (double)ring[prev_read].when.tv_sec + ((double)ring[prev_read].when.tv_usec / 1000000);
+		auto t_ref = ring[read_index].when;
+		auto t_prev = ring[prev_read].when;
 
 		res.push_back(t_ref - t_prev);
 		prev_read--;
@@ -417,6 +409,8 @@ void PollRing::get_delta_t(std::vector<double> &res,long nb)
 		if (read_index < 0)
 			read_index = max_elt - 1;
 	}
+
+	return res;
 }
 
 //+-------------------------------------------------------------------------
@@ -428,7 +422,7 @@ void PollRing::get_delta_t(std::vector<double> &res,long nb)
 //
 //--------------------------------------------------------------------------
 
-struct timeval PollRing::get_last_insert_date()
+PollClock::time_point PollRing::get_last_insert_date()
 {
 	if (insert_elt == 0)
 		return ring[max_elt - 1].when;
@@ -768,9 +762,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistoryList *ptr)
 
 	for (i = 0;i < n;i++)
 	{
-		(*ptr)[seq_index].time.tv_sec = ring[index].when.tv_sec + DELTA_T;
-		(*ptr)[seq_index].time.tv_usec = ring[index].when.tv_usec;
-		(*ptr)[seq_index].time.tv_nsec = 0;
+		(*ptr)[seq_index].time = make_TimeVal(ring[index].when);
 
 		if (ring[index].except == NULL)
 		{
@@ -1004,9 +996,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 // Copy dates
 //
 
-		ptr->dates[seq_index].tv_sec = ring[index].when.tv_sec + DELTA_T;
-		ptr->dates[seq_index].tv_usec = ring[index].when.tv_usec;
-		ptr->dates[seq_index].tv_nsec = 0;
+		ptr->dates[seq_index] = make_TimeVal(ring[index].when);
 
 //
 // Error treatement
@@ -1523,9 +1513,7 @@ void PollRing::get_attr_history(long n,Tango::DevAttrHistoryList *ptr,long type)
 
 	for (i = 0;i < n;i++)
 	{
-		(*ptr)[seq_index].value.time.tv_sec = ring[index].when.tv_sec + DELTA_T;
-		(*ptr)[seq_index].value.time.tv_usec = ring[index].when.tv_usec;
-		(*ptr)[seq_index].value.time.tv_nsec = 0;
+		(*ptr)[seq_index].value.time = make_TimeVal(ring[index].when);
 
 		if (ring[index].except == NULL)
 		{
@@ -1713,9 +1701,7 @@ void PollRing::get_attr_history(long n,Tango::DevAttrHistoryList_3 *ptr,long typ
 
 	for (i = 0;i < n;i++)
 	{
-		(*ptr)[seq_index].value.time.tv_sec = ring[index].when.tv_sec + DELTA_T;
-		(*ptr)[seq_index].value.time.tv_usec = ring[index].when.tv_usec;
-		(*ptr)[seq_index].value.time.tv_nsec = 0;
+		(*ptr)[seq_index].value.time = make_TimeVal(ring[index].when);
 
 		if (ring[index].except == NULL)
 		{
@@ -1919,9 +1905,7 @@ void PollRing::get_attr_history_43(long n,Tango::DevAttrHistoryList_3 *ptr,long 
 
 	for (i = 0;i < n;i++)
 	{
-		(*ptr)[seq_index].value.time.tv_sec = ring[index].when.tv_sec + DELTA_T;
-		(*ptr)[seq_index].value.time.tv_usec = ring[index].when.tv_usec;
-		(*ptr)[seq_index].value.time.tv_nsec = 0;
+		(*ptr)[seq_index].value.time = make_TimeVal(ring[index].when);
 
 		if (ring[index].except == NULL)
 		{

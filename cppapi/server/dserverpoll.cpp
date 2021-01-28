@@ -35,12 +35,7 @@
 #endif
 
 #include <tango.h>
-
-#ifdef _TG_WINDOWS_
-	#include <sys/timeb.h>
-#else
-	#include <sys/time.h>
-#endif
+#include <tango_clock.h>
 
 #include <iomanip>
 
@@ -198,7 +193,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
 // Create map of polled attributes read by the same call
 //
 
-    std::map<int,std::vector<std::string> > polled_together;
+    std::map<PollClock::duration, std::vector<std::string> > polled_together;
 
     bool poll_bef_9 = false;
     if (polling_bef_9_def == true)
@@ -214,8 +209,8 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
                 continue;
             else
             {
-                long po = poll_list[i]->get_upd();
-                std::map<int,std::vector<std::string> >::iterator ite = polled_together.find(po);
+                auto po = poll_list[i]->get_upd();
+                auto ite = polled_together.find(po);
 
                 Attribute &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
 
@@ -223,7 +218,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
                 {
                     std::vector<std::string> tmp_name;
                     tmp_name.push_back(att.get_name());
-                    polled_together.insert(std::pair<int,std::vector<std::string> >(po,tmp_name));
+                    polled_together.emplace(po, tmp_name);
                 }
                 else
                     ite->second.push_back(att.get_name());
@@ -298,16 +293,16 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
 		std::string tmp_str;
 		std::string per;
 
-		long po = poll_list[i]->get_upd();
+		auto po = poll_list[i]->get_upd();
 
-		if (po == 0)
+		if (po == PollClock::duration::zero())
 		{
 			returned_info = returned_info + "\nPolling externally triggered";
 		}
 		else
 		{
 			returned_info = returned_info + "\nPolling period (mS) = ";
-			s << po;
+			s << std::chrono::duration_cast<std::chrono::milliseconds>(po).count();
 			s >> tmp_str;
 			returned_info = returned_info + tmp_str;
 			s.clear();	// clear the stream eof flag
@@ -355,21 +350,21 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
 // Add needed time to execute last command
 //
 
-			double tmp_db = poll_list[i]->get_needed_time_i();
-			if (tmp_db == 0.0)
+			auto tmp_db = poll_list[i]->get_needed_time_i();
+			if (tmp_db == PollClock::duration::zero())
 			{
 				returned_info = returned_info + "\nThe polling buffer is externally filled in";
 			}
 			else
 			{
-				if (po != 0)
+				if (po != PollClock::duration::zero())
 				{
 					returned_info = returned_info + "\nTime needed for the last ";
 					if (type == Tango::POLL_CMD)
 						returned_info = returned_info + "command execution (mS) = ";
 					else
                     {
-                        std::map<int,std::vector<std::string> >::iterator ite = polled_together.find(po);
+                        auto ite = polled_together.find(po);
                         if (ite != polled_together.end())
                         {
                             if (ite->second.size() == 1)
@@ -391,7 +386,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
                     }
 
 					s.setf(std::ios::fixed);
-					s << std::setprecision(3) << tmp_db;
+					s << std::setprecision(3) << duration_ms(tmp_db);
 					returned_info = returned_info + s.str();
 
 					s.str("");
@@ -401,20 +396,10 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
 //
 
 					returned_info = returned_info + "\nData not updated since ";
-					double since = poll_list[i]->get_last_insert_date_i();
-					struct timeval now;
-#ifdef _TG_WINDOWS_
-					struct _timeb now_win;
-					_ftime(&now_win);
-					now.tv_sec = (unsigned long)now_win.time;
-					now.tv_usec = (long)now_win.millitm * 1000;
-#else
-					gettimeofday(&now,NULL);
-#endif
-					now.tv_sec = now.tv_sec - DELTA_T;
-					double now_d = (double)now.tv_sec + ((double)now.tv_usec / 1000000);
-					double diff_t = now_d - since;
-					diff_t = diff_t - (tmp_db / 1000);
+					auto since = poll_list[i]->get_last_insert_date_i();
+					auto now = PollClock::now();
+					auto diff = now - since;
+					double diff_t = duration_s(diff - tmp_db);
 					if (diff_t < 1.0)
 					{
 						long nb_msec = (long)(diff_t * 1000);
@@ -470,14 +455,12 @@ Tango::DevVarStringArray *DServer::dev_poll_status(std::string &dev_name)
 
 			try
 			{
-				std::vector<double> delta;
-				poll_list[i]->get_delta_t_i(delta,4);
+				auto delta = poll_list[i]->get_delta_t_i(4);
 
 				returned_info = returned_info + "\nDelta between last records (in mS) = ";
 				for (unsigned long j = 0;j < delta.size();j++)
 				{
-					long nb_msec = (long)(delta[j] * 1000);
-					s << nb_msec;
+					s << std::chrono::duration_cast<std::chrono::milliseconds>(delta[j]).count();
 					returned_info = returned_info + s.str();
 					s.str("");
 					if (j != (delta.size() - 1))
@@ -757,7 +740,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 		depth = dev->get_attr_poll_ring_depth(obj_name);
 
 	dev->get_poll_monitor().get_monitor();
-	poll_list.push_back(new PollObj(dev,type,obj_name,upd,depth));
+	poll_list.push_back(new PollObj(dev,type,obj_name,std::chrono::milliseconds(upd),depth));
 	dev->get_poll_monitor().rel_monitor();
 
 	PollingThreadInfo *th_info;
@@ -806,7 +789,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 		shared_cmd.cmd_code = POLL_ADD_OBJ;
 		shared_cmd.dev = dev;
 		shared_cmd.index = poll_list.size() - 1;
-		shared_cmd.new_upd = delta_ms;
+		shared_cmd.new_upd = std::chrono::milliseconds(delta_ms);
 
 		mon.signal();
 
@@ -853,7 +836,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 		shared_cmd.cmd_code = POLL_ADD_OBJ;
 		shared_cmd.dev = dev;
 		shared_cmd.index = poll_list.size() - 1;
-		shared_cmd.new_upd = delta_ms;
+		shared_cmd.new_upd = std::chrono::milliseconds(delta_ms);
 
 		PollThread *poll_th = th_info->poll_th;
 		poll_th->set_local_cmd(shared_cmd);
@@ -1156,28 +1139,6 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,b
 	check_upd_authorized(dev,upd,type,obj_name);
 
 //
-// Check that it is not an externally triggered polling object. In this case, throw exception
-//
-
-/*	long tmp_upd = (*ite)->get_upd();
-	if (tmp_upd == 0)
-	{
-		TangoSys_OMemStream o;
-
-		o << "Polling for ";
-		if (type == Tango::POLL_CMD)
-			o << "command ";
-		else
-			o << "attribute ";
-		o << (argin->svalue)[2];
-		o << " (device " << (argin->svalue)[0] << ") ";
-		o << " is externally triggered. Remove and add object to change its polling period";
-		o << std::ends;
-		Except::throw_exception((const char *)API_NotSupported,o.str(),
-					(const char *)"DServer::upd_obj_polling_period");
-	}*/
-
-//
 // Check that the update period is not to small
 //
 
@@ -1208,7 +1169,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,b
 // Update polling period
 //
 
-	(*ite)->update_upd(upd);
+	(*ite)->update_upd(std::chrono::milliseconds(upd));
 
 //
 // Send command to the polling thread
@@ -1230,7 +1191,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,b
 		shared_cmd.dev = dev;
 		shared_cmd.name = obj_name;
 		shared_cmd.type = type;
-		shared_cmd.new_upd = (argin->lvalue)[0];
+		shared_cmd.new_upd = std::chrono::milliseconds((argin->lvalue)[0]);
 
 		shared_cmd.index = distance(dev->get_poll_obj_list().begin(),ite);
 
@@ -1243,7 +1204,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,b
 		shared_cmd.dev = dev;
 		shared_cmd.name = obj_name;
 		shared_cmd.type = type;
-		shared_cmd.new_upd = (argin->lvalue)[0];
+		shared_cmd.new_upd = std::chrono::milliseconds((argin->lvalue)[0]);
 
 		shared_cmd.index = distance(dev->get_poll_obj_list().begin(),ite);
 
@@ -1421,7 +1382,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	}
 
 	std::vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(type,obj_name);
-	long tmp_upd = (*ite)->get_upd();
+	auto tmp_upd = (*ite)->get_upd();
 
 	PollingThreadInfo *th_info = nullptr;
 	int poll_th_id = 0;
@@ -1467,7 +1428,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 					mon.wait();
 				}
 				shared_cmd.cmd_pending = true;
-				if (tmp_upd == 0)
+				if (tmp_upd == PollClock::duration::zero())
 					shared_cmd.cmd_code = POLL_REM_EXT_TRIG_OBJ;
 				else
 					shared_cmd.cmd_code = POLL_REM_OBJ;
@@ -1505,7 +1466,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 			else
 			{
 				shared_cmd.cmd_pending = true;
-				if (tmp_upd == 0)
+				if (tmp_upd == PollClock::duration::zero())
 					shared_cmd.cmd_code = POLL_REM_EXT_TRIG_OBJ;
 				else
 					shared_cmd.cmd_code = POLL_REM_OBJ;
