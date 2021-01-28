@@ -159,9 +159,7 @@ namespace Tango {
         TangoSys_OMemStream o;
 
         o << "Incompatible command argument type, expected type is : Tango::" << type << std::ends;
-        Except::throw_exception((const char *) API_IncompatibleCmdArgumentType,
-                                o.str(),
-                                (const char *) "Command::extract()");
+        TANGO_THROW_EXCEPTION(API_IncompatibleCmdArgumentType, o.str());
     }
 
     void Command::extract(const CORBA::Any &in, Tango::DevBoolean &data) {
@@ -308,9 +306,7 @@ namespace Tango {
             any_ptr = new CORBA::Any();
         }
         catch (std::bad_alloc &) {
-            Except::throw_exception((const char *) API_MemoryAllocation,
-                                    (const char *) "Can't allocate memory in server",
-                                    (const char *) "Command::alloc_any()");
+            TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
         }
     }
 
@@ -903,8 +899,7 @@ namespace Tango {
             TangoSys_OMemStream o;
 
             o << "Command " << name << " defined with an unsupported type" << std::ends;
-            Except::throw_exception((const char *) API_CmdArgumentTypeNotSupported,
-                                    o.str(), (const char *) "TemplCommand::set_type");
+            TANGO_THROW_EXCEPTION(API_CmdArgumentTypeNotSupported, o.str());
         }
     }
 

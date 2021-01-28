@@ -173,12 +173,12 @@ public:
 
 		// try to register signal of out of range value
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IORegSig", din), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_SignalOutOfRange"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_SignalOutOfRange
 						&& e.errors[0].severity == Tango::ERR));
 
 		// try to unregister signal of out of range value
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOUnregSig", din), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_SignalOutOfRange"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_SignalOutOfRange
 						&& e.errors[0].severity == Tango::ERR));
 	}
 

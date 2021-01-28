@@ -716,7 +716,7 @@ void check_device_access(DeviceProxy *dev,bool allowed,bool all_cmd_not_allowed)
 		catch (Tango::DevFailed &e)
 		{
 //			Except::print_exception(e);
-			if (::strcmp(e.errors[0].reason.in(),"API_ReadOnlyMode") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_ReadOnlyMode) == 0)
 				read_only_except = true;
 		}
 
@@ -742,7 +742,7 @@ void check_device_access(DeviceProxy *dev,bool allowed,bool all_cmd_not_allowed)
 		catch (Tango::DevFailed &e)
 		{
 //			Except::print_exception(e);
-			if (::strcmp(e.errors[0].reason.in(),"API_ReadOnlyMode") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_ReadOnlyMode) == 0)
 				read_only_except = true;
 		}
 
@@ -774,7 +774,7 @@ void check_device_access(DeviceProxy *dev,bool allowed,bool all_cmd_not_allowed)
 		catch (Tango::DevFailed &e)
 		{
 //			Except::print_exception(e);
-			if (::strcmp(e.errors[0].reason.in(),"API_ReadOnlyMode") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_ReadOnlyMode) == 0)
 				read_only_except = true;
 		}
 
@@ -807,12 +807,12 @@ void call_devices_ds_off(DeviceProxy *dev_dp,DeviceProxy *another_dev_dp,bool ki
 //		Except::print_exception(e);
 		if (e.errors.length() == 2)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_DeviceNotExported") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_DeviceNotExported) == 0)
 				not_exported_except = true;
 		}
 		else if (e.errors.length() == 3)
 		{
-			if (::strcmp(e.errors[1].reason.in(),"API_CantConnectToDevice") == 0)
+			if (::strcmp(e.errors[1].reason.in(),API_CantConnectToDevice) == 0)
 				cant_connect_except = true;
 		}
 	}
@@ -835,12 +835,12 @@ void call_devices_ds_off(DeviceProxy *dev_dp,DeviceProxy *another_dev_dp,bool ki
 //		Except::print_exception(e);
 		if (e.errors.length() == 2)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_DeviceNotExported") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_DeviceNotExported) == 0)
 				not_exported_except = true;
 		}
 		else if (e.errors.length() == 3)
 		{
-			if (::strcmp(e.errors[1].reason.in(),"API_CantConnectToDevice") == 0)
+			if (::strcmp(e.errors[1].reason.in(),API_CantConnectToDevice) == 0)
 				cant_connect_except = true;
 		}
 	}
@@ -863,12 +863,12 @@ void call_devices_ds_off(DeviceProxy *dev_dp,DeviceProxy *another_dev_dp,bool ki
 //		Except::print_exception(e);
 		if (e.errors.length() == 2)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_DeviceNotExported") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_DeviceNotExported) == 0)
 				not_exported_except = true;
 		}
 		else if (e.errors.length() == 3)
 		{
-			if (::strcmp(e.errors[1].reason.in(),"API_CantConnectToDevice") == 0)
+			if (::strcmp(e.errors[1].reason.in(),API_CantConnectToDevice) == 0)
 				cant_connect_except = true;
 		}
 	}
@@ -891,12 +891,12 @@ void call_devices_ds_off(DeviceProxy *dev_dp,DeviceProxy *another_dev_dp,bool ki
 //		Except::print_exception(e);
 		if (e.errors.length() == 2)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_DeviceNotExported") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_DeviceNotExported) == 0)
 				not_exported_except = true;
 		}
 		else if (e.errors.length() == 3)
 		{
-			if (::strcmp(e.errors[1].reason.in(),"API_CantConnectToDevice") == 0)
+			if (::strcmp(e.errors[1].reason.in(),API_CantConnectToDevice) == 0)
 				cant_connect_except = true;
 		}
 	}

@@ -113,7 +113,7 @@ public:
 	void test_blackbox_device_feature(void)
 	{
 		TS_ASSERT_THROWS_ASSERT(device1->black_box(0), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_BlackBoxArgument"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_BlackBoxArgument
 						&& e.errors[0].severity == Tango::ERR));
 
 		DeviceData din, dout;
@@ -243,8 +243,8 @@ catch (Tango::DevFailed &e)
 cout << "Again exception when talking to adm device!!!" << endl;
 }
 			cout << "===> Nothing yet stored in blackbox, error reason = " << reas << endl;
-//			TS_ASSERT (reas == "API_BlackBoxEmpty");
-			if (reas == "API_CorbaException")
+//			TS_ASSERT (reas == API_BlackBoxEmpty);
+			if (reas == API_CorbaException)
 			{
 cout << "Too early, sleeping 4 more seconds...." << endl;
 				Tango_sleep(4);
@@ -279,11 +279,11 @@ catch (Tango::DevFailed &e)
 cout << "Again exception when talking to adm device!!!" << endl;
 }
 					cout << "===> Nothing yet stored in blackbox, error reason = " << reas << endl;
-					TS_ASSERT (reas == "API_BlackBoxEmpty");
+					TS_ASSERT (reas == API_BlackBoxEmpty);
 				}
 			}
 			else
-				TS_ASSERT (reas == "API_BlackBoxEmpty");
+				TS_ASSERT (reas == API_BlackBoxEmpty);
 		}
 		catch(...)
 		{
@@ -292,7 +292,7 @@ cout << "Again exception when talking to adm device!!!" << endl;
 		}
 
 /*		TS_ASSERT_THROWS_ASSERT(device3->black_box(2), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_BlackBoxEmpty"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_BlackBoxEmpty
 						&& e.errors[0].severity == Tango::ERR));*/
 		delete device3;
 

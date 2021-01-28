@@ -227,7 +227,7 @@ int main(int argc, char **argv)
 		}
 
 		assert (received_err == true);
-		assert (err_reason == "API_AttrNotFound");
+		assert (err_reason == API_AttrNotFound);
 
 //
 // unsubscribe to the event

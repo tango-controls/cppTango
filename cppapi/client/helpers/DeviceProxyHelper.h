@@ -819,10 +819,7 @@ public:
 					}
 				default:
 					{
-						Tango::Except::throw_exception(
-							static_cast<const char*>("TANGO_NON_SUPPORTED_FEATURE_ERROR"),
-							static_cast<const char*>("This type is not supported"),
-							static_cast<const char*>("AttributeHelper::read_attribute_w"));
+						TANGO_THROW_EXCEPTION("TANGO_NON_SUPPORTED_FEATURE_ERROR", "This type is not supported");
 						break;
 					}
 				}

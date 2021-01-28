@@ -402,9 +402,7 @@ string FileDatabase :: read_word(ifstream& f)
 		TangoSys_MemStream desc;
 		desc << "File database: Error in file at line " << StartLine;
 		desc << " in file " << filename << "." << ends;
-		ApiConnExcept::throw_exception((const char *)API_DatabaseFileError,
-				               desc.str(),
-				               (const char *)"FileDatabase::CHECK_LEX");
+		TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_DatabaseFileError, desc.str());
      }
      read_char(f);
      return ret_word;
@@ -467,9 +465,7 @@ string FileDatabase:: read_full_word(ifstream& f)
 			TangoSys_MemStream desc;
 			desc << "File database: String too long at line " << StartLine;
 			desc << " in file " << filename << "." << ends;
-			ApiConnExcept::throw_exception((const char *)API_DatabaseFileError,
-				       desc.str(),
-				       (const char *)"FileDatabase::read_full_word");
+			TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_DatabaseFileError, desc.str());
   		}
   		read_char(f);
 		if (ret_word.length() == 0)
@@ -502,9 +498,7 @@ void FileDatabase:: CHECK_LEX(int lt,int le)
 		TangoSys_MemStream desc;
 		desc << "File database: Error in file at line " << StartLine;
 		desc << " in file " << filename << "." << ends;
-		ApiConnExcept::throw_exception((const char *)API_DatabaseFileError,
-				               desc.str(),
-				               (const char *)"FileDatabase::CHECK_LEX");
+		TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_DatabaseFileError, desc.str());
 	}
 }
 
@@ -577,9 +571,7 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 	{
 		TangoSys_MemStream desc;
 		desc << "FILEDATABASE could not open file " << file_name << "." << ends;
-		ApiConnExcept::throw_exception((const char *)API_DatabaseFileError,
-				       desc.str(),
-				       (const char *)"FileDatabase::parse_res_file");
+		TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_DatabaseFileError, desc.str());
 	}
 
 /* CHECK BEGINING OF CONFIG FILE  */
@@ -1987,9 +1979,7 @@ CORBA::Any*  FileDatabase :: DbPutClassAttributeProperty(CORBA::Any& send)
 CORBA::Any*   FileDatabase :: DbDeleteClassAttributeProperty(CORBA::Any&)
 {
 	CORBA::Any* ret = new CORBA::Any;
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"Filedatabase::DbDeleteClassAttributeProperty");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 
@@ -2031,9 +2021,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceList(CORBA::Any& send)
 				TangoSys_MemStream desc;
 				desc << "File database: Can't find class " << (*data_in)[1];
 				desc << " in file " << filename << "." << ends;
-				ApiConnExcept::throw_exception((const char *)API_DatabaseFileError,
-				               			desc.str(),
-				               			(const char *)"FileDatabase::DbGetDeviceList");
+				TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_DatabaseFileError, desc.str());
 			}
 		}
 		else
@@ -2044,9 +2032,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceList(CORBA::Any& send)
 			TangoSys_MemStream desc;
 			desc << "File database: Can't find device server " << (*data_in)[0];
 			desc << " in file " << filename << "." << ends;
-			ApiConnExcept::throw_exception((const char *)API_DatabaseFileError,
-				               			desc.str(),
-				               			(const char *)"FileDatabase::DbGetDeviceList");
+			TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_DatabaseFileError, desc.str());
 		}
 	}
 
@@ -2113,9 +2099,7 @@ CORBA::Any*  FileDatabase :: DbImportDevice(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"Filedatabase::DbImportDevice");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 
 	return ret;
 }
@@ -2124,9 +2108,7 @@ CORBA::Any*  FileDatabase :: DbImportDevice(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbExportDevice(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"Filedatabase::DbExportDevice");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 
 	return ret;
 }
@@ -2135,9 +2117,7 @@ CORBA::Any*  FileDatabase :: DbExportDevice(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbUnExportDevice(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"Filedatabase::DbUnExportDevice");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 
 	return ret;
 }
@@ -2146,9 +2126,7 @@ CORBA::Any*  FileDatabase :: DbUnExportDevice(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbAddDevice(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"Filedatabase::DbAddDevice");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 
 	return ret;
 }
@@ -2157,9 +2135,7 @@ CORBA::Any*  FileDatabase :: DbAddDevice(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbDeleteDevice(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"Filedatabase::DbDeleteDevice");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 
 	return ret;
 }
@@ -2168,9 +2144,7 @@ CORBA::Any*  FileDatabase :: DbDeleteDevice(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbAddServer(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"Filedatabase::DbAddServer");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 
 	return ret;
 }
@@ -2179,9 +2153,7 @@ CORBA::Any*  FileDatabase :: DbAddServer(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbDeleteServer(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"Filedatabase::DbDeleteServer");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 
 	return ret;
 }
@@ -2190,9 +2162,7 @@ CORBA::Any*  FileDatabase :: DbDeleteServer(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbExportServer(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"Filedatabase::DbExportServer");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 
 	return ret;
 }
@@ -2201,9 +2171,7 @@ CORBA::Any*  FileDatabase :: DbExportServer(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbUnExportServer(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"Filedatabase::DbExportDevice");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 
 	return ret;
 }
@@ -2212,9 +2180,7 @@ CORBA::Any*  FileDatabase :: DbUnExportServer(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbGetServerInfo(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"Filedatabase::DbGetServerInfo");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 
 	return ret;
 }
@@ -2237,9 +2203,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceMemberList(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbGetDeviceExportedList(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"DbGetDeviceExportedList");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 
 	return ret;
 }
@@ -2300,9 +2264,7 @@ CORBA::Any*  FileDatabase :: DbGetProperty(CORBA::Any& send)
 CORBA::Any*  FileDatabase :: DbPutProperty(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"DbPutProperty");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 
@@ -2311,9 +2273,7 @@ CORBA::Any*  FileDatabase :: DbDeleteProperty(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"DbDeleteProperty");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 
@@ -2322,9 +2282,7 @@ CORBA::Any*  FileDatabase :: DbGetAliasDevice(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"DbGetAliasDevice");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 
@@ -2333,9 +2291,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceAlias(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"DbGetDeviceAlias");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 
@@ -2344,9 +2300,7 @@ CORBA::Any*  FileDatabase :: DbGetAttributeAlias(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"DbGetAttributeAlias");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 
@@ -2355,9 +2309,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceAliasList(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"DbGetDeviceAliasList");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 
@@ -2366,51 +2318,49 @@ CORBA::Any*  FileDatabase :: DbGetAttributeAliasList(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)API_NotSupported,
-	   				                     (const char *)"Call to a Filedatabase not implemented.",
-					                       (const char *)"DbGetAttributeAliasList");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 
 CORBA::Any* FileDatabase::DbGetClassPipeProperty(CORBA::Any&)
 {
 	CORBA::Any* ret = nullptr;
-	Tango::Except::throw_exception(API_NotSupported,"Call to a Filedatabase not implemented.","DbGetClassPipeProperty");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 
 CORBA::Any* FileDatabase::DbGetDevicePipeProperty(CORBA::Any&)
 {
 	CORBA::Any* ret = nullptr;
-	Tango::Except::throw_exception(API_NotSupported,"Call to a Filedatabase not implemented.","DbGetDevicePipeProperty");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 
 CORBA::Any* FileDatabase::DbDeleteClassPipeProperty(CORBA::Any&)
 {
 	CORBA::Any* ret = nullptr;
-	Tango::Except::throw_exception(API_NotSupported,"Call to a Filedatabase not implemented.","DbDeleteClassPipeProperty");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 
 CORBA::Any* FileDatabase::DbDeleteDevicePipeProperty(CORBA::Any&)
 {
 	CORBA::Any* ret = nullptr;
-	Tango::Except::throw_exception(API_NotSupported,"Call to a Filedatabase not implemented.","DbDeleteDevicePipeProperty");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 
 CORBA::Any* FileDatabase::DbPutClassPipeProperty(CORBA::Any&)
 {
 	CORBA::Any* ret = nullptr;
-	Tango::Except::throw_exception(API_NotSupported,"Call to a Filedatabase not implemented.","DbPutClassPipeProperty");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 
 CORBA::Any* FileDatabase::DbPutDevicePipeProperty(CORBA::Any&)
 {
 	CORBA::Any* ret = nullptr;
-	Tango::Except::throw_exception(API_NotSupported,"Call to a Filedatabase not implemented.","DbPutDevicePipeProperty");
+	TANGO_THROW_EXCEPTION(API_NotSupported, "Call to a Filedatabase not implemented.");
 	return ret;
 }
 

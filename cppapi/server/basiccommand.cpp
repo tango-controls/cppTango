@@ -87,9 +87,7 @@ CORBA::Any *DevStatusCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::
 	}
 	catch (std::bad_alloc &)
 	{
-		Except::throw_exception((const char *)API_MemoryAllocation,
-				      (const char *)"Can't allocate memory in server",
-				      (const char *)"DevStatus::execute");
+		TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 	}
 
 	try
@@ -151,9 +149,7 @@ CORBA::Any *DevStateCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::A
 	}
 	catch (std::bad_alloc &)
 	{
-		Except::throw_exception((const char *)API_MemoryAllocation,
-				      (const char *)"Can't allocate memory in server",
-				      (const char *)"DevStatus::execute");
+		TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
 	}
 
 	try
@@ -293,9 +289,7 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 			dc->set_memorized_values(false,loop,true);
 		else
 		{
-			Tango::Except::throw_exception((const char *)API_DeviceNotFound,
-										   (const char *)"Can't find new device in device list",
-										   (const char *)"DevInitCmd::execute()");
+			TANGO_THROW_EXCEPTION(API_DeviceNotFound, "Can't find new device in device list");
 		}
 
 	}
@@ -314,8 +308,7 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 		o << "\nDevice server adm. device name = dserver/";
 		o << tg->get_ds_name().c_str() << std::ends;
 
-		Except::re_throw_exception(e,(const char *)API_InitThrowsException,o.str(),
-				           (const char *)"DevInitCmd::execute()");
+		TANGO_RETHROW_EXCEPTION(e, API_InitThrowsException, o.str());
 	}
 
 //

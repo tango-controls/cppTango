@@ -263,7 +263,7 @@ public:
 		string mock_device = "toto";
 		din << mock_device;
 		TS_ASSERT_THROWS_ASSERT(dserver->command_inout("DevPollStatus", din), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_DeviceNotFound"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_DeviceNotFound
 						&& e.errors[0].severity == Tango::ERR));
 
 		// get polling status for a non polled device
@@ -1066,14 +1066,14 @@ public:
 		string mock_command = "toto";
 		din << mock_command;
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOTrigPoll", din), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_PollObjNotFound"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_PollObjNotFound
 						&& e.errors[0].severity == Tango::ERR));
 
 		// trigger polling for a non-polled command
 		string non_polled_command = "IOPollStr1";
 		din << non_polled_command;
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOTrigPoll", din), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_PollObjNotFound"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_PollObjNotFound
 						&& e.errors[0].severity == Tango::ERR));
 
 		// add polling for a non externally triggered command
@@ -1090,7 +1090,7 @@ public:
 		string non_ext_trig_command = "IOPollStr1";
 		din << non_ext_trig_command;
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOTrigPoll", din), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_NotSupported"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_NotSupported
 						&& e.errors[0].severity == Tango::ERR));
 
 		// stop polling for the non externally triggered command

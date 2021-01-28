@@ -133,8 +133,7 @@ void MultiClassPipe::init_class_pipe(DeviceClass *cl_ptr)
 			std::stringstream ss;
 			ss << "Can't get class pipe properties for class " << class_name;
 
-			Except::re_throw_exception(e,API_DatabaseAccess,ss.str(),
-				                "MultiClassPipe::init_class_pipe");
+			TANGO_RETHROW_EXCEPTION(e, API_DatabaseAccess, ss.str());
 		}
 
 //
@@ -206,7 +205,7 @@ std::vector<Tango::PipeProperty> &MultiClassPipe::get_prop_list(const std::strin
 		std::stringstream ss;
 		ss << "Pipe " << pipe_name << " not found in class pipe(s) properties" << std::ends;
 
-		Except::throw_exception(API_PipeNotFound,ss.str(),"MultiClassPipe::get_prop_list");
+		TANGO_THROW_EXCEPTION(API_PipeNotFound, ss.str());
 	}
 
 	return ite->second;

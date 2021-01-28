@@ -41,12 +41,12 @@ void MyCallBack::attr_written(AttrWrittenEvent *att)
 		coutv << "error length = " << nb_err << std::endl;
 		for (int i = 0;i < nb_err;i++)
 			coutv << "error[" << i << "].reason = " << att->errors.errors[i].reason << std::endl;
-		if (strcmp(att->errors.errors[nb_err - 1].reason,"API_DeviceTimedOut") == 0)
+		if (strcmp(att->errors.errors[nb_err - 1].reason,API_DeviceTimedOut) == 0)
 		{
 			to = true;
 			coutv << "Timeout error" << std::endl;
 		}
-		else if (strcmp(att->errors.errors[nb_err - 1].reason,"API_AttributeFailed") == 0)
+		else if (strcmp(att->errors.errors[nb_err - 1].reason,API_AttributeFailed) == 0)
 		{
 			attr_failed = true;
 			coutv << "Write attributes failed error" << std::endl;
@@ -58,7 +58,7 @@ void MyCallBack::attr_written(AttrWrittenEvent *att)
 	{
 		if (faulty_attr_nb != 0)
 		{
-			if (strcmp(att->errors.errors[0].reason,"API_AttributeFailed") == 0)
+			if (strcmp(att->errors.errors[0].reason,API_AttributeFailed) == 0)
 			{
 				if ((strcmp(att->errors.err_list[0].err_stack[0].reason,"aaa") == 0) &&
 				    (att->errors.err_list[0].idx_in_call == 0) &&

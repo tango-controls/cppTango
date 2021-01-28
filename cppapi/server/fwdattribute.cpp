@@ -615,7 +615,7 @@ void FwdAttribute::upd_att_config_base(const char *new_label)
 		desc = desc + name + " is a forwarded attribute and its root device (";
 		desc = desc + fwd_dev_name;
 		desc = desc + ") is not yet available";
-		Tango::Except::throw_exception(API_AttrConfig,desc,"FwdAttribute::upd_att_config_base");
+		TANGO_THROW_EXCEPTION(API_AttrConfig, desc);
 	}
 
 //
@@ -937,8 +937,7 @@ DevAttrHistory_5 *FwdAttribute::read_root_att_history(long n)
 				dp->set_connection_state(CONNECTION_NOTOK);
 				TangoSys_OMemStream desc;
 				desc << "Attribute_history failed on device " << get_fwd_dev_name() << std::ends;
-				ApiCommExcept::re_throw_exception(one,"API_CommunicationFailed",
-								         desc.str(),"FwdAttribute::read_root_att_history()");
+				TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
 			}
 		}
 		catch (CORBA::COMM_FAILURE &comm)
@@ -952,8 +951,7 @@ DevAttrHistory_5 *FwdAttribute::read_root_att_history(long n)
 				dp->set_connection_state(CONNECTION_NOTOK);
 				TangoSys_OMemStream desc;
 				desc << "Attribute_history failed on device " << get_fwd_dev_name() << std::ends;
-				ApiCommExcept::re_throw_exception(comm,"API_CommunicationFailed",
-											desc.str(),"FwdAttribute::read_root_att_history()");
+				TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
 			}
 		}
         catch (CORBA::SystemException &ce)
@@ -961,8 +959,7 @@ DevAttrHistory_5 *FwdAttribute::read_root_att_history(long n)
 			dp->set_connection_state(CONNECTION_NOTOK);
 			TangoSys_OMemStream desc;
 			desc << "Attribute_history failed on device " << get_fwd_dev_name() << std::ends;
-			ApiCommExcept::re_throw_exception(ce,"API_CommunicationFailed",
-                        			      desc.str(),"FwdAttribute::read_root_att_history()");
+			TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
 		}
 	}
 
@@ -1042,8 +1039,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 				TangoSys_OMemStream desc;
 				desc << "Writing attribute(s) on device " << get_fwd_dev_name() << " is not authorized" << std::ends;
 
-				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
-											  	  (const char *)"FwdAttribute::write_read_root_att()");
+				TANGO_THROW_API_EXCEPTION(NotAllowedExcept, API_ReadOnlyMode, desc.str());
 			}
 
 //
@@ -1072,8 +1068,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 			desc << ", attribute ";
 			desc << values[0].name.in();
 			desc << std::ends;
-			Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
-                        	desc.str(), (const char*)"FwdAttribute::write_read_root_att()");
+			TANGO_RETHROW_EXCEPTION(ex, API_AttributeFailed, desc.str());
 
 		}
 		catch (Tango::DevFailed &e)
@@ -1085,11 +1080,9 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 			desc << std::ends;
 
 			if (::strcmp(e.errors[0].reason,DEVICE_UNLOCKED_REASON) == 0)
-				DeviceUnlockedExcept::re_throw_exception(e,(const char*)DEVICE_UNLOCKED_REASON,
-							desc.str(), (const char*)"FwdAttribute::write_read_root_att()");
+				TANGO_RETHROW_API_EXCEPTION(DeviceUnlockedExcept, e, DEVICE_UNLOCKED_REASON, desc.str());
 			else
-                Except::re_throw_exception(e,(const char*)API_AttributeFailed,
-                        	desc.str(), (const char*)"FwdAttribute::write_read_root_att()");
+                TANGO_RETHROW_EXCEPTION(e, API_AttributeFailed, desc.str());
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
@@ -1106,10 +1099,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 				dp->set_connection_state(CONNECTION_NOTOK);
 				TangoSys_OMemStream desc;
 				desc << "Failed to execute write_read_attribute on device " << get_fwd_dev_name() << std::ends;
-				ApiCommExcept::re_throw_exception(one,
-							      (const char*)"API_CommunicationFailed",
-                        				      desc.str(),
-							      (const char*)"FwdAttribute::write_read_root_att()");
+				TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
 			}
 		}
 		catch (CORBA::COMM_FAILURE &comm)
@@ -1123,10 +1113,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 				dp->set_connection_state(CONNECTION_NOTOK);
 				TangoSys_OMemStream desc;
 				desc << "Failed to execute write_attribute on device " << get_fwd_dev_name() << std::ends;
-				ApiCommExcept::re_throw_exception(comm,
-							      (const char*)"API_CommunicationFailed",
-                        				      desc.str(),
-							      (const char*)"FwdAttribute::write_read_root_att");
+				TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
 			}
 		}
         catch (CORBA::SystemException &ce)
@@ -1135,10 +1122,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute write_attributes on device " << get_fwd_dev_name() << std::ends;
-			ApiCommExcept::re_throw_exception(ce,
-						      (const char*)"API_CommunicationFailed",
-                        			      desc.str(),
-						      (const char*)"FwdAttribute::write_read_root_att()");
+			TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
 		}
 	}
 

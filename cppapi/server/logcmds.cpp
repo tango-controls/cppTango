@@ -116,9 +116,7 @@ CORBA::Any *AddLoggingTarget::execute (DeviceImpl *device, const CORBA::Any &in_
 	const DevVarStringArray *targets;
 	if ((in_any >>= targets) == false)
 	{
-		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
-					(const char *)"Imcompatible command argument type, expected type is : DevVarStringArray",
-					(const char *)"AddLoggingTarget::execute");
+		TANGO_THROW_EXCEPTION(API_IncompatibleCmdArgumentType, "Imcompatible command argument type, expected type is : DevVarStringArray");
 	}
 
 //
@@ -168,9 +166,7 @@ CORBA::Any *RemoveLoggingTarget::execute (DeviceImpl *device, const CORBA::Any &
 	const DevVarStringArray *targets;
 	if ((in_any >>= targets) == false)
 	{
-		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
-					(const char *)"Imcompatible command argument type, expected type is : DevVarStringArray",
-					(const char *)"RemoveLoggingTarget::execute");
+		TANGO_THROW_EXCEPTION(API_IncompatibleCmdArgumentType, "Imcompatible command argument type, expected type is : DevVarStringArray");
 	}
 
 //
@@ -222,9 +218,7 @@ CORBA::Any *GetLoggingTarget::execute (DeviceImpl *device, const CORBA::Any &in_
 	const char* tmp_str;
 	if ((in_any >>= tmp_str) == false)
 	{
-		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
-					(const char *)"Imcompatible command argument type, expected type is : DevString",
-					(const char *)"GetLoggingTarget::execute");
+		TANGO_THROW_EXCEPTION(API_IncompatibleCmdArgumentType, "Imcompatible command argument type, expected type is : DevString");
 	}
 
 //
@@ -268,9 +262,7 @@ CORBA::Any *SetLoggingLevel::execute (DeviceImpl *device, const CORBA::Any &in_a
 	const DevVarLongStringArray *argin;
 	if ((in_any >>= argin) == false)
 	{
-		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
-					(const char *)"Imcompatible command argument type, expected type is : DevVarLongStringArray",
-					(const char *)"SetLoggingLevel::execute");
+		TANGO_THROW_EXCEPTION(API_IncompatibleCmdArgumentType, "Imcompatible command argument type, expected type is : DevVarLongStringArray");
 	}
 
 //
@@ -321,9 +313,7 @@ CORBA::Any *GetLoggingLevel::execute (DeviceImpl *device, const CORBA::Any &in_a
 	const DevVarStringArray *argin;
 	if ((in_any >>= argin) == false)
 	{
-		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
-					(const char *)"Imcompatible command argument type, expected type is : DevVarStringArray",
-					(const char *)"GetLoggingLevel::execute");
+		TANGO_THROW_EXCEPTION(API_IncompatibleCmdArgumentType, "Imcompatible command argument type, expected type is : DevVarStringArray");
 	}
 
 //

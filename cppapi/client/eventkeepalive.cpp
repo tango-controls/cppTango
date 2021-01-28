@@ -323,15 +323,11 @@ void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &i
   	}
 	catch (CORBA::COMM_FAILURE &)
 	{
-		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
-                       	(const char*)"Caught CORBA::COMM_FAILURE exception while creating event filter (check filter)",
-                       	(const char*)"EventConsumerKeepAliveThread::re_subscribe_event()");
+		TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_NotificationServiceFailed, "Caught CORBA::COMM_FAILURE exception while creating event filter (check filter)");
 	}
 	catch (...)
 	{
-		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
-                       	(const char*)"Caught exception while creating event filter (check filter)",
-                       	(const char*)"EventConsumerKeepAliveThread::re_subscribe_event()");
+		TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_NotificationServiceFailed, "Caught exception while creating event filter (check filter)");
 	}
 
 //
@@ -380,9 +376,7 @@ void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &i
 		catch (...) { }
 
     	filter = CosNotifyFilter::Filter::_nil();
-		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
-                       	(const char*)"Caught exception while creating event filter (check filter)",
-                       	(const char*)"EventConsumerKeepAliveThread::re_subscribe_event()");
+		TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_NotificationServiceFailed, "Caught exception while creating event filter (check filter)");
 	}
 }
 
@@ -1096,7 +1090,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 	errors.length(1);
 	errors[0].severity = Tango::ERR;
 	errors[0].origin = Tango::string_dup("EventConsumer::KeepAliveThread()");
-	errors[0].reason = Tango::string_dup("API_EventTimeout");
+	errors[0].reason = Tango::string_dup(API_EventTimeout);
 	errors[0].desc = Tango::string_dup("Event channel is not responding anymore, maybe the server or event system is down");
 	DeviceAttribute *dev_attr = NULL;
 	AttributeInfoEx *dev_attr_conf = NULL;

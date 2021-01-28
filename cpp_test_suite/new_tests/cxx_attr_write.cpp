@@ -79,7 +79,7 @@ public:
 		vector<DeviceAttribute> attributes;
 
 		TS_ASSERT_THROWS_ASSERT(device1->write_attribute(toto), Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotFound"
+						TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrNotFound
 								&& e.errors[0].severity == Tango::ERR));
 
 		// WARNING:
@@ -88,7 +88,7 @@ public:
 		attributes.push_back(short_attr_w);
 		attributes.push_back(toto);
 		TS_ASSERT_THROWS_ASSERT(device1->write_attributes(attributes), Tango::NamedDevFailedList &e,
-						TS_ASSERT(string(e.err_list[0].err_stack[0].reason.in()) == "API_AttrNotFound"
+						TS_ASSERT(string(e.err_list[0].err_stack[0].reason.in()) == API_AttrNotFound
 								&& e.errors[0].severity == Tango::ERR));
 
 		attributes.clear();
@@ -96,7 +96,7 @@ public:
 		attributes.push_back(short_attr);
 		attributes.push_back(long_attr_w);
 		TS_ASSERT_THROWS_ASSERT(device1->write_attributes(attributes), Tango::NamedDevFailedList &e,
-						TS_ASSERT(string(e.err_list[0].err_stack[0].reason.in()) == "API_AttrNotWritable"
+						TS_ASSERT(string(e.err_list[0].err_stack[0].reason.in()) == API_AttrNotWritable
 								&& e.errors[0].severity == Tango::ERR));
 
 	}

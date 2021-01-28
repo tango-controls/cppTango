@@ -167,7 +167,7 @@ public:
 		str = "a/b/c";
 		din << str;
 		TS_ASSERT_THROWS_ASSERT(dserver->command_inout("DevRestart", din), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_DeviceNotFound"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_DeviceNotFound
 						&& e.errors[0].severity == Tango::ERR));
 
 		state_in = Tango::OFF;

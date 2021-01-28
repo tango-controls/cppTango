@@ -323,7 +323,7 @@ public:
 
             TS_ASSERT((*d_hist)[i].has_failed() == true);
             TS_ASSERT((*d_hist)[i].get_err_stack().length() == 1);
-            TS_ASSERT(!strcmp((*d_hist)[i].get_err_stack()[0].reason, "API_ThrowException"));
+            TS_ASSERT(!strcmp((*d_hist)[i].get_err_stack()[0].reason, API_ThrowException));
         }
         delete d_hist;
     }
@@ -637,7 +637,7 @@ public:
 
             TS_ASSERT((*a_hist)[i].has_failed() == true);
             TS_ASSERT((*a_hist)[i].get_err_stack().length() == 1);
-            TS_ASSERT(!strcmp((*a_hist)[i].get_err_stack()[0].reason, "API_AttrOptProp"));
+            TS_ASSERT(!strcmp((*a_hist)[i].get_err_stack()[0].reason, API_AttrOptProp));
 //			AttributeDimension dim;
 //			dim = (*a_hist)[i].get_r_dimension();
 

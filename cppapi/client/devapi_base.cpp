@@ -445,9 +445,7 @@ void Connection::connect(std::string &corba_name)
                                 TangoSys_OMemStream desc;
                                 desc << "Failed to connect to device " << dev_name();
                                 desc << " (device nil after _narrowing)" << std::ends;
-                                ApiConnExcept::throw_exception((const char *) API_CantConnectToDevice,
-                                                               desc.str(),
-                                                               (const char *) "Connection::connect()");
+                                TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_CantConnectToDevice, desc.str());
                             }
                             else
                             {
@@ -565,7 +563,7 @@ void Connection::connect(std::string &corba_name)
                             desc << "database on host ";
                             desc << db_host << " with port ";
                             desc << db_port << std::ends;
-                            reason << "API_CantConnectToDatabase" << std::ends;
+                            reason << API_CantConnectToDatabase << std::ends;
                             db_retries--;
                             if (db_retries != 0)
                             {
@@ -577,11 +575,11 @@ void Connection::connect(std::string &corba_name)
                             desc << "device " << dev_name() << std::ends;
                             if (CORBA::OBJECT_NOT_EXIST::_downcast(&ce) != 0)
                             {
-                                reason << "API_DeviceNotDefined" << std::ends;
+                                reason << API_DeviceNotDefined << std::ends;
                             }
                             else if (CORBA::TRANSIENT::_downcast(&ce) != 0)
                             {
-                                reason << "API_ServerNotRunning" << std::ends;
+                                reason << API_ServerNotRunning << std::ends;
                             }
                             else
                             {
@@ -604,8 +602,7 @@ void Connection::connect(std::string &corba_name)
 
             if (db_connect == false)
             {
-                ApiConnExcept::re_throw_exception(ce, reason.str(), desc.str(),
-                                                  (const char *) "Connection::connect");
+                TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, ce, reason.str(), desc.str());
             }
         }
     }
@@ -723,9 +720,7 @@ void Connection::reconnect(bool db_used)
             desc << "The connection request was delayed." << std::endl;
             desc << "The last connection request was done less than " << RECONNECTION_DELAY << " ms ago" << std::ends;
 
-            Tango::Except::throw_exception((const char *) API_CantConnectToDevice,
-                                           desc.str(),
-                                           (const char *) "Connection::reconnect");
+            TANGO_THROW_EXCEPTION(API_CantConnectToDevice, desc.str());
         }
     }
 
@@ -800,10 +795,7 @@ void Connection::reconnect(bool db_used)
                 TangoSys_OMemStream desc;
                 desc << "Failed to connect to device " << dev_name() << std::ends;
 
-                ApiConnExcept::re_throw_exception(ce,
-                                                  (const char *) API_CantConnectToDevice,
-                                                  desc.str(),
-                                                  (const char *) "Connection::reconnect");
+                TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, ce, API_CantConnectToDevice, desc.str());
             }
         }
     }
@@ -1304,8 +1296,7 @@ DeviceData Connection::command_inout(std::string &command, DeviceData &data_in)
                         desc << std::ends;
                     }
 
-                    NotAllowedExcept::throw_exception((const char *) API_ReadOnlyMode, desc.str(),
-                                                      (const char *) "Connection::command_inout()");
+                    TANGO_THROW_API_EXCEPTION(NotAllowedExcept, API_ReadOnlyMode, desc.str());
                 }
             }
 
@@ -1342,8 +1333,7 @@ DeviceData Connection::command_inout(std::string &command, DeviceData &data_in)
             TangoSys_OMemStream desc;
             desc << "Failed to execute command_inout on device " << dev_name();
             desc << ", command " << command << std::ends;
-            ApiConnExcept::re_throw_exception(e, (const char *) API_CommandFailed,
-                                              desc.str(), (const char *) "Connection::command_inout()");
+            TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_CommandFailed, desc.str());
         }
         catch (Tango::DevFailed &e)
         {
@@ -1353,13 +1343,11 @@ DeviceData Connection::command_inout(std::string &command, DeviceData &data_in)
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
             {
-                DeviceUnlockedExcept::re_throw_exception(e, (const char *) DEVICE_UNLOCKED_REASON,
-                                                         desc.str(), (const char *) "Connection::command_inout()");
+                TANGO_RETHROW_API_EXCEPTION(DeviceUnlockedExcept, e, DEVICE_UNLOCKED_REASON, desc.str());
             }
             else
             {
-                Except::re_throw_exception(e, (const char *) API_CommandFailed,
-                                           desc.str(), (const char *) "Connection::command_inout()");
+                TANGO_RETHROW_EXCEPTION(e, API_CommandFailed, desc.str());
             }
         }
         catch (CORBA::TRANSIENT &trans)
@@ -1378,10 +1366,7 @@ DeviceData Connection::command_inout(std::string &command, DeviceData &data_in)
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute command_inout on device " << dev_name();
                 desc << ", command " << command << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "Connection::command_inout()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -1396,10 +1381,7 @@ DeviceData Connection::command_inout(std::string &command, DeviceData &data_in)
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute command_inout on device " << dev_name();
                 desc << ", command " << command << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "Connection::command_inout()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -1409,10 +1391,7 @@ DeviceData Connection::command_inout(std::string &command, DeviceData &data_in)
             TangoSys_OMemStream desc;
             desc << "Failed to execute command_inout on device " << dev_name();
             desc << ", command " << command << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "Connection::command_inout()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -1520,8 +1499,7 @@ CORBA::Any_var Connection::command_inout(std::string &command, CORBA::Any &any)
                         desc << std::ends;
                     }
 
-                    NotAllowedExcept::throw_exception((const char *) API_ReadOnlyMode, desc.str(),
-                                                      (const char *) "Connection::command_inout()");
+                    TANGO_THROW_API_EXCEPTION(NotAllowedExcept, API_ReadOnlyMode, desc.str());
                 }
             }
 
@@ -1551,8 +1529,7 @@ CORBA::Any_var Connection::command_inout(std::string &command, CORBA::Any &any)
             TangoSys_OMemStream desc;
             desc << "Failed to execute command_inout on device " << dev_name();
             desc << ", command " << command << std::ends;
-            ApiConnExcept::re_throw_exception(e, (const char *) API_CommandFailed,
-                                              desc.str(), (const char *) "Connection::command_inout()");
+            TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_CommandFailed, desc.str());
         }
         catch (Tango::DevFailed &e)
         {
@@ -1562,13 +1539,11 @@ CORBA::Any_var Connection::command_inout(std::string &command, CORBA::Any &any)
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
             {
-                DeviceUnlockedExcept::re_throw_exception(e, (const char *) DEVICE_UNLOCKED_REASON,
-                                                         desc.str(), (const char *) "Connection::command_inout()");
+                TANGO_RETHROW_API_EXCEPTION(DeviceUnlockedExcept, e, DEVICE_UNLOCKED_REASON, desc.str());
             }
             else
             {
-                Except::re_throw_exception(e, (const char *) API_CommandFailed,
-                                           desc.str(), (const char *) "Connection::command_inout()");
+                TANGO_RETHROW_EXCEPTION(e, API_CommandFailed, desc.str());
             }
         }
         catch (CORBA::TRANSIENT &trans)
@@ -1587,10 +1562,7 @@ CORBA::Any_var Connection::command_inout(std::string &command, CORBA::Any &any)
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute command_inout on device " << dev_name();
                 desc << ", command " << command << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "Connection::command_inout()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -1605,10 +1577,7 @@ CORBA::Any_var Connection::command_inout(std::string &command, CORBA::Any &any)
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute command_inout on device " << dev_name();
                 desc << ", command " << command << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "Connection::command_inout()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -1618,10 +1587,7 @@ CORBA::Any_var Connection::command_inout(std::string &command, CORBA::Any &any)
             TangoSys_OMemStream desc;
             desc << "Failed to execute command_inout on device " << dev_name();
             desc << ", command " << command << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "Connection::command_inout()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -1743,15 +1709,12 @@ void DeviceProxy::real_constructor(std::string &name, bool need_check_acc)
         }
         catch (Tango::DevFailed &dfe)
         {
-            if (strcmp(dfe.errors[0].reason, "DB_DeviceNotDefined") == 0)
+            if (strcmp(dfe.errors[0].reason, DB_DeviceNotDefined) == 0)
             {
                 delete db_dev;
                 TangoSys_OMemStream desc;
                 desc << "Can't connect to device " << device_name << std::ends;
-                ApiConnExcept::re_throw_exception(dfe,
-                                                  (const char *) "API_DeviceNotDefined",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::DeviceProxy");
+                TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, dfe, API_DeviceNotDefined, desc.str());
             }
             else if (strcmp(dfe.errors[0].reason, API_DeviceNotExported) == 0)
             {
@@ -1796,7 +1759,7 @@ void DeviceProxy::real_constructor(std::string &name, bool need_check_acc)
         set_connection_state(CONNECTION_NOTOK);
         if (dbase_used == false)
         {
-            if (strcmp(dfe.errors[1].reason, "API_DeviceNotDefined") == 0)
+            if (strcmp(dfe.errors[1].reason, API_DeviceNotDefined) == 0)
             {
                 throw;
             }
@@ -1824,7 +1787,7 @@ void DeviceProxy::real_constructor(std::string &name, bool need_check_acc)
         }
         catch (Tango::ConnectionFailed &dfe)
         {
-            if (strcmp(dfe.errors[1].reason, "API_DeviceNotDefined") == 0)
+            if (strcmp(dfe.errors[1].reason, API_DeviceNotDefined) == 0)
             {
                 throw;
             }
@@ -1847,7 +1810,7 @@ void DeviceProxy::real_constructor(std::string &name, bool need_check_acc)
     }
     catch (Tango::DevFailed &e)
     {
-        if (::strcmp(e.errors[0].reason.in(), "API_UtilSingletonNotCreated") != 0)
+        if (::strcmp(e.errors[0].reason.in(), API_UtilSingletonNotCreated) != 0)
         {
             throw;
         }
@@ -2016,9 +1979,7 @@ void DeviceProxy::parse_name(std::string &full_name)
         desc << "The given name is an empty string!!! " << full_name << std::endl;
         desc << "Device name syntax is domain/family/member" << std::ends;
 
-        ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                            desc.str(),
-                                            (const char *) "DeviceProxy::parse_name()");
+        TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
     }
 
 //
@@ -2064,9 +2025,7 @@ void DeviceProxy::parse_name(std::string &full_name)
             TangoSys_OMemStream desc;
             desc << protocol;
             desc << " protocol is an unsupported protocol" << std::ends;
-            ApiWrongNameExcept::throw_exception((const char *) "API_UnsupportedProtocol",
-                                                desc.str(),
-                                                (const char *) "DeviceProxy::parse_name()");
+            TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_UnsupportedProtocol, desc.str());
         }
     }
 
@@ -2098,9 +2057,7 @@ void DeviceProxy::parse_name(std::string &full_name)
             TangoSys_OMemStream desc;
             desc << mod;
             desc << " modifier is an unsupported db modifier" << std::ends;
-            ApiWrongNameExcept::throw_exception((const char *) "API_UnsupportedDBaseModifier",
-                                                desc.str(),
-                                                (const char *) "DeviceProxy::parse_name()");
+            TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_UnsupportedDBaseModifier, desc.str());
         }
     }
     else
@@ -2122,9 +2079,7 @@ void DeviceProxy::parse_name(std::string &full_name)
             TangoSys_OMemStream desc;
             desc << "Host and port not correctly defined in device name " << full_name << std::ends;
 
-            ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                desc.str(),
-                                                (const char *) "DeviceProxy::parse_name()");
+            TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
         }
 
         host = name_wo_db_mod.substr(0, pos);
@@ -2134,9 +2089,7 @@ void DeviceProxy::parse_name(std::string &full_name)
             TangoSys_OMemStream desc;
             desc << "Host and port not correctly defined in device name " << full_name << std::ends;
 
-            ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                desc.str(),
-                                                (const char *) "DeviceProxy::parse_name()");
+            TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
         }
         port = name_wo_db_mod.substr(pos + 1, tmp - pos - 1);
         TangoSys_MemStream s;
@@ -2156,9 +2109,7 @@ void DeviceProxy::parse_name(std::string &full_name)
             desc << "Wrong device name syntax (domain/family/member) in " << full_name << std::endl;
             desc << "Rem: Alias are forbidden when not using a database" << std::ends;
 
-            ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                desc.str(),
-                                                (const char *) "DeviceProxy::parse_name()");
+            TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
         }
         std::string::size_type prev_sep = tmp;
         tmp = device_name.find(DEV_NAME_FIELD_SEP, tmp + 1);
@@ -2168,9 +2119,7 @@ void DeviceProxy::parse_name(std::string &full_name)
             desc << "Wrong device name syntax (domain/family/member) in " << full_name << std::endl;
             desc << "Rem: Alias are forbidden when not using a database" << std::ends;
 
-            ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                desc.str(),
-                                                (const char *) "DeviceProxy::parse_name()");
+            TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
         }
         prev_sep = tmp;
         tmp = device_name.find(DEV_NAME_FIELD_SEP, tmp + 1);
@@ -2180,9 +2129,7 @@ void DeviceProxy::parse_name(std::string &full_name)
             desc << "Wrong device name syntax (domain/family/member) in " << full_name << std::endl;
             desc << "Rem: Alias are forbidden when not using a database" << std::ends;
 
-            ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                desc.str(),
-                                                (const char *) "DeviceProxy::parse_name()");
+            TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
         }
 
         db_host = db_port = NOT_USED;
@@ -2210,9 +2157,7 @@ void DeviceProxy::parse_name(std::string &full_name)
                 TangoSys_OMemStream desc;
                 desc << "Wrong alias name syntax in " << full_name << " (: is not allowed in alias name)" << std::ends;
 
-                ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                    desc.str(),
-                                                    (const char *) "DeviceProxy::parse_name()");
+                TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
             }
 
             pos = name_wo_db_mod.find(RES_SEP);
@@ -2221,9 +2166,7 @@ void DeviceProxy::parse_name(std::string &full_name)
                 TangoSys_OMemStream desc;
                 desc << "Wrong alias name syntax in " << full_name << " (-> is not allowed in alias name)" << std::ends;
 
-                ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                    desc.str(),
-                                                    (const char *) "DeviceProxy::parse_name()");
+                TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
             }
 
 //
@@ -2254,9 +2197,7 @@ void DeviceProxy::parse_name(std::string &full_name)
                     TangoSys_OMemStream desc;
                     desc << "Wrong device name syntax (domain/family/member) in " << full_name << std::ends;
 
-                    ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                        desc.str(),
-                                                        (const char *) "DeviceProxy::parse_name()");
+                    TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
                 }
 
                 std::string::size_type prev_sep = pos;
@@ -2267,9 +2208,7 @@ void DeviceProxy::parse_name(std::string &full_name)
                     TangoSys_OMemStream desc;
                     desc << "Wrong device name syntax (domain/family/member) in " << full_name << std::ends;
 
-                    ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                        desc.str(),
-                                                        (const char *) "DeviceProxy::parse_name()");
+                    TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
                 }
 
                 prev_sep = pos;
@@ -2279,9 +2218,7 @@ void DeviceProxy::parse_name(std::string &full_name)
                     TangoSys_OMemStream desc;
                     desc << "Wrong device name syntax (domain/family/member) in " << full_name << std::ends;
 
-                    ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                        desc.str(),
-                                                        (const char *) "DeviceProxy::parse_name()");
+                    TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
                 }
 
                 device_name = name_wo_db_mod;
@@ -2353,9 +2290,7 @@ void DeviceProxy::parse_name(std::string &full_name)
                         desc << "Wrong alias name syntax in " << full_name << " (: is not allowed in alias name)"
                              << std::ends;
 
-                        ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                            desc.str(),
-                                                            (const char *) "DeviceProxy::parse_name()");
+                        TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
                     }
 
                     pos = object_name.find(RES_SEP);
@@ -2365,9 +2300,7 @@ void DeviceProxy::parse_name(std::string &full_name)
                         desc << "Wrong alias name syntax in " << full_name << " (-> is not allowed in alias name)"
                              << std::ends;
 
-                        ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                            desc.str(),
-                                                            (const char *) "DeviceProxy::parse_name()");
+                        TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
                     }
                     alias_name = device_name = object_name;
                     is_alias = true;
@@ -2392,9 +2325,7 @@ void DeviceProxy::parse_name(std::string &full_name)
                         TangoSys_OMemStream desc;
                         desc << "Wrong device name syntax (domain/family/member) in " << full_name << std::ends;
 
-                        ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                            desc.str(),
-                                                            (const char *) "DeviceProxy::parse_name()");
+                        TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
                     }
 
                     prev_sep = pos;
@@ -2404,9 +2335,7 @@ void DeviceProxy::parse_name(std::string &full_name)
                         TangoSys_OMemStream desc;
                         desc << "Wrong device name syntax (domain/family/member) in " << full_name << std::ends;
 
-                        ApiWrongNameExcept::throw_exception((const char *) API_WrongDeviceNameSyntax,
-                                                            desc.str(),
-                                                            (const char *) "DeviceProxy::parse_name()");
+                        TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongDeviceNameSyntax, desc.str());
                     }
 
                     device_name = object_name;
@@ -2458,8 +2387,7 @@ std::string DeviceProxy::get_corba_name(bool need_check_acc)
 
             TangoSys_OMemStream desc;
             desc << "Device " << device_name << " is not exported (hint: try starting the device server)" << std::ends;
-            ApiConnExcept::throw_exception(API_DeviceNotExported, desc.str(),
-                                           "DeviceProxy::get_corba_name()");
+            TANGO_THROW_API_EXCEPTION(ApiConnExcept, API_DeviceNotExported, desc.str());
         }
     }
 
@@ -2545,9 +2473,7 @@ DbDevImportInfo DeviceProxy::import_info()
         desc << device_name;
         desc << " which is a non database device";
 
-        ApiNonDbExcept::throw_exception((const char *) API_NonDatabaseDevice,
-                                        desc.str(),
-                                        (const char *) "DeviceProxy::import_info");
+        TANGO_THROW_API_EXCEPTION(ApiNonDbExcept, API_NonDatabaseDevice, desc.str());
     }
     else
     {
@@ -2681,10 +2607,7 @@ int DeviceProxy::ping()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute ping on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::ping()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -2698,10 +2621,7 @@ int DeviceProxy::ping()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute ping on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::ping()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -2710,10 +2630,7 @@ int DeviceProxy::ping()
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute ping on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::ping()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 #ifndef _TG_WINDOWS_
@@ -2766,10 +2683,7 @@ std::string DeviceProxy::name()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute name() on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::name()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -2783,10 +2697,7 @@ std::string DeviceProxy::name()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute name() on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::name()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -2795,10 +2706,7 @@ std::string DeviceProxy::name()
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute name() on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::name()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -2822,9 +2730,7 @@ std::string DeviceProxy::alias()
         }
         else
         {
-            Tango::Except::throw_exception((const char *) "DB_AliasNotDefined",
-                                           (const char *) "No alias found for your device",
-                                           (const char *) "DeviceProxy::alias()");
+            TANGO_THROW_EXCEPTION(DB_AliasNotDefined, "No alias found for your device");
         }
     }
 
@@ -2867,10 +2773,7 @@ DevState DeviceProxy::state()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute state() on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::state()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -2884,10 +2787,7 @@ DevState DeviceProxy::state()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute state() on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::state()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -2896,10 +2796,7 @@ DevState DeviceProxy::state()
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute state() on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::state()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -2943,10 +2840,7 @@ std::string DeviceProxy::status()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute status() on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::status()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -2960,10 +2854,7 @@ std::string DeviceProxy::status()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute status() on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::status()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -2972,10 +2863,7 @@ std::string DeviceProxy::status()
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute status() on device (CORBA exception)" << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::status()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -3037,10 +2925,7 @@ std::string DeviceProxy::adm_name()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute adm_name() on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::adm_name()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -3054,10 +2939,7 @@ std::string DeviceProxy::adm_name()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute adm_name() on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::adm_name()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -3066,10 +2948,7 @@ std::string DeviceProxy::adm_name()
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute adm_name() on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::adm_name()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -3113,10 +2992,7 @@ std::string DeviceProxy::description()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute description() on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::description()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -3130,10 +3006,7 @@ std::string DeviceProxy::description()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute description() on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::description()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -3142,10 +3015,7 @@ std::string DeviceProxy::description()
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute description() on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::description()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -3189,10 +3059,7 @@ std::vector<std::string> *DeviceProxy::black_box(int last_n_commands)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute black_box on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::black_box()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -3206,10 +3073,7 @@ std::vector<std::string> *DeviceProxy::black_box(int last_n_commands)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute black_box on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::black_box()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -3218,10 +3082,7 @@ std::vector<std::string> *DeviceProxy::black_box(int last_n_commands)
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute black_box on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::black_box()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -3295,10 +3156,7 @@ DeviceInfo const &DeviceProxy::info()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute info() on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::info()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -3312,10 +3170,7 @@ DeviceInfo const &DeviceProxy::info()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute info() on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::info()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -3324,10 +3179,7 @@ DeviceInfo const &DeviceProxy::info()
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute info() on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::info()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -3397,10 +3249,7 @@ CommandInfo DeviceProxy::command_query(std::string cmd)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute command_query on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::command_query()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -3414,10 +3263,7 @@ CommandInfo DeviceProxy::command_query(std::string cmd)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute command_query on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::command_query()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -3426,10 +3272,7 @@ CommandInfo DeviceProxy::command_query(std::string cmd)
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute command_query on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::command_query()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -3559,10 +3402,7 @@ CommandInfoList *DeviceProxy::command_list_query()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute command_list_query on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::command_list_query()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -3576,10 +3416,7 @@ CommandInfoList *DeviceProxy::command_list_query()
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute command_list_query on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::command_list_query()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -3588,10 +3425,7 @@ CommandInfoList *DeviceProxy::command_list_query()
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute command_list_query on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::command_list_query()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -3636,9 +3470,7 @@ void DeviceProxy::get_property(std::string &property_name, DbData &db_data)
         desc << device_name;
         desc << " which is a non database device";
 
-        ApiNonDbExcept::throw_exception((const char *) API_NonDatabaseDevice,
-                                        desc.str(),
-                                        (const char *) "DeviceProxy::get_property");
+        TANGO_THROW_API_EXCEPTION(ApiNonDbExcept, API_NonDatabaseDevice, desc.str());
     }
     else
     {
@@ -3666,9 +3498,7 @@ void DeviceProxy::get_property(std::vector<std::string> &property_names, DbData 
         desc << device_name;
         desc << " which is a non database device";
 
-        ApiNonDbExcept::throw_exception((const char *) API_NonDatabaseDevice,
-                                        desc.str(),
-                                        (const char *) "DeviceProxy::get_property");
+        TANGO_THROW_API_EXCEPTION(ApiNonDbExcept, API_NonDatabaseDevice, desc.str());
     }
     else
     {
@@ -3699,9 +3529,7 @@ void DeviceProxy::get_property(DbData &db_data)
         desc << device_name;
         desc << " which is a non database device";
 
-        ApiNonDbExcept::throw_exception((const char *) API_NonDatabaseDevice,
-                                        desc.str(),
-                                        (const char *) "DeviceProxy::get_property");
+        TANGO_THROW_API_EXCEPTION(ApiNonDbExcept, API_NonDatabaseDevice, desc.str());
     }
     else
     {
@@ -3726,9 +3554,7 @@ void DeviceProxy::put_property(DbData &db_data)
         desc << device_name;
         desc << " which is a non database device";
 
-        ApiNonDbExcept::throw_exception((const char *) API_NonDatabaseDevice,
-                                        desc.str(),
-                                        (const char *) "DeviceProxy::put_property");
+        TANGO_THROW_API_EXCEPTION(ApiNonDbExcept, API_NonDatabaseDevice, desc.str());
     }
     else
     {
@@ -3753,9 +3579,7 @@ void DeviceProxy::delete_property(std::string &property_name)
         desc << device_name;
         desc << " which is a non database device";
 
-        ApiNonDbExcept::throw_exception((const char *) API_NonDatabaseDevice,
-                                        desc.str(),
-                                        (const char *) "DeviceProxy::delete_property");
+        TANGO_THROW_API_EXCEPTION(ApiNonDbExcept, API_NonDatabaseDevice, desc.str());
     }
     else
     {
@@ -3784,9 +3608,7 @@ void DeviceProxy::delete_property(std::vector<std::string> &property_names)
         desc << device_name;
         desc << " which is a non database device";
 
-        ApiNonDbExcept::throw_exception((const char *) API_NonDatabaseDevice,
-                                        desc.str(),
-                                        (const char *) "DeviceProxy::delete_property");
+        TANGO_THROW_API_EXCEPTION(ApiNonDbExcept, API_NonDatabaseDevice, desc.str());
     }
     else
     {
@@ -3818,9 +3640,7 @@ void DeviceProxy::delete_property(DbData &db_data)
         desc << device_name;
         desc << " which is a non database device";
 
-        ApiNonDbExcept::throw_exception((const char *) API_NonDatabaseDevice,
-                                        desc.str(),
-                                        (const char *) "DeviceProxy::delete_property");
+        TANGO_THROW_API_EXCEPTION(ApiNonDbExcept, API_NonDatabaseDevice, desc.str());
     }
     else
     {
@@ -3846,9 +3666,7 @@ void DeviceProxy::get_property_list(const std::string &wildcard, std::vector<std
         desc << device_name;
         desc << " which is a non database device";
 
-        ApiNonDbExcept::throw_exception((const char *) API_NonDatabaseDevice,
-                                        desc.str(),
-                                        (const char *) "DeviceProxy::get_property_list");
+        TANGO_THROW_API_EXCEPTION(ApiNonDbExcept, API_NonDatabaseDevice, desc.str());
     }
     else
     {
@@ -3857,9 +3675,7 @@ void DeviceProxy::get_property_list(const std::string &wildcard, std::vector<std
 
         if (num > 1)
         {
-            ApiWrongNameExcept::throw_exception((const char *) "API_WrongWildcardUsage",
-                                                (const char *) "Only one wildcard character (*) allowed!",
-                                                (const char *) "DeviceProxy::get_property_list");
+            TANGO_THROW_API_EXCEPTION(ApiWrongNameExcept, API_WrongWildcardUsage, "Only one wildcard character (*) allowed!");
         }
         db_dev->get_property_list(wildcard, prop_list);
     }
@@ -4003,10 +3819,7 @@ AttributeInfoList *DeviceProxy::get_attribute_config(std::vector<std::string> &a
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute get_attribute_config on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::get_attribute_config()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -4020,10 +3833,7 @@ AttributeInfoList *DeviceProxy::get_attribute_config(std::vector<std::string> &a
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute get_attribute_config on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::get_attribute_config()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -4032,10 +3842,7 @@ AttributeInfoList *DeviceProxy::get_attribute_config(std::vector<std::string> &a
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute get_attribute_config on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::get_attribute_config()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
         catch (Tango::DevFailed&)
         {
@@ -4233,10 +4040,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(std::vector<std::strin
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute get_attribute_config on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::get_attribute_config()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -4250,10 +4054,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(std::vector<std::strin
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute get_attribute_config on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::get_attribute_config()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -4262,10 +4063,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(std::vector<std::strin
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute get_attribute_config on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::get_attribute_config()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
         catch (Tango::DevFailed&)
         {
@@ -4610,10 +4408,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoList &dev_attr_list)
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute set_attribute_config on device " << device_name << std::ends;
 
-                DeviceUnlockedExcept::re_throw_exception(e,
-                                                         (const char *) DEVICE_UNLOCKED_REASON,
-                                                         desc.str(),
-                                                         (const char *) "DeviceProxy::set_attribute_config()");
+                TANGO_RETHROW_API_EXCEPTION(DeviceUnlockedExcept, e, DEVICE_UNLOCKED_REASON, desc.str());
             }
             else
             {
@@ -4635,10 +4430,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoList &dev_attr_list)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute set_attribute_config on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::set_attribute_config()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -4652,10 +4444,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoList &dev_attr_list)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute set_attribute_config on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::set_attribute_config()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -4664,10 +4453,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoList &dev_attr_list)
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute set_attribute_config on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::set_attribute_config()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -4840,10 +4626,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute set_attribute_config on device " << device_name << std::ends;
 
-                DeviceUnlockedExcept::re_throw_exception(e,
-                                                         (const char *) DEVICE_UNLOCKED_REASON,
-                                                         desc.str(),
-                                                         (const char *) "DeviceProxy::set_attribute_config()");
+                TANGO_RETHROW_API_EXCEPTION(DeviceUnlockedExcept, e, DEVICE_UNLOCKED_REASON, desc.str());
             }
             else
             {
@@ -4865,10 +4648,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute set_attribute_config on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::set_attribute_config()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -4882,10 +4662,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute set_attribute_config on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::set_attribute_config()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -4894,10 +4671,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute set_attribute_config on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::set_attribute_config()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -4927,8 +4701,7 @@ PipeInfoList *DeviceProxy::get_pipe_config(std::vector<std::string> &pipe_string
         std::stringstream ss;
         ss << "Device " << device_name << " too old to use get_pipe_config() call. Please upgrade to Tango 9/IDL5";
 
-        ApiNonSuppExcept::throw_exception(API_UnsupportedFeature,
-                                          ss.str(), "DeviceProxy::get_pipe_config()");
+        TANGO_THROW_API_EXCEPTION(ApiNonSuppExcept, API_UnsupportedFeature, ss.str());
     }
 
 //
@@ -4992,8 +4765,7 @@ PipeInfoList *DeviceProxy::get_pipe_config(std::vector<std::string> &pipe_string
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute get_pipe_config on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one, "API_CommunicationFailed",
-                                                  desc.str(), "DeviceProxy::get_pipe_config()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -5007,8 +4779,7 @@ PipeInfoList *DeviceProxy::get_pipe_config(std::vector<std::string> &pipe_string
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute get_pipe_config on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm, "API_CommunicationFailed",
-                                                  desc.str(), "DeviceProxy::get_pipe_config()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -5017,8 +4788,7 @@ PipeInfoList *DeviceProxy::get_pipe_config(std::vector<std::string> &pipe_string
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute get_pipe_config on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce, "API_CommunicationFailed",
-                                              desc.str(), "DeviceProxy::get_pipe_config()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
         catch (Tango::DevFailed&)
         {
@@ -5068,7 +4838,7 @@ void DeviceProxy::set_pipe_config(PipeInfoList &dev_pipe_list)
         std::stringstream ss;
         ss << "Device " << device_name << " too old to use set_pipe_config() call. Please upgrade to Tango 9/IDL5";
 
-        ApiNonSuppExcept::throw_exception(API_UnsupportedFeature, ss.str(), "DeviceProxy::set_pipe_config()");
+        TANGO_THROW_API_EXCEPTION(ApiNonSuppExcept, API_UnsupportedFeature, ss.str());
     }
 
     PipeConfigList pipe_config_list;
@@ -5112,8 +4882,7 @@ void DeviceProxy::set_pipe_config(PipeInfoList &dev_pipe_list)
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute set_pipe_config on device " << device_name << std::ends;
 
-                DeviceUnlockedExcept::re_throw_exception(e, DEVICE_UNLOCKED_REASON,
-                                                         desc.str(), "DeviceProxy::set_pipe_config()");
+                TANGO_RETHROW_API_EXCEPTION(DeviceUnlockedExcept, e, DEVICE_UNLOCKED_REASON, desc.str());
             }
             else
             {
@@ -5135,10 +4904,7 @@ void DeviceProxy::set_pipe_config(PipeInfoList &dev_pipe_list)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute set_pipe_config on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::set_pipe_config()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -5152,10 +4918,7 @@ void DeviceProxy::set_pipe_config(PipeInfoList &dev_pipe_list)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute set_pipe_config on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::set_pipe_config()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -5164,10 +4927,7 @@ void DeviceProxy::set_pipe_config(PipeInfoList &dev_pipe_list)
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute set_pipe_config on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::set_pipe_config()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -5222,7 +4982,7 @@ DevicePipe DeviceProxy::read_pipe(const std::string &pipe_name)
         std::stringstream ss;
         ss << "Device " << device_name << " too old to use read_pipe() call. Please upgrade to Tango 9/IDL5";
 
-        ApiNonSuppExcept::throw_exception(API_UnsupportedFeature, ss.str(), "DeviceProxy::read_pipe()");
+        TANGO_THROW_API_EXCEPTION(ApiNonSuppExcept, API_UnsupportedFeature, ss.str());
     }
 
     while (ctr < 2)
@@ -5243,13 +5003,13 @@ DevicePipe DeviceProxy::read_pipe(const std::string &pipe_name)
         {
             std::stringstream desc;
             desc << "Failed to read_pipe on device " << device_name << ", pipe " << pipe_name;
-            ApiConnExcept::re_throw_exception(e, API_PipeFailed, desc.str(), "DeviceProxy::read_pipe()");
+            TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_PipeFailed, desc.str());
         }
         catch (Tango::DevFailed &e)
         {
             std::stringstream desc;
             desc << "Failed to read_pipe on device " << device_name << ", pipe " << pipe_name;
-            Except::re_throw_exception(e, API_PipeFailed, desc.str(), "DeviceProxy::read_pipe()");
+            TANGO_RETHROW_EXCEPTION(e, API_PipeFailed, desc.str());
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -5266,10 +5026,7 @@ DevicePipe DeviceProxy::read_pipe(const std::string &pipe_name)
                 set_connection_state(CONNECTION_NOTOK);
                 std::stringstream desc;
                 desc << "Failed to read_pipe on device " << device_name;
-                ApiCommExcept::re_throw_exception(one,
-                                                  "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  "DeviceProxy::read_pipe()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -5283,10 +5040,7 @@ DevicePipe DeviceProxy::read_pipe(const std::string &pipe_name)
                 set_connection_state(CONNECTION_NOTOK);
                 std::stringstream desc;
                 desc << "Failed to read_pipe on device " << device_name;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  "DeviceProxy::read_pipe()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -5294,7 +5048,7 @@ DevicePipe DeviceProxy::read_pipe(const std::string &pipe_name)
             set_connection_state(CONNECTION_NOTOK);
             std::stringstream desc;
             desc << "Failed to read_pipe on device " << device_name;
-            ApiCommExcept::re_throw_exception(ce, "API_CommunicationFailed", desc.str(), "DeviceProxy::read_pipe()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -5344,7 +5098,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
         std::stringstream ss;
         ss << "Device " << device_name << " too old to use write_pipe() call. Please upgrade to Tango 9/IDL5";
 
-        ApiNonSuppExcept::throw_exception(API_UnsupportedFeature, ss.str(), "DeviceProxy::write_pipe()");
+        TANGO_THROW_API_EXCEPTION(ApiNonSuppExcept, API_UnsupportedFeature, ss.str());
     }
 
 //
@@ -5361,7 +5115,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
     DevVarPipeDataEltArray *tmp_ptr = dev_pipe.get_root_blob().get_insert_data();
     if (tmp_ptr == nullptr)
     {
-        Except::throw_exception(API_PipeNoDataElement, "No data in pipe!", "DeviceProxy::write_pipe()");
+        TANGO_THROW_EXCEPTION(API_PipeNoDataElement, "No data in pipe!");
     }
 
     CORBA::ULong max, len;
@@ -5390,7 +5144,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
 
             std::stringstream desc;
             desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
-            ApiConnExcept::re_throw_exception(e, API_PipeFailed, desc.str(), "DeviceProxy::write_pipe()");
+            TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_PipeFailed, desc.str());
         }
         catch (Tango::DevFailed &e)
         {
@@ -5399,7 +5153,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
 
             std::stringstream desc;
             desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
-            Except::re_throw_exception(e, API_PipeFailed, desc.str(), "DeviceProxy::write_pipe()");
+            TANGO_RETHROW_EXCEPTION(e, API_PipeFailed, desc.str());
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -5419,10 +5173,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
                 set_connection_state(CONNECTION_NOTOK);
                 std::stringstream desc;
                 desc << "Failed to write_pipe on device " << device_name;
-                ApiCommExcept::re_throw_exception(one,
-                                                  "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  "DeviceProxy::write_pipe()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -5439,10 +5190,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
                 set_connection_state(CONNECTION_NOTOK);
                 std::stringstream desc;
                 desc << "Failed to write_pipe on device " << device_name;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  "DeviceProxy::write_pipe()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -5453,7 +5201,7 @@ void DeviceProxy::write_pipe(DevicePipe &dev_pipe)
             set_connection_state(CONNECTION_NOTOK);
             std::stringstream desc;
             desc << "Failed to write_pipe on device " << device_name;
-            ApiCommExcept::re_throw_exception(ce, "API_CommunicationFailed", desc.str(), "DeviceProxy::write_pipe()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -5483,7 +5231,7 @@ DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
         std::stringstream ss;
         ss << "Device " << device_name << " too old to use write_read_pipe() call. Please upgrade to Tango 9/IDL5";
 
-        ApiNonSuppExcept::throw_exception(API_UnsupportedFeature, ss.str(), "DeviceProxy::write_read_pipe()");
+        TANGO_THROW_API_EXCEPTION(ApiNonSuppExcept, API_UnsupportedFeature, ss.str());
     }
 
 //
@@ -5523,13 +5271,13 @@ DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
         {
             std::stringstream desc;
             desc << "Failed to write_read_pipe on device " << device_name << ", pipe " << pipe_data.get_name();
-            ApiConnExcept::re_throw_exception(e, API_PipeFailed, desc.str(), "DeviceProxy::write_read_pipe()");
+            TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_PipeFailed, desc.str());
         }
         catch (Tango::DevFailed &e)
         {
             std::stringstream desc;
             desc << "Failed to write_pipe on device " << device_name << ", pipe " << pipe_data.get_name();
-            Except::re_throw_exception(e, API_PipeFailed, desc.str(), "DeviceProxy::write_read_pipe()");
+            TANGO_RETHROW_EXCEPTION(e, API_PipeFailed, desc.str());
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -5546,10 +5294,7 @@ DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
                 set_connection_state(CONNECTION_NOTOK);
                 std::stringstream desc;
                 desc << "Failed to write_read_pipe on device " << device_name;
-                ApiCommExcept::re_throw_exception(one,
-                                                  "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  "DeviceProxy::write_read_pipe()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -5563,10 +5308,7 @@ DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
                 set_connection_state(CONNECTION_NOTOK);
                 std::stringstream desc;
                 desc << "Failed to write_read_pipe on device " << device_name;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  "DeviceProxy::write_read_pipe()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -5574,10 +5316,7 @@ DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
             set_connection_state(CONNECTION_NOTOK);
             std::stringstream desc;
             desc << "Failed to write_read_pipe on device " << device_name;
-            ApiCommExcept::re_throw_exception(ce,
-                                              "API_CommunicationFailed",
-                                              desc.str(),
-                                              "DeviceProxy::write_read_pipe()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -5689,8 +5428,7 @@ std::vector<DeviceAttribute> *DeviceProxy::read_attributes(std::vector<std::stri
                 }
             }
             desc << std::ends;
-            ApiConnExcept::re_throw_exception(e, (const char *) API_AttributeFailed,
-                                              desc.str(), (const char *) "DeviceProxy::read_attributes()");
+            TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_AttributeFailed, desc.str());
         }
         catch (Tango::DevFailed &e)
         {
@@ -5707,8 +5445,7 @@ std::vector<DeviceAttribute> *DeviceProxy::read_attributes(std::vector<std::stri
                 }
             }
             desc << std::ends;
-            Except::re_throw_exception(e, (const char *) API_AttributeFailed,
-                                       desc.str(), (const char *) "DeviceProxy::read_attributes()");
+            TANGO_RETHROW_EXCEPTION(e, API_AttributeFailed, desc.str());
         }
         catch (CORBA::TRANSIENT &trans)
         {
@@ -5725,10 +5462,7 @@ std::vector<DeviceAttribute> *DeviceProxy::read_attributes(std::vector<std::stri
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute read_attributes on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::read_attributes()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -5742,10 +5476,7 @@ std::vector<DeviceAttribute> *DeviceProxy::read_attributes(std::vector<std::stri
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute read_attributes on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::read_attributes()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -5753,10 +5484,7 @@ std::vector<DeviceAttribute> *DeviceProxy::read_attributes(std::vector<std::stri
             set_connection_state(CONNECTION_NOTOK);
             TangoSys_OMemStream desc;
             desc << "Failed to execute read_attributes on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::read_attributes()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -6047,7 +5775,7 @@ void DeviceProxy::read_attribute(const std::string &attr_str, AttributeValue_4 *
         std::stringstream ss;
         ss << "Device " << dev_name()
            << " is too old to support this call. Please, update to IDL 4 (Tango 7.x or more)";
-        Except::throw_exception(API_NotSupported, ss.str(), "DeviceProxy::read_attribute");
+        TANGO_THROW_EXCEPTION(API_NotSupported, ss.str());
     }
 
     attr_list.length(1);
@@ -6105,7 +5833,7 @@ void DeviceProxy::read_attribute(const std::string &attr_str, AttributeValue_5 *
         std::stringstream ss;
         ss << "Device " << dev_name()
            << " is too old to support this call. Please, update to IDL 5 (Tango 9.x or more)";
-        Except::throw_exception(API_NotSupported, ss.str(), "DeviceProxy::read_attribute");
+        TANGO_THROW_EXCEPTION(API_NotSupported, ss.str());
     }
 
     attr_list.length(1);
@@ -6373,8 +6101,7 @@ void DeviceProxy::write_attributes(std::vector<DeviceAttribute> &attr_list)
                 TangoSys_OMemStream desc;
                 desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << std::ends;
 
-                NotAllowedExcept::throw_exception((const char *) API_ReadOnlyMode, desc.str(),
-                                                  (const char *) "DeviceProxy::write_attributes()");
+                TANGO_THROW_API_EXCEPTION(NotAllowedExcept, API_ReadOnlyMode, desc.str());
             }
 
 //
@@ -6427,13 +6154,11 @@ void DeviceProxy::write_attributes(std::vector<DeviceAttribute> &attr_list)
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
             {
-                DeviceUnlockedExcept::re_throw_exception(e, (const char *) DEVICE_UNLOCKED_REASON,
-                                                         desc.str(), (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_API_EXCEPTION(DeviceUnlockedExcept, e, DEVICE_UNLOCKED_REASON, desc.str());
             }
             else
             {
-                Except::re_throw_exception(e, (const char *) API_AttributeFailed,
-                                           desc.str(), (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_EXCEPTION(e, API_AttributeFailed, desc.str());
             }
         }
         catch (CORBA::TRANSIENT &trans)
@@ -6451,10 +6176,7 @@ void DeviceProxy::write_attributes(std::vector<DeviceAttribute> &attr_list)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute write_attribute on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::write_attributes()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -6468,10 +6190,7 @@ void DeviceProxy::write_attributes(std::vector<DeviceAttribute> &attr_list)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute write_attribute on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::write_attributes()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -6480,10 +6199,7 @@ void DeviceProxy::write_attributes(std::vector<DeviceAttribute> &attr_list)
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute write_attributes on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::write_attributes()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -6659,8 +6375,7 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
                 TangoSys_OMemStream desc;
                 desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << std::ends;
 
-                NotAllowedExcept::throw_exception((const char *) API_ReadOnlyMode, desc.str(),
-                                                  (const char *) "DeviceProxy::write_attribute()");
+                TANGO_THROW_API_EXCEPTION(NotAllowedExcept, API_ReadOnlyMode, desc.str());
             }
 
 //
@@ -6702,8 +6417,7 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
             desc << ", attribute ";
             desc << dev_attr.name;
             desc << std::ends;
-            Except::re_throw_exception(ex, (const char *) API_AttributeFailed,
-                                       desc.str(), (const char *) "DeviceProxy::write_attribute()");
+            TANGO_RETHROW_EXCEPTION(ex, API_AttributeFailed, desc.str());
 
         }
         catch (Tango::DevFailed &e)
@@ -6716,13 +6430,11 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
             {
-                DeviceUnlockedExcept::re_throw_exception(e, (const char *) DEVICE_UNLOCKED_REASON,
-                                                         desc.str(), (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_API_EXCEPTION(DeviceUnlockedExcept, e, DEVICE_UNLOCKED_REASON, desc.str());
             }
             else
             {
-                Except::re_throw_exception(e, (const char *) API_AttributeFailed,
-                                           desc.str(), (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_EXCEPTION(e, API_AttributeFailed, desc.str());
             }
         }
         catch (CORBA::TRANSIENT &trans)
@@ -6740,10 +6452,7 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute write_attribute on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -6757,10 +6466,7 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute write_attribute on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -6769,10 +6475,7 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute write_attributes on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::write_attribute()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -6817,8 +6520,7 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
                 TangoSys_OMemStream desc;
                 desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << std::ends;
 
-                NotAllowedExcept::throw_exception((const char *) API_ReadOnlyMode, desc.str(),
-                                                  (const char *) "DeviceProxy::write_attribute()");
+                TANGO_THROW_API_EXCEPTION(NotAllowedExcept, API_ReadOnlyMode, desc.str());
             }
 
 //
@@ -6852,8 +6554,7 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
             desc << ", attribute ";
             desc << attr_val[0].name.in();
             desc << std::ends;
-            Except::re_throw_exception(ex, (const char *) API_AttributeFailed,
-                                       desc.str(), (const char *) "DeviceProxy::write_attribute()");
+            TANGO_RETHROW_EXCEPTION(ex, API_AttributeFailed, desc.str());
 
         }
         catch (Tango::DevFailed &e)
@@ -6866,13 +6567,11 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
             {
-                DeviceUnlockedExcept::re_throw_exception(e, (const char *) DEVICE_UNLOCKED_REASON,
-                                                         desc.str(), (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_API_EXCEPTION(DeviceUnlockedExcept, e, DEVICE_UNLOCKED_REASON, desc.str());
             }
             else
             {
-                Except::re_throw_exception(e, (const char *) API_AttributeFailed,
-                                           desc.str(), (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_EXCEPTION(e, API_AttributeFailed, desc.str());
             }
         }
         catch (CORBA::TRANSIENT &trans)
@@ -6890,10 +6589,7 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute write_attribute on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -6907,10 +6603,7 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute write_attribute on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -6919,10 +6612,7 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute write_attributes on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::write_attribute()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -6951,8 +6641,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
         desc << attr_val[0].name.in();
         desc << ". The device does not support thi stype of data (Bad IDL release)";
         desc << std::ends;
-        Tango::Except::throw_exception((const char *) API_NotSupportedFeature,
-                                       desc.str(), (const char *) "DeviceProxy::write_attribute()");
+        TANGO_THROW_EXCEPTION(API_NotSupportedFeature, desc.str());
     }
 
     int ctr = 0;
@@ -6983,8 +6672,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
                 TangoSys_OMemStream desc;
                 desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << std::ends;
 
-                NotAllowedExcept::throw_exception((const char *) API_ReadOnlyMode, desc.str(),
-                                                  (const char *) "DeviceProxy::write_attribute()");
+                TANGO_THROW_API_EXCEPTION(NotAllowedExcept, API_ReadOnlyMode, desc.str());
             }
 
 //
@@ -7013,8 +6701,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
             desc << ", attribute ";
             desc << attr_val[0].name.in();
             desc << std::ends;
-            Except::re_throw_exception(ex, (const char *) API_AttributeFailed,
-                                       desc.str(), (const char *) "DeviceProxy::write_attribute()");
+            TANGO_RETHROW_EXCEPTION(ex, API_AttributeFailed, desc.str());
 
         }
         catch (Tango::DevFailed &e)
@@ -7027,13 +6714,11 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
             {
-                DeviceUnlockedExcept::re_throw_exception(e, (const char *) DEVICE_UNLOCKED_REASON,
-                                                         desc.str(), (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_API_EXCEPTION(DeviceUnlockedExcept, e, DEVICE_UNLOCKED_REASON, desc.str());
             }
             else
             {
-                Except::re_throw_exception(e, (const char *) API_AttributeFailed,
-                                           desc.str(), (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_EXCEPTION(e, API_AttributeFailed, desc.str());
             }
         }
         catch (CORBA::TRANSIENT &trans)
@@ -7051,10 +6736,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute write_attribute on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -7068,10 +6750,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute write_attribute on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::write_attribute()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -7080,10 +6759,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute write_attributes on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::write_attribute()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -7162,9 +6838,7 @@ std::vector<DeviceDataHistory> *DeviceProxy::command_history(std::string &cmd_na
         TangoSys_OMemStream desc;
         desc << "Device " << device_name;
         desc << " does not support command_history feature" << std::ends;
-        ApiNonSuppExcept::throw_exception((const char *) API_UnsupportedFeature,
-                                          desc.str(),
-                                          (const char *) "DeviceProxy::command_history");
+        TANGO_THROW_API_EXCEPTION(ApiNonSuppExcept, API_UnsupportedFeature, desc.str());
     }
 
     DevCmdHistoryList *hist = NULL;
@@ -7205,10 +6879,7 @@ std::vector<DeviceDataHistory> *DeviceProxy::command_history(std::string &cmd_na
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Command_history failed on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::command_history()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -7222,10 +6893,7 @@ std::vector<DeviceDataHistory> *DeviceProxy::command_history(std::string &cmd_na
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Command_history failed on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::command_history()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -7234,10 +6902,7 @@ std::vector<DeviceDataHistory> *DeviceProxy::command_history(std::string &cmd_na
 
             TangoSys_OMemStream desc;
             desc << "Command_history failed on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::command_history()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -7284,9 +6949,7 @@ std::vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(std::string 
         TangoSys_OMemStream desc;
         desc << "Device " << device_name;
         desc << " does not support attribute_history feature" << std::ends;
-        ApiNonSuppExcept::throw_exception((const char *) API_UnsupportedFeature,
-                                          desc.str(),
-                                          (const char *) "DeviceProxy::attribute_history");
+        TANGO_THROW_API_EXCEPTION(ApiNonSuppExcept, API_UnsupportedFeature, desc.str());
     }
 
     DevAttrHistoryList_var hist;
@@ -7342,10 +7005,7 @@ std::vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(std::string 
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Attribute_history failed on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::attribute_history()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -7359,10 +7019,7 @@ std::vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(std::string 
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Attribute_history failed on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::attribute_history()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -7370,10 +7027,7 @@ std::vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(std::string 
             set_connection_state(CONNECTION_NOTOK);
             TangoSys_OMemStream desc;
             desc << "Attribute_history failed on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::attribute_history()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -8199,7 +7853,7 @@ int DeviceProxy::subscribe_event(EventType event, CallBack *callback, bool state
         ss << "Device " << dev_name() << " does not support device interface change event\n";
         ss << "Available since Tango release 9 AND for device inheriting from IDL release 5 (Device_5Impl)";
 
-        Tango::Except::throw_exception(API_NotSupportedFeature, ss.str(), "DeviceProxy::subscribe_event()");
+        TANGO_THROW_EXCEPTION(API_NotSupportedFeature, ss.str());
     }
 
     ApiUtil *api_ptr = ApiUtil::instance();
@@ -8233,7 +7887,7 @@ int DeviceProxy::subscribe_event(EventType event, int event_queue_size, bool sta
         ss << "Device " << dev_name() << " does not support device interface change event\n";
         ss << "Available since Tango release 9 AND for device inheriting from IDL release 5 (Device_5Impl)";
 
-        Tango::Except::throw_exception(API_NotSupportedFeature, ss.str(), "DeviceProxy::subscribe_event()");
+        TANGO_THROW_EXCEPTION(API_NotSupportedFeature, ss.str());
     }
 
     ApiUtil *api_ptr = ApiUtil::instance();
@@ -8267,10 +7921,7 @@ void DeviceProxy::unsubscribe_event(int event_id)
         desc << "Could not find event consumer object, \n";
         desc << "probably no event subscription was done before!";
         desc << std::ends;
-        Tango::Except::throw_exception(
-            (const char *) "API_EventConsumer",
-            desc.str(),
-            (const char *) "DeviceProxy::unsubscribe_event()");
+        TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
     }
 
     if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
@@ -8285,10 +7936,7 @@ void DeviceProxy::unsubscribe_event(int event_id)
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << std::ends;
-            Tango::Except::throw_exception(
-                (const char *) "API_EventConsumer",
-                desc.str(),
-                (const char *) "DeviceProxy::unsubscribe_event()");
+            TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
         }
         api_ptr->get_notifd_event_consumer()->unsubscribe_event(event_id);
     }
@@ -8316,10 +7964,7 @@ void DeviceProxy::get_events(int event_id, EventDataList &event_list)
         desc << "Could not find event consumer object, \n";
         desc << "probably no event subscription was done before!";
         desc << std::ends;
-        Tango::Except::throw_exception(
-            (const char *) "API_EventConsumer",
-            desc.str(),
-            (const char *) "DeviceProxy::get_events()");
+        TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
     }
 
     if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
@@ -8334,10 +7979,7 @@ void DeviceProxy::get_events(int event_id, EventDataList &event_list)
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << std::ends;
-            Tango::Except::throw_exception(
-                (const char *) "API_EventConsumer",
-                desc.str(),
-                (const char *) "DeviceProxy::get_events()");
+            TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
         }
         api_ptr->get_notifd_event_consumer()->get_events(event_id, event_list);
     }
@@ -8366,7 +8008,7 @@ void DeviceProxy::get_events(int event_id, AttrConfEventDataList &event_list)
         desc << "Could not find event consumer object, \n";
         desc << "probably no event subscription was done before!";
         desc << std::ends;
-        Tango::Except::throw_exception(API_EventConsumer, desc.str(), "DeviceProxy::get_events()");
+        TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
     }
 
     if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
@@ -8381,7 +8023,7 @@ void DeviceProxy::get_events(int event_id, AttrConfEventDataList &event_list)
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << std::ends;
-            Tango::Except::throw_exception(API_EventConsumer, desc.str(), "DeviceProxy::get_events()");
+            TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
         }
         api_ptr->get_notifd_event_consumer()->get_events(event_id, event_list);
     }
@@ -8396,7 +8038,7 @@ void DeviceProxy::get_events(int event_id, DataReadyEventDataList &event_list)
         desc << "Could not find event consumer object, \n";
         desc << "probably no event subscription was done before!";
         desc << std::ends;
-        Tango::Except::throw_exception(API_EventConsumer, desc.str(), "DeviceProxy::get_events()");
+        TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
     }
 
     if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
@@ -8411,7 +8053,7 @@ void DeviceProxy::get_events(int event_id, DataReadyEventDataList &event_list)
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << std::ends;
-            Tango::Except::throw_exception(API_EventConsumer, desc.str(), "DeviceProxy::get_events()");
+            TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
         }
         api_ptr->get_notifd_event_consumer()->get_events(event_id, event_list);
     }
@@ -8425,7 +8067,7 @@ void DeviceProxy::get_events(int event_id, DevIntrChangeEventDataList &event_lis
         std::stringstream desc;
         desc << "Could not find event consumer object, \n";
         desc << "probably no event subscription was done before!";
-        Tango::Except::throw_exception(API_EventConsumer, desc.str(), "DeviceProxy::get_events()");
+        TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
     }
 
     if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
@@ -8436,7 +8078,7 @@ void DeviceProxy::get_events(int event_id, DevIntrChangeEventDataList &event_lis
     {
         std::stringstream desc;
         desc << "Event Device Interface Change not implemented in old Tango event system (notifd)";
-        Tango::Except::throw_exception(API_UnsupportedFeature, desc.str(), "DeviceProxy::get_events()");
+        TANGO_THROW_EXCEPTION(API_UnsupportedFeature, desc.str());
     }
 }
 
@@ -8448,7 +8090,7 @@ void DeviceProxy::get_events(int event_id, PipeEventDataList &event_list)
         std::stringstream desc;
         desc << "Could not find event consumer object, \n";
         desc << "probably no event subscription was done before!";
-        Tango::Except::throw_exception(API_EventConsumer, desc.str(), "DeviceProxy::get_events()");
+        TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
     }
 
     if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
@@ -8459,7 +8101,7 @@ void DeviceProxy::get_events(int event_id, PipeEventDataList &event_list)
     {
         std::stringstream desc;
         desc << "Pipe event not implemented in old Tango event system (notifd)";
-        Tango::Except::throw_exception(API_UnsupportedFeature, desc.str(), "DeviceProxy::get_events()");
+        TANGO_THROW_EXCEPTION(API_UnsupportedFeature, desc.str());
     }
 }
 
@@ -8486,10 +8128,7 @@ void DeviceProxy::get_events(int event_id, CallBack *cb)
         desc << "Could not find event consumer object, \n";
         desc << "probably no event subscription was done before!";
         desc << std::ends;
-        Tango::Except::throw_exception(
-            (const char *) "API_EventConsumer",
-            desc.str(),
-            (const char *) "DeviceProxy::get_events()");
+        TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
     }
 
     if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
@@ -8504,10 +8143,7 @@ void DeviceProxy::get_events(int event_id, CallBack *cb)
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << std::ends;
-            Tango::Except::throw_exception(
-                (const char *) "API_EventConsumer",
-                desc.str(),
-                (const char *) "DeviceProxy::get_events()");
+            TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
         }
         api_ptr->get_notifd_event_consumer()->get_events(event_id, cb);
     }
@@ -8531,10 +8167,7 @@ int DeviceProxy::event_queue_size(int event_id)
         desc << "Could not find event consumer object, \n";
         desc << "probably no event subscription was done before!";
         desc << std::ends;
-        Tango::Except::throw_exception(
-            (const char *) "API_EventConsumer",
-            desc.str(),
-            (const char *) "DeviceProxy::event_queue_size()");
+        TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
     }
 
     EventConsumer *ev = NULL;
@@ -8550,10 +8183,7 @@ int DeviceProxy::event_queue_size(int event_id)
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << std::ends;
-            Tango::Except::throw_exception(
-                (const char *) "API_EventConsumer",
-                desc.str(),
-                (const char *) "DeviceProxy::event_queue_size()");
+            TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
         }
         else
         {
@@ -8582,10 +8212,7 @@ bool DeviceProxy::is_event_queue_empty(int event_id)
         desc << "Could not find event consumer object, \n";
         desc << "probably no event subscription was done before!";
         desc << std::ends;
-        Tango::Except::throw_exception(
-            (const char *) "API_EventConsumer",
-            desc.str(),
-            (const char *) "DeviceProxy::is_event_queue_empty()");
+        TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
     }
 
     EventConsumer *ev = NULL;
@@ -8601,10 +8228,7 @@ bool DeviceProxy::is_event_queue_empty(int event_id)
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << std::ends;
-            Tango::Except::throw_exception(
-                (const char *) "API_EventConsumer",
-                desc.str(),
-                (const char *) "DeviceProxy::is_event_queue_empty()");
+            TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
         }
         else
         {
@@ -8633,10 +8257,7 @@ TimeVal DeviceProxy::get_last_event_date(int event_id)
         desc << "Could not find event consumer object, \n";
         desc << "probably no event subscription was done before!";
         desc << std::ends;
-        Tango::Except::throw_exception(
-            (const char *) "API_EventConsumer",
-            desc.str(),
-            (const char *) "DeviceProxy::get_last_event_date()");
+        TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
     }
 
     EventConsumer *ev = NULL;
@@ -8652,10 +8273,7 @@ TimeVal DeviceProxy::get_last_event_date(int event_id)
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << std::ends;
-            Tango::Except::throw_exception(
-                (const char *) "API_EventConsumer",
-                desc.str(),
-                (const char *) "DeviceProxy::get_last_event_date()");
+            TANGO_THROW_EXCEPTION(API_EventConsumer, desc.str());
         }
         else
         {
@@ -8721,9 +8339,7 @@ void DeviceProxy::lock(int lock_validity)
         desc << device_name;
         desc << " which is a non database device";
 
-        ApiNonDbExcept::throw_exception((const char *) API_NonDatabaseDevice,
-                                        desc.str(),
-                                        (const char *) "DeviceProxy::lock");
+        TANGO_THROW_API_EXCEPTION(ApiNonDbExcept, API_NonDatabaseDevice, desc.str());
     }
 
 //
@@ -8735,8 +8351,7 @@ void DeviceProxy::lock(int lock_validity)
         TangoSys_OMemStream desc;
         desc << "Lock validity can not be lower than " << MIN_LOCK_VALIDITY << " seconds" << std::ends;
 
-        Except::throw_exception((const char *) API_MethodArgument, desc.str(),
-                                (const char *) "DeviceProxy::lock");
+        TANGO_THROW_EXCEPTION(API_MethodArgument, desc.str());
     }
 
     {
@@ -8750,8 +8365,7 @@ void DeviceProxy::lock(int lock_validity)
                 desc << "Device " << device_name << " is already locked with another lock validity (";
                 desc << lock_valid << " sec)" << std::ends;
 
-                Except::throw_exception((const char *) API_MethodArgument, desc.str(),
-                                        (const char *) "DeviceProxy::lock");
+                TANGO_THROW_EXCEPTION(API_MethodArgument, desc.str());
             }
         }
     }
@@ -8844,9 +8458,7 @@ void DeviceProxy::lock(int lock_validity)
                     if ((pos->second.shared->cmd_pending == true) && (interupted == 0))
                     {
                         cout4 << "TIME OUT" << std::endl;
-                        Except::throw_exception((const char *) API_CommandTimedOut,
-                                                (const char *) "Locking thread blocked !!!",
-                                                (const char *) "DeviceProxy::lock");
+                        TANGO_THROW_EXCEPTION(API_CommandTimedOut, "Locking thread blocked !!!");
                     }
                 }
                 pos->second.shared->cmd_pending = true;
@@ -8868,9 +8480,7 @@ void DeviceProxy::lock(int lock_validity)
                     if ((pos->second.shared->cmd_pending == true) && (interupted == 0))
                     {
                         cout4 << "TIME OUT" << std::endl;
-                        Except::throw_exception((const char *) API_CommandTimedOut,
-                                                (const char *) "Locking thread blocked !!!",
-                                                (const char *) "DeviceProxy::lock");
+                        TANGO_THROW_EXCEPTION(API_CommandTimedOut, "Locking thread blocked !!!");
                     }
                 }
             }
@@ -8898,9 +8508,7 @@ void DeviceProxy::unlock(bool force)
         desc << device_name;
         desc << " which is a non database device";
 
-        ApiNonDbExcept::throw_exception((const char *) API_NonDatabaseDevice,
-                                        desc.str(),
-                                        (const char *) "DeviceProxy::unlock");
+        TANGO_THROW_API_EXCEPTION(ApiNonDbExcept, API_NonDatabaseDevice, desc.str());
     }
 
     check_connect_adm_device();
@@ -8970,8 +8578,7 @@ void DeviceProxy::unlock(bool force)
 //				TangoSys_OMemStream o;
 
 //				o << "Can't find the locking thread for device " << device_name << " and admin device " << adm_dev_name << ends;
-//				Tango::Except::throw_exception((const char *)API_CantFindLockingThread,o.str(),
-//                                           		(const char *)"DeviceProxy::unlock()");
+//				TANGO_THROW_EXCEPTION(API_CantFindLockingThread, o.str());
             }
             else
             {
@@ -8993,9 +8600,7 @@ void DeviceProxy::unlock(bool force)
                         if ((pos->second.shared->cmd_pending == true) && (interupted == 0))
                         {
                             cout4 << "TIME OUT" << std::endl;
-                            Except::throw_exception((const char *) API_CommandTimedOut,
-                                                    (const char *) "Locking thread blocked !!!",
-                                                    (const char *) "DeviceProxy::unlock");
+                            TANGO_THROW_EXCEPTION(API_CommandTimedOut, "Locking thread blocked !!!");
                         }
                     }
                     pos->second.shared->cmd_pending = true;
@@ -9013,9 +8618,7 @@ void DeviceProxy::unlock(bool force)
                         if ((pos->second.shared->cmd_pending == true) && (interupted == 0))
                         {
                             cout4 << "TIME OUT" << std::endl;
-                            Except::throw_exception((const char *) API_CommandTimedOut,
-                                                    (const char *) "Locking thread blocked !!!",
-                                                    (const char *) "DeviceProxy::unlock");
+                            TANGO_THROW_EXCEPTION(API_CommandTimedOut, "Locking thread blocked !!!");
                         }
                     }
                 }
@@ -9045,8 +8648,7 @@ void DeviceProxy::create_locking_thread(ApiUtil *au, DevLong dl)
         TangoSys_OMemStream o;
         o << "Can't create the locking thread for device " << device_name << " and admin device " << adm_dev_name
           << std::ends;
-        Tango::Except::throw_exception((const char *) API_CantCreateLockingThread, o.str(),
-                                       (const char *) "DeviceProxy::create_locking_thread()");
+        TANGO_THROW_EXCEPTION(API_CantCreateLockingThread, o.str());
     }
     else
     {
@@ -9290,9 +8892,7 @@ void DeviceProxy::ask_locking_status(std::vector<std::string> &v_str, std::vecto
         desc << device_name;
         desc << " which is a non database device";
 
-        ApiNonDbExcept::throw_exception((const char *) API_NonDatabaseDevice,
-                                        desc.str(),
-                                        (const char *) "DeviceProxy::locking_status");
+        TANGO_THROW_API_EXCEPTION(ApiNonDbExcept, API_NonDatabaseDevice, desc.str());
     }
 
     check_connect_adm_device();
@@ -9346,16 +8946,12 @@ void DeviceProxy::get_locker_host(std::string &f_addr, std::string &ip_addr)
         std::string::size_type pos;
         if ((pos = f_addr.find(':')) == std::string::npos)
         {
-            Tango::Except::throw_exception((const char *) API_WrongLockingStatus,
-                                           (const char *) "Locker IP address returned by server is unvalid",
-                                           (const char *) "DeviceProxy::get_locker_host()");
+            TANGO_THROW_EXCEPTION(API_WrongLockingStatus, "Locker IP address returned by server is unvalid");
         }
         pos++;
         if ((pos = f_addr.find(':', pos)) == std::string::npos)
         {
-            Tango::Except::throw_exception((const char *) API_WrongLockingStatus,
-                                           (const char *) "Locker IP address returned by server is unvalid",
-                                           (const char *) "DeviceProxy::get_locker_host()");
+            TANGO_THROW_EXCEPTION(API_WrongLockingStatus, "Locker IP address returned by server is unvalid");
         }
         pos++;
 
@@ -9364,17 +8960,13 @@ void DeviceProxy::get_locker_host(std::string &f_addr, std::string &ip_addr)
             pos = pos + 3;
             if ((pos = f_addr.find(':', pos)) == std::string::npos)
             {
-                Tango::Except::throw_exception((const char *) API_WrongLockingStatus,
-                                               (const char *) "Locker IP address returned by server is unvalid",
-                                               (const char *) "DeviceProxy::get_locker_host()");
+                TANGO_THROW_EXCEPTION(API_WrongLockingStatus, "Locker IP address returned by server is unvalid");
             }
             pos++;
             std::string ip_str = f_addr.substr(pos);
             if ((pos = ip_str.find(']')) == std::string::npos)
             {
-                Tango::Except::throw_exception((const char *) API_WrongLockingStatus,
-                                               (const char *) "Locker IP address returned by server is unvalid",
-                                               (const char *) "DeviceProxy::get_locker_host()");
+                TANGO_THROW_EXCEPTION(API_WrongLockingStatus, "Locker IP address returned by server is unvalid");
             }
             ip_addr = ip_str.substr(0, pos);
         }
@@ -9383,9 +8975,7 @@ void DeviceProxy::get_locker_host(std::string &f_addr, std::string &ip_addr)
             std::string ip_str = f_addr.substr(pos);
             if ((pos = ip_str.find(':')) == std::string::npos)
             {
-                Tango::Except::throw_exception((const char *) API_WrongLockingStatus,
-                                               (const char *) "Locker IP address returned by server is unvalid",
-                                               (const char *) "DeviceProxy::get_locker_host()");
+                TANGO_THROW_EXCEPTION(API_WrongLockingStatus, "Locker IP address returned by server is unvalid");
             }
             ip_addr = ip_str.substr(0, pos);
         }
@@ -9410,9 +9000,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
         TangoSys_OMemStream desc;
         desc << "Device " << device_name;
         desc << " does not support write_read_attribute feature" << std::ends;
-        ApiNonSuppExcept::throw_exception((const char *) API_UnsupportedFeature,
-                                          desc.str(),
-                                          (const char *) "DeviceProxy::write_read_attribute");
+        TANGO_THROW_API_EXCEPTION(ApiNonSuppExcept, API_UnsupportedFeature, desc.str());
     }
 
 //
@@ -9517,8 +9105,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
                 TangoSys_OMemStream desc;
                 desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << std::ends;
 
-                NotAllowedExcept::throw_exception((const char *) API_ReadOnlyMode, desc.str(),
-                                                  (const char *) "DeviceProxy::write_read_attribute()");
+                TANGO_THROW_API_EXCEPTION(NotAllowedExcept, API_ReadOnlyMode, desc.str());
             }
 
 //
@@ -9556,8 +9143,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
             desc << ", attribute ";
             desc << attr_value_list[0].name.in();
             desc << std::ends;
-            Except::re_throw_exception(ex, (const char *) API_AttributeFailed,
-                                       desc.str(), (const char *) "DeviceProxy::write_read_attribute()");
+            TANGO_RETHROW_EXCEPTION(ex, API_AttributeFailed, desc.str());
 
         }
         catch (Tango::DevFailed &e)
@@ -9570,15 +9156,11 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
             {
-                DeviceUnlockedExcept::re_throw_exception(e,
-                                                         (const char *) DEVICE_UNLOCKED_REASON,
-                                                         desc.str(),
-                                                         (const char *) "DeviceProxy::write_read_attribute()");
+                TANGO_RETHROW_API_EXCEPTION(DeviceUnlockedExcept, e, DEVICE_UNLOCKED_REASON, desc.str());
             }
             else
             {
-                Except::re_throw_exception(e, (const char *) API_AttributeFailed,
-                                           desc.str(), (const char *) "DeviceProxy::write_read_attribute()");
+                TANGO_RETHROW_EXCEPTION(e, API_AttributeFailed, desc.str());
             }
         }
         catch (CORBA::TRANSIENT &trans)
@@ -9596,10 +9178,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute write_read_attribute on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::write_read_attribute()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -9613,10 +9192,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute write_attribute on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::write_read_attribute()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -9625,10 +9201,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute write_attributes on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::write_read_attribute()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -9688,9 +9261,7 @@ std::vector<DeviceAttribute> *DeviceProxy::write_read_attributes(std::vector<Dev
         TangoSys_OMemStream desc;
         desc << "Device " << device_name;
         desc << " does not support write_read_attributes feature" << std::ends;
-        ApiNonSuppExcept::throw_exception((const char *) API_UnsupportedFeature,
-                                          desc.str(),
-                                          (const char *) "DeviceProxy::write_read_attributes");
+        TANGO_THROW_API_EXCEPTION(ApiNonSuppExcept, API_UnsupportedFeature, desc.str());
     }
 
 //
@@ -9804,8 +9375,7 @@ std::vector<DeviceAttribute> *DeviceProxy::write_read_attributes(std::vector<Dev
                 TangoSys_OMemStream desc;
                 desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << std::ends;
 
-                NotAllowedExcept::throw_exception((const char *) API_ReadOnlyMode, desc.str(),
-                                                  (const char *) "DeviceProxy::write_read_attribute()");
+                TANGO_THROW_API_EXCEPTION(NotAllowedExcept, API_ReadOnlyMode, desc.str());
             }
 
 //
@@ -9834,8 +9404,7 @@ std::vector<DeviceAttribute> *DeviceProxy::write_read_attributes(std::vector<Dev
             desc << ", attribute ";
             desc << attr_value_list[0].name.in();
             desc << std::ends;
-            Except::re_throw_exception(ex, (const char *) API_AttributeFailed,
-                                       desc.str(), (const char *) "DeviceProxy::write_read_attributes()");
+            TANGO_RETHROW_EXCEPTION(ex, API_AttributeFailed, desc.str());
 
         }
         catch (Tango::DevFailed &e)
@@ -9848,15 +9417,11 @@ std::vector<DeviceAttribute> *DeviceProxy::write_read_attributes(std::vector<Dev
 
             if (::strcmp(e.errors[0].reason, DEVICE_UNLOCKED_REASON) == 0)
             {
-                DeviceUnlockedExcept::re_throw_exception(e,
-                                                         (const char *) DEVICE_UNLOCKED_REASON,
-                                                         desc.str(),
-                                                         (const char *) "DeviceProxy::write_read_attributes()");
+                TANGO_RETHROW_API_EXCEPTION(DeviceUnlockedExcept, e, DEVICE_UNLOCKED_REASON, desc.str());
             }
             else
             {
-                Except::re_throw_exception(e, (const char *) API_AttributeFailed,
-                                           desc.str(), (const char *) "DeviceProxy::write_read_attributes()");
+                TANGO_RETHROW_EXCEPTION(e, API_AttributeFailed, desc.str());
             }
         }
         catch (CORBA::TRANSIENT &trans)
@@ -9874,10 +9439,7 @@ std::vector<DeviceAttribute> *DeviceProxy::write_read_attributes(std::vector<Dev
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute write_read_attributes on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(one,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::write_read_attributes()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, one, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::COMM_FAILURE &comm)
@@ -9891,10 +9453,7 @@ std::vector<DeviceAttribute> *DeviceProxy::write_read_attributes(std::vector<Dev
                 set_connection_state(CONNECTION_NOTOK);
                 TangoSys_OMemStream desc;
                 desc << "Failed to execute write_attributes on device " << device_name << std::ends;
-                ApiCommExcept::re_throw_exception(comm,
-                                                  (const char *) "API_CommunicationFailed",
-                                                  desc.str(),
-                                                  (const char *) "DeviceProxy::write_read_attributes()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, comm, API_CommunicationFailed, desc.str());
             }
         }
         catch (CORBA::SystemException &ce)
@@ -9903,10 +9462,7 @@ std::vector<DeviceAttribute> *DeviceProxy::write_read_attributes(std::vector<Dev
 
             TangoSys_OMemStream desc;
             desc << "Failed to execute write_read_attributes on device " << device_name << std::ends;
-            ApiCommExcept::re_throw_exception(ce,
-                                              (const char *) "API_CommunicationFailed",
-                                              desc.str(),
-                                              (const char *) "DeviceProxy::write_read_attributes()");
+            TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, ce, API_CommunicationFailed, desc.str());
         }
     }
 
@@ -9998,7 +9554,7 @@ void DeviceProxy::same_att_name(std::vector<std::string> &attr_list, const char 
                 }
             }
             desc << std::ends;
-            ApiConnExcept::throw_exception((const char *) API_AttributeFailed, desc.str(), met_name);
+            ApiConnExcept::throw_exception(API_AttributeFailed, desc.str(), met_name);
         }
     }
 }
@@ -10027,7 +9583,7 @@ void DeviceProxy::local_import(std::string &local_ior)
     catch (Tango::DevFailed &e)
     {
         std::string reas(e.errors[0].reason);
-        if (reas == "API_UtilSingletonNotCreated")
+        if (reas == API_UtilSingletonNotCreated)
         {
             return;
         }

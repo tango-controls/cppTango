@@ -106,7 +106,7 @@ public:
 		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOState", din));
 
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOTemplState"), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CommandNotAllowed"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_CommandNotAllowed
 						&& e.errors[0].severity == Tango::ERR));
 
 		state_in = Tango::ON;
@@ -148,7 +148,7 @@ public:
 
 		din << lg;
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOTemplInState", din), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CommandNotAllowed"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_CommandNotAllowed
 						&& e.errors[0].severity == Tango::ERR));
 
 		state_in = Tango::ON;
@@ -196,7 +196,7 @@ public:
 		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOState", din));
 
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOTemplOutState"), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CommandNotAllowed"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_CommandNotAllowed
 						&& e.errors[0].severity == Tango::ERR));
 
 		state_in = Tango::ON;
@@ -246,7 +246,7 @@ public:
 
 		din << db;
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOTemplInOutState", din), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CommandNotAllowed"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_CommandNotAllowed
 						&& e.errors[0].severity == Tango::ERR));
 
 		state_in = Tango::ON;

@@ -178,7 +178,7 @@ int main(int argc, char **argv)
 			catch (CommunicationFailed &e)
 			{
 				finish = true;
-				if (strcmp(e.errors[1].reason,"API_DeviceTimedOut") == 0)
+				if (strcmp(e.errors[1].reason,API_DeviceTimedOut) == 0)
 				{
 					to = true;
 					coutv << "Timeout exception" << std::endl;
@@ -219,7 +219,7 @@ int main(int argc, char **argv)
 			catch (CommunicationFailed &e)
 			{
 				finish = true;
-				if (strcmp(e.errors[1].reason,"API_DeviceTimedOut") == 0)
+				if (strcmp(e.errors[1].reason,API_DeviceTimedOut) == 0)
 				{
 					to = true;
 					coutv << "Timeout exception" << std::endl;
@@ -248,7 +248,7 @@ int main(int argc, char **argv)
 		}
 		catch (CommunicationFailed &e)
 		{
-			if (strcmp(e.errors[1].reason,"API_DeviceTimedOut") == 0)
+			if (strcmp(e.errors[1].reason,API_DeviceTimedOut) == 0)
 			{
 				to = true;
 				coutv << "Timeout exception" << std::endl;

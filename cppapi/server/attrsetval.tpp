@@ -74,7 +74,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 		std::stringstream o;
 		o << "Invalid data type for attribute " << name << std::ends;
 
-		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::set_value()");
+		TANGO_THROW_EXCEPTION(API_AttrOptProp, o.str());
 	}
 
 	bool short_enum = std::is_same<short,typename std::underlying_type<T>::type>::value;
@@ -88,7 +88,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 		ss << "Invalid enumeration type. Supported types are C++11 scoped enum with short as underlying data type\n";
 		ss << "or old enum";
 
-		Except::throw_exception(API_IncompatibleArgumentType,ss.str(),"Attribute::set_value()");
+		TANGO_THROW_EXCEPTION(API_IncompatibleArgumentType, ss.str());
 	}
 
 //
@@ -98,9 +98,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 	if (std::is_enum<T>::value == false)
 	{
 		SAFE_DELETE(enum_ptr);
-		Except::throw_exception(API_IncompatibleArgumentType,
-								"The input argument data type is not an enumeration",
-								"Attribute::set_value()");
+		TANGO_THROW_EXCEPTION(API_IncompatibleArgumentType, "The input argument data type is not an enumeration");
 	}
 
 //
@@ -114,7 +112,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 		std::stringstream ss;
 		ss << "Attribute " << name << " data type is enum but no enum labels are defined!";
 
-		Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_value()");
+		TANGO_THROW_EXCEPTION(API_AttrOptProp, ss.str());
 	}
 
 //
@@ -132,7 +130,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 
 		std::stringstream ss;
 		ss << "Invalid enumeration type. Requested enum type is " << att.get_enum_type();
-		Except::throw_exception(API_IncompatibleArgumentType,ss.str(),"Attribute::set_value()");
+		TANGO_THROW_EXCEPTION(API_IncompatibleArgumentType, ss.str());
 	}
 
 //
@@ -146,7 +144,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 		std::stringstream o;
 		o << "Data size for attribute " << name << " exceeds given limit" << std::ends;
 
-		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::set_value()");
+		TANGO_THROW_EXCEPTION(API_AttrOptProp, o.str());
 	}
 
 //
@@ -195,7 +193,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 			ss << ". Element " << i << " (value = " << loc_enum_ptr[i] << ") is negative or above the limit defined by the enum (" << max_val << ").";
 			delete [] loc_enum_ptr;
 
-			Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_value()");
+			TANGO_THROW_EXCEPTION(API_AttrOptProp, ss.str());
 		}
 	}
 

@@ -3,8 +3,8 @@
 //+----------------------------------------------------------------------------
 //
 // method : 		IOThrow::IOThrow()
-// 
-// description : 	constructor for the IOThrow command of the 
+//
+// description : 	constructor for the IOThrow command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -39,17 +39,17 @@ bool IOThrow::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 
 
 CORBA::Any *IOThrow::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
-{	
+{
   const Tango::DevVarLongStringArray *theException;
   extract(in_any, theException);
   Tango::ErrSeverity severity= (Tango::ErrSeverity) (theException->lvalue)[0];
   cout << "[IOThrow::execute] throwing severity exception " << severity << std::endl;
- 
+
   Tango::Except::throw_exception((const char *)(theException->svalue)[0],
   			         (const char *)"This is a test ",
 			         (const char *)"IOThrow::execute()",
 			         (Tango::ErrSeverity)severity );
-				 
+
 #if ((defined WIN32) || (defined __SUNPRO_CC))
    CORBA::Any *out = NULL;
    return(out);
@@ -60,8 +60,8 @@ CORBA::Any *IOThrow::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA
 //+----------------------------------------------------------------------------
 //
 // method : 		IOExcept::IOExcept()
-// 
-// description : 	constructor for the IOThrow command of the 
+//
+// description : 	constructor for the IOThrow command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -95,9 +95,9 @@ bool IOExcept::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::A
 
 
 CORBA::Any *IOExcept::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
-{	
-
-  Tango::Except::throw_exception((const char *)"API_ThrowException",
+{
+    using Tango::API_ThrowException;
+  Tango::Except::throw_exception((const char *)API_ThrowException,
   			         (const char *)"This is a test ",
 			         (const char *)"IOExcept::execute()");
 
@@ -111,8 +111,8 @@ CORBA::Any *IOExcept::execute(TANGO_UNUSED(Tango::DeviceImpl *device),TANGO_UNUS
 //+----------------------------------------------------------------------------
 //
 // method : 		IOReThrow::IOReThrow()
-// 
-// description : 	constructor for the IOReThrow command of the 
+//
+// description : 	constructor for the IOReThrow command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -146,14 +146,14 @@ bool IOReThrow::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::
 
 
 CORBA::Any *IOReThrow::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const CORBA::Any &in_any)
-{	
+{
   const Tango::DevVarLongStringArray *theException;
   extract(in_any, theException);
   Tango::ErrSeverity severity= (Tango::ErrSeverity) (theException->lvalue)[0];
   long nb_except = theException->lvalue.length();
   cout << "[IOReThrow::execute] throwing " << nb_except << " exception(s) " << std::endl;
   try
-  { 
+  {
   	Tango::Except::throw_exception((const char *)(theException->svalue)[0],
   			               (const char *)"This is a test ",
 			               (const char *)"IOThrow::execute()",
@@ -177,7 +177,7 @@ CORBA::Any *IOReThrow::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const COR
 			catch (Tango::DevFailed &ex)
 			{
 				e = ex;
-				ind++;					
+				ind++;
 			}
 		}
 	}
@@ -187,7 +187,7 @@ CORBA::Any *IOReThrow::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const COR
 			       		  (const char *)"IOReThrow::execute()",
 			       		  (Tango::ErrSeverity)((theException->lvalue)[nb_except - 1]));
   }
-  
+
 #if ((defined WIN32) || (defined __SUNPRO_CC))
    CORBA::Any *out = NULL;
    return out;
@@ -198,8 +198,8 @@ CORBA::Any *IOReThrow::execute(TANGO_UNUSED(Tango::DeviceImpl *device),const COR
 //+----------------------------------------------------------------------------
 //
 // method : 		IORegClassSig::IORegClassSig()
-// 
-// description : 	constructor for the IORegClassSig command of the 
+//
+// description : 	constructor for the IORegClassSig command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -233,7 +233,7 @@ bool IORegClassSig::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const COR
 
 
 CORBA::Any *IORegClassSig::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevLong theSignal;
     extract(in_any,theSignal);
@@ -252,8 +252,8 @@ CORBA::Any *IORegClassSig::execute(Tango::DeviceImpl *device,const CORBA::Any &i
 //+----------------------------------------------------------------------------
 //
 // method : 		IORegSig::IORegSig()
-// 
-// description : 	constructor for the IOregSig command of the 
+//
+// description : 	constructor for the IOregSig command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -287,7 +287,7 @@ bool IORegSig::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA::A
 
 
 CORBA::Any *IORegSig::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevLong theSignal;
     extract(in_any,theSignal);
@@ -306,8 +306,8 @@ CORBA::Any *IORegSig::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any
 //+----------------------------------------------------------------------------
 //
 // method : 		IORegSigOwn::IORegSigOwn()
-// 
-// description : 	constructor for the IOregSigOwn command of the 
+//
+// description : 	constructor for the IOregSigOwn command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -342,7 +342,7 @@ bool IORegSigOwn::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA
 
 CORBA::Any *IORegSigOwn::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-#ifdef __linux	
+#ifdef __linux
   try {
     Tango::DevLong theSignal;
     extract(in_any,theSignal);
@@ -365,8 +365,8 @@ CORBA::Any *IORegSigOwn::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
 //+----------------------------------------------------------------------------
 //
 // method : 		IOUnregClassSig::IOUnregClassSig()
-// 
-// description : 	constructor for the IOUnregClassSig command of the 
+//
+// description : 	constructor for the IOUnregClassSig command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -400,7 +400,7 @@ bool IOUnregClassSig::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const C
 
 
 CORBA::Any *IOUnregClassSig::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevLong theSignal;
     extract(in_any,theSignal);
@@ -419,8 +419,8 @@ CORBA::Any *IOUnregClassSig::execute(Tango::DeviceImpl *device,const CORBA::Any 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOUnregSig::IOUnregSig()
-// 
-// description : 	constructor for the IOUnregSig command of the 
+//
+// description : 	constructor for the IOUnregSig command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -454,7 +454,7 @@ bool IOUnregSig::is_allowed(Tango::DeviceImpl *device, TANGO_UNUSED(const CORBA:
 
 
 CORBA::Any *IOUnregSig::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevLong theSignal;
     extract(in_any,theSignal);

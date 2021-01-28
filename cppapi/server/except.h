@@ -38,6 +38,8 @@
 
 #include <idl/tango.h>
 
+#include <tango_current_function.h>
+
 #ifdef TANGO_USE_USING_NAMESPACE
   using namespace std;
 #endif
@@ -1891,6 +1893,14 @@ protected:
 /// @privatesection
 	static char mess[256];
 };
+
+#define TANGO_THROW_EXCEPTION(reason, desc) \
+    ::Tango::Except::throw_exception(reason, desc, \
+        (std::string(TANGO_CURRENT_FUNCTION) + " at (" TANGO_FILE_AND_LINE ")").c_str())
+
+#define TANGO_RETHROW_EXCEPTION(original, reason, desc) \
+    ::Tango::Except::re_throw_exception(original, reason, desc, \
+        (std::string(TANGO_CURRENT_FUNCTION) + " at (" TANGO_FILE_AND_LINE ")").c_str())
 
 } // End of Tango namespace
 

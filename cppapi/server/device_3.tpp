@@ -65,9 +65,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 	long nb_dev_attr = dev_attr->get_attr_nb();
 	if (nb_dev_attr == 0)
 	{
-		Except::throw_exception((const char *)API_AttrNotFound,
-				        (const char *)"The device does not have any attribute",
-				        (const char *)"Device_3Impl::set_attribute_config_3_local");
+		TANGO_THROW_EXCEPTION(API_AttrNotFound, "The device does not have any attribute");
 	}
 
 //

@@ -192,7 +192,7 @@ public:
 
 		// execute non-existing command
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOxxx"), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CommandNotFound"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_CommandNotFound
 						&& e.errors[0].severity == Tango::ERR));
 
 		// now set the data source to polling buffer (CACHE)
@@ -200,12 +200,12 @@ public:
 
 		// execute non-existing command
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOxxx"), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CommandNotFound"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_CommandNotFound
 						&& e.errors[0].severity == Tango::ERR));
 
 		// execute non-polled command
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOStr1"), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CmdNotPolled"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_CmdNotPolled
 						&& e.errors[0].severity == Tango::ERR));
 
 		// set the data source again to device (DEV)
@@ -223,7 +223,7 @@ public:
 		// read a non-existing attribute
 		TS_ASSERT_THROWS_NOTHING(mock_attr = device1->read_attribute("xxx"));
 		TS_ASSERT_THROWS_ASSERT(mock_attr >> sh, Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotFound"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrNotFound
 						&& e.errors[0].severity == Tango::ERR));
 
 		// set the data source again to polling buffer (CACHE)
@@ -232,13 +232,13 @@ public:
 		// again read a non-existing attribute
 		TS_ASSERT_THROWS_NOTHING(mock_attr = device1->read_attribute("xxx"));
 		TS_ASSERT_THROWS_ASSERT(mock_attr >> sh, Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotFound"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrNotFound
 						&& e.errors[0].severity == Tango::ERR));
 
 		// read a non-polled attribute
 		TS_ASSERT_THROWS_NOTHING(short_attr = device1->read_attribute("Short_attr"));
 		TS_ASSERT_THROWS_ASSERT(short_attr >> sh, Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotPolled"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrNotPolled
 						&& e.errors[0].severity == Tango::ERR));
 	}
 
@@ -315,12 +315,12 @@ public:
 		DevLong lg;
 		TS_ASSERT_THROWS_NOTHING(mock_attr = device1->read_attribute("attr_wrong_size"));
 		TS_ASSERT_THROWS_ASSERT(mock_attr >> lg, Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrOptProp"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrOptProp
 						&& e.errors[0].severity == Tango::ERR));
 
 		// execute a command which throws an exception
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOExcept"), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_ThrowException"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_ThrowException
 						&& e.errors[0].severity == Tango::ERR));
 	}
 
@@ -354,7 +354,7 @@ public:
 		// read an attribute from cache, which throws an exception
 		TS_ASSERT_THROWS_NOTHING(mock_attr = device1->read_attribute("attr_wrong_size"));
 		TS_ASSERT_THROWS_ASSERT(mock_attr >> lg, Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrOptProp"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrOptProp
 						&& e.errors[0].severity == Tango::ERR));
 
 		//
@@ -367,12 +367,12 @@ public:
 		// read a non-polled attribute from cache
 		TS_ASSERT_THROWS_NOTHING(lg_attr = device1->read_attribute("Long_attr"));
 		TS_ASSERT_THROWS_ASSERT(lg_attr >> lg, Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotPolled"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_AttrNotPolled
 						&& e.errors[0].severity == Tango::ERR));
 
 		// execute non-polled command with polling buffer as data source
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOStr2"), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CmdNotPolled"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_CmdNotPolled
 						&& e.errors[0].severity == Tango::ERR));
 
 		//

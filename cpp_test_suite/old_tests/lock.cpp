@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_DeviceUnlockable") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_DeviceUnlockable) == 0)
 				except = true;
 		}
 
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_MethodArgument") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_MethodArgument) == 0)
 				except = true;
 		}
 
@@ -101,7 +101,7 @@ int main(int argc, char **argv)
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_MethodArgument") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_MethodArgument) == 0)
 				except = true;
 		}
 
@@ -164,7 +164,7 @@ int main(int argc, char **argv)
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_MethodArgument") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_MethodArgument) == 0)
 				except = true;
 		}
 
@@ -375,7 +375,7 @@ int main(int argc, char **argv)
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_DeviceUnlocked") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_DeviceUnlocked) == 0)
 				except = true;
 		}
 
@@ -415,7 +415,7 @@ int main(int argc, char **argv)
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (::strcmp(e.errors[1].reason.in(),"API_DeviceUnlocked") == 0)
+			if (::strcmp(e.errors[1].reason.in(),API_DeviceUnlocked) == 0)
 				except = true;
 		}
 		assert ( except == true );

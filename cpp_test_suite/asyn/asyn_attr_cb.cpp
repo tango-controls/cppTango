@@ -45,7 +45,7 @@ void MyCallBack::attr_read(AttrReadEvent *att)
 		catch (DevFailed &e)
 		{
 			long nb_err = e.errors.length();
-			if (strcmp(e.errors[nb_err - 1].reason,"API_AttributeFailed") == 0)
+			if (strcmp(e.errors[nb_err - 1].reason,API_AttributeFailed) == 0)
 			{
 				attr_failed = true;
 				coutv << "Read attributes failed error" << std::endl;
@@ -63,7 +63,7 @@ void MyCallBack::attr_read(AttrReadEvent *att)
 			coutv << "error[" << i << "].reason = " << att->errors[i].reason << std::endl;
 
 		attr_failed = true;
-		if (strcmp(att->errors[nb_err - 1].reason,"API_DeviceTimedOut") == 0)
+		if (strcmp(att->errors[nb_err - 1].reason,API_DeviceTimedOut) == 0)
 		{
 			to = true;
 			coutv << "Timeout error" << std::endl;

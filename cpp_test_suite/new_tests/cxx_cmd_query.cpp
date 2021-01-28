@@ -100,7 +100,7 @@ public:
 	void test_fake_command(void)
 	{
 		TS_ASSERT_THROWS_ASSERT(device1->command_query("DevToto"),Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CommandNotFound"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_CommandNotFound
 						&& e.errors[0].severity == Tango::ERR));
 	}
 

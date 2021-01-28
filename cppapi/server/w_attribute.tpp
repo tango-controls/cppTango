@@ -68,9 +68,7 @@ void WAttribute::set_min_value(const T &new_min_value)
 		(data_type != ranges_type2const<T>::enu))
 	{
 		std::string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-		Except::throw_exception((const char *)API_IncompatibleAttrDataType,
-					  (const char *)err_msg.c_str(),
-					  (const char *)"WAttribute::set_min_value()");
+		TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
 	}
 
 //
@@ -230,16 +228,12 @@ void WAttribute::get_min_value(T &min_val)
 		(data_type != ranges_type2const<T>::enu))
 	{
 		std::string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-		Except::throw_exception((const char *)API_IncompatibleAttrDataType,
-					  (const char *)err_msg.c_str(),
-					  (const char *)"WAttribute::get_min_value()");
+		TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
 	}
 
 	if (check_min_value == false)
 	{
-		Except::throw_exception((const char *)API_AttrNotAllowed,
-					(const char *)"Minimum value not defined for this attribute",
-					(const char *)"WAttribute::get_min_value()");
+		TANGO_THROW_EXCEPTION(API_AttrNotAllowed, "Minimum value not defined for this attribute");
 	}
 
 	memcpy((void *)&min_val,(void *)&min_value,sizeof(T));
@@ -278,9 +272,7 @@ void WAttribute::set_max_value(const T &new_max_value)
 		(data_type != ranges_type2const<T>::enu))
 	{
 		std::string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-		Except::throw_exception((const char *)API_IncompatibleAttrDataType,
-					  (const char *)err_msg.c_str(),
-					  (const char *)"WAttribute::set_max_value()");
+		TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
 	}
 
 //
@@ -440,16 +432,12 @@ void WAttribute::get_max_value(T &max_val)
 		(data_type != ranges_type2const<T>::enu))
 	{
 		std::string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-		Except::throw_exception((const char *)API_IncompatibleAttrDataType,
-					  (const char *)err_msg.c_str(),
-					  (const char *)"WAttribute::get_max_value()");
+		TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
 	}
 
 	if (check_max_value == false)
 	{
-		Except::throw_exception((const char *)API_AttrNotAllowed,
-					(const char *)"Maximum value not defined for this attribute",
-					(const char *)"WAttribute::get_max_value()");
+		TANGO_THROW_EXCEPTION(API_AttrNotAllowed, "Maximum value not defined for this attribute");
 	}
 
 	memcpy((void *)&max_val,(void *)&max_value,sizeof(T));
@@ -487,7 +475,7 @@ void WAttribute::check_min_max(const unsigned int nb_data,const T1 &seq, const T
                 o << "Set value for attribute " << name;
                 o << " is below the minimum authorized (at least element " << i << ")" << std::ends;
 
-                Except::throw_exception((const char *)API_WAttrOutsideLimit,o.str(),"WAttribute::check_written_value()");
+                TANGO_THROW_EXCEPTION(API_WAttrOutsideLimit, o.str());
             }
         }
     }
@@ -501,7 +489,7 @@ void WAttribute::check_min_max(const unsigned int nb_data,const T1 &seq, const T
 
                 o << "Set value for attribute " << name;
                 o << " is above the maximum authorized (at least element " << i << ")" << std::ends;
-                Except::throw_exception((const char *)API_WAttrOutsideLimit,o.str(),"WAttribute::check_written_value()");
+                TANGO_THROW_EXCEPTION(API_WAttrOutsideLimit, o.str());
             }
         }
     }

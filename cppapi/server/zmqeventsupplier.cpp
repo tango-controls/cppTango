@@ -154,7 +154,7 @@ name_specified(false),double_send(0),double_send_heartbeat(false)
             std::stringstream ss;
             ss << "Can't convert " << specified_addr << " to IP address";
 
-            EventSystemExcept::throw_exception(API_ZmqInitFailed,ss.str(),"ZmqEventSupplier::ZmqEventSupplier()");
+            TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_ZmqInitFailed, ss.str());
         }
     }
     else
@@ -400,9 +400,7 @@ void ZmqEventSupplier::tango_bind(zmq::socket_t *sock,std::string &endpoint)
 	}
 	catch(...)
 	{
-        EventSystemExcept::throw_exception((const char*)API_ZmqInitFailed,
-                        (const char*)"Can't bind the ZMQ socket!",
-                        (const char*)"ZmqEventSupplier::tango_bind()");
+        TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_ZmqInitFailed, "Can't bind the ZMQ socket!");
 	}
 }
 
@@ -606,9 +604,7 @@ void ZmqEventSupplier::create_mcast_event_socket(std::string &mcast_data,std::st
             o << "Can't insert multicast transport parameter for event ";
             o << ev_name << " in EventSupplier instance" << std::ends;
 
-            Except::throw_exception((const char *)API_InternalError,
-                                o.str(),
-                               (const char *)"ZmqEventSupplier::create_mcast_event_socket");
+            TANGO_THROW_EXCEPTION(API_InternalError, o.str());
         }
     }
 }
@@ -693,9 +689,7 @@ void ZmqEventSupplier::create_mcast_socket(std::string &mcast_data,int rate,Mcas
         o << ms.endpoint;
         o << "\nZmq error: " << zmq_strerror(zmq_errno()) << std::ends;
 
-        Except::throw_exception((const char *)API_ZmqFailed,
-                                    o.str(),
-                                   (const char *)"ZmqEventSupplier::create_mcast_event_socket");
+        TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
     }
 
 //
@@ -782,7 +776,7 @@ void ZmqEventSupplier::init_event_cptr(std::string &event_name)
             o << "Can't insert event counter for event ";
             o << event_name << " in EventSupplier instance" << std::ends;
 
-            Except::throw_exception(API_InternalError,o.str(),"ZmqEventSupplier::init_event_cptr");
+            TANGO_THROW_EXCEPTION(API_InternalError, o.str());
         }
     }
 }
@@ -935,9 +929,7 @@ void ZmqEventSupplier::push_heartbeat_event()
                 else
                     o << std::ends;
 
-                Except::throw_exception((const char *)API_ZmqFailed,
-                                        o.str(),
-                                       (const char *)"ZmqEventSupplier::push_heartbeat_event");
+                TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
             }
         }
 	}
@@ -1554,9 +1546,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,std::string event_type
 		else
 			o << std::ends;
 
-		Except::throw_exception((const char *)API_ZmqFailed,
-									o.str(),
-									(const char *)"ZmqEventSupplier::push_event");
+		TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
 	}
 
 }

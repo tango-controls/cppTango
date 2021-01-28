@@ -115,7 +115,7 @@ void WAttribute::check_type(T &TANGO_UNUSED(dummy), const std::string &origin)
 		ss << "Invalid enumeration type. Supported types are C++11 scoped enum with short as underlying data type\n";
 		ss << "or old enum";
 
-		Except::throw_exception(API_IncompatibleArgumentType,ss.str(),origin);
+		Except::throw_exception(API_IncompatibleArgumentType, ss.str(), origin);
 	}
 
 //
@@ -124,8 +124,7 @@ void WAttribute::check_type(T &TANGO_UNUSED(dummy), const std::string &origin)
 
 	if (std::is_enum<T>::value == false)
 	{
-		Except::throw_exception(API_IncompatibleArgumentType,
-								"The input argument data type is not an enumeration",origin);
+		Except::throw_exception(API_IncompatibleArgumentType, "The input argument data type is not an enumeration", origin);
 	}
 
 	Tango::DeviceClass *dev_class;
@@ -154,7 +153,7 @@ void WAttribute::check_type(T &TANGO_UNUSED(dummy), const std::string &origin)
 	{
 		std::stringstream ss;
 		ss << "Invalid enumeration type. Requested enum type is " << att.get_enum_type();
-		Except::throw_exception(API_IncompatibleArgumentType,ss.str(),origin);
+		Except::throw_exception(API_IncompatibleArgumentType, ss.str(), origin);
 	}
 }
 

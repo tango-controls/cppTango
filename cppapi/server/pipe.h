@@ -461,7 +461,7 @@ Pipe &operator<<(Pipe &, DataElement<T> &);
 	{ \
 		std::stringstream o; \
 		o << "Data pointer for pipe " << B << ", data element " << C << " is NULL!"; \
-		Except::throw_exception(API_PipeOptProp,o.str(),"Pipe::set_value()"); \
+		TANGO_THROW_EXCEPTION(API_PipeOptProp, o.str()); \
 	} \
 	else \
 		(void)0

@@ -7,6 +7,52 @@ using namespace CmpTst;
 
 #define TMP_SUFFIX ".tmp"
 
+namespace
+{
+
+const std::string LOG_PREFIX = "<log4j:message><![CDATA[";
+const std::string LOG_SUFFIX = "]]></log4j:message>";
+
+void strip_cr_lf(std::string& line)
+{
+    while (line.size() > 0 && (line.back() == '\r' || line.back() == '\n'))
+    {
+        line.pop_back();
+    }
+}
+
+bool is_log_message(const std::string& line)
+{
+    return line.compare(0, LOG_PREFIX.size(), LOG_PREFIX) == 0
+        && line.compare(line.size() - LOG_SUFFIX.size(), LOG_SUFFIX.size(), LOG_SUFFIX) == 0;
+}
+
+auto strip_log_tags(const std::string& line)
+{
+    return line.substr(LOG_PREFIX.size(), line.size() - LOG_PREFIX.size() - LOG_SUFFIX.size());
+}
+
+bool is_matching_log_message(const std::string& ref_line, const std::string& out_line)
+{
+    // For log messages, we only check that emitted message contains expected
+    // substring. There may be extra information included (like line numbers).
+
+    return is_log_message(ref_line) && is_log_message(out_line)
+        && out_line.find(strip_log_tags(ref_line)) != std::string::npos;
+}
+
+bool is_line_equal(const std::string& ref_line, const std::string& out_line)
+{
+    return ref_line.compare(out_line) == 0;
+}
+
+bool compare_lines(const std::string& ref_line, const std::string& out_line)
+{
+    return is_line_equal(ref_line, out_line) || is_matching_log_message(ref_line, out_line);
+}
+
+} // namespace
+
 //+-------------------------------------------------------------------------
 //
 // method :			out_set_event_properties
@@ -320,7 +366,7 @@ void CmpTst::CompareTest::ref_replace_keywords(string file, map<string,string> k
 //
 // method :			out_remove_entries
 //
-// description :	
+// description :
 // argument : in :	- file : output file to be modified
 //					- prop_val_map : 	keys - properties to be modified,
 //										values - new values of the properties
@@ -442,21 +488,20 @@ void CmpTst::CompareTest::compare(string ref, string out)
 	while(refstream && outstream)
 	{
 		line_number++;
-		string ref_line, out_line, ref_line_orig, out_line_orig;
+		string ref_line, out_line;
 		getline(refstream, ref_line);
 		getline(outstream, out_line);
 
-		ref_line_orig = ref_line; // stores original line for error message, see linebreak hook below
-		out_line_orig = out_line;
-		size_t end_line = min(ref_line.size(), out_line.size());
-		out_line.erase(end_line); // trick to make it work with different linebreak encoding;
-		if(ref_line.compare(out_line) != 0)
+		strip_cr_lf(ref_line);
+		strip_cr_lf(out_line);
+
+		if (!compare_lines(ref_line, out_line))
 		{
 			refstream.close();
 			outstream.close();
 			stringstream ss;
 			ss << line_number;
-			throw CmpTst::CompareTestException("[CmpTst::CompareTest::compare] FAILED in file: " + out + ":" + ss.str() + "\nEXPECTED:\t" + ref_line_orig + "\n     WAS:\t" + out_line_orig);
+			throw CmpTst::CompareTestException("[CmpTst::CompareTest::compare] FAILED in file: " + out + ":" + ss.str() + "\nEXPECTED:\t" + ref_line + "\n     WAS:\t" + out_line);
 		}
 	}
 

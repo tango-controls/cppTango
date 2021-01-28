@@ -77,7 +77,7 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 //			Tango::Except::print_error_stack(event_data->errors);
 			if (strcmp(event_data->errors[0].reason.in(),"aaa") == 0)
 				cb_err++;
-			else if (strcmp(event_data->errors[0].reason.in(),"API_PollThreadOutOfSync") == 0)
+			else if (strcmp(event_data->errors[0].reason.in(),API_PollThreadOutOfSync) == 0)
 				cb_err_out_of_sync++;
 		}
 	}

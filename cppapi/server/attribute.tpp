@@ -185,9 +185,7 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
     {
         std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-        Except::throw_exception((const char *) API_IncompatibleAttrDataType,
-                                (const char *) err_msg.c_str(),
-                                (const char *) "Attribute::set_min_alarm()");
+        TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
     }
 
 //
@@ -349,9 +347,7 @@ void Attribute::get_min_alarm(T &min_al)
     {
         std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-        Except::throw_exception((const char *) API_IncompatibleAttrDataType,
-                                (const char *) err_msg.c_str(),
-                                (const char *) "Attribute::get_min_alarm()");
+        TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
     }
     else if ((data_type == Tango::DEV_STRING) ||
         (data_type == Tango::DEV_BOOLEAN) ||
@@ -360,16 +356,12 @@ void Attribute::get_min_alarm(T &min_al)
     {
         std::string err_msg =
             "Minimum alarm has no meaning for the attribute's (" + name + ") data type : " + ranges_type2const<T>::str;
-        Except::throw_exception((const char *) API_AttrOptProp,
-                                err_msg.c_str(),
-                                (const char *) "Attribute::get_min_alarm()");
+        TANGO_THROW_EXCEPTION(API_AttrOptProp, err_msg.c_str());
     }
 
     if (!alarm_conf[min_level])
     {
-        Except::throw_exception((const char *) API_AttrNotAllowed,
-                                (const char *) "Minimum alarm not defined for this attribute",
-                                (const char *) "Attribute::get_min_alarm()");
+        TANGO_THROW_EXCEPTION(API_AttrNotAllowed, "Minimum alarm not defined for this attribute");
     }
 
     memcpy((void *) &min_al, (void *) &min_alarm, sizeof(T));
@@ -409,9 +401,7 @@ void Attribute::set_max_alarm(const T &new_max_alarm)
     {
         std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-        Except::throw_exception((const char *) API_IncompatibleAttrDataType,
-                                (const char *) err_msg.c_str(),
-                                (const char *) "Attribute::set_max_alarm()");
+        TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
     }
 
 //
@@ -574,7 +564,7 @@ void Attribute::get_max_alarm(T &max_al)
     {
         std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-        Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::get_max_alarm()");
+        TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
     }
     else if ((data_type == Tango::DEV_STRING) ||
         (data_type == Tango::DEV_BOOLEAN) ||
@@ -583,14 +573,12 @@ void Attribute::get_max_alarm(T &max_al)
     {
         std::string err_msg =
             "Maximum alarm has no meaning for the attribute's (" + name + ") data type : " + ranges_type2const<T>::str;
-        Except::throw_exception(API_AttrOptProp, err_msg.c_str(), "Attribute::get_max_alarm()");
+        TANGO_THROW_EXCEPTION(API_AttrOptProp, err_msg.c_str());
     }
 
     if (!alarm_conf[max_level])
     {
-        Except::throw_exception(API_AttrNotAllowed,
-                                "Maximum alarm not defined for this attribute",
-                                "Attribute::get_max_alarm()");
+        TANGO_THROW_EXCEPTION(API_AttrNotAllowed, "Maximum alarm not defined for this attribute");
     }
 
     memcpy((void *) &max_al, (void *) &max_alarm, sizeof(T));
@@ -631,7 +619,7 @@ void Attribute::set_min_warning(const T &new_min_warning)
     {
         std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-        Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::set_min_warning()");
+        TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
     }
 
 //
@@ -794,7 +782,7 @@ void Attribute::get_min_warning(T &min_war)
     {
         std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-        Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::get_min_warning()");
+        TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
     }
     else if ((data_type == Tango::DEV_STRING) ||
         (data_type == Tango::DEV_BOOLEAN) ||
@@ -803,14 +791,12 @@ void Attribute::get_min_warning(T &min_war)
     {
         std::string err_msg = "Minimum warning has no meaning for the attribute's (" + name + ") data type : "
             + ranges_type2const<T>::str;
-        Except::throw_exception(API_AttrOptProp, err_msg.c_str(), "Attribute::get_min_warning()");
+        TANGO_THROW_EXCEPTION(API_AttrOptProp, err_msg.c_str());
     }
 
     if (!alarm_conf[min_warn])
     {
-        Except::throw_exception(API_AttrNotAllowed,
-                                "Minimum warning not defined for this attribute",
-                                "Attribute::get_min_warning()");
+        TANGO_THROW_EXCEPTION(API_AttrNotAllowed, "Minimum warning not defined for this attribute");
     }
 
     memcpy((void *) &min_war, (void *) &min_warning, sizeof(T));
@@ -850,7 +836,7 @@ void Attribute::set_max_warning(const T &new_max_warning)
     {
         std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-        Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::set_max_warning()");
+        TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
     }
 
 //
@@ -1012,7 +998,7 @@ void Attribute::get_max_warning(T &max_war)
     {
         std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-        Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::get_max_warning()");
+        TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
     }
     else if ((data_type == Tango::DEV_STRING) ||
         (data_type == Tango::DEV_BOOLEAN) ||
@@ -1021,14 +1007,12 @@ void Attribute::get_max_warning(T &max_war)
     {
         std::string err_msg = "Maximum warning has no meaning for the attribute's (" + name + ") data type : "
             + ranges_type2const<T>::str;
-        Except::throw_exception(API_AttrOptProp, err_msg.c_str(), "Attribute::get_max_warning()");
+        TANGO_THROW_EXCEPTION(API_AttrOptProp, err_msg.c_str());
     }
 
     if (!alarm_conf[max_warn])
     {
-        Except::throw_exception(API_AttrNotAllowed,
-                                "Maximum warning not defined for this attribute",
-                                "Attribute::get_max_warning()");
+        TANGO_THROW_EXCEPTION(API_AttrNotAllowed, "Maximum warning not defined for this attribute");
     }
 
     memcpy((void *) &max_war, (void *) &max_warning, sizeof(T));
@@ -1062,7 +1046,7 @@ void Attribute::get_properties(Tango::MultiAttrProp<T> &props)
     {
         std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-        Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::get_properties()");
+        TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
     }
 
 //
@@ -1130,7 +1114,7 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
     {
         std::string err_msg =
             "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-        Except::throw_exception(API_IncompatibleAttrDataType, err_msg.c_str(), "Attribute::set_properties()");
+        TANGO_THROW_EXCEPTION(API_IncompatibleAttrDataType, err_msg.c_str());
     }
 
 //
@@ -1323,7 +1307,7 @@ void Attribute::set_upd_properties(const T &conf, std::string &dev_name, bool fr
                 o << "Device " << dev_name << "-> Attribute : " << name;
                 o << "\nDatabase error occurred whilst setting attribute properties. The database may be corrupted."
                   << std::ends;
-                Except::throw_exception(API_CorruptedDatabase, o.str(), "Attribute::set_upd_properties()");
+                TANGO_THROW_EXCEPTION(API_CorruptedDatabase, o.str());
             }
 
             throw;

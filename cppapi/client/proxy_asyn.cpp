@@ -106,8 +106,7 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 			desc << "Command_inout_asynch on device " << dev_name() << " for command ";
 			desc << command << " is not authorized" << std::ends;
 
-			NotAllowedExcept::throw_exception(API_ReadOnlyMode,desc.str(),
-									  	  "Connection::command_inout_asynch()");
+			TANGO_THROW_API_EXCEPTION(NotAllowedExcept, API_ReadOnlyMode, desc.str());
 		}
 	}
 
@@ -124,8 +123,7 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute command_inout on device " << dev_name();
 		desc << ", command " << command << std::ends;
-                ApiConnExcept::re_throw_exception(e,API_CommandFailed,
-                        desc.str(),"Connection::command_inout_asynch()");
+                TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_CommandFailed, desc.str());
 	}
 
 //
@@ -244,9 +242,7 @@ DeviceData Connection::command_inout_reply(long id)
 
 	if (req.req_type != TgRequest::CMD_INOUT)
 	{
-		ApiAsynExcept::throw_exception(API_BadAsynReqType,
-					       "Incompatible request type",
-					       "Connection::command_inout_reply");
+		TANGO_THROW_API_EXCEPTION(ApiAsynExcept, API_BadAsynReqType, "Incompatible request type");
 	}
 
 //
@@ -259,9 +255,7 @@ DeviceData Connection::command_inout_reply(long id)
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
 		desc << ") is not yet arrived" << std::ends;
-		ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
-						       desc.str(),
-						       "Connection::command_inout_reply");
+		TANGO_THROW_API_EXCEPTION(ApiAsynNotThereExcept, API_AsynReplyNotArrived, desc.str());
 	}
 
 //
@@ -367,10 +361,7 @@ DeviceData Connection::command_inout_reply(long id)
 
                     remove_asyn_request(id);
 
-                    ApiCommExcept::re_throw_exception(cb_excep_mess,
-                          "API_DeviceTimedOut",
-                          desc.str(),
-                          "Connection::command_inout_reply()");
+                    TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_DeviceTimedOut, desc.str());
                 }
                 else
                 {
@@ -380,9 +371,7 @@ DeviceData Connection::command_inout_reply(long id)
                     std::stringstream ss;
                     ss << "Failed to execute command_inout_asynch on device " << dev_name();
 
-                    ApiCommExcept::re_throw_exception(cb_excep_mess,
-                                          "API_CommunicationFailed",ss.str(),
-                                          "Connection::command_inout_reply()");
+                    TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, ss.str());
                 }
 			}
 		}
@@ -413,10 +402,7 @@ DeviceData Connection::command_inout_reply(long id)
 
 			remove_asyn_request(id);
 
-			Except::re_throw_exception(ex,
-					   API_CommandFailed,
-					   desc.str(),
-					   "Connection::command_inout_reply()");
+			TANGO_RETHROW_EXCEPTION(ex, API_CommandFailed, desc.str());
 
 
 		}
@@ -476,10 +462,7 @@ DeviceData Connection::command_inout_reply(long id)
 
 			remove_asyn_request(id);
 
-			ApiCommExcept::re_throw_exception(cb_excep_mess,
-						  "API_CommunicationFailed",
-						  desc.str(),
-						  "Connection::command_inout_reply()");
+			TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, desc.str());
 
 
 		}
@@ -526,9 +509,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 
 	if (req.req_type != TgRequest::CMD_INOUT)
 	{
-		ApiAsynExcept::throw_exception(API_BadAsynReqType,
-					       "Incompatible request type",
-					       "Connection::command_inout_reply");
+		TANGO_THROW_API_EXCEPTION(ApiAsynExcept, API_BadAsynReqType, "Incompatible request type");
 	}
 
 //
@@ -581,9 +562,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 				desc << "Device " << dev_name();
 				desc << ": Reply for asynchronous call (id = " << id;
 				desc << ") is not yet arrived" << std::ends;
-				ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
-							       	       desc.str(),
-							               "Connection::command_inout_reply");
+				TANGO_THROW_API_EXCEPTION(ApiAsynNotThereExcept, API_AsynReplyNotArrived, desc.str());
 			}
 		}
 	}
@@ -693,10 +672,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 
                     remove_asyn_request(id);
 
-                    ApiCommExcept::re_throw_exception(cb_excep_mess,
-                              "API_DeviceTimedOut",
-                              desc.str(),
-                              "Connection::command_inout_reply()");
+                    TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_DeviceTimedOut, desc.str());
                 }
                 else
                 {
@@ -706,9 +682,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
                     std::stringstream ss;
                     ss << "Failed to execute command_inout_asynch on device " << dev_name();
 
-                    ApiCommExcept::re_throw_exception(cb_excep_mess,
-                                          "API_CommunicationFailed",ss.str(),
-                                          "Connection::command_inout_reply()");
+                    TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, ss.str());
                 }
 			}
 		}
@@ -739,9 +713,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 
 			remove_asyn_request(id);;
 
-			Except::re_throw_exception(ex,
-						   API_CommandFailed,desc.str(),
-						   "Connection::command_inout_reply()");
+			TANGO_RETHROW_EXCEPTION(ex, API_CommandFailed, desc.str());
 
 
 		}
@@ -800,9 +772,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 
 			remove_asyn_request(id);
 
-			ApiCommExcept::re_throw_exception(cb_excep_mess,
-						          "API_CommunicationFailed",desc.str(),
-						          "Connection::command_inout_reply()");
+			TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, desc.str());
 
 
 		}
@@ -845,8 +815,7 @@ long DeviceProxy::read_attributes_asynch(std::vector<std::string> &attr_names)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << std::ends;
-                ApiConnExcept::re_throw_exception(e,API_CommandFailed,
-                        desc.str(),"DeviceProxy::read_attributes_asynch()");
+                TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_CommandFailed, desc.str());
 	}
 
 //
@@ -957,9 +926,7 @@ std::vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 
 	if (req.req_type != TgRequest::READ_ATTR)
 	{
-		ApiAsynExcept::throw_exception(API_BadAsynReqType,
-					       "Incompatible request type",
-					       "Connection::read_attributes_reply");
+		TANGO_THROW_API_EXCEPTION(ApiAsynExcept, API_BadAsynReqType, "Incompatible request type");
 	}
 
 //
@@ -972,9 +939,7 @@ std::vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
 		desc << ") is not yet arrived" << std::ends;
-		ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
-						       desc.str(),
-						       "DeviceProxy::read_attributes_reply");
+		TANGO_THROW_API_EXCEPTION(ApiAsynNotThereExcept, API_AsynReplyNotArrived, desc.str());
 	}
 	else
 	{
@@ -1162,9 +1127,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 
 	if (req.req_type != TgRequest::READ_ATTR)
 	{
-		ApiAsynExcept::throw_exception(API_BadAsynReqType,
-					       "Incompatible request type",
-					       "Connection::read_attribute_reply");
+		TANGO_THROW_API_EXCEPTION(ApiAsynExcept, API_BadAsynReqType, "Incompatible request type");
 	}
 
 //
@@ -1177,9 +1140,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
 		desc << ") is not yet arrived" << std::ends;
-		ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
-						       desc.str(),
-						       "DeviceProxy::read_attribute_reply");
+		TANGO_THROW_API_EXCEPTION(ApiAsynNotThereExcept, API_AsynReplyNotArrived, desc.str());
 	}
 	else
 	{
@@ -1360,9 +1321,7 @@ std::vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long ca
 
 	if (req.req_type != TgRequest::READ_ATTR)
 	{
-		ApiAsynExcept::throw_exception(API_BadAsynReqType,
-					       "Incompatible request type",
-					       "Connection::read_attributes_reply");
+		TANGO_THROW_API_EXCEPTION(ApiAsynExcept, API_BadAsynReqType, "Incompatible request type");
 	}
 
 //
@@ -1415,9 +1374,7 @@ std::vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long ca
 				desc << "Device " << device_name;
 				desc << ": Reply for asynchronous call (id = " << id;
 				desc << ") is not yet arrived" << std::ends;
-				ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
-							       	       desc.str(),
-							               "DeviceProxy::read_attributes_reply");
+				TANGO_THROW_API_EXCEPTION(ApiAsynNotThereExcept, API_AsynReplyNotArrived, desc.str());
 			}
 		}
 	}
@@ -1606,9 +1563,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 
 	if (req.req_type != TgRequest::READ_ATTR)
 	{
-		ApiAsynExcept::throw_exception(API_BadAsynReqType,
-					       "Incompatible request type",
-					       "Connection::read_attribute_reply");
+		TANGO_THROW_API_EXCEPTION(ApiAsynExcept, API_BadAsynReqType, "Incompatible request type");
 	}
 
 //
@@ -1661,9 +1616,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 				desc << "Device " << device_name;
 				desc << ": Reply for asynchronous call (id = " << id;
 				desc << ") is not yet arrived" << std::ends;
-				ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
-							       	       desc.str(),
-							               "DeviceProxy::read_attribute_reply");
+				TANGO_THROW_API_EXCEPTION(ApiAsynNotThereExcept, API_AsynReplyNotArrived, desc.str());
 			}
 		}
 	}
@@ -1883,7 +1836,7 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
                 desc << std::ends;
 
                 remove_asyn_request(id);
-                ApiCommExcept::re_throw_exception(cb_excep_mess,"API_DeviceTimedOut",desc.str(),meth.c_str());
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_DeviceTimedOut, desc.str());
             }
             else
             {
@@ -1892,7 +1845,7 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 
                 std::stringstream ss;
                 ss << "Failed to execute read_attribute_asynch on device " << device_name;
-                ApiCommExcept::re_throw_exception(cb_excep_mess,"API_CommunicationFailed",ss.str(),meth.c_str());
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, ss.str());
             }
 		}
 	}
@@ -1929,13 +1882,9 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 		remove_asyn_request(id);
 
 		if (type == SIMPLE)
-	        	Except::re_throw_exception(ex,
-						   API_AttributeFailed,desc.str(),
-						   "DeviceProxy::read_attribute_reply()");
+	        	TANGO_RETHROW_EXCEPTION(ex, API_AttributeFailed, desc.str());
 		else
-	        	Except::re_throw_exception(ex,
-						   API_AttributeFailed,desc.str(),
-						   "DeviceProxy::read_attributes_reply()");
+	        	TANGO_RETHROW_EXCEPTION(ex, API_AttributeFailed, desc.str());
 
 
 	}
@@ -1991,13 +1940,9 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 		remove_asyn_request(id);
 
 		if (type == SIMPLE)
-			ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  "API_CommunicationFailed",desc.str(),
-							  "DeviceProxy::read_attribute_reply()");
+			TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, desc.str());
 		else
-			ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  "API_CommunicationFailed",desc.str(),
-							  "DeviceProxy::read_attributes_reply()");
+			TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, desc.str());
 	}
 
 }
@@ -2028,8 +1973,7 @@ long DeviceProxy::write_attributes_asynch(std::vector<DeviceAttribute> &attr_lis
 		TangoSys_OMemStream desc;
 		desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << std::ends;
 
-		NotAllowedExcept::throw_exception(API_ReadOnlyMode,desc.str(),
-									  	  "DeviceProxy::write_attributes_asynch()");
+		TANGO_THROW_API_EXCEPTION(NotAllowedExcept, API_ReadOnlyMode, desc.str());
 	}
 
 //
@@ -2044,8 +1988,7 @@ long DeviceProxy::write_attributes_asynch(std::vector<DeviceAttribute> &attr_lis
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute write_attributes_asynch on device " << dev_name() << std::ends;
-                ApiConnExcept::re_throw_exception(e,API_CommandFailed,
-                        desc.str(),"DeviceProxy::write_attributes_asynch()");
+                TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_CommandFailed, desc.str());
 	}
 
 //
@@ -2117,8 +2060,7 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 		TangoSys_OMemStream desc;
 		desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << std::ends;
 
-		NotAllowedExcept::throw_exception(API_ReadOnlyMode,desc.str(),
-									  	  "DeviceProxy::write_attribute_asynch()");
+		TANGO_THROW_API_EXCEPTION(NotAllowedExcept, API_ReadOnlyMode, desc.str());
 	}
 
 //
@@ -2133,8 +2075,7 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute write_attributes_asynch on device " << dev_name() << std::ends;
-                ApiConnExcept::re_throw_exception(e,API_CommandFailed,
-                        desc.str(),"DeviceProxy::write_attribute_asynch()");
+                TANGO_RETHROW_API_EXCEPTION(ApiConnExcept, e, API_CommandFailed, desc.str());
 	}
 
 //
@@ -2224,9 +2165,7 @@ void DeviceProxy::write_attributes_reply(long id,long call_timeout)
 
 	if ((req.req_type == TgRequest::CMD_INOUT) || (req.req_type == TgRequest::READ_ATTR))
 	{
-		ApiAsynExcept::throw_exception(API_BadAsynReqType,
-					       "Incompatible request type",
-					       "Connection::write_attributes_reply");
+		TANGO_THROW_API_EXCEPTION(ApiAsynExcept, API_BadAsynReqType, "Incompatible request type");
 	}
 
 //
@@ -2279,9 +2218,7 @@ void DeviceProxy::write_attributes_reply(long id,long call_timeout)
 				desc << "Device " << device_name;
 				desc << ": Reply for asynchronous call (id = " << id;
 				desc << ") is not yet arrived" << std::ends;
-				ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
-							       	       desc.str(),
-							               "DeviceProxy::write_attributes_reply");
+				TANGO_THROW_API_EXCEPTION(ApiAsynNotThereExcept, API_AsynReplyNotArrived, desc.str());
 			}
 		}
 	}
@@ -2370,9 +2307,7 @@ void DeviceProxy::write_attributes_reply(long id)
 
 	if ((req.req_type == TgRequest::CMD_INOUT) || (req.req_type == TgRequest::READ_ATTR))
 	{
-		ApiAsynExcept::throw_exception(API_BadAsynReqType,
-					       "Incompatible request type",
-					       "Connection::write_attributes_reply");
+		TANGO_THROW_API_EXCEPTION(ApiAsynExcept, API_BadAsynReqType, "Incompatible request type");
 	}
 
 //
@@ -2385,9 +2320,7 @@ void DeviceProxy::write_attributes_reply(long id)
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
 		desc << ") is not yet arrived" << std::ends;
-		ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
-						       desc.str(),
-						       "DeviceProxy::write_attributes_reply");
+		TANGO_THROW_API_EXCEPTION(ApiAsynNotThereExcept, API_AsynReplyNotArrived, desc.str());
 	}
 	else
 	{
@@ -2534,10 +2467,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
                 }
 
                 remove_asyn_request(id);
-                ApiCommExcept::re_throw_exception(cb_excep_mess,
-                                  "API_DeviceTimedOut",
-                                  desc.str(),
-                                  "DeviceProxy::write_attributes_reply()");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_DeviceTimedOut, desc.str());
             }
             else
             {
@@ -2546,8 +2476,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 
                 std::stringstream ss;
                 ss << "Failed to execute write_attribute_asynch on device " << device_name;
-                ApiCommExcept::re_throw_exception(cb_excep_mess,
-                                "API_CommunicationFailed",ss.str(),"DeviceProxy::write_attributes_reply");
+                TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, ss.str());
             }
 		}
 	}
@@ -2621,17 +2550,13 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 
 		if (version < 3)
 		{
-			Except::re_throw_exception(ex,API_AttributeFailed,
-						   desc.str(),
-						   "DeviceProxy::write_attributes_reply()");
+			TANGO_RETHROW_EXCEPTION(ex, API_AttributeFailed, desc.str());
 		}
 		else
 		{
 			if (serv_ex != NULL)
 			{
-				Except::re_throw_exception(ex,API_AttributeFailed,
-							   desc.str(),
-							   "DeviceProxy::write_attributes_reply()");
+				TANGO_RETHROW_EXCEPTION(ex, API_AttributeFailed, desc.str());
 			}
 
 			if (req_type == TgRequest::WRITE_ATTR)
@@ -2647,8 +2572,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 //
 
 				Tango::DevFailed ex(m_ex.errors[0].err_list);
-				Except::re_throw_exception(ex,API_AttributeFailed,
-                        				   desc.str(),"DeviceProxy::write_attributes_reply()");
+				TANGO_RETHROW_EXCEPTION(ex, API_AttributeFailed, desc.str());
 
 			}
 		}
@@ -2722,9 +2646,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 
 		remove_asyn_request(id);
 
-		ApiCommExcept::re_throw_exception(cb_excep_mess,
-						  "API_CommunicationFailed",desc.str(),
-						  "DeviceProxy::write_attributes_reply()");
+		TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, desc.str());
 	}
 }
 
@@ -2781,10 +2703,7 @@ void DeviceProxy::retrieve_read_args(TgRequest &req,std::vector<std::string> &at
 		}
 		desc << std::ends;
 
-		ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  			  "API_CommunicationFailed",
-                        			  	  desc.str(),
-							  			  "DeviceProxy::redo_simpl_call()");
+		TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, desc.str());
 	}
 }
 
@@ -2886,10 +2805,7 @@ void DeviceProxy::redo_synch_write_call(TgRequest &req)
 		TangoSys_OMemStream desc;
 		desc << "Failed to redo the call synchronously on device " << device_name << std::ends;
 
-		ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  			  "API_CommunicationFailed",
-                        			  	  desc.str(),
-							  			  "DeviceProxy::redo_synch_write_call()");
+		TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, desc.str());
 	}
 
 //
@@ -2936,10 +2852,7 @@ DeviceData Connection::redo_synch_cmd(TgRequest &req)
 		TangoSys_OMemStream desc;
 		desc << "Failed to redo the call synchronously on device " << dev_name() << std::ends;
 
-		ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  			  "API_CommunicationFailed",
-                        			  	  desc.str(),
-							  			  "DeviceProxy::redo_synch_write_call()");
+		TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, desc.str());
 	}
 
 //
@@ -3029,18 +2942,14 @@ void Connection::omni420_timeout(int id,char *cb_excep_mess)
     if (need_reconnect == false)
     {
         ss << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
-        ApiCommExcept::re_throw_exception(cb_excep_mess,
-                              "API_DeviceTimedOut",ss.str(),
-                              "Connection::command_inout_reply()");
+        TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_DeviceTimedOut, ss.str());
     }
     else
     {
         set_connection_state(CONNECTION_NOTOK);
 
         ss << "Failed to execute command_inout_asynch on device " << dev_name();
-        ApiCommExcept::re_throw_exception(cb_excep_mess,
-                              "API_CommunicationFailed",ss.str(),
-                              "Connection::command_inout_reply()");
+        TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, ss.str());
     }
 }
 
@@ -3075,8 +2984,7 @@ DeviceData Connection::omni420_except(int id,char *cb_excep_mess,TgRequest &req)
 
     remove_asyn_request(id);
 
-    ApiCommExcept::re_throw_exception(cb_excep_mess,
-						  "API_CommunicationFailed",ss.str(),"Connection::command_inout_reply");
+    TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, ss.str());
 
     DeviceData dummy;
     return dummy;
@@ -3115,16 +3023,14 @@ void DeviceProxy::omni420_timeout_attr(int id,char *cb_excep_mess,read_attr_type
     if (need_reconnect == false)
     {
         ss << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
-        ApiCommExcept::re_throw_exception(cb_excep_mess,
-                              "API_DeviceTimedOut",ss.str(),meth.c_str());
+        TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_DeviceTimedOut, ss.str());
     }
     else
     {
         set_connection_state(CONNECTION_NOTOK);
 
         ss << "Failed to execute command_inout_asynch on device " << dev_name();
-        ApiCommExcept::re_throw_exception(cb_excep_mess,
-                              "API_CommunicationFailed",ss.str(),meth.c_str());
+        TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, ss.str());
     }
 }
 
@@ -3153,8 +3059,7 @@ void DeviceProxy::omni420_except_attr(int id,char *cb_excep_mess,read_attr_type 
     else
         meth = "DeviceProxy::read_attributes_reply()";
 
-    ApiCommExcept::re_throw_exception(cb_excep_mess,
-						  "API_CommunicationFailed",ss.str(),meth.c_str());
+    TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, ss.str());
 }
 
 void DeviceProxy::omni420_timeout_wattr(int id,char *cb_excep_mess)
@@ -3184,16 +3089,14 @@ void DeviceProxy::omni420_timeout_wattr(int id,char *cb_excep_mess)
     if (need_reconnect == false)
     {
         ss << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
-        ApiCommExcept::re_throw_exception(cb_excep_mess,
-                          "API_DeviceTimedOut",ss.str(),"DeviceProxy::write_attributes_reply()");
+        TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_DeviceTimedOut, ss.str());
     }
     else
     {
         set_connection_state(CONNECTION_NOTOK);
 
         ss << "Failed to execute write_attribute_asynch on device " << dev_name();
-        ApiCommExcept::re_throw_exception(cb_excep_mess,
-                              "API_CommunicationFailed",ss.str(),"DeviceProxy::write_attributes_reply()");
+        TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, ss.str());
     }
 }
 
@@ -3216,8 +3119,7 @@ void DeviceProxy::omni420_except_wattr(int id,char *cb_excep_mess)
 
     remove_asyn_request(id);
 
-    ApiCommExcept::re_throw_exception(cb_excep_mess,
-						  "API_CommunicationFailed",ss.str(),"DeviceProxy::write_attributes_reply()");
+    TANGO_RETHROW_API_EXCEPTION(ApiCommExcept, cb_excep_mess, API_CommunicationFailed, ss.str());
 }
 
 } // End of tango namespace

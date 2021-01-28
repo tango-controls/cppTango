@@ -1007,9 +1007,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
                 if (poll_nb == MAX_SOCKET_SUB)
                 {
-                    Except::throw_exception((const char *)API_InternalError,
-                                            (const char *)"Array to store sockets for zmq poll() call is already full",
-                                            (const char *)"ZmqEventConsumer::process_control");
+                    TANGO_THROW_EXCEPTION(API_InternalError, "Array to store sockets for zmq poll() call is already full");
                 }
 
 //
@@ -1054,9 +1052,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
                     delete tmp_sock;
                     print_error_message("Error while inserting pair<event name,mcast socket> in map!");
 
-                    Except::throw_exception((const char *)API_InternalError,
-                                            (const char *)"Error while inserting pair<event name,multicast socket> in map",
-                                            (const char *)"ZmqEventConsumer::process_control");
+                    TANGO_THROW_EXCEPTION(API_InternalError, "Error while inserting pair<event name,multicast socket> in map");
                 }
 
 //
@@ -1308,7 +1304,7 @@ void ZmqEventConsumer::connect_event_channel(std::string &channel_name,TANGO_UNU
             o << "Failed to create connection to event channel!\n";
             o << "Impossible to create a network connection to any of the event endpoints returned by server";
 
-            Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_channel");
+            TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
         }
     }
 
@@ -1402,7 +1398,7 @@ void ZmqEventConsumer::connect_event_channel(std::string &channel_name,TANGO_UNU
         o << "ZMQ error code = " << e.num() << "\n";
         o << "ZMQ message: " << e.what() << std::ends;
 
-        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_channel");
+        TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
     }
 
 //
@@ -1421,7 +1417,7 @@ void ZmqEventConsumer::connect_event_channel(std::string &channel_name,TANGO_UNU
         o << "Error while trying to connect or subscribe the heartbeat ZMQ socket to the new publisher\n";
         o << "ZMQ message: " << err_mess << std::ends;
 
-        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_channel");
+        TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
     }
 
 //
@@ -1531,9 +1527,7 @@ void ZmqEventConsumer::disconnect_event_channel(std::string &channel_name,std::s
         o << "Error while communicating with the ZMQ main thread\n";
         o << "ZMQ message: " << e.what() << std::ends;
 
-        Except::throw_exception((const char *)API_ZmqFailed,
-                        o.str(),
-                        (const char *)"ZmqEventConsumer::disconnect_event_channel");
+        TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
     }
 
 //
@@ -1552,9 +1546,7 @@ void ZmqEventConsumer::disconnect_event_channel(std::string &channel_name,std::s
         o << "Error while trying to unsubscribe the heartbeat ZMQ socket from the channel heartbeat publisher\n";
         o << "ZMQ message: " << err_mess << std::ends;
 
-        Except::throw_exception((const char *)API_ZmqFailed,
-                        o.str(),
-                        (const char *)"ZmqEventConsumer::disconnect_event_channel");
+        TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
     }
 
 }
@@ -1624,9 +1616,7 @@ void ZmqEventConsumer::disconnect_event(std::string &event_name,std::string &end
         o << "Error while communicating with the ZMQ main thread\n";
         o << "ZMQ message: " << e.what() << std::ends;
 
-        Except::throw_exception((const char *)API_ZmqFailed,
-                        o.str(),
-                        (const char *)"ZmqEventConsumer::disconnect_event");
+        TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
     }
 
 //
@@ -1645,9 +1635,7 @@ void ZmqEventConsumer::disconnect_event(std::string &event_name,std::string &end
         o << "Error while trying to unsubscribe the heartbeat ZMQ socket from the channel heartbeat publisher\n";
         o << "ZMQ message: " << err_mess << std::ends;
 
-        Except::throw_exception((const char *)API_ZmqFailed,
-                        o.str(),
-                        (const char *)"ZmqEventConsumer::disconnect_event");
+        TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
     }
 }
 
@@ -1790,7 +1778,7 @@ void ZmqEventConsumer::connect_event_system(TANGO_UNUSED(std::string &device_nam
         o << "Error while communicating with the ZMQ main thread\n";
         o << "ZMQ message: " << e.what() << std::ends;
 
-        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_system");
+        TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
     }
 
 //
@@ -1809,7 +1797,7 @@ void ZmqEventConsumer::connect_event_system(TANGO_UNUSED(std::string &device_nam
         o << "Error while trying to connect or subscribe the event ZMQ socket to the new publisher\n";
         o << "ZMQ message: " << err_mess << std::ends;
 
-        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_system");
+        TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
     }
 }
 
@@ -3184,9 +3172,7 @@ void ZmqEventConsumer::zmq_specific(DeviceData &dd,std::string &adm_name,DeviceP
 	{
 		if (zmq_major != 3 || zmq_minor != 1 || zmq_patch != 0)
 		{
-			Except::throw_exception((const char *)API_UnsupportedFeature,
-									(const char *)"Incompatibility between ZMQ releases between client and server!",
-									(const char *)"EventConsumer::connect_event");
+			TANGO_THROW_EXCEPTION(API_UnsupportedFeature, "Incompatibility between ZMQ releases between client and server!");
 		}
 	}
 
@@ -3194,9 +3180,7 @@ void ZmqEventConsumer::zmq_specific(DeviceData &dd,std::string &adm_name,DeviceP
 	{
 		if (ds_zmq_release != 0 && ds_zmq_release != 310)
 		{
-			Except::throw_exception((const char *)API_UnsupportedFeature,
-									(const char *)"Incompatibility between ZMQ releases between client and server!",
-									(const char *)"EventConsumer::connect_event");
+			TANGO_THROW_EXCEPTION(API_UnsupportedFeature, "Incompatibility between ZMQ releases between client and server!");
 		}
 	}
 
@@ -3215,9 +3199,7 @@ void ZmqEventConsumer::zmq_specific(DeviceData &dd,std::string &adm_name,DeviceP
 			o << " is configured to use multicasting";
 			o << "\nMulticast event(s) not available with this ZMQ release" << std::ends;
 
-			Except::throw_exception((const char *)API_UnsupportedFeature,
-											o.str(),
-											(const char *)"EventConsumer::connect_event");
+			TANGO_THROW_EXCEPTION(API_UnsupportedFeature, o.str());
 		}
 	}
 }
@@ -3518,9 +3500,7 @@ ReceivedFromAdmin ZmqEventConsumer::initialize_received_from_admin(const Tango::
     ReceivedFromAdmin result;
     if (dvlsa->lvalue.length() == 0)
     {
-        EventSystemExcept::throw_exception(API_NotSupported,
-                                           "Server did not send its tango lib version. The server is possibly too old. The event system is not initialized!",
-                                           "ZmqEventConsumer::initialize_received_from_admin()");
+        TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_NotSupported, "Server did not send its tango lib version. The server is possibly too old. The event system is not initialized!");
     }
 
     long server_tango_lib_ver = dvlsa->lvalue[0];
@@ -3556,18 +3536,14 @@ ReceivedFromAdmin ZmqEventConsumer::initialize_received_from_admin(const Tango::
 
     if (result.event_name.empty())
     {
-        EventSystemExcept::throw_exception(API_NotSupported,
-                                           "Server did not send the event name. The server is possibly too old. The event system is not initialized!",
-                                           "ZmqEventConsumer::initialize_received_from_admin()");
+        TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_NotSupported, "Server did not send the event name. The server is possibly too old. The event system is not initialized!");
 
     }
 
     cout4 << "received_from_admin.event_name = " << result.event_name << std::endl;
     if (result.channel_name.empty())
     {
-        EventSystemExcept::throw_exception(API_NotSupported,
-                                           "Server did not send the channel name. The server is possibly too old. The event system is not initialized!",
-                                           "ZmqEventConsumer::initialize_received_from_admin()");
+        TANGO_THROW_API_EXCEPTION(EventSystemExcept, API_NotSupported, "Server did not send the channel name. The server is possibly too old. The event system is not initialized!");
     }
     cout4 << "received_from_admin.channel_name = " << result.channel_name << std::endl;
     return result;
@@ -4034,9 +4010,7 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
             o << "Error while communicating with the ZMQ main thread\n";
             o << "ZMQ message: " << e.what() << std::ends;
 
-            Except::throw_exception((const char *)API_ZmqFailed,
-                            o.str(),
-                            (const char *)"DelayEvent::DelayEvent");
+            TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
         }
 
 //
@@ -4057,9 +4031,7 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
             o << "Error while asking the ZMQ thread to delay events\n";
             o << "ZMQ message: " << err_mess << std::ends;
 
-            Except::throw_exception((const char *)API_ZmqFailed,
-                            o.str(),
-                            (const char *)"DelayEvent::DelayEvent");
+            TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
         }
     }
 }
@@ -4114,9 +4086,7 @@ void DelayEvent::release()
             o << "Error while communicating with the ZMQ main thread\n";
             o << "ZMQ message: " << e.what() << std::ends;
 
-            Except::throw_exception((const char *)API_ZmqFailed,
-                            o.str(),
-                            (const char *)"DelayEvent::release");
+            TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
         }
 
 //
@@ -4135,9 +4105,7 @@ void DelayEvent::release()
             o << "Error while trying to ask the ZMQ thread to release events\n";
             o << "ZMQ message: " << err_mess << std::ends;
 
-            Except::throw_exception((const char *)API_ZmqFailed,
-                            o.str(),
-                            (const char *)"DelayEvent::release");
+            TANGO_THROW_EXCEPTION(API_ZmqFailed, o.str());
         }
     }
 }

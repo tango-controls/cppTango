@@ -81,7 +81,7 @@ public:
 		}
 		catch (DevFailed &e)
 		{
-			if (strcmp(e.errors[0].reason.in(),"API_WrongDeviceNameSyntax") == 0)
+			if (strcmp(e.errors[0].reason.in(),API_WrongDeviceNameSyntax) == 0)
 				ret = 0;
 			else
 				ret = 1;
@@ -101,9 +101,9 @@ public:
 		}
 		catch (DevFailed &e)
 		{
-			if (strcmp(e.errors[0].reason.in(),"API_WrongAttributeNameSyntax") == 0)
+			if (strcmp(e.errors[0].reason.in(),API_WrongAttributeNameSyntax) == 0)
 				ret = 0;
-			else if (strcmp(e.errors[0].reason.in(),"API_UnsupportedAttribute") == 0)
+			else if (strcmp(e.errors[0].reason.in(),API_UnsupportedAttribute) == 0)
 				ret = 1;
 			else
 				ret = 2;
@@ -256,7 +256,7 @@ public:
 		DeviceProxy *device2 = nullptr;
 		TS_ASSERT_THROWS_NOTHING(device2 = new DeviceProxy(device2_name));
 		TS_ASSERT_THROWS_ASSERT(device2->alias(), Tango::DevFailed &e,
-						TS_ASSERT(string(e.errors[0].reason.in()) == "DB_AliasNotDefined"
+						TS_ASSERT(string(e.errors[0].reason.in()) == DB_AliasNotDefined
 								&& e.errors[0].severity == Tango::ERR));
 		delete device2;
 	}

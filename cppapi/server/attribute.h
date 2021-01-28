@@ -2545,8 +2545,7 @@ inline void Attribute::throw_hard_coded_prop(const char *prop_name)
     TangoSys_OMemStream desc;
     desc << "Attribute property " << prop_name << " is not changeable at run time" << std::ends;
 
-    Except::throw_exception((const char *)API_AttrNotAllowed,desc.str(),
-				      	  (const char *)"Attribute::check_hard_coded_properties()");
+    TANGO_THROW_EXCEPTION(API_AttrNotAllowed, desc.str());
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -2616,7 +2615,7 @@ inline void Attribute::throw_startup_exception(const char* origin)
 			err_msg += "\nHint : Check also class level attribute properties";
 		}
 
-		Except::throw_exception(API_AttrConfig,err_msg,origin);
+		Except::throw_exception(API_AttrConfig, err_msg, origin);
 	}
 }
 
@@ -2775,7 +2774,7 @@ inline void Attribute::set_att_conf_event_sub(int cl_lib)
 	{ \
 		std::stringstream o; \
 		o << "Data pointer for attribute " << B << " is NULL!"; \
-		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::set_value()"); \
+		TANGO_THROW_EXCEPTION(API_AttrOptProp, o.str()); \
 	} \
 	else \
 		(void)0

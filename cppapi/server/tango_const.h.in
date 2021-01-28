@@ -31,6 +31,8 @@
 #ifndef _TANGO_CONST_H
 #define _TANGO_CONST_H
 
+#include <exception_reason_consts.h>
+
 namespace Tango
 {
 
@@ -322,144 +324,6 @@ const char* const RootAttrPropName		   = "__root_att";
 // For DevEnum data type
 
 typedef DevShort	DevEnum;
-
-/*
- * List of strings used by the API as the DevError reason field.
- * This list is given here only for API writers to re-use (if possible)
- * strings already used.
- *
- */
-
-const char* const API_AlreadyPolled                = "API_AlreadyPolled";
-const char* const API_AsynReplyNotArrived          = "API_AsynReplyNotArrived";
-const char* const API_AttrConfig                   = "API_AttrConfig";
-const char* const API_AttrEventProp                = "API_AttrEventProp";
-const char* const API_AttributeFailed			   = "API_AttributeFailed";
-const char* const API_AttributeNotDataReadyEnabled = "API_AttributeNotDataReadyEnabled";
-const char* const API_AttributePollingNotStarted   = "API_AttributePollingNotStarted";
-const char* const API_AttrIncorrectDataNumber      = "API_AttrIncorrectDataNumber";
-const char* const API_AttrNoAlarm                  = "API_AttrNoAlarm";
-const char* const API_AttrNotAllowed               = "API_AttrNotAllowed";
-const char* const API_AttrNotFound                 = "API_AttrNotFound";
-const char* const API_AttrNotPolled                = "API_AttrNotPolled";
-const char* const API_AttrNotWritable              = "API_AttrNotWritable";
-const char* const API_AttrOptProp                  = "API_AttrOptProp";
-const char* const API_AttrPropValueNotSet          = "API_AttrPropValueNotSet";
-const char* const API_AttrValueNotSet              = "API_AttrValueNotSet";
-const char* const API_AttrWrongDefined             = "API_AttrWrongDefined";
-const char* const API_AttrWrongMemValue            = "API_AttrWrongMemValue";
-const char* const API_BadAsynReqType               = "API_BadAsynReqType";
-const char* const API_BadConfigurationProperty     = "API_BadConfigurationProperty";
-const char* const API_BlackBoxArgument             = "API_BlackBoxArgument";
-const char* const API_BlackBoxEmpty                = "API_BlackBoxEmpty";
-const char* const API_CannotCheckAccessControl     = "API_CannotCheckAccessControl";
-const char* const API_CannotOpenFile               = "API_CannotOpenFile";
-const char* const API_CantActivatePOAManager       = "API_CantActivatePOAManager";
-const char* const API_CantConnectToDevice		   = "API_CantConnectToDevice";
-const char* const API_CantCreateClassPoa           = "API_CantCreateClassPoa";
-const char* const API_CantCreateLockingThread      = "API_CantCreateLockingThread";
-const char* const API_CantDestroyDevice            = "API_CantDestroyDevice";
-const char* const API_CantFindLockingThread        = "API_CantFindLockingThread";
-const char* const API_CantGetClientIdent           = "API_CantGetClientIdent";
-const char* const API_CantGetDevObjectId           = "API_CantGetDevObjectId";
-const char* const API_CantInstallSignal            = "API_CantInstallSignal";
-const char* const API_CantRetrieveClass            = "API_CantRetrieveClass";
-const char* const API_CantRetrieveClassList        = "API_CantRetrieveClassList";
-const char* const API_CantStoreDeviceClass         = "API_CantStoreDeviceClass";
-const char* const API_ClassNotFound                = "API_ClassNotFound";
-const char* const API_CmdArgumentTypeNotSupported  = "API_CmdArgumentTypeNotSupported";
-const char* const API_CmdNotPolled                 = "API_CmdNotPolled";
-const char* const API_CommandFailed				   = "API_CommandFailed";
-const char* const API_CommandNotAllowed            = "API_CommandNotAllowed";
-const char* const API_CommandNotFound              = "API_CommandNotFound";
-const char* const API_CommandTimedOut              = "API_CommandTimedOut";
-const char* const API_ConnectionFailed             = "API_ConnectionFailed";
-const char* const API_CorbaSysException            = "API_CorbaSysException";
-const char* const API_CorruptedDatabase            = "API_CorruptedDatabase";
-const char* const API_DatabaseAccess               = "API_DatabaseAccess";
-const char* const API_DatabaseCacheAccess          = "API_DatabaseCacheAccess";
-const char* const API_DatabaseFileError            = "API_DatabaseFileError";
-const char* const API_DecodeErr                    = "API_DecodeErr";
-const char* const API_DeprecatedCommand            = "API_DeprecatedCommand";
-const char* const API_DeviceLocked                 = "API_DeviceLocked";
-const char* const API_DeviceNotExported			   = "API_DeviceNotExported";
-const char* const API_DeviceNotFound               = "API_DeviceNotFound";
-const char* const API_DeviceNotLocked              = "API_DeviceNotLocked";
-const char* const API_DeviceNotPolled              = "API_DeviceNotPolled";
-const char* const API_DeviceUnlockable             = "API_DeviceUnlockable";
-const char* const API_DeviceUnlocked               = "API_DeviceUnlocked";
-const char* const API_DServerClassNotInitialised   = "API_DServerClassNotInitialised";
-const char* const API_DSFailedRegisteringEvent	   = "API_DSFailedRegisteringEvent";
-const char* const API_EmptyDataElement			   = "API_EmptyDataElement";
-const char* const API_EmptyDeviceAttribute		   = "API_EmptyDeviceAttribute";
-const char* const API_EventConsumer				   = "API_EventConsumer";
-const char* const API_EventPropertiesNotSet        = "API_EventPropertiesNotSet";
-const char* const API_EventQueues                  = "API_EventQueues";
-const char* const API_EventSupplierNotConstructed  = "API_EventSupplierNotConstructed";
-const char* const API_FwdAttrNotConfigured		   = "API_FwdAttrNotConfigured";
-const char* const API_FwdAttrInconsistency		   = "API_FwdAttrInconsistency";
-const char* const API_IncoherentDbData             = "API_IncoherentDbData";
-const char* const API_IncoherentDevData            = "API_IncoherentDevData";
-const char* const API_IncoherentValues             = "API_IncoherentValues";
-const char* const API_IncompatibleArgumentType     = "API_IncompatibleArgumentType";
-const char* const API_IncompatibleAttrDataType     = "API_IncompatibleAttrDataType";
-const char* const API_IncompatibleCmdArgumentType  = "API_IncompatibleCmdArgumentType";
-const char* const API_InitMethodNotFound           = "API_InitMethodNotFound";
-const char* const API_InitNotPublic                = "API_InitNotPublic";
-const char* const API_InitThrowsException          = "API_InitThrowsException";
-const char* const API_InternalError                = "API_InternalError";
-const char* const API_InvalidArgs				   = "API_InvalidArgs";
-const char* const API_JavaRuntimeSecurityException = "API_JavaRuntimeSecurityException";
-const char* const API_MemAttFailedDuringInit       = "API_MemAttFailedDuringInit";
-const char* const API_MemoryAllocation             = "API_MemoryAllocation";
-const char* const API_MethodArgument               = "API_MethodArgument";
-const char* const API_MethodNotFound               = "API_MethodNotFound";
-const char* const API_MissedEvents                 = "API_MissedEvents";
-const char* const API_NoDataYet                    = "API_NoDataYet";
-const char* const API_NonDatabaseDevice            = "API_NonDatabaseDevice";
-const char* const API_NotificationServiceFailed    = "API_NotificationServiceFailed";
-const char* const API_NotSupported                 = "API_NotSupported";
-const char* const API_NotSupportedFeature          = "API_NotSupportedFeature";
-const char* const API_NotUpdatedAnyMore            = "API_NotUpdatedAnyMore";
-const char* const API_NtDebugWindowError           = "API_NtDebugWindowError";
-const char* const API_OverloadingNotSupported      = "API_OverloadingNotSupported";
-const char* const API_PipeDataEltNotFound		   = "API_PipeDataEltNotFound";
-const char* const API_PipeDuplicateDEName		   = "API_PipeDuplicateDEName";
-const char* const API_PipeFailed				   = "API_PipeFailed";
-const char* const API_PipeNoDataElement			   = "API_PipeNoDataElement";
-const char* const API_PipeNotAllowed			   = "API_PipeNotAllowed";
-const char* const API_PipeNotFound				   = "API_PipeNotFound";
-const char* const API_PipeNotWritable              = "API_PipeNotWritable";
-const char* const API_PipeOptProp				   = "API_PipeOptProp";
-const char* const API_PipeValueNotSet              = "API_PipeValueNotSet";
-const char* const API_PipeWrongArgNumber		   = "API_PipeWrongArgNumber";
-const char* const API_PipeWrongArg 				   = "API_PipeWrongArg";
-const char* const API_PolledDeviceNotInPoolConf    = "API_PolledDeviceNotInPoolConf";
-const char* const API_PolledDeviceNotInPoolMap     = "API_PolledDeviceNotInPoolMap";
-const char* const API_PollingThreadNotFound        = "API_PollingThreadNotFound";
-const char* const API_PollObjNotFound              = "API_PollObjNotFound";
-const char* const API_PollRingBufferEmpty          = "API_PollRingBufferEmpty";
-const char* const API_ReadOnlyMode                 = "API_ReadOnlyMode";
-const char* const API_RootAttrFailed			   = "API_RootAttrFailed";
-const char* const API_ShutdownInProgress           = "API_ShutdownInProgress";
-const char* const API_SignalOutOfRange             = "API_SignalOutOfRange";
-const char* const API_StartupSequence              = "API_StartupSequence";
-const char* const API_StdException                 = "API_StdException";
-const char* const API_SystemCallFailed             = "API_SystemCallFailed";
-const char* const API_TangoHostNotSet              = "API_TangoHostNotSet";
-const char* const API_UnsupportedFeature           = "API_UnsupportedFeature";
-const char* const API_WAttrOutsideLimit            = "API_WAttrOutsideLimit";
-const char* const API_WizardConfError              = "API_WizardConfError";
-const char* const API_WrongAttributeNameSyntax     = "API_WrongAttributeNameSyntax";
-const char* const API_WrongCmdLineArgs			   = "API_WrongCmdLineArgs";
-const char* const API_WrongDeviceNameSyntax        = "API_WrongDeviceNameSyntax";
-const char* const API_WrongEventData               = "API_WrongEventData";
-const char* const API_WrongFormat                  = "API_WrongFormat";
-const char* const API_WrongHistoryDataBuffer       = "API_WrongHistoryDataBuffer";
-const char* const API_WrongLockingStatus           = "API_WrongLockingStatus";
-const char* const API_WrongNumberOfArgs            = "API_WrongNumberOfArgs";
-const char* const API_ZmqFailed                    = "API_ZmqFailed";
-const char* const API_ZmqInitFailed                = "API_ZmqInitFailed";
 
 //
 // Many, many typedef

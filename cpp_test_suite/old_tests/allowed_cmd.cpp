@@ -4,7 +4,7 @@
  * Possible return code:
  *  -1 : major error
  *   0 : success
- *   1 : Exception "API_DeviceLocked"
+ *   1 : Exception API_DeviceLocked
  *   2 : All other exceptions
  */
 
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 	catch (Tango::DevFailed &e)
 	{
 //		Except::print_exception(e);
-		if (::strcmp(e.errors[0].reason.in(),"API_DeviceLocked") == 0)
+		if (::strcmp(e.errors[0].reason.in(),API_DeviceLocked) == 0)
 			return 1;
 		else
 			return 2;

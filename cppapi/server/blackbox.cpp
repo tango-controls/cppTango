@@ -1835,17 +1835,13 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
     {
         sync.unlock();
 
-        Except::throw_exception((const char *) API_BlackBoxArgument,
-                                (const char *) "Argument to read black box out of range",
-                                (const char *) "BlackBox::read");
+        TANGO_THROW_EXCEPTION(API_BlackBoxArgument, "Argument to read black box out of range");
     }
     if (nb_elt == 0)
     {
         sync.unlock();
 
-        Except::throw_exception((const char *) API_BlackBoxEmpty,
-                                (const char *) "Nothing stored yet in black-box",
-                                (const char *) "BlackBox::read");
+        TANGO_THROW_EXCEPTION(API_BlackBoxEmpty, "Nothing stored yet in black-box");
     }
 
 //
@@ -1898,9 +1894,7 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
     {
         sync.unlock();
 
-        Except::throw_exception((const char *) API_MemoryAllocation,
-                                (const char *) "Can't allocate memory in server",
-                                (const char *) "BlackBox::read");
+        TANGO_THROW_EXCEPTION(API_MemoryAllocation, "Can't allocate memory in server");
     }
 
 //

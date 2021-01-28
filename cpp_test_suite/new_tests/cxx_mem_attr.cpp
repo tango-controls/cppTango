@@ -123,7 +123,7 @@ public:
 		short s_val;
 		TS_ASSERT_THROWS_ASSERT(read_da >> s_val,Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "Aaaa" && e.errors[0].severity == Tango::ERR &&
-						  string(e.errors[1].reason.in()) == "API_MemAttFailedDuringInit" && e.errors[1].severity == Tango::ERR));
+						  string(e.errors[1].reason.in()) == API_MemAttFailedDuringInit && e.errors[1].severity == Tango::ERR));
 
 //
 // Ask attribute not to throw exception any more

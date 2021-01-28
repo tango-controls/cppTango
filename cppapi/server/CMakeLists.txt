@@ -129,7 +129,10 @@ set(HEADERS attrdesc.h
             subdev_diag.h
             encoded_attribute.h
             encoded_format.h
-            event_subscription_state.h)
+            event_subscription_state.h
+            tango_current_function.h
+            exception_reason_consts.h
+            )
 
 add_subdirectory(idl)
 add_subdirectory(jpeg)

@@ -58,9 +58,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 		TangoSys_OMemStream o;
 		o << "Not enough input arguments, needs 4 i.e. device name, attribute name, action, event name" << std::ends;
 
-		Except::throw_exception((const char *)API_WrongNumberOfArgs,
-								o.str(),
-								(const char *)"DServer::event_subscription_change");
+		TANGO_THROW_EXCEPTION(API_WrongNumberOfArgs, o.str());
 	}
 
 	std::string dev_name, attr_name, action, event, attr_name_lower;
@@ -85,9 +83,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
      	TangoSys_OMemStream o;
 		o << "The device server is shutting down! You can no longer subscribe for events" << std::ends;
 
-		Except::throw_exception((const char *)API_ShutdownInProgress,
-									    o.str(),
-									   (const char *)"DServer::event_subscription_change");
+		TANGO_THROW_EXCEPTION(API_ShutdownInProgress, o.str());
 	}
 
 //
@@ -196,8 +192,7 @@ void DServer::event_subscription(std::string &dev_name,std::string &obj_name,std
         {
             TangoSys_OMemStream o;
             o << "Device " << dev_name << " not found" << std::ends;
-            Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
-                                       (const char *)"DServer::event_subscription");
+            TANGO_RETHROW_EXCEPTION(e, API_DeviceNotFound, o.str());
         }
 	}
 
@@ -220,8 +215,7 @@ void DServer::event_subscription(std::string &dev_name,std::string &obj_name,std
 				ss << "The attribute " << obj_name << " is a forwarded attribute.";
 				ss << "\nIt is not supported to subscribe events from forwarded attribute using Tango < 9. Please update!!";
 
-				Except::throw_exception(API_NotSupportedFeature,
-										ss.str(),"DServer::event_subscription");
+				TANGO_THROW_EXCEPTION(API_NotSupportedFeature, ss.str());
 			}
 		}
 		else
@@ -232,8 +226,7 @@ void DServer::event_subscription(std::string &dev_name,std::string &obj_name,std
 				ss << "The attribute " << obj_name << " is a forwarded attribute.";
 				ss << "\nIt is not supported to subscribe events from forwarded attribute using Tango < 9. Please update!!";
 
-				Except::throw_exception(API_NotSupportedFeature,
-										ss.str(),"DServer::event_subscription");
+				TANGO_THROW_EXCEPTION(API_NotSupportedFeature, ss.str());
 			}
 		}
 
@@ -278,9 +271,7 @@ void DServer::event_subscription(std::string &dev_name,std::string &obj_name,std
 					o << obj_name;
 					o << " is not data ready event enabled" << std::ends;
 
-					Except::throw_exception(API_AttributeNotDataReadyEnabled,
-											o.str(),
-											"DServer::event_subscription");
+					TANGO_THROW_EXCEPTION(API_AttributeNotDataReadyEnabled, o.str());
 				}
 				cout4 << "DServer::event_subscription(): update data_ready subscription\n";
 
@@ -305,8 +296,7 @@ void DServer::event_subscription(std::string &dev_name,std::string &obj_name,std
 					{
 						if (attribute.is_fwd_att() == false && attribute.is_change_event() == false)
 						{
-							Except::throw_exception(API_AttributePollingNotStarted,o.str(),
-													"DServer::event_subscription");
+							TANGO_THROW_EXCEPTION(API_AttributePollingNotStarted, o.str());
 						}
 					}
 					else
@@ -315,14 +305,13 @@ void DServer::event_subscription(std::string &dev_name,std::string &obj_name,std
 						{
 							if (attribute.is_fwd_att() == false && attribute.is_archive_event() == false)
 							{
-								Except::throw_exception(API_AttributePollingNotStarted,o.str(),
-														"DServer::event_subscription");
+								TANGO_THROW_EXCEPTION(API_AttributePollingNotStarted, o.str());
 							}
 						}
 						else
 						{
 							if (attribute.is_fwd_att() == false)
-								Except::throw_exception(API_AttributePollingNotStarted,o.str(),"DServer::event_subscription");
+								TANGO_THROW_EXCEPTION(API_AttributePollingNotStarted, o.str());
 						}
 					}
 				}
@@ -356,8 +345,7 @@ void DServer::event_subscription(std::string &dev_name,std::string &obj_name,std
 									o << obj_name;
 									o << " are not set" << std::ends;
 
-									Except::throw_exception(API_EventPropertiesNotSet,
-															o.str(),"DServer::event_subscription");
+									TANGO_THROW_EXCEPTION(API_EventPropertiesNotSet, o.str());
 								}
 							}
 						}
@@ -433,8 +421,7 @@ void DServer::event_subscription(std::string &dev_name,std::string &obj_name,std
 									o << obj_name;
 									o << " are not set" << std::ends;
 
-									Except::throw_exception(API_EventPropertiesNotSet,
-															o.str(),"DServer::event_subscription");
+									TANGO_THROW_EXCEPTION(API_EventPropertiesNotSet, o.str());
 								}
 							}
 						}
@@ -498,8 +485,7 @@ void DServer::event_subscription(std::string &dev_name,std::string &obj_name,std
 							o << zmq_major << "." << zmq_minor << "." << zmq_patch;
 							o << "\nMulticast event(s) not available with this ZMQ release" << std::ends;
 
-							Except::throw_exception(API_UnsupportedFeature,
-													o.str(),"DServer::event_subscription");
+							TANGO_THROW_EXCEPTION(API_UnsupportedFeature, o.str());
 						}
 
 						std::string::size_type start,end;
@@ -669,9 +655,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 		TangoSys_OMemStream o;
 		o << "Not enough input arguments, needs at least 4 i.e. device name, attribute/pipe name, action, event name, <Tango lib release>" << std::ends;
 
-		Except::throw_exception((const char *)API_WrongNumberOfArgs,
-								o.str(),
-								(const char *)"DServer::zmq_event_subscription_change");
+		TANGO_THROW_EXCEPTION(API_WrongNumberOfArgs, o.str());
 	}
 
     Tango::Util *tg = Tango::Util::instance();
@@ -686,9 +670,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             TangoSys_OMemStream o;
             o << "Not enough input arguments, needs 4 i.e. device name, attribute/pipe name, action, event name" << std::ends;
 
-            Except::throw_exception((const char *)API_WrongNumberOfArgs,
-                                    o.str(),
-                                    (const char *)"DServer::zmq_event_subscription_change");
+            TANGO_THROW_EXCEPTION(API_WrongNumberOfArgs, o.str());
         }
 
 //
@@ -784,7 +766,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             std::stringstream ss;
             ss << "The event type you sent (" << event << ") is not  valid event type";
 
-            Except::throw_exception(API_WrongNumberOfArgs,ss.str(),"DServer::zmq_event_subscription_change");
+            TANGO_THROW_EXCEPTION(API_WrongNumberOfArgs, ss.str());
         }
 
         bool intr_change = false;
@@ -860,9 +842,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             TangoSys_OMemStream o;
             o << "The device server is shutting down! You can no longer subscribe for events" << std::ends;
 
-            Except::throw_exception((const char *)API_ShutdownInProgress,
-                                            o.str(),
-                                           (const char *)"DServer::zmq_event_subscription_change");
+            TANGO_THROW_EXCEPTION(API_ShutdownInProgress, o.str());
         }
 
 //
@@ -892,8 +872,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         {
             TangoSys_OMemStream o;
             o << "Device " << dev_name << " not found" << std::ends;
-            Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
-                                       (const char *)"DServer::event_subscription");
+            TANGO_RETHROW_EXCEPTION(e, API_DeviceNotFound, o.str());
         }
 
 		long idl_vers = dev->get_dev_idl_version();
@@ -903,9 +882,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
             o << "Device " << dev_name << " too old to use ZMQ event (it does not implement IDL 4)";
             o << "\nSimulate a CommandNotFound exception to move to notifd event system" << std::ends;
-            Except::throw_exception((const char *)API_CommandNotFound,
-				      o.str(),
-				      (const char *)"DServer::zmq_event_subscription_change");
+            TANGO_THROW_EXCEPTION(API_CommandNotFound, o.str());
         }
 
         if (client_release > idl_vers)
@@ -1162,8 +1139,7 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
         	{
             	TangoSys_OMemStream o;
             	o << "Device " << dev_name << " not found" << std::ends;
-            	Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
-             	                          (const char *)"DServer::event_confirm_subscription");
+            	TANGO_RETHROW_EXCEPTION(e, API_DeviceNotFound, o.str());
         	}
 
 			old_dev = dev_name;

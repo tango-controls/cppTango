@@ -124,7 +124,7 @@ public:
 	void test_command_not_found_exception(void)
 	{
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("DevToto"), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CommandNotFound"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_CommandNotFound
 						&& e.errors[0].severity == Tango::ERR));
 	}
 
@@ -146,7 +146,7 @@ public:
 		DevLong num = 1L;
 		din << num;
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOLong", din), Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CommandNotAllowed"
+				TS_ASSERT(string(e.errors[0].reason.in()) == API_CommandNotAllowed
 						&& e.errors[0].severity == Tango::ERR));
 
 		state_in = Tango::ON;
