@@ -25,28 +25,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "PortabilityImpl.hh"
+#include <log4tango/Portability.hh>
 
 #include <log4tango/PatternLayout.hh>
 #include <log4tango/Level.hh> 
-#include <log4tango/NDC.hh>
 #include <log4tango/TimeStamp.hh>
 
-#ifdef LOG4TANGO_HAVE_SSTREAM
-# include <sstream>
-#else
-# include <strstream>
-#endif
+#include <sstream>
 
 #include <iomanip>
 #include <ctime>
 #include <cmath>
-
-#ifdef LOG4TANGO_HAVE_INT64_T
-# ifdef LOG4TANGO_HAVE_STDINT_H
-#   include <stdint.h>
-# endif // LOG4TANGO_HAVE_STDINT_H
-#endif // LOG4TANGO_HAVE_INT64_T
+#include <cstdint>
 
 namespace log4tango {
 
@@ -71,11 +61,7 @@ namespace log4tango {
             if (specifier == "") {
                 _precision = -1;
             } else {
-#ifdef LOG4TANGO_HAVE_SSTREAM 
                 std::istringstream s(specifier);
-#else
-                std::istrstream s(specifier.c_str());
-#endif
                 s >> _precision;
             }
         }
@@ -107,13 +93,6 @@ namespace log4tango {
         }
     };
 
-#ifdef LOG4TANGO_HAS_NDC
-    struct NDCComponent : public PatternLayout::PatternComponent {
-        virtual void append(std::ostringstream& out, const LoggingEvent& event) {
-            out << event.ndc;
-        }
-    };
-#endif
 
     struct LevelComponent : public PatternLayout::PatternComponent {
         virtual void append(std::ostringstream& out, const LoggingEvent& event) {
@@ -261,11 +240,7 @@ namespace log4tango {
     bool _alignLeft;
 };
 
-#ifdef LOG4TANGO_HAS_NDC
-    const char* PatternLayout::BASIC_CONVERSION_PATTERN = "%R %p %c %x: %m%n";
-#else
     const char* PatternLayout::BASIC_CONVERSION_PATTERN = "%R %p %c %m%n";
-#endif
 
 PatternLayout::PatternLayout() {
   set_conversion_pattern(BASIC_CONVERSION_PATTERN);
@@ -286,11 +261,7 @@ void PatternLayout::clear_conversion_pattern() {
 
 int PatternLayout::set_conversion_pattern (const std::string& conversionPattern) 
 {
-#ifdef LOG4TANGO_HAVE_SSTREAM 
     std::istringstream conversionStream(conversionPattern);
-#else
-    std::istrstream conversionStream(conversionPattern.c_str());
-#endif
     std::string literal;
 
     char ch;
@@ -369,11 +340,6 @@ int PatternLayout::set_conversion_pattern (const std::string& conversionPattern)
             case 'u':
                 component = new ProcessorTimeComponent();
                 break;
-#ifdef LOG4TANGO_HAS_NDC
-            case 'x':
-                component = new NDCComponent();
-                break;
-#endif
             default:
                 return -1;                 
             }

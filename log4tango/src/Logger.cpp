@@ -25,19 +25,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "PortabilityImpl.hh"
+#include <log4tango/Portability.hh>
 
 #ifdef LOG4TANGO_HAVE_UNISTD_H
 # include <unistd.h>
 #endif
 
 #include <log4tango/Logger.hh>
-#ifdef LOG4TANGO_LOGGERS_USE_LOGSTREAM  
-# include <log4tango/LogStream.hh>
-#endif
-#ifdef LOG4TANGO_HAS_NDC
-# include <log4tango/NDC.hh>
-#endif
 #include "StringUtil.hh"
 
 namespace log4tango {
@@ -45,31 +39,11 @@ namespace log4tango {
 Logger::Logger(const std::string& name, Level::Value level) 
   : _name(name), _level(level)
 {
-#ifdef LOG4TANGO_LOGGERS_USE_LOGSTREAM  
-   LogStreamBuf* stream_buf;
-   stream_buf = new LogStreamBuf(this, Level::DEBUG);
-  _log_streams[_DEBUG_STREAM_ID] = new LogStream(stream_buf);
-   stream_buf = new LogStreamBuf(this, Level::INFO);
-  _log_streams[_INFO_STREAM_ID] = new LogStream(stream_buf);
-   stream_buf = new LogStreamBuf(this, Level::WARN);
-  _log_streams[_WARN_STREAM_ID] = new LogStream(stream_buf);
-   stream_buf = new LogStreamBuf(this, Level::ERROR);
-  _log_streams[_ERROR_STREAM_ID] = new LogStream(stream_buf);
-  stream_buf = new LogStreamBuf(this, Level::FATAL);
-  _log_streams[_FATAL_STREAM_ID] = new LogStream(stream_buf);
-#else
   //no-op
-#endif // LOG4TANGO_LOGGERS_USE_LOGSTREAM 
 }
 
 Logger::~Logger() 
 {
-#ifdef LOG4TANGO_LOGGERS_USE_LOGSTREAM 
-  for (int i = _FATAL_STREAM_ID; i <= _DEBUG_STREAM_ID; i++) {
-    if (_log_streams[i]) delete _log_streams[i];
-    _log_streams[i] = 0;
-  }
-#endif
 }
     
 void Logger::set_level (Level::Value level)
@@ -77,7 +51,7 @@ void Logger::set_level (Level::Value level)
   if ((level >= Level::OFF) && (level <= Level::DEBUG)) {
     _level = level;
     { //-- Begin critical section -----------------------------
-      threading::ScopedLock guard(_appendersMutex); 
+      std::lock_guard<std::mutex> guard(_appendersMutex);
       if (!_appenders.empty()) {
         AppenderMapIterator i = _appenders.begin();
         AppenderMapIterator e = _appenders.end();
@@ -93,7 +67,7 @@ void Logger::call_appenders (const LoggingEvent& event)
 {
   std::vector<std::string> *bad_appenders = 0;
   { //-- Begin critical section -----------------------------
-    threading::ScopedLock guard(_appendersMutex); 
+    std::lock_guard<std::mutex> guard(_appendersMutex);
     if (!_appenders.empty()) {
       AppenderMapIterator i = _appenders.begin();
       AppenderMapIterator e = _appenders.end();
@@ -129,11 +103,7 @@ void Logger::log_unconditionally(Level::Value level,
 void Logger::log_unconditionally(Level::Value level, 
                                  const std::string& message) 
 {
-#ifdef LOG4TANGO_HAS_NDC
-  LoggingEvent event(get_name(), message, NDC::get(), level);
-#else
   LoggingEvent event(get_name(), message, level);
-#endif
   call_appenders(event);
 }
 

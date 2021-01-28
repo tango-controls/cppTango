@@ -26,7 +26,7 @@
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "PortabilityImpl.hh"
+#include <log4tango/Portability.hh>
 #ifdef LOG4TANGO_HAVE_IO_H
 # include <io.h>
 #endif

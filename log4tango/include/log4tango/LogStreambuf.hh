@@ -43,8 +43,6 @@ namespace log4tango {
 //-----------------------------------------------------------------------------
 class LOG4TANGO_EXPORT LogStreamBuf : public std::streambuf
 {
-  friend class LogStream;
-
 public:
 
   LogStreamBuf (Logger* logger, 

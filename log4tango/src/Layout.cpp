@@ -25,10 +25,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "PortabilityImpl.hh"
-#ifdef LOG4TANGO_HAVE_SSTREAM
-# include <sstream>
-#endif
+#include <log4tango/Portability.hh>
+#include <sstream>
 #include <log4tango/Level.hh>
 #include <log4tango/Layout.hh>
 
@@ -48,10 +46,6 @@ std::string Layout::format (const LoggingEvent& event)
             << sep
             << event.logger_name
             << sep
-#ifdef LOG4TANGO_HAS_NDC
-            << event.ndc 
-            << sep  
-#endif
             << event.message
             << std::ends;
      

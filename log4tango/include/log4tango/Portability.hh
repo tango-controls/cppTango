@@ -28,37 +28,64 @@
 #ifndef _LOG4TANGO_PORTABILITY_H
 #define _LOG4TANGO_PORTABILITY_H
 
-#if defined (_MSC_VER) || defined(__BORLANDC__)
-# include <log4tango/config-win32.h>
-#else
-# include <log4tango/config.h>
-#endif
-
+#include <log4tango/config.h>
 #include <log4tango/Export.hh>
 
 #if defined(_MSC_VER)
-# pragma warning( disable : 4786 ) // 255 char debug symbol limit
-# pragma warning( disable : 4290 ) // throw specifier not implemented
-# pragma warning( disable : 4251 ) // "class XXX should be exported"
+
+/* define to get around problems with ERROR in windows.h */
+#ifndef LOG4TANGO_FIX_ERROR_COLLISION
+# define LOG4TANGO_FIX_ERROR_COLLISION 1
+#endif
+
+#ifdef LOG4TANGO_USE_THREADING
+
+// deal with ERROR #define
+
+// This #includes windows.h with NOGDI and WIN32_LEAN_AND_MEAN
+// #defined. If this is not what the user wants, #include
+// windows.h before this file.
+
+#ifndef _WINDOWS_
+	#ifndef NOGDI
+		#define NOGDI // circumvent the ERROR #define in windows.h
+		#define LOG4TANGO_UNDEFINE_NOGDI
+	#endif
+
+	#ifndef WIN32_LEAN_AND_MEAN
+		#define WIN32_LEAN_AND_MEAN
+		#define LOG4TANGO_UNDEFINE_WIN32_LEAN_AND_MEAN
+	#endif
+
+	#include <windows.h>
+
+	#ifdef LOG4TANGO_UNDEFINE_NOGDI
+		#undef NOGDI
+	#endif
+
+	#ifdef LOG4TANGO_UNDEFINE_WIN32_LEAN_AND_MEAN
+		#undef WIN32_LEAN_AND_MEAN
+	#endif
+
+#endif
+// done dealing with ERROR #define
+
+#endif // LOG4TANGO_USE_THREADING
+
+/* define mode_t */
+namespace log4tango
+{
+typedef unsigned short mode_t;
+}
 
 #define LOG4TANGO_UNUSED(var) var
-#else
+
+#else // _MSC_VER
 	#ifdef __GNUC__
 		#define LOG4TANGO_UNUSED(var) var __attribute__ ((unused))
 	#else
 		#define LOG4TANGO_UNUSED(var) var
 	#endif
-#endif
-
-#ifndef LOG4TANGO_HAVE_SSTREAM
-#include <strstream>
-namespace std {
-  class LOG4TANGO_EXPORT ostringstream : public ostrstream {
-    public:
-      std::string str();
-      void str (const char*);
-  };
-}
-#endif // LOG4TANGO_HAVE_SSTREAM
+#endif // _MSC_VER
 
 #endif // _LOG4TANGO_PORTABILITY_H

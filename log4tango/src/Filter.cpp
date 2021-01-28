@@ -27,7 +27,7 @@
 
 #ifdef APPENDERS_HAVE_FILTERS
 
-#include "PortabilityImpl.hh"
+#include <log4tango/Portability.hh>
 #include <log4tango/Filter.hh>
 
 namespace log4tango {
