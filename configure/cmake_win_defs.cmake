@@ -1,4 +1,7 @@
 #definitions and preprocessor
+option(TANGO_BUILD_SHARED "Build a shared library instead of static" ON)
+option(TANGO_INSTALL_DEPENDENCIES "Install the libraries that tango depends on" ON)
+
 add_definitions(-D_WIN32)
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 if(CMAKE_CL_64)
@@ -42,3 +45,11 @@ if(CMAKE_CL_64)
     list(REMOVE_ITEM dyn_defs "JPG_USE_ASM")
 endif(CMAKE_CL_64)
 message("dyn_defs: ${dyn_defs}")
+
+if (TANGO_BUILD_SHARED)
+    message("selected dynamic-library build")
+    set(windows_defs ${dyn_defs})
+else()
+    message("selected static-library build")
+    set(windows_defs ${static_defs})
+endif()
