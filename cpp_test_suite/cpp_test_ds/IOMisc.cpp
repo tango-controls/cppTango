@@ -1328,12 +1328,7 @@ bool GetLongSize::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUS
 
 CORBA::Any *GetLongSize::execute(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
-	short size;
-#ifdef TANGO_LONG64
-	size = 64;
-#else
-	size = 32;
-#endif
+	short size = sizeof(long);
 	return insert(size);
 }
 

@@ -135,7 +135,7 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 		}
 
 		int max_val = enum_labels.size() - 1;
-		for (unsigned int i = 0;i < data_size;i++)
+		for (long i = 0;i < data_size;i++)
 		{
 			if (p_data[i] < 0 || p_data[i] > max_val)
 			{

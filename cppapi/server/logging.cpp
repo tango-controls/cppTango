@@ -186,11 +186,7 @@ void Logging::init (const std::string& ds_name, // dserver name
           else if (rtf > kMaxRollingThreshold) {
             Logging::_rft = kMaxRollingThreshold;
           }
-#ifdef TANGO_LONG64
-          _VERBOSE(("\tRolling file threshold is %lu Kb\n", Logging::_rft));
-#else
-		  _VERBOSE(("\tRolling file threshold is %d Kb\n", Logging::_rft));
-#endif
+          _VERBOSE(("\tRolling file threshold is %s Kb\n", std::to_string(Logging::_rft).c_str()));
         }
         // set logging level (if not set from cmd line)
         if (! level_set_from_cmd_line)
