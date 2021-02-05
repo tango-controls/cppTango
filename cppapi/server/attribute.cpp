@@ -3906,7 +3906,7 @@ void Attribute::fire_change_event(DevFailed *except)
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-//						set_value_flag (false);
+						set_value_flag (false);
 					}
 				}
 			}
@@ -3932,7 +3932,7 @@ void Attribute::fire_change_event(DevFailed *except)
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-//						set_value_flag (false);
+						set_value_flag (false);
 					}
 				}
 			}
@@ -4166,7 +4166,7 @@ void Attribute::fire_change_event(DevFailed *except)
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-//				set_value_flag (false);
+				set_value_flag (false);
 			}
 		}
 	}
@@ -4189,7 +4189,7 @@ void Attribute::fire_change_event(DevFailed *except)
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-//				set_value_flag (false);
+				set_value_flag (false);
 			}
 		}
 
@@ -4321,7 +4321,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-//						set_value_flag (false);
+						set_value_flag (false);
 					}
                 }
             }
@@ -4355,7 +4355,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-//						set_value_flag (false);
+						set_value_flag (false);
 					}
                 }
             }
@@ -4593,7 +4593,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-//				set_value_flag (false);
+				set_value_flag (false);
 			}
 		}
 	}
@@ -4617,7 +4617,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-//				set_value_flag (false);
+				set_value_flag (false);
 			}
 		}
 
@@ -4755,7 +4755,7 @@ void Attribute::fire_event(std::vector<std::string> &filt_names,std::vector<doub
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-//						set_value_flag (false);
+						set_value_flag (false);
 					}
 				}
 			}
@@ -4882,7 +4882,7 @@ void Attribute::fire_event(std::vector<std::string> &filt_names,std::vector<doub
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-//				set_value_flag (false);
+				set_value_flag (false);
 			}
 		}
 	}
@@ -4906,7 +4906,7 @@ void Attribute::fire_event(std::vector<std::string> &filt_names,std::vector<doub
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-//				set_value_flag (false);
+				set_value_flag (false);
 			}
 		}
 
@@ -5955,6 +5955,21 @@ void Attribute::remove_client_lib(int _l,const std::string &ev_name)
 	std::vector<int>::iterator pos = find(client_lib[i].begin(),client_lib[i].end(),_l);
 	if (pos != client_lib[i].end())
 		client_lib[i].erase(pos);
+}
+
+bool Attribute::is_readable() const
+{
+    // If the attribute is a forwarded one, force reading it from
+    // the root device. Another client could have written its value
+    return get_writable() != Tango::WRITE || is_fwd_att();
+}
+
+bool Attribute::is_writable() const
+{
+    const auto access_mode = get_writable();
+    return access_mode == Tango::READ_WRITE
+        || access_mode == Tango::READ_WITH_WRITE
+        || (access_mode == Tango::WRITE && ! is_fwd_att());
 }
 
 //-------------------------------------------------------------------------------------------------------------------

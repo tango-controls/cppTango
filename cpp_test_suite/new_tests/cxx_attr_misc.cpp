@@ -1102,6 +1102,60 @@ cout << "status = " << status << endl;
         TS_ASSERT_EQUALS(Tango::ALARM, device1->state());
         TS_ASSERT_EQUALS(Tango::ATTR_ALARM, device1->read_attribute(attr_name).get_quality());
     }
+
+/*
+ * Tests that it is possible to read two attributes in a single network call
+ * if one of the attributes pushes an event for the other one. Such scenario
+ * used to fail with API_AttrValueNotSet as reported in #201.
+ */
+
+    static constexpr Tango::DevShort READ_WITH_PUSH_ATTR_1_VALUE = 13;
+    static constexpr Tango::DevShort READ_WITH_PUSH_ATTR_2_VALUE = 17;
+
+    void test_read_two_attributes_one_pushes_event_for_another_1st_pushes()
+    {
+        std::vector<std::string> attributes = {"ReadWithPushAttr2", "ReadWithPushAttr1"};
+        std::vector<DeviceAttribute>* result = nullptr;
+        TS_ASSERT_THROWS_NOTHING(result = device1->read_attributes(attributes));
+        Tango::DevShort out;
+        TS_ASSERT_THROWS_NOTHING((*result)[0] >> out);
+        TS_ASSERT_EQUALS(out, READ_WITH_PUSH_ATTR_2_VALUE);
+        TS_ASSERT_THROWS_NOTHING((*result)[1] >> out);
+        TS_ASSERT_EQUALS(out, READ_WITH_PUSH_ATTR_1_VALUE);
+        delete result;
+    }
+
+    void test_read_two_attributes_one_pushes_event_for_another_2nd_pushes()
+    {
+        std::vector<std::string> attributes = {"ReadWithPushAttr1", "ReadWithPushAttr2"};
+        std::vector<DeviceAttribute>* result = nullptr;
+        TS_ASSERT_THROWS_NOTHING(result = device1->read_attributes(attributes));
+        Tango::DevShort out;
+        TS_ASSERT_THROWS_NOTHING((*result)[0] >> out);
+        TS_ASSERT_EQUALS(out, READ_WITH_PUSH_ATTR_1_VALUE);
+        TS_ASSERT_THROWS_NOTHING((*result)[1] >> out);
+        TS_ASSERT_EQUALS(out, READ_WITH_PUSH_ATTR_2_VALUE);
+        delete result;
+    }
+
+/*
+ * Test that if attribute pushes an event for itself from its read callback
+ * and push_event is called after set_value, an exception is raised. Such
+ * scenario was reported to cause a crash (#443).
+ */
+
+    void test_read_attribute_that_pushes_event_for_itself_after_calling_set_value()
+    {
+        DeviceAttribute result;
+        TS_ASSERT_THROWS_NOTHING(result = device1->read_attribute("PushItselfAfterSetAttr"));
+
+        Tango::DevShort out;
+        TS_ASSERT_THROWS_ASSERT(
+            result >> out,
+            Tango::DevFailed& e,
+            TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrValueNotSet"));
+    }
+
 };
 #undef cout
 #endif // AttrMiscTestSuite_h

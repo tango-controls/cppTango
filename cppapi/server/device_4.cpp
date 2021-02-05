@@ -589,7 +589,7 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 		try
 		{
 			AutoTangoMonitor sync(this);
-			read_attributes_no_except(real_names,aid,false,idx_in_back);
+			read_attributes_no_except(real_names, aid);
 		}
 		catch (...)
 		{
@@ -672,7 +672,7 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 
 				{
 					AutoTangoMonitor sync(this);
-					read_attributes_no_except(fwd_names,aid,true,idx_in_back);
+					read_attributes_no_except(fwd_names, aid, idx_in_back);
 					idx_in_back.clear();
 				}
 			}
@@ -742,7 +742,7 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 			try
 			{
 				AutoTangoMonitor sync(this);
-				read_attributes_no_except(names_from_device,aid,true,idx_in_back);
+				read_attributes_no_except(names_from_device, aid, idx_in_back);
 			}
 			catch (...)
 			{

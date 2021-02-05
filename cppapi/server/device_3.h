@@ -63,8 +63,11 @@ struct AttIdx
 {
 	long	idx_in_names;
 	long	idx_in_multi_attr;
-	bool	failed;
 };
+
+using AttributeNames = DevVarStringArray;
+using AttributeAndIndexInDataPairs = std::vector<std::pair<Attribute*, long>>;
+using AttributeIndicesInData = std::vector<long>;
 
 /**
  * Base class for all TANGO device since version 3.
@@ -291,25 +294,22 @@ public:
 
 protected:
 /// @privatesection
-	void read_attributes_no_except(const Tango::DevVarStringArray&,Tango::AttributeIdlData &,bool,std::vector<long> &);
+	void read_attributes_no_except(const Tango::DevVarStringArray&, Tango::AttributeIdlData&);
+	void read_attributes_no_except(const Tango::DevVarStringArray&, Tango::AttributeIdlData&, const AttributeIndicesInData&);
 	void write_attributes_in_db(std::vector<long> &,std::vector<AttIdx> &);
-	void add_alarmed(std::vector<long> &);
-	long reading_state_necessary(std::vector<AttIdx> &);
+	void add_alarmed(AttributeIndices&);
 	void state2attr(Tango::DevState,Tango::AttributeValue_3 &);
 	void state2attr(Tango::DevState,Tango::AttributeValue_4 &);
 	void state2attr(Tango::DevState,Tango::AttributeValue_5 &);
 	void status2attr(Tango::ConstDevString,Tango::AttributeValue_3 &);
 	void status2attr(Tango::ConstDevString,Tango::AttributeValue_4 &);
 	void status2attr(Tango::ConstDevString,Tango::AttributeValue_5 &);
-	void alarmed_not_read(std::vector<AttIdx> &);
+	void alarmed_not_read(const AttributeIndices&);
 
 	void write_attributes_34(const Tango::AttributeValueList *,const Tango::AttributeValueList_4 *);
 
 	template <typename T,typename V>
 	void set_attribute_config_3_local(const T &,const V &,bool,int);
-
-	template <typename T> void error_from_devfailed(T &,DevFailed &,const char *);
-	template <typename T> void error_from_errorlist(T &,DevErrorList &,const char *);
 
 	template <typename T> void one_error(T &,const char *,const char *,std::string &,Attribute &);
 	template <typename T> void one_error(T &,const char *,const char *,std::string &,const char *);
@@ -333,6 +333,21 @@ private:
     };
 
     void real_ctor();
+
+    AttributeAndIndexInDataPairs collect_attributes_to_read(
+        const AttributeNames&,
+        AttributeIdlData&,
+        const AttributeIndicesInData&,
+        long& state_index_in_data,
+        long& status_index_in_data);
+    AttributeIndices get_readable_attributes(const AttributeAndIndexInDataPairs&);
+    void call_read_attr_hardware_if_needed(const AttributeIndices&, bool state_wanted);
+    void update_readable_attribute_value(Attribute&, AttributeIdlData&, long index_in_data);
+    void update_writable_attribute_value(Attribute&, AttributeIdlData&, long index_in_data);
+    void store_attribute_for_network_transfer(Attribute&, AttributeIdlData&, long index_in_data);
+    void read_and_store_state_for_network_transfer(AttributeIdlData&, long index_in_data, const AttributeIndices&);
+    void read_and_store_status_for_network_transfer(AttributeIdlData&, long index_in_data);
+
 
     std::unique_ptr<Device_3ImplExt>     ext_3;           // Class extension
 };

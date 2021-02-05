@@ -486,4 +486,16 @@ void SubDevDiag::get_sub_devices_from_cache()
 		std::cerr << "No database cache found to initialise sub device map!" << std::endl;
 }
 
+SubDevDiag::ContextManager::ContextManager(std::string device_name)
+    : diag(Tango::Util::instance()->get_sub_dev_diag())
+    , previous_device_name(diag.get_associated_device())
+{
+    diag.set_associated_device(std::move(device_name));
+}
+
+SubDevDiag::ContextManager::~ContextManager()
+{
+    diag.set_associated_device(std::move(previous_device_name));
+}
+
 } // End of Tango namespace
