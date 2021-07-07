@@ -31,6 +31,7 @@
 #endif
 #include <log4tango/Level.hh>
 #include <log4tango/Layout.hh>
+#include <chrono>
 
 namespace log4tango {
 
@@ -39,8 +40,11 @@ std::string Layout::format (const LoggingEvent& event)
     const char sep = ' ';
     
     std::ostringstream message;
-    
-    message << event.timestamp.get_seconds()
+
+    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(
+        event.timestamp.time_since_epoch()).count();
+
+    message << seconds
             << sep
             << "[" << event.thread_id << "]"
             << sep

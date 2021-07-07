@@ -31,9 +31,9 @@
 #include <log4tango/Portability.hh>
 #include <string>
 #include <thread>
+#include <chrono>
 
 #include <log4tango/Level.hh>
-#include <log4tango/TimeStamp.hh>
 
 namespace log4tango {
 
@@ -97,7 +97,7 @@ public:
 
   /** The number of seconds elapsed since the epoch 
       (1/1/1970 00:00:00 UTC) until logging event was created. */
-  TimeStamp timestamp;
+  std::chrono::system_clock::time_point timestamp;
   
 private:
   /** Prevent implicit copy */

@@ -15,7 +15,6 @@ set(SOURCES
                 Level.cpp
                 NDC.cpp
                 Filter.cpp
-                TimeStamp.cpp
                 StringUtil.hh
                 StringUtil.cpp
                 DllMain.cpp

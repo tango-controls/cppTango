@@ -27,6 +27,7 @@
 
 #include "PortabilityImpl.hh"
 #include <stdio.h>
+#include <chrono>
 #include <log4tango/threading/Threading.hh> 
 #include <log4tango/LoggingEvent.hh> 
 #include <log4tango/XmlLayout.hh> 
@@ -49,10 +50,10 @@ namespace log4tango {
     buf.append("<log4j:event logger=\"");
     buf.append(event.logger_name);
     buf.append("\" timestamp=\"");
-    double ts_ms = 1000. * event.timestamp.get_seconds();
-    ts_ms += event.timestamp.get_milliseconds();
+    double ts_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+        event.timestamp.time_since_epoch()).count();
     char ts_str[32];
-    ::sprintf(ts_str, "%.0f", ts_ms);
+    ::sprintf(ts_str, "%.0f", double(ts_ms));
     buf.append(ts_str);
     buf.append("\" level=\"");
     buf.append(log4tango::Level::get_name(event.level));

@@ -30,7 +30,6 @@
 #include <log4tango/FileAppender.hh>
 #include <log4tango/Layout.hh>
 #include <log4tango/PatternLayout.hh>
-#include <log4tango/TimeStamp.hh>
 
 #include "clock.hh"
 

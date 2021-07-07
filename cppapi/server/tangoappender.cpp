@@ -40,6 +40,8 @@
 
 #include <iomanip>
 
+#include <chrono>
+
 #ifdef TANGO_HAS_LOG4TANGO
 
 #include <tangoappender.h>
@@ -103,8 +105,8 @@ namespace Tango
       Tango::DevVarStringArray *dvsa = new Tango::DevVarStringArray(6);
       if (dvsa) {
         dvsa->length(6);
-        double ts_ms = 1000. * event.timestamp.get_seconds();
-        ts_ms += event.timestamp.get_milliseconds();
+        auto ts_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+            event.timestamp.time_since_epoch()).count();
         TangoSys_OMemStream ts_ms_str;
 
         ts_ms_str << std::fixed
